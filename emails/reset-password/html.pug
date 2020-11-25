@@ -1,0 +1,10 @@
+extends ../email-template
+
+block emailTitle
+  span Reset password
+
+block emailText
+  span Please #[a(href=actionURL title="Reset password") click below] to reset your #{frontendAppHostname} password.
+
+block emailAction
+  a(href=actionURL, title="Reset password" target="_blank", style="font-size: 16px; font-family: Lato, Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; border-radius: 4px; padding: 8px 32px; border: 1px solid #0d79d0; display: inline-block;").btn-radius Reset password

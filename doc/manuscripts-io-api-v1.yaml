@@ -1,0 +1,1265 @@
+swagger: "2.0"
+info:
+  description: "manuscripts.io API server."
+  version: "1.0"
+  title: "manuscripts.io"
+  contact:
+    email: "support@manuscripts.io"
+host: "api.manuscripts.io"
+basePath: "/api/v1"
+tags:
+  - name: "auth"
+    description: "User authentication endpoints"
+  - name: "registration"
+    description: "User registration endpoints"
+  - name: "user"
+    description: "User manipulation endpoints"
+  - name: "container"
+    description: "Container manipulation endpoints"
+  - name: "invitation"
+    description: "Invitation endpoints"
+  - name: "submission"
+    description: "Submission manipulation endpoints"
+  - name: "server"
+    description: "Server information"
+schemes:
+  - "https"
+parameters:
+  JsonContentTypenHeadersSchema:
+    name: content-type
+    type: string
+    in: header
+    required: true
+    default: "application/json"
+  JsonAcceptHeadersSchema:
+    name: accept
+    type: string
+    in: header
+    required: true
+    default: "application/json"
+  AppIdAcceptHeadersSchema:
+    name: manuscripts-app-id
+    description: "Manuscripts client application ID"
+    type: string
+    in: header
+    required: true
+  AppSecretHeadersSchema:
+    name: manuscripts-app-secret
+    description: "Manuscripts client application secret"
+    type: string
+    in: header
+    required: true
+  AppIdAcceptQuerySchema:
+    name: manuscripts-app-id
+    description: "Manuscripts client application ID"
+    type: string
+    in: query
+    required: true
+  AppSecretQuerySchema:
+    name: manuscripts-app-secret
+    description: "Manuscripts client application secret"
+    type: string
+    in: query
+    required: true
+  AuthorizationTokenHeaderSchema:
+    name: Authorization
+    description: "Manuscripts JWT authorization token"
+    type: string
+    in: header
+    format: "Authorization: Bearer <token>"
+    required: true
+  AdminTokenHeaderSchema:
+    name: admin-token
+    description: "Admin JWT authorization token signed by server secret, containing email or connectUserID"
+    type: string
+    in: header
+    format: "Authorization: Bearer <token>"
+    required: true
+paths:
+  /auth/login:
+    post:
+      tags:
+        - "auth"
+      summary: "Logs user in by providing credentials."
+      description: "Authorize user into the system through providing username and password."
+      operationId: "basic-login"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "User credentials"
+          required: true
+          schema:
+            $ref: "#/definitions/CredentialsSchema"
+        - $ref: "#/parameters/JsonContentTypenHeadersSchema"
+        - $ref: "#/parameters/JsonAcceptHeadersSchema"
+        - $ref: "#/parameters/AppIdAcceptHeadersSchema"
+        - $ref: "#/parameters/AppSecretHeadersSchema"
+      responses:
+        200:
+          description: "successful login"
+          headers:
+            Set-Cookie:
+              type: "string"
+              description: "For each bucket path a cookie will be set containing: SyncGatewaySession value, Age, domain, path, Expiry date and SameSite .</br> Ex: SyncGatewaySession={cookie}; Max-Age=86400; Domain={host}; Path={bucket’s path}; Expires={expiry date}; SameSite=None"
+          schema:
+            $ref: "#/definitions/TokenSchema"
+        401:
+          description: "Invalid username or password"
+        403:
+          description: "User is blocked or email is not verified"
+  /auth/admin:
+    post:
+      tags:
+        - "auth"
+      summary: "Server-server authorization."
+      description: "Authorize through providing admin jwt token signed with server secret."
+      operationId: "server-server-auth"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "User credentials"
+          required: true
+          schema:
+            $ref: "#/definitions/ServerToServerAuthSchema"
+        - $ref: "#/parameters/AdminTokenHeaderSchema"
+        - $ref: "#/parameters/JsonContentTypenHeadersSchema"
+        - $ref: "#/parameters/JsonAcceptHeadersSchema"
+        - $ref: "#/parameters/AppIdAcceptHeadersSchema"
+      responses:
+        200:
+          description: "Successfully Authorized"
+          schema:
+            $ref: "#/definitions/TokenSchema"
+        401:
+          description: "Invalid token, email or connectUserID"
+  /auth/google:
+    get:
+      tags:
+        - "auth"
+      summary: "Redirects user to google authentication."
+      description: ""
+      operationId: "google-login"
+      parameters:
+        - in: "query"
+          name: "deviceId"
+          description: "The unique device id a user use to access the api"
+          type: "string"
+          required: true
+        - in: "query"
+          name: "invitationId"
+          description: "User's invitation id"
+          type: "string"
+          required: false
+        - $ref: "#/parameters/AppIdAcceptQuerySchema"
+        - $ref: "#/parameters/AppSecretQuerySchema"
+        - $ref: "#/parameters/AppIdAcceptHeadersSchema"
+        - $ref: "#/parameters/AppSecretHeadersSchema"
+      responses:
+        302:
+          description: "Redirects to a google login portal."
+  /auth/google/callback:
+    get:
+      tags:
+        - "auth"
+      summary: "Verifies user login using google."
+      description: "This request is only called only by google authorization portal"
+      operationId: "google-login-callback"
+      parameters:
+        - in: "query"
+          name: "code"
+          description: "generated by google"
+          type: "string"
+          required: true
+        - in: "query"
+          name: "state"
+          description: "This value is sent to google by the API, then google will send it back to the API."
+          required: true
+          type: "string"
+          format: "string"
+      responses:
+        302:
+          description: "Redirects to manuscripts.io site, either succeeding or failing. The client needs to check whether the URL has expected token value or error flag in the query string."
+        401:
+          description: "Invalid OAuth state parameter"
+        403:
+          description: "User status does not exist"
+  /auth/iam:
+    get:
+      tags:
+        - "auth"
+      summary: "Redirects user to connect authentication."
+      description: ""
+      operationId: "iam-login"
+      parameters:
+        - in: "query"
+          name: "deviceId"
+          description: "the unique device id user use to access the api"
+          type: "string"
+          required: true
+        - in: "query"
+          name: "manuscripts-app-id"
+          description: "Application id"
+          type: "string"
+          required: false
+        - $ref: "#/parameters/AppIdAcceptQuerySchema"
+        - $ref: "#/parameters/AppSecretQuerySchema"
+        - $ref: "#/parameters/AppIdAcceptHeadersSchema"
+        - $ref: "#/parameters/AppSecretHeadersSchema"
+      responses:
+        302:
+          description: "redirect to iam login portal"
+  /auth/iam/callback:
+    get:
+      tags:
+        - "auth"
+      summary: "Verifies user login using connect."
+      description: "This request is only called only by connect authorization portal"
+      operationId: "iam-login-callback"
+      parameters:
+        - in: "query"
+          name: "token_id"
+          description: "A token generated by iam which contains user credentials"
+          type: "string"
+          required: true
+        - in: "query"
+          name: "state"
+          description: "This value is sent to iam by the API, then iam will send it back to the API."
+          required: true
+          type: "string"
+          format: "string"
+        - in: "query"
+          name: "error"
+          description: "Indicates the existance of error"
+          required: false
+          type: "string"
+          format: "string"
+        - in: "query"
+          name: "error_description"
+          description: "The description of the error returned by iam server"
+          required: false
+          type: "string"
+          format: "string"
+      responses:
+        302:
+          description: "Redirects to manuscripts.io site, either succeeding or failing. The client needs to check whether the URL has expected token value or error flag in the query string."
+        401:
+          description: "Invalid OAuth state parameter"
+        403:
+          description: "User status does not exist"
+  /auth/sendForgottenPassword:
+    post:
+      tags:
+        - "auth"
+      summary: "Sends an email to the user with details about resetting password."
+      description: ""
+      operationId: "send-forgotten-password"
+      parameters:
+        - in: "body"
+          name: "body"
+          schema:
+            $ref: "#/definitions/SendForgottenPasswordSchema"
+        - $ref: "#/parameters/JsonContentTypenHeadersSchema"
+        - $ref: "#/parameters/JsonAcceptHeadersSchema"
+      responses:
+        200:
+          description: "Email sent successfully"
+        401:
+          description: "User was not found"
+        403:
+          description: "Email was not found"
+  /auth/resetPassword:
+    post:
+      tags:
+        - "auth"
+      summary: "Resets the user password after requesting password change."
+      description: ""
+      operationId: "reset-password"
+      parameters:
+        - in: "body"
+          name: "body"
+          schema:
+            $ref: "#/definitions/ResetPasswordSchema"
+        - $ref: "#/parameters/AppIdAcceptQuerySchema"
+        - $ref: "#/parameters/AppSecretQuerySchema"
+        - $ref: "#/parameters/AppIdAcceptHeadersSchema"
+        - $ref: "#/parameters/AppSecretHeadersSchema"
+      responses:
+        200:
+          description: "Password has been changed successfully and user logged in"
+          schema:
+            $ref: "#/definitions/TokenSchema"
+        401:
+          description: "Invalid application or token or user was not found"
+  /auth/logout:
+    post:
+      tags:
+        - "auth"
+      summary: "Logs user out of the system."
+      description: ""
+      operationId: "logout"
+      parameters:
+        - in: "body"
+          name: "body"
+          schema:
+            $ref: "#/definitions/EmptyBodySchema"
+        - $ref: "#/parameters/AuthorizationTokenHeaderSchema"
+      responses:
+        200:
+          description: "User logged out successfully"
+        401:
+          description: "Invalid authorization token, the token was not found or the user is in unexpected state."
+  /auth/backchannel_logout:
+    post:
+      tags:
+        - "auth"
+      summary: "Logs user out of the system when the user is logged out from Connect."
+      description: ""
+      operationId: "backchannel-logout"
+      parameters:
+        - in: "body"
+          name: "body"
+          schema:
+            $ref: "#/definitions/EmptyBodySchema"
+        - in: "query"
+          name: "logout_token"
+          description: "A JWT token sent from connect to request from the api to log out, which contains connect user id and user sessions."
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "User token removed successfully."
+        400:
+          description: "Invalid logout request, invalid logout_token provided."
+  /auth/refreshSyncSession:
+    post:
+      tags:
+        - "auth"
+      summary: "Refreshes user's sync session"
+      description: ""
+      operationId: "refresh-sync-session"
+      parameters:
+        - in: "body"
+          name: "body"
+          schema:
+            $ref: "#/definitions/EmptyBodySchema"
+        - $ref: "#/parameters/AuthorizationTokenHeaderSchema"
+      responses:
+        200:
+          description: "User logged out successfully."
+        401:
+          description: "Invalid authorization token or the token or the user state were not found."
+  /auth/changePassword:
+    post:
+      tags:
+        - "auth"
+      summary: "Changes user's password."
+      description: ""
+      operationId: "change-password"
+      parameters:
+        - in: "body"
+          name: "body"
+          schema:
+            $ref: "#/definitions/ChangePasswordSchema"
+      responses:
+        200:
+          description: "Password changed successfully"
+  /authorization/:scope:
+    post:
+      tags:
+        - "auth"
+      summary: "Creates an authorization token that allows authenticating with other services such as pressroom or jupyter."
+      description: ""
+      operationId: "authorization"
+      produces:
+        - "application/json"
+        - "text/plain"
+      parameters:
+        - name: accept
+          type: string
+          in: header
+          required: false
+          default: "application/json"
+        - $ref: '#/parameters/AuthorizationTokenHeaderSchema'
+      responses:
+        200:
+          description: "Access token retrieved successfully."
+        400:
+          description: "Invalid scope provided"
+        401:
+          description: "Invalid authorization token."
+  /registration/signup:
+    post:
+      tags:
+        - "registration"
+      summary: "Registers new user."
+      description: ""
+      operationId: "signup"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "User credentials"
+          required: true
+          schema:
+            $ref: "#/definitions/SignupSchema"
+        - $ref: "#/parameters/JsonContentTypenHeadersSchema"
+        - $ref: "#/parameters/JsonAcceptHeadersSchema"
+      responses:
+        200:
+          description: "User registered successfully."
+        401:
+          description: "User already exists but user status does not."
+        409:
+          description: "User already exists."
+  /registration/verify:
+    post:
+      tags:
+        - "registration"
+      summary: "Verifies user's email address."
+      description: ""
+      operationId: "verify"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          schema:
+            $ref: "#/definitions/VerifySchema"
+        - in: "header"
+          name: "token"
+          description: "email verification token"
+          required: true
+          type: "string"
+      responses:
+        200:
+          description: "Email address has been verified successfully."
+        401:
+          description: "Token was not found or the user does not exist."
+  /registration/verify/resend:
+    post:
+      tags:
+        - "registration"
+      summary: "Resend account verification for user email address."
+      description: ""
+      operationId: "resend-account-verification-email"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "email"
+          description: "User credentials"
+          required: true
+          schema:
+            $ref: "#/definitions/ResendAccountVerificationEmailSchema"
+      responses:
+        200:
+          description: "Verification email has been sent successfully."
+        401:
+          description: "User record is in unexpected state for verification."
+        404:
+          description: "User does not exist."
+  /app/version:
+    get:
+      tags:
+        - "server"
+      summary: "returns application version"
+      description: ""
+      operationId: "application-version"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "Application version returned successfully."
+          schema:
+            $ref: "#/definitions/ApplicationVersionSchema"
+  /user:
+    get:
+      tags:
+        - "user"
+      summary: "Return logged in user details."
+      description: ""
+      operationId: "get-user-details"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - $ref: "#/parameters/JsonAcceptHeadersSchema"
+        - $ref: "#/parameters/AuthorizationTokenHeaderSchema"
+      responses:
+        200:
+          description: "User details has been returned successfully."
+          schema:
+            $ref: "#/definitions/UserSchema"
+        401:
+          description: "Invalid authorization token, or user record is in an inconsistent state."
+        403:
+          description: "User account is blocked or email is not verified."
+  /user/projects:
+    get:
+      tags:
+        - "user"
+      summary: "Retrieves all the projects for the current user."
+      description: "Retrieves all the projects for the current user."
+      operationId: "get-user-projects"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - $ref: "#/parameters/AuthorizationTokenHeaderSchema"
+      responses:
+        200:
+          description: "Containers have been retrieved successfully."
+          schema:
+            $ref: "#/definitions/UserContainersResponseSchema"
+  /user/mark-for-deletion:
+    post:
+       tags:
+         - "user"
+       summary: "Mark user's account for deletion."
+       description: ""
+       operationId: "mark-for-deletion"
+       consumes:
+         - "application/json"
+       produces:
+         - "application/json"
+       parameters:
+         - in: "body"
+           name: "body"
+         - $ref: "#/parameters/AuthorizationTokenHeaderSchema"
+       responses:
+         200:
+           description: "User account marked for deletion successfully."
+         401:
+           description: "Invalid authorization token, or user record not found."   
+  /user/unmark-for-deletion:
+    post:
+       tags:
+         - "user"
+       summary: "Unmark user's account for deletion."
+       description: ""
+       operationId: "unmark-for-deletion"
+       consumes:
+         - "application/json"
+       produces:
+         - "application/json"
+       parameters:
+         - $ref: "#/parameters/AuthorizationTokenHeaderSchema"
+       responses:
+         200:
+           description: "User account unMarked for deletion successfully."
+         401:
+           description: "Invalid authorization token, or user record not found."
+  /project/:
+    post:
+      tags:
+        - "project"
+      summary: "Creates new project."
+      description: "Creates new project with a provided title."
+      operationId: "create-project"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: ""
+          required: true
+          schema:
+            $ref: "#/definitions/NewProjectSchema"
+        - $ref: "#/parameters/JsonAcceptHeadersSchema"
+        - $ref: "#/parameters/AuthorizationTokenHeaderSchema"
+      responses:
+        200:
+          description: "Project has been created successfully."
+          schema:
+            $ref: "#/definitions/NewContainerResponseSchema"
+        401:
+          description: "Invalid authorization token, or user record is in an invalid state for container creation."
+        403:
+          description: "User account is blocked or email is not verified."
+  /project/:projectId:
+    post:
+      tags:
+        - "project"
+      summary: "Adds manuscript to a project."
+      description: "Adds a JATS manuscript to a project."
+      operationId: "add-manuscript"
+      produces:
+        - "application/json"
+      consumes:
+        - "multipart/form-data"
+      parameters:
+        - in: formData
+          name: file
+          type: file
+          description: The JATS zip file to upload.
+        - $ref: "#/parameters/JsonAcceptHeadersSchema"
+        - $ref: "#/parameters/AuthorizationTokenHeaderSchema"
+      responses:
+        200:
+          description: "Manuscript has been added successfully."
+          schema:
+            $ref: "#/definitions/NewContainerResponseSchema"
+        401:
+          description: "Invalid authorization token, or user record is in an invalid state for container creation."
+        403:
+          description: "User account is blocked or email is not verified."
+  /:containerType/create:
+    post:
+      tags:
+        - "container"
+      summary: "Creates new container."
+      description: "Creates new container of the allowed container types."
+      operationId: "create-container"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: ""
+          required: true
+          schema:
+            $ref: "#/definitions/NewContainerSchema"
+        - $ref: "#/parameters/JsonAcceptHeadersSchema"
+        - $ref: "#/parameters/AuthorizationTokenHeaderSchema"
+      responses:
+        200:
+          description: "Container has been created successfully."
+          schema:
+            $ref: "#/definitions/NewContainerResponseSchema"
+        401:
+          description: "Invalid authorization token, or user record is in an invalid state for container creation."
+        403:
+          description: "User account is blocked or email is not verified."
+  /:containerID/roles:
+    post:
+      tags:
+        - "container"
+      summary: "Manages user's role in a container."
+      description: ""
+      operationId: "manage-user-role"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: ""
+          required: true
+          schema:
+            $ref: "#/definitions/ManageUserRoleSchema"
+        - $ref: "#/parameters/JsonAcceptHeadersSchema"
+        - $ref: "#/parameters/AuthorizationTokenHeaderSchema"
+      responses:
+        200:
+          description: "Role was managed successfully."
+        401:
+          description: "Invalid authorization token, or user record is in an invalid state for container creation."
+        403:
+          description: "User account is blocked or email is not verified."
+  /:containerID/addUser:
+    post:
+      tags:
+        - "container"
+      summary: "Adds a user to a container."
+      description: ""
+      operationId: "add-user-to-container"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: ""
+          required: true
+          schema:
+            $ref: "#/definitions/AddUserSchema"
+        - $ref: "#/parameters/JsonAcceptHeadersSchema"
+        - $ref: "#/parameters/AuthorizationTokenHeaderSchema"
+      responses:
+        200:
+          description: "Role was managed successfully."
+        401:
+          description: "Invalid authorization token, or user record is in an invalid state for container creation."
+        403:
+          description: "User account is blocked or email is not verified."
+  /:containerID/archive:
+    get:
+      tags:
+        - "container"
+      summary: "Gets an archive from a container."
+      description: ""
+      operationId: "get-archive"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - $ref: "#/parameters/JsonAcceptHeadersSchema"
+        - $ref: "#/parameters/AuthorizationTokenHeaderSchema"
+        - in: "query"
+          name: "onlyIDs"
+          description: "If true, the archive object will return with only document IDs."
+          type: "boolean"
+          required: false
+      responses:
+        200:
+          description: "Archive retrieved successfully"
+  /:containerID/attachment/:id/:attachmentKey:
+    get:
+      tags:
+        - "container"
+      summary: "Gets an attachment from a container."
+      description: ""
+      operationId: "get-attachment"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - $ref: "#/parameters/JsonAcceptHeadersSchema"
+        - $ref: "#/parameters/AuthorizationTokenHeaderSchema"
+      responses:
+        200:
+          description: "Attachment retrieved successfully."
+  /:containerType/:containerID/:scope:
+    get:
+      tags:
+        - "container"
+      summary: "Get access token to specified scopes."
+      description: ""
+      operationId: "access-token"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters: 
+        - $ref: '#/parameters/JsonAcceptHeadersSchema'
+        - $ref: '#/parameters/AuthorizationTokenHeaderSchema'
+      responses:
+        200:
+          description: "Access token retrieved successfully."
+        400:
+          description: "User is not a contributor in the container."
+        401:
+          description: "Invalid authorization token."
+  /invitation/invite:
+    post:
+      tags:
+        - "invitation"
+      summary: "Invites new users."
+      description: ""
+      operationId: "invite-user"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: ""
+          required: true
+          schema:
+            $ref: "#/definitions/InviteUserSchema"
+        - $ref: "#/parameters/JsonContentTypenHeadersSchema"
+        - $ref: "#/parameters/JsonAcceptHeadersSchema"
+        - $ref: "#/parameters/AuthorizationTokenHeaderSchema"
+      responses:
+        200:
+          description: "Invitation has been sent successfully."
+        401:
+          description: "Invalid authorization token, or user record is in an inconsistent state."
+  /invitation/:containerID/invite:
+    post:
+      tags:
+        - "invitation"
+      summary: "Invites new users to collaborate on a container."
+      description: ""
+      operationId: "invite-user-container"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: ""
+          required: true
+          schema:
+            $ref: "#/definitions/InviteUserToContainerSchema"
+        - $ref: "#/parameters/JsonContentTypenHeadersSchema"
+        - $ref: "#/parameters/JsonAcceptHeadersSchema"
+        - $ref: "#/parameters/AuthorizationTokenHeaderSchema"
+      responses:
+        200:
+          description: "Invitation has been sent successfully."
+        401:
+          description: "Invalid authorization token, container not found, or user record is in an inconsistent state."
+  /invitation/reject:
+    post:
+      tags:
+        - "invitation"
+      summary: "Rejects invitation."
+      description: ""
+      operationId: "reject-invitation"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: ""
+          required: true
+          schema:
+            $ref: "#/definitions/RejectInvitationSchema"
+        - $ref: "#/parameters/JsonContentTypenHeadersSchema"
+        - $ref: "#/parameters/JsonAcceptHeadersSchema"
+      responses:
+        200:
+          description: "Invitation has been rejected."
+  /invitation/accept:
+    post:
+      tags:
+        - "invitation"
+      summary: "Accepts invitation."
+      description: ""
+      operationId: "accept-invitation"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: ""
+          required: true
+          schema:
+            $ref: "#/definitions/AcceptInvitationSchema"
+        - $ref: "#/parameters/JsonContentTypenHeadersSchema"
+        - $ref: "#/parameters/JsonAcceptHeadersSchema"
+      responses:
+        200:
+          description: "Invitation has been accepted successfully."
+        401:
+          description: "Project was not found, or user record is not in a state that can accept an invitation."
+  /invitation:
+    delete:
+      tags:
+        - "invitation"
+      summary: "Uninvites a user."
+      description: ""
+      operationId: "uninvite"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: ""
+          required: true
+          schema:
+            $ref: "#/definitions/UninviteSchema"
+        - $ref: "#/parameters/JsonContentTypenHeadersSchema"
+        - $ref: "#/parameters/JsonAcceptHeadersSchema"
+      responses:
+        200:
+          description: "Invitation has been removed successfully."
+        401:
+          description: "Container was not found, or the uninviting user has no privilege to uninvite."
+  /invitation/:containerID/:role:
+    get:
+      tags:
+        - "invitation"
+      summary: "Requests an invitation token."
+      description: ""
+      operationId: "request-invitation-token"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - $ref: "#/parameters/JsonAcceptHeadersSchema"
+      responses:
+        200:
+          description: "The token was created and retrieved successfully "
+        401:
+          description: "Container not found, invalid role or the user has no privilege."
+    post:
+      tags:
+        - "invitation"
+      summary: "Refreshes an existing invitation token."
+      description: ""
+      operationId: "request-refresh-invitation-token"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - $ref: "#/parameters/JsonAcceptHeadersSchema"
+      responses:
+        200:
+          description: "The token was refreshed successfully."
+        401:
+          description: "Project not found, invalid role or the user has no privilege."
+  /invitation/:containerType/access:
+    post:
+      tags:
+        - "invitation"
+      summary: "Grants access to a container through invitation token."
+      description: ""
+      operationId: "access-shared-uri"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: ""
+          required: true
+          schema:
+            $ref: "#/definitions/AccessSharedUriSchema"
+        - $ref: "#/parameters/JsonContentTypenHeadersSchema"
+        - $ref: "#/parameters/JsonAcceptHeadersSchema"
+      responses:
+        200:
+          description: "Invitation has been accepted successfully."
+        401:
+          description: "Container not found, or user record is not in a state that can accept an invitation."
+  /submission/status/:id:
+    post:
+      tags:
+        - "submission"
+      summary: "Updates subission status."
+      description: ""
+      operationId: "update-submission-status"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: ""
+          required: true
+          schema:
+            $ref: "#/definitions/UpdateSubmissionStatusSchema"
+        - $ref: "#/parameters/JsonContentTypenHeadersSchema"
+        - $ref: "#/parameters/JsonAcceptHeadersSchema"
+      responses:
+        200:
+          description: "Status was updated successfully."
+        400:
+          description: "Invalid status."
+        404:
+          description: "Submission is not found."
+definitions:
+  AcceptInvitationSchema:
+    type: "object"
+    required:
+      - "invitationId"
+    properties:
+      invitationId:
+        type: "string"
+      name:
+        type: "string"
+        example: "Jane Doe"
+      password:
+        type: "string"
+  AccessSharedUriSchema:
+    type: "object"
+    required:
+      - "token"
+    properties:
+      token:
+        type: "string"
+        format: "jwt"
+  AddUserSchema:
+    type: "object"
+    required:
+      - "userId"
+      - "role"
+    properties:
+      role:
+        type: "string"
+        enum: ["Owner", "Writer", "Editor", "Viewer"]
+      userId:
+        type: "string"
+  ApplicationVersionSchema:
+    type: "object"
+    properties:
+      version:
+        type: "string"
+  ChangePasswordSchema:
+    type: "object"
+    required:
+      - "deviceId"
+      - "currentPassword"
+      - "newPassword"
+    properties:
+      currentPassword:
+        type: "string"
+      deviceId:
+        type: "string"
+        description: "Unique device ID with which the user accesses the API. There is no hard requirement for this ID to remain stable across authentication times (the device ID is merely used to count devices)."
+      newPassword:
+        type: "string"
+  CredentialsSchema:
+    type: "object"
+    required:
+      - "email"
+      - "password"
+      - "deviceId"
+    properties:
+      deviceId:
+        type: "string"
+        description: "Unique device ID with which the user accesses the API. There is no hard requirement for this ID to remain stable across authentication times (the device ID is merely used to count devices)."
+      email:
+        type: "string"
+        format: "email"
+        example: "example@example.com"
+      password:
+        type: "string"
+  EmptyBodySchema:
+    type: "object"
+  InviteUserSchema:
+    type: "object"
+    required:
+      - "invitedUsersEmails"
+    properties:
+      invitedUsersEmails:
+        type: "array"
+        items:
+          type: "string"
+          format: "email"
+          example: "example@example.com"
+      message:
+        type: "string"
+  InviteUserToContainerSchema:
+    type: "object"
+    required:
+      - "invitedUsers"
+      - "role"
+    properties:
+      invitedUsers:
+        type: "array"
+        items:
+          type: "object"
+          required:
+            - "email"
+          properties:
+            name:
+              type: "string"
+              example: "John Doe"
+            email:
+              type: "string"
+              format: "email"
+              example: "example@example.com"
+      message:
+        type: "string"
+      role:
+        type: "string"
+        example: "owner/writer/viewer"
+  ManageUserRoleSchema:
+    type: "object"
+    required:
+      - "managedUserId"
+      - "newRole"
+    properties:
+      managedUserId:
+        type: "string"
+      newRole:
+        type: "string"
+        example: "owner/writer/viewer"
+  NewContainerResponseSchema:
+    type: "object"
+    properties:
+      _id:
+        type: "string"
+      owners:
+        type: "array"
+        items:
+          type: "string"
+      writers:
+        type: "array"
+        items:
+          type: "string"
+      viewers:
+        type: "array"
+        items:
+          type: "string"
+  NewProjectSchema:
+    type: "object"
+    properties:
+      title:
+        type: "string"
+  NewContainerSchema:
+    type: "object"
+    properties:
+      _id:
+        type: "string"
+  RejectInvitationSchema:
+    type: "object"
+    required:
+      - "invitationId"
+    properties:
+      invitationId:
+        type: "string"
+  ResendAccountVerificationEmailSchema:
+    type: "object"
+    required:
+      - "email"
+    properties:
+      email:
+        type: "string"
+        format: "email"
+        example: "example@example.com"
+  ResetPasswordSchema:
+    type: "object"
+    required:
+      - "token"
+      - "password"
+      - "deviceId"
+    properties:
+      deviceId:
+        type: "string"
+        description: "Unique device ID with which the user accesses the API. There is no hard requirement for this ID to remain stable across authentication times (the device ID is merely used to count devices)."
+      password:
+        type: "string"
+      token:
+        type: "string"
+        format: "jwt"
+  SendForgottenPasswordSchema:
+    type: "object"
+    required:
+      - "email"
+    properties:
+      email:
+        type: "string"
+        format: "email"
+        example: "example@example.com"
+  ServerToServerAuthSchema:
+    type: "object"
+    required:
+      - "deviceId"
+    properties:
+      deviceId:
+        type: "string"
+        description: "Unique device ID with which the user accesses the API. There is no hard requirement for this ID to remain stable across authentication times (the device ID is merely used to count devices)."
+  SignupSchema:
+    type: "object"
+    required:
+      - "password"
+      - "email"
+      - "name"
+    properties:
+      email:
+        type: "string"
+        format: "email"
+        example: "example@example.com"
+      name:
+        type: "string"
+        example: "Jane Doe"
+      password:
+        type: "string"
+  TokenSchema:
+    type: "object"
+    properties:
+      token:
+        type: "string"
+        format: "jwt"
+  UninviteSchema:
+    type: "object"
+    required:
+      - "invitationId"
+    properties:
+      invitationId:
+        type: "string"
+  UpdateSubmissionStatusSchema:
+    type: "object"
+    required:
+      - "eventKey"
+    properties:
+      eventKey:
+        type: "string"
+        description: "The status of the submission to update."
+      eventMessage:
+        type: "string"
+      submissionID:
+        type: "string"
+      depositoryCode:
+        type: "string"
+  UserContainersResponseSchema:
+    type: "array"
+    items: 
+      type: "object"
+      description: "Object of type container."
+      properties:
+        _id:
+          type: "string"
+        objectType:
+          type: "string"
+        owners:
+          type: "array"
+          items:
+            type: "string"
+        writers:
+          type: "array"
+          items:
+            type: "string"
+        viewers:
+          type: "array"
+          items:
+            type: "string"
+        title:
+          type: "string"
+        createdAt: 
+          type: "number"
+        updatedAt: 
+          type: "number"
+  UserSchema:
+    type: "object"
+    properties:
+      _id:
+        type: "string"
+      email:
+        type: "string"
+        format: "email"
+        example: "example@example.com"
+      name:
+        type: "string"
+        example: "John Doe"
+  VerifySchema:
+    type: "object"
+    required:
+      - "token"
+    properties:
+      token:
+        type: "string"
+        format: "jwt"

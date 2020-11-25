@@ -1,0 +1,10 @@
+extends ../email-template
+
+block emailTitle
+  span Sorry to see you go!
+
+block emailText
+  span Your account will remain accessible for 30 days. After this period, your data will be permanently deleted.
+
+block emailAction
+  a(href=actionURL, title="retrieve-account" target="_blank", style="font-size: 16px; font-family: Lato, Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; border-radius: 4px; padding: 8px 32px; border: 1px solid #0d79d0; display: inline-block;").btn-radius Retrieve my Account

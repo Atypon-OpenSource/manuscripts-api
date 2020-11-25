@@ -1,0 +1,72 @@
+# By default, we need to execute this on the source namespace
+
+kind: Job
+apiVersion: batch/v1
+metadata:
+  name: "couchbase-restore-to-{{ .Values.restoreToRelease }}"
+spec:
+  backoffLimit: 0
+  template:
+    metadata:
+      labels:
+        type: cb-backup
+    spec:
+      tolerations:
+        - key: {{ .Release.Namespace }}
+          operator: Exists
+          effect: NoSchedule
+      affinity:
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: type
+                operator: In
+                values:
+                - cb-backup
+            topologyKey: "kubernetes.io/hostname"
+      containers:
+        - name: "couchbase-restore-to-{{ .Values.restoreToRelease }}"
+          image: {{ .Values.cluster.image }}
+          version: {{ .Values.cluster.tag }}
+          command:
+            - "cbbackupmgr"
+            - "restore"
+            - "--archive"
+            - "/backups/cb/"
+            - "--repo"
+            - "couchbase"
+            - "--cluster"
+            - "couchbase://$(APP_COUCHBASE_HOSTNAME):8091"
+            - "--username"
+            - "$(APP_COUCHBASE_ADMIN_USER)"
+            - "--password"
+            - "$(APP_COUCHBASE_ADMIN_PASS)"
+            - "--start"
+            - "$(RESTORE_POINT_START)"
+            - "--end"
+            - "$(RESTORE_POINT_END)"
+            - "--no-progress-bar"
+            - "--disable-eventing"
+            - "--disable-views"
+            - "--disable-gsi-indexes"
+            - "--disable-ft-indexes"
+          env:
+            - name: APP_COUCHBASE_HOSTNAME
+              value: "{{ .Values.restoreToRelease }}-couchbase.{{ .Values.restoreToNamespace }}"
+            - name: APP_COUCHBASE_ADMIN_USER
+              value: "{{ .Values.restoreToCbAdminUser }}"
+            - name: APP_COUCHBASE_ADMIN_PASS
+              value: "{{ .Values.restoreToCbAdminPass }}"
+            - name: RESTORE_POINT_START
+              value: "{{ .Values.restorePointStart }}"
+            - name: RESTORE_POINT_END
+              value: "{{ .Values.restorePointEnd }}"
+          volumeMounts:
+            - name: {{ .Release.Name }}-cb-backup-data
+              mountPath: "/backups"
+      restartPolicy: Never
+      volumes:
+        - name: {{ .Release.Name }}-cb-backup-data
+          persistentVolumeClaim:
+            claimName: {{ .Values.restoreFromRelease }}-cb-backup-data-claim

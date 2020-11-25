@@ -1,0 +1,1511 @@
+{
+  "version": "2.0",
+  "data": [
+    {
+      "_id": "MPAuxiliaryObjectReferenceStyle:AAC52955-C8A3-4125-8596-98660943462C",
+      "name": "default",
+      "title": "Default",
+      "objectType": "MPAuxiliaryObjectReferenceStyle",
+      "bundled": true,
+      "priority": 10,
+      "embeddedReferenceStringComponents": [
+        {
+          "_id": "MPStyleableStringComponent:B8CF9955-0956-4114-AAC7-F9C6CC99688F",
+          "objectType": "MPStyleableStringComponent",
+          "bold": true,
+          "italic": false,
+          "placeholderString": "${kind} ${elementIndex}"
+        }
+      ],
+      "prototype": "MPAuxiliaryObjectReferenceStyle:default",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "elementType": "div",
+      "contents": "<div xmlns=\"http://www.w3.org/1999/xhtml\" class=\"csl-bib-body\" id=\"MPBibliographyElement:C65083EA-1727-4AC4-900B-B89FA4376CFB\">  <div class=\"csl-entry\">\n    <div class=\"csl-left-margin\">1.</div><div class=\"csl-right-inline\">Piipari, M., Eaton, A. &amp; Pepe, A. <a href=\"https://www.ncbi.nlm.nih.gov/books/NBK540955/\"><i>Introducing Manuscripts.io: open source editing environment for structured, computationally reproducible research documents</i></a>. (National Center for Biotechnology Information (US), 2019).</div>\n  </div>\n</div>",
+      "paragraphStyle": "MPParagraphStyle:339456D4-33B6-40EE-8B6F-80662870B3A7",
+      "_id": "MPBibliographyElement:C65083EA-1727-4AC4-900B-B89FA4376CFB",
+      "objectType": "MPBibliographyElement"
+    },
+    {
+      "type": "book",
+      "title": "Introducing Manuscripts.io: open source editing environment for structured, computationally reproducible research documents",
+      "abstract": "Manuscripts.io is an open source collaborative editing environment, tailored for scholarly and research papers. It features a structured editor which can validate content against the requirements of a target publication outlet (e.g. a specific article type in a journal), and it allows for embedding authorship metadata, bibliographic references, experimental data, code and interactive visualizations. It ties collaborative projects together with strong content semantics and project management capabilities, in one environment. The effort has as its origin the macOS based editor Manuscripts.app, with Manuscripts.io fully rebuilt for collaboration on the web while retaining the most-loved features of the desktop application.",
+      "issued": {
+        "date-parts": [
+          [
+            "2019"
+          ]
+        ],
+        "_id": "MPBibliographicDate:C4682C8E-C666-49E5-B77C-A34FE7FEA3BB",
+        "objectType": "MPBibliographicDate"
+      },
+      "archive": "www.ncbi.nlm.nih.gov",
+      "language": "en",
+      "publisher": "National Center for Biotechnology Information (US)",
+      "shortTitle": "Introducing Manuscripts.io",
+      "URL": "https://www.ncbi.nlm.nih.gov/books/NBK540955/",
+      "accessed": {
+        "date-parts": [
+          [
+            "2020",
+            "06",
+            "08"
+          ]
+        ],
+        "_id": "MPBibliographicDate:6B9D6AAC-071E-424B-9AD7-A537D0EC228B",
+        "objectType": "MPBibliographicDate"
+      },
+      "author": [
+        {
+          "family": "Piipari",
+          "given": "Matias",
+          "_id": "MPBibliographicName:D767BCF5-B05B-4525-A4C4-70EEA4B38287",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "family": "Eaton",
+          "given": "Alf",
+          "_id": "MPBibliographicName:F731E273-DA74-49D4-AAE2-EE98089AE767",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "family": "Pepe",
+          "given": "Alberto",
+          "_id": "MPBibliographicName:6FC82C81-4B35-4D42-9D73-B9943B79ADB0",
+          "objectType": "MPBibliographicName"
+        }
+      ],
+      "_id": "MPBibliographyItem:6C6AF046-1C45-4CC5-9F38-93BC736E5293",
+      "objectType": "MPBibliographyItem",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C"
+    },
+    {
+      "_id": "MPBorderStyle:16B2D411-CB8D-46B8-9C51-7AFADCDB2840",
+      "name": "dashed",
+      "title": "Dashed",
+      "objectType": "MPBorderStyle",
+      "bundled": true,
+      "pattern": [
+        2,
+        2
+      ],
+      "priority": 20,
+      "prototype": "MPBorderStyle:E28AA90C-4379-434F-AF58-E2D8C8ED1EB4",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "_id": "MPBorderStyle:91D9FF22-1692-48C1-AAF3-0837E8B63064",
+      "name": "dotted",
+      "title": "Dotted",
+      "objectType": "MPBorderStyle",
+      "bundled": true,
+      "pattern": [
+        1,
+        1
+      ],
+      "priority": 30,
+      "prototype": "MPBorderStyle:00FD8810-B85D-4FC5-8C23-8022A36E07BD",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "_id": "MPBorderStyle:92C16683-56FC-49B7-9D3F-80CFC3473458",
+      "name": "double",
+      "title": "Double Lines",
+      "objectType": "MPBorderStyle",
+      "bundled": true,
+      "doubleLines": true,
+      "priority": 40,
+      "prototype": "MPBorderStyle:16583262-A260-4E35-A508-3F960F70074F",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "_id": "MPBorderStyle:E9D5EA5E-AAA1-4F54-B094-877BF7DFB858",
+      "name": "solid",
+      "title": "Solid",
+      "objectType": "MPBorderStyle",
+      "bundled": true,
+      "priority": 10,
+      "prototype": "MPBorderStyle:EBBB68B9-16A9-4EA2-8817-43755FF1B7A1",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "bundled": true,
+      "csl": {
+        "ISSNs": [
+          "00280836"
+        ],
+        "_id": "MPCitationStyle:www-zotero-org-styles-nature",
+        "author-email": "mberkowi@gmu.edu",
+        "author-name": "Michael Berkowitz",
+        "cslIdentifier": "http://www.zotero.org/styles/nature",
+        "defaultLocale": "en-GB",
+        "documentation-URL": "http://www.nature.com/nature/authors/gta/index.html#a5.4",
+        "eISSNs": [
+          "14764687"
+        ],
+        "fields": [
+          "MPResearchField:science",
+          "MPResearchField:generic-base"
+        ],
+        "license": "http://creativecommons.org/licenses/by-sa/3.0/",
+        "self-URL": "http://www.zotero.org/styles/nature",
+        "title": "Nature",
+        "updatedAt": 1410325903,
+        "version": "1.0"
+      },
+      "objectType": "MPBundle",
+      "prototype": "MPBundle:www-zotero-org-styles-nature",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "_id": "MPBundle:E8B2DFE8-B19D-4779-9CE7-15DB5B2DFC6F"
+    },
+    {
+      "_id": "MPCaptionStyle:63BDF004-AF29-45B0-9C57-5E9C44B0A6FF",
+      "name": "default",
+      "title": "Default",
+      "objectType": "MPCaptionStyle",
+      "bundled": true,
+      "priority": 10,
+      "embeddedCaptionComponents": [
+        {
+          "_id": "MPStyleableStringComponent:E43EAFE4-7C81-468E-BF88-8CEF41435062",
+          "objectType": "MPStyleableStringComponent",
+          "bold": true,
+          "italic": false,
+          "placeholderString": "${kind} ${elementIndex}:"
+        },
+        {
+          "_id": "MPStyleableStringComponent:A6F4C1B4-597F-4206-A21A-4CA60F6C7A2E",
+          "objectType": "MPStyleableStringComponent",
+          "bold": false,
+          "italic": false,
+          "placeholderString": "${caption}",
+          "editable": true
+        }
+      ],
+      "embeddedFigureTitleComponents": [
+        {
+          "_id": "MPStyleableStringComponent:E5CB691A-EE39-41BD-8D78-22E02BD7782A",
+          "objectType": "MPStyleableStringComponent",
+          "bold": true,
+          "italic": false,
+          "placeholderString": "${figureIndex}. "
+        },
+        {
+          "_id": "MPStyleableStringComponent:9E4DDC68-4667-49C8-9F3E-600E0258A53A",
+          "objectType": "MPStyleableStringComponent",
+          "bold": false,
+          "italic": false,
+          "placeholderString": "${title}",
+          "editable": true
+        }
+      ],
+      "figureTitleNumberingScheme": "decimal",
+      "prototype": "MPCaptionStyle:default",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "_id": "MPCitation:A99098E0-476D-4930-ABF0-FE248A8BBA22",
+      "objectType": "MPCitation",
+      "containingObject": "MPParagraphElement:E51EFD7D-52FF-4B72-BF9C-B47F2989436F",
+      "embeddedCitationItems": [
+        {
+          "_id": "MPCitationItem:DB6896A8-C99B-41B2-B64A-30ECD96ED8AB",
+          "objectType": "MPCitationItem",
+          "bibliographyItem": "MPBibliographyItem:6C6AF046-1C45-4CC5-9F38-93BC736E5293"
+        }
+      ],
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "_id": "MPColor:07DA56E6-04F0-48BB-997F-600BF142B80D",
+      "name": "verylightgray",
+      "title": "Very Light Gray",
+      "objectType": "MPColor",
+      "bundled": true,
+      "value": "#f4f4f4",
+      "priority": 50,
+      "prototype": "MPColor:verylightgray",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "_id": "MPColor:893B0021-F750-4FCC-88B9-56BD2299C7B9",
+      "name": "white",
+      "title": "White",
+      "objectType": "MPColor",
+      "bundled": true,
+      "value": "#ffffff",
+      "priority": 100,
+      "prototype": "MPColor:white",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "_id": "MPColor:918DF05E-83D0-4856-A8D0-C93E34F8F9B0",
+      "name": "green",
+      "title": "Green",
+      "objectType": "MPColor",
+      "bundled": true,
+      "value": "#00ff00",
+      "priority": 120,
+      "prototype": "MPColor:green",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "_id": "MPColor:99938205-D7EB-4F19-988B-DC27D0AA376F",
+      "name": "gray",
+      "title": "Gray",
+      "objectType": "MPColor",
+      "bundled": true,
+      "value": "#b0b0b0",
+      "priority": 50,
+      "prototype": "MPColor:gray",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "_id": "MPColor:A1F2DF55-6144-4458-9592-6F9CF273BBCB",
+      "name": "blue",
+      "title": "Blue",
+      "objectType": "MPColor",
+      "bundled": true,
+      "value": "#0000ff",
+      "priority": 130,
+      "prototype": "MPColor:blue",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "_id": "MPColor:B805D389-0DB8-4609-ACF6-A3BF2C8207A9",
+      "name": "red",
+      "title": "Red",
+      "objectType": "MPColor",
+      "bundled": true,
+      "value": "#ff0000",
+      "priority": 110,
+      "prototype": "MPColor:red",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "_id": "MPColor:D8F5B5C8-F87D-489D-AAA4-E962AEE848AB",
+      "name": "black",
+      "title": "Black",
+      "objectType": "MPColor",
+      "bundled": true,
+      "value": "#000000",
+      "priority": 10,
+      "prototype": "MPColor:black",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "_id": "MPColor:E76B8DF0-2543-4281-92DA-32DF8705A717",
+      "name": "verylightblue",
+      "title": "Very Light Blue",
+      "objectType": "MPColor",
+      "bundled": true,
+      "value": "#f0f0ff",
+      "priority": 50,
+      "prototype": "MPColor:verylightblue",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "_id": "MPColorScheme:BB14E2B4-4466-4330-B612-856EC256FFF8",
+      "objectType": "MPColorScheme",
+      "name": "Manuscripts default colour scheme",
+      "bundled": true,
+      "colors": [
+        "MPColor:black",
+        "MPColor:gray",
+        "MPColor:verylightgray",
+        "MPColor:verylightblue",
+        "MPColor:white",
+        "MPColor:red",
+        "MPColor:green",
+        "MPColor:blue"
+      ],
+      "prototype": "MPColorScheme:default",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "_id": "MPContributor:1327CC94-A940-4506-A547-BB8649478768",
+      "objectType": "MPContributor",
+      "priority": 0,
+      "role": "author",
+      "affiliations": [],
+      "bibliographicName": {
+        "_id": "MPBibliographicName:8DDEBCB0-0106-4051-98FD-672FDA4232F1",
+        "family": "Eaton",
+        "given": "Alf",
+        "objectType": "MPBibliographicName"
+      },
+      "userID": "User_aeaton@atypon.com",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "_id": "MPContributorRole:0A583635-257F-42F2-B04D-67AAD801ED4D",
+      "uri": "https://dictionary.casrai.org/Contributor_Roles/Data_curation",
+      "name": "Data curation",
+      "desc": "Management activities to annotate (produce metadata), scrub data and maintain research data (including software code, where it is necessary for interpreting the data itself) for initial use and later re-use.",
+      "objectType": "MPContributorRole",
+      "bundled": true,
+      "prototype": "MPContributorRole:credit-data-curation",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "_id": "MPContributorRole:120DEEEF-40FD-4221-BA9C-A16B12C3B9B6",
+      "uri": "https://dictionary.casrai.org/Contributor_Roles/Methodology",
+      "name": "Methodology",
+      "desc": "Development or design of methodology; creation of models.",
+      "objectType": "MPContributorRole",
+      "bundled": true,
+      "prototype": "MPContributorRole:credit-methodology",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "_id": "MPContributorRole:2A4109E4-12F0-4663-AFFB-46CDA5ED6E05",
+      "uri": "https://dictionary.casrai.org/Contributor_Roles/Funding_acquisition",
+      "name": "Funding acquisition",
+      "desc": "Acquisition of the financial support for the project leading to this publication.",
+      "objectType": "MPContributorRole",
+      "bundled": true,
+      "prototype": "MPContributorRole:credit-funding-acquisition",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "_id": "MPContributorRole:37A21DD2-3772-4379-AD84-E1E53DEB9BB5",
+      "uri": "https://dictionary.casrai.org/Contributor_Roles/Formal_analysis",
+      "name": "Formal analysis",
+      "desc": "Application of statistical, mathematical, computational, or other formal techniques to analyze or synthesize study data.",
+      "objectType": "MPContributorRole",
+      "bundled": true,
+      "prototype": "MPContributorRole:credit-formal-analysis",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "_id": "MPContributorRole:50DE072E-1947-4BBC-9B9D-6677F6FACB2A",
+      "uri": "https://dictionary.casrai.org/Contributor_Roles/Conceptualization",
+      "name": "Conceptualization",
+      "desc": "Ideas; formulation or evolution of overarching research goals and aims.",
+      "objectType": "MPContributorRole",
+      "bundled": true,
+      "prototype": "MPContributorRole:credit-conceptualization",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "_id": "MPContributorRole:53C01F1E-23D6-4A7B-B959-FC52F00834A9",
+      "uri": "https://dictionary.casrai.org/Contributor_Roles/Resources",
+      "name": "Resources",
+      "desc": "Provision of study materials, reagents, materials, patients, laboratory samples, animals, instrumentation, computing resources, or other analysis tools.",
+      "objectType": "MPContributorRole",
+      "bundled": true,
+      "prototype": "MPContributorRole:credit-resources",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "_id": "MPContributorRole:71DC9E7F-CC33-4167-856A-FEEF507F2914",
+      "uri": "https://dictionary.casrai.org/Contributor_Roles/Software",
+      "name": "Software",
+      "desc": "Programming, software development; designing computer programs; implementation of the computer code and supporting algorithms; testing of existing code components.",
+      "objectType": "MPContributorRole",
+      "bundled": true,
+      "prototype": "MPContributorRole:credit-software",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "_id": "MPContributorRole:7EBA2145-85AD-4682-B32A-133F9765CAD0",
+      "uri": "https://dictionary.casrai.org/Contributor_Roles/Validation",
+      "name": "Validation",
+      "desc": "Verification, whether as a part of the activity or separate, of the overall replication/reproducibility of results/experiments and other research outputs.",
+      "objectType": "MPContributorRole",
+      "bundled": true,
+      "prototype": "MPContributorRole:credit-validation",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "_id": "MPContributorRole:8AE031E8-6638-4319-B4C9-A3DB19F34751",
+      "uri": "https://dictionary.casrai.org/Contributor_Roles/Project_administration",
+      "name": "Project administration",
+      "desc": "Management and coordination responsibility for the research activity planning and execution.",
+      "objectType": "MPContributorRole",
+      "bundled": true,
+      "prototype": "MPContributorRole:credit-project-administration",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "_id": "MPContributorRole:97ED7575-94AA-4433-933B-9ACCA05EC668",
+      "uri": "https://dictionary.casrai.org/Contributor_Roles/Investigation",
+      "name": "Investigation",
+      "desc": "Conducting a research and investigation process, specifically performing the experiments, or data/evidence collection.",
+      "objectType": "MPContributorRole",
+      "bundled": true,
+      "prototype": "MPContributorRole:credit-investigation",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "_id": "MPContributorRole:98AC128E-7D14-4A65-BE57-E1BC5BF0ABD2",
+      "uri": "https://dictionary.casrai.org/Contributor_Roles/Writing_%E2%80%93_original_draft",
+      "name": "Writing – original draft",
+      "desc": "Preparation, creation and/or presentation of the published work, specifically writing the initial draft (including substantive translation).",
+      "objectType": "MPContributorRole",
+      "bundled": true,
+      "prototype": "MPContributorRole:credit-writing-original-draft",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "_id": "MPContributorRole:AEBB3551-1710-4A8F-B11F-C0617AC47ED5",
+      "uri": "https://dictionary.casrai.org/Contributor_Roles/Writing_%E2%80%93_review_%26_editing",
+      "name": "Writing – review & editing",
+      "desc": "Preparation, creation and/or presentation of the published work by those from the original research group, specifically critical review, commentary or revision – including pre- or post-publication stages.",
+      "objectType": "MPContributorRole",
+      "bundled": true,
+      "prototype": "MPContributorRole:credit-writing-review-editing",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "_id": "MPContributorRole:B6E265F1-6C1D-42B4-A679-375A8AA37755",
+      "uri": "https://dictionary.casrai.org/Contributor_Roles/Supervision",
+      "name": "Supervision",
+      "desc": "Oversight and leadership responsibility for the research activity planning and execution, including mentorship external to the core team.",
+      "objectType": "MPContributorRole",
+      "bundled": true,
+      "prototype": "MPContributorRole:credit-supervision",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "_id": "MPContributorRole:CD0007F7-A50A-477A-814E-366336B60A4A",
+      "uri": "https://dictionary.casrai.org/Contributor_Roles/Visualization",
+      "name": "Visualization",
+      "desc": "Preparation, creation and/or presentation of the published work, specifically visualization/data presentation.",
+      "objectType": "MPContributorRole",
+      "bundled": true,
+      "prototype": "MPContributorRole:credit-visualization",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "TeXRepresentation": "x + y = z",
+      "SVGStringRepresentation": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"9.238ex\" height=\"1.783ex\" role=\"img\" focusable=\"false\" viewBox=\"0 -583 4083 788\" style=\"vertical-align: -0.464ex;\"><g stroke=\"currentColor\" fill=\"currentColor\" stroke-width=\"0\" transform=\"matrix(1 0 0 -1 0 0)\"><g data-mml-node=\"math\"><g data-mml-node=\"mi\"><path data-c=\"78\" d=\"M52 289Q59 331 106 386T222 442Q257 442 286 424T329 379Q371 442 430 442Q467 442 494 420T522 361Q522 332 508 314T481 292T458 288Q439 288 427 299T415 328Q415 374 465 391Q454 404 425 404Q412 404 406 402Q368 386 350 336Q290 115 290 78Q290 50 306 38T341 26Q378 26 414 59T463 140Q466 150 469 151T485 153H489Q504 153 504 145Q504 144 502 134Q486 77 440 33T333 -11Q263 -11 227 52Q186 -10 133 -10H127Q78 -10 57 16T35 71Q35 103 54 123T99 143Q142 143 142 101Q142 81 130 66T107 46T94 41L91 40Q91 39 97 36T113 29T132 26Q168 26 194 71Q203 87 217 139T245 247T261 313Q266 340 266 352Q266 380 251 392T217 404Q177 404 142 372T93 290Q91 281 88 280T72 278H58Q52 284 52 289Z\"/></g><g data-mml-node=\"mo\" transform=\"translate(794.2, 0)\"><path data-c=\"2B\" d=\"M56 237T56 250T70 270H369V420L370 570Q380 583 389 583Q402 583 409 568V270H707Q722 262 722 250T707 230H409V-68Q401 -82 391 -82H389H387Q375 -82 369 -68V230H70Q56 237 56 250Z\"/></g><g data-mml-node=\"mi\" transform=\"translate(1794.4, 0)\"><path data-c=\"79\" d=\"M21 287Q21 301 36 335T84 406T158 442Q199 442 224 419T250 355Q248 336 247 334Q247 331 231 288T198 191T182 105Q182 62 196 45T238 27Q261 27 281 38T312 61T339 94Q339 95 344 114T358 173T377 247Q415 397 419 404Q432 431 462 431Q475 431 483 424T494 412T496 403Q496 390 447 193T391 -23Q363 -106 294 -155T156 -205Q111 -205 77 -183T43 -117Q43 -95 50 -80T69 -58T89 -48T106 -45Q150 -45 150 -87Q150 -107 138 -122T115 -142T102 -147L99 -148Q101 -153 118 -160T152 -167H160Q177 -167 186 -165Q219 -156 247 -127T290 -65T313 -9T321 21L315 17Q309 13 296 6T270 -6Q250 -11 231 -11Q185 -11 150 11T104 82Q103 89 103 113Q103 170 138 262T173 379Q173 380 173 381Q173 390 173 393T169 400T158 404H154Q131 404 112 385T82 344T65 302T57 280Q55 278 41 278H27Q21 284 21 287Z\"/></g><g data-mml-node=\"mo\" transform=\"translate(2562.2, 0)\"><path data-c=\"3D\" d=\"M56 347Q56 360 70 367H707Q722 359 722 347Q722 336 708 328L390 327H72Q56 332 56 347ZM56 153Q56 168 72 173H708Q722 163 722 153Q722 140 707 133H70Q56 140 56 153Z\"/></g><g data-mml-node=\"mi\" transform=\"translate(3618, 0)\"><path data-c=\"7A\" d=\"M347 338Q337 338 294 349T231 360Q211 360 197 356T174 346T162 335T155 324L153 320Q150 317 138 317Q117 317 117 325Q117 330 120 339Q133 378 163 406T229 440Q241 442 246 442Q271 442 291 425T329 392T367 375Q389 375 411 408T434 441Q435 442 449 442H462Q468 436 468 434Q468 430 463 420T449 399T432 377T418 358L411 349Q368 298 275 214T160 106L148 94L163 93Q185 93 227 82T290 71Q328 71 360 90T402 140Q406 149 409 151T424 153Q443 153 443 143Q443 138 442 134Q425 72 376 31T278 -11Q252 -11 232 6T193 40T155 57Q111 57 76 -3Q70 -11 59 -11H54H41Q35 -5 35 -2Q35 13 93 84Q132 129 225 214T340 322Q352 338 347 338Z\"/></g></g></g></svg>",
+      "_id": "MPEquation:0F11ADFF-73B2-418A-89A0-88E5E8A8FC95",
+      "objectType": "MPEquation",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "containedObjectID": "MPEquation:0F11ADFF-73B2-418A-89A0-88E5E8A8FC95",
+      "caption": "",
+      "elementType": "p",
+      "suppressCaption": true,
+      "_id": "MPEquationElement:4311CDC7-70FF-48A3-9C63-176210C962D4",
+      "objectType": "MPEquationElement",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "contentType": "image/png",
+      "_id": "MPFigure:C9A3CBCE-4AF4-4AD2-97B0-D2848BEFDE5A",
+      "objectType": "MPFigure"
+    },
+    {
+      "containedObjectIDs": [
+        "MPFigure:C9A3CBCE-4AF4-4AD2-97B0-D2848BEFDE5A"
+      ],
+      "caption": "The Manuscripts logo",
+      "elementType": "figure",
+      "listingID": "MPListing:B2FC3BFC-4426-4FE7-BE86-55262F6402A4",
+      "figureStyle": "MPFigureStyle:9FA50AA2-702E-4F0C-AE0D-27E640179ECF",
+      "figureLayout": "MPFigureLayout:75A27ACF-C934-41A6-8230-8E1262D4AE2C",
+      "_id": "MPFigureElement:A7BBA561-7FA2-4576-981B-3D75E91B614A",
+      "objectType": "MPFigureElement",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "_id": "MPFigureLayout:75A27ACF-C934-41A6-8230-8E1262D4AE2C",
+      "name": "default",
+      "title": "Single Figure",
+      "objectType": "MPFigureLayout",
+      "bundled": true,
+      "columns": 1,
+      "rows": 1,
+      "priority": 10,
+      "prototype": "MPFigureLayout:default",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "_id": "MPFigureLayout:776BD71A-F0F2-4B3D-8BDA-095AF0C1461A",
+      "name": "three_figures_stacked",
+      "title": "Three Figures Stacked",
+      "objectType": "MPFigureLayout",
+      "columns": 1,
+      "rows": 3,
+      "bundled": true,
+      "priority": 35,
+      "prototype": "MPFigureLayout:three_figures_stacked",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "_id": "MPFigureLayout:7BFFED02-F51B-4991-A657-941FCC664A6D",
+      "name": "2_by_3",
+      "title": "Six Figures (2×3)",
+      "objectType": "MPFigureLayout",
+      "columns": 2,
+      "rows": 3,
+      "bundled": true,
+      "priority": 65,
+      "prototype": "MPFigureLayout:2_by_3",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "_id": "MPFigureLayout:7DAD19D3-A933-42FC-90B8-B545F7E917E6",
+      "name": "four_figures",
+      "title": "Four Figures (2×2)",
+      "objectType": "MPFigureLayout",
+      "columns": 2,
+      "rows": 2,
+      "bundled": true,
+      "priority": 40,
+      "prototype": "MPFigureLayout:four_figures",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "_id": "MPFigureLayout:97EC9111-1033-4DDB-B248-6DC41218BAAB",
+      "name": "two_figures_stacked",
+      "title": "Two Figures Stacked",
+      "objectType": "MPFigureLayout",
+      "columns": 1,
+      "rows": 2,
+      "bundled": true,
+      "priority": 25,
+      "prototype": "MPFigureLayout:two_figures_stacked",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "_id": "MPFigureLayout:E18F5C75-31C2-42B1-9AC9-D765E4C2C859",
+      "name": "nine_figures",
+      "title": "Nine Figures (3×3)",
+      "objectType": "MPFigureLayout",
+      "columns": 3,
+      "rows": 3,
+      "bundled": true,
+      "priority": 90,
+      "prototype": "MPFigureLayout:nine_figures",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "_id": "MPFigureLayout:F5E39682-55D2-4CE5-90F1-B97D77D1D426",
+      "name": "three_figures",
+      "title": "Three Figures in a Row",
+      "objectType": "MPFigureLayout",
+      "bundled": true,
+      "columns": 3,
+      "rows": 1,
+      "priority": 30,
+      "prototype": "MPFigureLayout:three_figures",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "_id": "MPFigureLayout:FF82A360-7429-4613-8A6F-5D14ED0A45F8",
+      "name": "3_by_2",
+      "title": "Six Figures (3×2)",
+      "objectType": "MPFigureLayout",
+      "columns": 3,
+      "rows": 2,
+      "bundled": true,
+      "priority": 60,
+      "prototype": "MPFigureLayout:3_by_2",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "_id": "MPFigureLayout:FFEB1849-423D-44B6-8CA5-58F74B48DC92",
+      "name": "two_figures",
+      "title": "Two Figures Side by Side",
+      "objectType": "MPFigureLayout",
+      "bundled": true,
+      "columns": 2,
+      "rows": 1,
+      "priority": 20,
+      "prototype": "MPFigureLayout:two_figures",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "_id": "MPFigureStyle:9FA50AA2-702E-4F0C-AE0D-27E640179ECF",
+      "preferredXHTMLElement": "figure",
+      "name": "default",
+      "title": "Default",
+      "objectType": "MPFigureStyle",
+      "bundled": true,
+      "captionPosition": "below",
+      "innerBorder": {
+        "color": "MPColor:D8F5B5C8-F87D-489D-AAA4-E962AEE848AB",
+        "style": "MPBorderStyle:E9D5EA5E-AAA1-4F54-B094-877BF7DFB858",
+        "width": 0,
+        "_id": "MPBorder:0FFF4CDC-9D5C-4B7D-A606-F0374354FB7F",
+        "objectType": "MPBorder"
+      },
+      "outerBorder": {
+        "width": 0,
+        "_id": "MPBorder:0FFF4CDC-9D5C-4B7D-A606-F0374354FB7F",
+        "objectType": "MPBorder"
+      },
+      "priority": 10,
+      "prototype": "MPFigureStyle:default",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "containingObject": "MPParagraphElement:51D47526-2C4A-4CCA-9091-C6C8E04685D3",
+      "TeXRepresentation": "2+3=5",
+      "SVGRepresentation": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"9.176ex\" height=\"1.692ex\" role=\"img\" focusable=\"false\" viewBox=\"0 -666 4056 748\" style=\"vertical-align: -0.186ex;\"><g stroke=\"currentColor\" fill=\"currentColor\" stroke-width=\"0\" transform=\"matrix(1 0 0 -1 0 0)\"><g data-mml-node=\"math\"><g data-mml-node=\"mn\"><path data-c=\"32\" d=\"M109 429Q82 429 66 447T50 491Q50 562 103 614T235 666Q326 666 387 610T449 465Q449 422 429 383T381 315T301 241Q265 210 201 149L142 93L218 92Q375 92 385 97Q392 99 409 186V189H449V186Q448 183 436 95T421 3V0H50V19V31Q50 38 56 46T86 81Q115 113 136 137Q145 147 170 174T204 211T233 244T261 278T284 308T305 340T320 369T333 401T340 431T343 464Q343 527 309 573T212 619Q179 619 154 602T119 569T109 550Q109 549 114 549Q132 549 151 535T170 489Q170 464 154 447T109 429Z\"></path></g><g data-mml-node=\"mo\" transform=\"translate(722.2, 0)\"><path data-c=\"2B\" d=\"M56 237T56 250T70 270H369V420L370 570Q380 583 389 583Q402 583 409 568V270H707Q722 262 722 250T707 230H409V-68Q401 -82 391 -82H389H387Q375 -82 369 -68V230H70Q56 237 56 250Z\"></path></g><g data-mml-node=\"mn\" transform=\"translate(1722.4, 0)\"><path data-c=\"33\" d=\"M127 463Q100 463 85 480T69 524Q69 579 117 622T233 665Q268 665 277 664Q351 652 390 611T430 522Q430 470 396 421T302 350L299 348Q299 347 308 345T337 336T375 315Q457 262 457 175Q457 96 395 37T238 -22Q158 -22 100 21T42 130Q42 158 60 175T105 193Q133 193 151 175T169 130Q169 119 166 110T159 94T148 82T136 74T126 70T118 67L114 66Q165 21 238 21Q293 21 321 74Q338 107 338 175V195Q338 290 274 322Q259 328 213 329L171 330L168 332Q166 335 166 348Q166 366 174 366Q202 366 232 371Q266 376 294 413T322 525V533Q322 590 287 612Q265 626 240 626Q208 626 181 615T143 592T132 580H135Q138 579 143 578T153 573T165 566T175 555T183 540T186 520Q186 498 172 481T127 463Z\"></path></g><g data-mml-node=\"mo\" transform=\"translate(2500.2, 0)\"><path data-c=\"3D\" d=\"M56 347Q56 360 70 367H707Q722 359 722 347Q722 336 708 328L390 327H72Q56 332 56 347ZM56 153Q56 168 72 173H708Q722 163 722 153Q722 140 707 133H70Q56 140 56 153Z\"></path></g><g data-mml-node=\"mn\" transform=\"translate(3556, 0)\"><path data-c=\"35\" d=\"M164 157Q164 133 148 117T109 101H102Q148 22 224 22Q294 22 326 82Q345 115 345 210Q345 313 318 349Q292 382 260 382H254Q176 382 136 314Q132 307 129 306T114 304Q97 304 95 310Q93 314 93 485V614Q93 664 98 664Q100 666 102 666Q103 666 123 658T178 642T253 634Q324 634 389 662Q397 666 402 666Q410 666 410 648V635Q328 538 205 538Q174 538 149 544L139 546V374Q158 388 169 396T205 412T256 420Q337 420 393 355T449 201Q449 109 385 44T229 -22Q148 -22 99 32T50 154Q50 178 61 192T84 210T107 214Q132 214 148 197T164 157Z\"></path></g></g></g></svg>",
+      "_id": "MPInlineMathFragment:2BA6B7DC-EFFF-480B-A046-EB567179B09F",
+      "objectType": "MPInlineMathFragment"
+    },
+    {
+      "_id": "MPInlineMathFragment:9E31084B-642E-4CA6-A05A-D42D6676A76E",
+      "objectType": "MPInlineMathFragment",
+      "containingObject": "MPParagraphElement:51D47526-2C4A-4CCA-9091-C6C8E04685D3",
+      "TeXRepresentation": "",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C"
+    },
+    {
+      "elementType": "ol",
+      "contents": "<ol xmlns=\"http://www.w3.org/1999/xhtml\" id=\"MPListElement:130F24F7-0F78-43DA-AB80-5B5DAF840C0B\" class=\"MPElement MPParagraphStyle_339456D4-33B6-40EE-8B6F-80662870B3A7\" data-object-type=\"MPListElement\"><li data-placeholder-text=\"List item\">An ordered list</li><li data-placeholder-text=\"List item\">With two items<ol><li data-placeholder-text=\"List item\">A nested item</li></ol></li></ol>",
+      "paragraphStyle": "MPParagraphStyle:339456D4-33B6-40EE-8B6F-80662870B3A7",
+      "_id": "MPListElement:130F24F7-0F78-43DA-AB80-5B5DAF840C0B",
+      "objectType": "MPListElement",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "elementType": "ul",
+      "contents": "<ul xmlns=\"http://www.w3.org/1999/xhtml\" id=\"MPListElement:F211C6B1-2E91-4F48-8F09-2C05CAAF829F\" class=\"MPElement MPParagraphStyle_339456D4-33B6-40EE-8B6F-80662870B3A7\" data-object-type=\"MPListElement\"><li data-placeholder-text=\"List item\">A bullet list</li><li data-placeholder-text=\"List item\">With two items<ul><li data-placeholder-text=\"List item\">A nested item</li></ul></li></ul>",
+      "paragraphStyle": "MPParagraphStyle:339456D4-33B6-40EE-8B6F-80662870B3A7",
+      "_id": "MPListElement:F211C6B1-2E91-4F48-8F09-2C05CAAF829F",
+      "objectType": "MPListElement",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "contents": "",
+      "languageKey": "null",
+      "_id": "MPListing:4B2C4C6F-1BCC-4163-96AE-4C647211AAB6",
+      "objectType": "MPListing",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "contents": "",
+      "languageKey": "null",
+      "_id": "MPListing:B2FC3BFC-4426-4FE7-BE86-55262F6402A4",
+      "objectType": "MPListing",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "_id": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232",
+      "objectType": "MPManuscript",
+      "title": "A Test Manuscript",
+      "bundle": "MPBundle:E8B2DFE8-B19D-4779-9CE7-15DB5B2DFC6F",
+      "pageLayout": "MPPageLayout:AB0289F4-FFD9-430E-B057-55ADEDCFD8A0",
+      "priority": 1,
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C"
+    },
+    {
+      "_id": "MPPageLayout:AB0289F4-FFD9-430E-B057-55ADEDCFD8A0",
+      "objectType": "MPPageLayout",
+      "bundled": true,
+      "beginChaptersOnRightHandPages": true,
+      "bottomMargin": 20,
+      "defaultParagraphStyle": "MPParagraphStyle:339456D4-33B6-40EE-8B6F-80662870B3A7",
+      "displayUnits": "mm",
+      "leftMargin": 20,
+      "mirrorPagesHorizontally": true,
+      "embeddedNumberingStyle": {
+        "_id": "MPNumberingStyle:CB6FF724-7F91-454A-9A3C-30293471E039",
+        "objectType": "MPNumberingStyle",
+        "startIndex": 1,
+        "prefix": "[",
+        "numberingScheme": "decimal",
+        "suffix": "]",
+        "priority": 99
+      },
+      "pageSize": "a4",
+      "rightMargin": 20,
+      "topMargin": 20,
+      "prototype": "MPPageLayout:defaultA4",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "elementType": "p",
+      "contents": "<p xmlns=\"http://www.w3.org/1999/xhtml\" id=\"MPParagraphElement:2F64B77A-161C-48BB-AC09-C7EF425F752F\" class=\"MPElement MPParagraphStyle_339456D4-33B6-40EE-8B6F-80662870B3A7\" data-object-type=\"MPParagraphElement\">This is a paragraph with <b>bold</b>, <i>italic</i>, <u>underlined</u>, <sub>subscript</sub> and <sup>superscript</sup> text.</p>",
+      "paragraphStyle": "MPParagraphStyle:339456D4-33B6-40EE-8B6F-80662870B3A7",
+      "placeholderInnerHTML": "",
+      "_id": "MPParagraphElement:2F64B77A-161C-48BB-AC09-C7EF425F752F",
+      "objectType": "MPParagraphElement",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "elementType": "p",
+      "contents": "<p xmlns=\"http://www.w3.org/1999/xhtml\" id=\"MPParagraphElement:51D47526-2C4A-4CCA-9091-C6C8E04685D3\" class=\"MPElement MPParagraphStyle_339456D4-33B6-40EE-8B6F-80662870B3A7\" data-object-type=\"MPParagraphElement\">This paragraph contains an inline equation: <span class=\"MPInlineMathFragment\" id=\"MPInlineMathFragment:2BA6B7DC-EFFF-480B-A046-EB567179B09F\" data-tex-representation=\"2+3=5\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"9.176ex\" height=\"1.692ex\" role=\"img\" focusable=\"false\" viewBox=\"0 -666 4056 748\" style=\"vertical-align: -0.186ex;\"><g stroke=\"currentColor\" fill=\"currentColor\" stroke-width=\"0\" transform=\"matrix(1 0 0 -1 0 0)\"><g data-mml-node=\"math\"><g data-mml-node=\"mn\"><path data-c=\"32\" d=\"M109 429Q82 429 66 447T50 491Q50 562 103 614T235 666Q326 666 387 610T449 465Q449 422 429 383T381 315T301 241Q265 210 201 149L142 93L218 92Q375 92 385 97Q392 99 409 186V189H449V186Q448 183 436 95T421 3V0H50V19V31Q50 38 56 46T86 81Q115 113 136 137Q145 147 170 174T204 211T233 244T261 278T284 308T305 340T320 369T333 401T340 431T343 464Q343 527 309 573T212 619Q179 619 154 602T119 569T109 550Q109 549 114 549Q132 549 151 535T170 489Q170 464 154 447T109 429Z\"/></g><g data-mml-node=\"mo\" transform=\"translate(722.2, 0)\"><path data-c=\"2B\" d=\"M56 237T56 250T70 270H369V420L370 570Q380 583 389 583Q402 583 409 568V270H707Q722 262 722 250T707 230H409V-68Q401 -82 391 -82H389H387Q375 -82 369 -68V230H70Q56 237 56 250Z\"/></g><g data-mml-node=\"mn\" transform=\"translate(1722.4, 0)\"><path data-c=\"33\" d=\"M127 463Q100 463 85 480T69 524Q69 579 117 622T233 665Q268 665 277 664Q351 652 390 611T430 522Q430 470 396 421T302 350L299 348Q299 347 308 345T337 336T375 315Q457 262 457 175Q457 96 395 37T238 -22Q158 -22 100 21T42 130Q42 158 60 175T105 193Q133 193 151 175T169 130Q169 119 166 110T159 94T148 82T136 74T126 70T118 67L114 66Q165 21 238 21Q293 21 321 74Q338 107 338 175V195Q338 290 274 322Q259 328 213 329L171 330L168 332Q166 335 166 348Q166 366 174 366Q202 366 232 371Q266 376 294 413T322 525V533Q322 590 287 612Q265 626 240 626Q208 626 181 615T143 592T132 580H135Q138 579 143 578T153 573T165 566T175 555T183 540T186 520Q186 498 172 481T127 463Z\"/></g><g data-mml-node=\"mo\" transform=\"translate(2500.2, 0)\"><path data-c=\"3D\" d=\"M56 347Q56 360 70 367H707Q722 359 722 347Q722 336 708 328L390 327H72Q56 332 56 347ZM56 153Q56 168 72 173H708Q722 163 722 153Q722 140 707 133H70Q56 140 56 153Z\"/></g><g data-mml-node=\"mn\" transform=\"translate(3556, 0)\"><path data-c=\"35\" d=\"M164 157Q164 133 148 117T109 101H102Q148 22 224 22Q294 22 326 82Q345 115 345 210Q345 313 318 349Q292 382 260 382H254Q176 382 136 314Q132 307 129 306T114 304Q97 304 95 310Q93 314 93 485V614Q93 664 98 664Q100 666 102 666Q103 666 123 658T178 642T253 634Q324 634 389 662Q397 666 402 666Q410 666 410 648V635Q328 538 205 538Q174 538 149 544L139 546V374Q158 388 169 396T205 412T256 420Q337 420 393 355T449 201Q449 109 385 44T229 -22Q148 -22 99 32T50 154Q50 178 61 192T84 210T107 214Q132 214 148 197T164 157Z\"/></g></g></g></svg></span></p>",
+      "paragraphStyle": "MPParagraphStyle:339456D4-33B6-40EE-8B6F-80662870B3A7",
+      "placeholderInnerHTML": "",
+      "_id": "MPParagraphElement:51D47526-2C4A-4CCA-9091-C6C8E04685D3",
+      "objectType": "MPParagraphElement",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "_id": "MPParagraphElement:69BEE95C-ADA9-4CBB-8E4C-6E3E9D1DDADA",
+      "objectType": "MPParagraphElement",
+      "elementType": "p",
+      "contents": "<p xmlns=\"http://www.w3.org/1999/xhtml\" id=\"MPParagraphElement:69BEE95C-ADA9-4CBB-8E4C-6E3E9D1DDADA\" class=\"MPElement MPParagraphStyle_339456D4-33B6-40EE-8B6F-80662870B3A7\" data-object-type=\"MPParagraphElement\" data-placeholder-text=\"Start from here. Enjoy writing! - the Manuscripts Team.\">This is a figure</p>",
+      "placeholderInnerHTML": "Start from here. Enjoy writing! - the Manuscripts Team.",
+      "paragraphStyle": "MPParagraphStyle:339456D4-33B6-40EE-8B6F-80662870B3A7",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "elementType": "p",
+      "contents": "<p xmlns=\"http://www.w3.org/1999/xhtml\" id=\"MPParagraphElement:E51EFD7D-52FF-4B72-BF9C-B47F2989436F\" class=\"MPElement MPParagraphStyle_339456D4-33B6-40EE-8B6F-80662870B3A7\" data-object-type=\"MPParagraphElement\">This paragraph contains a citation<span class=\"citation\" data-reference-id=\"MPCitation:A99098E0-476D-4930-ABF0-FE248A8BBA22\"><sup>1</sup></span>.</p>",
+      "paragraphStyle": "MPParagraphStyle:339456D4-33B6-40EE-8B6F-80662870B3A7",
+      "placeholderInnerHTML": "",
+      "_id": "MPParagraphElement:E51EFD7D-52FF-4B72-BF9C-B47F2989436F",
+      "objectType": "MPParagraphElement"
+    },
+    {
+      "elementType": "p",
+      "contents": "<p xmlns=\"http://www.w3.org/1999/xhtml\" id=\"MPParagraphElement:FEE7BE52-4CC1-4331-8682-6F229866F33B\" class=\"MPElement MPParagraphStyle_339456D4-33B6-40EE-8B6F-80662870B3A7\" data-object-type=\"MPParagraphElement\">This is a table</p>",
+      "paragraphStyle": "MPParagraphStyle:339456D4-33B6-40EE-8B6F-80662870B3A7",
+      "placeholderInnerHTML": "",
+      "_id": "MPParagraphElement:FEE7BE52-4CC1-4331-8682-6F229866F33B",
+      "objectType": "MPParagraphElement",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "_id": "MPParagraphStyle:08D1901E-0C5F-4EBF-83EA-1CB88FD1C249",
+      "kind": "heading",
+      "preferredXHTMLElement": "h6",
+      "name": "heading6",
+      "title": "Subsubsubsubsubsection Heading",
+      "objectType": "MPParagraphStyle",
+      "bundled": true,
+      "nextStyle": "MPParagraphStyle:339456D4-33B6-40EE-8B6F-80662870B3A7",
+      "textStyling": {
+        "_id": "MPTextStyling:5507294C-AD8D-48EC-B86A-A4E5AE6C34D5",
+        "objectType": "MPTextStyling",
+        "fontFamily": "Charter",
+        "fontSize": 10,
+        "bold": true,
+        "italic": false,
+        "color": "MPColor:D8F5B5C8-F87D-489D-AAA4-E962AEE848AB"
+      },
+      "alignment": "left",
+      "bottomSpacing": 5,
+      "firstLineIndent": 0,
+      "lineSpacing": 1.5,
+      "headIndent": 0,
+      "tailIndent": 0,
+      "topSpacing": 8,
+      "priority": 25,
+      "partOfTOC": false,
+      "prototype": "MPParagraphStyle:H6",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "_id": "MPParagraphStyle:31A96886-0C0E-4AB3-A6CB-3B9DF136640C",
+      "kind": "listing",
+      "preferredXHTMLElement": "pre",
+      "name": "listing",
+      "title": "Listing",
+      "objectType": "MPParagraphStyle",
+      "bundled": true,
+      "nextStyle": "MPParagraphStyle:31A96886-0C0E-4AB3-A6CB-3B9DF136640C",
+      "textStyling": {
+        "_id": "MPTextStyling:38ED2127-F6B6-4465-B739-09A3701A832D",
+        "objectType": "MPTextStyling",
+        "fontFamily": "Menlo",
+        "fontSize": 11,
+        "bold": false,
+        "italic": false,
+        "color": "MPColor:D8F5B5C8-F87D-489D-AAA4-E962AEE848AB"
+      },
+      "alignment": "left",
+      "bottomSpacing": 10,
+      "firstLineIndent": 0,
+      "lineSpacing": 1.5,
+      "headIndent": 0,
+      "tailIndent": 0,
+      "topSpacing": 10,
+      "priority": 110,
+      "partOfTOC": false,
+      "prototype": "MPParagraphStyle:listing",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "_id": "MPParagraphStyle:339456D4-33B6-40EE-8B6F-80662870B3A7",
+      "kind": "body",
+      "preferredXHTMLElement": "p",
+      "name": "bodyText",
+      "title": "Body Text",
+      "objectType": "MPParagraphStyle",
+      "bundled": true,
+      "nextStyle": "MPParagraphStyle:339456D4-33B6-40EE-8B6F-80662870B3A7",
+      "textStyling": {
+        "_id": "MPTextStyling:A6E169AC-4610-44C6-A979-7FD95AE787CC",
+        "objectType": "MPTextStyling",
+        "fontFamily": "Charter",
+        "fontSize": 12,
+        "bold": false,
+        "italic": false,
+        "color": "MPColor:D8F5B5C8-F87D-489D-AAA4-E962AEE848AB"
+      },
+      "listHeadIndent": 30,
+      "listItemIndentPerLevel": 30,
+      "listTailIndent": 0,
+      "hierarchicalListNumbering": false,
+      "hideListNumberingSuffixForLastLevel": true,
+      "embeddedListItemBulletStyles": {
+        "1": {
+          "_id": "MPListItemBulletStyle:0E9110F4-8426-4B66-B97A-9053CFC9C77A",
+          "objectType": "MPListItemBulletStyle",
+          "bulletStyle": "disc"
+        },
+        "2": {
+          "_id": "MPListItemBulletStyle:1066DC6B-704F-4CA0-B807-72F461F5E0BA",
+          "objectType": "MPListItemBulletStyle",
+          "bulletStyle": "circle"
+        }
+      },
+      "embeddedListItemNumberingStyles": {
+        "1": {
+          "_id": "MPNumberingStyle:5A479546-C898-4C4B-9836-202EA34332A8",
+          "objectType": "MPNumberingStyle",
+          "startIndex": 1,
+          "prefix": "",
+          "numberingScheme": "decimal",
+          "suffix": "."
+        },
+        "2": {
+          "_id": "MPNumberingStyle:BE16BD50-9F21-49A7-8F66-15011A3DBCEE",
+          "objectType": "MPNumberingStyle",
+          "startIndex": 1,
+          "prefix": "",
+          "numberingScheme": "decimal",
+          "suffix": "."
+        },
+        "3": {
+          "_id": "MPNumberingStyle:5AC47239-EDA2-4314-8BE5-8A5399F379DF",
+          "objectType": "MPNumberingStyle",
+          "startIndex": 1,
+          "prefix": "",
+          "numberingScheme": "decimal",
+          "suffix": "."
+        }
+      },
+      "alignment": "left",
+      "bottomSpacing": 10,
+      "firstLineIndent": 0,
+      "lineSpacing": 2,
+      "headIndent": 0,
+      "tailIndent": 0,
+      "topSpacing": 10,
+      "priority": 10,
+      "partOfTOC": false,
+      "prototype": "MPParagraphStyle:bodyText",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "_id": "MPParagraphStyle:3EB33343-0BAF-4B7F-BE5A-BB6C0DC17178",
+      "kind": "heading",
+      "preferredXHTMLElement": "h5",
+      "name": "heading5",
+      "title": "Subsubsubsubsection Heading",
+      "objectType": "MPParagraphStyle",
+      "bundled": true,
+      "nextStyle": "MPParagraphStyle:339456D4-33B6-40EE-8B6F-80662870B3A7",
+      "textStyling": {
+        "_id": "MPTextStyling:6094A8B5-2751-489F-B4A5-699E54B57DC3",
+        "objectType": "MPTextStyling",
+        "fontFamily": "Charter",
+        "fontSize": 12,
+        "bold": true,
+        "italic": false,
+        "color": "MPColor:D8F5B5C8-F87D-489D-AAA4-E962AEE848AB"
+      },
+      "alignment": "left",
+      "bottomSpacing": 5,
+      "firstLineIndent": 0,
+      "lineSpacing": 1.5,
+      "headIndent": 0,
+      "tailIndent": 0,
+      "topSpacing": 8,
+      "priority": 24,
+      "partOfTOC": false,
+      "prototype": "MPParagraphStyle:H5",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "_id": "MPParagraphStyle:6044D9C9-E62C-41C6-9158-EA45A88FCF90",
+      "kind": "title",
+      "preferredXHTMLElement": "h1",
+      "name": "manuscriptTitle",
+      "title": "Manuscript Title",
+      "objectType": "MPParagraphStyle",
+      "bundled": true,
+      "nextStyle": "MPParagraphStyle:339456D4-33B6-40EE-8B6F-80662870B3A7",
+      "textStyling": {
+        "_id": "MPTextStyling:BBA06E82-F724-419F-A81E-1886644AA4B9",
+        "objectType": "MPTextStyling",
+        "fontFamily": "Charter",
+        "fontSize": 20,
+        "bold": true,
+        "italic": false,
+        "color": "MPColor:D8F5B5C8-F87D-489D-AAA4-E962AEE848AB"
+      },
+      "alignment": "left",
+      "bottomSpacing": 10,
+      "firstLineIndent": 0,
+      "lineSpacing": 1.5,
+      "headIndent": 0,
+      "tailIndent": 0,
+      "topSpacing": 10,
+      "priority": 19,
+      "partOfTOC": false,
+      "prototype": "MPParagraphStyle:manuscriptTitle",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "_id": "MPParagraphStyle:6BE338AE-D517-42C8-BFFC-0F7E32075E5C",
+      "kind": "body",
+      "preferredXHTMLElement": "p",
+      "name": "bodyText",
+      "title": "Table of Contents",
+      "objectType": "MPParagraphStyle",
+      "bundled": true,
+      "nextStyle": "MPParagraphStyle:339456D4-33B6-40EE-8B6F-80662870B3A7",
+      "textStyling": {
+        "_id": "MPTextStyling:2E79D76D-CAC1-492F-8709-DAD9FD369B8B",
+        "objectType": "MPTextStyling",
+        "fontFamily": "Charter",
+        "fontSize": 12,
+        "bold": false,
+        "italic": false,
+        "color": "MPColor:D8F5B5C8-F87D-489D-AAA4-E962AEE848AB"
+      },
+      "listHeadIndent": 30,
+      "listItemIndentPerLevel": 30,
+      "listTailIndent": 0,
+      "hierarchicalListNumbering": false,
+      "hideListNumberingSuffixForLastLevel": true,
+      "embeddedListItemBulletStyles": {
+        "1": {
+          "_id": "MPListItemBulletStyle:DD563297-776A-42C6-9408-21501DD0B0AC",
+          "objectType": "MPListItemBulletStyle",
+          "bulletStyle": "none"
+        },
+        "2": {
+          "_id": "MPListItemBulletStyle:EC293DED-80AD-414C-9988-9EF62A9A4EF4",
+          "objectType": "MPListItemBulletStyle",
+          "bulletStyle": "none"
+        }
+      },
+      "embeddedListItemNumberingStyles": {
+        "1": {
+          "_id": "MPNumberingStyle:43D2A1BA-0ED9-4B8E-8C29-265B17B9F1DD",
+          "objectType": "MPNumberingStyle",
+          "startIndex": 1,
+          "prefix": "",
+          "numberingScheme": "none",
+          "suffix": "."
+        },
+        "2": {
+          "_id": "MPNumberingStyle:9D6F6970-0273-4C53-BC7A-8B2FAA784D4A",
+          "objectType": "MPNumberingStyle",
+          "startIndex": 1,
+          "prefix": "",
+          "numberingScheme": "none",
+          "suffix": "."
+        },
+        "3": {
+          "_id": "MPNumberingStyle:AAB86A8A-5D9D-4C37-995F-F0226E22E10D",
+          "objectType": "MPNumberingStyle",
+          "startIndex": 1,
+          "prefix": "",
+          "numberingScheme": "none",
+          "suffix": "."
+        }
+      },
+      "alignment": "left",
+      "bottomSpacing": 10,
+      "firstLineIndent": 0,
+      "lineSpacing": 2,
+      "headIndent": 0,
+      "tailIndent": 0,
+      "topSpacing": 10,
+      "priority": 20,
+      "partOfTOC": false,
+      "prototype": "MPParagraphStyle:toc",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "_id": "MPParagraphStyle:901DF094-3BA2-4B07-B3F8-008CC7BBBC14",
+      "kind": "footnote",
+      "preferredXHTMLElement": "p",
+      "name": "footnote",
+      "title": "Footnote",
+      "objectType": "MPParagraphStyle",
+      "bundled": true,
+      "nextStyle": "MPParagraphStyle:901DF094-3BA2-4B07-B3F8-008CC7BBBC14",
+      "textStyling": {
+        "_id": "MPTextStyling:A6E169AC-4610-44C6-A979-7FD95AE787CC",
+        "objectType": "MPTextStyling",
+        "fontFamily": "Charter",
+        "fontSize": 10,
+        "bold": false,
+        "italic": false,
+        "color": "MPColor:D8F5B5C8-F87D-489D-AAA4-E962AEE848AB"
+      },
+      "listHeadIndent": 30,
+      "listItemIndentPerLevel": 30,
+      "listTailIndent": 0,
+      "hierarchicalListNumbering": false,
+      "hideListNumberingSuffixForLastLevel": true,
+      "embeddedListItemBulletStyles": {
+        "1": {
+          "_id": "MPListItemBulletStyle:0E9110F4-8426-4B66-B97A-9053CFC9C77A",
+          "objectType": "MPListItemBulletStyle",
+          "bulletStyle": "disc"
+        },
+        "2": {
+          "_id": "MPListItemBulletStyle:1066DC6B-704F-4CA0-B807-72F461F5E0BA",
+          "objectType": "MPListItemBulletStyle",
+          "bulletStyle": "circle"
+        }
+      },
+      "embeddedListItemNumberingStyles": {
+        "1": {
+          "_id": "MPNumberingStyle:5A479546-C898-4C4B-9836-202EA34332A8",
+          "objectType": "MPNumberingStyle",
+          "startIndex": 1,
+          "prefix": "",
+          "numberingScheme": "decimal",
+          "suffix": "."
+        },
+        "2": {
+          "_id": "MPNumberingStyle:BE16BD50-9F21-49A7-8F66-15011A3DBCEE",
+          "objectType": "MPNumberingStyle",
+          "startIndex": 1,
+          "prefix": "",
+          "numberingScheme": "decimal",
+          "suffix": "."
+        },
+        "3": {
+          "_id": "MPNumberingStyle:5AC47239-EDA2-4314-8BE5-8A5399F379DF",
+          "objectType": "MPNumberingStyle",
+          "startIndex": 1,
+          "prefix": "",
+          "numberingScheme": "decimal",
+          "suffix": "."
+        }
+      },
+      "alignment": "left",
+      "bottomSpacing": 10,
+      "firstLineIndent": 0,
+      "lineSpacing": 2,
+      "headIndent": 0,
+      "tailIndent": 0,
+      "topSpacing": 10,
+      "priority": 100,
+      "partOfTOC": false,
+      "prototype": "MPParagraphStyle:footnote",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "_id": "MPParagraphStyle:A7068459-085B-479C-A210-11CF021CFBB4",
+      "kind": "heading",
+      "preferredXHTMLElement": "h3",
+      "name": "heading3",
+      "title": "Subsubsection Heading",
+      "objectType": "MPParagraphStyle",
+      "bundled": true,
+      "nextStyle": "MPParagraphStyle:339456D4-33B6-40EE-8B6F-80662870B3A7",
+      "textStyling": {
+        "_id": "MPTextStyling:055123F5-3704-49FE-B59B-D801598C67C4",
+        "objectType": "MPTextStyling",
+        "fontFamily": "Charter",
+        "fontSize": 12,
+        "bold": true,
+        "italic": false,
+        "color": "MPColor:D8F5B5C8-F87D-489D-AAA4-E962AEE848AB"
+      },
+      "alignment": "left",
+      "bottomSpacing": 5,
+      "firstLineIndent": 0,
+      "lineSpacing": 1.5,
+      "headIndent": 0,
+      "tailIndent": 0,
+      "topSpacing": 8,
+      "priority": 22,
+      "partOfTOC": false,
+      "prototype": "MPParagraphStyle:H3",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "_id": "MPParagraphStyle:AF0062A3-C0D9-4B1F-8BFD-4DDF676283F4",
+      "kind": "title",
+      "preferredXHTMLElement": "p",
+      "name": "contributorList",
+      "title": "Author List",
+      "objectType": "MPParagraphStyle",
+      "bundled": true,
+      "nextStyle": "MPParagraphStyle:339456D4-33B6-40EE-8B6F-80662870B3A7",
+      "textStyling": {
+        "_id": "MPTextStyling:E430B8EE-411D-4218-82E3-C30269D1803A",
+        "objectType": "MPTextStyling",
+        "fontFamily": "Charter",
+        "fontSize": 12,
+        "bold": false,
+        "italic": false,
+        "color": "MPColor:D8F5B5C8-F87D-489D-AAA4-E962AEE848AB"
+      },
+      "alignment": "left",
+      "bottomSpacing": 10,
+      "firstLineIndent": 0,
+      "lineSpacing": 1.5,
+      "headIndent": 0,
+      "tailIndent": 0,
+      "topSpacing": 10,
+      "priority": 20,
+      "partOfTOC": false,
+      "prototype": "MPParagraphStyle:contributorList",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "_id": "MPParagraphStyle:B976DB46-D840-4A92-85FA-1495343396E2",
+      "kind": "heading",
+      "preferredXHTMLElement": "h4",
+      "name": "heading4",
+      "title": "Subsubsubsection Heading",
+      "objectType": "MPParagraphStyle",
+      "bundled": true,
+      "nextStyle": "MPParagraphStyle:339456D4-33B6-40EE-8B6F-80662870B3A7",
+      "textStyling": {
+        "_id": "MPTextStyling:A3F0EF28-7A3F-4208-9205-5BD3FF8C1066",
+        "objectType": "MPTextStyling",
+        "fontFamily": "Charter",
+        "fontSize": 12,
+        "bold": true,
+        "italic": false,
+        "color": "MPColor:D8F5B5C8-F87D-489D-AAA4-E962AEE848AB"
+      },
+      "alignment": "left",
+      "bottomSpacing": 5,
+      "firstLineIndent": 0,
+      "lineSpacing": 1.5,
+      "headIndent": 0,
+      "tailIndent": 0,
+      "topSpacing": 8,
+      "priority": 23,
+      "partOfTOC": false,
+      "prototype": "MPParagraphStyle:H4",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "_id": "MPParagraphStyle:C25CA040-0F54-4C10-BE6F-D863A51853F4",
+      "kind": "heading",
+      "preferredXHTMLElement": "h2",
+      "name": "heading2",
+      "title": "Subsection Heading",
+      "objectType": "MPParagraphStyle",
+      "bundled": true,
+      "nextStyle": "MPParagraphStyle:339456D4-33B6-40EE-8B6F-80662870B3A7",
+      "textStyling": {
+        "_id": "MPTextStyling:0A37ACFF-1D8A-4068-ABD0-0594C99C8EE0",
+        "objectType": "MPTextStyling",
+        "fontFamily": "Charter",
+        "fontSize": 14,
+        "bold": true,
+        "italic": false,
+        "color": "MPColor:D8F5B5C8-F87D-489D-AAA4-E962AEE848AB"
+      },
+      "alignment": "left",
+      "bottomSpacing": 5,
+      "firstLineIndent": 0,
+      "lineSpacing": 1.5,
+      "headIndent": 0,
+      "tailIndent": 0,
+      "topSpacing": 8,
+      "priority": 21,
+      "partOfTOC": true,
+      "prototype": "MPParagraphStyle:H2",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "_id": "MPParagraphStyle:EC417BE7-ECD8-46FB-BB29-51620300C801",
+      "kind": "heading",
+      "preferredXHTMLElement": "h1",
+      "name": "heading1",
+      "title": "Section Heading",
+      "objectType": "MPParagraphStyle",
+      "bundled": true,
+      "nextStyle": "MPParagraphStyle:339456D4-33B6-40EE-8B6F-80662870B3A7",
+      "textStyling": {
+        "_id": "MPTextStyling:2E2D93EB-2474-4494-AD92-B5EAD46A38BE",
+        "objectType": "MPTextStyling",
+        "fontFamily": "Charter",
+        "fontSize": 16,
+        "bold": true,
+        "italic": false,
+        "color": "MPColor:D8F5B5C8-F87D-489D-AAA4-E962AEE848AB"
+      },
+      "alignment": "left",
+      "bottomSpacing": 5,
+      "firstLineIndent": 0,
+      "lineSpacing": 1.5,
+      "headIndent": 0,
+      "tailIndent": 0,
+      "topSpacing": 8,
+      "priority": 20,
+      "partOfTOC": true,
+      "prototype": "MPParagraphStyle:H1",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "_id": "MPSection:3A1ECA84-AA87-4E3A-AB70-6686FF6FE452",
+      "objectType": "MPSection",
+      "priority": 7,
+      "path": [
+        "MPSection:3A1ECA84-AA87-4E3A-AB70-6686FF6FE452"
+      ],
+      "elementIDs": [
+        "MPParagraphElement:69BEE95C-ADA9-4CBB-8E4C-6E3E9D1DDADA",
+        "MPFigureElement:A7BBA561-7FA2-4576-981B-3D75E91B614A"
+      ],
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232",
+      "title": "A figure"
+    },
+    {
+      "priority": 2,
+      "title": "A citation",
+      "path": [
+        "MPSection:62247D30-86C2-40C8-9B25-55E323397F57"
+      ],
+      "elementIDs": [
+        "MPParagraphElement:E51EFD7D-52FF-4B72-BF9C-B47F2989436F"
+      ],
+      "_id": "MPSection:62247D30-86C2-40C8-9B25-55E323397F57",
+      "objectType": "MPSection",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "priority": 5,
+      "title": "A bullet list",
+      "path": [
+        "MPSection:6AFAA84A-3E7D-40B8-96F0-72EFB0DD2165"
+      ],
+      "elementIDs": [
+        "MPListElement:F211C6B1-2E91-4F48-8F09-2C05CAAF829F"
+      ],
+      "_id": "MPSection:6AFAA84A-3E7D-40B8-96F0-72EFB0DD2165",
+      "objectType": "MPSection",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "priority": 4,
+      "title": "An ordered list",
+      "path": [
+        "MPSection:7EB59268-1C3A-4522-B250-A7B09AC5C97D"
+      ],
+      "elementIDs": [
+        "MPListElement:130F24F7-0F78-43DA-AB80-5B5DAF840C0B"
+      ],
+      "_id": "MPSection:7EB59268-1C3A-4522-B250-A7B09AC5C97D",
+      "objectType": "MPSection",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "priority": 1,
+      "title": "A paragraph",
+      "path": [
+        "MPSection:A67FABCE-B7A0-457A-95C0-3A6B4AFD80BB"
+      ],
+      "elementIDs": [
+        "MPParagraphElement:2F64B77A-161C-48BB-AC09-C7EF425F752F"
+      ],
+      "_id": "MPSection:A67FABCE-B7A0-457A-95C0-3A6B4AFD80BB",
+      "objectType": "MPSection",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "priority": 3,
+      "title": "An equation",
+      "path": [
+        "MPSection:D015E1FF-1880-48EC-B8A3-4C9CD37E3B2D"
+      ],
+      "elementIDs": [
+        "MPParagraphElement:51D47526-2C4A-4CCA-9091-C6C8E04685D3",
+        "MPEquationElement:4311CDC7-70FF-48A3-9C63-176210C962D4"
+      ],
+      "_id": "MPSection:D015E1FF-1880-48EC-B8A3-4C9CD37E3B2D",
+      "objectType": "MPSection",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "priority": 6,
+      "title": "A table",
+      "path": [
+        "MPSection:E03BA80F-AAF5-4050-961E-380DF6993D0C"
+      ],
+      "elementIDs": [
+        "MPParagraphElement:FEE7BE52-4CC1-4331-8682-6F229866F33B",
+        "MPTableElement:099D7B05-3418-4ABA-86ED-8B8D6E992241"
+      ],
+      "_id": "MPSection:E03BA80F-AAF5-4050-961E-380DF6993D0C",
+      "objectType": "MPSection",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "category": "MPSectionCategory:bibliography",
+      "priority": 8,
+      "title": "Bibliography",
+      "path": [
+        "MPSection:FFC7095E-A048-4CC4-BFF3-ADA4AF2C919E"
+      ],
+      "elementIDs": [
+        "MPBibliographyElement:C65083EA-1727-4AC4-900B-B89FA4376CFB"
+      ],
+      "_id": "MPSection:FFC7095E-A048-4CC4-BFF3-ADA4AF2C919E",
+      "objectType": "MPSection",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "contents": "<table xmlns=\"http://www.w3.org/1999/xhtml\" id=\"MPTableElement:099D7B05-3418-4ABA-86ED-8B8D6E992241\" class=\"MPElement MPTableStyle_4D63B93D-5DA4-4947-9119-6F2EE527E230 MPParagraphStyle_339456D4-33B6-40EE-8B6F-80662870B3A7\" data-contained-object-id=\"MPTable:6335C287-5ADE-4DD9-B7CD-51A31F7AF194\"><thead style=\"display: table-header-group;\"><tr><th data-placeholder-text=\"Data\">Test</th><th data-placeholder-text=\"Data\">Test</th></tr></thead><tbody><tr><td data-placeholder-text=\"Data\">Test</td><td data-placeholder-text=\"Data\">Test</td></tr><tr><td data-placeholder-text=\"Data\">Test</td><td data-placeholder-text=\"Data\">Test</td></tr></tbody><tfoot style=\"display: table-footer-group;\"><tr><td data-placeholder-text=\"Data\">Test</td><td data-placeholder-text=\"Data\">Test</td></tr></tfoot></table>",
+      "_id": "MPTable:6335C287-5ADE-4DD9-B7CD-51A31F7AF194",
+      "objectType": "MPTable",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "containedObjectID": "MPTable:6335C287-5ADE-4DD9-B7CD-51A31F7AF194",
+      "caption": "An example table",
+      "elementType": "table",
+      "listingID": "MPListing:4B2C4C6F-1BCC-4163-96AE-4C647211AAB6",
+      "paragraphStyle": "MPParagraphStyle:339456D4-33B6-40EE-8B6F-80662870B3A7",
+      "tableStyle": "MPTableStyle:4D63B93D-5DA4-4947-9119-6F2EE527E230",
+      "_id": "MPTableElement:099D7B05-3418-4ABA-86ED-8B8D6E992241",
+      "objectType": "MPTableElement",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    },
+    {
+      "_id": "MPTableStyle:4D63B93D-5DA4-4947-9119-6F2EE527E230",
+      "name": "default",
+      "title": "Default Table Style",
+      "objectType": "MPTableStyle",
+      "bundled": true,
+      "headerBackgroundColor": "MPColor:07DA56E6-04F0-48BB-997F-600BF142B80D",
+      "headerTopBorder": {
+        "color": "MPColor:D8F5B5C8-F87D-489D-AAA4-E962AEE848AB",
+        "style": "MPBorderStyle:E9D5EA5E-AAA1-4F54-B094-877BF7DFB858",
+        "width": 2,
+        "_id": "MPBorder:6BC92907-B7DF-4542-84CF-1456246EFEA9",
+        "objectType": "MPBorder"
+      },
+      "headerBottomBorder": {
+        "color": "MPColor:D8F5B5C8-F87D-489D-AAA4-E962AEE848AB",
+        "style": "MPBorderStyle:E9D5EA5E-AAA1-4F54-B094-877BF7DFB858",
+        "width": 1,
+        "_id": "MPBorder:EB6A90B8-E464-4016-A6E7-90F704EC63C2",
+        "objectType": "MPBorder"
+      },
+      "headerBottomSpacing": 3,
+      "bodyBackgroundColor": "MPColor:893B0021-F750-4FCC-88B9-56BD2299C7B9",
+      "bodyBackgroundAlternateColor": "MPColor:893B0021-F750-4FCC-88B9-56BD2299C7B9",
+      "bodyColumnSeparatorBorder": {
+        "color": "MPColor:D8F5B5C8-F87D-489D-AAA4-E962AEE848AB",
+        "style": "MPBorderStyle:91D9FF22-1692-48C1-AAF3-0837E8B63064",
+        "width": 1,
+        "_id": "MPBorder:EBB5D0B3-A9FE-49B3-ADAD-2CC5851D91F9",
+        "objectType": "MPBorder"
+      },
+      "footerTopSpacing": 3,
+      "footerBackgroundColor": "MPColor:893B0021-F750-4FCC-88B9-56BD2299C7B9",
+      "footerTopBorder": {
+        "color": "MPColor:D8F5B5C8-F87D-489D-AAA4-E962AEE848AB",
+        "style": "MPBorderStyle:E9D5EA5E-AAA1-4F54-B094-877BF7DFB858",
+        "width": 1,
+        "_id": "MPBorder:2338AB83-D20B-4118-8C38-D0F330E85F23",
+        "objectType": "MPBorder"
+      },
+      "footerBottomBorder": {
+        "color": "MPColor:D8F5B5C8-F87D-489D-AAA4-E962AEE848AB",
+        "style": "MPBorderStyle:E9D5EA5E-AAA1-4F54-B094-877BF7DFB858",
+        "width": 1,
+        "_id": "MPBorder:EC933CA4-ABBB-49D0-A2EF-4B0B2D1DA786",
+        "objectType": "MPBorder"
+      },
+      "priority": 10,
+      "prototype": "MPTableStyle:default",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    }
+  ]
+}

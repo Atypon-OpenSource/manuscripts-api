@@ -1,0 +1,13 @@
+extends ../email-template
+
+block emailTitle
+  span Project Invitation
+
+block emailText
+  if role == 'viewer'
+    p You have been invited by #{invitingUser.name} to view project "#{containerTitle || 'Untitled Project'}" at #[span(class='frontend-app-hostname') #{frontendAppHostname}].
+  else
+    p You have been invited by #{invitingUser.name} to collaborate on project "#{containerTitle || 'Untitled Project'}" at #[span(class='frontend-app-hostname') #{frontendAppHostname}].
+
+block emailAction
+  a(href=actionURL, title="Accept invitation" target="_blank", style="font-size: 16px; font-family: Lato, Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; border-radius: 4px; padding: 8px 32px; border: 1px solid #0d79d0; display: inline-block;").btn-radius Accept the Invitation

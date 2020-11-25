@@ -1,0 +1,16 @@
+# cluster image, tag should be compatible with the CB clusters used
+cluster:
+  image: couchbase/server
+  tag: enterprise-5.5.1
+
+restorePointStart: oldest # Can override
+restorePointEnd: latest # Can override
+
+# The following variables *need* to be set by the user
+restoreFromRelease: UserSuppliedValue
+restoreToRelease: UserSuppliedValue
+restoreToNamespace: UserSuppliedValue
+restoreToCbAdminUser: UserSuppliedValue
+restoreToCbAdminPass: UserSuppliedValue
+
+

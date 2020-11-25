@@ -1,0 +1,10 @@
+extends ../email-template
+
+block emailTitle
+  span #{invitingUser.name} has invited you to collaborate at #{frontendAppHostname}.
+
+block emailText
+  span To accept the invitation, please #[a(href=actionURL) click the link below].
+
+block emailAction
+  a(href=actionURL, title="accept" target="_blank", style="font-size: 16px; font-family: Lato, Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; border-radius: 4px; padding: 8px 32px; border: 1px solid #0d79d0; display: inline-block;").btn-radius Accept the invitation

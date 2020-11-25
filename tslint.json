@@ -1,0 +1,11 @@
+{
+    "extends": ["tslint-config-standard", "./tslint-header"],
+    "rules": {
+        "no-console": [true, "log", "error"],
+        "no-inferrable-types": [true, "ignore-params", "ignore-properties"],
+        "await-promise": [true, "RequestPromise"],
+        "cyclomatic-complexity": [true, 8],
+        "no-unused-variable": false,
+        "no-empty": false
+    }
+}

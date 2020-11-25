@@ -1,0 +1,23 @@
+{
+  "name": "tokomak-doc",
+  "version": "1.0.0",
+  "description": "Tokomak documentation.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@gitlab.com/mpapp-private/manuscripts-api.git"
+  },
+  "author": "Matias Piipari <mpiipari@atypon.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/mpapp-private/manuscripts-api/issues"
+  },
+  "homepage": "https://gitlab.com/mpapp-private/manuscripts-api#README",
+  "dependencies": {
+    "spectacle-docs": "^1.1.0",
+    "typedoc": "^0.19.2"
+  }
+}

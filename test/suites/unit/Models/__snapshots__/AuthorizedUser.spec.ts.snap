@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Authorized User Model should create model 1`] = `
+Object {
+  "syncSessions": Object {
+    "data": "fooo",
+  },
+  "token": "12345",
+  "user": Object {
+    "_id": "1",
+    "connectUserID": undefined,
+    "email": "abarmawi@live.com",
+    "name": "Abdallah",
+  },
+}
+`;

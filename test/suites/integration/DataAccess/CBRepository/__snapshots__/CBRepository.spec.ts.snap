@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CBRepository getAll should return user list 1`] = `
+Array [
+  Object {
+    "_id": "User|valid-user-2@manuscriptsapp.com",
+    "connectUserID": undefined,
+    "email": "valid-user-2@manuscriptsapp.com",
+    "name": "Valid System User",
+  },
+]
+`;
+
+exports[`CBRepository getOne should return user 1`] = `
+Object {
+  "_id": "User|valid-user-2@manuscriptsapp.com",
+  "connectUserID": undefined,
+  "email": "valid-user-2@manuscriptsapp.com",
+  "name": "Valid System User",
+}
+`;

@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "target": "es2017",
+    "module": "commonjs",
+    "noImplicitAny": true,
+    "removeComments": false,
+    "sourceMap": true,
+    "outDir": "dist",
+    "lib": ["dom", "es2017"],
+    "moduleResolution": "node",
+    "isolatedModules": true,
+    "noUnusedLocals": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "noUnusedParameters": true,
+    "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
+    "baseUrl": "./"
+  },
+  "include": [
+    "src",
+    "test"
+  ],
+  "files": [
+    "./types/globals.d.ts"
+  ]
+
+}

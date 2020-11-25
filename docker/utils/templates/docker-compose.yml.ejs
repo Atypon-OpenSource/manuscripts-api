@@ -1,0 +1,176 @@
+version: '3.4'
+
+services:
+  <%- app_couchbase_hostname %>:
+    image: registry.gitlab.com/mpapp-public/couchbase-images/couchbase:0.1.1-4-G6398
+    environment:
+      APP_COUCHBASE_ADMIN_PASS: <%- app_couchbase_admin_pass %>
+      APP_COUCHBASE_ADMIN_USER: <%- app_couchbase_admin_user %>
+      APP_COUCHBASE_RBAC_PASSWORD: <%- app_couchbase_rbac_password %>
+      APP_DATA_BUCKET: <%- app_data_bucket %>
+      APP_DERIVED_DATA_BUCKET: <%- app_derived_data_bucket %>
+      APP_DISCUSSIONS_BUCKET: <%- app_discussions_bucket %>
+      APP_STATE_BUCKET: <%- app_state_bucket %>
+      APP_USER_BUCKET: <%- app_user_bucket %>
+      APP_INDEX_REPLICA_COUNT: <%- app_index_replica_count %>
+      COUCHBASE_INITIALIZE: "true"
+      NFS: "/data"
+<% if (node_env != 'production') { -%>
+    ports:
+      - "8091-8096:8091-8096"
+      - "11207-11211:11207-11211"
+      - "18091-18096:18091-18096"
+<%} else { -%>
+    expose:
+      - "8091-8096"
+      - "11207-11211"
+      - "18091-18096"
+<% } -%>
+
+  <%- app_gateway_hostname %>:
+    image: registry.gitlab.com/mpapp-public/manuscripts-sync/sync_gateway:0.24.0
+    depends_on:
+      - <%- app_couchbase_hostname %>
+    environment:
+      APP_COUCHBASE_ADMIN_PASS: <%- app_couchbase_admin_pass %>
+      APP_COUCHBASE_ADMIN_USER: <%- app_couchbase_admin_user %>
+      APP_COUCHBASE_HOSTNAME: <%- app_couchbase_hostname %>
+      APP_COUCHBASE_RBAC_PASSWORD: <%- app_couchbase_rbac_password %>
+      APP_ENABLE_SHARED_BUCKET_ACCESS: <%- app_enable_shared_bucket_access %>
+      APP_PROJECTS_GATEWAY_COOKIE_DOMAIN: "<%- app_gateway_cookie_domain %>"
+      APP_GATEWAY_ADMIN_PORT: "<%- app_gateway_admin_port %>"
+      APP_GATEWAY_PUBLIC_PORT: "<%- app_gateway_public_port %>"
+      APP_DATA_BUCKET: <%- app_data_bucket %>
+      APP_DERIVED_DATA_BUCKET: <%- app_derived_data_bucket %>
+      APP_DISCUSSIONS_BUCKET: <%- app_discussions_bucket %>
+      APP_STATE_BUCKET: <%- app_state_bucket %>
+      APP_USER_BUCKET: <%- app_user_bucket %>
+      APP_ALLOWED_CORS_ORIGINS: <%- app_allowed_cors_origins %>
+      APP_INDEX_REPLICA_COUNT: <%- app_index_replica_count %>
+<% if (node_env != 'production') { -%>
+    ports:
+      - "<%- app_gateway_public_port %>:<%- app_gateway_public_port %>"
+      - "<%- app_gateway_admin_port %>:<%- app_gateway_admin_port %>"
+<% } else { -%>
+    ports:
+      - "<%- app_gateway_public_port %>:<%- app_gateway_public_port %>"
+    expose:
+      - "<%- app_gateway_admin_port %>"
+<% } -%>
+
+<% if (node_env == 'development' || node_env == 'production') { -%>
+  app:
+    depends_on:
+      - <%- app_couchbase_hostname %>
+    ports:
+      - "<%- app_port %>:<%- app_port %>"
+    image: app
+    build:
+      context: ../
+      dockerfile: docker/app/Dockerfile
+    environment:
+      NODE_ENV: <%- node_env %>
+      APP_COUCHBASE_ADMIN_USER: <%- app_couchbase_admin_user %>
+      APP_COUCHBASE_ADMIN_PASS: <%- app_couchbase_admin_pass %>
+      APP_BASE_URL: "<%- app_base_url %>"
+      APP_DB_URI: "couchbase://<%- app_couchbase_hostname %>/"
+      APP_DISCOURSE_SSO_SECRET: "<%- app_discourse_sso_secret %>"
+      APP_DISCOURSE_URL: "<%- app_discourse_url %>"
+      APP_DISCOURSE_ADMIN_USERNAME: "<%- app_discourse_admin_username %>"
+      APP_DISCOURSE_FEEDBACK_CATEGORY_ID: "<%- app_discourse_feedback_category_id %>"
+      APP_DISCOURSE_API_KEY: "<%- app_discourse_api_key %>"
+      APP_COUCHBASE_HOSTNAME: <%- app_couchbase_hostname %>
+      APP_COUCHBASE_RBAC_PASSWORD: <%- app_couchbase_rbac_password %>
+      APP_ENABLE_NON_CONNECT_AUTH: "<%- app_enable_non_connect_auth -%>"
+      APP_FROM_EMAIL: "<%- app_from_email %>"
+      APP_GATEWAY_COOKIE_DOMAIN: "<%- app_gateway_cookie_domain %>"
+      APP_GATEWAY_HOSTNAME: "<%- app_gateway_hostname %>"
+      APP_GATEWAY_ADMIN_PORT: "<%- app_gateway_admin_port %>"
+      APP_GATEWAY_PUBLIC_PORT: "<%- app_gateway_public_port %>"
+      APP_GOOGLE_AUTH_CALLBACK: "<%- app_google_auth_callback %>"
+      APP_GOOGLE_CLIENT_ID: <%- app_google_client_id %>
+      APP_GOOGLE_CLIENT_SECRET: <%- app_google_client_secret %>
+      APP_JWT_SECRET: <%- app_jwt_secret %>
+      APP_SERVER_SECRET: <%- app_server_secret %>
+      APP_OAUTH_STATE_ENCRYPTION_KEY: <%- app_oauth_state_encryption_key %>
+      APP_PORT: <%- app_port %>
+      APP_CLIENT_APPLICATIONS: <%- app_client_applications %>
+      APP_AWS_ACCESS_KEY_ID: <%- app_aws_access_key_id %>
+      APP_AWS_SECRET_ACCESS_KEY: <%- app_aws_secret_access_key %>
+      APP_AWS_REGION: <%- app_aws_region %>
+      APP_STORE_ONLY_SSL_TRANSMITTED_COOKIES: <%- app_store_only_ssl_transmitted_cookies %>
+      APP_ALLOWED_CORS_ORIGINS: <%- app_allowed_cors_origins %>
+      APP_SKIP_ACCOUNT_VERIFICATION: <%- app_skip_account_verification %>
+      APP_INITIALIZE: <%- app_initialize %>
+      APP_RUN_AFTER_INITIALIZE: <%- app_run_after_initialize %>
+      APP_HASH_SALT_ROUNDS: <%- app_hash_salt_rounds %>
+      APP_DATA_BUCKET: <%- app_data_bucket %>
+      APP_DERIVED_DATA_BUCKET: <%- app_derived_data_bucket %>
+      APP_STATE_BUCKET: <%- app_state_bucket %>
+      APP_USER_BUCKET: <%- app_user_bucket %>
+      APP_START_FUNCTION_SERVICE: <%- app_start_function_service %>
+      APP_IAM_SERVER_URL: <%- app_iam_server_url %>
+      APP_IAM_CLIENT_ID: <%- app_iam_client_id %>
+      APP_IAM_AUTH_CALLBACK_PATH: <%- app_iam_auth_callback_path %>
+      APP_API_SERVER_URL: <%- app_api_server_url %>
+      APP_PRESSROOM_BASE_URL: <%- app_pressroom_base_url %>
+      APP_PRESSROOM_APIKEY: <%- app_pressroom_apikey %>
+      APP_CONTAINER_TOKEN_SCOPES: <%- app_container_token_scopes %>
+<% } else { -%>
+  test_runner:
+    depends_on:
+      - <%- app_couchbase_hostname %>
+    image: test_runner
+    build:
+      context: ../
+      dockerfile: docker/test_runner/Dockerfile
+    environment:
+      NODE_ENV: <%- node_env %>
+      APP_COUCHBASE_ADMIN_USER: <%- app_couchbase_admin_user %>
+      APP_COUCHBASE_ADMIN_PASS: <%- app_couchbase_admin_pass %>
+      APP_BASE_URL: "<%- app_base_url %>"
+      APP_DB_URI: "couchbase://<%- app_couchbase_hostname %>/"
+      APP_DISCOURSE_SSO_SECRET: "<%- app_discourse_sso_secret %>"
+      APP_DISCOURSE_URL: "<%- app_discourse_url %>"
+      APP_DISCOURSE_ADMIN_USERNAME: "<%- app_discourse_admin_username %>"
+      APP_DISCOURSE_FEEDBACK_CATEGORY_ID: "<%- app_discourse_feedback_category_id %>"
+      APP_DISCOURSE_API_KEY: "<%- app_discourse_api_key %>"
+      APP_COUCHBASE_HOSTNAME: <%- app_couchbase_hostname %>
+      APP_COUCHBASE_RBAC_PASSWORD: <%- app_couchbase_rbac_password %>
+      APP_FROM_EMAIL: "<%- app_from_email %>"
+      APP_GATEWAY_HOSTNAME: "<%- app_gateway_hostname %>"
+      APP_GATEWAY_COOKIE_DOMAIN: "<%- app_gateway_cookie_domain %>"
+      APP_PROJECTS_GATEWAY_COOKIE_DOMAIN: "<%- app_gateway_cookie_domain %>"
+      APP_GATEWAY_ADMIN_PORT: "<%- app_gateway_admin_port %>"
+      APP_GATEWAY_PUBLIC_PORT: "<%- app_gateway_public_port %>"
+      APP_GOOGLE_AUTH_CALLBACK: "<%- app_google_auth_callback %>"
+      APP_GOOGLE_CLIENT_ID: <%- app_google_client_id %>
+      APP_GOOGLE_CLIENT_SECRET: <%- app_google_client_secret %>
+      APP_JWT_SECRET: <%- app_jwt_secret %>
+      APP_SERVER_SECRET: <%- app_server_secret %>
+      APP_OAUTH_STATE_ENCRYPTION_KEY: <%- app_oauth_state_encryption_key %>
+      APP_PORT: <%- app_port %>
+      APP_CLIENT_APPLICATIONS: <%- app_client_applications %>
+      APP_AWS_ACCESS_KEY_ID: <%- app_aws_access_key_id %>
+      APP_AWS_SECRET_ACCESS_KEY: <%- app_aws_secret_access_key %>
+      APP_AWS_REGION: <%- app_aws_region %>
+      APP_STORE_ONLY_SSL_TRANSMITTED_COOKIES: <%- app_store_only_ssl_transmitted_cookies %>
+      APP_ALLOWED_CORS_ORIGINS: <%- app_allowed_cors_origins %>
+      APP_TEST_ACTION: <%- app_test_action %>
+      APP_INITIALIZE: <%- app_initialize %>
+      APP_RUN_AFTER_INITIALIZE: <%- app_run_after_initialize %>
+      APP_HASH_SALT_ROUNDS: <%- app_hash_salt_rounds %>
+      APP_DATA_BUCKET: <%- app_data_bucket %>
+      APP_DERIVED_DATA_BUCKET: <%- app_derived_data_bucket %>
+      APP_STATE_BUCKET: <%- app_state_bucket %>
+      APP_USER_BUCKET: <%- app_user_bucket %>
+      APP_START_FUNCTION_SERVICE: "0"
+      APP_IAM_SERVER_URL: <%- app_iam_server_url %>
+      APP_IAM_CLIENT_ID: <%- app_iam_client_id %>
+      APP_IAM_AUTH_CALLBACK_PATH: <%- app_iam_auth_callback_path %>
+      APP_IAM_LIBRARY_URL: <%- app_iam_library_url %>
+      APP_API_SERVER_URL: <%- app_api_server_url %>
+      APP_PRESSROOM_BASE_URL: <%- app_pressroom_base_url %>
+      APP_PRESSROOM_APIKEY: <%- app_pressroom_apikey %>
+      APP_CONTAINER_TOKEN_SCOPES: <%- app_container_token_scopes %>
+<% } -%>

@@ -1,0 +1,107 @@
+/*!
+ * © 2020 Atypon Systems LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import * as Joi from 'joi'
+
+import { appJsonAndCharset } from '../../BaseSchema'
+
+export const createSchema: Joi.SchemaMap = {
+  headers: Joi.object({
+    accept: appJsonAndCharset
+  }).options({ allowUnknown: true }),
+  body: Joi.object({
+    _id: Joi.string()
+  })
+}
+
+export const manageUserRoleSchema: Joi.SchemaMap = {
+  headers: Joi.object({
+    accept: appJsonAndCharset
+  }).options({ allowUnknown: true }),
+  body: Joi.object({
+    managedUserId: Joi.string().required(),
+    newRole: Joi.string().allow(null)
+  }),
+  params: Joi.object({
+    containerID: Joi.string().required()
+  })
+}
+
+export const addUserSchema: Joi.SchemaMap = {
+  headers: Joi.object({
+    accept: appJsonAndCharset
+  }).options({ allowUnknown: true }),
+  body: Joi.object({
+    userId: Joi.string().required(),
+    role: Joi.string().required()
+  }),
+  params: Joi.object({
+    containerID: Joi.string().required()
+  })
+}
+
+export const getArchiveSchema: Joi.SchemaMap = {
+  params: Joi.object({
+    containerID: Joi.string().required(),
+    manuscriptID: Joi.string()
+  }),
+  query: Joi.object({
+    allowOrphanedDocs: Joi.string()
+  })
+}
+
+export const getPickerBuilderSchema: Joi.SchemaMap = {
+  headers: Joi.object({
+    accept: appJsonAndCharset
+  }).options({ allowUnknown: true }),
+  params: Joi.object({
+    containerID: Joi.string().required(),
+    manuscriptID: Joi.string().required()
+  })
+}
+
+export const accessTokenSchema: Joi.SchemaMap = {
+  params: Joi.object({
+    containerType: Joi.string().required(),
+    containerID: Joi.string().required(),
+    scope: Joi.string().required()
+  })
+}
+
+export const accessTokenJWKSchema: Joi.SchemaMap = {
+  params: Joi.object({
+    containerType: Joi.string().required(),
+    scope: Joi.string().required()
+  })
+}
+
+export const getProductionNotesSchema: Joi.SchemaMap = {
+  params: Joi.object({
+    containerID: Joi.string().required(),
+    manuscriptID: Joi.string().required()
+  })
+}
+
+export const addProductionNoteSchema: Joi.SchemaMap = {
+  params: Joi.object({
+    containerID: Joi.string().required(),
+    manuscriptID: Joi.string().required()
+  }),
+  body: Joi.object({
+    content: Joi.string().required(),
+    target: Joi.string()
+  })
+}
