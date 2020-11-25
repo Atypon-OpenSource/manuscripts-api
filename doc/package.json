@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@gitlab.com/mpapp-private/manuscripts-api.git"
+    "url": "git+ssh://git@gitlab.com/mpapp-public/manuscripts-api.git"
   },
   "author": "Matias Piipari <mpiipari@atypon.com>",
   "license": "ISC",
   "bugs": {
-    "url": "https://gitlab.com/mpapp-private/manuscripts-api/issues"
+    "url": "https://gitlab.com/mpapp-public/manuscripts-api/issues"
   },
-  "homepage": "https://gitlab.com/mpapp-private/manuscripts-api#README",
+  "homepage": "https://gitlab.com/mpapp-public/manuscripts-api#README",
   "dependencies": {
     "spectacle-docs": "^1.1.0",
     "typedoc": "^0.19.2"

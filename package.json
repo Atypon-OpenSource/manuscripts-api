@@ -5,7 +5,7 @@
     "license": "Apache-2.0",
     "private": true,
     "main": "dist/index",
-    "repository": "gitlab:mpapp-private/manuscripts-api",
+    "repository": "gitlab:mpapp-public/manuscripts-api",
     "scripts": {
         "gulp": "gulp",
         "dev": "ts-node --transpile-only --files src",

@@ -113,7 +113,6 @@ describe('CBRepository Create', () => {
     return expect(repository.create(newUser, {})).rejects.toThrowError(DatabaseError)
   })
 
-  // Test skipped until https://gitlab.com/mpapp-private/manuscripts-api/issues/186 is fixed.
   test('should delete the created user after the expiry time pass', async () => {
     const repository = new UserRepository(db)
     const user: any = await repository.create(validNewUser2, { expiry: 1 })
