@@ -187,7 +187,7 @@ export class AuthRoute extends BaseRoute {
       AuthStrategy.applicationValidation(),
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
-          const { redirectUri, deviceId, theme, action } = req.query
+          const { redirectUri, deviceId, theme, redirectBaseUri, action } = req.query
           // Redirect user to IAM OAuth start endpoint
           const {
             url,
@@ -196,7 +196,8 @@ export class AuthRoute extends BaseRoute {
             {
               deviceId,
               redirectUri,
-              theme
+              theme,
+              redirectBaseUri
             },
             action
           )
@@ -222,20 +223,24 @@ export class AuthRoute extends BaseRoute {
           } else {
             const state = DIContainer.sharedContainer.authService.decodeIAMState(req.query.state)
             const params = removeEmptyValuesFromObj({ redirectUri: state.redirectUri, theme: state.theme })
+            const serverUrl =
+              state.redirectBaseUri && config.IAM.authServerPermittedURLs.includes(state.redirectBaseUri) ?
+                state.redirect_base_uri :
+                config.IAM.libraryURL
             try {
               const { token, syncSessions, user } = await this.authController.iamOAuthCallback(req, state)
 
               if (!user) {
-                res.redirect(`${config.IAM.libraryURL}/login#${stringify({ error: 'user-not-found' })}`)
+                res.redirect(`${serverUrl}/login#${stringify({ error: 'user-not-found' })}`)
               } else {
                 this.setSyncCookies(syncSessions, res)
-                res.redirect(`${config.IAM.libraryURL}/login?${stringify(params)}#${stringify({
+                res.redirect(`${serverUrl}/login?${stringify(params)}#${stringify({
                   access_token: token,
                   recover: user.deleteAt ? true : false
                 })}`)
               }
             } catch (error) {
-              res.redirect(`${config.IAM.libraryURL}/login#${stringify({ error: 'error', error_description: error.message })}`)
+              res.redirect(`${serverUrl}/login#${stringify({ error: 'error', error_description: error.message })}`)
             }
           }
         }, next)

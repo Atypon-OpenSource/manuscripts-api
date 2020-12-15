@@ -76,7 +76,8 @@ jest.mock('../../src/Config/Config', () => {
       authServerURL: 'https://iam-test.atypon.com/IAM',
       authCallbackPath: 'https://iam-test.atypon.com/callback',
       libraryURL: 'https://iam-test.atypon.com/library',
-      apiServerURL: 'https://iam-test.atypon.com/api-server'
+      apiServerURL: 'https://iam-test.atypon.com/api-server',
+      authServerPermittedURLs: ['https://iam-test.atypon.com']
     },
     email: {
       fromAddress: 'no-reply@manuscriptsapp.com',

@@ -204,7 +204,7 @@ describe('AuthService IAM', () => {
 
   test('IAM OAuth state parsing', () => {
     const authService = DIContainer.sharedContainer.authService
-    // base64(x=y:u=v:deviceId=derp) = eD15OnU9djpkZXZpY2VJZD1kZXJwCg==
-    return expect(authService.decodeIAMState('eD15OnU9djpkZXZpY2VJZD1kZXJwCg==').deviceId).toEqual('derp\n')
+    // base64(x=y:u=v:deviceId=derp) = ZGV2aWNlSWQ9ZGVycAo=
+    return expect(authService.decodeIAMState('ZGV2aWNlSWQ9ZGVycAo=').deviceId).toEqual('derp\n')
   })
 })

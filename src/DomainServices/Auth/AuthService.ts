@@ -303,7 +303,7 @@ export class AuthService implements IAuthService {
    */
   public static encodeIAMState (state: IAMState): string {
     let stateParam = ''
-    const separator = ':'
+    const separator = ';'
     Object.keys(state).forEach((key) => {
       if (state[key]) {
         // If some value was added before, add a separator
@@ -432,15 +432,16 @@ export class AuthService implements IAuthService {
 
   public decodeIAMState (stateParam: string): IAMState {
     let state: { [s: string]: string } = {}
-    Buffer.from(stateParam, 'base64').toString('ascii').split(':').map((stateParamValue: string) => {
+    Buffer.from(stateParam, 'base64').toString('ascii').split(';').map((stateParamValue: string) => {
       const params = stateParamValue.split('=')
       state[params[0]] = params[1]
     })
-    const { deviceId, redirectUri, theme } = state
+    const { deviceId, redirectUri, theme, redirectBaseUri } = state
     return {
       deviceId,
       redirectUri,
-      theme
+      theme,
+      redirectBaseUri
     }
   }
 

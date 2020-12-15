@@ -44,10 +44,11 @@ describe('IAMAuthService', () => {
     const state = {
       deviceId: '123',
       redirectUri: '/test',
-      theme: 'foo'
+      theme: 'foo',
+      redirectBaseUri: null
     }
     expect(AuthService.encodeIAMState(state)).toBe(
-      Buffer.from('deviceId=123:redirectUri=/test:theme=foo').toString('base64')
+      Buffer.from('deviceId=123;redirectUri=/test;theme=foo').toString('base64')
     )
   })
 
@@ -55,7 +56,8 @@ describe('IAMAuthService', () => {
     const state = {
       deviceId: '123',
       redirectUri: '/test',
-      theme: 'foo'
+      theme: 'foo',
+      redirectBaseUri: null
     }
     const encodedState = AuthService.encodeIAMState(state)
     const {
@@ -72,11 +74,13 @@ describe('IAMAuthService', () => {
     const deviceId = '123456'
     const redirectUri = '/login'
     const theme = 'themeA'
+    const redirectBaseUri = null
     const OAuthStartUrl = (await DIContainer.sharedContainer.authService.iamOAuthStartData(
       {
         deviceId,
         redirectUri,
-        theme
+        theme,
+        redirectBaseUri
       }
     )).url
     const parsedStartURL = url.parse(OAuthStartUrl)

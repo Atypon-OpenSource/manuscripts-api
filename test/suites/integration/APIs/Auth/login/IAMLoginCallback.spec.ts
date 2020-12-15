@@ -66,7 +66,8 @@ describe('GET api/v1/auth/iam/callback', () => {
     const state = AuthService.encodeIAMState({
       deviceId: 'deviceId',
       redirectUri: 'redirectUri',
-      theme: 'theme'
+      theme: 'theme',
+      redirectBaseUri: ''
     })
 
     const response: supertest.Response = await iamOAuthCallback(
@@ -125,7 +126,8 @@ describe('GET api/v1/auth/iam/callback', () => {
     const state = AuthService.encodeIAMState({
       deviceId: 'deviceId',
       redirectUri: 'redirectUri',
-      theme: 'theme'
+      theme: 'theme',
+      redirectBaseUri: ''
     })
 
     const response: supertest.Response = await iamOAuthCallback(
@@ -185,7 +187,8 @@ describe('GET api/v1/auth/iam/callback', () => {
     const state = AuthService.encodeIAMState({
       deviceId: 'deviceId',
       redirectUri: 'redirectUri',
-      theme: 'theme'
+      theme: 'theme',
+      redirectBaseUri: ''
     })
 
     const response: supertest.Response = await iamOAuthCallback(
@@ -218,7 +221,8 @@ describe('GET api/v1/auth/iam/callback', () => {
     const state = AuthService.encodeIAMState({
       deviceId: 'deviceId',
       redirectUri: 'redirectUri',
-      theme: 'theme'
+      theme: 'theme',
+      redirectBaseUri: ''
     })
 
     const response: supertest.Response = await iamOAuthCallback(

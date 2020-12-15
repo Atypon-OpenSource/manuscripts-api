@@ -31,5 +31,10 @@ export interface IAMState {
   /**
    * Represents UI theme used by the client application
    */
-  theme: string | null
+  theme: string | null,
+
+  /**
+   * Represents the base url which the api should redirect at
+   */
+  redirectBaseUri: string | null
 }
