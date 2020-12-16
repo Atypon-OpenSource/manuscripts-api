@@ -641,7 +641,8 @@ describe('AuthController - iamOAuthCallback', () => {
       authController.iamOAuthCallback(req, {
         deviceId: '',
         redirectUri: '',
-        theme: ''
+        theme: '',
+        redirectBaseUri: ''
       })
     ).rejects.toThrow(MissingQueryParameterError)
   })
@@ -671,7 +672,8 @@ describe('AuthController - iamOAuthCallback', () => {
       authController.iamOAuthCallback(req, {
         deviceId: 123 as any,
         redirectUri: '',
-        theme: ''
+        theme: '',
+        redirectBaseUri: ''
       })
     ).rejects.toThrow(MissingQueryParameterError)
   })
@@ -688,7 +690,8 @@ describe('AuthController - iamOAuthCallback', () => {
       authController.iamOAuthCallback(req, {
         redirectUri: 123 as any,
         deviceId: '',
-        theme: ''
+        theme: '',
+        redirectBaseUri: ''
       })
     ).rejects.toThrow(MissingQueryParameterError)
   })
@@ -705,7 +708,8 @@ describe('AuthController - iamOAuthCallback', () => {
       authController.iamOAuthCallback(req, {
         theme: 123 as any,
         deviceId: '',
-        redirectUri: ''
+        redirectUri: '',
+        redirectBaseUri: ''
       })
     ).rejects.toThrow(MissingQueryParameterError)
   })
@@ -722,7 +726,8 @@ describe('AuthController - iamOAuthCallback', () => {
       authController.iamOAuthCallback(req, {
         theme: '',
         deviceId: '',
-        redirectUri: ''
+        redirectUri: '',
+        redirectBaseUri: ''
       })
     ).rejects.toThrow(InvalidCredentialsError)
   })

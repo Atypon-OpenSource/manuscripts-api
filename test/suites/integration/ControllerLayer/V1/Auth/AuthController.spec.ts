@@ -301,7 +301,8 @@ describe('AuthController - iamOAuthCallback', () => {
       authController.iamOAuthCallback({ query: { id_token: 1 } } as any, {
         deviceId: 'foo',
         redirectUri: null,
-        theme: null
+        theme: null,
+        redirectBaseUri: ''
       })
     ).rejects.toThrowError(MissingQueryParameterError)
   })
@@ -312,7 +313,8 @@ describe('AuthController - iamOAuthCallback', () => {
       authController.iamOAuthCallback({ query: { id_token: null } } as any, {
         deviceId: 'foo',
         redirectUri: null,
-        theme: null
+        theme: null,
+        redirectBaseUri: ''
       })
     ).rejects.toThrowError(MissingQueryParameterError)
   })
