@@ -24,7 +24,8 @@ import { AuthStrategy } from '../../../Auth/Passport/AuthStrategy'
 import {
   signupSchema,
   verificationSchema,
-  requestVerificationEmailSchema
+  requestVerificationEmailSchema,
+  connectSignupSchema
 } from './RegistrationSchema'
 
 export class RegistrationRoute extends BaseRoute {
@@ -47,6 +48,19 @@ export class RegistrationRoute extends BaseRoute {
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           await this.registrationController.signup(req)
+          res.status(HttpStatus.NO_CONTENT).end()
+        }, next)
+      }
+    )
+
+    router.post(
+      `${this.basePath}/connect/signup`,
+      expressJoiMiddleware(connectSignupSchema, {}),
+      AuthStrategy.JWTAuth,
+      AuthStrategy.JsonHeadersValidation,
+      (req: Request, res: Response, next: NextFunction) => {
+        return this.runWithErrorHandling(async () => {
+          await this.registrationController.connectSignup(req)
           res.status(HttpStatus.NO_CONTENT).end()
         }, next)
       }

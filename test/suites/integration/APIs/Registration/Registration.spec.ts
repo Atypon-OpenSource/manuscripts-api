@@ -28,7 +28,7 @@ jest.mock('../../../../../src/DomainServices/External/AWS', () => ({
   SES: { sendEmail: jest.fn((_foo, callback) => callback(null, { foo: 1 })) }
 }))
 
-import { signup } from '../../../../api'
+import { connectSignup, serverToServerAuth, signup } from '../../../../api'
 import { TEST_TIMEOUT } from '../../../../utilities/testSetup'
 import { drop, seed, testDatabase, dropBucket } from '../../../../utilities/db'
 import { validNewUserCredentials } from '../../../../data/fixtures/registrationCredentials'
@@ -39,14 +39,18 @@ import {
   EmptyAcceptJsonHeader,
   EmptyContentTypeAcceptJsonHeader,
   InValidAcceptJsonHeader,
-  ValidContentTypeAcceptWithCharsetJsonHeader
+  ValidContentTypeAcceptWithCharsetJsonHeader, ValidHeaderWithApplicationKey
 } from '../../../../data/fixtures/headers'
 import { DIContainer } from '../../../../../src/DIContainer/DIContainer'
 import { SeedOptions } from '../../../../../src/DataAccess/Interfaces/SeedOptions'
 import { BucketKey } from '../../../../../src/Config/ConfigurationTypes'
+import * as jsonwebtoken from 'jsonwebtoken'
+import { validBody } from '../../../../data/fixtures/credentialsRequestPayload'
+import { config } from '../../../../../src/Config/Config'
+import { GATEWAY_BUCKETS } from '../../../../../src/DomainServices/Sync/SyncService'
 
 let db: any = null
-const seedOptions: SeedOptions = { users: true, singleUseTokens: true }
+const seedOptions: SeedOptions = { users: true, singleUseTokens: true, applications: true }
 
 beforeAll(async () => db = await testDatabase())
 afterAll(() => db.bucket.disconnect())
@@ -162,6 +166,49 @@ describe('UserRegistrationService - signup', () => {
       ValidContentTypeAcceptWithCharsetJsonHeader
     )
 
+    expect(response.status).toBe(HttpStatus.NO_CONTENT)
+  })
+})
+
+describe('ConnectSignup - signup', () => {
+  beforeEach(async () => {
+    await drop()
+    await dropBucket(BucketKey.Data)
+    await seed(seedOptions)
+    return Promise.all(
+        GATEWAY_BUCKETS.map(key => {
+          return DIContainer.sharedContainer.syncService.createGatewayAccount(
+              'User|' + validBody.email,
+              key
+          )
+        })
+    )
+  })
+  test('should create new user', async () => {
+    const loginRes: supertest.Response = await serverToServerAuth(
+        { deviceId: '12345' },
+      {
+        ...ValidHeaderWithApplicationKey,
+        authorization: `Bearer ${jsonwebtoken.sign(
+            { email: validBody.email },
+            config.auth.serverSecret
+        )}`
+      }
+    )
+
+    expect(loginRes.status).toBe(HttpStatus.OK)
+    expect(loginRes.body.token).toBeDefined()
+    const response: supertest.Response = await connectSignup(
+      {
+        email: 'someEmail@email.com',
+        name: 'somename',
+        connectUserID: 'someConnectID'
+      },
+      {
+        ...ValidHeaderWithApplicationKey,
+        authorization: `Bearer ${loginRes.body.token}`
+      }
+    )
     expect(response.status).toBe(HttpStatus.NO_CONTENT)
   })
 })

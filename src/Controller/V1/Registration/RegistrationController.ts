@@ -44,6 +44,23 @@ export class RegistrationController extends BaseController implements IRegistrat
     return DIContainer.sharedContainer.userRegistrationService.signup(credentials)
   }
 
+  async connectSignup (req: Request): Promise<void> {
+    const { email, name, connectUserID } = req.body
+
+    if (!isString(email) || !isString(connectUserID) || !isString(name)) {
+      throw new ValidationError('email, name, connectUserID should be strings.', req.body)
+    }
+    const credentials = {
+      connectUserID,
+      name,
+      email: email.toLowerCase(),
+      isVerified: false,
+      createdAt: new Date().getTime()
+    }
+
+    return DIContainer.sharedContainer.userRegistrationService.connectSignup(credentials)
+  }
+
   async verify (req: Request): Promise<void> {
     const token = req.body.token
 

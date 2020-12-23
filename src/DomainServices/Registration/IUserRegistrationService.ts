@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
-import { SignupCredentials } from '../../Models/UserModels'
+import { ConnectSignupCredentials, SignupCredentials } from '../../Models/UserModels'
 
 export interface IUserRegistrationService {
   signup (credentials: SignupCredentials): Promise<void>
+
+  connectSignup (credentials: ConnectSignupCredentials): Promise<void>
 
   verify (token: string): Promise<void>
 

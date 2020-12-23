@@ -62,4 +62,16 @@ describe('RegistrationController', () => {
       return expect(registrationController.requestVerificationEmail(req)).rejects.toThrowError(ValidationError)
     })
   })
+
+  describe('ConnectSignup', () => {
+    test('should fail if email is not string', () => {
+      const req: any = {
+        body: {
+          email: 123
+        }
+      }
+      const registrationController = new RegistrationController()
+      return expect(registrationController.connectSignup(req)).rejects.toThrowError(ValidationError)
+    })
+  })
 })

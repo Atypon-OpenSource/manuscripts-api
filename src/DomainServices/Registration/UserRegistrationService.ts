@@ -17,7 +17,7 @@
 import * as jsonwebtoken from 'jsonwebtoken'
 import checksum from 'checksum'
 
-import { User, SignupCredentials } from '../../Models/UserModels'
+import { User, SignupCredentials, ConnectSignupCredentials } from '../../Models/UserModels'
 import { SingleUseTokenType } from '../../Models/SingleUseTokenModels'
 import {
   ConflictingRecordError,
@@ -58,6 +58,42 @@ export class UserRegistrationService implements IUserRegistrationService {
     private userStatusRepository: IUserStatusRepository,
     private syncService: ISyncService
   ) {}
+
+  public async connectSignup (credentials: ConnectSignupCredentials): Promise<void> {
+    const { email, name, connectUserID } = credentials
+
+    const user = await this.userRepository.getOne({
+      email
+    })
+
+    if (user) {
+      throw new ConflictingRecordError('User email already exists', user.email)
+    }
+
+    try {
+      const userEmailID = this.userEmailID(email)
+      await this.userEmailRepository.create({ _id: userEmailID }, {})
+    } catch (error) {
+      throw new DuplicateEmailError(`Email ${email} is not available`)
+    }
+
+    const newUser = await this.userRepository.create({ email, name, connectUserID }, {})
+
+    await Promise.all(
+      GATEWAY_BUCKETS.map(key =>
+        this.syncService.createGatewayAccount(newUser._id, key)
+      )
+    )
+    await this.syncService.createGatewayContributor(newUser, BucketKey.Data)
+
+    // tslint:disable-next-line: no-floating-promises
+    this.activityTrackingService.createEvent(
+      newUser._id,
+      UserActivityEventType.Registration,
+      null,
+      null
+    ) // intentional fire and forget.
+  }
 
   public async signup (credentials: SignupCredentials): Promise<void> {
     const { token, email, name, password } = credentials

@@ -53,6 +53,9 @@ import { SingleUseTokenType } from '../../../../../../src/Models/SingleUseTokenM
 import { userSignupList } from '../../../../../data/fixtures/signupCredentials'
 import { UserActivityEventType } from '../../../../../../src/Models/UserEventModels'
 import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
+import { ConnectSignupCredentials } from '../../../../../../src/Models/UserModels'
+import Chance from 'chance'
+import { validBody } from '../../../../../data/fixtures/credentialsRequestPayload'
 
 jest.setTimeout(TEST_TIMEOUT)
 
@@ -435,5 +438,51 @@ describe('Registration - requestVerificationEmail', () => {
 
     expect(Object.keys(params[1])).toEqual(['expiry'])
     expect(params[1].expiry).toEqual(userRegistrationService.activityTrackingService.eventLifetime)
+  })
+})
+
+describe('Registration - connectSignup', () => {
+
+  test('should fail if user already exist', () => {
+    const userRegistrationService: any = DIContainer.sharedContainer.userRegistrationService
+    userRegistrationService.userRepository = {
+      getOne: async () => Promise.resolve({ connectUserID: 'valid-connectId', ...userList[0] })
+    }
+    const chance = new Chance()
+    const cred: ConnectSignupCredentials = {
+      email: chance.email(),
+      name: chance.string(),
+      connectUserID: chance.string()
+    }
+    return expect(
+        userRegistrationService.connectSignup(cred)
+    ).rejects.toThrowError(ConflictingRecordError)
+  })
+
+  test('should create user', async () => {
+    const userRegistrationService: any = DIContainer.sharedContainer.userRegistrationService
+    userRegistrationService.userRepository = {
+      getOne: async () => null,
+      create: async () => validBody
+    }
+    userRegistrationService.userEmailRepository = {
+      create: async () => validBody
+    }
+
+    userRegistrationService.syncService = {
+      createGatewayAccount: async () => {},
+      createGatewayContributor: async () => {}
+    }
+
+    userRegistrationService.activityTrackingService = {
+      createEvent: async () => {}
+    }
+    const chance = new Chance()
+    const cred: ConnectSignupCredentials = {
+      email: chance.email(),
+      name: chance.string(),
+      connectUserID: chance.string()
+    }
+    return userRegistrationService.connectSignup(cred)
   })
 })

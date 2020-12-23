@@ -256,6 +256,25 @@ export interface SignupCredentials {
    * A token signed by a trusted source
    */
   token?: string
+  /**
+   * A token signed by a trusted source
+   */
+  connectUserID?: string
+}
+
+export interface ConnectSignupCredentials {
+  /**
+   * User's full name.
+   */
+  name: string
+  /**
+   * User's unique email address.
+   */
+  email: string
+  /**
+   * A token signed by a trusted source
+   */
+  connectUserID: string
 }
 
 /**

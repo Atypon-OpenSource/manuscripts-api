@@ -156,4 +156,16 @@ describe('RegistrationController', () => {
       return expect(registrationController.requestVerificationEmail(req)).rejects.toThrowError(ValidationError)
     })
   })
+
+  describe('connectSignup', () => {
+    test('should fail to create user if email/name/connectId is not string', async () => {
+      const req: any = {
+        body: {
+          email: 123
+        }
+      }
+      const registrationController: RegistrationController = new RegistrationController()
+      await expect(registrationController.connectSignup(req)).rejects.toThrowError(ValidationError)
+    })
+  })
 })

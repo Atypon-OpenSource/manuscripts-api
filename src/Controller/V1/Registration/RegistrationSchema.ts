@@ -32,6 +32,17 @@ export const signupSchema: Joi.SchemaMap = {
   headers: jsonHeadersSchema.headers
 }
 
+export const connectSignupSchema: Joi.SchemaMap = {
+  body: Joi.object({
+    email: emailSchema.required(),
+    name: Joi.string()
+      .max(100)
+      .required(),
+    connectUserID: Joi.string().required()
+  }),
+  headers: jsonHeadersSchema.headers
+}
+
 export const verificationSchema: Joi.SchemaMap = {
   body: Joi.object({
     token: Joi.string()

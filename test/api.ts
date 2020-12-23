@@ -38,6 +38,14 @@ export async function serverToServerAuth (body: any, headers: object): Promise<s
     .send(body)
 }
 
+export async function connectSignup (body: any, headers: object): Promise<supertest.Response> {
+  const server = await createServer()
+  return supertest(server.app)
+    .post('/api/v1/registration/connect/signup')
+    .set(headers)
+    .send(body)
+}
+
 export async function googleLogin (headers: any, query: any): Promise<supertest.Response> {
   const server = await createServer()
 
