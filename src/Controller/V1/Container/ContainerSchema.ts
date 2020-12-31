@@ -54,6 +54,9 @@ export const addUserSchema: Joi.SchemaMap = {
 }
 
 export const getArchiveSchema: Joi.SchemaMap = {
+  headers: Joi.object({
+    accept: appJsonAndCharset
+  }).options({ allowUnknown: true }),
   params: Joi.object({
     containerID: Joi.string().required(),
     manuscriptID: Joi.string()

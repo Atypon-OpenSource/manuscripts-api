@@ -106,6 +106,7 @@ export class ContainersController extends ContainedBaseController
   async getArchive (req: Request) {
     const { containerID, manuscriptID } = req.params
     const { allowOrphanedDocs, onlyIDs } = req.query
+    const { accept: acceptHeader } = req.headers
 
     if (!isString(containerID)) {
       throw new ValidationError('containerID should be string', containerID)
@@ -113,8 +114,7 @@ export class ContainersController extends ContainedBaseController
 
     let token = authorizationBearerToken(req)
 
-    const getAttachments = true
-
+    const getAttachments = acceptHeader !== 'application/json'
     const containerType = getContainerType(containerID)
 
     const userID = req.user._id

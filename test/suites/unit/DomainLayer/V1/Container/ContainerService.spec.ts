@@ -1237,7 +1237,7 @@ describe('containerService - getArchive', () => {
       getProjectAttachments: async () => Promise.resolve([])
     }
 
-    const archive = await containerService.getArchive(validUserProfile.userID, validProject7._id, null, false, {})
+    const archive = await containerService.getArchive(validUserProfile.userID, validProject7._id, null, false, { getAttachments: true })
     const zip = await JSZip.loadAsync(archive)
     expect(Object.keys(zip.files).length).toBe(2)
     const content = await zip.files['index.manuscript-json'].async('text')
@@ -1261,7 +1261,7 @@ describe('containerService - getArchive', () => {
       getProjectAttachments: async () => Promise.resolve([])
     }
 
-    const archive = await containerService.getArchive(validUserProfile.userID, validProject7._id, null, false, { onlyIDs: true })
+    const archive = await containerService.getArchive(validUserProfile.userID, validProject7._id, null, false, { onlyIDs: true, getAttachments: true })
 
     const zip = await JSZip.loadAsync(archive)
     expect(Object.keys(zip.files).length).toBe(2)
@@ -1299,7 +1299,7 @@ describe('containerService - getArchive', () => {
     }
 
     const chance = new Chance()
-    const archive = await containerService.getArchive(validUserProfile.userID, validProject4._id, null, chance.string(), {})
+    const archive = await containerService.getArchive(validUserProfile.userID, validProject4._id, null, chance.string(), { getAttachments: true })
     const zip = await JSZip.loadAsync(archive)
     expect(Object.keys(zip.files).length).toBe(2)
     const content = await zip.files['index.manuscript-json'].async('text')

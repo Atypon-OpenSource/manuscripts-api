@@ -378,6 +378,7 @@ export class ContainerService implements IContainerService {
     }
 
     const index = { version: '2.0', data: projectResourcesData }
+    if (!options.getAttachments) return index
 
     const attachments = await this.containerRepository.getProjectAttachments(containerID, manuscriptID)
 
