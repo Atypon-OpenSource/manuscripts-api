@@ -92,6 +92,9 @@ export const getProductionNotesSchema: Joi.SchemaMap = {
   params: Joi.object({
     containerID: Joi.string().required(),
     manuscriptID: Joi.string().required()
+  }),
+  body: Joi.object({
+    connectUserID: Joi.string().required()
   })
 }
 
@@ -102,6 +105,8 @@ export const addProductionNoteSchema: Joi.SchemaMap = {
   }),
   body: Joi.object({
     content: Joi.string().required(),
+    connectUserID: Joi.string().required(),
+    source: Joi.string().required().valid('EDITOR', 'EMAIL', 'DASHBOARD'),
     target: Joi.string()
   })
 }

@@ -18,7 +18,6 @@ import { drop, testDatabase, seed, dropBucket } from '../../../../utilities/db'
 import { TEST_TIMEOUT } from '../../../../utilities/testSetup'
 import { BucketKey } from '../../../../../src/Config/ConfigurationTypes'
 import { ManuscriptNoteRepository } from '../../../../../src/DataAccess/ManuscriptNoteRepository/ManuscriptNoteRepository'
-import { validNote1 } from '../../../../data/fixtures/ManuscriptNote'
 
 jest.setTimeout(TEST_TIMEOUT)
 
@@ -35,7 +34,7 @@ describe('ManuscriptNoteRepository getProductionNotes', () => {
 
   test('should fetch list of notes', async () => {
     const repository = new ManuscriptNoteRepository(BucketKey.Data, db)
-    const data = await repository.getProductionNotes(validNote1.containerID, validNote1.manuscriptID)
+    const data = await repository.getProductionNotes('MPProject:valid-project-id-11', 'MPManuscript:valid-manuscript-id-1')
     expect(data).toBeTruthy()
     expect(data.length).toBeGreaterThan(0)
   })

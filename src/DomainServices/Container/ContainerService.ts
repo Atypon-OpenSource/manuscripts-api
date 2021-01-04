@@ -49,6 +49,7 @@ import { ScopedAccessTokenConfiguration } from '../../Config/ConfigurationTypes'
 import { ManuscriptNoteRepository } from '../../DataAccess/ManuscriptNoteRepository/ManuscriptNoteRepository'
 import { ManuscriptNote } from '@manuscripts/manuscripts-json-schema'
 import { UserService } from '../User/UserService'
+import { DIContainer } from '../../DIContainer/DIContainer'
 
 const JSZip = require('jszip')
 
@@ -650,18 +651,23 @@ export class ContainerService implements IContainerService {
     containerID: string,
     manuscriptID: string,
     contents: string,
-    userID: string,
+    connectUserID: string,
+    source: string,
     target?: string
   ): Promise<ManuscriptNote> {
 
+    const user = await DIContainer.sharedContainer.userRepository.getOne({ connectUserID })
+    if (!user) {
+      throw new RecordNotFoundError('user not found')
+    }
     // will fail of the user is not a collaborator on the project
-    const canAccess = await this.checkIfOwnerOrWriter(userID, containerID)
+    const canAccess = await this.checkIfOwnerOrWriter(user._id, containerID)
     if (!canAccess) {
       throw new ValidationError('User must be a contributor in the container', containerID)
     }
 
     const stamp = timestamp()
-    const userProfileID = UserService.profileID(userID)
+    const userProfileID = UserService.profileID(user._id)
     if (target) {
       const note = await this.manuscriptNoteRepository.getById(target)
       if (!note) {
@@ -679,6 +685,7 @@ export class ContainerService implements IContainerService {
         manuscriptID: manuscriptID,
         contents: contents,
         target: target ? target : manuscriptID,
+        source: source,
         contributions: [
           {
             _id: `MPContribution:${uuid_v4()}`,
@@ -695,10 +702,16 @@ export class ContainerService implements IContainerService {
   public async getProductionNotes (
     containerID: string,
     manuscriptID: string,
-    userID: string
+    connectUserID: string
   ): Promise<ManuscriptNote[]> {
+
+    const user = await DIContainer.sharedContainer.userRepository.getOne({ connectUserID })
+
+    if (!user) {
+      throw new RecordNotFoundError('user not found')
+    }
     // will fail of the user is not a collaborator on the project
-    const canAccess = await this.checkUserContainerAccess(userID, containerID)
+    const canAccess = await this.checkUserContainerAccess(user._id, containerID)
     if (!canAccess) {
       throw new ValidationError('User must be a contributor in the container', containerID)
     }

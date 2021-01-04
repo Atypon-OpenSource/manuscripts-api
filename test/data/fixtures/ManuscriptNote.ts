@@ -24,6 +24,7 @@ export const validNote1: ManuscriptNoteLike = {
   objectType: 'MPManuscriptNote',
   sessionID: 'CAB15C5D-D178-4792-88F0-892BB1E29A79',
   target: 'MPManuscript:valid-manuscript-id-1',
+  source: 'DASHBOARD',
   contributions: []
 }
 
@@ -35,5 +36,6 @@ export const validNote2: ManuscriptNoteLike = {
   objectType: 'MPManuscriptNote',
   sessionID: 'CAB15C5D-D178-4792-88F0-892BB1E29A79',
   target: 'MPManuscriptNote:valid-note-id-1',
+  source: 'DASHBOARD',
   contributions: []
 }

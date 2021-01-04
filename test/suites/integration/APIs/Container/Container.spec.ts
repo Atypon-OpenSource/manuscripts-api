@@ -31,7 +31,7 @@ import {
 } from '../../../../api'
 import { TEST_TIMEOUT } from '../../../../utilities/testSetup'
 import { drop, dropBucket, seed, testDatabase } from '../../../../utilities/db'
-import { validBody } from '../../../../data/fixtures/credentialsRequestPayload'
+import { validBody, validBody2 } from '../../../../data/fixtures/credentialsRequestPayload'
 import { DIContainer } from '../../../../../src/DIContainer/DIContainer'
 import {
   ValidContentTypeAcceptJsonHeader,
@@ -58,7 +58,7 @@ import {
 } from '../../../../data/fixtures/UserRepository'
 import { GATEWAY_BUCKETS } from '../../../../../src/DomainServices/Sync/SyncService'
 import { SeedOptions } from '../../../../../src/DataAccess/Interfaces/SeedOptions'
-import { validManuscript } from '../../../../data/fixtures/manuscripts'
+import { validManuscript, validManuscript1 } from '../../../../data/fixtures/manuscripts'
 import { validNote1 } from '../../../../data/fixtures/ManuscriptNote'
 
 jest.mock('email-templates', () =>
@@ -901,9 +901,9 @@ describe('ContainerService - addProductionNote', () => {
     await seed({ users: true, applications: true, projects: true, manuscript: true, manuscriptNotes: true })
     await DIContainer.sharedContainer.syncService.createGatewayContributor(
       {
-        _id: `User|${validBody.email}`,
+        _id: `User|${validBody2.email}`,
         name: 'foobar',
-        email: validBody.email
+        email: validBody2.email
       },
       BucketKey.Data
     )
@@ -911,7 +911,7 @@ describe('ContainerService - addProductionNote', () => {
 
   test('addProductionNote', async () => {
     const loginResponse: supertest.Response = await basicLogin(
-      validBody,
+      validBody2,
       ValidHeaderWithApplicationKey
     )
     expect(loginResponse.status).toBe(HttpStatus.OK)
@@ -923,10 +923,12 @@ describe('ContainerService - addProductionNote', () => {
         ...authHeader
       },
       {
-        containerID: `MPProject:valid-project-id-2`,
-        manuscriptID: validManuscript._id
+        containerID: `MPProject:valid-project-id-11`,
+        manuscriptID: validManuscript1._id
       },{
-        content: 'Test content'
+        content: 'Test content',
+        connectUserID: 'valid-connect-user-6-id',
+        source: 'DASHBOARD'
       }
     )
     expect(addProductionNoteResponse.status).toBe(HttpStatus.OK)
@@ -936,7 +938,7 @@ describe('ContainerService - addProductionNote', () => {
 
   test('should fail to addProductionNote if target is invalid', async () => {
     const loginResponse: supertest.Response = await basicLogin(
-      validBody,
+      validBody2,
       ValidHeaderWithApplicationKey
     )
     expect(loginResponse.status).toBe(HttpStatus.OK)
@@ -948,11 +950,13 @@ describe('ContainerService - addProductionNote', () => {
         ...authHeader
       },
       {
-        containerID: `MPProject:valid-project-id-2`,
-        manuscriptID: validManuscript._id
+        containerID: `MPProject:valid-project-id-11`,
+        manuscriptID: validManuscript1._id
       },{
         content: 'Test content (reply)',
-        target: 'invalidTarget'
+        target: 'invalidTarget',
+        connectUserID: 'valid-connect-user-6-id',
+        source: 'DASHBOARD'
       }
     )
     expect(addProductionNoteResponse.status).toBe(HttpStatus.NOT_FOUND)
@@ -960,7 +964,7 @@ describe('ContainerService - addProductionNote', () => {
 
   test('should fail if user is not contributor', async () => {
     const loginResponse: supertest.Response = await basicLogin(
-      validBody,
+      validBody2,
       ValidHeaderWithApplicationKey
     )
     expect(loginResponse.status).toBe(HttpStatus.OK)
@@ -973,9 +977,11 @@ describe('ContainerService - addProductionNote', () => {
       },
       {
         containerID: `MPProject:valid-project-id-9`,
-        manuscriptID: validManuscript._id
+        manuscriptID: validManuscript1._id
       },{
-        content: 'Test content (reply)'
+        content: 'Test content (reply)',
+        connectUserID: 'valid-connect-user-6-id',
+        source: 'DASHBOARD'
       }
     )
     expect(addProductionNoteResponse.status).toBe(HttpStatus.BAD_REQUEST)
@@ -983,7 +989,7 @@ describe('ContainerService - addProductionNote', () => {
 
   test('addProductionNote with target', async () => {
     const loginResponse: supertest.Response = await basicLogin(
-      validBody,
+      validBody2,
       ValidHeaderWithApplicationKey
     )
     expect(loginResponse.status).toBe(HttpStatus.OK)
@@ -995,11 +1001,13 @@ describe('ContainerService - addProductionNote', () => {
         ...authHeader
       },
       {
-        containerID: `MPProject:valid-project-id-2`,
-        manuscriptID: validManuscript._id
+        containerID: `MPProject:valid-project-id-11`,
+        manuscriptID: validManuscript1._id
       },{
         content: 'Test content (reply)',
-        target: validNote1._id
+        target: validNote1._id,
+        connectUserID: 'valid-connect-user-6-id',
+        source: 'DASHBOARD'
       }
     )
 
@@ -1016,9 +1024,9 @@ describe('ContainerService - getProductionNotes', () => {
     await seed({ users: true, applications: true, projects: true, manuscript: true, manuscriptNotes: true })
     await DIContainer.sharedContainer.syncService.createGatewayContributor(
       {
-        _id: `User|${validBody.email}`,
+        _id: `User|${validBody2.email}`,
         name: 'foobar',
-        email: validBody.email
+        email: validBody2.email
       },
       BucketKey.Data
     )
@@ -1038,8 +1046,10 @@ describe('ContainerService - getProductionNotes', () => {
         ...authHeader
       },
       {
-        containerID: `MPProject:valid-project-id-9`,
+        containerID: `MPProject:valid-project-id-11`,
         manuscriptID: validManuscript._id
+      }, {
+        connectUserID: 'valid-connect-user-7-id'
       }
     )
     expect(getProductionNoteResponse.status).toBe(HttpStatus.BAD_REQUEST)
@@ -1047,7 +1057,7 @@ describe('ContainerService - getProductionNotes', () => {
 
   test('should get a list of notes', async () => {
     const loginResponse: supertest.Response = await basicLogin(
-      validBody,
+      validBody2,
       ValidHeaderWithApplicationKey
     )
     expect(loginResponse.status).toBe(HttpStatus.OK)
@@ -1059,8 +1069,10 @@ describe('ContainerService - getProductionNotes', () => {
         ...authHeader
       },
       {
-        containerID: `MPProject:valid-project-id-2`,
+        containerID: `MPProject:valid-project-id-11`,
         manuscriptID: validManuscript._id
+      }, {
+        connectUserID: 'valid-connect-user-6-id'
       }
     )
     expect(getProductionNoteResponse.status).toBe(HttpStatus.OK)

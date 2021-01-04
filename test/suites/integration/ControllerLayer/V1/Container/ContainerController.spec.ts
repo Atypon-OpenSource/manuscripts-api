@@ -511,6 +511,9 @@ describe('ContainerController - getProductionNotes', () => {
       },
       user: {
         _id: `User_${validBody.email}`
+      },
+      body: {
+        connectUserID: 'valid-connect-user-6-id'
       }
     }
     await expect(new ContainersController().getProductionNotes(req)).rejects.toThrow(ValidationError)
@@ -526,6 +529,9 @@ describe('ContainerController - getProductionNotes', () => {
       },
       user: {
         _id: `User_${validBody.email}`
+      },
+      body: {
+        connectUserID: 'valid-connect-user-6-id'
       }
     }
     await expect(new ContainersController().getProductionNotes(req)).rejects.toThrow(ValidationError)
@@ -541,6 +547,9 @@ describe('ContainerController - getProductionNotes', () => {
       },
       user: {
         _id: `User_${validBody.email}`
+      },
+      body: {
+        connectUserID: 'valid-connect-user-6-id'
       }
     }
     await new ContainersController().getProductionNotes(req)
@@ -574,7 +583,9 @@ describe('ContainerController - addProductionNotes', () => {
         _id: `User_${validBody.email}`
       },
       body: {
-        content: 'test content'
+        content: 'test content',
+        connectUserID: 'valid-connect-user-6-id',
+        source: 'DASHBOARD'
       }
     }
     await expect(new ContainersController().addProductionNote(req)).rejects.toThrow(ValidationError)
@@ -592,7 +603,9 @@ describe('ContainerController - addProductionNotes', () => {
         _id: `User_${validBody.email}`
       },
       body: {
-        content: 'test content'
+        content: 'test content',
+        connectUserID: 'valid-connect-user-6-id',
+        source: 'DASHBOARD'
       }
     }
     await expect(new ContainersController().addProductionNote(req)).rejects.toThrow(ValidationError)
@@ -610,7 +623,29 @@ describe('ContainerController - addProductionNotes', () => {
         _id: `User_${validBody.email}`
       },
       body: {
-        content: chance.integer()
+        content: chance.integer(),
+        connectUserID: 'valid-connect-user-6-id',
+        source: 'DASHBOARD'
+      }
+    }
+    await expect(new ContainersController().addProductionNote(req)).rejects.toThrow(ValidationError)
+  })
+
+  test('should fail if the source is not not valid', async () => {
+    const containerService = DIContainer.sharedContainer.containerService[ContainerType.project]
+    containerService.createManuscriptNote = jest.fn()
+    const req: any = {
+      params: {
+        containerID: validNote1.containerID,
+        manuscriptID: validNote1.manuscriptID
+      },
+      user: {
+        _id: `User_${validBody.email}`
+      },
+      body: {
+        content: chance.integer(),
+        connectUserID: 'valid-connect-user-6-id',
+        source: 'invalid'
       }
     }
     await expect(new ContainersController().addProductionNote(req)).rejects.toThrow(ValidationError)
@@ -629,7 +664,9 @@ describe('ContainerController - addProductionNotes', () => {
         _id: 'User_test'
       },
       body: {
-        content: 'test content'
+        content: 'test content',
+        connectUserID: 'valid-connect-user-6-id',
+        source: 'DASHBOARD'
       }
     }
     await new ContainersController().addProductionNote(req)

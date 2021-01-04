@@ -21,6 +21,7 @@ import { RegistrationController } from '../../../../../../src/Controller/V1/Regi
 import { ValidationError } from '../../../../../../src/Errors'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
 import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
+import { validBody2 } from '../../../../../data/fixtures/credentialsRequestPayload'
 
 jest.setTimeout(TEST_TIMEOUT)
 
@@ -166,6 +167,22 @@ describe('RegistrationController', () => {
       }
       const registrationController: RegistrationController = new RegistrationController()
       await expect(registrationController.connectSignup(req)).rejects.toThrowError(ValidationError)
+    })
+
+    test('should fail to create user if email/name/connectId is not string', async () => {
+      const regService: any = DIContainer.sharedContainer.userRegistrationService
+      regService.connectSignup = jest.fn()
+      const chance = new Chance()
+      const req: any = {
+        body: {
+          email: validBody2.email,
+          name: chance.string(),
+          connectUserID: chance.string()
+        }
+      }
+      const registrationController: RegistrationController = new RegistrationController()
+      await registrationController.connectSignup(req)
+      expect(regService.connectSignup).toBeCalled()
     })
   })
 })

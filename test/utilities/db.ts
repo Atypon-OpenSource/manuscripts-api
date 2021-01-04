@@ -34,7 +34,7 @@ import { userProfileList } from '../data/dump/userProfile'
 import { userTokensList } from '../data/dump/userToken'
 import { containerRequestList } from '../data/dump/containerRequest'
 import { submissionsList } from '../data/dump/submissions'
-import { validManuscript } from '../data/fixtures/manuscripts'
+import { validManuscript, validManuscript1 } from '../data/fixtures/manuscripts'
 import { manuscriptList } from '../data/dump/manuscriptList'
 import { manuscriptNoteList } from '../data/dump/manuscriptNotes'
 
@@ -285,6 +285,7 @@ export async function dropBucket (bucketKey: BucketKey): Promise<void> {
     return acc
   }, {})
   payload[validManuscript._id] = ['*']
+  payload[validManuscript1._id] = ['*']
   await purge(bucketKey, payload)
 
   payload = manuscriptNoteList.reduce((acc: any, doc: any) => {

@@ -226,6 +226,7 @@ export class ContainersController extends ContainedBaseController
 
   async getProductionNotes (req: Request) {
     const { containerID, manuscriptID } = req.params
+    const { connectUserID } = req.body
 
     if (!isString(containerID)) {
       throw new ValidationError('containerID should be string', containerID)
@@ -235,19 +236,22 @@ export class ContainersController extends ContainedBaseController
       throw new ValidationError('manuscriptID should be string', manuscriptID)
     }
     const containerType = getContainerType(containerID)
-    return DIContainer.sharedContainer.containerService[containerType].getProductionNotes(containerID, manuscriptID, req.user._id)
+    return DIContainer.sharedContainer.containerService[containerType].getProductionNotes(containerID, manuscriptID, connectUserID)
   }
 
   async addProductionNote (req: Request) {
     const { containerID, manuscriptID } = req.params
-    const { content, target } = req.body
-
+    const { content, target, connectUserID, source } = req.body
     if (!isString(containerID)) {
       throw new ValidationError('containerID should be string', containerID)
     }
 
     if (!isString(manuscriptID)) {
       throw new ValidationError('manuscriptID should be string', manuscriptID)
+    }
+
+    if (!isString(connectUserID)) {
+      throw new ValidationError('userConnectID should be string', connectUserID)
     }
 
     if (!isString(content)) {
@@ -255,7 +259,6 @@ export class ContainersController extends ContainedBaseController
     }
 
     const containerType = getContainerType(containerID)
-    const userID = ContainerService.userIdForSync(req.user._id)
-    return DIContainer.sharedContainer.containerService[containerType].createManuscriptNote(containerID, manuscriptID, content, userID, target)
+    return DIContainer.sharedContainer.containerService[containerType].createManuscriptNote(containerID, manuscriptID, content, connectUserID, source, target)
   }
 }

@@ -41,6 +41,13 @@ userList.push({
 })
 
 userList.push({
+  _id: 'valid-user-7@manuscriptsapp.com',
+  name: 'Valid System User',
+  email: 'valid-user-7@manuscriptsapp.com',
+  connectUserID: 'valid-connect-user-7-id'
+})
+
+userList.push({
   _id: 'valid-user-3@manuscriptsapp.com',
   name: 'Valid System User',
   email: 'valid-user-3@manuscriptsapp.com'

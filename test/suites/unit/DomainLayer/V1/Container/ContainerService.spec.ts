@@ -57,6 +57,7 @@ import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
 import { validUser } from '../../../../../data/fixtures/userServiceUser'
 import { validManuscript } from '../../../../../data/fixtures/manuscripts'
 import { validNote1, validNote2 } from '../../../../../data/fixtures/ManuscriptNote'
+import { validBody2 } from '../../../../../data/fixtures/credentialsRequestPayload'
 const JSZip = require('jszip')
 
 jest.setTimeout(TEST_TIMEOUT)
@@ -1492,6 +1493,10 @@ describe('ContainerService - addProductionNote', () => {
     const containerService: any =
       DIContainer.sharedContainer.containerService[ContainerType.project]
     containerService.getContainer = jest.fn(() => Promise.resolve(validProject))
+    const userRebo: any = DIContainer.sharedContainer.userRepository
+    userRebo.getOne = jest.fn(() => {
+      return { _id: 'User_test', ...validBody2 }
+    })
     const repo: any = DIContainer.sharedContainer.manuscriptNotesRepository
     repo.create = jest.fn(() => validNote1)
     repo.getById = jest.fn(() => {})
@@ -1500,13 +1505,18 @@ describe('ContainerService - addProductionNote', () => {
     const content = validNote1.contents
     const userID = 'User_test'
     const target = 'invalidTarget'
-    await expect(containerService.createManuscriptNote(containerID, manuscriptID, content, userID, target)).rejects.toThrow(RecordNotFoundError)
+    const source = 'DASHBOARD'
+    await expect(containerService.createManuscriptNote(containerID, manuscriptID, content, userID, source, target)).rejects.toThrow(RecordNotFoundError)
   })
 
   test('should fail if user not contributor', async () => {
     const containerService: any =
       DIContainer.sharedContainer.containerService[ContainerType.project]
     containerService.getContainer = jest.fn(() => Promise.resolve(validProject))
+    const userRebo: any = DIContainer.sharedContainer.userRepository
+    userRebo.getOne = jest.fn(() => {
+      return { _id: 'User_test2', ...validBody2 }
+    })
     const repo: any = DIContainer.sharedContainer.manuscriptNotesRepository
     repo.create = jest.fn(() => validNote1)
     repo.getById = jest.fn(() => {})
@@ -1514,13 +1524,18 @@ describe('ContainerService - addProductionNote', () => {
     const manuscriptID = validNote1.manuscriptID
     const content = validNote1.contents
     const userID = validUser1._id
-    await expect(containerService.createManuscriptNote(containerID, manuscriptID, content, userID)).rejects.toThrow(ValidationError)
+    const source = 'DASHBOARD'
+    await expect(containerService.createManuscriptNote(containerID, manuscriptID, content, userID, source)).rejects.toThrow(ValidationError)
   })
 
   test('should add note', async () => {
     const containerService: any =
       DIContainer.sharedContainer.containerService[ContainerType.project]
     containerService.checkIfOwnerOrWriter = jest.fn(() => true)
+    const userRebo: any = DIContainer.sharedContainer.userRepository
+    userRebo.getOne = jest.fn(() => {
+      return { _id: 'User_test', ...validBody2 }
+    })
     const repo: any = DIContainer.sharedContainer.manuscriptNotesRepository
     repo.create = jest.fn(() => validNote2)
     repo.getById = jest.fn(() => validNote1)
@@ -1529,7 +1544,8 @@ describe('ContainerService - addProductionNote', () => {
     const content = validNote2.contents
     const userID = validUser1._id
     const target = validNote1._id
-    const note = await containerService.createManuscriptNote(containerID, manuscriptID, content, userID, target)
+    const source = 'DASHBOARD'
+    const note = await containerService.createManuscriptNote(containerID, manuscriptID, content, userID, source, target)
     expect(note).toBeTruthy()
     expect(note._id).toBe('MPManuscriptNote:valid-note-id-2')
   })
@@ -1539,6 +1555,10 @@ describe('ContainerService - getProductionNotes', () => {
   test('should fail of user not contributor', async () => {
     const containerService: any =
       DIContainer.sharedContainer.containerService[ContainerType.project]
+    const userRebo: any = DIContainer.sharedContainer.userRepository
+    userRebo.getOne = jest.fn(() => {
+      return { _id: 'User_test2', ...validBody2 }
+    })
     containerService.getContainer = jest.fn(() => Promise.resolve(validProject))
     const repo: any = DIContainer.sharedContainer.manuscriptNotesRepository
     repo.getProductionNotes = jest.fn(() => [validNote1])
@@ -1551,6 +1571,10 @@ describe('ContainerService - getProductionNotes', () => {
     const containerService: any =
       DIContainer.sharedContainer.containerService[ContainerType.project]
     containerService.checkUserContainerAccess = jest.fn(() => true)
+    const userRebo: any = DIContainer.sharedContainer.userRepository
+    userRebo.getOne = jest.fn(() => {
+      return { _id: 'User_test', ...validBody2 }
+    })
     const repo: any = DIContainer.sharedContainer.manuscriptNotesRepository
     repo.getProductionNotes = jest.fn(() => [validNote1])
     const containerID = validProject._id

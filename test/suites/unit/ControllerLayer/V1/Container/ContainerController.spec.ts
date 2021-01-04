@@ -750,6 +750,9 @@ describe('ContainersController - getProductionNotes', () => {
     const req: any = {
       params: {
         containerID: chance.integer()
+      },
+      body: {
+        connectUserID: 'valid-connect-user-6-id'
       }
     }
     const containersController: ContainersController = new ContainersController()
@@ -762,6 +765,9 @@ describe('ContainersController - getProductionNotes', () => {
       params: {
         containerID: chance.string(),
         manuscriptID: chance.integer()
+      },
+      body: {
+        connectUserID: 'valid-connect-user-6-id'
       }
     }
     const containersController: ContainersController = new ContainersController()
@@ -779,6 +785,9 @@ describe('ContainersController - getProductionNotes', () => {
       },
       user: {
         _id: chance.string()
+      },
+      body: {
+        connectUserID: 'valid-connect-user-6-id'
       }
     }
     const containersController: ContainersController = new ContainersController()
@@ -795,7 +804,9 @@ describe('ContainersController - addProductionNote', () => {
         containerID: chance.integer()
       },
       body: {
-        content: chance.integer()
+        content: chance.integer(),
+        connectUserID: 'valid-connect-user-6-id',
+        source: 'DASHBOARD'
       },
       user: {
         _id: chance.string()
@@ -813,7 +824,9 @@ describe('ContainersController - addProductionNote', () => {
         manuscriptID: chance.integer()
       },
       body: {
-        content: chance.integer()
+        content: chance.integer(),
+        connectUserID: 'valid-connect-user-6-id',
+        source: 'DASHBOARD'
       },
       user: {
         _id: chance.string()
@@ -831,7 +844,9 @@ describe('ContainersController - addProductionNote', () => {
         manuscriptID: chance.string()
       },
       body: {
-        content: chance.integer()
+        content: chance.integer(),
+        connectUserID: 'valid-connect-user-6-id',
+        source: 'DASHBOARD'
       },
       user: {
         _id: chance.string()
@@ -852,7 +867,9 @@ describe('ContainersController - addProductionNote', () => {
         manuscriptID: chance.string()
       },
       body: {
-        content: 'asdasdasdasd'
+        content: 'asdasdasdasd',
+        connectUserID: 'valid-connect-user-6-id',
+        source: 'DASHBOARD'
       },
       user: {
         _id: 'User_test'

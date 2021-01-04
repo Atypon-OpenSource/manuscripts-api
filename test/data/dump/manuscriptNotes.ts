@@ -20,12 +20,13 @@ export const manuscriptNoteList: ManuscriptNoteLike[] = []
 
 manuscriptNoteList.push({
   _id: 'MPManuscriptNote:valid-note-id-1',
-  containerID: 'MPProject:valid-project-id-2',
+  containerID: 'MPProject:valid-project-id-11',
   contents: 'test data',
   manuscriptID: 'MPManuscript:valid-manuscript-id-1',
   objectType: 'MPManuscriptNote',
   sessionID: 'CAB15C5D-D178-4792-88F0-892BB1E29A79',
   target: 'MPManuscript:valid-manuscript-id-1',
+  source: 'DASHBOARD',
   contributions: [
     {
       _id: 'MPContribution:52A07FF8-2E76-4AA3-8C4B-B65BC3211DBD',
