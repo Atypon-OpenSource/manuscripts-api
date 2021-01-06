@@ -225,7 +225,7 @@ export class AuthRoute extends BaseRoute {
             const params = removeEmptyValuesFromObj({ redirectUri: state.redirectUri, theme: state.theme })
             const serverUrl =
               state.redirectBaseUri && config.IAM.authServerPermittedURLs.includes(state.redirectBaseUri) ?
-                state.redirect_base_uri :
+                state.redirectBaseUri :
                 config.IAM.libraryURL
             try {
               const { token, syncSessions, user } = await this.authController.iamOAuthCallback(req, state)
