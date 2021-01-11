@@ -189,14 +189,10 @@ export class ContainerService implements IContainerService {
   }
 
   private async getValidUser (userId: string): Promise<User> {
-    try {
-      const databaseUserId = ContainerService.userIdForDatabase(userId)
-      const addedUser = await this.userRepository.getById(databaseUserId)
-      if (!addedUser) throw new InvalidCredentialsError(`User not found`)
-      return addedUser
-    } catch (err) {
-      throw err instanceof ValidationError ? new InvalidCredentialsError(`User not found`) : err
-    }
+    const databaseUserId = ContainerService.userIdForDatabase(userId)
+    const addedUser = await this.userRepository.getById(databaseUserId)
+    if (!addedUser) throw new ValidationError(`Invalid user id`, userId)
+    return addedUser
   }
 
   public async addContainerUser (
@@ -654,7 +650,7 @@ export class ContainerService implements IContainerService {
    */
   public static userIdForDatabase (id: string) {
     if (!id.startsWith('User|') && !id.startsWith('User_')) {
-      throw new ValidationError(`Invalid id ${id}`, id)
+      throw new ValidationError(`Invalid id prefix: ${id}`, id)
     }
 
     return id.replace('_', '|')

@@ -278,7 +278,7 @@ describe('containerService - addContainerUser', () => {
         'wrong-id',
         validUser2
       )
-    ).rejects.toThrowError(InvalidCredentialsError)
+    ).rejects.toThrowError(ValidationError)
   })
 
   test('should fail to add the user if the project does not exist in the db', () => {

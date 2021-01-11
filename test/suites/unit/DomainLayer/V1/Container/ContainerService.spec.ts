@@ -271,7 +271,7 @@ describe('containerService - addContainerUser', () => {
         'User|userId',
         {}
       )
-    ).rejects.toThrowError(InvalidCredentialsError)
+    ).rejects.toThrowError(ValidationError)
   })
 
   test('should fail if wrong role assigned', async () => {
@@ -394,7 +394,7 @@ describe('containerService - addContainerUser', () => {
 
   test('should fail with InvalidCredentailsError if the user is malformed', async () => {
     const containerService: any = DIContainer.sharedContainer.containerService[ContainerType.project]
-    return expect(containerService.getValidUser('User|foo')).rejects.toThrowError(InvalidCredentialsError)
+    return expect(containerService.getValidUser('User|foo')).rejects.toThrowError(ValidationError)
   })
 
   test('should fail with a TypeError if the value is null', async () => {
@@ -420,7 +420,7 @@ describe('containerService - addContainerUser', () => {
         ContainerRole.Viewer,
         'userId'
       )
-    ).rejects.toThrowError(InvalidCredentialsError)
+    ).rejects.toThrowError(ValidationError)
   })
 
   test('should return false if the user already exists in the project', async () => {
