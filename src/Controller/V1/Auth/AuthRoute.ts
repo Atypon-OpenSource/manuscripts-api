@@ -187,7 +187,9 @@ export class AuthRoute extends BaseRoute {
       AuthStrategy.applicationValidation(),
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
-          const { redirectUri, deviceId, theme, redirectBaseUri, action } = req.query
+          const { redirectUri, deviceId, theme, action } = req.query
+          const origin = req.get('origin')
+          const redirectBaseUri = origin ? origin : null
           // Redirect user to IAM OAuth start endpoint
           const {
             url,
@@ -233,7 +235,7 @@ export class AuthRoute extends BaseRoute {
               if (!user) {
                 res.redirect(`${serverUrl}/login#${stringify({ error: 'user-not-found' })}`)
               } else {
-                this.setSyncCookies(syncSessions, res)
+                this.setSyncCookies(syncSessions, res, serverUrl)
                 res.redirect(`${serverUrl}/login?${stringify(params)}#${stringify({
                   access_token: token,
                   recover: user.deleteAt ? true : false
@@ -314,8 +316,9 @@ export class AuthRoute extends BaseRoute {
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           const sessions = await this.authController.refreshSyncSessions(req)
-
-          this.setSyncCookies(sessions, res)
+          const origin = req.get('origin')
+          const cookieDomain = origin && config.IAM.authServerPermittedURLs.includes(origin) ? origin : undefined
+          this.setSyncCookies(sessions, res, cookieDomain)
           res.status(HttpStatus.NO_CONTENT).send()
         }, next)
       }
@@ -379,13 +382,14 @@ export class AuthRoute extends BaseRoute {
     }
   }
 
-  private setSyncCookies (syncSessions: BucketSessions, res: Response) {
+  private setSyncCookies (syncSessions: BucketSessions, res: Response, origin?: string) {
+    const originDomain = origin && !origin.startsWith('.') ? origin.substring(origin.indexOf('.')) : origin
     for (const [key, session] of Object.entries(syncSessions)) {
       res.cookie(
         SYNC_GATEWAY_COOKIE_NAME,
         session,
         this.cookieOptions(
-          config.gateway.cookieDomain,
+          originDomain ? originDomain : config.gateway.cookieDomain,
           true,
           this.cookieKey(key)
         )

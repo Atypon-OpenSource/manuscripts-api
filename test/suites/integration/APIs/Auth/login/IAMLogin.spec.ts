@@ -34,6 +34,7 @@ import { SeedOptions } from '../../../../../../src/DataAccess/Interfaces/SeedOpt
 import { config } from '../../../../../../src/Config/Config'
 import { BucketKey } from '../../../../../../src/Config/ConfigurationTypes'
 import { iamOAuthStart } from '../../../../../api'
+import { URL } from 'url'
 import {
   validIAMOAuthStartRequest
 } from '../../../../../data/fixtures/requests'
@@ -115,6 +116,25 @@ describe('IAM Login - GET api/v1/auth/iam', () => {
         'https://manuscripts-stag.connectscience.io/api/oauth/authorize'
       )
     )
+    expect(response.status).toBe(HttpStatus.MOVED_TEMPORARILY)
+  })
+
+  test('state should contain sent origin header value', async () => {
+    const response: supertest.Response = await iamOAuthStart(
+        { origin: 'https://lw-manuscripts-frontend.ciplit.com' }, { ...validIAMOAuthStartRequest.query, ...validIAMOAuthStartRequest.headers }
+    )
+    const urlStr = response.header.location
+    expect(urlStr).toEqual(
+        expect.stringContaining(
+            'https://manuscripts-stag.connectscience.io/api/oauth/authorize'
+        )
+    )
+
+    const url = new URL(urlStr)
+    const searchParams = url.searchParams
+    const stateValue = searchParams.get('state') as string
+    const state = DIContainer.sharedContainer.authService.decodeIAMState(stateValue)
+    expect(state.redirectBaseUri).toEqual('https://lw-manuscripts-frontend.ciplit.com')
     expect(response.status).toBe(HttpStatus.MOVED_TEMPORARILY)
   })
 })
