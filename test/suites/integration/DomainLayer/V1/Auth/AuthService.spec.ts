@@ -27,6 +27,9 @@ import {
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
 import { SeedOptions } from '../../../../../../src/DataAccess/Interfaces/SeedOptions'
 import { BucketKey } from '../../../../../../src/Config/ConfigurationTypes'
+import { parse } from 'qs'
+import { config } from '../../../../../../src/Config/Config'
+const url = require('url')
 
 jest.setTimeout(TEST_TIMEOUT)
 
@@ -206,5 +209,23 @@ describe('AuthService IAM', () => {
     const authService = DIContainer.sharedContainer.authService
     // base64(x=y:u=v:deviceId=derp) = ZGV2aWNlSWQ9ZGVycAo=
     return expect(authService.decodeIAMState('ZGV2aWNlSWQ9ZGVycAo=').deviceId).toEqual('derp\n')
+  })
+
+  test('should resolve redirect url based on origin', async () => {
+    const deviceId = '123456'
+    const redirectUri = '/login'
+    const theme = 'themeA'
+    const redirectBaseUri = 'http://lw-manuscripts-frontend-dev.ciplit.com:8080'
+    const OAuthStartUrl = (await DIContainer.sharedContainer.authService.iamOAuthStartData(
+      {
+        deviceId,
+        redirectUri,
+        theme,
+        redirectBaseUri
+      }
+    )).url
+    const parsedStartURL = url.parse(OAuthStartUrl)
+    const queryObj = parse(parsedStartURL.query)
+    expect(queryObj.redirect_uri).toEqual(`${config.IAM.apiServerURL[0]}${config.IAM.authCallbackPath}`)
   })
 })

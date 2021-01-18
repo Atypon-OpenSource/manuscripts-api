@@ -102,4 +102,22 @@ describe('IAMAuthService', () => {
     expect(retrievedRedirectUri).toBe(redirectUri)
     expect(retrievedTheme).toBe(theme)
   })
+
+  test('should resolve redirect url based on origin', async () => {
+    const deviceId = '123456'
+    const redirectUri = '/login'
+    const theme = 'themeA'
+    const redirectBaseUri = 'https://fe-test.atypon.com'
+    const OAuthStartUrl = (await DIContainer.sharedContainer.authService.iamOAuthStartData(
+      {
+        deviceId,
+        redirectUri,
+        theme,
+        redirectBaseUri
+      }
+    )).url
+    const parsedStartURL = url.parse(OAuthStartUrl)
+    const queryObj = parse(parsedStartURL.query)
+    expect(queryObj.redirect_uri).toEqual(`${config.IAM.apiServerURL[0]}${config.IAM.authCallbackPath}`)
+  })
 })

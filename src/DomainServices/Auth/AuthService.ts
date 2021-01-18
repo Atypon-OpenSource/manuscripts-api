@@ -274,7 +274,8 @@ export class AuthService implements IAuthService {
     state: IAMState,
     action?: string
   ): Promise<IAMStartData> {
-    const authCallbackURL = `${config.IAM.apiServerURL}${config.IAM.authCallbackPath}`
+    const apiUrl = AuthService.getAPIUrlBasedOnOrigin(state.redirectBaseUri)
+    const authCallbackURL = `${apiUrl}${config.IAM.authCallbackPath}`
 
     const nonce = AuthService.generateNonce()
     const hashedNonce = AuthService.hashNonce(nonce)
@@ -295,6 +296,18 @@ export class AuthService implements IAuthService {
         querystring.stringify(params),
       nonce
     }
+  }
+
+  public static getAPIUrlBasedOnOrigin (origin: string | null): string {
+    if (origin) {
+      const domain = origin.substring(origin.indexOf('.'))
+      for (const serverUrl in config.IAM.apiServerURL) {
+        if (serverUrl.substring(origin.indexOf('.')) === domain) {
+          return serverUrl
+        }
+      }
+    }
+    return config.IAM.apiServerURL[0]
   }
 
   /**

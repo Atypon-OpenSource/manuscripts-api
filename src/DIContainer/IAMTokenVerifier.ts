@@ -97,7 +97,7 @@ export class IAMTokenVerifier implements IIAMTokenVerifier {
       )
       this.issuer = JSON.parse(body).issuer
     } else {
-      this.issuer = config.IAM.apiServerURL
+      this.issuer = config.IAM.apiServerURL[0]
     }
   }
 }

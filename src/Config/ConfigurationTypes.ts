@@ -103,7 +103,7 @@ export type IAMConfiguration = {
   // URL of the library web application
   readonly libraryURL: string,
   // URL of the Manuscript's api server - ie. current server
-  readonly apiServerURL: string
+  readonly apiServerURL: string[]
   // URL of the IAM allowed servers
   readonly authServerPermittedURLs: string[]
 }

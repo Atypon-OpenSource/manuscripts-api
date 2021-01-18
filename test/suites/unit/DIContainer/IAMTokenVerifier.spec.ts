@@ -49,7 +49,7 @@ describe('IAMTokenVerifier', () => {
 
     expect(iamTokenVerifier.isValidIssuer('foobar')).toBeFalsy()
     expect(
-      iamTokenVerifier.isValidIssuer(config.IAM.apiServerURL)
+      iamTokenVerifier.isValidIssuer(config.IAM.apiServerURL[0])
     ).toBeTruthy()
   })
 
