@@ -200,7 +200,7 @@ export class Configuration implements ConfigurationContainer {
       authServerPermittedURLs: Array.from(new Set(getArray(getString(env.APP_IAM_PERMITTED_SERVER_URLS, 'APP_IAM_PERMITTED_SERVER_URLS'), 'APP_IAM_PERMITTED_SERVER_URLS', ';'))),
       authCallbackPath: normalizeURL(getString(env.APP_IAM_AUTH_CALLBACK_PATH, 'APP_IAM_AUTH_CALLBACK_PATH')),
       libraryURL: normalizeURL(getString(env.APP_IAM_LIBRARY_URL, 'APP_IAM_LIBRARY_URL')),
-      apiServerURL: Array.from(new Set(getArray(getString(env.APP_IAM_PERMITTED_SERVER_URLS, 'APP_API_SERVER_URL'), 'APP_API_SERVER_URL', ';')))
+      apiServerURL: Array.from(new Set(getArray(getString(env.APP_API_SERVER_URL, 'APP_API_SERVER_URL'), 'APP_API_SERVER_URL', ';')))
     }
 
     this.email = {
