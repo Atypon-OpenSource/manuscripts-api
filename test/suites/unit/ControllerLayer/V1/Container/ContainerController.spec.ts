@@ -751,7 +751,7 @@ describe('ContainersController - getProductionNotes', () => {
       params: {
         containerID: chance.integer()
       },
-      body: {
+      query: {
         connectUserID: 'valid-connect-user-6-id'
       }
     }
@@ -766,7 +766,7 @@ describe('ContainersController - getProductionNotes', () => {
         containerID: chance.string(),
         manuscriptID: chance.integer()
       },
-      body: {
+      query: {
         connectUserID: 'valid-connect-user-6-id'
       }
     }
@@ -786,7 +786,7 @@ describe('ContainersController - getProductionNotes', () => {
       user: {
         _id: chance.string()
       },
-      body: {
+      query: {
         connectUserID: 'valid-connect-user-6-id'
       }
     }

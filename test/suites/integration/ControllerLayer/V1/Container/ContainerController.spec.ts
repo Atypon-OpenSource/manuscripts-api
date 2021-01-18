@@ -512,7 +512,7 @@ describe('ContainerController - getProductionNotes', () => {
       user: {
         _id: `User_${validBody.email}`
       },
-      body: {
+      query: {
         connectUserID: 'valid-connect-user-6-id'
       }
     }
@@ -530,7 +530,7 @@ describe('ContainerController - getProductionNotes', () => {
       user: {
         _id: `User_${validBody.email}`
       },
-      body: {
+      query: {
         connectUserID: 'valid-connect-user-6-id'
       }
     }
@@ -548,7 +548,7 @@ describe('ContainerController - getProductionNotes', () => {
       user: {
         _id: `User_${validBody.email}`
       },
-      body: {
+      query: {
         connectUserID: 'valid-connect-user-6-id'
       }
     }

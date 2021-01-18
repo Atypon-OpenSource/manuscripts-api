@@ -226,7 +226,7 @@ export class ContainersController extends ContainedBaseController
 
   async getProductionNotes (req: Request) {
     const { containerID, manuscriptID } = req.params
-    const { connectUserID } = req.body
+    const { connectUserID } = req.query
 
     if (!isString(containerID)) {
       throw new ValidationError('containerID should be string', containerID)
