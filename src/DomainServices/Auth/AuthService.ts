@@ -301,8 +301,8 @@ export class AuthService implements IAuthService {
   public static getAPIUrlBasedOnOrigin (origin: string | null): string {
     if (origin) {
       const domain = origin.substring(origin.indexOf('.'))
-      for (const serverUrl in config.IAM.apiServerURL) {
-        if (serverUrl.substring(origin.indexOf('.')) === domain) {
+      for (const serverUrl of config.IAM.apiServerURL) {
+        if (serverUrl.substring(serverUrl.indexOf('.')) === domain) {
           return serverUrl
         }
       }
