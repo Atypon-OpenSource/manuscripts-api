@@ -190,6 +190,47 @@ describe('containerService - containerCreate', () => {
   })
 })
 
+describe('containerService - deleteContainer', () => {
+  test('should fail if container id is invalid', () => {
+    const containerService: any =
+      DIContainer.sharedContainer.containerService[ContainerType.project]
+
+    containerService.containerRepository = {
+      getById: async () => Promise.resolve(null)
+    }
+
+    return expect(
+      containerService.deleteContainer(chance.guid(), { _id: chance.guid() })
+    ).rejects.toThrowError(RecordNotFoundError)
+  })
+
+  test('should fail if user is not an owner', () => {
+    const containerService: any =
+      DIContainer.sharedContainer.containerService[ContainerType.project]
+
+    containerService.containerRepository = {
+      getById: async () => Promise.resolve({ owners: [] })
+    }
+
+    return expect(
+      containerService.deleteContainer(chance.guid(), { _id: `User|${chance.guid()}` })
+    ).rejects.toThrowError(InvalidCredentialsError)
+  })
+
+  test('should delete a project', async () => {
+    const containerService: any =
+      DIContainer.sharedContainer.containerService[ContainerType.project]
+
+    containerService.containerRepository = {
+      getById: async () => Promise.resolve({ owners: [ 'User_123abc123abc' ] }),
+      removeWithAllResources: jest.fn()
+    }
+
+    await containerService.deleteContainer(chance.guid(), { _id: 'User|123abc123abc' })
+    expect(containerService.containerRepository.removeWithAllResources).toBeCalled()
+  })
+})
+
 describe('containerService - addContainerUser', () => {
   test('should fail if the project is not in the db', () => {
     const containerService: any =

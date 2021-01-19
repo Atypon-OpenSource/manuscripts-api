@@ -51,6 +51,20 @@ export class ContainersController extends ContainedBaseController
     ].containerCreate(token, _id)
   }
 
+  async delete (req: Request): Promise<void> {
+    const { containerID } = req.params
+
+    if (!containerID || !isString(containerID)) {
+      throw new ValidationError('container id should be a string', containerID)
+    }
+
+    const containerType = getContainerType(containerID)
+
+    await DIContainer.sharedContainer.containerService[
+      containerType
+    ].deleteContainer(containerID, req.user)
+  }
+
   async manageUserRole (req: Request): Promise<void> {
     const { managedUserId, newRole } = req.body
     const { containerID } = req.params

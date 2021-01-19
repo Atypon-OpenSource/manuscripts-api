@@ -296,6 +296,14 @@ export async function create (headers: object, body: any, params: any): Promise<
       .send(body)
 }
 
+export async function deleteContainer (headers: object, params: any): Promise<supertest.Response> {
+  const server: IServer = await createServer()
+  return supertest(server.app)
+      .delete(`/api/v1/${params.containerID}`)
+      .set(headers)
+      .send()
+}
+
 export async function manageUserRole (headers: object, body: any, params: any): Promise<supertest.Response> {
   const server: IServer = await createServer()
   return supertest(server.app)

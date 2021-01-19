@@ -26,6 +26,11 @@ export interface IContainerService {
   containerCreate (token: string, _id: string | null): Promise<Container>
 
   /**
+   * Deletes the container with all resources.
+   */
+  deleteContainer (containerId: string, user: User): Promise<void>
+
+  /**
    * Adds user to container.
    * @returns a boolean indicating the success or the failure of adding the user.
    */

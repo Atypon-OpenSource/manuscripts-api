@@ -114,6 +114,26 @@ export class ContainerService implements IContainerService {
     return newContainer
   }
 
+  public async deleteContainer (containerId: string, user: User): Promise<void> {
+    const container = await this.containerRepository.getById(containerId)
+
+    if (!container) {
+      throw new RecordNotFoundError(
+        `Container with id ${containerId} was not found.`
+      )
+    }
+
+    const userID = ContainerService.userIdForSync(user._id)
+
+    if (!container.owners.includes(userID)) {
+      throw new InvalidCredentialsError(
+        `User ${userID} is not an owner.`
+      )
+    }
+
+    await this.containerRepository.removeWithAllResources(containerId)
+  }
+
   public async getContainer (containerId: string): Promise<Container> {
     const container = await this.containerRepository.getById(containerId)
 

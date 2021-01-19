@@ -597,6 +597,29 @@ paths:
           description: "Invalid authorization token, or user record is in an invalid state for container creation."
         403:
           description: "User account is blocked or email is not verified."
+  /:projectId:
+    delete:
+      tags:
+        - "project"
+      summary: "Deletes an existing project."
+      description: "Deletes a project with a provided container id."
+      operationId: "delete-project"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - $ref: "#/parameters/JsonAcceptHeadersSchema"
+        - $ref: "#/parameters/AuthorizationTokenHeaderSchema"
+      responses:
+        200:
+          description: "Project has been deleted with all associated resources successfully."
+        400:
+          description: "Invalid container id."
+        401:
+          description: "Invalid authorization token, or the user has no privilege for this operation."
+        403:
+          description: "User account is blocked or email is not verified."
   /project/:projectId:
     post:
       tags:

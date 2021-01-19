@@ -424,6 +424,43 @@ describe('ContainersController - addUser', () => {
   })
 })
 
+describe('ContainersController - delete', () => {
+  test('should call deleteContainer()', async () => {
+    const containerService: any =
+      DIContainer.sharedContainer.containerService[ContainerType.project]
+
+    const chance = new Chance()
+    const req: any = {
+      headers: authorizationHeader(chance.string()),
+      params: {
+        containerID: 'MPProject:foo'
+      }
+    }
+
+    containerService.deleteContainer = jest.fn(() => {})
+
+    const containersController: ContainersController = new ContainersController()
+    await containersController.delete(req)
+
+    return expect(containerService.deleteContainer).toBeCalled()
+  })
+
+  test('delete should fail if containerID is not a string', () => {
+    const chance = new Chance()
+    const req: any = {
+      headers: authorizationHeader(chance.string()),
+      params: {
+        containerID: chance.integer()
+      }
+    }
+
+    const containersController: ContainersController = new ContainersController()
+    return expect(containersController.delete(req)).rejects.toThrowError(
+      ValidationError
+    )
+  })
+})
+
 describe('ContainersController - getArchive', () => {
   test('should fail if the containerID is not a string', () => {
     const chance = new Chance()

@@ -27,6 +27,12 @@ export const createSchema: Joi.SchemaMap = {
   })
 }
 
+export const deleteSchema: Joi.SchemaMap = {
+  headers: Joi.object({
+    accept: appJsonAndCharset
+  }).options({ allowUnknown: true })
+}
+
 export const manageUserRoleSchema: Joi.SchemaMap = {
   headers: Joi.object({
     accept: appJsonAndCharset

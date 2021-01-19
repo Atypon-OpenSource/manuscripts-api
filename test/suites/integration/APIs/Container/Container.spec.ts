@@ -17,10 +17,12 @@
 import * as HttpStatus from 'http-status-codes'
 import * as supertest from 'supertest'
 import { Chance } from 'chance'
+import checksum from 'checksum'
 
 import {
   basicLogin,
   create,
+  deleteContainer,
   manageUserRole,
   addUser,
   getArchive,
@@ -145,6 +147,60 @@ describe('ContainerService - createProject', () => {
       }
     )
     expect(response.status).toBe(HttpStatus.OK)
+  })
+})
+
+describe('ContainerService - delete', () => {
+  beforeEach(async () => {
+    await drop()
+    await dropBucket(BucketKey.Data)
+    await seed({ ...seedOptions, projects: true, projectInvitations: true })
+  })
+
+  test('should delete a project with all its resources', async () => {
+    const loginResponse: supertest.Response = await basicLogin(
+      validBody,
+      ValidHeaderWithApplicationKey
+    )
+
+    expect(loginResponse.status).toBe(HttpStatus.OK)
+
+    const authHeader = authorizationHeader(loginResponse.body.token)
+
+    const validContainerId = `MPProject:valid-project-id-6`
+    const validInvitationId = checksum(
+      'valid-user@manuscriptsapp.com-valid-user-6@manuscriptsapp.com-valid-project-id-6',
+      { algorithm: 'sha1' }
+    )
+
+    const projectBefore = await DIContainer.sharedContainer.projectRepository.getById(
+      validContainerId
+    )
+    const invitationBefore = await DIContainer.sharedContainer.containerInvitationRepository.getById(
+      validInvitationId
+    )
+
+    expect(projectBefore!._id).toBe(validContainerId)
+    expect(invitationBefore).not.toBeNull()
+
+    const response: supertest.Response = await deleteContainer(
+      {
+        ...ValidContentTypeAcceptJsonHeader,
+        ...authHeader
+      },
+      { containerID: validContainerId }
+    )
+
+    expect(response.status).toBe(HttpStatus.OK)
+    const projectAfter = await DIContainer.sharedContainer.projectRepository.getById(
+      validContainerId
+    )
+    const invitationAfter = await DIContainer.sharedContainer.containerInvitationRepository.getById(
+      validInvitationId
+    )
+
+    expect(projectAfter).toBeNull()
+    expect(invitationAfter).toBeNull()
   })
 })
 

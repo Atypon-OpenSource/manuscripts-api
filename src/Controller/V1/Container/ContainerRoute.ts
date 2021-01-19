@@ -21,12 +21,15 @@ import * as HttpStatus from 'http-status-codes'
 import { BaseRoute } from '../../BaseRoute'
 import {
   createSchema,
+  deleteSchema,
   manageUserRoleSchema,
   addUserSchema,
   getArchiveSchema,
   accessTokenSchema,
   accessTokenJWKSchema,
-  getPickerBuilderSchema, getProductionNotesSchema, addProductionNoteSchema
+  getPickerBuilderSchema,
+  getProductionNotesSchema,
+  addProductionNoteSchema
 } from './ContainerSchema'
 import { ContainersController } from './ContainersController'
 import { AuthStrategy } from '../../../Auth/Passport/AuthStrategy'
@@ -43,6 +46,19 @@ export class ContainerRoute extends BaseRoute {
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           await this.containersController.create(req)
+          res.status(HttpStatus.OK).end()
+        }, next)
+      }
+    )
+
+    router.delete(
+      [`/:containerID`, `projects/:containerID`],
+      expressJoiMiddleware(deleteSchema, {}),
+      AuthStrategy.JsonHeadersValidation,
+      AuthStrategy.JWTAuth,
+      (req: Request, res: Response, next: NextFunction) => {
+        return this.runWithErrorHandling(async () => {
+          await this.containersController.delete(req)
           res.status(HttpStatus.OK).end()
         }, next)
       }
