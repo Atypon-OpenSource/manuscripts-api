@@ -787,9 +787,6 @@ describe('ContainersController - getProductionNotes', () => {
     const req: any = {
       params: {
         containerID: chance.integer()
-      },
-      query: {
-        connectUserID: 'valid-connect-user-6-id'
       }
     }
     const containersController: ContainersController = new ContainersController()
@@ -802,9 +799,6 @@ describe('ContainersController - getProductionNotes', () => {
       params: {
         containerID: chance.string(),
         manuscriptID: chance.integer()
-      },
-      query: {
-        connectUserID: 'valid-connect-user-6-id'
       }
     }
     const containersController: ContainersController = new ContainersController()
@@ -822,9 +816,6 @@ describe('ContainersController - getProductionNotes', () => {
       },
       user: {
         _id: chance.string()
-      },
-      query: {
-        connectUserID: 'valid-connect-user-6-id'
       }
     }
     const containersController: ContainersController = new ContainersController()

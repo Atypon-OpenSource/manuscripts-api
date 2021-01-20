@@ -101,9 +101,6 @@ export const getProductionNotesSchema: Joi.SchemaMap = {
   params: Joi.object({
     containerID: Joi.string().required(),
     manuscriptID: Joi.string().required()
-  }),
-  query: Joi.object({
-    connectUserID: Joi.string().required()
   })
 }
 

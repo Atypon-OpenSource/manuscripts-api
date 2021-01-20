@@ -240,7 +240,6 @@ export class ContainersController extends ContainedBaseController
 
   async getProductionNotes (req: Request) {
     const { containerID, manuscriptID } = req.params
-    const { connectUserID } = req.query
 
     if (!isString(containerID)) {
       throw new ValidationError('containerID should be string', containerID)
@@ -250,7 +249,7 @@ export class ContainersController extends ContainedBaseController
       throw new ValidationError('manuscriptID should be string', manuscriptID)
     }
     const containerType = getContainerType(containerID)
-    return DIContainer.sharedContainer.containerService[containerType].getProductionNotes(containerID, manuscriptID, connectUserID)
+    return DIContainer.sharedContainer.containerService[containerType].getProductionNotes(containerID, manuscriptID)
   }
 
   async addProductionNote (req: Request) {

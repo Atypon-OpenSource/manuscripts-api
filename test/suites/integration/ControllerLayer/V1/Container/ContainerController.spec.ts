@@ -508,12 +508,6 @@ describe('ContainerController - getProductionNotes', () => {
     const req: any = {
       params: {
         containerID: chance.integer()
-      },
-      user: {
-        _id: `User_${validBody.email}`
-      },
-      query: {
-        connectUserID: 'valid-connect-user-6-id'
       }
     }
     await expect(new ContainersController().getProductionNotes(req)).rejects.toThrow(ValidationError)
@@ -526,12 +520,6 @@ describe('ContainerController - getProductionNotes', () => {
       params: {
         containerID: validNote1.containerID,
         manuscriptID: chance.integer()
-      },
-      user: {
-        _id: `User_${validBody.email}`
-      },
-      query: {
-        connectUserID: 'valid-connect-user-6-id'
       }
     }
     await expect(new ContainersController().getProductionNotes(req)).rejects.toThrow(ValidationError)
@@ -547,9 +535,6 @@ describe('ContainerController - getProductionNotes', () => {
       },
       user: {
         _id: `User_${validBody.email}`
-      },
-      query: {
-        connectUserID: 'valid-connect-user-6-id'
       }
     }
     await new ContainersController().getProductionNotes(req)

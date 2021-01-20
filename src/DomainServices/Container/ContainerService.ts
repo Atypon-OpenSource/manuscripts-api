@@ -718,21 +718,8 @@ export class ContainerService implements IContainerService {
 
   public async getProductionNotes (
     containerID: string,
-    manuscriptID: string,
-    connectUserID: string
+    manuscriptID: string
   ): Promise<ManuscriptNote[]> {
-
-    const user = await DIContainer.sharedContainer.userRepository.getOne({ connectUserID })
-
-    if (!user) {
-      throw new RecordNotFoundError('user not found')
-    }
-    // will fail of the user is not a collaborator on the project
-    const canAccess = await this.checkUserContainerAccess(user._id, containerID)
-    if (!canAccess) {
-      throw new ValidationError('User must be a contributor in the container', containerID)
-    }
-
     return this.manuscriptNoteRepository.getProductionNotes(containerID, manuscriptID)
   }
 }

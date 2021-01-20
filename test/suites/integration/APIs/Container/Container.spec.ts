@@ -50,7 +50,6 @@ import {
 } from '../../../../../src/Models/ContainerModels'
 import {
   ValidationError,
-  InvalidCredentialsError,
   RecordNotFoundError
 } from '../../../../../src/Errors'
 import { BucketKey } from '../../../../../src/Config/ConfigurationTypes'
@@ -1088,29 +1087,6 @@ describe('ContainerService - getProductionNotes', () => {
     )
   })
 
-  test('should fail if user is not contributor', async () => {
-    const loginResponse: supertest.Response = await basicLogin(
-      validBody,
-      ValidHeaderWithApplicationKey
-    )
-    expect(loginResponse.status).toBe(HttpStatus.OK)
-
-    const authHeader = authorizationHeader(loginResponse.body.token)
-    const getProductionNoteResponse: supertest.Response = await getProductionNotes(
-      {
-        ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
-      },
-      {
-        containerID: `MPProject:valid-project-id-11`,
-        manuscriptID: validManuscript._id
-      }, {
-        connectUserID: 'valid-connect-user-7-id'
-      }
-    )
-    expect(getProductionNoteResponse.status).toBe(HttpStatus.BAD_REQUEST)
-  })
-
   test('should get a list of notes', async () => {
     const loginResponse: supertest.Response = await basicLogin(
       validBody2,
@@ -1127,8 +1103,6 @@ describe('ContainerService - getProductionNotes', () => {
       {
         containerID: `MPProject:valid-project-id-11`,
         manuscriptID: validManuscript._id
-      }, {
-        connectUserID: 'valid-connect-user-6-id'
       }
     )
     expect(getProductionNoteResponse.status).toBe(HttpStatus.OK)

@@ -1593,29 +1593,9 @@ describe('ContainerService - addProductionNote', () => {
 })
 
 describe('ContainerService - getProductionNotes', () => {
-  test('should fail of user not contributor', async () => {
-    const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
-    const userRebo: any = DIContainer.sharedContainer.userRepository
-    userRebo.getOne = jest.fn(() => {
-      return { _id: 'User_test2', ...validBody2 }
-    })
-    containerService.getContainer = jest.fn(() => Promise.resolve(validProject))
-    const repo: any = DIContainer.sharedContainer.manuscriptNotesRepository
-    repo.getProductionNotes = jest.fn(() => [validNote1])
-    const containerID = validProject._id
-    const manuscriptID = validManuscript._id
-    await expect(containerService.getProductionNotes(containerID, manuscriptID, validUser1._id)).rejects.toThrow(ValidationError)
-  })
-
   test('should return a list of node', async () => {
     const containerService: any =
       DIContainer.sharedContainer.containerService[ContainerType.project]
-    containerService.checkUserContainerAccess = jest.fn(() => true)
-    const userRebo: any = DIContainer.sharedContainer.userRepository
-    userRebo.getOne = jest.fn(() => {
-      return { _id: 'User_test', ...validBody2 }
-    })
     const repo: any = DIContainer.sharedContainer.manuscriptNotesRepository
     repo.getProductionNotes = jest.fn(() => [validNote1])
     const containerID = validProject._id
