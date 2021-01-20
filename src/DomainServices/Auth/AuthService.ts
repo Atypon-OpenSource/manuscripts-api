@@ -336,9 +336,9 @@ export class AuthService implements IAuthService {
     return crypto.createHash('sha1').update(nonce).digest('hex')
   }
 
-  public iamOAuthErrorURL (errorDescription: string): string {
+  public iamOAuthErrorURL (errorDescription: string, serverUrl: string): string {
     // return back to web application with the error message, if there was an error in OAuth response
-    return `${config.IAM.libraryURL}/login#${stringify({ error: 'error', error_description: errorDescription })}`
+    return `${serverUrl}/login#${stringify({ error: 'error', error_description: errorDescription })}`
   }
 
   public userEmailID (email: string) {

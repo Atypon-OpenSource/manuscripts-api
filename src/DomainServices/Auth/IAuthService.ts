@@ -93,7 +93,7 @@ export interface IAuthService {
    * in IAM OAuth flow.
    * @returns {string} URL where user should be redirected back, in case of error
    */
-  iamOAuthErrorURL (errorDescription: string): string
+  iamOAuthErrorURL (errorDescription: string, serverUrl: string): string
 
   /**
    * Handles IAM callback after user registration/login

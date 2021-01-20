@@ -33,7 +33,7 @@ describe('IAMAuthService', () => {
 
   test('should return expected IAM OAuth error url', () => {
     const errorMessage = DIContainer.sharedContainer.authService.iamOAuthErrorURL(
-      'error message'
+      'error message', config.IAM.libraryURL
     )
     expect(errorMessage).toBe(
       `${config.IAM.libraryURL}/login#error=error&error_description=error%20message`

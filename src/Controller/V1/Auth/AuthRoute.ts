@@ -204,7 +204,7 @@ export class AuthRoute extends BaseRoute {
             action
           )
 
-          this.setNonceCookie(nonce, res)
+          this.setNonceCookie(nonce, res, origin)
 
           res.redirect(url)
         }, next)
@@ -218,17 +218,17 @@ export class AuthRoute extends BaseRoute {
       AuthStrategy.verifyIAMToken,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
-          this.clearNonceCookie(res)
+          const state = DIContainer.sharedContainer.authService.decodeIAMState(req.query.state)
+          const serverUrl =
+            state.redirectBaseUri && config.IAM.authServerPermittedURLs.includes(state.redirectBaseUri) ?
+              state.redirectBaseUri :
+              config.IAM.libraryURL
+          this.clearNonceCookie(res, serverUrl)
           if (req.query.error) {
             const errorDescription = req.query.error_description
-            res.redirect(DIContainer.sharedContainer.authService.iamOAuthErrorURL(errorDescription))
+            res.redirect(DIContainer.sharedContainer.authService.iamOAuthErrorURL(errorDescription, serverUrl))
           } else {
-            const state = DIContainer.sharedContainer.authService.decodeIAMState(req.query.state)
             const params = removeEmptyValuesFromObj({ redirectUri: state.redirectUri, theme: state.theme })
-            const serverUrl =
-              state.redirectBaseUri && config.IAM.authServerPermittedURLs.includes(state.redirectBaseUri) ?
-                state.redirectBaseUri :
-                config.IAM.libraryURL
             try {
               const { token, syncSessions, user } = await this.authController.iamOAuthCallback(req, state)
 
@@ -300,8 +300,9 @@ export class AuthRoute extends BaseRoute {
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
+          const origin = req.get('origin')
           await this.authController.logout(req)
-          this.clearSyncCookies(res)
+          this.clearSyncCookies(res, origin)
           res.redirect(
             HttpStatus.TEMPORARY_REDIRECT,
             `${config.IAM.authServerURL}/api/oidc/logout?redirect=${config.email.fromBaseURL}`
@@ -369,12 +370,13 @@ export class AuthRoute extends BaseRoute {
     secure: config.server.storeOnlySSLTransmittedCookies
   })
 
-  private clearSyncCookies (res: Response) {
+  private clearSyncCookies (res: Response, origin?: string) {
+    const originDomain = origin && !origin.startsWith('.') ? origin.substring(origin.indexOf('.')) : origin
     for (const key of [BucketKey.Data]) {
       res.clearCookie(
         this.cookieKey(key),
         this.cookieOptions(
-          config.gateway.cookieDomain,
+          originDomain ? originDomain : config.gateway.cookieDomain,
           false,
           this.cookieKey(key)
         )
@@ -397,18 +399,20 @@ export class AuthRoute extends BaseRoute {
     }
   }
 
-  private clearNonceCookie (res: Response) {
+  private clearNonceCookie (res: Response, origin?: string) {
+    const originDomain = origin && !origin.startsWith('.') ? origin.substring(origin.indexOf('.')) : origin
     res.clearCookie(
       'nonce',
-      this.cookieOptions(config.gateway.cookieDomain, false)
+      this.cookieOptions(originDomain ? originDomain : config.gateway.cookieDomain, false)
     )
   }
 
-  private setNonceCookie (nonce: string, res: Response) {
+  private setNonceCookie (nonce: string, res: Response, origin?: string) {
+    const originDomain = origin && !origin.startsWith('.') ? origin.substring(origin.indexOf('.')) : origin
     res.cookie(
       'nonce',
       nonce,
-      this.cookieOptions(config.gateway.cookieDomain, true)
+      this.cookieOptions(originDomain ? originDomain : config.gateway.cookieDomain, true)
     )
   }
 }
