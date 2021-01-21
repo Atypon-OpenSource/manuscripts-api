@@ -256,7 +256,7 @@ describe('GET api/v1/auth/iam/callback', () => {
       deviceId: 'deviceId',
       redirectUri: 'redirectUri',
       theme: 'theme',
-      redirectBaseUri: 'https://lw-manuscripts-frontend.ciplit.com'
+      redirectBaseUri: 'https://lw-manuscripts-frontend.ciplit.com/login'
     })
 
     const response: supertest.Response = await iamOAuthCallback(

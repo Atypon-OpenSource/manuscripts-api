@@ -211,7 +211,7 @@ describe('AuthService IAM', () => {
     return expect(authService.decodeIAMState('ZGV2aWNlSWQ9ZGVycAo=').deviceId).toEqual('derp\n')
   })
 
-  test('should resolve redirect url based on origin', async () => {
+  test('should resolve redirect url based on referer', async () => {
     const deviceId = '123456'
     const redirectUri = '/login'
     const theme = 'themeA'

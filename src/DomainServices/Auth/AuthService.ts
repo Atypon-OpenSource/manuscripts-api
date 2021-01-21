@@ -78,6 +78,7 @@ import { log } from '../../Utilities/Logger'
 import { IUserEmailRepository } from '../../DataAccess/Interfaces/IUserEmailRepository'
 import { IAMStartData } from '../../Models/IAMModels'
 import { IContainerInvitationService } from '../Invitation/IContainerInvitationService'
+import { URL } from 'url'
 const cryptoRandomString = require('crypto-random-string')
 
 /** Authentication token timeout */
@@ -274,7 +275,7 @@ export class AuthService implements IAuthService {
     state: IAMState,
     action?: string
   ): Promise<IAMStartData> {
-    const apiUrl = AuthService.getAPIUrlBasedOnOrigin(state.redirectBaseUri)
+    const apiUrl = AuthService.getAPIUrlBasedOnReferer(state.redirectBaseUri)
     const authCallbackURL = `${apiUrl}${config.IAM.authCallbackPath}`
 
     const nonce = AuthService.generateNonce()
@@ -298,11 +299,12 @@ export class AuthService implements IAuthService {
     }
   }
 
-  public static getAPIUrlBasedOnOrigin (origin: string | null): string {
-    if (origin) {
-      const domain = origin.substring(origin.indexOf('.'))
+  public static getAPIUrlBasedOnReferer (referer: string | null): string {
+    if (referer) {
+      const host = new URL(referer).host
       for (const serverUrl of config.IAM.apiServerURL) {
-        if (serverUrl.substring(serverUrl.indexOf('.')) === domain) {
+        const serverHost = new URL(serverUrl).host
+        if (serverHost === host) {
           return serverUrl
         }
       }

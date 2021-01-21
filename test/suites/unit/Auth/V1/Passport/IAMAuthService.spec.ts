@@ -103,7 +103,7 @@ describe('IAMAuthService', () => {
     expect(retrievedTheme).toBe(theme)
   })
 
-  test('should resolve redirect url based on origin', async () => {
+  test('should resolve redirect url based on referer', async () => {
     const deviceId = '123456'
     const redirectUri = '/login'
     const theme = 'themeA'

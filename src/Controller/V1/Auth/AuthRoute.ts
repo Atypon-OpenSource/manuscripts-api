@@ -188,8 +188,7 @@ export class AuthRoute extends BaseRoute {
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           const { redirectUri, deviceId, theme, action } = req.query
-          const origin = req.get('origin')
-          const redirectBaseUri = origin ? origin : null
+          const redirectBaseUri = req.get('referer') ?? null
           // Redirect user to IAM OAuth start endpoint
           const {
             url,
@@ -204,12 +203,26 @@ export class AuthRoute extends BaseRoute {
             action
           )
 
-          this.setNonceCookie(nonce, res, origin)
+          this.setNonceCookie(nonce, res, redirectBaseUri)
 
           res.redirect(url)
         }, next)
       }
     )
+
+    function getPermittedUrlFromReferer (referer?: string | null): string {
+      let url = config.IAM.libraryURL
+      if (referer) {
+        const refererHost = new URL(referer).host
+        for (const permittedUrl of config.IAM.authServerPermittedURLs) {
+          const permittedHost = new URL(permittedUrl).host
+          if (permittedHost === refererHost) {
+            url = permittedUrl
+          }
+        }
+      }
+      return url
+    }
 
     // IAM callback endpoint where user gets redirected to by IAM server, after user login/registration
     router.get(
@@ -219,10 +232,7 @@ export class AuthRoute extends BaseRoute {
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           const state = DIContainer.sharedContainer.authService.decodeIAMState(req.query.state)
-          const serverUrl =
-            state.redirectBaseUri && config.IAM.authServerPermittedURLs.includes(state.redirectBaseUri) ?
-              state.redirectBaseUri :
-              config.IAM.libraryURL
+          const serverUrl = getPermittedUrlFromReferer(state.redirectBaseUri)
           this.clearNonceCookie(res, serverUrl)
           if (req.query.error) {
             const errorDescription = req.query.error_description
@@ -300,9 +310,9 @@ export class AuthRoute extends BaseRoute {
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
-          const origin = req.get('origin')
+          const referer = req.get('referer')
           await this.authController.logout(req)
-          this.clearSyncCookies(res, origin)
+          this.clearSyncCookies(res, referer)
           res.redirect(
             HttpStatus.TEMPORARY_REDIRECT,
             `${config.IAM.authServerURL}/api/oidc/logout?redirect=${config.email.fromBaseURL}`
@@ -317,9 +327,8 @@ export class AuthRoute extends BaseRoute {
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           const sessions = await this.authController.refreshSyncSessions(req)
-          const origin = req.get('origin')
-          const cookieDomain = origin && config.IAM.authServerPermittedURLs.includes(origin) ? origin : undefined
-          this.setSyncCookies(sessions, res, cookieDomain)
+          const referer = req.get('referer')
+          this.setSyncCookies(sessions, res, referer)
           res.status(HttpStatus.NO_CONTENT).send()
         }, next)
       }
@@ -370,13 +379,13 @@ export class AuthRoute extends BaseRoute {
     secure: config.server.storeOnlySSLTransmittedCookies
   })
 
-  private clearSyncCookies (res: Response, origin?: string) {
-    const originDomain = origin && !origin.startsWith('.') ? origin.substring(origin.indexOf('.')) : origin
+  private clearSyncCookies (res: Response, referer?: string) {
+    const refererDomain = AuthRoute.getCookieDomain(referer)
     for (const key of [BucketKey.Data]) {
       res.clearCookie(
         this.cookieKey(key),
         this.cookieOptions(
-          originDomain ? originDomain : config.gateway.cookieDomain,
+          refererDomain,
           false,
           this.cookieKey(key)
         )
@@ -384,14 +393,14 @@ export class AuthRoute extends BaseRoute {
     }
   }
 
-  private setSyncCookies (syncSessions: BucketSessions, res: Response, origin?: string) {
-    const originDomain = origin && !origin.startsWith('.') ? origin.substring(origin.indexOf('.')) : origin
+  private setSyncCookies (syncSessions: BucketSessions, res: Response, referer?: string) {
+    const refererDomain = AuthRoute.getCookieDomain(referer)
     for (const [key, session] of Object.entries(syncSessions)) {
       res.cookie(
         SYNC_GATEWAY_COOKIE_NAME,
         session,
         this.cookieOptions(
-          originDomain ? originDomain : config.gateway.cookieDomain,
+          refererDomain,
           true,
           this.cookieKey(key)
         )
@@ -399,20 +408,25 @@ export class AuthRoute extends BaseRoute {
     }
   }
 
-  private clearNonceCookie (res: Response, origin?: string) {
-    const originDomain = origin && !origin.startsWith('.') ? origin.substring(origin.indexOf('.')) : origin
+  private clearNonceCookie (res: Response, referer?: string) {
+    const refererDomain = AuthRoute.getCookieDomain(referer)
     res.clearCookie(
       'nonce',
-      this.cookieOptions(originDomain ? originDomain : config.gateway.cookieDomain, false)
+      this.cookieOptions(refererDomain, false)
     )
   }
 
-  private setNonceCookie (nonce: string, res: Response, origin?: string) {
-    const originDomain = origin && !origin.startsWith('.') ? origin.substring(origin.indexOf('.')) : origin
+  private setNonceCookie (nonce: string, res: Response, referer?: string | null) {
+    const refererDomain = AuthRoute.getCookieDomain(referer)
     res.cookie(
       'nonce',
       nonce,
-      this.cookieOptions(originDomain ? originDomain : config.gateway.cookieDomain, true)
+      this.cookieOptions(refererDomain, true)
     )
+  }
+
+  private static getCookieDomain (referer?: string | null) {
+    const refererHost = referer ? new URL(referer).host : config.gateway.cookieDomain
+    return !refererHost.startsWith('.') ? refererHost.substring(refererHost.indexOf('.')) : refererHost
   }
 }

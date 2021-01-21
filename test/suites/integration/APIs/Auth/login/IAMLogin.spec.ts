@@ -119,9 +119,9 @@ describe('IAM Login - GET api/v1/auth/iam', () => {
     expect(response.status).toBe(HttpStatus.MOVED_TEMPORARILY)
   })
 
-  test('state should contain sent origin header value', async () => {
+  test('state should contain sent referer header value', async () => {
     const response: supertest.Response = await iamOAuthStart(
-        { origin: 'https://lw-manuscripts-frontend.ciplit.com' }, { ...validIAMOAuthStartRequest.query, ...validIAMOAuthStartRequest.headers }
+        { referer: 'https://lw-manuscripts-frontend.ciplit.com' }, { ...validIAMOAuthStartRequest.query, ...validIAMOAuthStartRequest.headers }
     )
     const urlStr = response.header.location
     expect(urlStr).toEqual(
