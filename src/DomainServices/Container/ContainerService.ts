@@ -147,30 +147,23 @@ export class ContainerService implements IContainerService {
   }
 
   public async manageUserRole (
-    token: string,
+    user: User,
     containerId: string,
     managedUserId: string,
-    newRole: ContainerRole | null
+    newRole: ContainerRole | null,
+    secret?: string
   ): Promise<void> {
-    const profile = await this.userService.profile(token)
-
-    if (!profile) {
-      throw new InvalidCredentialsError(`User not found.`)
-    }
-
     const container = await this.getContainer(containerId)
 
-    const managedUser = await this.userRepository.getById(managedUserId)
-    if (!managedUser) {
-      throw new ValidationError('Managed user record was not found', managedUserId)
-    }
+    const managedUser = await this.getValidUser(managedUserId)
 
-    const userId = ContainerService.userIdForDatabase(profile.userID)
-    if (!this.isOwner(container, userId)) {
+    if (!this.isOwner(container, user._id)) {
       throw new UserRoleError('User must be an owner to manage roles', newRole)
     }
 
-    await this.validateManagedUser(managedUserId, userId, container, newRole)
+    const isServer = this.validateSecret(secret)
+
+    await this.validateManagedUser(managedUserId, user._id, container, newRole, isServer)
 
     if (this.isOwner(container, managedUserId) && container.owners.length < 2) {
       throw new UserRoleError('User is the only owner', newRole)
@@ -179,10 +172,25 @@ export class ContainerService implements IContainerService {
     await this.updateContainerUser(containerId, newRole, managedUser)
   }
 
-  public async validateManagedUser (managedUserId: string, userId: string, container: Container, newRole: ContainerRole | null): Promise<void> {
-    if (managedUserId !== '*' && userId !== managedUserId && !this.isContainerUser(container, managedUserId)) {
+  private validateSecret = (secret?: string) =>
+    secret ? secret === config.auth.serverSecret : false
+
+  public async validateManagedUser (
+    managedUserId: string,
+    userId: string,
+    container: Container,
+    newRole: ContainerRole | null,
+    isServer: boolean
+  ): Promise<void> {
+    if (
+      !isServer &&
+      managedUserId !== '*' &&
+      userId !== managedUserId &&
+      !this.isContainerUser(container, managedUserId)
+    ) {
       throw new ValidationError('User is not in container', managedUserId)
     }
+
     if (managedUserId === '*' && (newRole === 'Owner' || newRole === 'Writer')) {
       throw new ValidationError('User can not be owner or writer', managedUserId)
     }

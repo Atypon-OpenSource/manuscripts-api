@@ -210,72 +210,6 @@ describe('ContainersController - manageUserRole', () => {
     return expect(containerService.manageUserRole).toBeCalled()
   })
 
-  test('manageUserRole should fail if the token is not a bearer token', () => {
-    const chance = new Chance()
-    const req: any = {
-      headers: {
-        authorization: chance.string()
-      },
-      body: {
-        managedUserId: chance.string(),
-        newRole: chance.string()
-      },
-      params: {
-        containerID: 'MPProject:foo',
-        containerType: 'project'
-      }
-    }
-
-    const containersController: ContainersController = new ContainersController()
-    return expect(
-      containersController.manageUserRole(req)
-    ).rejects.toThrowError(ValidationError)
-  })
-
-  test('manageUserRole should fail if the token is undefined', () => {
-    const chance = new Chance()
-    const req: any = {
-      headers: {
-        authorization: undefined
-      },
-      body: {
-        managedUserId: chance.string(),
-        newRole: chance.string()
-      },
-      params: {
-        containerID: 'MPProject:foo',
-        containerType: 'project'
-      }
-    }
-
-    const containersController: ContainersController = new ContainersController()
-    return expect(
-      containersController.manageUserRole(req)
-    ).rejects.toThrowError(ValidationError)
-  })
-
-  test('manageUserRole should fail if the token is array', () => {
-    const chance = new Chance()
-    const req: any = {
-      headers: {
-        authorization: [chance.string(), chance.string()]
-      },
-      body: {
-        managedUserId: chance.string(),
-        newRole: chance.string()
-      },
-      params: {
-        containerID: 'MPProject:foo',
-        containerType: 'project'
-      }
-    }
-
-    const containersController: ContainersController = new ContainersController()
-    return expect(
-      containersController.manageUserRole(req)
-    ).rejects.toThrowError(ValidationError)
-  })
-
   test('manageUserRole should fail if managedUserId is not a string', () => {
     const chance = new Chance()
     const req: any = {
@@ -323,6 +257,27 @@ describe('ContainersController - manageUserRole', () => {
       body: {
         managedUserId: chance.string(),
         newRole: chance.integer()
+      },
+      params: {
+        containerID: 'MPProject:foo',
+        containerType: 'project'
+      }
+    }
+
+    const containersController: ContainersController = new ContainersController()
+    return expect(
+      containersController.manageUserRole(req)
+    ).rejects.toThrowError(ValidationError)
+  })
+
+  test('manageUserRole should fail if secret is not a string', () => {
+    const chance = new Chance()
+    const req: any = {
+      headers: authorizationHeader(chance.string()),
+      body: {
+        managedUserId: chance.string(),
+        newRole: 'Viewer',
+        secret: chance.integer()
       },
       params: {
         containerID: 'MPProject:foo',

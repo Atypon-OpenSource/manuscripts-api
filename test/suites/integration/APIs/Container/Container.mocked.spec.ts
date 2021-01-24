@@ -17,9 +17,8 @@
 import * as HttpStatus from 'http-status-codes'
 import * as supertest from 'supertest'
 import { Response, Request, NextFunction } from 'express'
-import { Chance } from 'chance'
 
-import { create, manageUserRole, getArchive } from '../../../../api'
+import { create, getArchive } from '../../../../api'
 import { TEST_TIMEOUT } from '../../../../utilities/testSetup'
 import { drop, dropBucket, seed, testDatabase } from '../../../../utilities/db'
 import { BucketKey } from '../../../../../src/Config/ConfigurationTypes'
@@ -31,7 +30,6 @@ import {
 import { AuthStrategy } from '../../../../../src/Auth/Passport/AuthStrategy'
 import { SeedOptions } from '../../../../../src/DataAccess/Interfaces/SeedOptions'
 
-const chance = new Chance()
 let db: any = null
 const seedOptions: SeedOptions = { users: true, applications: true, projects: true }
 
@@ -116,31 +114,6 @@ describe('ProjectService - createProject', () => {
       })
 
     expect(response.status).toBe(HttpStatus.FORBIDDEN)
-  })
-})
-
-describe('ProjectService - manageUserRole', () => {
-  beforeEach(async () => {
-    await drop()
-    await dropBucket(BucketKey.Data)
-    await seed(seedOptions)
-  })
-
-  test('manageUserRole should fail if the user is not found', async () => {
-    const authHeader = authorizationHeader('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbklkIjoiVXNlcnxpbnZhbGlkLXVzZXJAbWFudXNjcmlwdHNhcHAuY29tK2RldmljZUlkIiwidXNlcklkIjoiVXNlcnxpbnZhbGlkLXVzZXJAbWFudXNjcmlwdHNhcHAuY29tIiwiYXBwSWQiOiJBcHBsaWNhdGlvbnw5YTkwOTBkOS02Zjk1LTQyMGMtYjkwMy01NDNmMzJiNTE0MGYiLCJpYXQiOjE1MjIyNTM5Njd9.Eu5wp186NoR19P25zayPlZXhSfJeaW-q1eSDzW88k6c')
-
-    const response: supertest.Response = await manageUserRole(
-      {
-        ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
-      }, {
-        managedUserId: chance.string(),
-        newRole: chance.string()
-      }, {
-        containerID: 'MPProject:1996'
-      })
-
-    expect(response.status).toBe(HttpStatus.UNAUTHORIZED)
   })
 })
 

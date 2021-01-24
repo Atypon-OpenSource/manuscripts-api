@@ -61,6 +61,7 @@ import { GATEWAY_BUCKETS } from '../../../../../src/DomainServices/Sync/SyncServ
 import { SeedOptions } from '../../../../../src/DataAccess/Interfaces/SeedOptions'
 import { validManuscript, validManuscript1 } from '../../../../data/fixtures/manuscripts'
 import { validNote1 } from '../../../../data/fixtures/ManuscriptNote'
+import { config } from '../../../../../src/Config/Config'
 
 jest.mock('email-templates', () =>
   jest.fn().mockImplementation(() => {
@@ -490,6 +491,33 @@ describe('containerService - manageUserRole', () => {
     )
 
     expect(response.status).toBe(HttpStatus.BAD_REQUEST)
+  })
+
+  test('manageUserRole successfully add the managedUser if the secret is provided', async () => {
+    const loginResponse: supertest.Response = await basicLogin(
+      validBody,
+      ValidHeaderWithApplicationKey
+    )
+
+    expect(loginResponse.status).toBe(HttpStatus.OK)
+
+    const authHeader = authorizationHeader(loginResponse.body.token)
+    const response: supertest.Response = await manageUserRole(
+      {
+        ...ValidContentTypeAcceptJsonHeader,
+        ...authHeader
+      },
+      {
+        managedUserId: 'User_valid-user-6@manuscriptsapp.com',
+        newRole: ContainerRole.Viewer,
+        secret: config.auth.serverSecret
+      },
+      {
+        containerID: 'MPProject:valid-project-id-4'
+      }
+    )
+
+    expect(response.status).toBe(HttpStatus.OK)
   })
 
   test('manageUserRole should fail if the managedUser is the only owner', async () => {

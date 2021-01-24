@@ -52,13 +52,13 @@ export interface IContainerService {
 
   /**
    * Manage the role of a user in the container.
-   * @param token Managing user's token.
+   * @param user Managing user object.
    * @param containerId The id of the container.
    * @param managedUserId The id of the managed user.
    * @param newRole The new role of a user, could be null for deleting the user from the container.
    */
   manageUserRole (
-    token: string,
+    user: User,
     containerId: string,
     managedUserId: string,
     newRole: ContainerRole | null
