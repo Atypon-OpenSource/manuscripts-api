@@ -302,9 +302,10 @@ export class AuthService implements IAuthService {
   public static getAPIUrlBasedOnReferer (referer: string | null): string {
     if (referer) {
       const host = new URL(referer).host
+      const refererMainDomain = host.substring(host.indexOf('.'))
       for (const serverUrl of config.IAM.apiServerURL) {
-        const serverHost = new URL(serverUrl).host
-        if (serverHost === host) {
+        const serverMainDomain = new URL(serverUrl).host
+        if (serverMainDomain.substring(serverMainDomain.indexOf('.')) === refererMainDomain) {
           return serverUrl
         }
       }
