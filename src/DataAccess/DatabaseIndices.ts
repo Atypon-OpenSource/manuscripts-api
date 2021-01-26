@@ -47,14 +47,16 @@ const indexesObj = {
       { fields: ['containerID'], gsi: true },
       { fields: ['DOI'], gsi: true }
     ],
-    [ObjectTypes.Keyword]: [{ fields: ['containerID'], gsi: true }]
+    [ObjectTypes.Keyword]: [{ fields: ['containerID'], gsi: true }],
+    [ObjectTypes.UserProject]: [{ fields: ['projectID'], gsi: true }],
+    [ObjectTypes.ProjectInvitation]: [{ fields: ['projectID'], gsi: true }]
   } as any,
   [BucketKey.DerivedData]: {
     // The bucket level indicies
     bucket: [
       { fields: ['objectType'], gsi: true }
     ],
-    [ObjectTypes.ProjectMemento]: [{ fields: ['userID'], gsi: true }],
+    [ObjectTypes.ProjectMemento]: [{ fields: ['userID'], gsi: true }, { fields: ['projectID'], gsi: true }],
     [ObjectTypes.UserCollaborator]: [
       { fields: ['userID'], gsi: true },
       { fields: ['collaboratorID'], gsi: true }
