@@ -695,10 +695,6 @@ describe('containerService - manageUserRole', () => {
       getById: async () => Promise.resolve(validUser)
     }
 
-    containerService.userService = {
-      profile: async () => Promise.resolve(validUserProfile)
-    }
-
     containerService.containerRepository = {
       getById: async () => Promise.resolve(null)
     }
@@ -723,10 +719,6 @@ describe('containerService - manageUserRole', () => {
       getById: async () => Promise.resolve(validUser)
     }
 
-    containerService.userService = {
-      profile: async () => Promise.resolve(validUserProfile)
-    }
-
     containerService.containerRepository = {
       getById: async () => Promise.resolve(validProject)
     }
@@ -735,7 +727,7 @@ describe('containerService - manageUserRole', () => {
       containerService.manageUserRole(
         { _id: 'User|invalid' },
         validProject._id,
-        `User|${chance.string()}`,
+        { userId: `User|${chance.string()}` },
         chance.string()
       )
     ).rejects.toThrowError(UserRoleError)
@@ -751,10 +743,6 @@ describe('containerService - manageUserRole', () => {
       getById: async () => Promise.resolve(validUser)
     }
 
-    containerService.userService = {
-      profile: async () => Promise.resolve(validUserProfile)
-    }
-
     containerService.containerRepository = {
       getById: async () => Promise.resolve(validProject2)
     }
@@ -763,7 +751,7 @@ describe('containerService - manageUserRole', () => {
       containerService.manageUserRole(
         { _id: 'User|test' },
         validProject2._id,
-        `User|${chance.string()}`,
+        { userId: `User|${chance.string()}` },
         chance.string()
       )
     ).rejects.toThrowError(ValidationError)
@@ -776,11 +764,7 @@ describe('containerService - manageUserRole', () => {
     const chance = new Chance()
 
     containerService.userRepository = {
-      getById: async () => Promise.resolve(validUser)
-    }
-
-    containerService.userService = {
-      profile: async () => Promise.resolve(validUserProfile)
+      getById: async () => Promise.resolve(validUser1)
     }
 
     containerService.containerRepository = {
@@ -791,7 +775,7 @@ describe('containerService - manageUserRole', () => {
       containerService.manageUserRole(
         { _id: 'User_valid-user-1@manuscriptsapp.com' },
         validProject5._id,
-        validUser1._id,
+        { userId: validUser1._id },
         chance.string()
       )
     ).rejects.toThrowError(UserRoleError)
@@ -804,10 +788,6 @@ describe('containerService - manageUserRole', () => {
 
     containerService.userRepository = {
       getById: async () => Promise.resolve(validUser)
-    }
-
-    containerService.userService = {
-      profile: async () => Promise.resolve(validUserProfile)
     }
 
     containerService.containerRepository = {
@@ -830,12 +810,9 @@ describe('containerService - manageUserRole', () => {
     const containerService: any =
       DIContainer.sharedContainer.containerService[ContainerType.project]
 
-    containerService.userService = {
-      profile: async () => Promise.resolve(validUserProfile)
-    }
-
     containerService.userRepository = {
-      getById: async () => Promise.resolve(validUser)
+      getById: async () =>
+        Promise.resolve({ _id: validProject4.writers[0].replace('_', '|') })
     }
 
     containerService.containerRepository = {
@@ -847,7 +824,32 @@ describe('containerService - manageUserRole', () => {
     await containerService.manageUserRole(
       { _id: 'User_valid-user-1@manuscriptsapp.com' },
       validProject4._id,
-      validProject4.writers[0].replace('_', '|'),
+      { userId: validProject4.writers[0].replace('_', '|') },
+      ContainerRole.Owner
+    )
+
+    expect(containerService.updateContainer).toBeCalled()
+  })
+
+  test('should call update project user using connectUserID', async () => {
+    const containerService: any =
+      DIContainer.sharedContainer.containerService[ContainerType.project]
+
+    containerService.userRepository = {
+      getOne: async () =>
+        Promise.resolve({ _id: validProject4.writers[0].replace('_', '|') })
+    }
+
+    containerService.containerRepository = {
+      getById: async () => Promise.resolve(validProject4)
+    }
+
+    containerService.updateContainer = jest.fn()
+
+    await containerService.manageUserRole(
+      { _id: 'User_valid-user-1@manuscriptsapp.com' },
+      validProject4._id,
+      { connectUserID: 'some-connect-id' },
       ContainerRole.Owner
     )
 
@@ -858,10 +860,6 @@ describe('containerService - manageUserRole', () => {
     const containerService: any =
       DIContainer.sharedContainer.containerService[ContainerType.project]
 
-    containerService.userService = {
-      profile: async () => Promise.resolve(validUserProfile)
-    }
-
     containerService.userRepository = {
       getById: async () => Promise.resolve(validUser)
     }
@@ -875,7 +873,7 @@ describe('containerService - manageUserRole', () => {
     await containerService.manageUserRole(
       { _id: 'User_valid-user-1@manuscriptsapp.com' },
       validProject4._id,
-      validProject4.writers[0].replace('_', '|'),
+      { userId: validProject4.writers[0].replace('_', '|') },
       ContainerRole.Owner,
       '123456789'
     )

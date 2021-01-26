@@ -60,7 +60,7 @@ export interface IContainerService {
   manageUserRole (
     user: User,
     containerId: string,
-    managedUserId: string,
+    managedUserId: { userId?: string, connectUserId?: string },
     newRole: ContainerRole | null
   ): Promise<void>
 

@@ -38,7 +38,8 @@ export const manageUserRoleSchema: Joi.SchemaMap = {
     accept: appJsonAndCharset
   }).options({ allowUnknown: true }),
   body: Joi.object({
-    managedUserId: Joi.string().required(),
+    managedUserId: Joi.string(),
+    managedUserConnectId: Joi.string(),
     newRole: Joi.string().allow(null),
     secret: Joi.string()
   }),

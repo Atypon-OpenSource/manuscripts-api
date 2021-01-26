@@ -1112,10 +1112,11 @@ definitions:
   ManageUserRoleSchema:
     type: "object"
     required:
-      - "managedUserId"
       - "newRole"
     properties:
       managedUserId:
+        type: "string"
+      managedUserConnectId:
         type: "string"
       newRole:
         type: "string"

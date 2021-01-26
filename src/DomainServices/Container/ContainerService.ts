@@ -149,13 +149,19 @@ export class ContainerService implements IContainerService {
   public async manageUserRole (
     user: User,
     containerId: string,
-    managedUserId: string,
+    managedUser: { userId: string, connectUserId: string },
     newRole: ContainerRole | null,
     secret?: string
   ): Promise<void> {
     const container = await this.getContainer(containerId)
 
-    const managedUser = await this.getValidUser(managedUserId)
+    const managedUserObj = managedUser.userId
+      ? await this.userRepository.getById(ContainerService.userIdForDatabase(managedUser.userId))
+      : await this.userRepository.getOne({ connectUserID: managedUser.connectUserId })
+
+    if (!managedUserObj) {
+      throw new ValidationError('Invalid managed user id', managedUser)
+    }
 
     if (!this.isOwner(container, user._id)) {
       throw new UserRoleError('User must be an owner to manage roles', newRole)
@@ -163,13 +169,13 @@ export class ContainerService implements IContainerService {
 
     const isServer = this.validateSecret(secret)
 
-    await this.validateManagedUser(managedUserId, user._id, container, newRole, isServer)
+    await this.validateManagedUser(managedUserObj._id, user._id, container, newRole, isServer)
 
-    if (this.isOwner(container, managedUserId) && container.owners.length < 2) {
+    if (this.isOwner(container, managedUserObj._id) && container.owners.length < 2) {
       throw new UserRoleError('User is the only owner', newRole)
     }
 
-    await this.updateContainerUser(containerId, newRole, managedUser)
+    await this.updateContainerUser(containerId, newRole, managedUserObj)
   }
 
   private validateSecret = (secret?: string) =>

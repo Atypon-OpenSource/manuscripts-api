@@ -67,11 +67,14 @@ export class ContainersController extends ContainedBaseController
 
   // tslint:disable-next-line:cyclomatic-complexity
   async manageUserRole (req: Request): Promise<void> {
-    const { managedUserId, newRole, secret } = req.body
+    const { managedUserId, managedUserConnectId, newRole, secret } = req.body
     const { containerID } = req.params
 
-    if (!managedUserId || !isString(managedUserId)) {
-      throw new ValidationError('User id must be string', managedUserId)
+    if (
+      !(managedUserId && isString(managedUserId)) &&
+      !(managedUserConnectId && isString(managedUserConnectId))
+    ) {
+      throw new ValidationError('User id must be string', null)
     }
 
     if (!containerID || !isString(containerID)) {
@@ -90,7 +93,13 @@ export class ContainersController extends ContainedBaseController
 
     await DIContainer.sharedContainer.containerService[
       containerType
-    ].manageUserRole(req.user, containerID, managedUserId, newRole, secret)
+    ].manageUserRole(
+      req.user,
+      containerID,
+      { userId: managedUserId, connectUserId: managedUserConnectId },
+      newRole,
+      secret
+    )
   }
 
   async addUser (req: Request): Promise<void> {

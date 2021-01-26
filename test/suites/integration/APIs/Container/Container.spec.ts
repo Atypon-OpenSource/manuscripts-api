@@ -508,7 +508,7 @@ describe('containerService - manageUserRole', () => {
         ...authHeader
       },
       {
-        managedUserId: 'User_valid-user-6@manuscriptsapp.com',
+        managedUserId: 'User|valid-user-6@manuscriptsapp.com',
         newRole: ContainerRole.Viewer,
         secret: config.auth.serverSecret
       },
