@@ -113,9 +113,11 @@ export class ProjectRepository
       return null
     }
 
+    // Index selection for a query solely depends on the filter on the where statement, and
+    // since projectID is a partial index we are adding objectTypes explicitly
     let n1ql = `SELECT *, META().id FROM ${
       this.bucketName
-    } WHERE (projectID = $1 OR containerID = $1)`
+    } WHERE containerID = $1 OR (projectID = $1 and objectType in ['MPUserProject','MPProjectInvitation'])`
 
     if (manuscriptID) {
       n1ql += ' and (manuscriptID = $2  or Meta().id = $2 or manuscriptID is missing)'
@@ -163,9 +165,11 @@ export class ProjectRepository
       return null
     }
 
+    // Index selection for a query solely depends on the filter on the where statement, and
+    // since projectID is a partial index we are adding objectTypes explicitly
     const n1ql = `SELECT META().id FROM ${
       this.bucketName
-    } WHERE projectID = $1 OR containerID = $1`
+    } WHERE containerID = $1 OR (projectID = $1 and objectType in ['MPUserProject','MPProjectInvitation'])`
 
     const statement = N1qlQuery.fromString(n1ql)
       .adhoc(false)
