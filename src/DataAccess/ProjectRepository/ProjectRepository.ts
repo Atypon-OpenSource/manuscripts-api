@@ -328,7 +328,7 @@ export class ProjectRepository
     }
     let n1ql = `SELECT _sync.attachments ,META().id FROM ${
       this.bucketName
-    } WHERE (projectID = $1 OR containerID = $1) AND _sync.attachments is not missing`
+    } WHERE containerID = $1 AND _sync.attachments is not missing`
 
     if (manuscriptID) {
       n1ql += ` AND (manuscriptID = $2 or manuscriptID is missing)`
