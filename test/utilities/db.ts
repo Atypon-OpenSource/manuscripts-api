@@ -37,6 +37,7 @@ import { submissionsList } from '../data/dump/submissions'
 import { validManuscript, validManuscript1 } from '../data/fixtures/manuscripts'
 import { manuscriptList } from '../data/dump/manuscriptList'
 import { manuscriptNoteList } from '../data/dump/manuscriptNotes'
+import { externalFileList } from '../data/dump/externalFilesList'
 
 async function createUsers (): Promise<void> {
   const { userRepository, userEmailRepository } = DIContainer.sharedContainer
@@ -160,6 +161,15 @@ async function createManuscriptNotes (): Promise<void> {
   }
 }
 
+async function createExternalFile (): Promise<void> {
+  for (const externalFile of externalFileList) {
+    await DIContainer.sharedContainer.externalFileRepository.create(
+      _.clone(externalFile),
+      {}
+    )
+  }
+}
+
 let _db: any = null
 export async function testDatabase (
   enableActivityTracking: boolean = false,
@@ -259,6 +269,10 @@ export async function seed (options: SeedOptions): Promise<void> {
     storagePromises.push(createManuscriptNotes())
   }
 
+  if (options.externalFile) {
+    storagePromises.push(createExternalFile())
+  }
+
   await Promise.all(storagePromises)
 }
 
@@ -289,6 +303,12 @@ export async function dropBucket (bucketKey: BucketKey): Promise<void> {
   await purge(bucketKey, payload)
 
   payload = manuscriptNoteList.reduce((acc: any, doc: any) => {
+    acc[doc._id] = ['*']
+    return acc
+  }, {})
+  await purge(bucketKey, payload)
+
+  payload = externalFileList.reduce((acc: any, doc: any) => {
     acc[doc._id] = ['*']
     return acc
   }, {})

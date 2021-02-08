@@ -86,6 +86,7 @@ import { log } from '../Utilities/Logger'
 import { IPressroomService } from '../DomainServices/Pressroom/IPressroomService'
 import { PressroomService } from '../DomainServices/Pressroom/PressroomService'
 import { ManuscriptNoteRepository } from '../DataAccess/ManuscriptNoteRepository/ManuscriptNoteRepository'
+import { ExternalFileRepository } from '../DataAccess/ExternalFileRepository/ExternalFileRepository'
 
 export class UninitializedContainerError extends Error {
   constructor () {
@@ -148,6 +149,7 @@ export class DIContainer {
   readonly iamTokenVerifier: IAMTokenVerifier
   readonly pressroomService: IPressroomService
   readonly manuscriptNotesRepository: ManuscriptNoteRepository
+  readonly externalFileRepository: ExternalFileRepository
 
   /**
    * WARNING: internal method.
@@ -230,6 +232,10 @@ export class DIContainer {
       BucketKey.Data,
       this.dataBucket
     )
+    this.externalFileRepository = new ExternalFileRepository(
+      BucketKey.Data,
+      this.dataBucket
+    )
     this.userService = new UserService(
       this.userRepository,
       this.singleUseTokenRepository,
@@ -256,7 +262,8 @@ export class DIContainer {
         this.projectRepository,
         this.containerInvitationRepository,
         this.emailService,
-        this.manuscriptNotesRepository
+        this.manuscriptNotesRepository,
+        this.externalFileRepository
       )}
     this.containerInvitationService = new ContainerInvitationService(
         this.userRepository,

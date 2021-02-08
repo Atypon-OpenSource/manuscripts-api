@@ -27,6 +27,7 @@ import { ContainerType } from '../../../../../../src/Models/ContainerModels'
 import { validProject } from '../../../../../data/fixtures/projects'
 import { validJWTToken } from '../../../../../data/fixtures/authServiceUser'
 import { UserService } from '../../../../../../src/DomainServices/User/UserService'
+import { externalFile, externalFile1 } from '../../../../../data/fixtures/ExternalFiles'
 
 jest.setTimeout(TEST_TIMEOUT)
 
@@ -861,5 +862,53 @@ describe('ContainersController - addProductionNote', () => {
     const containersController: ContainersController = new ContainersController()
     await containersController.addProductionNote(req)
     expect(containerService.createManuscriptNote).toBeCalled()
+  })
+})
+describe('ContainersController - addExternalFiles', () => {
+  test('should call addExternalFiles', async () => {
+    const containerService = DIContainer.sharedContainer.containerService[ContainerType.project]
+    containerService.addExternalFiles = jest.fn()
+    const req: any = {
+      body: {
+        content: [externalFile, externalFile1]
+      }
+    }
+    const containersController: ContainersController = new ContainersController()
+    await containersController.addExternalFiles(req)
+    expect(containerService.addExternalFiles).toBeCalled()
+  })
+})
+describe('ContainersController - updateExternalFile', () => {
+  test('should fail if external file id is not a string', async () => {
+    const containerService = DIContainer.sharedContainer.containerService[ContainerType.project]
+    containerService.updateExternalFile = jest.fn()
+    const chance = new Chance()
+    const req: any = {
+      body: {
+        content: externalFile
+      },
+      params: {
+        externalFileID: chance.integer()
+      }
+    }
+    const containersController: ContainersController = new ContainersController()
+    await expect(containersController.updateExternalFile(req)).rejects.toThrow(ValidationError)
+  })
+
+  test('should call updateExternalFiles', async () => {
+    const containerService = DIContainer.sharedContainer.containerService[ContainerType.project]
+    UserService.profileID = jest.fn()
+    containerService.updateExternalFile = jest.fn()
+    const req: any = {
+      body: {
+        content: externalFile
+      },
+      params: {
+        externalFileID: externalFile._id
+      }
+    }
+    const containersController: ContainersController = new ContainersController()
+    await containersController.updateExternalFile(req)
+    expect(containerService.updateExternalFile).toBeCalled()
   })
 })

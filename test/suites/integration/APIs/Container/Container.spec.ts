@@ -29,7 +29,7 @@ import {
   accessToken,
   pickerBundle,
   addProductionNote,
-  getProductionNotes
+  getProductionNotes, addExternalFiles, updateExternalFile
 } from '../../../../api'
 import { TEST_TIMEOUT } from '../../../../utilities/testSetup'
 import { drop, dropBucket, seed, testDatabase } from '../../../../utilities/db'
@@ -62,6 +62,7 @@ import { SeedOptions } from '../../../../../src/DataAccess/Interfaces/SeedOption
 import { validManuscript, validManuscript1 } from '../../../../data/fixtures/manuscripts'
 import { validNote1 } from '../../../../data/fixtures/ManuscriptNote'
 import { config } from '../../../../../src/Config/Config'
+import { externalFile } from '../../../../data/fixtures/ExternalFiles'
 
 jest.mock('email-templates', () =>
   jest.fn().mockImplementation(() => {
@@ -1135,5 +1136,103 @@ describe('ContainerService - getProductionNotes', () => {
     )
     expect(getProductionNoteResponse.status).toBe(HttpStatus.OK)
     expect(JSON.parse(getProductionNoteResponse.text).length).toBeGreaterThan(0)
+  })
+})
+
+describe('ContainerService - addExternalFiles', () => {
+  beforeEach(async () => {
+    await drop()
+    await dropBucket(BucketKey.Data)
+    await seed({ users: true, applications: true, projects: true })
+    await DIContainer.sharedContainer.syncService.createGatewayContributor(
+      {
+        _id: `User|${validBody2.email}`,
+        name: 'foobar',
+        email: validBody2.email
+      },
+      BucketKey.Data
+    )
+  })
+  test('should add external files', async () => {
+    const loginResponse: supertest.Response = await basicLogin(
+      validBody2,
+      ValidHeaderWithApplicationKey
+    )
+    expect(loginResponse.status).toBe(HttpStatus.OK)
+
+    const authHeader = authorizationHeader(loginResponse.body.token)
+    const { _id, ...noId } = externalFile
+    const addExternalFilesResponse: supertest.Response = await addExternalFiles(
+      {
+        ...ValidContentTypeAcceptJsonHeader,
+        ...authHeader
+      },
+      {
+        content: [noId]
+      }
+    )
+    expect(addExternalFilesResponse.status).toBe(HttpStatus.OK)
+  })
+})
+
+describe('ContainerService - updateExternalFile', () => {
+  beforeEach(async () => {
+    await drop()
+    await dropBucket(BucketKey.Data)
+    await seed({ users: true, applications: true, projects: true, externalFile: true })
+    await DIContainer.sharedContainer.syncService.createGatewayContributor(
+      {
+        _id: `User|${validBody2.email}`,
+        name: 'foobar',
+        email: validBody2.email
+      },
+      BucketKey.Data
+    )
+  })
+
+  test('should should fail if id not found', async () => {
+    const loginResponse: supertest.Response = await basicLogin(
+      validBody2,
+      ValidHeaderWithApplicationKey
+    )
+    expect(loginResponse.status).toBe(HttpStatus.OK)
+
+    const authHeader = authorizationHeader(loginResponse.body.token)
+    const { _id, ...noId } = externalFile
+    const updateExternalFileResponse: supertest.Response = await updateExternalFile(
+      {
+        ...ValidContentTypeAcceptJsonHeader,
+        ...authHeader
+      },
+      {
+        content: noId
+      },{
+        externalFileID: 'random-id'
+      }
+    )
+    expect(updateExternalFileResponse.status).toBe(HttpStatus.NOT_FOUND)
+  })
+
+  test('should update external files', async () => {
+    const loginResponse: supertest.Response = await basicLogin(
+      validBody2,
+      ValidHeaderWithApplicationKey
+    )
+    expect(loginResponse.status).toBe(HttpStatus.OK)
+
+    const authHeader = authorizationHeader(loginResponse.body.token)
+    const { _id, ...noId } = externalFile
+    const updateExternalFileResponse: supertest.Response = await updateExternalFile(
+      {
+        ...ValidContentTypeAcceptJsonHeader,
+        ...authHeader
+      },
+      {
+        content: noId
+      },{
+        externalFileID: _id
+      }
+    )
+    expect(updateExternalFileResponse.status).toBe(HttpStatus.OK)
   })
 })

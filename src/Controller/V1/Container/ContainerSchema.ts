@@ -118,3 +118,18 @@ export const addProductionNoteSchema: Joi.SchemaMap = {
     target: Joi.string()
   })
 }
+
+export const addExternalFiles: Joi.SchemaMap = {
+  body: Joi.object({
+    content: Joi.array().required()
+  })
+}
+
+export const updateExternalFile: Joi.SchemaMap = {
+  params: Joi.object({
+    externalFileID: Joi.string().required()
+  }),
+  body: Joi.object({
+    content: Joi.object().required()
+  })
+}

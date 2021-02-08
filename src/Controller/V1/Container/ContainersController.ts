@@ -28,6 +28,7 @@ import { ContainedBaseController, getContainerType } from '../../ContainedBaseCo
 import { config } from '../../../Config/Config'
 import { RSA_JWK } from 'pem-jwk'
 import { ContainerService } from '../../../DomainServices/Container/ContainerService'
+import { ExternalFile } from '@manuscripts/manuscripts-json-schema'
 
 export class ContainersController extends ContainedBaseController
   implements IContainersController {
@@ -286,5 +287,23 @@ export class ContainersController extends ContainedBaseController
 
     const containerType = getContainerType(containerID)
     return DIContainer.sharedContainer.containerService[containerType].createManuscriptNote(containerID, manuscriptID, content, connectUserID, source, target)
+  }
+
+  async addExternalFiles (req: Request) {
+    const { content } = req.body
+    const externalFiles: ExternalFile[] = content
+    return DIContainer.sharedContainer.containerService[ContainerType.project].addExternalFiles(externalFiles)
+  }
+
+  async updateExternalFile (req: Request) {
+    const { externalFileID } = req.params
+
+    if (!isString(externalFileID)) {
+      throw new ValidationError('userConnectID should be string', externalFileID)
+    }
+
+    const { content } = req.body
+    const externalFile: ExternalFile = content
+    return DIContainer.sharedContainer.containerService[ContainerType.project].updateExternalFile(externalFileID, externalFile)
   }
 }

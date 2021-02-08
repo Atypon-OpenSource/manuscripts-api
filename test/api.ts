@@ -431,3 +431,19 @@ export async function createProject (headers: any, body: object): Promise<supert
     .set(headers)
     .send(body)
 }
+
+export async function addExternalFiles (headers: any, body: object): Promise<supertest.Response> {
+  const server: IServer = await createServer()
+  return supertest(server.app)
+    .post(`/api/v1/external-files/add`)
+    .set(headers)
+    .send(body)
+}
+
+export async function updateExternalFile (headers: any, body: object, params: any): Promise<supertest.Response> {
+  const server: IServer = await createServer()
+  return supertest(server.app)
+    .post(`/api/v1/external-files/${params.externalFileID}/update`)
+    .set(headers)
+    .send(body)
+}

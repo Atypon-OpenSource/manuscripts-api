@@ -22,7 +22,8 @@ import {
   UserProfile,
   ContainerRequest,
   Submission,
-  ManuscriptNote
+  ManuscriptNote,
+  ExternalFile
 } from '@manuscripts/manuscripts-json-schema'
 
 export type ProjectLike = Pick<
@@ -64,3 +65,8 @@ export type ManuscriptNoteLike = Pick<
   ManuscriptNote,
   Exclude<keyof ManuscriptNote, 'createdAt' | 'updatedAt'>
 >
+
+export type ExternalFileLike = Pick<
+  ExternalFile,
+  Exclude<keyof ExternalFile, 'createdAt' | 'updatedAt'>
+  >

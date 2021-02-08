@@ -47,9 +47,10 @@ import { ContainerInvitationRepository } from '../../DataAccess/ContainerInvitat
 import { config } from '../../Config/Config'
 import { ScopedAccessTokenConfiguration } from '../../Config/ConfigurationTypes'
 import { ManuscriptNoteRepository } from '../../DataAccess/ManuscriptNoteRepository/ManuscriptNoteRepository'
-import { ManuscriptNote } from '@manuscripts/manuscripts-json-schema'
+import { ManuscriptNote, ExternalFile } from '@manuscripts/manuscripts-json-schema'
 import { UserService } from '../User/UserService'
 import { DIContainer } from '../../DIContainer/DIContainer'
+import { ExternalFileRepository } from '../../DataAccess/ExternalFileRepository/ExternalFileRepository'
 
 const JSZip = require('jszip')
 
@@ -63,7 +64,8 @@ export class ContainerService implements IContainerService {
     private containerRepository: ContainerRepository,
     private containerInvitationRepository: ContainerInvitationRepository,
     private emailService: EmailService,
-    private manuscriptNoteRepository: ManuscriptNoteRepository
+    private manuscriptNoteRepository: ManuscriptNoteRepository,
+    private externalFileRepository: ExternalFileRepository
   ) {}
 
   public async containerCreate (
@@ -735,5 +737,32 @@ export class ContainerService implements IContainerService {
     manuscriptID: string
   ): Promise<ManuscriptNote[]> {
     return this.manuscriptNoteRepository.getProductionNotes(containerID, manuscriptID)
+  }
+
+  public async updateExternalFile (
+    externalFileID: string,
+    updatedDocument: ExternalFile
+  ): Promise<ExternalFile> {
+    const externalFile = await this.externalFileRepository.getById(externalFileID)
+    if (!externalFile) {
+      throw new RecordNotFoundError(`External file not found for id: ${externalFileID}`)
+    }
+    _.extend(externalFile, updatedDocument)
+    return this.externalFileRepository.update(externalFileID, externalFile, {})
+  }
+
+  public async addExternalFiles (docs: ExternalFile[]) {
+    const stamp = timestamp()
+    const externalFiles: ExternalFile[] = []
+    for (const externalFile of docs) {
+      externalFiles.push({
+        ...externalFile,
+        _id: `${this.externalFileRepository.objectType}:${uuid_v4()}`,
+        createdAt: stamp,
+        updatedAt: stamp,
+        sessionID: uuid_v4()
+      })
+    }
+    return this.externalFileRepository.bulkDocs(externalFiles)
   }
 }

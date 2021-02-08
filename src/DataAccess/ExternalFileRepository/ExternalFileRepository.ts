@@ -14,19 +14,23 @@
  * limitations under the License.
  */
 
-export interface SeedOptions {
-  users?: boolean
-  applications?: boolean
-  singleUseTokens?: boolean
-  invitations?: boolean
-  projects?: boolean
-  projectInvitations?: boolean
-  invitationTokens?: boolean
-  userProfiles?: boolean
-  userTokens?: boolean
-  containerRequest?: boolean
-  submission?: boolean
-  manuscript?: boolean
-  manuscriptNotes?: boolean
-  externalFile?: boolean
+import { SGRepository } from '../SGRepository'
+import {
+  NoBucketError
+} from '../../Errors'
+
+class ExternalFileRepository extends SGRepository<any, any, any, any> {
+  public get objectType (): string {
+    return 'MPExternalFile'
+  }
+
+  public get bucketName (): string {
+    if (!this.database.bucket) {
+      throw new NoBucketError()
+    }
+
+    return (this.database.bucket as any)._name
+  }
 }
+
+export { ExternalFileRepository }

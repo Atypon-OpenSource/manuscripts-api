@@ -29,7 +29,7 @@ import {
   accessTokenJWKSchema,
   getPickerBuilderSchema,
   getProductionNotesSchema,
-  addProductionNoteSchema
+  addProductionNoteSchema, addExternalFiles, updateExternalFile
 } from './ContainerSchema'
 import { ContainersController } from './ContainersController'
 import { AuthStrategy } from '../../../Auth/Passport/AuthStrategy'
@@ -169,6 +169,28 @@ export class ContainerRoute extends BaseRoute {
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           res.send(await this.containersController.addProductionNote(req))
+        }, next)
+      }
+    )
+
+    router.post(
+      `/external-files/add`,
+      expressJoiMiddleware(addExternalFiles, {}),
+      AuthStrategy.JWTAuth,
+      (req: Request, res: Response, next: NextFunction) => {
+        return this.runWithErrorHandling(async () => {
+          res.send(await this.containersController.addExternalFiles(req))
+        }, next)
+      }
+    )
+
+    router.post(
+      `/external-files/:externalFileID/update`,
+      expressJoiMiddleware(updateExternalFile, {}),
+      AuthStrategy.JWTAuth,
+      (req: Request, res: Response, next: NextFunction) => {
+        return this.runWithErrorHandling(async () => {
+          res.send(await this.containersController.updateExternalFile(req))
         }, next)
       }
     )

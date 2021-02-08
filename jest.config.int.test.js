@@ -49,6 +49,7 @@ module.exports = {
         "!src/DataAccess/EventingFunctions/*.ts",
         "!src/DataAccess/ProjectMementoRepository/ProjectMementoRepository.ts",
         "!src/DataAccess/UserCollaboratorRepository/UserCollaboratorRepository.ts",
-        "!src/DataAccess/ProjectSummaryRepository/ProjectSummaryRepository.ts"
+        "!src/DataAccess/ProjectSummaryRepository/ProjectSummaryRepository.ts",
+        "!src/DataAccess/ExternalFileRepository/ExternalFileRepository.ts"
     ]
 }

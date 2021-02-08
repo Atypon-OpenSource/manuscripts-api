@@ -16,7 +16,7 @@
 
 import { ContainerRole, Container } from '../../Models/ContainerModels'
 import { User } from '../../Models/UserModels'
-import { ManuscriptNote } from '@manuscripts/manuscripts-json-schema'
+import { ExternalFile, ManuscriptNote } from '@manuscripts/manuscripts-json-schema'
 
 export interface IContainerService {
   /**
@@ -140,6 +140,22 @@ export interface IContainerService {
     manuscriptID: string,
     userID: string
   ): Promise<ManuscriptNote[]>
+
+  /**
+   * Update a externalFile document
+   * @param externalFileID external file id to be updated
+   * @param updatedDocument the new updated document
+   */
+  updateExternalFile (
+    externalFileID: string,
+    updatedDocument: ExternalFile
+  ): Promise<ExternalFile>
+
+  /**
+   * create given list of external files
+   * @param docs list of ExternalFile document to be created
+   */
+  addExternalFiles (docs: ExternalFile[]): void
 }
 
 export interface ArchiveOptions {

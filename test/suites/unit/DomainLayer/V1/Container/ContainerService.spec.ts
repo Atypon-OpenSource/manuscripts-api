@@ -58,6 +58,7 @@ import { validUser } from '../../../../../data/fixtures/userServiceUser'
 import { validManuscript } from '../../../../../data/fixtures/manuscripts'
 import { validNote1, validNote2 } from '../../../../../data/fixtures/ManuscriptNote'
 import { validBody2 } from '../../../../../data/fixtures/credentialsRequestPayload'
+import { externalFile } from '../../../../../data/fixtures/ExternalFiles'
 const JSZip = require('jszip')
 
 jest.setTimeout(TEST_TIMEOUT)
@@ -1595,5 +1596,35 @@ describe('ContainerService - getProductionNotes', () => {
     const notes = await containerService.getProductionNotes(containerID, manuscriptID)
     expect(notes).toBeTruthy()
     expect(notes.length).toBe(1)
+  })
+})
+describe('ContainerService - addExternalFiles', () => {
+  test('should add externalFiles', async () => {
+    const containerService: any =
+      DIContainer.sharedContainer.containerService[ContainerType.project]
+    const repo: any = DIContainer.sharedContainer.externalFileRepository
+    repo.bulkDocs = jest.fn(() => [externalFile])
+    await containerService.addExternalFiles([externalFile])
+    expect(repo.bulkDocs).toBeCalled()
+  })
+})
+describe('ContainerService - updateExternalFile', () => {
+  test('should update externalFile', async () => {
+    const containerService: any =
+      DIContainer.sharedContainer.containerService[ContainerType.project]
+    const repo: any = DIContainer.sharedContainer.externalFileRepository
+    repo.getById = jest.fn(() => externalFile)
+    repo.update = jest.fn()
+    await containerService.updateExternalFile(externalFile._id, externalFile)
+    expect(repo.update).toBeCalled()
+  })
+
+  test('should fail if externalFile does not exists', async () => {
+    const containerService: any =
+      DIContainer.sharedContainer.containerService[ContainerType.project]
+    const repo: any = DIContainer.sharedContainer.externalFileRepository
+    repo.getById = jest.fn(() => {})
+    repo.update = jest.fn()
+    await expect(containerService.updateExternalFile(externalFile._id, externalFile)).rejects.toThrow(RecordNotFoundError)
   })
 })
