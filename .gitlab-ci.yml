@@ -152,11 +152,11 @@ integration_tests:
   tags:
     - docker-ce
     - docker-compose
-  artifacts:
-    paths:
-      - coverage/int
-    expire_in: 1 week
-    when: always
+#  artifacts:
+#    paths:
+#      - coverage/int
+#    expire_in: 1 week
+#    when: always
   except:
     refs:
       - /^deployment/
