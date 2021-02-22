@@ -53,8 +53,7 @@ import {
 } from '../../../../../src/Models/ContainerModels'
 import {
   ValidationError,
-  RecordNotFoundError,
-  ConflictingRecordError
+  RecordNotFoundError
 } from '../../../../../src/Errors'
 import { BucketKey } from '../../../../../src/Config/ConfigurationTypes'
 import {

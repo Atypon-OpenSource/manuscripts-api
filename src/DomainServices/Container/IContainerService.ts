@@ -113,7 +113,7 @@ export interface IContainerService {
   ensureValidRole (role: ContainerRole): void
 
   /**
-   * Creates a Manuscript Note
+   * Creates a Manuscript
    * @param userID the ID of the user
    * @param containerId the ID of the container
    * @param manuscriptID the ID of the manuscript
