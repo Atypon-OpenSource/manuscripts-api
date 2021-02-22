@@ -252,6 +252,24 @@ export class ContainersController extends ContainedBaseController
     return { keys: [ jwk ] }
   }
 
+  async createManuscript (req: Request) {
+    const { containerID, manuscriptID } = req.params
+    const { user } = req
+
+    if (!isString(containerID)) {
+      throw new ValidationError('containerID should be string', containerID)
+    }
+
+    if (manuscriptID && !isString(manuscriptID)) {
+      throw new ValidationError('manuscriptID should be string', manuscriptID)
+    }
+
+    const containerType = getContainerType(containerID)
+    return DIContainer.sharedContainer.containerService[
+      containerType
+    ].createManuscript(user._id, containerID, manuscriptID)
+  }
+
   async getProductionNotes (req: Request) {
     const { containerID, manuscriptID } = req.params
 

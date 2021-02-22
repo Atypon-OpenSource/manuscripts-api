@@ -780,6 +780,49 @@ describe('ContainersController - getProductionNotes', () => {
   })
 })
 
+describe('ContainersController - createManuscript', () => {
+  test('should fail if containerID is not a string', async () => {
+    const chance = new Chance()
+    const req: any = {
+      params: {
+        containerID: chance.integer()
+      }
+    }
+    const containersController: ContainersController = new ContainersController()
+    await expect(containersController.createManuscript(req)).rejects.toThrow(ValidationError)
+  })
+
+  test('should fail if manuscriptID is not a string', async () => {
+    const chance = new Chance()
+    const req: any = {
+      params: {
+        containerID: chance.string(),
+        manuscriptID: chance.integer()
+      }
+    }
+    const containersController: ContainersController = new ContainersController()
+    await expect(containersController.createManuscript(req)).rejects.toThrow(ValidationError)
+  })
+
+  test('should succeed to call createManuscript', async () => {
+    const containerService = DIContainer.sharedContainer.containerService[ContainerType.project]
+    containerService.createManuscript = jest.fn()
+    const chance = new Chance()
+    const req: any = {
+      params: {
+        containerID: `MPProject:${chance.string()}`,
+        manuscriptID: chance.string()
+      },
+      user: {
+        _id: chance.string()
+      }
+    }
+    const containersController: ContainersController = new ContainersController()
+    await containersController.createManuscript(req)
+    expect(containerService.createManuscript).toBeCalled()
+  })
+})
+
 describe('ContainersController - addProductionNote', () => {
   test('should fail if containerID is not a string', async () => {
     const chance = new Chance()

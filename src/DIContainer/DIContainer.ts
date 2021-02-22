@@ -87,6 +87,8 @@ import { IPressroomService } from '../DomainServices/Pressroom/IPressroomService
 import { PressroomService } from '../DomainServices/Pressroom/PressroomService'
 import { ManuscriptNoteRepository } from '../DataAccess/ManuscriptNoteRepository/ManuscriptNoteRepository'
 import { ExternalFileRepository } from '../DataAccess/ExternalFileRepository/ExternalFileRepository'
+import { IManuscriptRepository } from '../DataAccess/Interfaces/IManuscriptRepository'
+import { ManuscriptRepository } from '../DataAccess/ManuscriptRepository/ManuscriptRepository'
 
 export class UninitializedContainerError extends Error {
   constructor () {
@@ -148,6 +150,7 @@ export class DIContainer {
   readonly jwksClient: JWKSClient
   readonly iamTokenVerifier: IAMTokenVerifier
   readonly pressroomService: IPressroomService
+  readonly manuscriptRepository: IManuscriptRepository
   readonly manuscriptNotesRepository: ManuscriptNoteRepository
   readonly externalFileRepository: ExternalFileRepository
 
@@ -228,6 +231,10 @@ export class DIContainer {
     this.submissionService = new SubmissionService(
       this.submissionRepository
     )
+    this.manuscriptRepository = new ManuscriptRepository(
+      BucketKey.Data,
+      this.dataBucket
+    )
     this.manuscriptNotesRepository = new ManuscriptNoteRepository(
       BucketKey.Data,
       this.dataBucket
@@ -262,6 +269,7 @@ export class DIContainer {
         this.projectRepository,
         this.containerInvitationRepository,
         this.emailService,
+        this.manuscriptRepository,
         this.manuscriptNotesRepository,
         this.externalFileRepository
       )}

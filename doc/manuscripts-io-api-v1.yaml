@@ -790,6 +790,27 @@ paths:
           description: "User is not a contributor in the container."
         401:
           description: "Invalid authorization token."
+  /projects/:containerID/manuscript/:manuscriptID:
+    post:
+      tags:
+        - "container"
+      summary: "Create a manusript."
+      description: ""
+      operationId: "create-manuscript"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters: 
+        - $ref: '#/parameters/JsonAcceptHeadersSchema'
+        - $ref: '#/parameters/AuthorizationTokenHeaderSchema'
+      responses:
+        200:
+          description: "Manuscripts created successfully."
+        400:
+          description: "User is not a contributor in the container."
+        409:
+          description: "Manuscript id already taken by another manuscript."
   /invitation/invite:
     post:
       tags:

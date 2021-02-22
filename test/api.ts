@@ -352,6 +352,18 @@ export async function pickerBundle (headers: object, params: any): Promise<super
     .send()
 }
 
+export async function createManuscript (headers: object, params: any): Promise<supertest.Response> {
+  const server: IServer = await createServer()
+  return supertest(server.app)
+    .post(
+      `/api/v1/projects/${params.containerID}/manuscripts/${
+        params.manuscriptID ? params.manuscriptID : ''
+      }`
+    )
+    .set(headers)
+    .send()
+}
+
 export async function getProductionNotes (headers: object, params: any): Promise<supertest.Response> {
   const server: IServer = await createServer()
   return supertest(server.app)

@@ -37,7 +37,8 @@ import {
   ValidationError,
   UserRoleError,
   RecordNotFoundError,
-  InvalidScopeNameError
+  InvalidScopeNameError,
+  ConflictingRecordError
 } from '../../Errors'
 import { isBlocked, User } from '../../Models/UserModels'
 import { UserActivityEventType } from '../../Models/UserEventModels'
@@ -47,10 +48,11 @@ import { ContainerInvitationRepository } from '../../DataAccess/ContainerInvitat
 import { config } from '../../Config/Config'
 import { ScopedAccessTokenConfiguration } from '../../Config/ConfigurationTypes'
 import { ManuscriptNoteRepository } from '../../DataAccess/ManuscriptNoteRepository/ManuscriptNoteRepository'
-import { ManuscriptNote, ExternalFile } from '@manuscripts/manuscripts-json-schema'
+import { ManuscriptNote, ExternalFile, ObjectTypes } from '@manuscripts/manuscripts-json-schema'
 import { UserService } from '../User/UserService'
 import { DIContainer } from '../../DIContainer/DIContainer'
 import { ExternalFileRepository } from '../../DataAccess/ExternalFileRepository/ExternalFileRepository'
+import { IManuscriptRepository } from '../../DataAccess/Interfaces/IManuscriptRepository'
 
 const JSZip = require('jszip')
 
@@ -64,6 +66,7 @@ export class ContainerService implements IContainerService {
     private containerRepository: ContainerRepository,
     private containerInvitationRepository: ContainerInvitationRepository,
     private emailService: EmailService,
+    private manuscriptRepository: IManuscriptRepository,
     private manuscriptNoteRepository: ManuscriptNoteRepository,
     private externalFileRepository: ExternalFileRepository
   ) {}
@@ -678,6 +681,37 @@ export class ContainerService implements IContainerService {
       case ContainerType.project:
         return 'MPProject'
     }
+  }
+
+  public async createManuscript (userID: string, containerID: string, manuscriptID?: string) {
+    const container = await this.getContainer(containerID)
+
+    const canAccess =
+      this.isOwner(container, userID) || this.isWriter(container, userID)
+    if (!canAccess) {
+      throw new ValidationError(
+        'User must be a contributor in the container',
+        containerID
+      )
+    }
+
+    const newManuscriptID = manuscriptID ? manuscriptID : uuid_v4()
+
+    const manuscript = manuscriptID
+      ? await this.manuscriptRepository.getById(manuscriptID)
+      : null
+
+    if (manuscript) {
+      throw new ConflictingRecordError(
+        'Manuscript with the same id exists',
+        manuscript
+      )
+    }
+
+    return this.manuscriptRepository.create(
+      { _id: newManuscriptID, containerID, objectType: ObjectTypes.Manuscript },
+      {}
+    )
   }
 
   public async createManuscriptNote (

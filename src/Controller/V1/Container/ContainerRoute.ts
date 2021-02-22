@@ -29,7 +29,10 @@ import {
   accessTokenJWKSchema,
   getPickerBuilderSchema,
   getProductionNotesSchema,
-  addProductionNoteSchema, addExternalFiles, updateExternalFile
+  addProductionNoteSchema,
+  addExternalFiles,
+  updateExternalFile,
+  createManuscriptSchema
 } from './ContainerSchema'
 import { ContainersController } from './ContainersController'
 import { AuthStrategy } from '../../../Auth/Passport/AuthStrategy'
@@ -147,6 +150,17 @@ export class ContainerRoute extends BaseRoute {
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           res.send(await this.containersController.accessToken(req))
+        }, next)
+      }
+    )
+
+    router.post(
+      `/projects/:containerID/manuscripts/:manuscriptID?`,
+      expressJoiMiddleware(createManuscriptSchema, {}),
+      AuthStrategy.JWTAuth,
+      (req: Request, res: Response, next: NextFunction) => {
+        return this.runWithErrorHandling(async () => {
+          res.send(await this.containersController.createManuscript(req))
         }, next)
       }
     )

@@ -488,6 +488,67 @@ describe('ContainerController - getBundle', () => {
   })
 })
 
+describe('ContainerController - createManuscript', () => {
+  beforeEach(async () => {
+    await drop()
+    await dropBucket(BucketKey.Data)
+    await seed({ users: true, applications: true, projects: true, manuscript: true })
+    await DIContainer.sharedContainer.syncService.createGatewayContributor(
+      {
+        _id: `User|${validBody.email}`,
+        name: 'foobar',
+        email: validBody.email
+      },
+      BucketKey.Data
+    )
+  })
+
+  test('should fail if the containerID is not a string', async () => {
+    const containerService =
+      DIContainer.sharedContainer.containerService[ContainerType.project]
+    containerService.createManuscript = jest.fn()
+    const req: any = {
+      params: {
+        containerID: chance.integer()
+      }
+    }
+    await expect(
+      new ContainersController().createManuscript(req)
+    ).rejects.toThrow(ValidationError)
+  })
+
+  test('should fail if the manuscriptID is not a string', async () => {
+    const containerService =
+      DIContainer.sharedContainer.containerService[ContainerType.project]
+    containerService.createManuscript = jest.fn()
+    const req: any = {
+      params: {
+        containerID: validNote1.containerID,
+        manuscriptID: chance.integer()
+      }
+    }
+    await expect(
+      new ContainersController().createManuscript(req)
+    ).rejects.toThrow(ValidationError)
+  })
+
+  test('should call createManuscript', async () => {
+    const containerService = DIContainer.sharedContainer.containerService[ContainerType.project]
+    containerService.createManuscript = jest.fn()
+    const req: any = {
+      params: {
+        containerID: validNote1.containerID,
+        manuscriptID: validNote1.manuscriptID
+      },
+      user: {
+        _id: `User_${validBody.email}`
+      }
+    }
+    await new ContainersController().createManuscript(req)
+    expect(containerService.createManuscript).toBeCalled()
+  })
+})
+
 describe('ContainerController - getProductionNotes', () => {
   beforeEach(async () => {
     await drop()

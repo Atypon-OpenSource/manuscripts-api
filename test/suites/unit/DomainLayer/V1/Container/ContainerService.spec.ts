@@ -27,7 +27,8 @@ import {
   ValidationError,
   UserRoleError,
   RecordNotFoundError,
-  InvalidScopeNameError
+  InvalidScopeNameError,
+  ConflictingRecordError
 } from '../../../../../../src/Errors'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
 import {
@@ -1519,6 +1520,53 @@ describe('ContainerService - accessToken', () => {
         'MPProject:foobarbaz'
       )
     ).rejects.toThrowError(InvalidScopeNameError)
+  })
+})
+
+describe('ContainerService - createManuscript', () => {
+  test('should fail if user not contributor', async () => {
+    const containerService: any =
+      DIContainer.sharedContainer.containerService[ContainerType.project]
+    containerService.getContainer = jest.fn(() => Promise.resolve(validProject))
+    const containerID = validNote1.containerID
+    const manuscriptID = validNote1.manuscriptID
+    const userID = 'User_test3'
+
+    await expect(
+      containerService.createManuscript(userID, containerID, manuscriptID)
+    ).rejects.toThrow(ValidationError)
+  })
+
+  test('should fail if manuscript already exists', async () => {
+    const containerService: any =
+      DIContainer.sharedContainer.containerService[ContainerType.project]
+    containerService.getContainer = jest.fn(() => Promise.resolve(validProject))
+    containerService.manuscriptRepository.getById = jest.fn(() => Promise.resolve({}))
+    const containerID = validNote1.containerID
+    const manuscriptID = validNote1.manuscriptID
+    const userID = 'User_test'
+
+    await expect(
+      containerService.createManuscript(userID, containerID, manuscriptID)
+    ).rejects.toThrow(ConflictingRecordError)
+  })
+
+  test('should create a manuscript', async () => {
+    const containerService: any =
+      DIContainer.sharedContainer.containerService[ContainerType.project]
+    containerService.getContainer = jest.fn(() => Promise.resolve(validProject))
+    containerService.manuscriptRepository = {
+      getById: jest.fn(() => Promise.resolve(null)),
+      create: jest.fn()
+    }
+    const containerID = validNote1.containerID
+    const manuscriptID = validNote1.manuscriptID
+    const userID = 'User_test'
+
+    await containerService.createManuscript(userID, containerID, manuscriptID)
+    expect(
+      containerService.manuscriptRepository.create
+    ).toBeCalled()
   })
 })
 

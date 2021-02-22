@@ -29,7 +29,10 @@ import {
   accessToken,
   pickerBundle,
   addProductionNote,
-  getProductionNotes, addExternalFiles, updateExternalFile
+  getProductionNotes,
+  addExternalFiles,
+  updateExternalFile,
+  createManuscript
 } from '../../../../api'
 import { TEST_TIMEOUT } from '../../../../utilities/testSetup'
 import { drop, dropBucket, seed, testDatabase } from '../../../../utilities/db'
@@ -50,7 +53,8 @@ import {
 } from '../../../../../src/Models/ContainerModels'
 import {
   ValidationError,
-  RecordNotFoundError
+  RecordNotFoundError,
+  ConflictingRecordError
 } from '../../../../../src/Errors'
 import { BucketKey } from '../../../../../src/Config/ConfigurationTypes'
 import {
@@ -1098,6 +1102,91 @@ describe('ContainerService - addProductionNote', () => {
     expect(addProductionNoteResponse.status).toBe(HttpStatus.OK)
     expect(addProductionNoteResponse.body.ok).toBe(true)
     expect(addProductionNoteResponse.body.id).toBeTruthy()
+  })
+})
+
+describe('ContainerService - createManuscript', () => {
+  beforeEach(async () => {
+    await drop()
+    await dropBucket(BucketKey.Data)
+    await seed({ users: true, applications: true, projects: true, manuscript: true, manuscriptNotes: true })
+    await DIContainer.sharedContainer.syncService.createGatewayContributor(
+      {
+        _id: `User|${validBody2.email}`,
+        name: 'foobar',
+        email: validBody2.email
+      },
+      BucketKey.Data
+    )
+  })
+
+  test('should create a manuscript', async () => {
+    const loginResponse: supertest.Response = await basicLogin(
+      validBody2,
+      ValidHeaderWithApplicationKey
+    )
+    expect(loginResponse.status).toBe(HttpStatus.OK)
+
+    const authHeader = authorizationHeader(loginResponse.body.token)
+    const response: supertest.Response = await createManuscript(
+      {
+        ...ValidContentTypeAcceptJsonHeader,
+        ...authHeader
+      },
+      {
+        containerID: `MPProject:valid-project-id-11`
+      }
+    )
+    expect(response.status).toBe(HttpStatus.OK)
+    expect(
+      JSON.parse(response.text).id.startsWith('MPManuscript')
+    ).toBeTruthy()
+  })
+
+  test('should fail if user is not a contributor', async () => {
+    const loginResponse: supertest.Response = await basicLogin(
+      validBody2,
+      ValidHeaderWithApplicationKey
+    )
+    expect(loginResponse.status).toBe(HttpStatus.OK)
+
+    const authHeader = authorizationHeader(loginResponse.body.token)
+
+    const response = await createManuscript(
+      {
+        ...ValidContentTypeAcceptJsonHeader,
+        ...authHeader
+      },
+      {
+        containerID: `MPProject:valid-project-id-2`,
+        manuscriptID: validManuscript._id
+      }
+    )
+
+    return expect(response.status).toBe(HttpStatus.BAD_REQUEST)
+  })
+
+  test('should fail if manuscript with the same id exists', async () => {
+    const loginResponse: supertest.Response = await basicLogin(
+      validBody2,
+      ValidHeaderWithApplicationKey
+    )
+    expect(loginResponse.status).toBe(HttpStatus.OK)
+
+    const authHeader = authorizationHeader(loginResponse.body.token)
+
+    const response = await createManuscript(
+      {
+        ...ValidContentTypeAcceptJsonHeader,
+        ...authHeader
+      },
+      {
+        containerID: `MPProject:valid-project-id-11`,
+        manuscriptID: validManuscript._id
+      }
+    )
+
+    return expect(response.status).toBe(HttpStatus.CONFLICT)
   })
 })
 

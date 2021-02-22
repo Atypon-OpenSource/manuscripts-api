@@ -16,7 +16,7 @@
 
 import { ContainerRole, Container } from '../../Models/ContainerModels'
 import { User } from '../../Models/UserModels'
-import { ExternalFile, ManuscriptNote } from '@manuscripts/manuscripts-json-schema'
+import { ExternalFile, Manuscript, ManuscriptNote } from '@manuscripts/manuscripts-json-schema'
 
 export interface IContainerService {
   /**
@@ -93,7 +93,7 @@ export interface IContainerService {
     containerID: string,
     manuscriptID: string | null,
     token: string | null,
-    options: { getAttachments: boolean; onlyIDs: boolean; includeExt: boolean}
+    options: { getAttachments: boolean; onlyIDs: boolean; includeExt: boolean }
   ): Promise<Blob>
 
   checkUserContainerAccess (userID: string, containerID: string): Promise<boolean>
@@ -114,6 +114,18 @@ export interface IContainerService {
 
   /**
    * Creates a Manuscript Note
+   * @param userID the ID of the user
+   * @param containerId the ID of the container
+   * @param manuscriptID the ID of the manuscript
+   */
+  createManuscript (
+    userID: string,
+    containerID: string,
+    manuscriptID?: string
+  ): Promise<Manuscript>
+
+  /**
+   * Creates a Manuscript Note
    * @param containerId the ID of the container
    * @param manuscriptID the ID of the manuscript
    * @param content the note content
@@ -121,12 +133,13 @@ export interface IContainerService {
    * @param source the source of the note (EDITOR, EMAIL, DASHBOARD)
    * @param target if supplied it note will act as a reply and the value of the target should be a note ID
    */
-  createManuscriptNote (containerId: string,
-                       manuscriptID: string,
-                       content: string,
-                       userID: string,
-                       source: string,
-                       target?: string
+  createManuscriptNote (
+    containerId: string,
+    manuscriptID: string,
+    content: string,
+    userID: string,
+    source: string,
+    target?: string
   ): Promise<ManuscriptNote>
 
   /**
