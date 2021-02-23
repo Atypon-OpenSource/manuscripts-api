@@ -83,6 +83,12 @@ export interface IAuthService {
   ): Promise<AuthorizedUser>
 
   /**
+   * Create token on behalf of user.
+   */
+  serverToServerTokenAuth (
+    credentials: ServerToServerAuthCredentials
+  ): Promise<AuthorizedUser>
+  /**
    * Returns url to initiate IAM OAuth flow
    * @param state represents value of "state" passed to IAM
    */

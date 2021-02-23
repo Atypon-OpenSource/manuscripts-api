@@ -29,6 +29,9 @@ import { SeedOptions } from '../../../../../../src/DataAccess/Interfaces/SeedOpt
 import { BucketKey } from '../../../../../../src/Config/ConfigurationTypes'
 import { parse } from 'qs'
 import { config } from '../../../../../../src/Config/Config'
+import {
+  AuthorizedUser, ServerToServerAuthCredentials
+} from '../../../../../../src/Models/UserModels'
 const url = require('url')
 
 jest.setTimeout(TEST_TIMEOUT)
@@ -227,5 +230,36 @@ describe('AuthService IAM', () => {
     const parsedStartURL = url.parse(OAuthStartUrl)
     const queryObj = parse(parsedStartURL.query)
     expect(queryObj.redirect_uri).toEqual(`${config.IAM.apiServerURL[0]}${config.IAM.authCallbackPath}`)
+  })
+})
+
+describe('AuthService - serverToServerTokenAuth', () => {
+  const seedOptions: SeedOptions = { users: true }
+
+  beforeEach(async () => {
+    await drop()
+    await dropBucket(BucketKey.Data)
+    await seed(seedOptions)
+  })
+
+  test('should fail if user not found', async () => {
+    const authService: any = DIContainer.sharedContainer.authService
+    const credentials: ServerToServerAuthCredentials = {
+      appId: 'Application|9a9090d9-6f95-420c-b903-543f32b5140f',
+      connectUserID: 'invalid-connectId',
+      deviceId: 'valid-deviceId'
+    }
+    await expect(authService.serverToServerTokenAuth(credentials)).rejects.toThrow(AccountNotFoundError)
+  })
+
+  test('should call createUserSessionAndToken', async () => {
+    const authService: any = DIContainer.sharedContainer.authService
+    const credentials: ServerToServerAuthCredentials = {
+      appId: 'Application|9a9090d9-6f95-420c-b903-543f32b5140f',
+      connectUserID: 'valid-connect-user-id',
+      deviceId: 'valid-deviceId'
+    }
+    const authorizedUser: AuthorizedUser = await authService.serverToServerTokenAuth(credentials)
+    expect(authorizedUser).toBeTruthy()
   })
 })

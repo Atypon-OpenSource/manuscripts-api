@@ -35,7 +35,8 @@ import {
   iamOAuthStartSchema,
   backchannelLogoutSchema,
   serverToServerAuthSchema,
-  authorizationTokenSchema
+  authorizationTokenSchema,
+  serverToServerTokenAuthSchema
 } from './AuthSchema'
 import { AuthController } from './AuthController'
 import { AuthStrategy } from '../../../Auth/Passport/AuthStrategy'
@@ -102,6 +103,26 @@ export class AuthRoute extends BaseRoute {
           } = await this.authController.serverToServerAuth(req)
 
           this.setSyncCookies(syncSessions, res)
+
+          res
+            .status(HttpStatus.OK)
+            .json({ token })
+            .end()
+        }, next)
+      }
+    )
+
+    router.post(
+      `${this.basePath}/token/:connectUserID`,
+      expressJoiMiddleware(serverToServerTokenAuthSchema, {}),
+      AuthStrategy.JsonHeadersValidation,
+      AuthStrategy.verifyAdminToken,
+      AuthStrategy.applicationValidation(),
+      (req: Request, res: Response, next: NextFunction) => {
+        return this.runWithErrorHandling(async () => {
+          const {
+            token
+          } = await this.authController.serverToServerTokenAuth(req)
 
           res
             .status(HttpStatus.OK)

@@ -113,6 +113,7 @@ paths:
           description: "User is blocked or email is not verified"
   /auth/admin:
     post:
+      deprecated: true
       tags:
         - "auth"
       summary: "Server-server authorization."
@@ -140,6 +141,35 @@ paths:
             $ref: "#/definitions/TokenSchema"
         401:
           description: "Invalid token, email or connectUserID"
+  /auth/token/:connectUserID:
+    post:
+      tags:
+        - "auth"
+      summary: "Server-server authorization on behalf of given user."
+      description: "Authenticate and create a token for a given user through providing admin jwt token signed with server secret and the user connectId."
+      operationId: "server-server-token-creation-on-behalf-of-user"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "User credentials"
+          required: true
+          schema:
+            $ref: "#/definitions/ServerToServerAuthSchema"
+        - $ref: "#/parameters/AdminTokenHeaderSchema"
+        - $ref: "#/parameters/JsonContentTypenHeadersSchema"
+        - $ref: "#/parameters/JsonAcceptHeadersSchema"
+        - $ref: "#/parameters/AppIdAcceptHeadersSchema"
+      responses:
+        200:
+          description: "Successfully Authorized"
+          schema:
+            $ref: "#/definitions/TokenSchema"
+        401:
+          description: "Invalid token or connectUserID"
   /auth/google:
     get:
       tags:

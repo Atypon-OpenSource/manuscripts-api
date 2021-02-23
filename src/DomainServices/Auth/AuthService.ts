@@ -236,11 +236,28 @@ export class AuthService implements IAuthService {
       throw new AccountNotFoundError(`User account not found.`)
     }
 
+    return this.createUserSessionAndToken(user, appId, deviceId, true)
+  }
+
+  public async serverToServerTokenAuth (
+    credentials: ServerToServerAuthCredentials
+  ): Promise<AuthorizedUser> {
+    const { connectUserID, appId, deviceId } = credentials
+    let user = await this.userRepository.getOne({ connectUserID })
+
+    if (!user) {
+      throw new AccountNotFoundError(`User account not found.`)
+    }
+
+    return this.createUserSessionAndToken(user, appId, deviceId, false)
+  }
+
+  private async createUserSessionAndToken (user: User, appId: string, deviceId: string, isAdmin: boolean) {
     const userStatus = await this.ensureValidUserStatus(
       user,
       appId,
       deviceId,
-      true
+      isAdmin
     )
 
     const userModel: User = {

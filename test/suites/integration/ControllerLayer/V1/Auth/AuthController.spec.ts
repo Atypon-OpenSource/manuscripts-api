@@ -23,7 +23,8 @@ import {
   ValidationError,
   MissingQueryParameterError,
   InvalidCredentialsError,
-  InvalidBackchannelLogoutError
+  InvalidBackchannelLogoutError,
+  InvalidClientApplicationError
 } from '../../../../../../src/Errors'
 import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
@@ -31,6 +32,7 @@ import DiscourseSSO from 'discourse-sso'
 import { generateLoginToken } from '../../../../../../src/Utilities/JWT/LoginTokenPayload'
 import { DiscourseController } from '../../../../../../src/DomainServices/Discourse/DiscourseController'
 import { DiscourseService } from '../../../../../../src/DomainServices/Discourse/DiscourseService'
+import { ValidHeaderWithApplicationKey } from '../../../../../data/fixtures/headers'
 
 jest.setTimeout(TEST_TIMEOUT)
 
@@ -367,5 +369,49 @@ describe('AuthController - backchannelLogout', () => {
         { query: { logout_token: '123' } } as any
       )
     ).rejects.toThrowError(InvalidBackchannelLogoutError)
+  })
+})
+
+describe('AuthController - serverToServerTokenAuth', () => {
+  test('should fail if the appId is not a string', async () => {
+    const req: any = {
+      headers: { ...ValidHeaderWithApplicationKey, 'manuscripts-app-id': 123 },
+      body: {
+        deviceId: 'valid-deviceId'
+      },
+      params: {
+        connectUserID: 'valid-connectId'
+      }
+    }
+    const authController = new AuthController()
+    await expect(authController.serverToServerTokenAuth(req)).rejects.toThrow(InvalidClientApplicationError)
+  })
+
+  test('should fail if the deviceId is not a string', async () => {
+    const req: any = {
+      headers: { ...ValidHeaderWithApplicationKey },
+      body: {
+        deviceId: 123456
+      },
+      params: {
+        connectUserID: 'valid-connectId'
+      }
+    }
+    const authController = new AuthController()
+    await expect(authController.serverToServerTokenAuth(req)).rejects.toThrow(InvalidCredentialsError)
+  })
+
+  test('should fail if the connectUserID is not a string', async () => {
+    const req: any = {
+      headers: { ...ValidHeaderWithApplicationKey, APP_ID_HEADER_KEY: 123 },
+      body: {
+        deviceId: 'valid-deviceId'
+      },
+      params: {
+        connectUserID: 123456
+      }
+    }
+    const authController = new AuthController()
+    await expect(authController.serverToServerTokenAuth(req)).rejects.toThrow(InvalidCredentialsError)
   })
 })

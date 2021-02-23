@@ -81,6 +81,8 @@ import {
 
 import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
 import { validLogoutToken } from '../../../../../data/fixtures/logoutTokens'
+import { ServerToServerAuthCredentials } from '../../../../../../src/Models/UserModels'
+import { validBody } from '../../../../../data/fixtures/credentialsRequestPayload'
 jest.setTimeout(TEST_TIMEOUT)
 
 const chance = new Chance()
@@ -1653,5 +1655,31 @@ describe('AuthService - backchannelLogout', () => {
     return expect(
       authService.syncService.removeGatewaySessions
     ).toBeCalled()
+  })
+})
+
+describe('AuthService - serverToServerTokenAuth', () => {
+  test('should fail if user not found', async () => {
+    const authService: any = DIContainer.sharedContainer.authService
+    authService.createUserSessionAndToken = jest.fn()
+    const credentials: ServerToServerAuthCredentials = {
+      appId: 'app-id',
+      connectUserID: 'invalid-connectId',
+      deviceId: 'valid-deviceId'
+    }
+    await expect(authService.serverToServerTokenAuth(credentials)).rejects.toThrow(AccountNotFoundError)
+  })
+
+  test('should call createUserSessionAndToken', async () => {
+    const authService: any = DIContainer.sharedContainer.authService
+    authService.userRepository.getOne = jest.fn(() => validBody)
+    authService.createUserSessionAndToken = jest.fn()
+    const credentials: ServerToServerAuthCredentials = {
+      appId: 'app-id',
+      connectUserID: 'invalid-connectId',
+      deviceId: 'valid-deviceId'
+    }
+    await authService.serverToServerTokenAuth(credentials)
+    expect(authService.createUserSessionAndToken).toBeCalled()
   })
 })

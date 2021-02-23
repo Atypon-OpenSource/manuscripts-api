@@ -40,6 +40,16 @@ export const serverToServerAuthSchema: Joi.SchemaMap = {
   headers: appSecretHeadersSchema.headers
 }
 
+export const serverToServerTokenAuthSchema: Joi.SchemaMap = {
+  body: Joi.object({
+    deviceId: deviceIdSchema
+  }),
+  params: {
+    connectUserID: Joi.string().required()
+  },
+  headers: appSecretHeadersSchema.headers
+}
+
 export const discourseAccountSchema: Joi.SchemaMap = {
   headers: jsonHeadersSchema.headers
 }

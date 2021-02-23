@@ -31,7 +31,10 @@ import {
   testDatabase,
   dropBucket
 } from '../../../../../utilities/db'
-import { serverToServerAuth } from '../../../../../api'
+import {
+  serverToServerAuth,
+  serverToServerTokenAuth
+} from '../../../../../api'
 import {
   validBody,
   validEmailBody
@@ -194,5 +197,48 @@ describe('Server to Server Auth - POST api/v1/auth/admin', () => {
     )
 
     return expect(response.status).toBe(HttpStatus.OK)
+  })
+})
+
+describe('Server to Server token Auth - POST api/v1/auth/token', () => {
+  beforeEach(async () => {
+    await drop()
+    await dropBucket(BucketKey.Data)
+    await seed(seedOptions)
+  })
+  test('should return token', async () => {
+    const response: supertest.Response = await serverToServerTokenAuth(
+      {
+        deviceId: chance.guid()
+      },
+      {
+        ...ValidHeaderWithApplicationKey,
+        authorization: `Bearer ${jsonwebtoken.sign(
+          { email: validEmailBody.email },
+          config.auth.serverSecret
+        )}`
+      },{
+        connectUserID: 'valid-connect-user-id'
+      }
+    )
+    return expect(response.status).toBe(HttpStatus.OK)
+  })
+
+  test('should fail if user not found', async () => {
+    const response: supertest.Response = await serverToServerTokenAuth(
+      {
+        deviceId: chance.guid()
+      },
+      {
+        ...ValidHeaderWithApplicationKey,
+        authorization: `Bearer ${jsonwebtoken.sign(
+          { email: validEmailBody.email },
+          config.auth.serverSecret
+        )}`
+      },{
+        connectUserID: 'invalid-connect-user-id'
+      }
+    )
+    return expect(response.status).toBe(HttpStatus.UNAUTHORIZED)
   })
 })

@@ -119,6 +119,31 @@ export class AuthController extends BaseController implements IAuthController {
     })
   }
 
+  async serverToServerTokenAuth (req: Request): Promise<AuthorizedUser> {
+
+    const appId = req.headers[APP_ID_HEADER_KEY]
+
+    if (!isString(appId)) {
+      throw new InvalidClientApplicationError(appId)
+    }
+
+    const { deviceId } = req.body
+    const { connectUserID } = req.params
+
+    if (!isString(deviceId)) {
+      throw new InvalidCredentialsError('Device id must be string.')
+    }
+
+    if (!isString(connectUserID)) {
+      throw new InvalidCredentialsError('connectUserID must be string.')
+    }
+    return DIContainer.sharedContainer.authService.serverToServerTokenAuth({
+      connectUserID: connectUserID,
+      deviceId,
+      appId
+    })
+  }
+
   async iamOAuthCallback (
     req: Request,
     state: IAMState
