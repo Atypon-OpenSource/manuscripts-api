@@ -16,6 +16,10 @@ tags:
     description: "User manipulation endpoints"
   - name: "container"
     description: "Container manipulation endpoints"
+  - name: "project"
+    description: "Project manipulation endpoints"
+  - name: "templates"
+    description: "Templates manipulation endpoints"
   - name: "invitation"
     description: "Invitation endpoints"
   - name: "submission"
@@ -64,6 +68,13 @@ parameters:
   AuthorizationTokenHeaderSchema:
     name: Authorization
     description: "Manuscripts JWT authorization token"
+    type: string
+    in: header
+    format: "Authorization: Bearer <token>"
+    required: true
+  ScopedAuthorizationTokenHeaderSchema:
+    name: Authorization
+    description: "Manuscripts JWT scoped authorization token"
     type: string
     in: header
     format: "Authorization: Bearer <token>"
@@ -140,7 +151,7 @@ paths:
           schema:
             $ref: "#/definitions/TokenSchema"
         401:
-          description: "Invalid token, email or connectUserID"
+          description: "Invalid token, email or connectUserID, or UnexpectedUserStatusError this could be the result of signing up and never signing in, the resolution to this is to log in once interactively"
   /auth/token/:connectUserID:
     post:
       tags:
@@ -169,7 +180,7 @@ paths:
           schema:
             $ref: "#/definitions/TokenSchema"
         401:
-          description: "Invalid token or connectUserID"
+          description: "Invalid token or connectUserID, or UnexpectedUserStatusError this could be the result of signing up and never signing in, the resolution to this is to log in once interactively"
   /auth/google:
     get:
       tags:
@@ -448,8 +459,31 @@ paths:
       responses:
         200:
           description: "User registered successfully."
-        401:
-          description: "User already exists but user status does not."
+        409:
+          description: "User already exists."
+  /registration/connect/signup:
+    post:
+      tags:
+        - "registration"
+      summary: "Password-less connect user registration."
+      description: ""
+      operationId: "connect-signup"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "User credentials"
+          required: true
+          schema:
+            $ref: "#/definitions/ConnectSignupSchema"
+        - $ref: "#/parameters/JsonContentTypenHeadersSchema"
+        - $ref: "#/parameters/JsonAcceptHeadersSchema"
+      responses:
+        200:
+          description: "User registered successfully."
         409:
           description: "User already exists."
   /registration/verify:
@@ -831,7 +865,7 @@ paths:
         - "application/json"
       produces:
         - "application/json"
-      parameters: 
+      parameters:
         - $ref: '#/parameters/JsonAcceptHeadersSchema'
         - $ref: '#/parameters/AuthorizationTokenHeaderSchema'
       responses:
@@ -841,6 +875,134 @@ paths:
           description: "User is not a contributor in the container."
         409:
           description: "Manuscript id already taken by another manuscript."
+  /picker-bundle/:containerID/:manuscriptId:
+    get:
+      tags:
+        - "container"
+      summary: "Gets an HTML bundle."
+      description: ""
+      operationId: "picker-bundle"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/zip"
+      parameters:
+        - $ref: "#/parameters/JsonAcceptHeadersSchema"
+        - $ref: "#/parameters/ScopedAuthorizationTokenHeaderSchema"
+      responses:
+        200:
+          description: "Html bundle retrieved successfully."
+  /projects/:containerID/manuscripts/:manuscriptID/notes:
+    get:
+      tags:
+        - "container"
+      summary: "Get production notes"
+      description: ""
+      operationId: "get-production-notes"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - $ref: "#/parameters/JsonContentTypenHeadersSchema"
+        - $ref: "#/parameters/JsonAcceptHeadersSchema"
+        - $ref: "#/parameters/AuthorizationTokenHeaderSchema"
+      responses:
+        200:
+          description: "List of production notes"
+        401:
+          description: "Invalid authorization token"
+    post:
+      tags:
+        - "container"
+      summary: "Add production note"
+      description: ""
+      operationId: "add-production-note"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - $ref: "#/parameters/JsonContentTypenHeadersSchema"
+        - $ref: "#/parameters/JsonAcceptHeadersSchema"
+        - $ref: "#/parameters/AuthorizationTokenHeaderSchema"
+        - in: "body"
+          name: "body"
+          description: ""
+          required: true
+          schema:
+            $ref: "#/definitions/addProductionNoteSchema"
+      responses:
+        200:
+          description: "Production note added successfully"
+        401:
+          description: "Invalid authorization token"
+        404:
+          description: "manuscript not found"
+  /external-files/add:
+    post:
+      tags:
+        - "container"
+      summary: "Add External-Files"
+      description: ""
+      operationId: "add-external-files"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - $ref: "#/parameters/AuthorizationTokenHeaderSchema"
+        - in: "body"
+          name: "body"
+          description: ""
+          required: true
+          schema:
+            $ref: "#/definitions/addExternalFilesSchema"
+      responses:
+        202:
+          description: "External files created successfully"
+        401:
+          description: "Invalid authorization token"
+  /external-files/:externalFileID/update:
+    get:
+      tags:
+        - "container"
+      summary: "Update External-File"
+      description: ""
+      operationId: "update-external-file"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - $ref: "#/parameters/AuthorizationTokenHeaderSchema"
+        - in: "body"
+          name: "body"
+          description: ""
+          required: true
+          schema:
+            $ref: "#/definitions/updateExternalFileSchema"
+      responses:
+        202:
+          description: "External file update successfully"
+        401:
+          description: "Invalid authorization token"
+        404:
+          description: "External file not found"
+  /publishedTemplates:
+    get:
+      tags:
+        - "templates"
+      summary: "Project templates"
+      description: "Public endpoint to fetch project templates"
+      operationId: "get-project-templates"
+      produces:
+        - "application/json"
+      responses:
+        202:
+          description: "Templates JSON"
+        404:
+          description: "Project not found"
   /invitation/invite:
     post:
       tags:
@@ -1135,6 +1297,35 @@ definitions:
           example: "example@example.com"
       message:
         type: "string"
+  addProductionNoteSchema:
+    type: "object"
+    required:
+      - "connectUserId"
+      - "content"
+      - "source"
+    properties:
+      connectUserId:
+        type: string
+      content:
+        type: object
+      source:
+        type: string
+      target:
+        type: string
+  addExternalFilesSchema:
+    type: "object"
+    required:
+      - "content"
+    properties:
+      content:
+        type: "array"
+  updateExternalFileSchema:
+    type: "object"
+    required:
+      - "content"
+    properties:
+      content:
+        type: "object"
   InviteUserToContainerSchema:
     type: "object"
     required:
@@ -1262,6 +1453,22 @@ definitions:
         type: "string"
         example: "Jane Doe"
       password:
+        type: "string"
+  ConnectSignupSchema:
+    type: "object"
+    required:
+      - "connectId"
+      - "email"
+      - "name"
+    properties:
+      email:
+        type: "string"
+        format: "email"
+        example: "example@example.com"
+      name:
+        type: "string"
+        example: "Jane Doe"
+      connectId:
         type: "string"
   TokenSchema:
     type: "object"
