@@ -89,6 +89,7 @@ export class AuthRoute extends BaseRoute {
       }
     )
 
+    // Deprecated, Use: /auth/token/:connectUserID
     router.post(
       `${this.basePath}/admin`,
       expressJoiMiddleware(serverToServerAuthSchema, {}),

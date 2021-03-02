@@ -207,6 +207,7 @@ describe('Server to Server token Auth - POST api/v1/auth/token', () => {
     await seed(seedOptions)
   })
   test('should return token', async () => {
+    const createUserStatus = jest.spyOn(DIContainer.sharedContainer.userStatusRepository, 'create')
     const response: supertest.Response = await serverToServerTokenAuth(
       {
         deviceId: chance.guid()
@@ -218,9 +219,11 @@ describe('Server to Server token Auth - POST api/v1/auth/token', () => {
           config.auth.serverSecret
         )}`
       },{
-        connectUserID: 'valid-connect-user-id'
+        connectUserID: 'valid-connect-user-7-id'
       }
     )
+    // userStatus will be created if not found
+    expect(createUserStatus).toHaveBeenCalled()
     return expect(response.status).toBe(HttpStatus.OK)
   })
 

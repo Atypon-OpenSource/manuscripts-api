@@ -249,15 +249,16 @@ export class AuthService implements IAuthService {
       throw new AccountNotFoundError(`User account not found.`)
     }
 
-    return this.createUserSessionAndToken(user, appId, deviceId, false)
+    return this.createUserSessionAndToken(user, appId, deviceId, false, true)
   }
 
-  private async createUserSessionAndToken (user: User, appId: string, deviceId: string, isAdmin: boolean) {
+  private async createUserSessionAndToken (user: User, appId: string, deviceId: string, isAdmin: boolean, verifyUser?: boolean | false) {
     const userStatus = await this.ensureValidUserStatus(
       user,
       appId,
       deviceId,
-      isAdmin
+      isAdmin,
+      verifyUser
     )
 
     const userModel: User = {
@@ -836,11 +837,26 @@ export class AuthService implements IAuthService {
     user: User,
     appId: string,
     deviceId: string,
-    isAdmin: boolean
+    isAdmin: boolean,
+    verifyUser?: boolean | false
   ): Promise<UserStatus> {
-    const userStatus = await this.userStatusRepository.statusForUserId(
+    let userStatus = await this.userStatusRepository.statusForUserId(
       user._id
     )
+
+    if (!userStatus && verifyUser) {
+      userStatus = await this.userStatusRepository.create(
+        {
+          _id: user._id,
+          blockUntil: null,
+          isVerified: true,
+          createdAt: new Date(),
+          deviceSessions: {},
+          password: ''
+        },
+        {}
+      )
+    }
 
     if (!userStatus) {
       // tslint:disable-next-line: no-floating-promises
