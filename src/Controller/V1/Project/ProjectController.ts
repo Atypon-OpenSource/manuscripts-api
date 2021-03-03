@@ -61,6 +61,7 @@ export class ProjectController extends BaseController implements IProjectControl
   async add (req: Request): Promise<Container> {
     const file = req.file
     const { projectId } = req.params
+    const { manuscriptId } = req.body
 
     if (!projectId) throw new ValidationError('projectId parameter must be specified',projectId)
 
@@ -78,14 +79,14 @@ export class ProjectController extends BaseController implements IProjectControl
 
     if (!DIContainer.sharedContainer.containerService[ContainerType.project].isOwner(project,req.user._id)) throw new UserRoleError('User must be an owner to add manuscripts',req.user._id)
 
-    const container = await this.addManuscriptToProject(project,manuscript)
+    const container = await this.addManuscriptToProject(project, manuscript, manuscriptId)
 
     await remove(file.path)
 
     return container
   }
 
-  async addManuscriptToProject (project: Container, manuscript: Readable): Promise<Container> {
+  async addManuscriptToProject (project: Container, manuscript: Readable, manuscriptId?: string): Promise<Container> {
     const buffer = await getStream.buffer(manuscript)
 
     const unzipRoot = tempy.directory()
@@ -94,6 +95,8 @@ export class ProjectController extends BaseController implements IProjectControl
 
     const json = JSON.parse(byPath['index.manuscript-json'].data)
     const manuscriptObject = json.data.find((model: Model) => model.objectType === 'MPManuscript')
+    if (manuscriptId) manuscriptObject._id = manuscriptId
+
     const sessionID = uuid.v4()
     const createdAt = Math.round(Date.now() / 1000)
     const docs = json.data.map((model: Model) => ({

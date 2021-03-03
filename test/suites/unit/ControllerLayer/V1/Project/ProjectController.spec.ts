@@ -101,7 +101,28 @@ describe('ProjectController', () => {
           headers: authorizationHeader(chance.string()),
           params: { projectId: 'MPProject:abc' },
           file: { path: tempPath },
-          user: { _id: 'validUserId' }
+          user: { _id: 'validUserId' },
+          body: {}
+        })
+
+        expect(DIContainer.sharedContainer.pressroomService.importJATS).toBeCalled()
+        expect(controller.addManuscriptToProject).toBeCalled()
+      })
+    })
+
+    test('should call service functions with manuscriptID specified',() => {
+      return tempy.write.task('', async tempPath => {
+        const controller: any = new ProjectController()
+
+        controller.addManuscriptToProject = jest.fn(async () => {})
+        DIContainer.sharedContainer.containerService[ContainerType.project].isOwner = jest.fn(() => true)
+
+        await controller.add({
+          headers: authorizationHeader(chance.string()),
+          params: { projectId: 'MPProject:abc' },
+          file: { path: tempPath },
+          user: { _id: 'validUserId' },
+          body: { manuscriptId: 'MPManuscript:foobarbaz' }
         })
 
         expect(DIContainer.sharedContainer.pressroomService.importJATS).toBeCalled()
@@ -115,7 +136,8 @@ describe('ProjectController', () => {
           headers: authorizationHeader(chance.string()),
           params: { projectId: 'MPProject:abc' },
           file: { path: tempPath },
-          user: { _id: 'validUserId' }
+          user: { _id: 'validUserId' },
+          body: {}
         }
 
         const controller: any = new ProjectController()
@@ -129,7 +151,8 @@ describe('ProjectController', () => {
           headers: authorizationHeader(chance.string()),
           params: { projectId: 'MPProject:abc' },
           file: { path: tempPath },
-          user: { _id: 'validUserId' }
+          user: { _id: 'validUserId' },
+          body: {}
         }
 
         const controller: any = new ProjectController()
@@ -145,7 +168,8 @@ describe('ProjectController', () => {
           headers: authorizationHeader(chance.string()),
           params: { projectId: 'MPProject:abc' },
           file: { path: tempPath },
-          user: { _id: 'validUserId' }
+          user: { _id: 'validUserId' },
+          body: {}
         }
 
         const controller: any = new ProjectController()

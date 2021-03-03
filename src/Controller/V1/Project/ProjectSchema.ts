@@ -32,5 +32,8 @@ export const addSchema: Joi.SchemaMap = {
   headers: Joi.object({
     accept: appJsonAndCharset,
     'content-type': Joi.string().required()
-  }).options({ allowUnknown: true })
+  }).options({ allowUnknown: true }),
+  body: Joi.object({
+    manuscriptId: Joi.string()
+  })
 }
