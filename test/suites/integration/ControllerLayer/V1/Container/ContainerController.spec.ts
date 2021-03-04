@@ -776,3 +776,45 @@ describe('ContainerController - updateExternalFile', () => {
     await expect(new ContainersController().updateExternalFile(req)).rejects.toThrow(ValidationError)
   })
 })
+
+describe('ContainerController - createSnapshot', () => {
+  beforeEach(async () => {
+    await drop()
+    await dropBucket(BucketKey.Data)
+    await seed({ users: true, applications: true, projects: true })
+  })
+  test('should fail createSnapshot', async () => {
+    const req: any = {
+      params: {
+        containerID: chance.integer()
+      },
+      headers: {
+        authorization: `Bearer ${validJWTToken}`
+      },
+      user: {
+        _id: 'foo'
+      }
+    }
+    const controller = new ContainersController()
+    await expect(controller.createSnapshot(req)).rejects.toThrow(ValidationError)
+  })
+
+  test('should call createSnapshot', async () => {
+    DIContainer.sharedContainer.shacklesService.createSnapshot = jest.fn()
+    DIContainer.sharedContainer.containerService[ContainerType.project].getArchive = jest.fn()
+    const req: any = {
+      params: {
+        containerID: 'MPProject:valid-project-id'
+      },
+      headers: {
+        authorization: `Bearer ${validJWTToken}`
+      },
+      user: {
+        _id: `User_test`
+      }
+    }
+    const controller = new ContainersController()
+    await controller.createSnapshot(req)
+    expect(DIContainer.sharedContainer.shacklesService.createSnapshot).toBeCalled()
+  })
+})

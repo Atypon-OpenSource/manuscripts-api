@@ -32,7 +32,8 @@ import {
   addProductionNoteSchema,
   addExternalFiles,
   updateExternalFile,
-  createManuscriptSchema
+  createManuscriptSchema,
+  createSnapshotSchema
 } from './ContainerSchema'
 import { ContainersController } from './ContainersController'
 import { AuthStrategy } from '../../../Auth/Passport/AuthStrategy'
@@ -205,6 +206,17 @@ export class ContainerRoute extends BaseRoute {
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           res.send(await this.containersController.updateExternalFile(req))
+        }, next)
+      }
+    )
+    router.post(
+      `/snapshot/:containerID/create`,
+      expressJoiMiddleware(createSnapshotSchema, {}),
+      AuthStrategy.JsonHeadersValidation,
+      AuthStrategy.JWTAuth,
+      (req: Request, res: Response, next: NextFunction) => {
+        return this.runWithErrorHandling(async () => {
+          res.send(await this.containersController.createSnapshot(req))
         }, next)
       }
     )

@@ -18,6 +18,9 @@ import { ConfigurationContainer } from '../../src/Config/ConfigurationTypes'
 
 jest.mock('../../src/Config/Config', () => {
   const config: ConfigurationContainer = {
+    shackles: {
+      baseUrl: 'someUrl'
+    },
     DB: {
       buckets: {
         user: 'manuscripts_user',
@@ -111,6 +114,14 @@ jest.mock('../../src/Config/Config', () => {
       },
       {
         name: 'file-picker',
+        secret: 'random-secret',
+        publicKeyPEM: null,
+        publicKeyJWK: null,
+        expiry: 15,
+        identifier: 'iden'
+      },
+      {
+        name: 'shackles',
         secret: 'random-secret',
         publicKeyPEM: null,
         publicKeyJWK: null,

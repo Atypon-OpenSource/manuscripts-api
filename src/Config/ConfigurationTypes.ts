@@ -150,6 +150,10 @@ export interface PressroomConfiguration {
   readonly apiKey: string
 }
 
+export interface ShacklesConfiguration {
+  readonly baseUrl: string
+}
+
 export interface TemplateConfiguration {
   readonly allowedOwners: string[]
 }
@@ -168,6 +172,7 @@ export interface ConfigurationContainer {
   readonly discourse: DiscourseConfiguration | null
   readonly scopes: ScopedAccessTokenConfiguration[]
   readonly pressroom: PressroomConfiguration
+  readonly shackles: ShacklesConfiguration
   readonly literatum: LiteratumConfiguration
   readonly template: TemplateConfiguration
 

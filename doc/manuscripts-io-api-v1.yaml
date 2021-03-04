@@ -989,6 +989,28 @@ paths:
           description: "Invalid authorization token"
         404:
           description: "External file not found"
+  /snapshot/:containerID/create:
+    get:
+      tags:
+        - "container"
+      summary: "Create a snapshot"
+      description: ""
+      operationId: "create-snapshot"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - $ref: "#/parameters/AuthorizationTokenHeaderSchema"
+      responses:
+        202:
+          description: "Snapshot created successfully"
+        400:
+          description: "Invalid authorization token | User must be contributor on project"
+        404:
+          description: "Project not found"
+        500:
+          description: "Shackles request '/snapshot' failed"
   /publishedTemplates:
     get:
       tags:
@@ -1320,6 +1342,13 @@ definitions:
       content:
         type: "array"
   updateExternalFileSchema:
+    type: "object"
+    required:
+      - "content"
+    properties:
+      content:
+        type: "object"
+  createSnapshotSchema:
     type: "object"
     required:
       - "content"

@@ -89,6 +89,8 @@ import { ManuscriptNoteRepository } from '../DataAccess/ManuscriptNoteRepository
 import { ExternalFileRepository } from '../DataAccess/ExternalFileRepository/ExternalFileRepository'
 import { IManuscriptRepository } from '../DataAccess/Interfaces/IManuscriptRepository'
 import { ManuscriptRepository } from '../DataAccess/ManuscriptRepository/ManuscriptRepository'
+import { ShacklesService } from '../DomainServices/Shackles/ShacklesService'
+import { IShacklesService } from '../DomainServices/Shackles/IShacklesService'
 
 export class UninitializedContainerError extends Error {
   constructor () {
@@ -150,6 +152,7 @@ export class DIContainer {
   readonly jwksClient: JWKSClient
   readonly iamTokenVerifier: IAMTokenVerifier
   readonly pressroomService: IPressroomService
+  readonly shacklesService: IShacklesService
   readonly manuscriptRepository: IManuscriptRepository
   readonly manuscriptNotesRepository: ManuscriptNoteRepository
   readonly externalFileRepository: ExternalFileRepository
@@ -331,6 +334,9 @@ export class DIContainer {
     this.pressroomService = new PressroomService(
       config.pressroom.baseurl,
       config.pressroom.apiKey
+    )
+    this.shacklesService = new ShacklesService(
+      config.shackles.baseUrl
     )
   }
 

@@ -46,6 +46,7 @@ module.exports = {
         "!src/DomainServices/UserActivity/UserActivityTrackingService.ts",
         "!src/DomainServices/External/AWS.ts",
         "!src/DataAccess/EventingFunctions/**.ts",
-        "!src/DomainServices/Pressroom/PressroomService.ts"
+        "!src/DomainServices/Pressroom/PressroomService.ts",
+        "!src/DomainServices/Shackles/ShacklesService.ts"
     ]
 }

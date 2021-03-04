@@ -324,4 +324,29 @@ export class ContainersController extends ContainedBaseController
     const externalFile: ExternalFile = content
     return DIContainer.sharedContainer.containerService[ContainerType.project].updateExternalFile(externalFileID, externalFile)
   }
+
+  async createSnapshot (req: Request) {
+    const { containerID } = req.params
+    if (!isString(containerID)) {
+      throw new ValidationError('containerID should be string', containerID)
+    }
+    let token = authorizationBearerToken(req)
+
+    const getAttachments = true
+    const includeExt = false
+    const allowOrphanedDocs = false
+    const userID = req.user._id
+    const containerType = getContainerType(containerID)
+    const archive = await DIContainer.sharedContainer.containerService[
+      containerType
+      ].getArchive(userID, containerID, null, token, {
+        getAttachments,
+        onlyIDs: false,
+        allowOrphanedDocs,
+        includeExt
+      })
+    const shacklesToken = await DIContainer.sharedContainer.containerService[containerType]
+      .accessToken(userID, 'shackles', containerID)
+    return DIContainer.sharedContainer.shacklesService.createSnapshot(archive, shacklesToken)
+  }
 }

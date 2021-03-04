@@ -955,3 +955,42 @@ describe('ContainersController - updateExternalFile', () => {
     expect(containerService.updateExternalFile).toBeCalled()
   })
 })
+describe('ContainerController - createSnapshot', () => {
+  test('should fail createSnapshot', async () => {
+    const chance = new Chance()
+    const req: any = {
+      params: {
+        containerID: chance.integer()
+      },
+      headers: {
+        authorization: `Bearer validToken`
+      },
+      user: {
+        _id: 'foo'
+      }
+    }
+    const controller: ContainersController = new ContainersController()
+    await expect(controller.createSnapshot(req)).rejects.toThrow(ValidationError)
+  })
+
+  test('should call createSnapshot', async () => {
+    DIContainer.sharedContainer.shacklesService.createSnapshot = jest.fn()
+    const containerService = DIContainer.sharedContainer.containerService[ContainerType.project]
+    containerService.getArchive = jest.fn()
+    containerService.accessToken = jest.fn()
+    const req: any = {
+      params: {
+        containerID: 'MPProject:valid-project-id'
+      },
+      headers: {
+        authorization: `Bearer validToken`
+      },
+      user: {
+        _id: 'foo'
+      }
+    }
+    const controller = new ContainersController()
+    await controller.createSnapshot(req)
+    expect(DIContainer.sharedContainer.shacklesService.createSnapshot).toBeCalled()
+  })
+})

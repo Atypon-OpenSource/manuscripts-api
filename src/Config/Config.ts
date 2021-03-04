@@ -40,7 +40,7 @@ import {
   ScopedAccessTokenConfiguration,
   LiteratumConfiguration,
   PressroomConfiguration,
-  TemplateConfiguration
+  TemplateConfiguration, ShacklesConfiguration
 } from './ConfigurationTypes'
 import { normalizeURL } from './normalize-url'
 
@@ -120,6 +120,7 @@ export class Configuration implements ConfigurationContainer {
   readonly scopes: ScopedAccessTokenConfiguration[]
   readonly literatum: LiteratumConfiguration
   readonly pressroom: PressroomConfiguration
+  readonly shackles: ShacklesConfiguration
   readonly template: TemplateConfiguration
 
   constructor (env: EnvironmentLike) {
@@ -238,6 +239,10 @@ export class Configuration implements ConfigurationContainer {
     this.pressroom = {
       baseurl: getString(env.APP_PRESSROOM_BASE_URL, 'APP_PRESSROOM_BASE_URL'),
       apiKey: getString(env.APP_PRESSROOM_APIKEY, 'APP_PRESSROOM_APIKEY')
+    }
+
+    this.shackles = {
+      baseUrl: getString(env.SHACKLES_URL, 'SHACKLES_URL')
     }
 
     this.template = {
