@@ -79,14 +79,18 @@ export class ProjectController extends BaseController implements IProjectControl
 
     if (!DIContainer.sharedContainer.containerService[ContainerType.project].isOwner(project,req.user._id)) throw new UserRoleError('User must be an owner to add manuscripts',req.user._id)
 
-    const container = await this.addManuscriptToProject(project, manuscript, manuscriptId)
+    const container = await this.upsertManuscriptToProject(project, manuscript, manuscriptId)
 
     await remove(file.path)
 
     return container
   }
 
-  async addManuscriptToProject (project: Container, manuscript: Readable, manuscriptId?: string): Promise<Container> {
+  /**
+   * Create/update the imported manuscript and it's resources.
+   * @returns the created/updated manuscript
+   */
+  async upsertManuscriptToProject (project: Container, manuscript: Readable, manuscriptId?: string): Promise<Container> {
     const buffer = await getStream.buffer(manuscript)
 
     const unzipRoot = tempy.directory()
@@ -94,21 +98,47 @@ export class ProjectController extends BaseController implements IProjectControl
     const byPath: any = files.reduce((acc,v) => ({ ...acc,[v.path]: v }),{})
 
     const json = JSON.parse(byPath['index.manuscript-json'].data)
-    const manuscriptObject = json.data.find((model: Model) => model.objectType === 'MPManuscript')
+    let manuscriptObject = json.data.find((model: Model) => model.objectType === 'MPManuscript')
     if (manuscriptId) manuscriptObject._id = manuscriptId
 
     const sessionID = uuid.v4()
     const createdAt = Math.round(Date.now() / 1000)
-    const docs = json.data.map((model: Model) => ({
-      ...model,
-      createdAt,
-      updatedAt: createdAt,
-      manuscriptID: manuscriptIDTypes.has(model.objectType) ? manuscriptObject._id : undefined,
-      sessionID,
-      containerID: project._id
-    }))
+    const docs = json.data
+      .filter((model: Model) => model.objectType !== 'MPManuscript')
+      .map((model: Model) => {
+        const doc: any = {
+          ...model,
+          createdAt,
+          updatedAt: createdAt,
+          sessionID,
+          containerID: project._id
+        }
+
+        if (manuscriptIDTypes.has(doc.objectType)) doc.manuscriptID = manuscriptId
+
+        return doc
+      })
 
     await remove(unzipRoot)
+
+    manuscriptObject = {
+      ...manuscriptObject,
+      createdAt,
+      updatedAt: createdAt,
+      sessionID,
+      containerID: project._id
+    }
+
+    manuscriptId
+      ? await DIContainer.sharedContainer.manuscriptRepository.update(
+          manuscriptObject._id,
+          manuscriptObject,
+          {}
+        )
+      : await DIContainer.sharedContainer.manuscriptRepository.create(
+          manuscriptObject,
+          {}
+        )
 
     await DIContainer.sharedContainer.containerService[ContainerType.project].addManuscript(docs)
 

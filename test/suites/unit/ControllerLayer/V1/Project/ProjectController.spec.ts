@@ -94,7 +94,7 @@ describe('ProjectController', () => {
       return tempy.write.task('', async tempPath => {
         const controller: any = new ProjectController()
 
-        controller.addManuscriptToProject = jest.fn(async () => {})
+        controller.upsertManuscriptToProject = jest.fn(async () => {})
         DIContainer.sharedContainer.containerService[ContainerType.project].isOwner = jest.fn(() => true)
 
         await controller.add({
@@ -106,7 +106,7 @@ describe('ProjectController', () => {
         })
 
         expect(DIContainer.sharedContainer.pressroomService.importJATS).toBeCalled()
-        expect(controller.addManuscriptToProject).toBeCalled()
+        expect(controller.upsertManuscriptToProject).toBeCalled()
       })
     })
 
@@ -114,7 +114,7 @@ describe('ProjectController', () => {
       return tempy.write.task('', async tempPath => {
         const controller: any = new ProjectController()
 
-        controller.addManuscriptToProject = jest.fn(async () => {})
+        controller.upsertManuscriptToProject = jest.fn(async () => {})
         DIContainer.sharedContainer.containerService[ContainerType.project].isOwner = jest.fn(() => true)
 
         await controller.add({
@@ -126,7 +126,7 @@ describe('ProjectController', () => {
         })
 
         expect(DIContainer.sharedContainer.pressroomService.importJATS).toBeCalled()
-        expect(controller.addManuscriptToProject).toBeCalled()
+        expect(controller.upsertManuscriptToProject).toBeCalled()
       })
     })
 
@@ -181,11 +181,12 @@ describe('ProjectController', () => {
     })
   })
 
-  describe('addManuscriptToProject', () => {
-    test('successfully call services', async () => {
+  describe('upsertManuscriptToProject', () => {
+    test('successfully create a mansucript and all contained resources', async () => {
       const controller: any = new ProjectController()
 
       DIContainer.sharedContainer.containerService[ContainerType.project].addManuscript = jest.fn(async () => {})
+      DIContainer.sharedContainer.manuscriptRepository.create = jest.fn()
 
       const archive = archiver('zip')
       archive.append(JSON.stringify({
@@ -197,8 +198,31 @@ describe('ProjectController', () => {
       }), { name: 'index.manuscript-json' })
       await archive.finalize()
 
-      await controller.addManuscriptToProject({ _id: 'MPProject:abc' }, archive)
+      await controller.upsertManuscriptToProject({ _id: 'MPProject:abc' }, archive)
 
+      expect(DIContainer.sharedContainer.manuscriptRepository.create).toBeCalled()
+      expect(DIContainer.sharedContainer.containerService[ContainerType.project].addManuscript).toBeCalled()
+    })
+
+    test('successfully update the manuscript when the manuscriptId is provided and create all contained resources', async () => {
+      const controller: any = new ProjectController()
+
+      DIContainer.sharedContainer.containerService[ContainerType.project].addManuscript = jest.fn(async () => {})
+      DIContainer.sharedContainer.manuscriptRepository.update = jest.fn()
+
+      const archive = archiver('zip')
+      archive.append(JSON.stringify({
+        data: [
+          { _id: 'MPManuscript:abc', objectType: 'MPManuscript' },
+          { _id: 'MPCitation:abc', objectType: 'MPCitation' },
+          { _id: 'MPMPAuxiliaryObjectReference:abc', objectType: 'MPAuxiliaryObjectReference' }
+        ]
+      }), { name: 'index.manuscript-json' })
+      await archive.finalize()
+
+      await controller.upsertManuscriptToProject({ _id: 'MPProject:abc' }, archive, 'MPManuscript:foo-bar-baz')
+
+      expect(DIContainer.sharedContainer.manuscriptRepository.update).toBeCalled()
       expect(DIContainer.sharedContainer.containerService[ContainerType.project].addManuscript).toBeCalled()
     })
   })
