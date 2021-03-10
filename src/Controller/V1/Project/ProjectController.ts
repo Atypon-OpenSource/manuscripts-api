@@ -114,7 +114,7 @@ export class ProjectController extends BaseController implements IProjectControl
           containerID: project._id
         }
 
-        if (manuscriptIDTypes.has(doc.objectType)) doc.manuscriptID = manuscriptId
+        if (manuscriptIDTypes.has(doc.objectType)) doc.manuscriptID = manuscriptObject._id
 
         return doc
       })
