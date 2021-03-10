@@ -800,7 +800,9 @@ describe('ContainerController - createSnapshot', () => {
   })
 
   test('should call createSnapshot', async () => {
-    DIContainer.sharedContainer.shacklesService.createSnapshot = jest.fn()
+    const shacklesService: any = DIContainer.sharedContainer.shacklesService
+    shacklesService.createSnapshot = jest.fn(() => Promise.resolve({ key: `somekey` }))
+    DIContainer.sharedContainer.containerService[ContainerType.project].saveSnapshot = jest.fn()
     DIContainer.sharedContainer.containerService[ContainerType.project].getArchive = jest.fn()
     const req: any = {
       params: {
@@ -816,5 +818,6 @@ describe('ContainerController - createSnapshot', () => {
     const controller = new ContainersController()
     await controller.createSnapshot(req)
     expect(DIContainer.sharedContainer.shacklesService.createSnapshot).toBeCalled()
+    expect(DIContainer.sharedContainer.containerService[ContainerType.project].saveSnapshot).toBeCalled()
   })
 })

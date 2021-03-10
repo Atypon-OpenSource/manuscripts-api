@@ -89,6 +89,7 @@ import { ManuscriptNoteRepository } from '../DataAccess/ManuscriptNoteRepository
 import { ExternalFileRepository } from '../DataAccess/ExternalFileRepository/ExternalFileRepository'
 import { IManuscriptRepository } from '../DataAccess/Interfaces/IManuscriptRepository'
 import { ManuscriptRepository } from '../DataAccess/ManuscriptRepository/ManuscriptRepository'
+import { SnapshotRepository } from '../DataAccess/SnapshotRepository/SnapshotRepository'
 import { ShacklesService } from '../DomainServices/Shackles/ShacklesService'
 import { IShacklesService } from '../DomainServices/Shackles/IShacklesService'
 
@@ -156,6 +157,7 @@ export class DIContainer {
   readonly manuscriptRepository: IManuscriptRepository
   readonly manuscriptNotesRepository: ManuscriptNoteRepository
   readonly externalFileRepository: ExternalFileRepository
+  readonly snapshotRepository: SnapshotRepository
 
   /**
    * WARNING: internal method.
@@ -246,6 +248,10 @@ export class DIContainer {
       BucketKey.Data,
       this.dataBucket
     )
+    this.snapshotRepository = new SnapshotRepository(
+      BucketKey.Data,
+      this.dataBucket
+    )
     this.userService = new UserService(
       this.userRepository,
       this.singleUseTokenRepository,
@@ -274,7 +280,8 @@ export class DIContainer {
         this.emailService,
         this.manuscriptRepository,
         this.manuscriptNotesRepository,
-        this.externalFileRepository
+        this.externalFileRepository,
+        this.snapshotRepository
       )}
     this.containerInvitationService = new ContainerInvitationService(
         this.userRepository,

@@ -30,9 +30,9 @@ export class ShacklesService implements IShacklesService {
       ...form.getHeaders(),
       'authorization': `Bearer ${token}`
     }
-    const res = await fetch(`${this.baseurl}/api/v2/snapshot`,{ method: 'POST', body: form, headers })
+    const res = await fetch(`${this.baseurl}/api/v1/snapshot`,{ method: 'POST', body: form, headers })
     if (res.ok) {
-      return res.body
+      return JSON.parse(await res.text())
     }
     throw new RequestError(`Shackles request '/snapshot' failed with error: code(${res.status}) - message(${res.statusText})`)
   }

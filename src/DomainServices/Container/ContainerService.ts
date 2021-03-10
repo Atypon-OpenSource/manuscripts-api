@@ -53,6 +53,7 @@ import { UserService } from '../User/UserService'
 import { DIContainer } from '../../DIContainer/DIContainer'
 import { ExternalFileRepository } from '../../DataAccess/ExternalFileRepository/ExternalFileRepository'
 import { IManuscriptRepository } from '../../DataAccess/Interfaces/IManuscriptRepository'
+import { SnapshotRepository } from '../../DataAccess/SnapshotRepository/SnapshotRepository'
 
 const JSZip = require('jszip')
 
@@ -68,7 +69,8 @@ export class ContainerService implements IContainerService {
     private emailService: EmailService,
     private manuscriptRepository: IManuscriptRepository,
     private manuscriptNoteRepository: ManuscriptNoteRepository,
-    private externalFileRepository: ExternalFileRepository
+    private externalFileRepository: ExternalFileRepository,
+    private snapshotRepository: SnapshotRepository
   ) {}
 
   public async containerCreate (
@@ -798,5 +800,17 @@ export class ContainerService implements IContainerService {
       })
     }
     return this.externalFileRepository.bulkDocs(externalFiles)
+  }
+
+  public async saveSnapshot (key: string) {
+    const stamp = timestamp()
+    const doc = {
+      _id: `MPSnapshot:${uuid_v4()}`,
+      objectType: ObjectTypes.Snapshot,
+      s3Id: key,
+      createdAt: stamp,
+      updatedAt: stamp
+    }
+    return this.snapshotRepository.create(doc, {})
   }
 }

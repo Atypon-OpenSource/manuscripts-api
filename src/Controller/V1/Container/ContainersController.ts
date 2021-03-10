@@ -347,6 +347,9 @@ export class ContainersController extends ContainedBaseController
       })
     const shacklesToken = await DIContainer.sharedContainer.containerService[containerType]
       .accessToken(userID, 'shackles', containerID)
-    return DIContainer.sharedContainer.shacklesService.createSnapshot(archive, shacklesToken)
+    const res = await DIContainer.sharedContainer.shacklesService.createSnapshot(archive, shacklesToken)
+    return DIContainer.sharedContainer.containerService[
+      containerType
+      ].saveSnapshot(res.key)
   }
 }

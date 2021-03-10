@@ -990,7 +990,7 @@ paths:
         404:
           description: "External file not found"
   /snapshot/:containerID/create:
-    get:
+    post:
       tags:
         - "container"
       summary: "Create a snapshot"
@@ -1004,7 +1004,7 @@ paths:
         - $ref: "#/parameters/AuthorizationTokenHeaderSchema"
       responses:
         202:
-          description: "Snapshot created successfully"
+          description: "A JSON containing snapshot ID"
         400:
           description: "Invalid authorization token | User must be contributor on project"
         404:

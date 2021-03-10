@@ -16,7 +16,7 @@
 
 import { ContainerRole, Container } from '../../Models/ContainerModels'
 import { User } from '../../Models/UserModels'
-import { ExternalFile, Manuscript, ManuscriptNote } from '@manuscripts/manuscripts-json-schema'
+import { ExternalFile, Manuscript, ManuscriptNote, Snapshot } from '@manuscripts/manuscripts-json-schema'
 
 export interface IContainerService {
   /**
@@ -169,6 +169,8 @@ export interface IContainerService {
    * @param docs list of ExternalFile document to be created
    */
   addExternalFiles (docs: ExternalFile[]): void
+
+  saveSnapshot (key: string): Promise<Snapshot>
 }
 
 export interface ArchiveOptions {
