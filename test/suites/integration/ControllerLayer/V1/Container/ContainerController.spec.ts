@@ -777,6 +777,26 @@ describe('ContainerController - updateExternalFile', () => {
   })
 })
 
+describe('ContainerController - getCorrectionStatus', () => {
+  beforeEach(async () => {
+    await drop()
+    await dropBucket(BucketKey.Data)
+    await seed({ users: true, corrections: true, projects: true })
+  })
+  test('should fail if containerID id is not a string', async () => {
+    const containerService = DIContainer.sharedContainer.containerService[ContainerType.project]
+    containerService.getCorrectionStatus = jest.fn()
+    const req: any = {
+      params: {
+        containerID: 123
+      }, user: {
+        _id: 'User_test'
+      }
+    }
+    await expect(new ContainersController().getCorrectionStatus(req)).rejects.toThrow(ValidationError)
+  })
+})
+
 describe('ContainerController - createSnapshot', () => {
   beforeEach(async () => {
     await drop()

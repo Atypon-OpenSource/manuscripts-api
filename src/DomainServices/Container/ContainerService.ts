@@ -52,6 +52,7 @@ import { ManuscriptNote, ExternalFile, ObjectTypes } from '@manuscripts/manuscri
 import { UserService } from '../User/UserService'
 import { DIContainer } from '../../DIContainer/DIContainer'
 import { ExternalFileRepository } from '../../DataAccess/ExternalFileRepository/ExternalFileRepository'
+import { CorrectionRepository } from '../../DataAccess/CorrectionRepository/CorrectionRepository'
 import { IManuscriptRepository } from '../../DataAccess/Interfaces/IManuscriptRepository'
 import { SnapshotRepository } from '../../DataAccess/SnapshotRepository/SnapshotRepository'
 
@@ -70,6 +71,7 @@ export class ContainerService implements IContainerService {
     private manuscriptRepository: IManuscriptRepository,
     private manuscriptNoteRepository: ManuscriptNoteRepository,
     private externalFileRepository: ExternalFileRepository,
+    private correctionRepository: CorrectionRepository,
     private snapshotRepository: SnapshotRepository
   ) {}
 
@@ -812,5 +814,13 @@ export class ContainerService implements IContainerService {
       updatedAt: stamp
     }
     return this.snapshotRepository.create(doc, {})
+  }
+
+  public async getCorrectionStatus (containerID: string, userId: string) {
+    const canAccess = await this.checkUserContainerAccess(userId, containerID)
+    if (!canAccess) {
+      throw new ValidationError('User must be a contributor in the container', containerID)
+    }
+    return this.correctionRepository.getCorrectionStatus(containerID)
   }
 }

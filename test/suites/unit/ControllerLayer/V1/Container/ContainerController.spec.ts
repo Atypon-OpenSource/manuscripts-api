@@ -997,3 +997,32 @@ describe('ContainerController - createSnapshot', () => {
     expect(containerService.saveSnapshot).toBeCalled()
   })
 })
+
+describe('ContainerController - getCorrectionStatus', () => {
+  test('should fail if containerID id is not a string', async () => {
+    const containerService = DIContainer.sharedContainer.containerService[ContainerType.project]
+    containerService.getCorrectionStatus = jest.fn()
+    const req: any = {
+      params: {
+        containerID: 123
+      }, user: {
+        _id: 'User_test'
+      }
+    }
+    await expect(new ContainersController().getCorrectionStatus(req)).rejects.toThrow(ValidationError)
+  })
+
+  test('should call getCorrectionStatus', async () => {
+    const containerService = DIContainer.sharedContainer.containerService[ContainerType.project]
+    containerService.getCorrectionStatus = jest.fn()
+    const req: any = {
+      params: {
+        containerID: 'container-id'
+      }, user: {
+        _id: 'User_test'
+      }
+    }
+    await new ContainersController().getCorrectionStatus(req)
+    expect(containerService.getCorrectionStatus).toBeCalled()
+  })
+})

@@ -473,3 +473,10 @@ export async function createSnapshot (headers: any, params: any): Promise<supert
     .post(`/api/v1/snapshot/${params.containerID}/create`)
     .set(headers)
 }
+
+export async function getCorrectionStatus (headers: any, params: any): Promise<supertest.Response> {
+  const server: IServer = await createServer()
+  return supertest(server.app)
+    .get(`/api/v1/projects/${params.containerID}/suggestions/status`)
+    .set(headers)
+}

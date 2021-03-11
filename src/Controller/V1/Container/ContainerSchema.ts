@@ -141,6 +141,12 @@ export const updateExternalFile: Joi.SchemaMap = {
   })
 }
 
+export const suggestionStatusSchema: Joi.SchemaMap = {
+  params: Joi.object({
+    containerID: Joi.string().required()
+  })
+}
+
 export const createSnapshotSchema: Joi.SchemaMap = {
   params: Joi.object({
     containerID: Joi.string().required()

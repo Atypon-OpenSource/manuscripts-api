@@ -38,6 +38,7 @@ import { validManuscript, validManuscript1 } from '../data/fixtures/manuscripts'
 import { manuscriptList } from '../data/dump/manuscriptList'
 import { manuscriptNoteList } from '../data/dump/manuscriptNotes'
 import { externalFileList } from '../data/dump/externalFilesList'
+import { correctionList } from '../data/dump/correctionList'
 
 async function createUsers (): Promise<void> {
   const { userRepository, userEmailRepository } = DIContainer.sharedContainer
@@ -170,6 +171,14 @@ async function createExternalFile (): Promise<void> {
   }
 }
 
+async function createCorrections (): Promise<void> {
+  for (const externalFile of correctionList) {
+    await DIContainer.sharedContainer.correctionRepository.create(
+      _.clone(externalFile),
+      {}
+    )
+  }
+}
 let _db: any = null
 export async function testDatabase (
   enableActivityTracking: boolean = false,
@@ -273,6 +282,10 @@ export async function seed (options: SeedOptions): Promise<void> {
     storagePromises.push(createExternalFile())
   }
 
+  if (options.corrections) {
+    storagePromises.push(createCorrections())
+  }
+
   await Promise.all(storagePromises)
 }
 
@@ -284,7 +297,8 @@ const syncGatewayRepositories = new Set<string>([
   'MPInvitation',
   'MPContainerRequest',
   'MPSubmission',
-  'MPManuscriptNote'
+  'MPManuscriptNote',
+  'MPCorrection'
 ])
 
 const derivedBucketRepositories = new Set<string>([
@@ -309,6 +323,12 @@ export async function dropBucket (bucketKey: BucketKey): Promise<void> {
   await purge(bucketKey, payload)
 
   payload = externalFileList.reduce((acc: any, doc: any) => {
+    acc[doc._id] = ['*']
+    return acc
+  }, {})
+  await purge(bucketKey, payload)
+
+  payload = correctionList.reduce((acc: any, doc: any) => {
     acc[doc._id] = ['*']
     return acc
   }, {})

@@ -1656,6 +1656,7 @@ describe('ContainerService - addExternalFiles', () => {
     expect(repo.bulkDocs).toBeCalled()
   })
 })
+
 describe('ContainerService - updateExternalFile', () => {
   test('should update externalFile', async () => {
     const containerService: any =
@@ -1674,5 +1675,51 @@ describe('ContainerService - updateExternalFile', () => {
     repo.getById = jest.fn(() => {})
     repo.update = jest.fn()
     await expect(containerService.updateExternalFile(externalFile._id, externalFile)).rejects.toThrow(RecordNotFoundError)
+  })
+})
+
+describe('ContainerService - getCorrectionStatus', () => {
+  test('should call getCorrectionStatus', async () => {
+    const containerService: any =
+      DIContainer.sharedContainer.containerService[ContainerType.project]
+    containerService.containerRepository.getById = jest.fn().mockImplementationOnce(() => {
+      return {
+        _id: 'MPProject:project-id',
+        owners: ['User_validId'],
+        viewers: [],
+        writers: []
+      }
+    })
+    const repo: any = DIContainer.sharedContainer.correctionRepository
+    repo.getCorrectionStatus = jest.fn()
+    await containerService.getCorrectionStatus('MPProject:project-id', 'User_validId')
+    expect(repo.getCorrectionStatus).toBeCalled()
+  })
+
+  test('should fail if container not found', async () => {
+    const containerService: any =
+      DIContainer.sharedContainer.containerService[ContainerType.project]
+    containerService.containerRepository.getById = jest.fn().mockImplementationOnce(() => {
+      return null
+    })
+    const repo: any = DIContainer.sharedContainer.correctionRepository
+    repo.getCorrectionStatus = jest.fn()
+    await expect(containerService.getCorrectionStatus('MPProject:project-id', 'User_validId')).rejects.toThrow(RecordNotFoundError)
+  })
+
+  test('should fail if user is not a contributor', async () => {
+    const containerService: any =
+      DIContainer.sharedContainer.containerService[ContainerType.project]
+    containerService.containerRepository.getById = jest.fn().mockImplementationOnce(() => {
+      return {
+        _id: 'MPProject:project-id',
+        owners: ['User_validId'],
+        viewers: [],
+        writers: []
+      }
+    })
+    const repo: any = DIContainer.sharedContainer.correctionRepository
+    repo.getCorrectionStatus = jest.fn()
+    await expect(containerService.getCorrectionStatus('MPProject:project-id', 'User_invalidId')).rejects.toThrow(ValidationError)
   })
 })

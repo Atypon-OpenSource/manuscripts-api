@@ -32,7 +32,8 @@ import {
   getProductionNotes,
   addExternalFiles,
   updateExternalFile,
-  createManuscript
+  createManuscript,
+  getCorrectionStatus
 } from '../../../../api'
 import { TEST_TIMEOUT } from '../../../../utilities/testSetup'
 import { drop, dropBucket, seed, testDatabase } from '../../../../utilities/db'
@@ -1322,5 +1323,53 @@ describe('ContainerService - updateExternalFile', () => {
       }
     )
     expect(updateExternalFileResponse.status).toBe(HttpStatus.OK)
+  })
+})
+
+describe('ContainerService - getCorrectionStatus', () => {
+  beforeEach(async () => {
+    await drop()
+    await dropBucket(BucketKey.Data)
+    await seed({ users: true, applications: true, corrections: true, projects: true })
+  })
+  test('should get correction status', async () => {
+    const loginResponse: supertest.Response = await basicLogin(
+      validBody,
+      ValidHeaderWithApplicationKey
+    )
+    expect(loginResponse.status).toBe(HttpStatus.OK)
+    const authHeader = authorizationHeader(loginResponse.body.token)
+    const response: supertest.Response = await getCorrectionStatus(
+      {
+        ...ValidContentTypeAcceptJsonHeader,
+        ...authHeader
+      },
+      {
+        containerID: 'MPProject:valid-project-id-2'
+      }
+    )
+    const status = response.body
+    expect(status.accepted).toBe(3)
+    expect(status.rejected).toBe(1)
+    expect(status.proposed).toBe(1)
+  })
+
+  test('should fail if user is not owner', async () => {
+    const loginResponse: supertest.Response = await basicLogin(
+      validBody2,
+      ValidHeaderWithApplicationKey
+    )
+    expect(loginResponse.status).toBe(HttpStatus.OK)
+    const authHeader = authorizationHeader(loginResponse.body.token)
+    const response: supertest.Response = await getCorrectionStatus(
+      {
+        ...ValidContentTypeAcceptJsonHeader,
+        ...authHeader
+      },
+      {
+        containerID: 'MPProject:valid-project-id-2'
+      }
+    )
+    expect(response.status).toBe(HttpStatus.BAD_REQUEST)
   })
 })

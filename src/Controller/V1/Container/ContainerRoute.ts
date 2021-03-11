@@ -33,6 +33,7 @@ import {
   addExternalFiles,
   updateExternalFile,
   createManuscriptSchema,
+  suggestionStatusSchema,
   createSnapshotSchema
 } from './ContainerSchema'
 import { ContainersController } from './ContainersController'
@@ -217,6 +218,17 @@ export class ContainerRoute extends BaseRoute {
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           res.send(await this.containersController.createSnapshot(req))
+        }, next)
+      }
+    )
+
+    router.get(
+      `/projects/:containerID/suggestions/status`,
+      expressJoiMiddleware(suggestionStatusSchema, {}),
+      AuthStrategy.JWTAuth,
+      (req: Request, res: Response, next: NextFunction) => {
+        return this.runWithErrorHandling(async () => {
+          res.send(await this.containersController.getCorrectionStatus(req))
         }, next)
       }
     )

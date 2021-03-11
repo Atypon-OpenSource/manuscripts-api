@@ -989,6 +989,28 @@ paths:
           description: "Invalid authorization token"
         404:
           description: "External file not found"
+  /projects/:containerID/suggestions/status:
+    get:
+      tags:
+        - "container"
+      summary: "Container suggestion status"
+      description: ""
+      operationId: "suggestion-status"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - $ref: "#/parameters/AuthorizationTokenHeaderSchema"
+      responses:
+        202:
+          description: "A json containing the count of accepted/rejected/proposed suggestions"
+        400:
+          description: "User is not a contributor on container"
+        401:
+          description: "Invalid authorization token"
+        404:
+          description: "Container not found"
   /snapshot/:containerID/create:
     post:
       tags:

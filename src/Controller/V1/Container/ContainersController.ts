@@ -325,6 +325,15 @@ export class ContainersController extends ContainedBaseController
     return DIContainer.sharedContainer.containerService[ContainerType.project].updateExternalFile(externalFileID, externalFile)
   }
 
+  async getCorrectionStatus (req: Request) {
+    const { containerID } = req.params
+    if (!isString(containerID)) {
+      throw new ValidationError('containerID should be string', containerID)
+    }
+    const userID = req.user?._id
+    return DIContainer.sharedContainer.containerService[ContainerType.project].getCorrectionStatus(containerID, userID)
+  }
+
   async createSnapshot (req: Request) {
     const { containerID } = req.params
     if (!isString(containerID)) {

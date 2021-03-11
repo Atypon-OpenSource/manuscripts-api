@@ -29,4 +29,5 @@ export interface SeedOptions {
   manuscript?: boolean
   manuscriptNotes?: boolean
   externalFile?: boolean
+  corrections?: boolean
 }
