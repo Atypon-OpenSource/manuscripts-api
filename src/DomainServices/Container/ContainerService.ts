@@ -796,6 +796,7 @@ export class ContainerService implements IContainerService {
       externalFiles.push({
         ...externalFile,
         _id: `${this.externalFileRepository.objectType}:${uuid_v4()}`,
+        objectType: 'MPExternalFile',
         createdAt: stamp,
         updatedAt: stamp,
         sessionID: uuid_v4()
