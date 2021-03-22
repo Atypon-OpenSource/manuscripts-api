@@ -49,7 +49,8 @@ const indexesObj = {
     ],
     [ObjectTypes.Keyword]: [{ fields: ['containerID'], gsi: true }],
     [ObjectTypes.UserProject]: [{ fields: ['projectID'], gsi: true }],
-    [ObjectTypes.ProjectInvitation]: [{ fields: ['projectID'], gsi: true }]
+    [ObjectTypes.ProjectInvitation]: [{ fields: ['projectID'], gsi: true }],
+    [ObjectTypes.ExternalFile]: [{ fields: ['publicUrl'], gsi: true }]
   } as any,
   [BucketKey.DerivedData]: {
     // The bucket level indicies
