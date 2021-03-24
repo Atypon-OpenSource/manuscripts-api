@@ -228,7 +228,12 @@ export class ContainerRoute extends BaseRoute {
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
-          res.send(await this.containersController.getCorrectionStatus(req))
+          const result: any = await this.containersController.getCorrectionStatus(req)
+          if (!Object.keys(result).length) {
+            res.status(HttpStatus.NO_CONTENT).send()
+          } else {
+            res.status(HttpStatus.OK).send(result)
+          }
         }, next)
       }
     )

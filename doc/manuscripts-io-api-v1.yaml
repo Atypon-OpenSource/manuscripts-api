@@ -1003,8 +1003,10 @@ paths:
       parameters:
         - $ref: "#/parameters/AuthorizationTokenHeaderSchema"
       responses:
-        202:
+        200:
           description: "A json containing the count of accepted/rejected/proposed suggestions"
+        204:
+          description: "No content will be return if no corrections are found"
         400:
           description: "User is not a contributor on container"
         401:

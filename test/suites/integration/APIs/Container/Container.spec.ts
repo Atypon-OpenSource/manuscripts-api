@@ -1349,9 +1349,29 @@ describe('ContainerService - getCorrectionStatus', () => {
       }
     )
     const status = response.body
+    expect(response.status).toBe(HttpStatus.OK)
     expect(status.accepted).toBe(3)
     expect(status.rejected).toBe(1)
     expect(status.proposed).toBe(1)
+  })
+
+  test('should return 204 if no corrections found', async () => {
+    const loginResponse: supertest.Response = await basicLogin(
+      validBody,
+      ValidHeaderWithApplicationKey
+    )
+    expect(loginResponse.status).toBe(HttpStatus.OK)
+    const authHeader = authorizationHeader(loginResponse.body.token)
+    const response: supertest.Response = await getCorrectionStatus(
+      {
+        ...ValidContentTypeAcceptJsonHeader,
+        ...authHeader
+      },
+      {
+        containerID: 'MPProject:valid-project-id-4'
+      }
+    )
+    expect(response.status).toBe(HttpStatus.NO_CONTENT)
   })
 
   test('should fail if user is not owner', async () => {
