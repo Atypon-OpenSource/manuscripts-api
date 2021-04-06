@@ -31,6 +31,10 @@ export interface LoginTokenPayload {
    */
   userId: string
   /**
+   * User's connect id.
+   */
+  connectUserID?: string
+  /**
    * User's profile IDs.
    */
   userProfileId: string

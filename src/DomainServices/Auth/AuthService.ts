@@ -897,6 +897,7 @@ export class AuthService implements IAuthService {
   ) {
     const userToken = await this.ensureUserTokenExists(
       user._id,
+      user.connectUserID,
       appId,
       deviceId,
       hasExpiry,
@@ -934,6 +935,7 @@ export class AuthService implements IAuthService {
 
   private async ensureUserTokenExists (
     userId: string,
+    connectUserID: string | undefined,
     appId: string,
     deviceId: string,
     hasExpiry: boolean,
@@ -962,6 +964,7 @@ export class AuthService implements IAuthService {
       let token = generateLoginToken({
         tokenId,
         userId,
+        connectUserID,
         userProfileId: UserService.profileID(userId),
         appId,
         iamSessionID,
