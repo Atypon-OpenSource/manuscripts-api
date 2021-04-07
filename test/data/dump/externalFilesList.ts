@@ -27,7 +27,8 @@ externalFileList.push({
   MIME: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
   displayName: 'Supplemental file',
   manuscriptID: 'MPManuscript:valid-manuscript-id-1',
-  sessionID: 'test'
+  sessionID: 'test',
+  publicUrl: 'http://exampleUrl.com/path'
 })
 
 externalFileList.push({
@@ -39,5 +40,6 @@ externalFileList.push({
   MIME: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
   displayName: 'Supplemental file',
   manuscriptID: 'MPManuscript:valid-manuscript-id-1',
-  sessionID: 'test'
+  sessionID: 'test',
+  publicUrl: 'http://exampleUrl.com/path'
 })
