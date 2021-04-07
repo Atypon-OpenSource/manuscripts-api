@@ -55,6 +55,7 @@ import { ExternalFileRepository } from '../../DataAccess/ExternalFileRepository/
 import { CorrectionRepository } from '../../DataAccess/CorrectionRepository/CorrectionRepository'
 import { IManuscriptRepository } from '../../DataAccess/Interfaces/IManuscriptRepository'
 import { SnapshotRepository } from '../../DataAccess/SnapshotRepository/SnapshotRepository'
+import { TemplateRepository } from '../../DataAccess/TemplateRepository/TemplateRepository'
 
 const JSZip = require('jszip')
 
@@ -72,7 +73,8 @@ export class ContainerService implements IContainerService {
     private manuscriptNoteRepository: ManuscriptNoteRepository,
     private externalFileRepository: ExternalFileRepository,
     private correctionRepository: CorrectionRepository,
-    private snapshotRepository: SnapshotRepository
+    private snapshotRepository: SnapshotRepository,
+    private templateRepository: TemplateRepository
   ) {}
 
   public async containerCreate (
@@ -687,7 +689,8 @@ export class ContainerService implements IContainerService {
     }
   }
 
-  public async createManuscript (userID: string, containerID: string, manuscriptID?: string) {
+  // tslint:disable-next-line:cyclomatic-complexity
+  public async createManuscript (userID: string, containerID: string, manuscriptID?: string, templateId?: string) {
     const container = await this.getContainer(containerID)
 
     const canAccess =
@@ -712,8 +715,18 @@ export class ContainerService implements IContainerService {
       )
     }
 
+    const template = templateId
+      ? await this.templateRepository.getById(templateId)
+      : null
+
+    if (templateId && !template) {
+      throw new RecordNotFoundError(
+        'Template with id not found'
+      )
+    }
+
     return this.manuscriptRepository.create(
-      { _id: newManuscriptID, containerID, objectType: ObjectTypes.Manuscript },
+      { _id: newManuscriptID, containerID, objectType: ObjectTypes.Manuscript, prototype: templateId },
       {}
     )
   }

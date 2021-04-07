@@ -1551,6 +1551,22 @@ describe('ContainerService - createManuscript', () => {
     ).rejects.toThrow(ConflictingRecordError)
   })
 
+  test('should fail if template not found', async () => {
+    const containerService: any =
+      DIContainer.sharedContainer.containerService[ContainerType.project]
+    containerService.getContainer = jest.fn(() => Promise.resolve(validProject))
+    containerService.manuscriptRepository.getById = jest.fn(() => Promise.resolve(null))
+    containerService.manuscriptRepository.create = jest.fn()
+    containerService.templateRepository.getById = jest.fn(() => Promise.resolve(null))
+    const containerID = validNote1.containerID
+    const manuscriptID = validNote1.manuscriptID
+    const userID = 'User_test'
+
+    await expect(
+      containerService.createManuscript(userID, containerID, manuscriptID, chance.string())
+    ).rejects.toThrow(RecordNotFoundError)
+  })
+
   test('should create a manuscript', async () => {
     const containerService: any =
       DIContainer.sharedContainer.containerService[ContainerType.project]

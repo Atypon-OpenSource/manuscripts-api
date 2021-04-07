@@ -360,7 +360,7 @@ export async function pickerBundle (headers: object, params: any): Promise<super
     .send()
 }
 
-export async function createManuscript (headers: object, params: any): Promise<supertest.Response> {
+export async function createManuscript (headers: object, params: any, body?: any): Promise<supertest.Response> {
   const server: IServer = await createServer()
   return supertest(server.app)
     .post(
@@ -369,7 +369,7 @@ export async function createManuscript (headers: object, params: any): Promise<s
       }`
     )
     .set(headers)
-    .send()
+    .send(body)
 }
 
 export async function getProductionNotes (headers: object, params: any): Promise<supertest.Response> {

@@ -492,7 +492,7 @@ describe('ContainerController - createManuscript', () => {
   beforeEach(async () => {
     await drop()
     await dropBucket(BucketKey.Data)
-    await seed({ users: true, applications: true, projects: true, manuscript: true })
+    await seed({ users: true, applications: true, projects: true, manuscript: true, templates: true })
     await DIContainer.sharedContainer.syncService.createGatewayContributor(
       {
         _id: `User|${validBody.email}`,
@@ -510,7 +510,8 @@ describe('ContainerController - createManuscript', () => {
     const req: any = {
       params: {
         containerID: chance.integer()
-      }
+      },
+      body: {}
     }
     await expect(
       new ContainersController().createManuscript(req)
@@ -525,6 +526,28 @@ describe('ContainerController - createManuscript', () => {
       params: {
         containerID: validNote1.containerID,
         manuscriptID: chance.integer()
+      },
+      body: {}
+    }
+    await expect(
+      new ContainersController().createManuscript(req)
+    ).rejects.toThrow(ValidationError)
+  })
+
+  test('should fail if template is not a string', async () => {
+    const containerService =
+      DIContainer.sharedContainer.containerService[ContainerType.project]
+    containerService.createManuscript = jest.fn()
+    const req: any = {
+      params: {
+        containerID: validNote1.containerID,
+        manuscriptID: validNote1.manuscriptID
+      },
+      user: {
+        _id: `User_${validBody.email}`
+      },
+      body: {
+        templateId: chance.integer()
       }
     }
     await expect(
@@ -540,6 +563,7 @@ describe('ContainerController - createManuscript', () => {
         containerID: validNote1.containerID,
         manuscriptID: validNote1.manuscriptID
       },
+      body: {},
       user: {
         _id: `User_${validBody.email}`
       }

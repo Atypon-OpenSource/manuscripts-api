@@ -14,21 +14,13 @@
  * limitations under the License.
  */
 
-export interface SeedOptions {
-  users?: boolean
-  applications?: boolean
-  singleUseTokens?: boolean
-  invitations?: boolean
-  projects?: boolean
-  projectInvitations?: boolean
-  invitationTokens?: boolean
-  userProfiles?: boolean
-  userTokens?: boolean
-  containerRequest?: boolean
-  submission?: boolean
-  manuscript?: boolean
-  manuscriptNotes?: boolean
-  externalFile?: boolean
-  corrections?: boolean
-  templates?: boolean
-}
+import { ManuscriptTemplateLike } from '../../../src/DataAccess/Interfaces/Models'
+
+export const templates: ManuscriptTemplateLike[] = []
+
+templates.push({
+  containerID: 'MPProject:valid-project-id-6',
+  title: 'Valid Template Title',
+  _id: 'MPManuscriptTemplate:valid-template-1',
+  objectType: 'MPManuscriptTemplate'
+})

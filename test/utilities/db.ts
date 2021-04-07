@@ -39,6 +39,7 @@ import { manuscriptList } from '../data/dump/manuscriptList'
 import { manuscriptNoteList } from '../data/dump/manuscriptNotes'
 import { externalFileList } from '../data/dump/externalFilesList'
 import { correctionList } from '../data/dump/correctionList'
+import { templates } from '../data/dump/templates'
 
 async function createUsers (): Promise<void> {
   const { userRepository, userEmailRepository } = DIContainer.sharedContainer
@@ -179,6 +180,16 @@ async function createCorrections (): Promise<void> {
     )
   }
 }
+
+async function createTemplates (): Promise<void> {
+  for (const template of templates) {
+    await DIContainer.sharedContainer.templateRepository.create(
+      _.clone(template),
+      {}
+    )
+  }
+}
+
 let _db: any = null
 export async function testDatabase (
   enableActivityTracking: boolean = false,
@@ -286,6 +297,10 @@ export async function seed (options: SeedOptions): Promise<void> {
     storagePromises.push(createCorrections())
   }
 
+  if (options.templates) {
+    storagePromises.push(createTemplates())
+  }
+
   await Promise.all(storagePromises)
 }
 
@@ -329,6 +344,12 @@ export async function dropBucket (bucketKey: BucketKey): Promise<void> {
   await purge(bucketKey, payload)
 
   payload = correctionList.reduce((acc: any, doc: any) => {
+    acc[doc._id] = ['*']
+    return acc
+  }, {})
+  await purge(bucketKey, payload)
+
+  payload = templates.reduce((acc: any, doc: any) => {
     acc[doc._id] = ['*']
     return acc
   }, {})

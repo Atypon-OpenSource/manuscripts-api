@@ -34,6 +34,7 @@ export const addSchema: Joi.SchemaMap = {
     'content-type': Joi.string().required()
   }).options({ allowUnknown: true }),
   body: Joi.object({
-    manuscriptId: Joi.string()
+    manuscriptId: Joi.string(),
+    templateId: Joi.string()
   })
 }

@@ -24,7 +24,12 @@ import { Readable } from 'stream'
 import * as fs from 'fs'
 import getStream from 'get-stream'
 import decompress from 'decompress'
-import { InvalidCredentialsError, UserRoleError, ValidationError } from '../../../Errors'
+import {
+  InvalidCredentialsError,
+  RecordNotFoundError,
+  UserRoleError,
+  ValidationError
+} from '../../../Errors'
 import { manuscriptIDTypes, Model } from '@manuscripts/manuscripts-json-schema'
 import { remove } from 'fs-extra'
 import jsonwebtoken from 'jsonwebtoken'
@@ -61,7 +66,7 @@ export class ProjectController extends BaseController implements IProjectControl
   async add (req: Request): Promise<Container> {
     const file = req.file
     const { projectId } = req.params
-    const { manuscriptId } = req.body
+    const { manuscriptId, templateId } = req.body
 
     if (!projectId) throw new ValidationError('projectId parameter must be specified',projectId)
 
@@ -79,7 +84,7 @@ export class ProjectController extends BaseController implements IProjectControl
 
     if (!DIContainer.sharedContainer.containerService[ContainerType.project].isOwner(project,req.user._id)) throw new UserRoleError('User must be an owner to add manuscripts',req.user._id)
 
-    const container = await this.upsertManuscriptToProject(project, manuscript, manuscriptId)
+    const container = await this.upsertManuscriptToProject(project, manuscript, manuscriptId, templateId)
 
     await remove(file.path)
 
@@ -90,7 +95,7 @@ export class ProjectController extends BaseController implements IProjectControl
    * Create/update the imported manuscript and it's resources.
    * @returns the created/updated manuscript
    */
-  async upsertManuscriptToProject (project: Container, manuscript: Readable, manuscriptId?: string): Promise<Container> {
+  async upsertManuscriptToProject (project: Container, manuscript: Readable, manuscriptId?: string, templateId?: string): Promise<Container> {
     const buffer = await getStream.buffer(manuscript)
 
     const unzipRoot = tempy.directory()
@@ -121,12 +126,23 @@ export class ProjectController extends BaseController implements IProjectControl
 
     await remove(unzipRoot)
 
+    const template = templateId
+      ? await DIContainer.sharedContainer.templateRepository.getById(templateId)
+      : null
+
+    if (templateId && !template) {
+      throw new RecordNotFoundError(
+        'Template with id not found'
+      )
+    }
+
     manuscriptObject = {
       ...manuscriptObject,
       createdAt,
       updatedAt: createdAt,
       sessionID,
-      containerID: project._id
+      containerID: project._id,
+      prototype: templateId
     }
 
     manuscriptId

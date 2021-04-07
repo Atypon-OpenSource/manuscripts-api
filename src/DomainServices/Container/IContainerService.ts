@@ -121,7 +121,8 @@ export interface IContainerService {
   createManuscript (
     userID: string,
     containerID: string,
-    manuscriptID?: string
+    manuscriptID?: string,
+    templateId?: string
   ): Promise<Manuscript>
 
   /**

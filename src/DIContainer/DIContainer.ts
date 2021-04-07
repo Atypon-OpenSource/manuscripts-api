@@ -93,6 +93,7 @@ import { SnapshotRepository } from '../DataAccess/SnapshotRepository/SnapshotRep
 import { CorrectionRepository } from '../DataAccess/CorrectionRepository/CorrectionRepository'
 import { ShacklesService } from '../DomainServices/Shackles/ShacklesService'
 import { IShacklesService } from '../DomainServices/Shackles/IShacklesService'
+import { TemplateRepository } from '../DataAccess/TemplateRepository/TemplateRepository'
 
 export class UninitializedContainerError extends Error {
   constructor () {
@@ -160,6 +161,7 @@ export class DIContainer {
   readonly externalFileRepository: ExternalFileRepository
   readonly correctionRepository: CorrectionRepository
   readonly snapshotRepository: SnapshotRepository
+  readonly templateRepository: TemplateRepository
 
   /**
    * WARNING: internal method.
@@ -258,6 +260,10 @@ export class DIContainer {
       BucketKey.Data,
       this.dataBucket
     )
+    this.templateRepository = new TemplateRepository(
+      BucketKey.Data,
+      this.dataBucket
+    )
     this.userService = new UserService(
       this.userRepository,
       this.singleUseTokenRepository,
@@ -288,7 +294,8 @@ export class DIContainer {
         this.manuscriptNotesRepository,
         this.externalFileRepository,
         this.correctionRepository,
-        this.snapshotRepository
+        this.snapshotRepository,
+        this.templateRepository
       )}
     this.containerInvitationService = new ContainerInvitationService(
         this.userRepository,

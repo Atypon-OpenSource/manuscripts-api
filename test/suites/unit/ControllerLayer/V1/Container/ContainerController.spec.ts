@@ -786,6 +786,21 @@ describe('ContainersController - createManuscript', () => {
     const req: any = {
       params: {
         containerID: chance.integer()
+      },
+      body: {}
+    }
+    const containersController: ContainersController = new ContainersController()
+    await expect(containersController.createManuscript(req)).rejects.toThrow(ValidationError)
+  })
+
+  test('should fail if containerID is not a string', async () => {
+    const chance = new Chance()
+    const req: any = {
+      params: {
+        containerID: chance.string()
+      },
+      body: {
+        templateId: chance.integer()
       }
     }
     const containersController: ContainersController = new ContainersController()
@@ -798,7 +813,8 @@ describe('ContainersController - createManuscript', () => {
       params: {
         containerID: chance.string(),
         manuscriptID: chance.integer()
-      }
+      },
+      body: {}
     }
     const containersController: ContainersController = new ContainersController()
     await expect(containersController.createManuscript(req)).rejects.toThrow(ValidationError)
@@ -815,7 +831,8 @@ describe('ContainersController - createManuscript', () => {
       },
       user: {
         _id: chance.string()
-      }
+      },
+      body: {}
     }
     const containersController: ContainersController = new ContainersController()
     await containersController.createManuscript(req)

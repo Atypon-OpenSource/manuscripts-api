@@ -18,7 +18,7 @@ import { Chance } from 'chance'
 import '../../../../../utilities/dbMock'
 import '../../../../../utilities/configMock'
 
-import { ValidationError } from '../../../../../../src/Errors'
+import { RecordNotFoundError, ValidationError } from '../../../../../../src/Errors'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
 import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
 import { ProjectController } from '../../../../../../src/Controller/V1/Project/ProjectController'
@@ -182,6 +182,26 @@ describe('ProjectController', () => {
   })
 
   describe('upsertManuscriptToProject', () => {
+    test('should fail if template not found', async () => {
+      const controller: any = new ProjectController()
+
+      DIContainer.sharedContainer.containerService[ContainerType.project].addManuscript = jest.fn(async () => {})
+      DIContainer.sharedContainer.manuscriptRepository.create = jest.fn()
+      DIContainer.sharedContainer.templateRepository.getById = jest.fn(() => Promise.resolve(null))
+      const archive = archiver('zip')
+      archive.append(JSON.stringify({
+        data: [
+          { _id: 'MPManuscript:abc', objectType: 'MPManuscript' },
+          { _id: 'MPCitation:abc', objectType: 'MPCitation' },
+          { _id: 'MPMPAuxiliaryObjectReference:abc', objectType: 'MPAuxiliaryObjectReference' }
+        ]
+      }), { name: 'index.manuscript-json' })
+      await archive.finalize()
+
+      await expect(controller.upsertManuscriptToProject({ _id: 'MPProject:abc' }, archive, null, 'templateId'))
+        .rejects.toThrow(RecordNotFoundError)
+    })
+
     test('successfully create a mansucript and all contained resources', async () => {
       const controller: any = new ProjectController()
 

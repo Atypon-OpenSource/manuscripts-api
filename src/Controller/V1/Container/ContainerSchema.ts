@@ -103,6 +103,9 @@ export const createManuscriptSchema: Joi.SchemaMap = {
   params: Joi.object({
     containerID: Joi.string().required(),
     manuscriptID: Joi.string()
+  }),
+  body: Joi.object({
+    templateId: Joi.string()
   })
 }
 

@@ -255,6 +255,7 @@ export class ContainersController extends ContainedBaseController
   async createManuscript (req: Request) {
     const { containerID, manuscriptID } = req.params
     const { user } = req
+    const { templateId } = req.body
 
     if (!isString(containerID)) {
       throw new ValidationError('containerID should be string', containerID)
@@ -264,10 +265,14 @@ export class ContainersController extends ContainedBaseController
       throw new ValidationError('manuscriptID should be string', manuscriptID)
     }
 
+    if (templateId && !isString(templateId)) {
+      throw new ValidationError('templateId should be string', templateId)
+    }
+
     const containerType = getContainerType(containerID)
     return DIContainer.sharedContainer.containerService[
       containerType
-    ].createManuscript(user._id, containerID, manuscriptID)
+    ].createManuscript(user._id, containerID, manuscriptID, templateId)
   }
 
   async getProductionNotes (req: Request) {

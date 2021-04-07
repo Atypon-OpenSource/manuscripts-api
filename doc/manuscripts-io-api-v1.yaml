@@ -86,6 +86,18 @@ parameters:
     in: header
     format: "Authorization: Bearer <token>"
     required: true
+  templateIdSchema:
+    name: templateId
+    description: "Template ID"
+    type: string
+    in: "body"
+    required: false
+  manuscriptIdSchema:
+    name: manuscriptId
+    description: "Manuscript ID"
+    type: string
+    in: "body"
+    required: false
 paths:
   /auth/login:
     post:
@@ -702,6 +714,8 @@ paths:
           description: The JATS zip file to upload.
         - $ref: "#/parameters/JsonAcceptHeadersSchema"
         - $ref: "#/parameters/AuthorizationTokenHeaderSchema"
+        - $ref: "#/parameters/templateIdSchema"
+        - $ref: "#/parameters/manuscriptIdSchema"
       responses:
         200:
           description: "Manuscript has been added successfully."
@@ -868,6 +882,7 @@ paths:
       parameters:
         - $ref: '#/parameters/JsonAcceptHeadersSchema'
         - $ref: '#/parameters/AuthorizationTokenHeaderSchema'
+        - $ref: "#/parameters/templateIdSchema"
       responses:
         200:
           description: "Manuscripts created successfully."

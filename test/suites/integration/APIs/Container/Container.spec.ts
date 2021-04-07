@@ -1120,6 +1120,29 @@ describe('ContainerService - createManuscript', () => {
     )
   })
 
+  test('should fail if template not found', async () => {
+    const loginResponse: supertest.Response = await basicLogin(
+      validBody2,
+      ValidHeaderWithApplicationKey
+    )
+    expect(loginResponse.status).toBe(HttpStatus.OK)
+
+    const authHeader = authorizationHeader(loginResponse.body.token)
+    const response: supertest.Response = await createManuscript(
+      {
+        ...ValidContentTypeAcceptJsonHeader,
+        ...authHeader
+      },
+      {
+        containerID: `MPProject:valid-project-id-11`
+      },
+      {
+        templateId: 'MPManuscriptTemplate:invalid-template'
+      }
+    )
+    expect(response.status).toBe(HttpStatus.NOT_FOUND)
+  })
+
   test('should create a manuscript', async () => {
     const loginResponse: supertest.Response = await basicLogin(
       validBody2,
