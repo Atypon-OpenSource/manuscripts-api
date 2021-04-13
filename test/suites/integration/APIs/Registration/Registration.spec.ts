@@ -28,7 +28,7 @@ jest.mock('../../../../../src/DomainServices/External/AWS', () => ({
   SES: { sendEmail: jest.fn((_foo, callback) => callback(null, { foo: 1 })) }
 }))
 
-import { connectSignup, serverToServerAuth, signup } from '../../../../api'
+import { connectSignup, signup } from '../../../../api'
 import { TEST_TIMEOUT } from '../../../../utilities/testSetup'
 import { drop, seed, testDatabase, dropBucket } from '../../../../utilities/db'
 import { validNewUserCredentials } from '../../../../data/fixtures/registrationCredentials'
@@ -44,9 +44,7 @@ import {
 import { DIContainer } from '../../../../../src/DIContainer/DIContainer'
 import { SeedOptions } from '../../../../../src/DataAccess/Interfaces/SeedOptions'
 import { BucketKey } from '../../../../../src/Config/ConfigurationTypes'
-import * as jsonwebtoken from 'jsonwebtoken'
 import { validBody } from '../../../../data/fixtures/credentialsRequestPayload'
-import { config } from '../../../../../src/Config/Config'
 import { GATEWAY_BUCKETS } from '../../../../../src/DomainServices/Sync/SyncService'
 
 let db: any = null
@@ -185,19 +183,6 @@ describe('ConnectSignup - signup', () => {
     )
   })
   test('should create new user', async () => {
-    const loginRes: supertest.Response = await serverToServerAuth(
-        { deviceId: '12345' },
-      {
-        ...ValidHeaderWithApplicationKey,
-        authorization: `Bearer ${jsonwebtoken.sign(
-            { email: validBody.email },
-            config.auth.serverSecret
-        )}`
-      }
-    )
-
-    expect(loginRes.status).toBe(HttpStatus.OK)
-    expect(loginRes.body.token).toBeDefined()
     const response: supertest.Response = await connectSignup(
       {
         email: 'someEmail@email.com',
@@ -205,8 +190,7 @@ describe('ConnectSignup - signup', () => {
         connectUserID: 'someConnectID'
       },
       {
-        ...ValidHeaderWithApplicationKey,
-        authorization: `Bearer ${loginRes.body.token}`
+        ...ValidHeaderWithApplicationKey
       }
     )
     expect(response.status).toBe(HttpStatus.NO_CONTENT)

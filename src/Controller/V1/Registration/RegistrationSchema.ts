@@ -16,7 +16,7 @@
 
 import * as Joi from 'joi'
 
-import { jsonHeadersSchema, emailSchema } from '../../BaseSchema'
+import { jsonHeadersSchema, emailSchema, appSecretHeadersSchema } from '../../BaseSchema'
 
 export const signupSchema: Joi.SchemaMap = {
   body: Joi.object({
@@ -40,7 +40,7 @@ export const connectSignupSchema: Joi.SchemaMap = {
       .required(),
     connectUserID: Joi.string().required()
   }),
-  headers: jsonHeadersSchema.headers
+  headers: appSecretHeadersSchema.headers
 }
 
 export const verificationSchema: Joi.SchemaMap = {

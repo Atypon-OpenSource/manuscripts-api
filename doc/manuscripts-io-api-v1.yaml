@@ -499,6 +499,8 @@ paths:
             $ref: "#/definitions/ConnectSignupSchema"
         - $ref: "#/parameters/JsonContentTypenHeadersSchema"
         - $ref: "#/parameters/JsonAcceptHeadersSchema"
+        - $ref: "#/parameters/AppIdAcceptHeadersSchema"
+        - $ref: "#/parameters/AppSecretHeadersSchema"
       responses:
         200:
           description: "User registered successfully."

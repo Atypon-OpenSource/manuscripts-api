@@ -29,7 +29,7 @@ jest.mock('../../../../../src/DomainServices/External/AWS', () => ({
 }))
 
 import { DIContainer } from '../../../../../src/DIContainer/DIContainer'
-import { connectSignup, serverToServerAuth, signup, verify } from '../../../../api'
+import { connectSignup, signup, verify } from '../../../../api'
 import { TEST_TIMEOUT } from '../../../../utilities/testSetup'
 import { drop, seed, testDatabase, dropBucket } from '../../../../utilities/db'
 import { invalidNewUserCredentials, validNotVerifiedNewUserCredentials } from '../../../../data/fixtures/registrationCredentials'
@@ -37,8 +37,6 @@ import { ValidContentTypeAcceptJsonHeader, ValidHeaderWithApplicationKey } from 
 import { SeedOptions } from '../../../../../src/DataAccess/Interfaces/SeedOptions'
 import { BucketKey } from '../../../../../src/Config/ConfigurationTypes'
 import { validBody } from '../../../../data/fixtures/credentialsRequestPayload'
-import jsonwebtoken from 'jsonwebtoken'
-import { config } from '../../../../../src/Config/Config'
 import { GATEWAY_BUCKETS } from '../../../../../src/DomainServices/Sync/SyncService'
 
 let db: any = null
@@ -134,28 +132,13 @@ describe('UserRegistrationService - connectSignup', () => {
     )
   })
   test('should fail if user email already exists', async () => {
-
-    const loginRes: supertest.Response = await serverToServerAuth(
-        { deviceId: '12345' },
-      {
-        ...ValidHeaderWithApplicationKey,
-        authorization: `Bearer ${jsonwebtoken.sign(
-            { email: validBody.email },
-            config.auth.serverSecret
-        )}`
-      }
-    )
-
-    expect(loginRes.status).toBe(HttpStatus.OK)
-    expect(loginRes.body.token).toBeDefined()
     const response: supertest.Response = await connectSignup(
       {
         email: validBody.email,
         name: 'validName',
         connectUserID: 'validConnectId'
       }, {
-        ...ValidContentTypeAcceptJsonHeader,
-        authorization: `Bearer ${loginRes.body.token}`
+        ...ValidHeaderWithApplicationKey
       }
     )
     expect(response.status).toBe(HttpStatus.CONFLICT)

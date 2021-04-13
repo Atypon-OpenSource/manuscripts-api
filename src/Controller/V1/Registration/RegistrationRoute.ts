@@ -56,8 +56,8 @@ export class RegistrationRoute extends BaseRoute {
     router.post(
       `${this.basePath}/connect/signup`,
       expressJoiMiddleware(connectSignupSchema, {}),
-      AuthStrategy.JWTAuth,
       AuthStrategy.JsonHeadersValidation,
+      AuthStrategy.applicationValidation(),
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           await this.registrationController.connectSignup(req)
