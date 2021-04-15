@@ -153,5 +153,8 @@ export const suggestionStatusSchema: Joi.SchemaMap = {
 export const createSnapshotSchema: Joi.SchemaMap = {
   params: Joi.object({
     containerID: Joi.string().required()
+  }),
+  body: Joi.object({
+    name: Joi.string()
   })
 }

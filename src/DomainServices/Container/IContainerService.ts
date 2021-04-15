@@ -171,7 +171,7 @@ export interface IContainerService {
    */
   addExternalFiles (docs: ExternalFile[]): void
 
-  saveSnapshot (key: string): Promise<Snapshot>
+  saveSnapshot (key: string, containerId: string, creator: string, name?: string): Promise<Snapshot>
 }
 
 export interface ArchiveOptions {

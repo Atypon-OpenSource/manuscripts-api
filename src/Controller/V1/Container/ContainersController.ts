@@ -341,6 +341,8 @@ export class ContainersController extends ContainedBaseController
 
   async createSnapshot (req: Request) {
     const { containerID } = req.params
+    const { name } = req.body
+
     if (!isString(containerID)) {
       throw new ValidationError('containerID should be string', containerID)
     }
@@ -364,6 +366,6 @@ export class ContainersController extends ContainedBaseController
     const res = await DIContainer.sharedContainer.shacklesService.createSnapshot(archive, shacklesToken)
     return DIContainer.sharedContainer.containerService[
       containerType
-      ].saveSnapshot(res.key)
+      ].saveSnapshot(res.key, containerID, userID, name)
   }
 }

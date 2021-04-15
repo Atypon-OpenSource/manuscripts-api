@@ -982,6 +982,7 @@ describe('ContainerController - createSnapshot', () => {
       headers: {
         authorization: `Bearer validToken`
       },
+      body: {},
       user: {
         _id: 'foo'
       }
@@ -1004,6 +1005,7 @@ describe('ContainerController - createSnapshot', () => {
       headers: {
         authorization: `Bearer validToken`
       },
+      body: {},
       user: {
         _id: 'foo'
       }

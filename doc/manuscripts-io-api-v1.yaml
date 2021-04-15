@@ -98,6 +98,12 @@ parameters:
     type: string
     in: "body"
     required: false
+  snapshotNameSchema:
+    name: name
+    description: "Snapshot name"
+    type: string
+    in: "body"
+    required: false
 paths:
   /auth/login:
     post:
@@ -1041,6 +1047,7 @@ paths:
         - "application/json"
       parameters:
         - $ref: "#/parameters/AuthorizationTokenHeaderSchema"
+        - $ref: "#/parameters/snapshotNameSchema"
       responses:
         202:
           description: "A JSON containing snapshot ID"

@@ -48,7 +48,7 @@ import { ContainerInvitationRepository } from '../../DataAccess/ContainerInvitat
 import { config } from '../../Config/Config'
 import { ScopedAccessTokenConfiguration } from '../../Config/ConfigurationTypes'
 import { ManuscriptNoteRepository } from '../../DataAccess/ManuscriptNoteRepository/ManuscriptNoteRepository'
-import { ManuscriptNote, ExternalFile, ObjectTypes } from '@manuscripts/manuscripts-json-schema'
+import { ManuscriptNote, ExternalFile, ObjectTypes, Snapshot } from '@manuscripts/manuscripts-json-schema'
 import { UserService } from '../User/UserService'
 import { DIContainer } from '../../DIContainer/DIContainer'
 import { ExternalFileRepository } from '../../DataAccess/ExternalFileRepository/ExternalFileRepository'
@@ -818,14 +818,19 @@ export class ContainerService implements IContainerService {
     return this.externalFileRepository.bulkDocs(externalFiles)
   }
 
-  public async saveSnapshot (key: string) {
+  public async saveSnapshot (key: string, containerID: string, creator: string, name?: string) {
     const stamp = timestamp()
-    const doc = {
+    const doc: Snapshot = {
       _id: `MPSnapshot:${uuid_v4()}`,
       objectType: ObjectTypes.Snapshot,
       s3Id: key,
+      containerID,
+      creator,
       createdAt: stamp,
       updatedAt: stamp
+    }
+    if (name) {
+      doc['name'] = name
     }
     return this.snapshotRepository.create(doc, {})
   }

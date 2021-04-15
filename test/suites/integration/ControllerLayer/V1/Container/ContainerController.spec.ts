@@ -835,6 +835,7 @@ describe('ContainerController - createSnapshot', () => {
       headers: {
         authorization: `Bearer ${validJWTToken}`
       },
+      body: {},
       user: {
         _id: 'foo'
       }
@@ -855,6 +856,7 @@ describe('ContainerController - createSnapshot', () => {
       headers: {
         authorization: `Bearer ${validJWTToken}`
       },
+      body: {},
       user: {
         _id: `User_test`
       }
