@@ -31,7 +31,7 @@
   ],
   "dependencies": {
     "@manuscripts/manuscripts-json-schema": "^1.46.2",
-    "@manuscripts/manuscripts-json-schema-utils": "^0.0.3",
+    "@manuscripts/manuscripts-json-schema-utils": "^0.2.2",
     "archiver": "^5.0.2",
     "async-retry": "^1.2.1",
     "aws-sdk": "^2.181.0",
