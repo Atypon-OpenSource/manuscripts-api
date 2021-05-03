@@ -512,8 +512,10 @@ export class AuthService implements IAuthService {
     })
 
     log.debug(`Get user: ${user}`)
-    if (!email) {
-      throw new InvalidCredentialsError('Missing email scope in IAM token')
+
+    if (!user) {
+      user = await this.userRepository.getOne({ email })
+      await this.patchConnectUserID(user, connectUserID)
     }
 
     let userStatus: UserStatus
@@ -586,6 +588,17 @@ export class AuthService implements IAuthService {
     )
 
     return { syncSessions, token: userToken.token, user }
+  }
+
+  private async patchConnectUserID (user: User | null, connectUserID: string) {
+    if (user) {
+      if (user.connectUserID) {
+        throw new InvalidCredentialsError('User with this email has a mismatching Connect ID')
+      }
+
+      await this.userRepository.patch(user._id, { connectUserID }, {})
+      user.connectUserID = connectUserID
+    }
   }
 
   /**

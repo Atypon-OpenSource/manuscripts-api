@@ -107,7 +107,7 @@ describe('GET api/v1/auth/iam/callback', () => {
     expect(response.status).toBe(HttpStatus.MOVED_TEMPORARILY)
   })
 
-  test('should redirect if the user created successfully and the same email not allowed to be used', async () => {
+  test('should redirect with an error if the user exists but with a different connectUserID', async () => {
     const token = jsonwebtoken.sign(
       {
         email: 'foo@bar96.com',
@@ -164,7 +164,7 @@ describe('GET api/v1/auth/iam/callback', () => {
 
     expect(response2.status).toBe(HttpStatus.MOVED_TEMPORARILY)
     expect(response2.text).toContain(
-      encodeURIComponent('Email foo@bar96.com is not available')
+      encodeURIComponent('User with this email has a mismatching Connect ID')
     )
   })
 
