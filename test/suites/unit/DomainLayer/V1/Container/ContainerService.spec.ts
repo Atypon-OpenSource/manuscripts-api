@@ -52,7 +52,8 @@ import {
   validProject2,
   validProject5,
   validProject4,
-  validProject7
+  validProject7,
+  validProject8
 } from '../../../../../data/fixtures/projects'
 import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
 import { validUser } from '../../../../../data/fixtures/userServiceUser'
@@ -1130,6 +1131,111 @@ describe('containerService - updateContainerUser', () => {
     )
   })
 
+  test('should update the user from viewer to annotator', async () => {
+    const containerService: any =
+      DIContainer.sharedContainer.containerService[ContainerType.project]
+
+    containerService.containerRepository = {
+      getById: async () => Promise.resolve(validProject4),
+      patch: jest.fn()
+    }
+
+    const newOwners = ['User_valid-user-1@manuscriptsapp.com']
+    const newWriters = ['User_test10']
+    const newViewers = ['User_test2']
+
+    await containerService.updateContainerUser(
+      validProject4._id,
+      ContainerRole.Annotator,
+      {
+        _id: 'User|test',
+        email: 'foobar@baz.com'
+      }
+    )
+
+    return expect(containerService.containerRepository.patch).toBeCalledWith(
+      validProject4._id,
+      {
+        _id: validProject4._id,
+        owners: newOwners,
+        writers: newWriters,
+        viewers: newViewers,
+        annotators: ['User_test']
+      },
+      {}
+    )
+  })
+
+  test('should update the user from annotator to editor', async () => {
+    const containerService: any =
+      DIContainer.sharedContainer.containerService[ContainerType.project]
+
+    containerService.containerRepository = {
+      getById: async () => Promise.resolve(validProject8),
+      patch: jest.fn()
+    }
+
+    const newOwners = ['User_valid-user-1@manuscriptsapp.com']
+
+    await containerService.updateContainerUser(
+      validProject8._id,
+      ContainerRole.Editor,
+      {
+        _id: 'User|test2',
+        email: 'foobar@baz.com'
+      }
+    )
+
+    return expect(containerService.containerRepository.patch).toBeCalledWith(
+      validProject8._id,
+      {
+        _id: validProject8._id,
+        owners: newOwners,
+        editors: ['User_foo@bar.com', 'User_test2'],
+        writers: [],
+        viewers: [],
+        annotators: [],
+        title: undefined
+      },
+      {}
+    )
+  })
+
+  test('should update the user from editor to annotator', async () => {
+    const containerService: any =
+      DIContainer.sharedContainer.containerService[ContainerType.project]
+
+    containerService.containerRepository = {
+      getById: async () => Promise.resolve(validProject8),
+      patch: jest.fn()
+    }
+
+    const newOwners = ['User_valid-user-1@manuscriptsapp.com']
+
+    await containerService.updateContainerUser(
+      validProject8._id,
+      ContainerRole.Annotator,
+      {
+        _id: 'User|foo@bar.com',
+        email: 'foobar@baz.com'
+      }
+    )
+
+    return expect(containerService.containerRepository.patch).toBeCalledWith(
+      validProject8._id,
+      {
+        _id: validProject8._id,
+        owners: newOwners,
+        editors: [],
+        writers: [],
+        viewers: [],
+        annotators: ['User_test2', 'User_foo@bar.com'],
+        title: undefined
+      },
+      {}
+    )
+  })
+
   test('should remove the user if the role in null', async () => {
     const containerService: any =
       DIContainer.sharedContainer.containerService[ContainerType.project]
@@ -1227,6 +1333,38 @@ describe('containerService - getUserRole', () => {
     expect(containerService.getUserRole(validProject4, 'User|test2')).toBe(
       ContainerRole.Viewer
     )
+  })
+
+  test('should return editor if the user is an editor', () => {
+    const containerService: any =
+      DIContainer.sharedContainer.containerService[ContainerType.project]
+
+    expect(containerService.getUserRole(validProject8, 'User|foo@bar.com')).toBe(
+      ContainerRole.Editor
+    )
+  })
+
+  test('should return annotator if the user is an annotator', () => {
+    const containerService: any =
+      DIContainer.sharedContainer.containerService[ContainerType.project]
+
+    expect(containerService.getUserRole(validProject8, 'User|test2')).toBe(
+      ContainerRole.Annotator
+    )
+  })
+
+  test('should return annotator if the user is an annotator', () => {
+    const containerService: any =
+      DIContainer.sharedContainer.containerService[ContainerType.project]
+
+    expect(containerService.isEditor(validProject8, 'User_foo@bar.com')).toBeTruthy()
+  })
+
+  test('should return annotator if the user is an annotator', () => {
+    const containerService: any =
+      DIContainer.sharedContainer.containerService[ContainerType.project]
+
+    expect(containerService.isAnnotator(validProject8, 'User_test2')).toBeTruthy()
   })
 
   test('should return null if the user is not in the project', () => {
@@ -1629,7 +1767,7 @@ describe('ContainerService - addProductionNote', () => {
   test('should add note', async () => {
     const containerService: any =
       DIContainer.sharedContainer.containerService[ContainerType.project]
-    containerService.checkIfOwnerOrWriter = jest.fn(() => true)
+    containerService.checkIfUserCanCreateNote = jest.fn(() => true)
     const userRebo: any = DIContainer.sharedContainer.userRepository
     userRebo.getOne = jest.fn(() => {
       return { _id: 'User_test', ...validBody2 }

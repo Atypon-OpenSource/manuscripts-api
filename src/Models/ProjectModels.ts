@@ -20,4 +20,6 @@ export interface PatchProject {
   owners?: string[],
   writers?: string[],
   viewers?: string[],
+  editors?: string[],
+  annotators?: string[]
 }

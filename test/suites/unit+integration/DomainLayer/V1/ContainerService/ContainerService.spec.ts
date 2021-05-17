@@ -92,6 +92,37 @@ describe('ContainerService - getProjectUserRole', () => {
     ).toBe(ContainerRole.Owner)
   })
 
+  test('Should return owner if the user is owner', () => {
+    const containerService = DIContainer.sharedContainer.containerService
+
+    expect(
+      containerService[ContainerType.project].getUserRole({
+        _id: 'MPProject:project-id',
+        owners: ['User_validId'],
+        viewers: [],
+        writers: [],
+        annotators: ['User_validId2']
+      } as any,
+        'User_validId2'
+      )
+    ).toBe(ContainerRole.Annotator)
+  })
+
+  test('Should return owner if the user is owner', () => {
+    const containerService = DIContainer.sharedContainer.containerService
+
+    expect(
+      containerService[ContainerType.project].getUserRole({
+        _id: 'MPProject:project-id',
+        owners: ['User_validId'],
+        viewers: [],
+        writers: [],
+        editors: ['User_validId2']
+      } as any,
+        'User_validId2'
+      )
+    ).toBe(ContainerRole.Editor)
+  })
   test('Should return true if user is a contributor|owner', async () => {
     const containerService = DIContainer.sharedContainer.containerService[ContainerType.project]
     containerService.getContainer = jest.fn().mockImplementationOnce(() => {
@@ -117,6 +148,25 @@ describe('ContainerService - getProjectUserRole', () => {
       }
     })
     let result = await containerService.checkIfOwnerOrWriter('User_validId', 'MPProject:project-id')
+    expect(result).toBeTruthy()
+  })
+
+  test('Should return true if user can create manuscript note', async () => {
+    const containerService = DIContainer.sharedContainer.containerService[ContainerType.project]
+    containerService.getContainer = jest.fn().mockImplementation(() => {
+      return {
+        _id: 'MPProject:project-id',
+        owners: ['User_validId'],
+        viewers: [],
+        writers: [],
+        editors: ['User_validId-2'],
+        annotators: ['User_validId-3']
+      }
+    })
+    let result = await containerService.checkIfUserCanCreateNote('User_validId-2', 'MPProject:project-id')
+    expect(result).toBeTruthy()
+
+    result = await containerService.checkIfUserCanCreateNote('User_validId-3', 'MPProject:project-id')
     expect(result).toBeTruthy()
   })
 
@@ -152,6 +202,18 @@ describe('ProjectService - isOwner/isWriter/isViewer', () => {
   test('should throw if project is null in isViewer', () => {
     expect(() =>
       DIContainer.sharedContainer.containerService[ContainerType.project].isViewer(null as any, 'userId')
+    ).toThrowError(RecordNotFoundError)
+  })
+
+  test('should throw if project is null in isEditor', () => {
+    expect(() =>
+      DIContainer.sharedContainer.containerService[ContainerType.project].isEditor(null as any, 'userId')
+    ).toThrowError(RecordNotFoundError)
+  })
+
+  test('should throw if project is null in isAnnotator', () => {
+    expect(() =>
+      DIContainer.sharedContainer.containerService[ContainerType.project].isAnnotator(null as any, 'userId')
     ).toThrowError(RecordNotFoundError)
   })
 })

@@ -262,6 +262,7 @@ export class ContainerService implements IContainerService {
     }
   }
 
+  // tslint:disable-next-line:cyclomatic-complexity
   public async updateContainerUser (
     containerID: string,
     role: ContainerRole | null,
@@ -276,7 +277,8 @@ export class ContainerService implements IContainerService {
     const owners = _.cloneDeep(container.owners)
     const writers = _.cloneDeep(container.writers)
     const viewers = _.cloneDeep(container.viewers)
-
+    let annotators = _.cloneDeep(container.annotators)
+    let editors = _.cloneDeep(container.editors)
     const ownerIdx = owners.indexOf(syncUserId)
     const writerIdx = writers.indexOf(syncUserId)
     const viewerIdx = viewers.indexOf(syncUserId)
@@ -287,6 +289,18 @@ export class ContainerService implements IContainerService {
       writers.splice(writerIdx, 1)
     } else if (viewerIdx > -1) {
       viewers.splice(viewerIdx, 1)
+    }
+    if (annotators && annotators.length) {
+      const idx = annotators.indexOf(syncUserId)
+      if (idx > -1) {
+        annotators.splice(idx, 1)
+      }
+    }
+    if (editors && editors.length) {
+      const idx = editors.indexOf(syncUserId)
+      if (idx > -1) {
+        editors.splice(idx, 1)
+      }
     }
 
     switch (role) {
@@ -299,11 +313,25 @@ export class ContainerService implements IContainerService {
       case ContainerRole.Viewer:
         viewers.push(syncUserId)
         break
+      case ContainerRole.Annotator:
+        if (annotators) {
+          annotators.push(syncUserId)
+        } else {
+          annotators = [syncUserId]
+        }
+        break
+      case ContainerRole.Editor:
+        if (editors) {
+          editors.push(syncUserId)
+        } else {
+          editors = [syncUserId]
+        }
+        break
     }
 
     await this.handleRole(role, user, containerID)
 
-    await this.updateContainer(containerID, title, owners, writers, viewers)
+    await this.updateContainer(containerID, title, owners, writers, viewers, editors, annotators)
   }
 
   private async handleRole (
@@ -324,7 +352,9 @@ export class ContainerService implements IContainerService {
     title: string | undefined,
     owners: string[] | undefined,
     writers: string[] | undefined,
-    viewers: string[] | undefined
+    viewers: string[] | undefined,
+    editors?: string[] | undefined,
+    annotators?: string[] | undefined
   ): Promise<void> {
     await this.containerRepository.patch(
       containerId,
@@ -333,7 +363,9 @@ export class ContainerService implements IContainerService {
         title,
         owners: owners && owners.map(u => ContainerService.userIdForSync(u)),
         writers: writers && writers.map(u => ContainerService.userIdForSync(u)),
-        viewers: viewers && viewers.map(u => ContainerService.userIdForSync(u))
+        viewers: viewers && viewers.map(u => ContainerService.userIdForSync(u)),
+        editors: editors && editors.map(u => ContainerService.userIdForSync(u)),
+        annotators: annotators && annotators.map(u => ContainerService.userIdForSync(u))
       },
       {}
     )
@@ -343,7 +375,9 @@ export class ContainerService implements IContainerService {
     return (
       this.isOwner(container, userId) ||
       this.isWriter(container, userId) ||
-      this.isViewer(container, userId)
+      this.isViewer(container, userId) ||
+      this.isEditor(container, userId) ||
+      this.isAnnotator(container, userId)
     )
   }
 
@@ -357,6 +391,10 @@ export class ContainerService implements IContainerService {
       return ContainerRole.Writer
     } else if (this.isViewer(container, userId)) {
       return ContainerRole.Viewer
+    } else if (this.isEditor(container, userId)) {
+      return ContainerRole.Editor
+    } else if (this.isAnnotator(container, userId)) {
+      return ContainerRole.Annotator
     } else {
       return null
     }
@@ -508,16 +546,34 @@ export class ContainerService implements IContainerService {
     return [...owners, ...writers].includes(ContainerService.userIdForSync(userID))
   }
 
+  public async checkIfUserCanCreateNote (userID: string, containerID: string): Promise<boolean> {
+    const { owners, writers, annotators, editors } = await this.getContainer(containerID)
+    let usersWithAccess = [...owners, ...writers]
+    if (annotators && annotators.length) {
+      usersWithAccess = usersWithAccess.concat(annotators)
+    }
+    if (editors && editors.length) {
+      usersWithAccess = usersWithAccess.concat(editors)
+    }
+    return usersWithAccess.includes(ContainerService.userIdForSync(userID))
+  }
+
   public async accessToken (
     userID: string,
     scope: string,
     containerID: string
   ): Promise<any> {
     const container = await this.getContainer(containerID)
-    const contributors = container.owners.concat(
+    let contributors = container.owners.concat(
       container.writers,
       container.viewers
     )
+    if (container.editors) {
+      contributors = contributors.concat(container.editors)
+    }
+    if (container.annotators) {
+      contributors = contributors.concat(container.annotators)
+    }
     const syncUserID = ContainerService.userIdForSync(userID)
 
     if (contributors.indexOf(syncUserID) < 0) {
@@ -625,6 +681,28 @@ export class ContainerService implements IContainerService {
     }
 
     return container.viewers.indexOf(ContainerService.userIdForSync(userId)) > -1
+  }
+
+  public isEditor (container: Container, userId: string): boolean {
+    if (!container) {
+      throw new RecordNotFoundError(`${this.containerType} not found`)
+    }
+    const editors = container.editors
+    if (editors && editors.length) {
+      return editors.indexOf(ContainerService.userIdForSync(userId)) > -1
+    }
+    return false
+  }
+
+  public isAnnotator (container: Container, userId: string): boolean {
+    if (!container) {
+      throw new RecordNotFoundError(`${this.containerType} not found`)
+    }
+    const annotators = container.annotators
+    if (annotators && annotators.length) {
+      return annotators.indexOf(ContainerService.userIdForSync(userId)) > -1
+    }
+    return false
   }
 
   public isPublic (container: Container): boolean {
@@ -745,7 +823,7 @@ export class ContainerService implements IContainerService {
       throw new RecordNotFoundError('user not found')
     }
     // will fail of the user is not a collaborator on the project
-    const canAccess = await this.checkIfOwnerOrWriter(user._id, containerID)
+    const canAccess = await this.checkIfUserCanCreateNote(user._id, containerID)
     if (!canAccess) {
       throw new ValidationError('User must be a contributor in the container', containerID)
     }

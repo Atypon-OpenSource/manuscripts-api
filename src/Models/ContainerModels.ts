@@ -22,7 +22,9 @@ import { ContainerService } from '../DomainServices/Container/ContainerService'
 export enum ContainerRole {
   Owner = 'Owner',
   Writer = 'Writer',
-  Viewer = 'Viewer'
+  Viewer = 'Viewer',
+  Editor = 'Editor',
+  Annotator = 'Annotator'
 }
 
 export interface InvitedUserData {

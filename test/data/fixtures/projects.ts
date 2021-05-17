@@ -88,6 +88,16 @@ export const validProject5: ProjectLike = {
   viewers: ['User_valid-user@manuscriptsapp.com']
 }
 
+export const validProject8: ProjectLike = {
+  _id: 'valid-project-id-8',
+  objectType: 'MPProject',
+  owners: ['User_valid-user-1@manuscriptsapp.com'],
+  writers: [],
+  viewers: [],
+  editors: ['User_foo@bar.com'],
+  annotators: ['User_test2']
+}
+
 export const validProjectNotInDB: ProjectLike = {
   _id: 'valid-project-not-in-db',
   objectType: 'MPProject',
