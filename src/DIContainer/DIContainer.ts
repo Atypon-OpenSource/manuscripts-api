@@ -326,6 +326,7 @@ export class DIContainer {
       this.userRepository,
       this.userTokenRepository,
       this.userEmailRepository,
+      this.userProfileRepository,
       this.emailService,
       this.singleUseTokenRepository,
       this.activityTrackingService,

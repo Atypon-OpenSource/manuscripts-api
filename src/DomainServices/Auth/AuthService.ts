@@ -79,6 +79,7 @@ import { IUserEmailRepository } from '../../DataAccess/Interfaces/IUserEmailRepo
 import { IAMStartData } from '../../Models/IAMModels'
 import { IContainerInvitationService } from '../Invitation/IContainerInvitationService'
 import { URL } from 'url'
+import { IUserProfileRepository } from '../../DataAccess/Interfaces/IUserProfileRepository'
 const cryptoRandomString = require('crypto-random-string')
 
 /** Authentication token timeout */
@@ -109,6 +110,7 @@ export class AuthService implements IAuthService {
     private userRepository: IUserRepository,
     private userTokenRepository: IUserTokenRepository,
     private userEmailRepository: IUserEmailRepository,
+    private userProfileRepository: IUserProfileRepository,
     private emailService: EmailService,
     private singleUseTokenRepository: ISingleUseTokenRepository,
     private activityTrackingService: UserActivityTrackingService,
@@ -908,6 +910,7 @@ export class AuthService implements IAuthService {
     googleCredentials: any,
     hasExpiry: boolean
   ) {
+    await this.ensureUserProfileExists(user)
     const userToken = await this.ensureUserTokenExists(
       user._id,
       user.connectUserID,
@@ -1003,6 +1006,16 @@ export class AuthService implements IAuthService {
     }
 
     return userToken
+  }
+
+  private async ensureUserProfileExists (user: User) {
+    const userProfile = await this.userProfileRepository.getById(
+      UserService.profileID(user._id)
+    )
+
+    if (!userProfile) {
+      await this.syncService.createGatewayContributor(user, BucketKey.Data)
+    }
   }
 
   private async createUserForIAMDetails (

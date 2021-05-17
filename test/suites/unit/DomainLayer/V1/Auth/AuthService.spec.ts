@@ -247,6 +247,10 @@ describe('AuthService - Login', () => {
       fullyQualifiedId: (id: string) => `User|${id}`
     }
 
+    authService.userProfileRepository = {
+      getById: async () => Promise.resolve({})
+    }
+
     const user = await authService.login(validCredentials)
 
     expect(user.token).toBeDefined()
@@ -267,6 +271,10 @@ describe('AuthService - Login', () => {
       create: async () => Promise.resolve(null),
       touch: async () => Promise.resolve(null),
       fullyQualifiedId: (id: string) => `User|${id}`
+    }
+
+    authService.userProfileRepository = {
+      getById: async () => Promise.resolve({})
     }
 
     authService.userStatusRepository = {
@@ -315,6 +323,10 @@ describe('AuthService - Login', () => {
       create: async () => Promise.resolve(null)
     }
 
+    authService.userProfileRepository = {
+      getById: async () => Promise.resolve({})
+    }
+
     const user = await authService.login(validCredentials)
 
     expect(user.token).toBeDefined()
@@ -353,6 +365,10 @@ describe('AuthService - serverToServerAuth', () => {
       create: async () => Promise.resolve(null),
       touch: async () => Promise.resolve(null),
       fullyQualifiedId: (id: string) => `User|${id}`
+    }
+
+    authService.userProfileRepository = {
+      getById: async () => Promise.resolve({})
     }
 
     authService.userStatusRepository = {
@@ -394,6 +410,10 @@ describe('AuthService - serverToServerAuth', () => {
       create: async () => Promise.resolve(null),
       touch: async () => Promise.resolve(null),
       fullyQualifiedId: (id: string) => `User|${id}`
+    }
+
+    authService.userProfileRepository = {
+      getById: async () => Promise.resolve({})
     }
 
     authService.userStatusRepository = {
@@ -445,6 +465,10 @@ describe('AuthService - loginGoogle', () => {
       fullyQualifiedId: (id: string) => `UserStatus|${id}`
     }
 
+    authService.userProfileRepository = {
+      getById: async () => Promise.resolve({})
+    }
+
     authService.userEventRepository = {
       create: async () => Promise.resolve(null)
     }
@@ -483,6 +507,10 @@ describe('AuthService - loginGoogle', () => {
     }
     authService.userStatusRepository = {
       create: async () => Promise.resolve({})
+    }
+
+    authService.userProfileRepository = {
+      getById: async () => Promise.resolve({})
     }
 
     const user = await authService.loginGoogle(validGoogleAccess)
@@ -1018,7 +1046,7 @@ describe('AuthService - resetPassword', () => {
     const authService: any = DIContainer.sharedContainer.authService
     const token = {
       _id: 'foo',
-      userId: 'bar',
+      userId: 'User|bar',
       tokenType: SingleUseTokenType.ResetPasswordToken,
       createdAt: new Date(1900, 1, 1).getTime(),
       updatedAt: new Date().getTime()
@@ -1051,6 +1079,10 @@ describe('AuthService - resetPassword', () => {
       getOne: () => Promise.resolve(defaultSystemUser)
     }
 
+    authService.userProfileRepository = {
+      getById: async () => Promise.resolve({})
+    }
+
     authService.emailService = {
       sendPasswordResetInstructions: jest.fn(() => Promise.resolve())
     }
@@ -1071,7 +1103,7 @@ describe('AuthService - resetPassword', () => {
 
     const token = {
       _id: 'foo',
-      userId: 'bar',
+      userId: 'User|bar',
       tokenType: SingleUseTokenType.ResetPasswordToken,
       createdAt: new Date(1900, 1, 1).getTime(),
       updatedAt: new Date().getTime()
@@ -1089,6 +1121,10 @@ describe('AuthService - resetPassword', () => {
 
     authService.userRepository = {
       getById: () => Promise.resolve(defaultSystemUser)
+    }
+
+    authService.userProfileRepository = {
+      getById: async () => Promise.resolve({})
     }
 
     authService.userStatusRepository = {
@@ -1342,11 +1378,15 @@ describe('AuthService - iamOAuthCallback', () => {
     }
 
     authService.userRepository = {
-      getOne: async () => Promise.resolve({}),
+      getOne: async () => Promise.resolve({ _id: 'User|foobarovic' }),
       create: async () =>
         Promise.resolve({
           _id: 'User|foobarovic'
         })
+    }
+
+    authService.userProfileRepository = {
+      getById: () => Promise.resolve({})
     }
 
     authService.syncService = {
@@ -1377,7 +1417,7 @@ describe('AuthService - iamOAuthCallback', () => {
     }
 
     const x = await authService.iamOAuthCallback(payload, state)
-    expect(x).toEqual({ syncSessions: 'session', token: 'foobar', user: {} })
+    expect(x).toEqual({ syncSessions: 'session', token: 'foobar', user: { _id: 'User|foobarovic' } })
   })
 
   test('should fail if user status of the new user is missing', async () => {
@@ -1496,7 +1536,7 @@ describe('AuthService - iamOAuthCallback', () => {
     }
 
     authService.userRepository = {
-      getOne: async () => Promise.resolve({}),
+      getOne: async () => Promise.resolve({ _id: 'User|foobarovic' }),
       create: async () =>
         Promise.resolve({
           _id: 'User|foobarovic'
@@ -1509,6 +1549,10 @@ describe('AuthService - iamOAuthCallback', () => {
       createGatewayContributor: jest.fn(),
       gatewayAccountExists: async () => Promise.resolve(true),
       createGatewaySessions: async () => Promise.resolve('session')
+    }
+
+    authService.userProfileRepository = {
+      getById: () => Promise.resolve({})
     }
 
     authService.invitationService = {
@@ -1535,12 +1579,13 @@ describe('AuthService - iamOAuthCallback', () => {
     authService.userTokenRepository = {
       getOne: async () =>
         Promise.resolve({
-          token: 'foobar'
+          token: 'foobar',
+          userId: 'User|foobarovic'
         })
     }
 
     const x = await authService.iamOAuthCallback(payload, state)
-    expect(x).toEqual({ syncSessions: 'session', token: 'foobar', user: {} })
+    expect(x).toEqual({ syncSessions: 'session', token: 'foobar', user: { _id: 'User|foobarovic' } })
   })
 
   test('should create and log in the user', async () => {
@@ -1589,6 +1634,10 @@ describe('AuthService - iamOAuthCallback', () => {
         Promise.resolve({
           token: 'foobar'
         })
+    }
+
+    authService.userProfileRepository = {
+      getById: () => Promise.resolve({})
     }
 
     const x = await authService.iamOAuthCallback(payload, state)

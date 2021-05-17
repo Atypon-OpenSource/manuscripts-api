@@ -78,15 +78,6 @@ describe('UserService - getProfile', () => {
 
     expect(loginResponse.status).toBe(HttpStatus.OK)
 
-    await DIContainer.sharedContainer.syncService.createGatewayContributor(
-      {
-        _id: 'User|' + validBody.email,
-        name: 'foobar',
-        email: validBody.email
-      },
-      BucketKey.Data
-    )
-
     const authHeader = authorizationHeader(loginResponse.body.token)
     const response: supertest.Response = await getProfile({
       ...ValidContentTypeAcceptJsonHeader,
