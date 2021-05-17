@@ -88,24 +88,6 @@ describe('IAM Login - GET api/v1/auth/iam', () => {
     expect(response.status).toBe(HttpStatus.MOVED_TEMPORARILY)
   })
 
-  test('should fail if query is missing deviceId', async () => {
-    const response: supertest.Response = await iamOAuthStart(
-      validIAMOAuthStartRequest.headers,
-      {}
-    )
-
-    expect(response.status).toBe(HttpStatus.BAD_REQUEST)
-  })
-
-  test('should fail if query is missing app ID ', async () => {
-    const response: supertest.Response = await iamOAuthStart(
-      {},
-      validIAMOAuthStartRequest.query
-    )
-
-    expect(response.status).toBe(HttpStatus.UNAUTHORIZED)
-  })
-
   test('should redirect to frontend when the app ID is included in the query', async () => {
     const response: supertest.Response = await iamOAuthStart(
       {}, { ...validIAMOAuthStartRequest.query, ...validIAMOAuthStartRequest.headers }

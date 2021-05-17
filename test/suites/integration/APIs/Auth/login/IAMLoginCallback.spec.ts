@@ -37,17 +37,6 @@ describe('GET api/v1/auth/iam/callback', () => {
     await seed({ users: true })
   })
 
-  test('should fail if query is not sent', async () => {
-    const response: supertest.Response = await iamOAuthCallback(null, {})
-    expect(response.status).toBe(HttpStatus.BAD_REQUEST)
-  })
-
-  test('should fail if state is missing', async () => {
-    const response: supertest.Response = await iamOAuthCallback({}, {})
-
-    expect(response.status).toBe(HttpStatus.BAD_REQUEST)
-  })
-
   test('should fail if cookie is missing', async () => {
     const token = jsonwebtoken.sign(
       {

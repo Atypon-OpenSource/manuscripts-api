@@ -27,45 +27,14 @@ export const validInvitation2 = {
   invitedUsersEmails: [ 'valid-google2@manuscriptsapp.com' ]
 }
 
-export const emptyInvitedUsersEmails = {
-  message: 'Message',
-  invitedUsersEmails: [ ]
-}
-
 export const invalid = {
   message: 'Message',
   invitedUsersEmails: ['valid-user@manuscriptsapp.com']
 }
 
-export const notExistUsers = {
-  message: 'Message',
-  invitedUsersEmails: ['invalid-user@manuscriptsapp.com']
-}
-
-export const nonStringMessageCredentials: any = {
-  message: 123,
-  invitedUsersEmails: [ 'valid-google@manuscriptsapp.com' ]
-}
-
-export const validJWTToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbklkIjoiVXNlcnx2YWxpZC11c2VyQG1hbnVzY3JpcHRzYXBwLmNvbStkZXZpY2VJZCIsInVzZXJJZCI6IlVzZXJ8aW52YWxpZC11c2VyQG1hbnVzY3JpcHRzYXBwLmNvbSIsImFwcElkIjoiQXBwbGljYXRpb258OWE5MDkwZDktNmY5NS00MjBjLWI5MDMtNTQzZjMyYjUxNDBmIiwiaWF0IjoxNTIxOTgyOTYyfQ.WcZF9zjESaVY0wNCgq5fBmzE5N3bJDWC7Osm4h7lDVk'
-
-export const invalidJWTToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbklkIjoiVXNlcnx2YWxpZC11c2VyQG1hbnVzY3JpcHRzYXBwLmNvbStkZXZpY2VJZCIsImlhdCI6MTUyMTk4Mjk2Mn0.VlDI1RNozfrJ2Z9V1R5Luu46lkVAIzhwX2ySkihlDS8'
-
-export const invalidProjectInvitation = {
-  message: 'Message',
-  invitedUsers: [{ email: 'valid-user@manuscriptsapp.com', name: 'Valid User' }],
-  role: 'Viewer' as 'Viewer'
-}
-
 export const validProjectInvitation = {
   message: 'Message',
   invitedUsers: [{ email: 'valid-google@manuscriptsapp.com', name: 'Valid Google' }],
-  role: 'Viewer' as 'Viewer'
-}
-
-export const invitedUserAlreadyExist = {
-  message: 'Message',
-  invitedUsers: [{ email: 'valid-user-2@manuscriptsapp.com', name: 'Valid User' }],
   role: 'Viewer' as 'Viewer'
 }
 
@@ -80,30 +49,6 @@ export const validProjectInvitationWithoutEmail = {
   invitedUsers: [ { email: 'valid-google2@manuscriptsapp.com', name: 'Valid Google' } ],
   role: 'Viewer' as 'Viewer',
   skipEmail: true
-}
-
-export const emptyInvitedUsers = {
-  message: 'Message',
-  invitedUsers: [ ],
-  role: 'Viewer' as 'Viewer'
-}
-
-export const invalidRole = {
-  message: 'Message',
-  invitedUsers: [{ email: 'valid-google@manuscriptsapp.com', name: 'Valid Google' }],
-  role: 'invalid-role'
-}
-
-export const notExistProject = {
-  message: 'Message',
-  invitedUsers: [{ email: 'valid-google@manuscriptsapp.com', name: 'Valid Google' }],
-  role: 'Viewer' as 'Viewer'
-}
-
-export const invalidProjectInvitation2 = {
-  message: 'Message',
-  invitedUsers: [{ email: 'valid-google@manuscriptsapp.com', name: 'Valid Google' }],
-  role: 'Viewer' as 'Viewer'
 }
 
 export const validProjectInvitationObject: ContainerInvitation = {

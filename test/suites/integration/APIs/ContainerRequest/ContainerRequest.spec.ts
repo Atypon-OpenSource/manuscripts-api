@@ -49,7 +49,7 @@ import {
 import { ContainerRole } from '../../../../../src/Models/ContainerModels'
 import { BucketKey } from '../../../../../src/Config/ConfigurationTypes'
 import { GATEWAY_BUCKETS } from '../../../../../src/DomainServices/Sync/SyncService'
-import { validProject, validProjectRequest } from '../../../../data/fixtures/projects'
+import { validProject } from '../../../../data/fixtures/projects'
 
 let db: any = null
 
@@ -126,48 +126,6 @@ describe('ContainerRequestService - create', () => {
     expect(response.status).toBe(HttpStatus.OK)
   })
 
-  test('should fail if user profile does not exist', async () => {
-    const loginResponse: supertest.Response = await basicLogin(
-      validBody,
-      ValidHeaderWithApplicationKey
-    )
-
-    expect(loginResponse.status).toBe(HttpStatus.OK)
-
-    const authHeader = authorizationHeader(loginResponse.body.token)
-    const response: supertest.Response = await createContainerRequest(
-      {
-        ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
-      },
-      { role: ContainerRole.Writer },
-      { containerID: `MPProject:${validProject._id}` }
-    )
-
-    expect(response.status).toBe(HttpStatus.BAD_REQUEST)
-  })
-
-  test('should fail if user has a less limiting role in the project', async () => {
-    await seed({ userProfiles: true })
-    const loginResponse: supertest.Response = await basicLogin(
-      validBody,
-      ValidHeaderWithApplicationKey
-    )
-
-    expect(loginResponse.status).toBe(HttpStatus.OK)
-
-    const authHeader = authorizationHeader(loginResponse.body.token)
-    const response: supertest.Response = await createContainerRequest(
-      {
-        ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
-      },
-      { role: ContainerRole.Writer },
-      { containerID: `MPProject:${validProjectRequest._id}` }
-    )
-
-    expect(response.status).toBe(HttpStatus.FORBIDDEN)
-  })
 })
 
 describe('ContainerRequestService - accept', () => {
@@ -232,103 +190,6 @@ describe('ContainerRequestService - accept', () => {
     expect(response.status).toBe(HttpStatus.OK)
   })
 
-  test('should fail if user\'s current role is less limiting', async () => {
-    const loginResponse: supertest.Response = await basicLogin(
-      validBody,
-      ValidHeaderWithApplicationKey
-    )
-
-    expect(loginResponse.status).toBe(HttpStatus.OK)
-
-    const authHeader = authorizationHeader(loginResponse.body.token)
-    const response: supertest.Response = await acceptContainerRequest(
-      {
-        ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
-      },
-      {
-        requestID: `MPContainerRequest:${checksum(
-          'User_valid-user-3@manuscriptsapp.com-MPProject:valid-project-id-request-3'
-        )}`
-      },
-      { containerID: `MPProject:valid-project-id-request-3` }
-    )
-
-    expect(response.status).toBe(HttpStatus.FORBIDDEN)
-  })
-
-  test('should fail if the container request does not exist', async () => {
-    const loginResponse: supertest.Response = await basicLogin(
-      validBody,
-      ValidHeaderWithApplicationKey
-    )
-
-    expect(loginResponse.status).toBe(HttpStatus.OK)
-
-    const authHeader = authorizationHeader(loginResponse.body.token)
-    const response: supertest.Response = await acceptContainerRequest(
-      {
-        ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
-      },
-      {
-        requestID: `MPContainerRequest:invalid`
-      },
-      { containerID: `MPProject:valid-project-id-2` }
-    )
-
-    expect(response.status).toBe(HttpStatus.BAD_REQUEST)
-  })
-
-  test('should fail if the requesting user does not exist', async () => {
-    const loginResponse: supertest.Response = await basicLogin(
-      validBody,
-      ValidHeaderWithApplicationKey
-    )
-
-    expect(loginResponse.status).toBe(HttpStatus.OK)
-
-    const authHeader = authorizationHeader(loginResponse.body.token)
-    const response: supertest.Response = await acceptContainerRequest(
-      {
-        ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
-      },
-      {
-        requestID: `MPContainerRequest:${checksum(
-          'User_valid-user-MPProject:valid-project-id-2'
-        )}`
-      },
-      { containerID: `MPProject:valid-project-id-2` }
-    )
-
-    expect(response.status).toBe(HttpStatus.BAD_REQUEST)
-  })
-
-  test('should fail if the user is not an owner', async () => {
-    const loginResponse: supertest.Response = await basicLogin(
-      validBody,
-      ValidHeaderWithApplicationKey
-    )
-
-    expect(loginResponse.status).toBe(HttpStatus.OK)
-
-    const authHeader = authorizationHeader(loginResponse.body.token)
-    const response: supertest.Response = await acceptContainerRequest(
-      {
-        ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
-      },
-      {
-        requestID: `MPContainerRequest:${checksum(
-          'User_valid-user-3@manuscriptsapp.com-MPProject:valid-project-id-8'
-        )}`
-      },
-      { containerID: `MPProject:valid-project-id-8` }
-    )
-
-    expect(response.status).toBe(HttpStatus.FORBIDDEN)
-  })
 })
 
 describe('ContainerRequestService - reject', () => {
@@ -368,76 +229,4 @@ describe('ContainerRequestService - reject', () => {
     expect(response.status).toBe(HttpStatus.OK)
   })
 
-  test('should fail if the container request does not exist', async () => {
-    const loginResponse: supertest.Response = await basicLogin(
-      validBody,
-      ValidHeaderWithApplicationKey
-    )
-
-    expect(loginResponse.status).toBe(HttpStatus.OK)
-
-    const authHeader = authorizationHeader(loginResponse.body.token)
-    const response: supertest.Response = await rejectContainerRequest(
-      {
-        ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
-      },
-      {
-        requestID: `MPContainerRequest:invalid`
-      },
-      { containerID: `MPProject:valid-project-id-2` }
-    )
-
-    expect(response.status).toBe(HttpStatus.BAD_REQUEST)
-  })
-
-  test('should fail if the requesting user does not exist', async () => {
-    const loginResponse: supertest.Response = await basicLogin(
-      validBody,
-      ValidHeaderWithApplicationKey
-    )
-
-    expect(loginResponse.status).toBe(HttpStatus.OK)
-
-    const authHeader = authorizationHeader(loginResponse.body.token)
-    const response: supertest.Response = await rejectContainerRequest(
-      {
-        ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
-      },
-      {
-        requestID: `MPContainerRequest:${checksum(
-          'User_valid-user-MPProject:valid-project-id-2'
-        )}`
-      },
-      { containerID: `MPProject:valid-project-id-2` }
-    )
-
-    expect(response.status).toBe(HttpStatus.BAD_REQUEST)
-  })
-
-  test('should fail if the user is not an owner', async () => {
-    const loginResponse: supertest.Response = await basicLogin(
-      validBody,
-      ValidHeaderWithApplicationKey
-    )
-
-    expect(loginResponse.status).toBe(HttpStatus.OK)
-
-    const authHeader = authorizationHeader(loginResponse.body.token)
-    const response: supertest.Response = await rejectContainerRequest(
-      {
-        ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
-      },
-      {
-        requestID: `MPContainerRequest:${checksum(
-          'User_valid-user-3@manuscriptsapp.com-MPProject:valid-project-id-8'
-        )}`
-      },
-      { containerID: `MPProject:valid-project-id-8` }
-    )
-
-    expect(response.status).toBe(HttpStatus.FORBIDDEN)
-  })
 })

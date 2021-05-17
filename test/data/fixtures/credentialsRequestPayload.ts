@@ -38,12 +38,6 @@ export const validEmailBody = {
   deviceId: 'deviceId'
 }
 
-export const invalidPasswordBody = {
-  email: 'valid-user@manuscriptsapp.com',
-  password: '123456789',
-  deviceId: 'deviceId'
-}
-
 export const emptyEmailBody = {
   email: '',
   password: 'Script@123@M@nu',

@@ -26,22 +26,6 @@ export const validGoogleRequestWithHeader = {
   }
 }
 
-export const invalidGoogleRequestWithHeaderNoDeviceId = {
-  headers: {
-    'manuscripts-app-id': validApplication._id,
-    'manuscripts-app-secret': validApplication.secret
-  }
-}
-
-export const invalidGoogleRequestWithHeaderNoAppId = {
-  query: {
-    deviceId: 'Device Id Example'
-  },
-  headers: {
-    'manuscripts-app-secret': validApplication.secret
-  }
-}
-
 export const validGoogleRequestNoHeaders = {
   query: {
     deviceId: 'Device Id Example',

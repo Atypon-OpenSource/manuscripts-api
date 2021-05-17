@@ -24,3 +24,10 @@ templates.push({
   _id: 'MPManuscriptTemplate:valid-template-1',
   objectType: 'MPManuscriptTemplate'
 })
+
+templates.push({
+  containerID: 'MPProject:valid-project-id-2',
+  title: 'Valid Template Title',
+  _id: 'MPManuscriptTemplate:valid-template-2',
+  objectType: 'MPManuscriptTemplate'
+})

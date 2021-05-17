@@ -54,12 +54,6 @@ export const emptyTokenAndPassword = {
   deviceId: '9f338224-b0d5-45aa-b02c-21c7e0c3c07b'
 }
 
-export const invalidNullToken = {
-  token: null,
-  password: '54321',
-  deviceId: '9f338224-b0d5-45aa-b02c-21c7e0c3c07b'
-}
-
 export const validTokenInvalidUser = {
   token: 'SingleUseToken|foobarbaz4',
   password: '12345',

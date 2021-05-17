@@ -46,7 +46,6 @@ import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
 import { SeedOptions } from '../../../../../../src/DataAccess/Interfaces/SeedOptions'
 import { config } from '../../../../../../src/Config/Config'
 import { BucketKey } from '../../../../../../src/Config/ConfigurationTypes'
-import { notVerifiedStatus } from '../../../../../data/fixtures/userStatus'
 
 jest.setTimeout(TEST_TIMEOUT)
 
@@ -145,59 +144,6 @@ describe('Server to Server Auth - POST api/v1/auth/admin', () => {
     const [syncSessionCookie] = setCookieHeaders
     expect(syncSessionCookie.startsWith(SYNC_GATEWAY_COOKIE_NAME)).toBeTruthy()
   })
-
-  test('should fail if user does not exists', async () => {
-    await DIContainer.sharedContainer.userStatusRepository.remove(null)
-    const response: supertest.Response = await serverToServerAuth(
-      { deviceId: chance.guid() },
-      {
-        ...ValidHeaderWithApplicationKey,
-        authorization: `Bearer ${jsonwebtoken.sign(
-          { email: chance.email() },
-          config.auth.serverSecret
-        )}`
-      }
-    )
-
-    return expect(response.status).toBe(HttpStatus.UNAUTHORIZED)
-  })
-
-  test('should fail if user status does not exists', async () => {
-    await DIContainer.sharedContainer.userStatusRepository.remove(null)
-    const response: supertest.Response = await serverToServerAuth(
-      { deviceId: chance.guid() },
-      {
-        ...ValidHeaderWithApplicationKey,
-        authorization: `Bearer ${jsonwebtoken.sign(
-          { email: validEmailBody.email },
-          config.auth.serverSecret
-        )}`
-      }
-    )
-
-    return expect(response.status).toBe(HttpStatus.UNAUTHORIZED)
-  })
-
-  test('should not fail if user is not verified', async () => {
-    await DIContainer.sharedContainer.userStatusRepository.remove(null)
-    await DIContainer.sharedContainer.userStatusRepository.create(
-      notVerifiedStatus,
-      {}
-    )
-
-    const response: supertest.Response = await serverToServerAuth(
-      { deviceId: chance.guid() },
-      {
-        ...ValidHeaderWithApplicationKey,
-        authorization: `Bearer ${jsonwebtoken.sign(
-          { email: validEmailBody.email },
-          config.auth.serverSecret
-        )}`
-      }
-    )
-
-    return expect(response.status).toBe(HttpStatus.OK)
-  })
 })
 
 describe('Server to Server token Auth - POST api/v1/auth/token', () => {
@@ -225,23 +171,5 @@ describe('Server to Server token Auth - POST api/v1/auth/token', () => {
     // userStatus will be created if not found
     expect(createUserStatus).toHaveBeenCalled()
     return expect(response.status).toBe(HttpStatus.OK)
-  })
-
-  test('should fail if user not found', async () => {
-    const response: supertest.Response = await serverToServerTokenAuth(
-      {
-        deviceId: chance.guid()
-      },
-      {
-        ...ValidHeaderWithApplicationKey,
-        authorization: `Bearer ${jsonwebtoken.sign(
-          { email: validEmailBody.email },
-          config.auth.serverSecret
-        )}`
-      },{
-        connectUserID: 'invalid-connect-user-id'
-      }
-    )
-    return expect(response.status).toBe(HttpStatus.UNAUTHORIZED)
   })
 })

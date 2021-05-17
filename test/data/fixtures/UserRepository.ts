@@ -67,12 +67,6 @@ export const NewUserNoId = {
   email: 'new-user@manuscriptsapp.com'
 }
 
-export const validGoogleUser = {
-  _id: 'User|valid-google@manuscriptsapp.com',
-  name: 'Valid System User',
-  email: 'valid-google@manuscriptsapp.com'
-}
-
 export const userList: any = []
 userList.push({
   'BUCKET_NAME': {

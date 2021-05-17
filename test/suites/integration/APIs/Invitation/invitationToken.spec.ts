@@ -59,55 +59,6 @@ describe('InvitationService - requestInvitationToken', () => {
     await seed(seedOptions)
   })
 
-  test('should fail if role is not valid ', async () => {
-    const loginResponse: supertest.Response = await basicLogin(
-      validBody,
-      ValidHeaderWithApplicationKey
-    )
-
-    expect(loginResponse.status).toBe(HttpStatus.OK)
-
-    const header = authorizationHeader(loginResponse.body.token)
-    const response: supertest.Response = await requestInvitationToken(header, {
-      containerID: 'MPProject:valid-project-id-2',
-      role: 'Owner'
-    })
-    expect(response.status).toBe(HttpStatus.BAD_REQUEST)
-  })
-
-  test('should fail if project does not exist', async () => {
-    const loginResponse: supertest.Response = await basicLogin(
-      validBody,
-      ValidHeaderWithApplicationKey
-    )
-
-    expect(loginResponse.status).toBe(HttpStatus.OK)
-
-    const header = authorizationHeader(loginResponse.body.token)
-    const response: supertest.Response = await requestInvitationToken(header, {
-      containerID: 'MPProject:foo',
-      role: 'Writer'
-    })
-
-    expect(response.status).toBe(HttpStatus.NOT_FOUND)
-  })
-
-  test('should fail if the user requesting invitation token is not a project owner', async () => {
-    const loginResponse: supertest.Response = await basicLogin(
-      validBody,
-      ValidHeaderWithApplicationKey
-    )
-
-    expect(loginResponse.status).toBe(HttpStatus.OK)
-
-    const header = authorizationHeader(loginResponse.body.token)
-    const response: supertest.Response = await requestInvitationToken(header, {
-      containerID: 'MPProject:valid-project-id',
-      role: 'Writer'
-    })
-    expect(response.status).toBe(HttpStatus.FORBIDDEN)
-  })
-
   test('should create invitation token ', async () => {
     const loginResponse: supertest.Response = await basicLogin(
       validBody,
@@ -146,28 +97,6 @@ describe('InvitationService - refreshProjectInvitationToken', () => {
     await drop()
     await dropBucket(BucketKey.Data)
     await seed(seedOptions)
-  })
-
-  test('should fail to refresh invitation token if token does not exist', async () => {
-    const loginResponse: supertest.Response = await basicLogin(
-      validBody,
-      ValidHeaderWithApplicationKey
-    )
-
-    expect(loginResponse.status).toBe(HttpStatus.OK)
-
-    const header = authorizationHeader(loginResponse.body.token)
-    const response: supertest.Response = await refreshInvitationToken(
-      {
-        ...ValidContentTypeAcceptJsonHeader,
-        ...header
-      },
-      {
-        containerID: 'MPProject:valid-project-id-5',
-        role: 'Writer'
-      }
-    )
-    expect(response.status).toBe(HttpStatus.UNAUTHORIZED)
   })
 
   test('should refresh invitation token ', async () => {

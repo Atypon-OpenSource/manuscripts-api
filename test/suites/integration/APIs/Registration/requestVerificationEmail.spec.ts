@@ -62,30 +62,4 @@ describe('UserRegistrationService - requestVerificationEmail', () => {
 
     expect(response.status).toBe(HttpStatus.NO_CONTENT)
   })
-
-  test('should fail if email not in the correct format', async () => {
-
-    const response: supertest.Response = await requestVerificationEmail({ email: 'foo' }, ValidContentTypeAcceptJsonHeader)
-
-    expect(response.status).toBe(HttpStatus.BAD_REQUEST)
-  })
-
-  test('should fail if user\'s email does not exist in the db', async () => {
-    const response: supertest.Response = await requestVerificationEmail({ email: 'foo@bar.com' }, ValidContentTypeAcceptJsonHeader)
-
-    expect(response.status).toBe(HttpStatus.NOT_FOUND)
-  })
-
-  test('should fail if user\'s status does not exist in the db', async () => {
-    await DIContainer.sharedContainer.userStatusRepository.remove(null)
-    const response: supertest.Response = await requestVerificationEmail({ email: defaultSystemUser.email },ValidContentTypeAcceptJsonHeader)
-
-    expect(response.status).toBe(HttpStatus.UNAUTHORIZED)
-  })
-
-  test('should fail if user already exist and verified', async () => {
-    const response: supertest.Response = await requestVerificationEmail({ email: defaultSystemUser.email }, ValidContentTypeAcceptJsonHeader)
-
-    expect(response.status).toBe(HttpStatus.BAD_REQUEST)
-  })
 })

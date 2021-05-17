@@ -64,15 +64,6 @@ describe('InvitationService - reject', () => {
     expect(invitation).toBeNull()
   })
 
-  test('should fail if invitation does not exist', async () => {
-    const rejectResponse: supertest.Response = await reject(
-      { invitationId: 'MPInvitation:invalid-invitation-id' },
-      {
-        ...ValidContentTypeAcceptJsonHeader
-      }
-    )
-    expect(rejectResponse.status).toBe(HttpStatus.BAD_REQUEST)
-  })
 })
 
 describe('InvitationService - rejectProjectInvite', () => {
@@ -96,13 +87,4 @@ describe('InvitationService - rejectProjectInvite', () => {
     expect(rejectResponse.status).toBe(HttpStatus.OK)
   })
 
-  test('should fail if invitation does not exist', async () => {
-    const rejectResponse: supertest.Response = await reject(
-      { invitationId: 'MPContainerInvitation:invalid-invitation-id' },
-      {
-        ...ValidContentTypeAcceptJsonHeader
-      }
-    )
-    expect(rejectResponse.status).toBe(HttpStatus.BAD_REQUEST)
-  })
 })

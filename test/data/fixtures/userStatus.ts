@@ -16,8 +16,6 @@
 
 import moment from 'moment'
 
-import { UserActivityEventType } from '../../../src/Models/UserEventModels'
-
 export const blockedStatus = {
   _id: 'User|valid-user@manuscriptsapp.com',
   blockUntil: moment(new Date())
@@ -47,12 +45,4 @@ export const blockedStatusButBlockTimeExpired = {
   deviceSessions: {},
   isVerified: true,
   password: '$2a$05$LpEIAuWg7aF4leM9aZaKDO3.7r.6IkkcS4qrj5qMhHZEWzFoZHrv.'
-}
-
-export const userFailedLoginEvent = {
-  appId: '1234567',
-  deviceId: '1234567',
-  eventType: UserActivityEventType.FailedLogin,
-  timestamp: new Date().getTime(),
-  userId: 'valid-user@manuscriptsapp.com'
 }

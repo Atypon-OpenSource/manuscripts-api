@@ -37,7 +37,7 @@ import { drop, dropBucket, seed, testDatabase } from '../../../../utilities/db'
 import { ValidContentTypeAcceptJsonHeader, ValidHeaderWithApplicationKey, authorizationHeader } from '../../../../data/fixtures/headers'
 import { accept, basicLogin } from '../../../../api'
 import { SeedOptions } from '../../../../../src/DataAccess/Interfaces/SeedOptions'
-import { validBody, validBody2 } from '../../../../../test/data/fixtures/credentialsRequestPayload'
+import { validBody2 } from '../../../../../test/data/fixtures/credentialsRequestPayload'
 
 let db: any = null
 const seedOptions: SeedOptions = {
@@ -78,43 +78,6 @@ describe('InvitationService - accept', () => {
     expect(response.status).toBe(HttpStatus.OK)
   })
 
-  test('should fail if invitation does not exist', async () => {
-    const response: supertest.Response = await accept(
-      { invitationId: 'MPInvitation:invalid-invitation-id' },
-      { ...ValidContentTypeAcceptJsonHeader }
-    )
-
-    expect(response.status).toBe(HttpStatus.BAD_REQUEST)
-  })
-
-  test('should fail if invited user not in DB and name , password not set', async () => {
-    const response: supertest.Response = await accept(
-      {
-        invitationId: `MPInvitation:${checksum(
-          'valid-user@manuscriptsapp.com-valid-user-4@manuscriptsapp.com',
-          { algorithm: 'sha1' }
-        )}`
-      },
-      { ...ValidContentTypeAcceptJsonHeader }
-    )
-    expect(response.status).toBe(HttpStatus.BAD_REQUEST)
-  })
-
-  test('should fail if invited user not in DB and password not set', async () => {
-    const response: supertest.Response = await accept(
-      {
-        invitationId: `MPInvitation:${checksum(
-          'valid-user@manuscriptsapp.com-valid-user-4@manuscriptsapp.com',
-          { algorithm: 'sha1' }
-        )}`,
-        name: 'Valid System User'
-      },
-      { ...ValidContentTypeAcceptJsonHeader }
-    )
-
-    expect(response.status).toBe(HttpStatus.BAD_REQUEST)
-  })
-
   test('should create new user and create a collaboration ', async () => {
     const response: supertest.Response = await accept(
       {
@@ -137,100 +100,6 @@ describe('InvitationService - acceptProjectInvite', () => {
     await drop()
     await dropBucket(BucketKey.Data)
     await seed({ projects: true, projectInvitations: true, users: true, applications: true })
-  })
-
-  test('should fail if invitation does not exist', async () => {
-    const loginResponse: supertest.Response = await basicLogin(
-      validBody,
-      ValidHeaderWithApplicationKey
-    )
-
-    expect(loginResponse.status).toBe(HttpStatus.OK)
-
-    const header = authorizationHeader(loginResponse.body.token)
-    const response: supertest.Response = await accept(
-      {
-        invitationId: 'MPContainerInvitation:invalid-invitation-id'
-      },
-      { ...ValidContentTypeAcceptJsonHeader,
-        ...header
-      }
-    )
-
-    expect(response.status).toBe(HttpStatus.GONE)
-  })
-
-  test('should fail - only invited user could accept the invitation', async () => {
-    const loginResponse: supertest.Response = await basicLogin(
-      validBody,
-      ValidHeaderWithApplicationKey
-    )
-
-    expect(loginResponse.status).toBe(HttpStatus.OK)
-
-    const header = authorizationHeader(loginResponse.body.token)
-    const response: supertest.Response = await accept(
-      {
-        invitationId: `MPContainerInvitation:${checksum(
-          'valid-user@manuscriptsapp.com-valid-user-4@manuscriptsapp.com-valid-project-id-2',
-          { algorithm: 'sha1' }
-        )}`
-      },
-      { ...ValidContentTypeAcceptJsonHeader,
-        ...header
-      }
-    )
-
-    expect(response.status).toBe(HttpStatus.UNAUTHORIZED)
-  })
-
-  test('should fail if container not exist', async () => {
-    const loginResponse: supertest.Response = await basicLogin(
-      validBody,
-      ValidHeaderWithApplicationKey
-    )
-
-    expect(loginResponse.status).toBe(HttpStatus.OK)
-
-    const header = authorizationHeader(loginResponse.body.token)
-    const response: supertest.Response = await accept(
-      {
-        invitationId: `MPContainerInvitation:${checksum(
-          'valid-user-4@manuscriptsapp.com-valid-user@manuscriptsapp.com-not-valid-project-id',
-          { algorithm: 'sha1' }
-        )}`
-      },
-      { ...ValidContentTypeAcceptJsonHeader,
-        ...header
-      }
-    )
-
-    expect(response.status).toBe(HttpStatus.BAD_REQUEST)
-  })
-
-  test('should fail if inviting user not in DB', async () => {
-    const loginResponse: supertest.Response = await basicLogin(
-      validBody,
-      ValidHeaderWithApplicationKey
-    )
-
-    expect(loginResponse.status).toBe(HttpStatus.OK)
-
-    const header = authorizationHeader(loginResponse.body.token)
-    const response: supertest.Response = await accept(
-      {
-        invitationId: `MPContainerInvitation:${checksum(
-          'valid-user-9@manuscriptsapp.com-valid-user@manuscriptsapp.com-valid-project-id-4',
-          { algorithm: 'sha1' }
-        )}`,
-        name: 'Valid System User'
-      },
-      { ...ValidContentTypeAcceptJsonHeader,
-        ...header
-      }
-    )
-
-    expect(response.status).toBe(HttpStatus.BAD_REQUEST)
   })
 
   test('should accept the invitation and update user role in case the user have a more limiting role', async () => {

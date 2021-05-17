@@ -480,3 +480,17 @@ export async function getCorrectionStatus (headers: any, params: any): Promise<s
     .get(`/api/v1/projects/${params.containerID}/suggestions/status`)
     .set(headers)
 }
+
+export async function importManuscript (headers: object, params: any, filePath: string, manuscriptId?: string, templateId?: string): Promise<supertest.Response> {
+  const server: IServer = await createServer()
+  const req = supertest(server.app)
+    .post(`/api/v1/project/${params.containerID}`)
+    .set(headers)
+  if (manuscriptId) {
+    req.field('manuscriptId', manuscriptId)
+  }
+  if (templateId) {
+    req.field('templateId', templateId)
+  }
+  return req.attach('file', filePath)
+}

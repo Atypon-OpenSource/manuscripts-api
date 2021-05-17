@@ -16,22 +16,9 @@
 
 // import { INewUser } from '../../../src/Models'
 
-// user exist in db
-export const invalidNewUserCredentials: any = {
-  name: 'Valid System User',
-  email: 'valid-user@manuscriptsapp.com',
-  password: '12345678'
-}
-
 // user does not exist in db
 export const validNewUserCredentials: any = {
   name: 'valid-user 4',
   email: 'valid-user-4@manuscriptsapp.com',
-  password: '12345678'
-}
-
-export const validNotVerifiedNewUserCredentials: any = {
-  name: 'Valid System User',
-  email: 'valid-user-2@manuscriptsapp.com',
   password: '12345678'
 }

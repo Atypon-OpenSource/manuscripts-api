@@ -20,11 +20,6 @@ import * as supertest from 'supertest'
 
 import { drop, testDatabase } from '../../../../../utilities/db'
 import { googleLoginCallback } from '../../../../../api'
-import {
-  randomQueryString,
-  googleAuthOneTimeCode,
-  googleAuthOneTimeCodeNoState
-} from '../../../../../data/fixtures/queryString'
 import { AuthStrategy } from '../../../../../../src/Auth/Passport/AuthStrategy'
 import { UserClaim } from '../../../../../../src/Auth/Interfaces/UserClaim'
 import { config } from '../../../../../../src/Config/Config'
@@ -40,35 +35,6 @@ afterAll(() => db.bucket.disconnect())
 describe('Google Login - GET api/v1/auth/google/callback', () => {
   beforeEach(async () => {
     await drop()
-  })
-
-  test('should fail if query is not sent', async () => {
-    const response: supertest.Response = await googleLoginCallback(null)
-    expect(response.status).toBe(HttpStatus.MOVED_TEMPORARILY)
-  })
-
-  test('should fail if query string has different keys than code', async () => {
-    const response: supertest.Response = await googleLoginCallback(
-      randomQueryString
-    )
-
-    expect(response.status).toBe(HttpStatus.MOVED_TEMPORARILY)
-  })
-
-  test('should redirect if code is invalid', async () => {
-    const response: supertest.Response = await googleLoginCallback(
-      googleAuthOneTimeCode
-    )
-
-    expect(response.status).toBe(HttpStatus.MOVED_TEMPORARILY)
-  })
-
-  test('should fail if the state is missing', async () => {
-    const response: supertest.Response = await googleLoginCallback(
-      googleAuthOneTimeCodeNoState
-    )
-
-    expect(response.status).toBe(HttpStatus.MOVED_TEMPORARILY)
   })
 
   test('should log user in and redirect user to login page with token data in the query string', async () => {

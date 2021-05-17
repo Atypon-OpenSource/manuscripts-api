@@ -41,12 +41,8 @@ import {
   } from '../../../../../data/fixtures/credentialsRequestPayload'
 import {
   ValidContentTypeAcceptJsonHeader,
-  EmptyAcceptJsonHeader,
-  EmptyContentTypeAcceptJsonHeader,
-  InValidAcceptJsonHeader,
   ValidContentTypeAcceptWithCharsetJsonHeader
   } from '../../../../../data/fixtures/headers'
-import { validEmailCredentials } from '../../../../../data/fixtures/credentials'
 import { BucketKey } from '../../../../../../src/Config/ConfigurationTypes'
 
 jest.setTimeout(TEST_TIMEOUT)
@@ -101,42 +97,6 @@ describe('Forgot Password - POST api/v1/auth/sendForgottenPassword', () => {
     )
 
     expect(response.status).toBe(HttpStatus.NO_CONTENT)
-  })
-
-  test('should fail if email is empty', async () => {
-    const response: supertest.Response = await forgotPassword(
-      { email : '' },
-      ValidContentTypeAcceptJsonHeader
-    )
-
-    expect(response.status).toBe(HttpStatus.BAD_REQUEST)
-  })
-
-  test('ensures API does not work if Content-Type & Accept headers not sent', async () => {
-    const response: supertest.Response = await forgotPassword(
-        { email : validEmailBody.email },
-        EmptyContentTypeAcceptJsonHeader
-      )
-
-    expect(response.status).toBe(HttpStatus.BAD_REQUEST)
-  })
-
-  test('ensures API does not work if Accept header not sent', async () => {
-    const response: supertest.Response = await forgotPassword(
-        { email : validEmailBody.email },
-        EmptyAcceptJsonHeader
-      )
-
-    expect(response.status).toBe(HttpStatus.BAD_REQUEST)
-  })
-
-  test('ensures API does not work if Accept header is invalid', async () => {
-    const response: supertest.Response = await forgotPassword(
-      { email : validEmailCredentials.email },
-      InValidAcceptJsonHeader
-    )
-
-    expect(response.status).toBe(HttpStatus.BAD_REQUEST)
   })
 
   test('ensures forgotPassword API does work if Accept and Content-Type headers has charset=UTF-8', async () => {

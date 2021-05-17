@@ -40,11 +40,7 @@ import {
 import { acceptInvitationToken, basicLogin } from '../../../../api'
 import { SeedOptions } from '../../../../../src/DataAccess/Interfaces/SeedOptions'
 import {
-  validInvitationToken,
-  validInvitationTokenProjectNotInDB,
   validInvitationToken2,
-  invalidRoleInvitationToken,
-  validInvitationTokenNotInDB,
   validInvitationToken3,
   validInvitationToken4,
   validTokenButInvitationExist,
@@ -190,101 +186,6 @@ describe('InvitationService - acceptInvitationToken', () => {
     )
 
     expect(response.status).toBe(HttpStatus.OK)
-  })
-
-  test('should fail if the invited user is not a valid user', async () => {
-    const authHeader = authorizationHeader(
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbklkIjoiMDMzYzkxY2QtNzBmNS01ODgwLTk2NmYtMzBjMGU2MGEzMWFlIiwidXNlcklkIjoiSW52YWxpZCB1c2VyIiwiYXBwSWQiOiJhcHBJZCIsImlhdCI6MTUxODUxNzI2OH0.gxUc_LKg9_VlBTLTdnq7aCFoD3bwUWXUms13fLEaTpY'
-    )
-    const response: supertest.Response = await acceptInvitationToken(
-      {
-        token: validInvitationToken.token
-      },
-      {
-        ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
-      },
-      {
-        containerType: 'project'
-      }
-    )
-
-    expect(response.status).toBe(HttpStatus.UNAUTHORIZED)
-  })
-
-  test('should fail if the project does not exist in the db', async () => {
-    const loginResponse: supertest.Response = await basicLogin(
-      validBody,
-      ValidHeaderWithApplicationKey
-    )
-
-    expect(loginResponse.status).toBe(HttpStatus.OK)
-
-    const authHeader = authorizationHeader(loginResponse.body.token)
-    const response: supertest.Response = await acceptInvitationToken(
-      {
-        token: validInvitationTokenProjectNotInDB.token
-      },
-      {
-        ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
-      },
-      {
-        containerType: 'project'
-      }
-    )
-
-    expect(response.status).toBe(HttpStatus.NOT_FOUND)
-  })
-
-  test('should fail if the role is invalid', async () => {
-    const loginResponse: supertest.Response = await basicLogin(
-      validBody,
-      ValidHeaderWithApplicationKey
-    )
-
-    expect(loginResponse.status).toBe(HttpStatus.OK)
-
-    const authHeader = authorizationHeader(loginResponse.body.token)
-    const response: supertest.Response = await acceptInvitationToken(
-      {
-        token: invalidRoleInvitationToken.token
-      },
-      {
-        ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
-      },
-      {
-        containerType: 'project'
-      }
-    )
-
-    expect(response.status).toBe(HttpStatus.BAD_REQUEST)
-  })
-
-  test('should fail if the invitationToken is not in DB', async () => {
-    const loginResponse: supertest.Response = await basicLogin(
-      validBody,
-      ValidHeaderWithApplicationKey
-    )
-
-    expect(loginResponse.status).toBe(HttpStatus.OK)
-
-    const authHeader = authorizationHeader(loginResponse.body.token)
-    const response: supertest.Response = await acceptInvitationToken(
-      {
-        token: validInvitationTokenNotInDB.token
-      },
-      {
-        ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
-      },
-      {
-        containerType: 'project'
-      }
-    )
-
-    expect(response.status).toBe(HttpStatus.GONE)
   })
 
   test('should accept the sent invitation instead of URI if there is invitation exist with a better role', async () => {

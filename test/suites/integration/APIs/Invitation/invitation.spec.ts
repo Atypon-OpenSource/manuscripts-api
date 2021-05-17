@@ -44,23 +44,14 @@ import {
 } from '../../../../data/fixtures/headers'
 import {
   validInvitation,
-  emptyInvitedUsersEmails,
-  invalid,
   validInvitation2,
-  emptyInvitedUsers,
-  invalidProjectInvitation,
-  invalidRole,
-  notExistProject,
   validProjectInvitation,
-  invalidProjectInvitation2,
   validProjectInvitation2,
-  validProjectInvitationWithoutEmail,
-  invitedUserAlreadyExist
+  validProjectInvitationWithoutEmail
 } from '../../../../data/fixtures/invitation'
 import { BucketKey } from '../../../../../src/Config/ConfigurationTypes'
 import { GATEWAY_BUCKETS } from '../../../../../src/DomainServices/Sync/SyncService'
 import { SeedOptions } from '../../../../../src/DataAccess/Interfaces/SeedOptions'
-import { UserService } from '../../../../../src/DomainServices/User/UserService'
 
 let db: any = null
 const seedOptions: SeedOptions = {
@@ -123,63 +114,6 @@ describe('InvitationService - invite', () => {
     expect(response.status).toBe(HttpStatus.OK)
     expect(invitationService.emailService.sendInvitation).toBeCalled()
     invitationService.emailService.sendInvitation.mockClear()
-  })
-
-  test('should fail if user profile does not exist', async () => {
-    await DIContainer.sharedContainer.userProfileRepository.remove(
-      UserService.profileID('User|valid-user@manuscriptsapp.com')
-    )
-
-    const loginResponse: supertest.Response = await basicLogin(
-      validBody,
-      ValidHeaderWithApplicationKey
-    )
-
-    expect(loginResponse.status).toBe(HttpStatus.OK)
-
-    const header = authorizationHeader(loginResponse.body.token)
-    const response: supertest.Response = await invite(validInvitation2, {
-      ...ValidContentTypeAcceptJsonHeader,
-      ...header
-    })
-
-    expect(response.status).toBe(HttpStatus.BAD_REQUEST)
-  })
-
-  test('should fail if invited users is empty', async () => {
-    const loginResponse: supertest.Response = await basicLogin(
-      validBody,
-      ValidHeaderWithApplicationKey
-    )
-
-    expect(loginResponse.status).toBe(HttpStatus.OK)
-
-    const header = authorizationHeader(loginResponse.body.token)
-
-    const response: supertest.Response = await invite(emptyInvitedUsersEmails, {
-      ...ValidContentTypeAcceptJsonHeader,
-      ...header
-    })
-
-    expect(response.status).toBe(HttpStatus.BAD_REQUEST)
-  })
-
-  test('should fail if user inviting himself', async () => {
-    const loginResponse: supertest.Response = await basicLogin(
-      validBody,
-      ValidHeaderWithApplicationKey
-    )
-
-    expect(loginResponse.status).toBe(HttpStatus.OK)
-
-    const header = authorizationHeader(loginResponse.body.token)
-
-    const response: supertest.Response = await invite(invalid, {
-      ...ValidContentTypeAcceptJsonHeader,
-      ...header
-    })
-
-    expect(response.status).toBe(HttpStatus.BAD_REQUEST)
   })
 
   test('should extend invitation expiry if it already exists', async () => {
@@ -294,176 +228,6 @@ describe('InvitationService - inviteToContainer', () => {
     })
     expect(containerInvitationService.emailService.sendContainerInvitation).not.toBeCalled()
     containerInvitationService.emailService.sendContainerInvitation.mockClear()
-  })
-
-  test('should fail if the user profile does not exist', async () => {
-    await DIContainer.sharedContainer.userProfileRepository.remove(
-      UserService.profileID('User|valid-user@manuscriptsapp.com')
-    )
-
-    const loginResponse: supertest.Response = await basicLogin(
-      validBody,
-      ValidHeaderWithApplicationKey
-    )
-
-    expect(loginResponse.status).toBe(HttpStatus.OK)
-
-    const header = authorizationHeader(loginResponse.body.token)
-    const response: supertest.Response = await inviteToContainer(
-      validProjectInvitation2,
-      {
-        ...ValidContentTypeAcceptJsonHeader,
-        ...header
-      },
-      {
-        containerID: 'MPProject:valid-project-id-2'
-      }
-    )
-
-    expect(response.status).toBe(HttpStatus.BAD_REQUEST)
-  })
-
-  test('should fail if invited users is empty', async () => {
-    const loginResponse: supertest.Response = await basicLogin(
-      validBody,
-      ValidHeaderWithApplicationKey
-    )
-
-    expect(loginResponse.status).toBe(HttpStatus.OK)
-
-    const header = authorizationHeader(loginResponse.body.token)
-
-    const response: supertest.Response = await inviteToContainer(
-      emptyInvitedUsers,
-      {
-        ...ValidContentTypeAcceptJsonHeader,
-        ...header
-      },
-      {
-        containerID: 'MPProject:valid-project-id-2'
-      }
-    )
-
-    expect(response.status).toBe(HttpStatus.BAD_REQUEST)
-  })
-
-  test('should fail if user inviting himself', async () => {
-    const loginResponse: supertest.Response = await basicLogin(
-      validBody,
-      ValidHeaderWithApplicationKey
-    )
-
-    expect(loginResponse.status).toBe(HttpStatus.OK)
-
-    const header = authorizationHeader(loginResponse.body.token)
-
-    const response: supertest.Response = await inviteToContainer(
-      invalidProjectInvitation,
-      {
-        ...ValidContentTypeAcceptJsonHeader,
-        ...header
-      },
-      {
-        containerID: 'MPProject:valid-project-id-2'
-      }
-    )
-
-    expect(response.status).toBe(HttpStatus.BAD_REQUEST)
-  })
-
-  test('should fail if role is not valid', async () => {
-    const loginResponse: supertest.Response = await basicLogin(
-      validBody,
-      ValidHeaderWithApplicationKey
-    )
-
-    expect(loginResponse.status).toBe(HttpStatus.OK)
-
-    const header = authorizationHeader(loginResponse.body.token)
-
-    const response: supertest.Response = await inviteToContainer(
-      invalidRole,
-      {
-        ...ValidContentTypeAcceptJsonHeader,
-        ...header
-      },
-      {
-        containerID: 'MPProject:valid-project-id-2'
-      }
-    )
-
-    expect(response.status).toBe(HttpStatus.BAD_REQUEST)
-  })
-
-  test('should fail if project does not exist', async () => {
-    const loginResponse: supertest.Response = await basicLogin(
-      validBody,
-      ValidHeaderWithApplicationKey
-    )
-
-    expect(loginResponse.status).toBe(HttpStatus.OK)
-
-    const header = authorizationHeader(loginResponse.body.token)
-
-    const response: supertest.Response = await inviteToContainer(
-      notExistProject,
-      {
-        ...ValidContentTypeAcceptJsonHeader,
-        ...header
-      },
-      {
-        containerID: 'MPProject:project-not-in-db'
-      }
-    )
-
-    expect(response.status).toBe(HttpStatus.NOT_FOUND)
-  })
-
-  test('inviting user can not invite others he is not a project owner', async () => {
-    const loginResponse: supertest.Response = await basicLogin(
-      validBody,
-      ValidHeaderWithApplicationKey
-    )
-
-    expect(loginResponse.status).toBe(HttpStatus.OK)
-
-    const header = authorizationHeader(loginResponse.body.token)
-
-    const response: supertest.Response = await inviteToContainer(
-      invalidProjectInvitation2,
-      {
-        ...ValidContentTypeAcceptJsonHeader,
-        ...header
-      },
-      {
-        containerID: 'MPProject:valid-project-id'
-      }
-    )
-
-    expect(response.status).toBe(HttpStatus.BAD_REQUEST)
-  })
-
-  test('should fail if invited user already exists', async () => {
-    const loginResponse: supertest.Response = await basicLogin(
-      validBody,
-      ValidHeaderWithApplicationKey
-    )
-
-    expect(loginResponse.status).toBe(HttpStatus.OK)
-
-    const header = authorizationHeader(loginResponse.body.token)
-    const response: supertest.Response = await inviteToContainer(
-      invitedUserAlreadyExist,
-      {
-        ...ValidContentTypeAcceptJsonHeader,
-        ...header
-      },
-      {
-        containerID: 'MPProject:valid-project-id-2'
-      }
-    )
-
-    expect(response.status).toBe(HttpStatus.CONFLICT)
   })
 
   test('should update invitation if it already exists', async () => {

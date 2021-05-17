@@ -35,7 +35,6 @@ import {
   createManuscript,
   getCorrectionStatus
 } from '../../../../api'
-import { TEST_TIMEOUT } from '../../../../utilities/testSetup'
 import { drop, dropBucket, seed, testDatabase } from '../../../../utilities/db'
 import { validBody, validBody2 } from '../../../../data/fixtures/credentialsRequestPayload'
 import { DIContainer } from '../../../../../src/DIContainer/DIContainer'
@@ -44,18 +43,11 @@ import {
   authorizationHeader,
   ValidHeaderWithApplicationKey
 } from '../../../../data/fixtures/headers'
-import {
-  validProject,
-  validProjectNotInDB
-} from '../../../../data/fixtures/projects'
+import { validProject } from '../../../../data/fixtures/projects'
 import {
   ContainerRole,
   ContainerType
 } from '../../../../../src/Models/ContainerModels'
-import {
-  ValidationError,
-  RecordNotFoundError
-} from '../../../../../src/Errors'
 import { BucketKey } from '../../../../../src/Config/ConfigurationTypes'
 import {
   validUser1,
@@ -101,7 +93,7 @@ afterAll(() => {
   db.bucket.disconnect()
 })
 
-jest.setTimeout(TEST_TIMEOUT)
+jest.setTimeout(180000)
 
 describe('ContainerService - createProject', () => {
   beforeEach(async () => {
@@ -258,48 +250,6 @@ describe('containerService - addContainerUser', () => {
     return expect(didAdd).toBeTruthy()
   })
 
-  test('should fail to add user if the role is invalid', () => {
-    const containerService =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
-
-    return expect(
-      containerService.addContainerUser(
-        validProject._id,
-        'Goalkeeper' as any,
-        validUser1._id,
-        validUser2
-      )
-    ).rejects.toThrowError(ValidationError)
-  })
-
-  test("should fail to add the user if user's id is wrong", () => {
-    const containerService =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
-
-    return expect(
-      containerService.addContainerUser(
-        validProject._id,
-        ContainerRole.Writer,
-        'wrong-id',
-        validUser2
-      )
-    ).rejects.toThrowError(ValidationError)
-  })
-
-  test('should fail to add the user if the project does not exist in the db', () => {
-    const containerService =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
-
-    return expect(
-      containerService.addContainerUser(
-        validProjectNotInDB._id,
-        ContainerRole.Writer,
-        validUser1._id,
-        validUser2
-      )
-    ).rejects.toThrowError(RecordNotFoundError)
-  })
-
   test('should add user to a project', async () => {
     const loginResponse: supertest.Response = await basicLogin(
       validBody,
@@ -394,110 +344,6 @@ describe('containerService - manageUserRole', () => {
     )
   })
 
-  test('manageUserRole should fail if the managedUserId does not exists in the db', async () => {
-    const loginResponse: supertest.Response = await basicLogin(
-      validBody,
-      ValidHeaderWithApplicationKey
-    )
-
-    expect(loginResponse.status).toBe(HttpStatus.OK)
-
-    const authHeader = authorizationHeader(loginResponse.body.token)
-    const response: supertest.Response = await manageUserRole(
-      {
-        ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
-      },
-      {
-        managedUserId: `User|${chance.string()}`,
-        newRole: chance.string()
-      },
-      {
-        containerID: 'MPProject:valid-project-id-5'
-      }
-    )
-
-    expect(response.status).toBe(HttpStatus.BAD_REQUEST)
-  })
-
-  test('manageUserRole should fail if the project does not exist in the db', async () => {
-    const loginResponse: supertest.Response = await basicLogin(
-      validBody,
-      ValidHeaderWithApplicationKey
-    )
-
-    expect(loginResponse.status).toBe(HttpStatus.OK)
-
-    const authHeader = authorizationHeader(loginResponse.body.token)
-    const response: supertest.Response = await manageUserRole(
-      {
-        ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
-      },
-      {
-        managedUserId: 'User|valid-user@manuscriptsapp.com',
-        newRole: chance.string()
-      },
-      {
-        containerID: 'MPProject:Id'
-      }
-    )
-
-    expect(response.status).toBe(HttpStatus.NOT_FOUND)
-  })
-
-  test('manageUserRole should fail if the user is not an owner', async () => {
-    const loginResponse: supertest.Response = await basicLogin(
-      validBody,
-      ValidHeaderWithApplicationKey
-    )
-
-    expect(loginResponse.status).toBe(HttpStatus.OK)
-
-    const authHeader = authorizationHeader(loginResponse.body.token)
-    const response: supertest.Response = await manageUserRole(
-      {
-        ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
-      },
-      {
-        managedUserId: 'User|valid-user@manuscriptsapp.com',
-        newRole: chance.string()
-      },
-      {
-        containerID: `MPProject:${validProject._id}`
-      }
-    )
-
-    expect(response.status).toBe(HttpStatus.FORBIDDEN)
-  })
-
-  test('manageUserRole should fail if the managedUser is not in the project', async () => {
-    const loginResponse: supertest.Response = await basicLogin(
-      validBody,
-      ValidHeaderWithApplicationKey
-    )
-
-    expect(loginResponse.status).toBe(HttpStatus.OK)
-
-    const authHeader = authorizationHeader(loginResponse.body.token)
-    const response: supertest.Response = await manageUserRole(
-      {
-        ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
-      },
-      {
-        managedUserId: 'User|valid-user-3@manuscriptsapp.com',
-        newRole: chance.string()
-      },
-      {
-        containerID: 'MPProject:valid-project-id-5'
-      }
-    )
-
-    expect(response.status).toBe(HttpStatus.BAD_REQUEST)
-  })
-
   test('manageUserRole successfully add the managedUser if the secret is provided', async () => {
     const loginResponse: supertest.Response = await basicLogin(
       validBody,
@@ -549,32 +395,6 @@ describe('containerService - manageUserRole', () => {
     )
 
     expect(response.status).toBe(HttpStatus.FORBIDDEN)
-  })
-
-  test('manageUserRole should fail if the new role is not valid', async () => {
-    const loginResponse: supertest.Response = await basicLogin(
-      validBody,
-      ValidHeaderWithApplicationKey
-    )
-
-    expect(loginResponse.status).toBe(HttpStatus.OK)
-
-    const authHeader = authorizationHeader(loginResponse.body.token)
-    const response: supertest.Response = await manageUserRole(
-      {
-        ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
-      },
-      {
-        managedUserId: 'User|valid-user-3@manuscriptsapp.com',
-        newRole: 'programmer'
-      },
-      {
-        containerID: 'MPProject:valid-project-id-4'
-      }
-    )
-
-    expect(response.status).toBe(HttpStatus.BAD_REQUEST)
   })
 
   test('should successfully update user role from writer to viewer', async () => {
@@ -758,50 +578,6 @@ describe('ContainerService - getArchive', () => {
     )
   })
 
-  test('should fail if the project not found', async () => {
-    const loginResponse: supertest.Response = await basicLogin(
-      validBody,
-      ValidHeaderWithApplicationKey
-    )
-
-    expect(loginResponse.status).toBe(HttpStatus.OK)
-
-    const authHeader = authorizationHeader(loginResponse.body.token)
-    const response: supertest.Response = await getArchive(
-      {
-        ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
-      },
-      {},
-      {
-        containerID: 'MPProject:Id'
-      }
-    )
-    expect(response.status).toBe(HttpStatus.NOT_FOUND)
-  })
-
-  test('should fail user not contributor on project', async () => {
-    const loginResponse: supertest.Response = await basicLogin(
-      validBody,
-      ValidHeaderWithApplicationKey
-    )
-
-    expect(loginResponse.status).toBe(HttpStatus.OK)
-
-    const authHeader = authorizationHeader(loginResponse.body.token)
-    const response: supertest.Response = await getArchive(
-      {
-        ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
-      },
-      {},
-      {
-        containerID: 'MPProject:valid-project-id'
-      }
-    )
-    expect(response.status).toBe(HttpStatus.BAD_REQUEST)
-  })
-
   test('should successfully get archive', async () => {
     const loginResponse: supertest.Response = await basicLogin(
       validBody,
@@ -861,50 +637,6 @@ describe('ContainerService - accessToken', () => {
       },
       BucketKey.Data
     )
-  })
-
-  test('should fail if the user not a contributor in the project', async () => {
-    const loginResponse: supertest.Response = await basicLogin(
-      validBody,
-      ValidHeaderWithApplicationKey
-    )
-
-    expect(loginResponse.status).toBe(HttpStatus.OK)
-
-    const authHeader = authorizationHeader(loginResponse.body.token)
-    const response: supertest.Response = await accessToken(
-      {
-        ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
-      },
-      {
-        containerID: 'MPProject:valid-project-id',
-        scope: 'jupyterhub'
-      }
-    )
-    expect(response.status).toBe(HttpStatus.BAD_REQUEST)
-  })
-
-  test('should fail if the scope is invalid', async () => {
-    const loginResponse: supertest.Response = await basicLogin(
-      validBody,
-      ValidHeaderWithApplicationKey
-    )
-
-    expect(loginResponse.status).toBe(HttpStatus.OK)
-
-    const authHeader = authorizationHeader(loginResponse.body.token)
-    const response: supertest.Response = await accessToken(
-      {
-        ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
-      },
-      {
-        containerID: 'MPProject:valid-project-id-2',
-        scope: 'foobars'
-      }
-    )
-    expect(response.status).toBe(HttpStatus.BAD_REQUEST)
   })
 
   test('should return the access token', async () => {
@@ -1024,57 +756,6 @@ describe('ContainerService - addProductionNote', () => {
     expect(addProductionNoteResponse.body.id).toBeTruthy()
   })
 
-  test('should fail to addProductionNote if target is invalid', async () => {
-    const loginResponse: supertest.Response = await basicLogin(
-      validBody2,
-      ValidHeaderWithApplicationKey
-    )
-    expect(loginResponse.status).toBe(HttpStatus.OK)
-
-    const authHeader = authorizationHeader(loginResponse.body.token)
-    const addProductionNoteResponse: supertest.Response = await addProductionNote(
-      {
-        ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
-      },
-      {
-        containerID: `MPProject:valid-project-id-11`,
-        manuscriptID: validManuscript1._id
-      },{
-        content: 'Test content (reply)',
-        target: 'invalidTarget',
-        connectUserID: 'valid-connect-user-6-id',
-        source: 'DASHBOARD'
-      }
-    )
-    expect(addProductionNoteResponse.status).toBe(HttpStatus.NOT_FOUND)
-  })
-
-  test('should fail if user is not contributor', async () => {
-    const loginResponse: supertest.Response = await basicLogin(
-      validBody2,
-      ValidHeaderWithApplicationKey
-    )
-    expect(loginResponse.status).toBe(HttpStatus.OK)
-
-    const authHeader = authorizationHeader(loginResponse.body.token)
-    const addProductionNoteResponse: supertest.Response = await addProductionNote(
-      {
-        ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
-      },
-      {
-        containerID: `MPProject:valid-project-id-9`,
-        manuscriptID: validManuscript1._id
-      },{
-        content: 'Test content (reply)',
-        connectUserID: 'valid-connect-user-6-id',
-        source: 'DASHBOARD'
-      }
-    )
-    expect(addProductionNoteResponse.status).toBe(HttpStatus.BAD_REQUEST)
-  })
-
   test('addProductionNote with target', async () => {
     const loginResponse: supertest.Response = await basicLogin(
       validBody2,
@@ -1109,7 +790,7 @@ describe('ContainerService - createManuscript', () => {
   beforeEach(async () => {
     await drop()
     await dropBucket(BucketKey.Data)
-    await seed({ users: true, applications: true, projects: true, manuscript: true, manuscriptNotes: true })
+    await seed({ users: true, applications: true, projects: true, manuscript: true, manuscriptNotes: true, templates: true })
     await DIContainer.sharedContainer.syncService.createGatewayContributor(
       {
         _id: `User|${validBody2.email}`,
@@ -1118,29 +799,6 @@ describe('ContainerService - createManuscript', () => {
       },
       BucketKey.Data
     )
-  })
-
-  test('should fail if template not found', async () => {
-    const loginResponse: supertest.Response = await basicLogin(
-      validBody2,
-      ValidHeaderWithApplicationKey
-    )
-    expect(loginResponse.status).toBe(HttpStatus.OK)
-
-    const authHeader = authorizationHeader(loginResponse.body.token)
-    const response: supertest.Response = await createManuscript(
-      {
-        ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
-      },
-      {
-        containerID: `MPProject:valid-project-id-11`
-      },
-      {
-        templateId: 'MPManuscriptTemplate:invalid-template'
-      }
-    )
-    expect(response.status).toBe(HttpStatus.NOT_FOUND)
   })
 
   test('should create a manuscript', async () => {
@@ -1166,7 +824,7 @@ describe('ContainerService - createManuscript', () => {
     ).toBeTruthy()
   })
 
-  test('should fail if user is not a contributor', async () => {
+  test('should create a manuscript', async () => {
     const loginResponse: supertest.Response = await basicLogin(
       validBody2,
       ValidHeaderWithApplicationKey
@@ -1174,42 +832,22 @@ describe('ContainerService - createManuscript', () => {
     expect(loginResponse.status).toBe(HttpStatus.OK)
 
     const authHeader = authorizationHeader(loginResponse.body.token)
-
-    const response = await createManuscript(
+    const response: supertest.Response = await createManuscript(
       {
         ...ValidContentTypeAcceptJsonHeader,
         ...authHeader
       },
       {
-        containerID: `MPProject:valid-project-id-2`,
-        manuscriptID: validManuscript._id
-      }
-    )
-
-    return expect(response.status).toBe(HttpStatus.BAD_REQUEST)
-  })
-
-  test('should fail if manuscript with the same id exists', async () => {
-    const loginResponse: supertest.Response = await basicLogin(
-      validBody2,
-      ValidHeaderWithApplicationKey
-    )
-    expect(loginResponse.status).toBe(HttpStatus.OK)
-
-    const authHeader = authorizationHeader(loginResponse.body.token)
-
-    const response = await createManuscript(
-      {
-        ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
+        containerID: `MPProject:valid-project-id-11`
       },
       {
-        containerID: `MPProject:valid-project-id-11`,
-        manuscriptID: validManuscript._id
+        templateId: 'MPManuscriptTemplate:valid-template-1'
       }
     )
-
-    return expect(response.status).toBe(HttpStatus.CONFLICT)
+    expect(response.status).toBe(HttpStatus.OK)
+    expect(
+      JSON.parse(response.text).id.startsWith('MPManuscript')
+    ).toBeTruthy()
   })
 })
 
@@ -1302,29 +940,6 @@ describe('ContainerService - updateExternalFile', () => {
     )
   })
 
-  test('should should fail if id not found', async () => {
-    const loginResponse: supertest.Response = await basicLogin(
-      validBody2,
-      ValidHeaderWithApplicationKey
-    )
-    expect(loginResponse.status).toBe(HttpStatus.OK)
-
-    const authHeader = authorizationHeader(loginResponse.body.token)
-    const { _id, ...noId } = externalFile
-    const updateExternalFileResponse: supertest.Response = await updateExternalFile(
-      {
-        ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
-      },
-      {
-        content: noId
-      },{
-        externalFileID: 'random-id'
-      }
-    )
-    expect(updateExternalFileResponse.status).toBe(HttpStatus.NOT_FOUND)
-  })
-
   test('should update external files', async () => {
     const loginResponse: supertest.Response = await basicLogin(
       validBody2,
@@ -1397,22 +1012,4 @@ describe('ContainerService - getCorrectionStatus', () => {
     expect(response.status).toBe(HttpStatus.NO_CONTENT)
   })
 
-  test('should fail if user is not owner', async () => {
-    const loginResponse: supertest.Response = await basicLogin(
-      validBody2,
-      ValidHeaderWithApplicationKey
-    )
-    expect(loginResponse.status).toBe(HttpStatus.OK)
-    const authHeader = authorizationHeader(loginResponse.body.token)
-    const response: supertest.Response = await getCorrectionStatus(
-      {
-        ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
-      },
-      {
-        containerID: 'MPProject:valid-project-id-2'
-      }
-    )
-    expect(response.status).toBe(HttpStatus.BAD_REQUEST)
-  })
 })

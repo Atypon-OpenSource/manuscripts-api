@@ -23,8 +23,6 @@ import { GOOGLE_AUTH_URI } from '../../../../../data/fixtures/misc'
 import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
 import {
   validGoogleRequestWithHeader,
-  invalidGoogleRequestWithHeaderNoDeviceId,
-  invalidGoogleRequestWithHeaderNoAppId,
   validGoogleRequestNoHeaders
 } from '../../../../../data/fixtures/requests'
 import { SeedOptions } from '../../../../../../src/DataAccess/Interfaces/SeedOptions'
@@ -54,24 +52,6 @@ describe('Google Login - GET api/v1/auth/google', () => {
       expect.stringContaining(GOOGLE_AUTH_URI)
     )
     expect(response.status).toBe(HttpStatus.MOVED_TEMPORARILY)
-  })
-
-  test('should fail if query is missing deviceId', async () => {
-    const response: supertest.Response = await googleLogin(
-      invalidGoogleRequestWithHeaderNoDeviceId.headers,
-      {}
-    )
-
-    expect(response.status).toBe(HttpStatus.BAD_REQUEST)
-  })
-
-  test('should fail if query is missing app ID ', async () => {
-    const response: supertest.Response = await googleLogin(
-      invalidGoogleRequestWithHeaderNoAppId.headers,
-      invalidGoogleRequestWithHeaderNoAppId.query
-    )
-
-    expect(response.status).toBe(HttpStatus.UNAUTHORIZED)
   })
 
   test('should redirect to google auth portal when the app ID is included in the query', async () => {

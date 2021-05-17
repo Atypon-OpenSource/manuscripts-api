@@ -64,28 +64,4 @@ describe('SubmissionService - updateStatus', () => {
 
     expect(submission!.status).toEqual(SubmissionStatus.SUCCESS)
   })
-
-  test('updateStatus should fail if the submission does not exist', async () => {
-    const response: supertest.Response = await updateStatus(
-      ValidContentTypeAcceptJsonHeader,
-      {
-        eventKey: SubmissionStatus.SUCCESS
-      },
-      { id: 'MPSubmission:invalid-submission-id' }
-    )
-
-    expect(response.status).toBe(HttpStatus.NOT_FOUND)
-  })
-
-  test('updateStatus should fail if the status is invalid', async () => {
-    const response: supertest.Response = await updateStatus(
-      ValidContentTypeAcceptJsonHeader,
-      {
-        eventKey: 'confirmed'
-      },
-      { id: 'MPSubmission:valid-submission-id' }
-    )
-
-    expect(response.status).toBe(HttpStatus.BAD_REQUEST)
-  })
 })

@@ -36,9 +36,6 @@ import { SingleUseTokenQueryCriteria } from '../../../../../src/DataAccess/Inter
 import { SingleUseToken, SingleUseTokenType } from '../../../../../src/Models/SingleUseTokenModels'
 import {
   ValidContentTypeAcceptJsonHeader,
-  EmptyAcceptJsonHeader,
-  EmptyContentTypeAcceptJsonHeader,
-  InValidAcceptJsonHeader,
   ValidContentTypeAcceptWithCharsetJsonHeader, ValidHeaderWithApplicationKey
 } from '../../../../data/fixtures/headers'
 import { DIContainer } from '../../../../../src/DIContainer/DIContainer'
@@ -90,72 +87,6 @@ describe('UserRegistrationService - signup', () => {
       )
 
     expect(response.status).toBe(HttpStatus.NO_CONTENT)
-  })
-
-  test('should fail if email is empty', async () => {
-
-    const response: supertest.Response = await signup(
-      { name: 'valid-user-3',
-        email: '',
-        password: '12345678'
-      },
-      ValidContentTypeAcceptJsonHeader
-    )
-
-    expect(response.status).toBe(HttpStatus.BAD_REQUEST)
-  })
-
-  test('should fail if password is empty', async () => {
-
-    const response: supertest.Response = await signup(
-      { name: 'valid-user-3',
-        email: 'valid-user@manuscriptsapp.com',
-        password: ''
-      },
-      ValidContentTypeAcceptJsonHeader
-    )
-
-    expect(response.status).toBe(HttpStatus.BAD_REQUEST)
-  })
-
-  test('should fail if name is empty', async () => {
-
-    const response: supertest.Response = await signup(
-      { name: '',
-        email: 'valid-user@manuscriptsapp.com',
-        password: '12345678'
-      },
-      ValidContentTypeAcceptJsonHeader
-    )
-
-    expect(response.status).toBe(HttpStatus.BAD_REQUEST)
-  })
-
-  test('ensures API does not work if Content-Type & Accept headers not sent', async () => {
-    const response: supertest.Response = await signup(
-      validNewUserCredentials,
-        EmptyContentTypeAcceptJsonHeader
-      )
-
-    expect(response.status).toBe(HttpStatus.BAD_REQUEST)
-  })
-
-  test('ensures API does not work if Accept header not sent', async () => {
-    const response: supertest.Response = await signup(
-      validNewUserCredentials,
-        EmptyAcceptJsonHeader
-      )
-
-    expect(response.status).toBe(HttpStatus.BAD_REQUEST)
-  })
-
-  test('ensures API does not work if Accept header is invalid', async () => {
-    const response: supertest.Response = await signup(
-      validNewUserCredentials,
-      InValidAcceptJsonHeader
-    )
-
-    expect(response.status).toBe(HttpStatus.BAD_REQUEST)
   })
 
   test('ensures signup API does work if Accept and Content-Type headers has charset=UTF-8', async () => {

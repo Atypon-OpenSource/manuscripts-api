@@ -24,14 +24,6 @@ export const validProject: ProjectLike = {
   viewers: []
 }
 
-export const validProjectRequest: ProjectLike = {
-  _id: 'valid-project-id-request',
-  objectType: 'MPProject',
-  owners: ['User_valid-user@manuscriptsapp.com'],
-  writers: [],
-  viewers: ['User_valid-user-3@manuscriptsapp.com']
-}
-
 export const validProjectForMemento: ProjectLike = {
   _id: 'valid-project-id-memento',
   objectType: 'MPProject',
@@ -104,19 +96,6 @@ export const validProjectNotInDB: ProjectLike = {
   owners: ['User_test'],
   writers: [],
   viewers: []
-}
-
-export const validProjectForRemoveTest: ProjectLike = {
-  _id: 'valid-project-for-remove-test',
-  objectType: 'MPProject',
-  owners: ['User_test'],
-  writers: [],
-  viewers: []
-}
-
-export const invalidTypeProject = {
-  objectType: 'MPAnything',
-  _id: 'valid-id-2'
 }
 
 export const validProject7: ProjectLike = {

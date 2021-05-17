@@ -1,7 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`UserRegistrationService - signup should fail if verified user exists 1`] = `
-Object {
-  "error": "{\\"statusCode\\":409,\\"existingValue\\":{\\"_id\\":\\"User|valid-user@manuscriptsapp.com\\",\\"name\\":\\"Valid System User\\",\\"email\\":\\"valid-user@manuscriptsapp.com\\",\\"connectUserID\\":\\"valid-connect-user-id\\"},\\"name\\":\\"ConflictingRecordError\\"}",
-}
-`;
