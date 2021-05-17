@@ -31,4 +31,5 @@ export interface SeedOptions {
   externalFile?: boolean
   corrections?: boolean
   templates?: boolean
+  snapshots?: boolean
 }

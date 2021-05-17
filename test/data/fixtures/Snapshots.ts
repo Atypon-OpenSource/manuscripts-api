@@ -1,5 +1,5 @@
 /*!
- * © 2020 Atypon Systems LLC
+ * © 2021 Atypon Systems LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,10 @@
  * limitations under the License.
  */
 
-import { Model } from '@manuscripts/manuscripts-json-schema'
+import { SnapshotLike } from '../../../src/DataAccess/Interfaces/Models'
 
-export interface IShacklesService {
-  getSnapshot (
-    s3Id: string,
-    token: string
-  ): Promise<{ version: string, data: Model[] | null }>
-  createSnapshot (
-    archive: Buffer,
-    containerID: string
-  ): Promise<any>
+export const validSnapshot: SnapshotLike = {
+  containerID: 'MPProject:valid-project-id',
+  _id: 'MPSnapshot:valid-snapshot',
+  objectType: 'MPSnapshot'
 }

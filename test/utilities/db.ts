@@ -40,6 +40,7 @@ import { manuscriptNoteList } from '../data/dump/manuscriptNotes'
 import { externalFileList } from '../data/dump/externalFilesList'
 import { correctionList } from '../data/dump/correctionList'
 import { templates } from '../data/dump/templates'
+import { snapshotList } from '../data/dump/SnapshotList'
 
 async function createUsers (): Promise<void> {
   const { userRepository, userEmailRepository } = DIContainer.sharedContainer
@@ -190,6 +191,15 @@ async function createTemplates (): Promise<void> {
   }
 }
 
+async function createSnapshot (): Promise<void> {
+  for (const template of snapshotList) {
+    await DIContainer.sharedContainer.snapshotRepository.create(
+      _.clone(template),
+      {}
+    )
+  }
+}
+
 let _db: any = null
 export async function testDatabase (
   enableActivityTracking: boolean = false,
@@ -301,6 +311,10 @@ export async function seed (options: SeedOptions): Promise<void> {
     storagePromises.push(createTemplates())
   }
 
+  if (options.snapshots) {
+    storagePromises.push(createSnapshot())
+  }
+
   await Promise.all(storagePromises)
 }
 
@@ -313,7 +327,8 @@ const syncGatewayRepositories = new Set<string>([
   'MPContainerRequest',
   'MPSubmission',
   'MPManuscriptNote',
-  'MPCorrection'
+  'MPCorrection',
+  'MPSnapshot'
 ])
 
 const derivedBucketRepositories = new Set<string>([
@@ -350,6 +365,12 @@ export async function dropBucket (bucketKey: BucketKey): Promise<void> {
   await purge(bucketKey, payload)
 
   payload = templates.reduce((acc: any, doc: any) => {
+    acc[doc._id] = ['*']
+    return acc
+  }, {})
+  await purge(bucketKey, payload)
+
+  payload = snapshotList.reduce((acc: any, doc: any) => {
     acc[doc._id] = ['*']
     return acc
   }, {})

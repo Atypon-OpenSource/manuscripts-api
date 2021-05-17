@@ -19,7 +19,9 @@ import '../../../../../utilities/dbMock'
 import { ContainerService } from '../../../../../../src/DomainServices/Container/ContainerService'
 import { ContainerRole, ContainerType } from '../../../../../../src/Models/ContainerModels'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
-import { RecordNotFoundError } from '../../../../../../src/Errors'
+import { InvalidCredentialsError, RecordNotFoundError, ValidationError } from '../../../../../../src/Errors'
+import { validProject } from '../../../../../data/fixtures/projects'
+import { log } from '../../../../../../src/Utilities/Logger'
 
 beforeEach(() => {
   (DIContainer as any)._sharedContainer = null
@@ -245,5 +247,44 @@ describe('ContainerService - isPublic', () => {
         writers: ['User_validId']
       }as any)
     ).toBeFalsy()
+  })
+})
+
+describe('ContainerService - getProject', () => {
+  test('Should fail if token is not provided', async () => {
+    const userService = DIContainer.sharedContainer.userService
+    const containerService: any = DIContainer.sharedContainer.containerService[ContainerType.project]
+    userService.authenticateUser = jest.fn()
+    await expect(containerService.getProject('userId', 'containerId', 'manuscriptId', null)).rejects.toThrow(InvalidCredentialsError)
+  })
+
+  test('should fail if user don\'t have access to project', async () => {
+    const userService = DIContainer.sharedContainer.userService
+    const containerService: any = DIContainer.sharedContainer.containerService[ContainerType.project]
+    userService.authenticateUser = jest.fn()
+    containerService.checkUserContainerAccess = jest.fn(() => { return false })
+    await expect(containerService.getProject('userId', 'containerId', 'manuscriptId', 'token')).rejects.toThrow(ValidationError)
+  })
+
+  test('Should fail if no project resources found', async () => {
+    const userService = DIContainer.sharedContainer.userService
+    const containerService: any = DIContainer.sharedContainer.containerService[ContainerType.project]
+    const projectRepository = DIContainer.sharedContainer.projectRepository
+    userService.authenticateUser = jest.fn()
+    projectRepository.getContainerResources = jest.fn()
+    containerService.checkUserContainerAccess = jest.fn(() => { return true })
+    await expect(containerService.getProject('userId', 'containerId', 'manuscriptId', 'token')).rejects.toThrow(Error)
+  })
+
+  test('Should return true if the project is public', async () => {
+    const userService = DIContainer.sharedContainer.userService
+    const containerService: any = DIContainer.sharedContainer.containerService[ContainerType.project]
+    const projectRepository: any = DIContainer.sharedContainer.projectRepository
+    userService.authenticateUser = jest.fn()
+    projectRepository.getContainerResources = jest.fn(() => [ validProject ])
+    containerService.checkUserContainerAccess = jest.fn(() => { return true })
+    const result = await containerService.getProject('userId', 'containerId', 'manuscriptId', 'token')
+    log.debug(JSON.stringify(result))
+    expect(result).toBeTruthy()
   })
 })

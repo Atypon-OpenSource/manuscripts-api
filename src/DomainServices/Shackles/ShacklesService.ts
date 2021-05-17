@@ -18,9 +18,22 @@ import { IShacklesService } from './IShacklesService'
 import FormData from 'form-data'
 import fetch from 'node-fetch'
 import { RequestError } from '../../Errors'
+import JSZip from 'jszip'
 
 export class ShacklesService implements IShacklesService {
   constructor (private baseurl: string) {}
+
+  public async getSnapshot (key: string, token: string) {
+    const headers = {
+      'authorization': `Bearer ${token}`,
+      'responseType': 'arraybuffer'
+    }
+    const res = await fetch(`${this.baseurl}/api/v1/snapshot/${key}`, { method: 'GET', headers })
+    const data = await res.arrayBuffer()
+    const zip = await new JSZip().loadAsync(data)
+    const json = await zip.files['index.manuscript-json'].async('text')
+    return JSON.parse(json)
+  }
 
   public async createSnapshot (archive: Buffer, token: string) {
     const form = new FormData()

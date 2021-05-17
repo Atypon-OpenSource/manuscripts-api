@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-import { Model } from '@manuscripts/manuscripts-json-schema'
+import { SnapshotLike } from '../../../src/DataAccess/Interfaces/Models'
 
-export interface IShacklesService {
-  getSnapshot (
-    s3Id: string,
-    token: string
-  ): Promise<{ version: string, data: Model[] | null }>
-  createSnapshot (
-    archive: Buffer,
-    containerID: string
-  ): Promise<any>
-}
+export const snapshotList: SnapshotLike[] = []
+
+snapshotList.push({
+  _id: 'MPSnapshot:valid-snapshot-id-1',
+  objectType: 'MPSnapshot',
+  containerID: 'MPProject:valid-project-id',
+  sessionID: 'test'
+})

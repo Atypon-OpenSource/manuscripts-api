@@ -26,7 +26,8 @@ import {
   ExternalFile,
   Manuscript,
   Correction,
-  ManuscriptTemplate
+  ManuscriptTemplate,
+  Snapshot
 } from '@manuscripts/manuscripts-json-schema'
 
 export type ProjectLike = Pick<
@@ -87,4 +88,9 @@ export type CorrectionLike = Pick<
 export type ManuscriptTemplateLike = Pick<
   ManuscriptTemplate,
   Exclude<keyof ManuscriptTemplate, 'createdAt' | 'updatedAt'>
+  >
+
+export type SnapshotLike = Pick<
+  Snapshot,
+  Exclude<keyof Snapshot, 'createdAt' | 'updatedAt'>
   >

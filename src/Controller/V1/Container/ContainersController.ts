@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { Correction, ExternalFile, ObjectTypes, Snapshot } from '@manuscripts/manuscripts-json-schema'
 import { Request } from 'express'
 import { isString } from '../../../util'
 
@@ -28,7 +29,6 @@ import { ContainedBaseController, getContainerType } from '../../ContainedBaseCo
 import { config } from '../../../Config/Config'
 import { RSA_JWK } from 'pem-jwk'
 import { ContainerService } from '../../../DomainServices/Container/ContainerService'
-import { ExternalFile } from '@manuscripts/manuscripts-json-schema'
 
 export class ContainersController extends ContainedBaseController
   implements IContainersController {
@@ -348,6 +348,10 @@ export class ContainersController extends ContainedBaseController
     }
     let token = authorizationBearerToken(req)
 
+    if (await this.hasPendingCorrections(req)) {
+      throw new Error('Cannot create a snapshot when there are pending corrections')
+    }
+
     const getAttachments = true
     const includeExt = false
     const allowOrphanedDocs = false
@@ -367,5 +371,37 @@ export class ContainersController extends ContainedBaseController
     return DIContainer.sharedContainer.containerService[
       containerType
       ].saveSnapshot(res.key, containerID, userID, name)
+  }
+
+  async hasPendingCorrections (req: Request) {
+    const userID = req.user._id
+    const { containerID, manuscriptID } = req.params
+    const containerType = getContainerType(containerID)
+    let token = authorizationBearerToken(req)
+
+    const projectJSON = await DIContainer.sharedContainer.containerService[containerType].getProject(userID, containerID, manuscriptID, token)
+
+    const snapshots = projectJSON && projectJSON.length
+      ? projectJSON
+        .filter(doc => doc.objectType === ObjectTypes.Snapshot)
+        .sort((a, b) => b.createdAt - a.createdAt)
+      : []
+
+    const latestSnapshot = snapshots.length ? (snapshots[0] as Snapshot) : null
+
+    if (!latestSnapshot) {
+      throw new Error('No snapshot associated with project')
+    }
+
+    const pendingCorrections = (projectJSON && projectJSON.length
+      ? projectJSON
+        .filter((doc) =>
+          doc.objectType === ObjectTypes.Correction &&
+          (doc as Correction).snapshotID === latestSnapshot._id &&
+          (doc as Correction).status !== 'proposed'
+        )
+      : []) as Correction[]
+
+    return !!pendingCorrections.length
   }
 }

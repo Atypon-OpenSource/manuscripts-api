@@ -430,6 +430,30 @@ export class ContainerService implements IContainerService {
     return this.makeArchive(containerID, manuscriptID, options)
   }
 
+  public async getProject (userID: string, containerID: string, manuscriptID: string, token: string) {
+    if (!token) {
+      throw new InvalidCredentialsError('Token not supplied.')
+    }
+
+    await this.userService.authenticateUser(token)
+    const canAccess = await this.checkUserContainerAccess(userID, containerID)
+    if (!canAccess) {
+      throw new ValidationError('User must be a contributor in the container', containerID)
+    }
+
+    const projectResources = await this.containerRepository.getContainerResources(
+      containerID,
+      manuscriptID,
+      false
+    )
+
+    if (!projectResources) {
+      throw new Error('Project is empty')
+    }
+
+    return projectResources
+  }
+
   private rewriteAttachmentFilename (originalName: string, mimeType: string, includeExt: boolean) {
     const updatedName = originalName.replace(':', '_')
     if (includeExt) {

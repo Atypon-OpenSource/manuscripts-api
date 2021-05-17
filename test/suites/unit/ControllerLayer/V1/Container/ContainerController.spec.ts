@@ -28,6 +28,8 @@ import { validProject } from '../../../../../data/fixtures/projects'
 import { validJWTToken } from '../../../../../data/fixtures/authServiceUser'
 import { UserService } from '../../../../../../src/DomainServices/User/UserService'
 import { externalFile, externalFile1 } from '../../../../../data/fixtures/ExternalFiles'
+import { validSnapshot } from '../../../../../data/fixtures/Snapshots'
+import { validCorrection } from '../../../../../data/fixtures/Corrections'
 
 jest.setTimeout(TEST_TIMEOUT)
 
@@ -991,10 +993,52 @@ describe('ContainerController - createSnapshot', () => {
     await expect(controller.createSnapshot(req)).rejects.toThrow(ValidationError)
   })
 
+  test('should fail if no snapshot were found', async () => {
+    const containerService: any = DIContainer.sharedContainer.containerService[ContainerType.project]
+    containerService.getProject = jest.fn(() => { return [ validProject ] })
+    containerService.accessToken = jest.fn()
+    containerService.saveSnapshot = jest.fn()
+    const req: any = {
+      params: {
+        containerID: 'MPProject:valid-project-id'
+      },
+      headers: {
+        authorization: `Bearer validToken`
+      },
+      body: {},
+      user: {
+        _id: 'foo'
+      }
+    }
+    const controller = new ContainersController()
+    await expect(controller.createSnapshot(req)).rejects.toThrow(Error)
+  })
+
+  test('should fail if there are pending corrections', async () => {
+    const containerService: any = DIContainer.sharedContainer.containerService[ContainerType.project]
+    containerService.getProject = jest.fn(() => { return [ validProject, validSnapshot, validCorrection ] })
+    containerService.accessToken = jest.fn()
+    const req: any = {
+      params: {
+        containerID: 'MPProject:valid-project-id'
+      },
+      headers: {
+        authorization: `Bearer validToken`
+      },
+      body: {},
+      user: {
+        _id: 'foo'
+      }
+    }
+    const controller = new ContainersController()
+    await expect(controller.createSnapshot(req)).rejects.toThrow(Error)
+  })
+
   test('should call createSnapshot', async () => {
     const shacklesService: any = DIContainer.sharedContainer.shacklesService
     shacklesService.createSnapshot = jest.fn(() => Promise.resolve({ key: `somekey` }))
-    const containerService = DIContainer.sharedContainer.containerService[ContainerType.project]
+    const containerService: any = DIContainer.sharedContainer.containerService[ContainerType.project]
+    containerService.getProject = jest.fn(() => { return [ validProject, validSnapshot ] })
     containerService.getArchive = jest.fn()
     containerService.accessToken = jest.fn()
     containerService.saveSnapshot = jest.fn()
