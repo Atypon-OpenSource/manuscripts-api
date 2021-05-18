@@ -477,6 +477,11 @@ describe('Registration - connectSignup', () => {
     userRegistrationService.activityTrackingService = {
       createEvent: async () => {}
     }
+
+    userRegistrationService.userStatusRepository = {
+      create: async () => Promise.resolve({})
+    }
+
     const chance = new Chance()
     const cred: ConnectSignupCredentials = {
       email: chance.email(),

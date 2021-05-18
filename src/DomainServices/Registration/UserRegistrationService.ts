@@ -79,12 +79,7 @@ export class UserRegistrationService implements IUserRegistrationService {
 
     const newUser = await this.userRepository.create({ email, name, connectUserID }, {})
 
-    await Promise.all(
-      GATEWAY_BUCKETS.map(key =>
-        this.syncService.createGatewayAccount(newUser._id, key)
-      )
-    )
-    await this.syncService.createGatewayContributor(newUser, BucketKey.Data)
+    await this.createUserDetails(newUser, true)
 
     // tslint:disable-next-line: no-floating-promises
     this.activityTrackingService.createEvent(
@@ -128,24 +123,7 @@ export class UserRegistrationService implements IUserRegistrationService {
 
     const newUser = await this.userRepository.create({ email, name }, {})
 
-    await Promise.all(
-      GATEWAY_BUCKETS.map(key =>
-        this.syncService.createGatewayAccount(newUser._id, key)
-      )
-    )
-    await this.syncService.createGatewayContributor(newUser, BucketKey.Data)
-
-    await this.userStatusRepository.create(
-      {
-        _id: newUser._id,
-        blockUntil: null,
-        isVerified: skipVerification,
-        password: password ? await AuthService.createPassword(password) : '',
-        createdAt: new Date(),
-        deviceSessions: {}
-      },
-      {}
-    )
+    await this.createUserDetails(newUser, skipVerification, password)
 
     if (!skipVerification) {
       await this.sendAccountVerification(newUser)
@@ -162,6 +140,27 @@ export class UserRegistrationService implements IUserRegistrationService {
 
   private userEmailID (email: string) {
     return checksum(email, { algorithm: 'sha1' })
+  }
+
+  private async createUserDetails (user: User, skipVerification: boolean, password?: string) {
+    await Promise.all(
+      GATEWAY_BUCKETS.map(key =>
+        this.syncService.createGatewayAccount(user._id, key)
+      )
+    )
+    await this.syncService.createGatewayContributor(user, BucketKey.Data)
+
+    await this.userStatusRepository.create(
+      {
+        _id: user._id,
+        blockUntil: null,
+        isVerified: skipVerification,
+        password: password ? await AuthService.createPassword(password) : '',
+        createdAt: new Date(),
+        deviceSessions: {}
+      },
+      {}
+    )
   }
 
   private async handleUserExistence (user: User) {
