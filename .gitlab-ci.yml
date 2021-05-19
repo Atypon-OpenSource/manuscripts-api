@@ -50,6 +50,7 @@ docs:
     - npm ci
     - ./node_modules/spectacle-docs/bin/spectacle.js manuscripts-io-api-v1.yaml -t swagger
     - AWS_ACCESS_KEY_ID=${DOCS_S3_ACCESS_KEY} AWS_SECRET_ACCESS_KEY=${DOCS_S3_SECRET_ACCESS_KEY} AWS_DEFAULT_REGION=${DOCS_S3_REGION} aws s3 cp swagger s3://${DOCS_S3_SWAGGER_BUCKET} --recursive --include "*"
+    - AWS_ACCESS_KEY_ID=${DOCS_S3_ACCESS_KEY} AWS_SECRET_ACCESS_KEY=${DOCS_S3_SECRET_ACCESS_KEY} AWS_DEFAULT_REGION=${DOCS_S3_REGION} aws cloudfront create-invalidation --distribution-id ${SWAGGER_DISTRIBUTION_ID} --paths /index.html / '/*'
     - cd ../
     - npm ci
     - ./doc/node_modules/typedoc/bin/typedoc --out doc/api --includes './src'
