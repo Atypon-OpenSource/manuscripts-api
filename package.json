@@ -30,7 +30,7 @@
     "lint"
   ],
   "dependencies": {
-    "@manuscripts/manuscripts-json-schema": "^1.46.4",
+    "@manuscripts/manuscripts-json-schema": "^1.46.9",
     "@manuscripts/manuscripts-json-schema-utils": "^0.2.3",
     "archiver": "^5.0.2",
     "async-retry": "^1.2.1",

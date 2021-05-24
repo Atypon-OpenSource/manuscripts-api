@@ -25,7 +25,7 @@ correctionList.push({
   sessionID: 'test',
   objectType: 'MPCorrection',
   snapshotID: 'MPSnapshot:test-snap',
-  status: 'accepted',
+  status: { label: 'accepted', editorProfileID: 'MPUserProfile:valid-user-profile-1' },
   commitChangeID: 'MPCommit:123-123'
 })
 
@@ -36,7 +36,7 @@ correctionList.push({
   sessionID: 'test',
   objectType: 'MPCorrection',
   snapshotID: 'MPSnapshot:test-snap',
-  status: 'accepted',
+  status: { label: 'accepted', editorProfileID: 'MPUserProfile:valid-user-profile-1' },
   commitChangeID: 'MPCommit:123-123'
 })
 
@@ -47,7 +47,7 @@ correctionList.push({
   sessionID: 'test',
   objectType: 'MPCorrection',
   snapshotID: 'MPSnapshot:test-snap',
-  status: 'rejected',
+  status: { label: 'rejected', editorProfileID: 'MPUserProfile:valid-user-profile-1' },
   commitChangeID: 'MPCommit:123-123'
 })
 
@@ -58,7 +58,7 @@ correctionList.push({
   sessionID: 'test',
   objectType: 'MPCorrection',
   snapshotID: 'MPSnapshot:test-snap',
-  status: 'proposed',
+  status: { label: 'proposed', editorProfileID: 'MPUserProfile:valid-user-profile-1' },
   commitChangeID: 'MPCommit:123-123'
 })
 
@@ -69,6 +69,6 @@ correctionList.push({
   sessionID: 'test',
   objectType: 'MPCorrection',
   snapshotID: 'MPSnapshot:test-snap',
-  status: 'accepted',
+  status: { label: 'accepted', editorProfileID: 'MPUserProfile:valid-user-profile-1' },
   commitChangeID: 'MPCommit:123-123'
 })

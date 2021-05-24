@@ -398,7 +398,7 @@ export class ContainersController extends ContainedBaseController
         .filter((doc) =>
           doc.objectType === ObjectTypes.Correction &&
           (doc as Correction).snapshotID === latestSnapshot._id &&
-          (doc as Correction).status !== 'proposed'
+          (doc as Correction).status.label !== 'proposed'
         )
       : []) as Correction[]
 

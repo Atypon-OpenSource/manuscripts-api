@@ -41,7 +41,7 @@ class CorrectionRepository
   }
 
   public async getCorrectionStatus (containerID: string) {
-    let n1ql = `SELECT projects.status, META().id FROM ${
+    let n1ql = `SELECT projects.status.label, META().id FROM ${
       this.bucketName
     } WHERE containerID =$1 AND objectType = '${this.objectType}' AND _deleted IS MISSING`
     const statement = N1qlQuery.fromString(n1ql)
@@ -63,7 +63,7 @@ class CorrectionRepository
             )
           }
           const groupByStatus = results.reduce((objectsByKeyValue: any, obj: any) => {
-            const value = obj['status']
+            const value = obj['label']
             objectsByKeyValue[value] = (objectsByKeyValue[value] || []).concat(obj)
             return objectsByKeyValue
           }, {})
