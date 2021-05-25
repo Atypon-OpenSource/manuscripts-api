@@ -390,7 +390,7 @@ export class ContainersController extends ContainedBaseController
     const latestSnapshot = snapshots.length ? (snapshots[0] as Snapshot) : null
 
     if (!latestSnapshot) {
-      throw new Error('No snapshot associated with project')
+      return false
     }
 
     const pendingCorrections = (projectJSON && projectJSON.length
