@@ -23,6 +23,9 @@ export const validCorrection: CorrectionLike = {
   sessionID: 'test',
   objectType: 'MPCorrection',
   snapshotID: 'MPSnapshot:test-snap',
-  status: 'proposed',
+  status: {
+    label: 'proposed',
+    editorProfileID: ''
+  },
   commitChangeID: 'MPCommit:123-123'
 }
