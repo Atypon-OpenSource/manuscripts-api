@@ -18,7 +18,7 @@ import { SGRepository } from '../SGRepository'
 import { DatabaseError, NoBucketError } from '../../Errors'
 import { CouchbaseError, N1qlQuery } from 'couchbase'
 import { ManuscriptNote } from '@manuscripts/manuscripts-json-schema'
-import { databaseErrorMessage } from '../DatabaseErrorMessage'
+import { databaseErrorMessage } from '../DatabaseResponseFunctions'
 
 class ManuscriptNoteRepository extends SGRepository<any, any, any, any> {
   public get objectType (): string {

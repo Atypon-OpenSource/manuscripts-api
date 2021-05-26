@@ -32,7 +32,7 @@ import {
   BucketExistenceCheckError
 } from '../Errors'
 import { DesignDocumentName, DatabaseDesignDocument } from './DatabaseView'
-import { databaseErrorMessage } from './DatabaseErrorMessage'
+import { databaseErrorMessage } from './DatabaseResponseFunctions'
 import { Index, indices as getIndices } from './DatabaseIndices'
 
 /**

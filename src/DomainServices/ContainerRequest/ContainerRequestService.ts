@@ -36,15 +36,18 @@ export class ContainerRequestService implements IContainerRequestService {
     private containerRequestRepository: ContainerRequestRepository,
     private userProfileRepository: UserProfileRepository,
     private userRepository: IUserRepository,
-    private containerService: IContainerService,
+    private projectService: IContainerService,
+    private libraryService: IContainerService,
+    private libraryCollectionService: IContainerService,
     private emailService: EmailService
   ) {}
 
   public async create (user: User, containerID: string, role: ContainerRole) {
     const userID = user._id.replace('|', '_')
-    const container = await this.containerService.getContainer(containerID)
+    const containerService = this.containerService(containerID)
+    const container = await containerService.getContainer(containerID)
 
-    this.containerService.ensureValidRole(role)
+    containerService.ensureValidRole(role)
 
     const userProfileID = UserService.profileID(userID)
     const userProfile = await this.userProfileRepository.getById(userProfileID)
@@ -56,7 +59,7 @@ export class ContainerRequestService implements IContainerRequestService {
       )
     }
 
-    const currentUserRole = this.containerService.getUserRole(
+    const currentUserRole = containerService.getUserRole(
       container,
       userID
     )
@@ -133,11 +136,13 @@ export class ContainerRequestService implements IContainerRequestService {
       )
     }
 
-    const container = await this.containerService.getContainer(
+    const containerService = this.containerService(request.containerID)
+
+    const container = await containerService.getContainer(
       request.containerID
     )
 
-    if (!this.containerService.isOwner(container, acceptingUser._id)) {
+    if (!ContainerService.isOwner(container, acceptingUser._id)) {
       throw new UserRoleError(
         'Only owners can accept user requests.',
         acceptingUser._id
@@ -147,13 +152,13 @@ export class ContainerRequestService implements IContainerRequestService {
     const requestedRole = request.role as ContainerRole
 
     if (accept) {
-      const currentUserRole = this.containerService.getUserRole(
+      const currentUserRole = containerService.getUserRole(
         container,
         userID
       )
 
       if (!currentUserRole) {
-        await this.containerService.addContainerUser(
+        await containerService.addContainerUser(
           request.containerID,
           requestedRole,
           userID,
@@ -162,7 +167,7 @@ export class ContainerRequestService implements IContainerRequestService {
       } else if (
         ContainerService.compareRoles(requestedRole, currentUserRole) === 1
       ) {
-        await this.containerService.updateContainerUser(
+        await containerService.updateContainerUser(
           request.containerID,
           requestedRole,
           requestingUser
@@ -184,5 +189,22 @@ export class ContainerRequestService implements IContainerRequestService {
       requestedRole,
       accept
     )
+  }
+
+  /* istanbul ignore next */
+  private containerService (containerID: string) {
+    if (containerID.startsWith('MPProject')) {
+      return this.projectService
+    }
+
+    if (containerID.startsWith('MPLibrary')) {
+      return this.libraryService
+    }
+
+    if (containerID.startsWith('MPLibraryCollection')) {
+      return this.libraryCollectionService
+    }
+
+    throw new ValidationError('Invalid container id.', containerID)
   }
 }

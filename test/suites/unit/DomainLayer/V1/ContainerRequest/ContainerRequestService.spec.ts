@@ -38,7 +38,7 @@ describe('ContainerRequestService - create', () => {
     const containerRequestService: any =
       DIContainer.sharedContainer.containerRequestService
 
-    containerRequestService.containerService = {
+    containerRequestService.projectService = {
       getContainer: async () => Promise.resolve(validProject),
       ensureValidRole: () => {},
       getUserRole: () => ContainerRole.Owner
@@ -51,7 +51,7 @@ describe('ContainerRequestService - create', () => {
     return expect(
       containerRequestService.create(
         { _id: `User_${chance.guid()}` },
-        chance.guid(),
+        validProject._id,
         ContainerRole.Viewer
       )
     ).rejects.toThrowError(UserRoleError)
@@ -61,7 +61,7 @@ describe('ContainerRequestService - create', () => {
     const containerRequestService: any =
       DIContainer.sharedContainer.containerRequestService
 
-    containerRequestService.containerService = {
+    containerRequestService.projectService = {
       getContainer: async () => Promise.resolve(validProject),
       ensureValidRole: () => {},
       getUserRole: () => ContainerRole.Viewer
@@ -74,7 +74,7 @@ describe('ContainerRequestService - create', () => {
     return expect(
       containerRequestService.create(
         { _id: `User_${chance.guid()}` },
-        chance.guid(),
+        validProject._id,
         ContainerRole.Viewer
       )
     ).rejects.toThrowError(ValidationError)
@@ -84,7 +84,7 @@ describe('ContainerRequestService - create', () => {
     const containerRequestService: any =
       DIContainer.sharedContainer.containerRequestService
 
-    containerRequestService.containerService = {
+    containerRequestService.projectService = {
       getContainer: async () => Promise.resolve(validProject),
       ensureValidRole: () => {},
       getUserRole: () => null
@@ -97,7 +97,7 @@ describe('ContainerRequestService - create', () => {
     return expect(
       containerRequestService.create(
         { _id: `User_${chance.guid()}` },
-        chance.guid(),
+        validProject._id,
         ContainerRole.Viewer
       )
     ).rejects.toThrowError(ValidationError)
@@ -107,7 +107,7 @@ describe('ContainerRequestService - create', () => {
     const containerRequestService: any =
       DIContainer.sharedContainer.containerRequestService
 
-    containerRequestService.containerService = {
+    containerRequestService.projectService = {
       getContainer: async () => Promise.resolve(validProject),
       ensureValidRole: () => {},
       getUserRole: () => null
@@ -130,7 +130,7 @@ describe('ContainerRequestService - create', () => {
 
     await containerRequestService.create(
       { _id: `User_${chance.guid()}` },
-      chance.guid(),
+      validProject._id,
       ContainerRole.Viewer
     )
 
@@ -143,7 +143,7 @@ describe('ContainerRequestService - create', () => {
     const containerRequestService: any =
       DIContainer.sharedContainer.containerRequestService
 
-    containerRequestService.containerService = {
+    containerRequestService.projectService = {
       getContainer: async () => Promise.resolve(validProject),
       ensureValidRole: () => {},
       getUserRole: () => null
@@ -166,7 +166,7 @@ describe('ContainerRequestService - create', () => {
 
     await containerRequestService.create(
       { _id: `User_${chance.guid()}` },
-      chance.guid(),
+      validProject._id,
       ContainerRole.Viewer
     )
 
@@ -220,15 +220,20 @@ describe('ContainerRequestService - response', () => {
       DIContainer.sharedContainer.containerRequestService
 
     containerRequestService.containerRequestRepository = {
-      getById: async () => Promise.resolve({ userID: `User_${chance.guid()}` })
+      getById: async () =>
+        Promise.resolve({
+          userID: `User_${chance.guid()}`,
+          containerID: validProject._id
+        })
     }
 
     containerRequestService.userRepository = {
       getById: async () => Promise.resolve({})
     }
 
-    containerRequestService.containerService = {
-      getContainer: async () => Promise.resolve({ owners: [] }),
+    containerRequestService.projectService = {
+      getContainer: async () =>
+        Promise.resolve({ owners: [], _id: validProject._id }),
       isOwner: () => false
     }
 
@@ -246,16 +251,21 @@ describe('ContainerRequestService - response', () => {
       DIContainer.sharedContainer.containerRequestService
 
     containerRequestService.containerRequestRepository = {
-      getById: async () => Promise.resolve({ userID: `User_${chance.guid()}` }),
+      getById: async () =>
+        Promise.resolve({
+          userID: `User_${chance.guid()}`,
+          containerID: validProject._id
+        }),
       remove: jest.fn()
     }
 
     containerRequestService.userRepository = {
-      getById: async () => Promise.resolve({})
+      getById: async () => Promise.resolve({ containerID: validProject._id })
     }
 
-    containerRequestService.containerService = {
-      getContainer: async () => Promise.resolve({ owners: [] }),
+    containerRequestService.projectService = {
+      getContainer: async () =>
+        Promise.resolve({ owners: [], _id: validProject._id }),
       isOwner: () => true,
       getUserRole: () => ContainerRole.Owner
     }
@@ -274,16 +284,24 @@ describe('ContainerRequestService - response', () => {
       DIContainer.sharedContainer.containerRequestService
 
     containerRequestService.containerRequestRepository = {
-      getById: async () => Promise.resolve({ userID: `User_${chance.guid()}` }),
+      getById: async () =>
+        Promise.resolve({
+          userID: 'User_random-id',
+          containerID: validProject._id
+        }),
       remove: jest.fn()
     }
 
     containerRequestService.userRepository = {
-      getById: async () => Promise.resolve({})
+      getById: async () => Promise.resolve({ _id: 'User|random-id' })
     }
 
-    containerRequestService.containerService = {
-      getContainer: async () => Promise.resolve({ owners: [] }),
+    containerRequestService.projectService = {
+      getContainer: async () =>
+        Promise.resolve({
+          owners: ['User_random-id-2'],
+          _id: validProject._id
+        }),
       addContainerUser: jest.fn(),
       isOwner: () => true,
       getUserRole: () => null
@@ -293,12 +311,12 @@ describe('ContainerRequestService - response', () => {
 
     await containerRequestService.response(
       chance.guid(),
-      { _id: `User_${chance.guid()}` },
+      { _id: 'User_random-id-2' },
       true
     )
 
     expect(
-      containerRequestService.containerService.addContainerUser
+      containerRequestService.projectService.addContainerUser
     ).toBeCalled()
     expect(
       containerRequestService.containerRequestRepository.remove
@@ -314,7 +332,8 @@ describe('ContainerRequestService - response', () => {
       getById: async () =>
         Promise.resolve({
           userID: `User_${chance.guid()}`,
-          role: ContainerRole.Writer
+          role: ContainerRole.Writer,
+          containerID: validProject._id
         }),
       remove: jest.fn()
     }
@@ -323,8 +342,12 @@ describe('ContainerRequestService - response', () => {
       getById: async () => Promise.resolve({})
     }
 
-    containerRequestService.containerService = {
-      getContainer: async () => Promise.resolve({ owners: [] }),
+    containerRequestService.projectService = {
+      getContainer: async () =>
+        Promise.resolve({
+          owners: ['User_random-id-2'],
+          _id: validProject._id
+        }),
       updateContainerUser: jest.fn(),
       isOwner: () => true,
       getUserRole: () => ContainerRole.Viewer
@@ -334,12 +357,12 @@ describe('ContainerRequestService - response', () => {
 
     await containerRequestService.response(
       chance.guid(),
-      { _id: `User_${chance.guid()}` },
+      { _id: 'User_random-id-2' },
       true
     )
 
     expect(
-      containerRequestService.containerService.updateContainerUser
+      containerRequestService.projectService.updateContainerUser
     ).toBeCalled()
     expect(
       containerRequestService.containerRequestRepository.remove
@@ -352,7 +375,11 @@ describe('ContainerRequestService - response', () => {
       DIContainer.sharedContainer.containerRequestService
 
     containerRequestService.containerRequestRepository = {
-      getById: async () => Promise.resolve({ userID: `User_${chance.guid()}` }),
+      getById: async () =>
+        Promise.resolve({
+          userID: `User_${chance.guid()}`,
+          containerID: validProject._id
+        }),
       remove: jest.fn()
     }
 
@@ -360,8 +387,12 @@ describe('ContainerRequestService - response', () => {
       getById: async () => Promise.resolve({})
     }
 
-    containerRequestService.containerService = {
-      getContainer: async () => Promise.resolve({ owners: [] }),
+    containerRequestService.projectService = {
+      getContainer: async () =>
+        Promise.resolve({
+          owners: ['User_random-id-2'],
+          _id: validProject._id
+        }),
       addContainerUser: jest.fn(),
       isOwner: () => true,
       isContainerUser: () => false
@@ -371,12 +402,12 @@ describe('ContainerRequestService - response', () => {
 
     await containerRequestService.response(
       chance.guid(),
-      { _id: `User_${chance.guid()}` },
+      { _id: 'User_random-id-2' },
       false
     )
 
     expect(
-      containerRequestService.containerService.addContainerUser
+      containerRequestService.projectService.addContainerUser
     ).not.toBeCalled()
     expect(
       containerRequestService.containerRequestRepository.remove

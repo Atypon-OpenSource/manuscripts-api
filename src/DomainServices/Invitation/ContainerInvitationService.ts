@@ -72,7 +72,9 @@ export class ContainerInvitationService implements IContainerInvitationService {
     private userRepository: IUserRepository,
     private userProfileRepository: IUserProfileRepository,
     private emailService: EmailService,
-    private containerService: IContainerService,
+    private projectService: IContainerService,
+    private libraryService: IContainerService,
+    private libraryCollectionService: IContainerService,
     private containerInvitationRepository: ContainerInvitationRepository,
     private invitationTokenRepository: IInvitationTokenRepository,
     private activityTrackingService: UserActivityTrackingService
@@ -115,9 +117,9 @@ export class ContainerInvitationService implements IContainerInvitationService {
       if (invitedUserDoc) {
         invitedUserID = invitedUserDoc._id.replace('|', '_')
         if (
-          this.containerService.isContainerUser(
+          ContainerService.isContainerUser(
             container,
-            invitedUserDoc._id
+            invitedUserID
           )
         ) {
           throw new ConflictingRecordError(
@@ -153,7 +155,7 @@ export class ContainerInvitationService implements IContainerInvitationService {
           invitedUserName: invitedUser.name,
           invitedUserID,
           containerID,
-          containerTitle: container.title,
+          containerTitle: ContainerService.containerTitle(container),
           role,
           message
         }
@@ -188,6 +190,23 @@ export class ContainerInvitationService implements IContainerInvitationService {
     return invitations
   }
 
+  /* istanbul ignore next */
+  private containerService (containerID: string) {
+    if (containerID.startsWith('MPProject')) {
+      return this.projectService
+    }
+
+    if (containerID.startsWith('MPLibrary')) {
+      return this.libraryService
+    }
+
+    if (containerID.startsWith('MPLibraryCollection')) {
+      return this.libraryCollectionService
+    }
+
+    throw new ValidationError('Invalid container id.', containerID)
+  }
+
   private async resolveInvitationDetails (
     invitingUserId: string,
     invitedUsers: InvitedUserData[],
@@ -218,7 +237,7 @@ export class ContainerInvitationService implements IContainerInvitationService {
       throw new ValidationError(`'${role}' is an invalid role`, role)
     }
 
-    const container = await this.containerService.getContainer(containerID)
+    const container = await this.containerService(containerID).getContainer(containerID)
 
     const owners = container.owners
     if (owners.indexOf(sgUsername(invitingUser._id)) < 0) {
@@ -272,7 +291,9 @@ export class ContainerInvitationService implements IContainerInvitationService {
 
     let container
     try {
-      container = await this.containerService.getContainer(invitation.containerID)
+      container = await this.containerService(
+        invitation.containerID
+      ).getContainer(invitation.containerID)
     } catch (e) {
       await this.containerInvitationRepository.remove(invitationId)
       throw new MissingContainerError(
@@ -364,7 +385,7 @@ export class ContainerInvitationService implements IContainerInvitationService {
       )
     }
 
-    const container = await this.containerService.getContainer(
+    const container = await this.containerService(invitation.containerID).getContainer(
       invitation.containerID
     )
 
@@ -393,9 +414,9 @@ export class ContainerInvitationService implements IContainerInvitationService {
       throw new ValidationError(`role '${role}' is not valid`, role)
     }
 
-    const container = await this.containerService.getContainer(containerID)
+    const container = await this.containerService(containerID).getContainer(containerID)
 
-    if (!this.containerService.isOwner(container, user._id)) {
+    if (!ContainerService.isOwner(container, user._id)) {
       throw new UserRoleError(`Only owners can invite other users.`, user._id)
     }
   }
@@ -483,7 +504,7 @@ export class ContainerInvitationService implements IContainerInvitationService {
 
     const { containerID, permittedRole } = invitationToken
 
-    const container = await this.containerService.getContainer(containerID)
+    const container = await this.containerService(containerID).getContainer(containerID)
 
     if (
       permittedRole !== ContainerRole.Viewer &&
@@ -539,7 +560,7 @@ export class ContainerInvitationService implements IContainerInvitationService {
     const userID = user._id
 
     if (invitationToAccept) {
-      await this.containerService.addContainerUser(
+      await this.containerService(invitationToAccept.containerID).addContainerUser(
         invitationToAccept.containerID,
         roleToAssign,
         userID,
@@ -552,27 +573,28 @@ export class ContainerInvitationService implements IContainerInvitationService {
       }
     }
 
-    const currentUserRole = this.containerService.getUserRole(
+    const currentUserRole = this.containerService(container._id).getUserRole(
       container,
       userID
     )
 
     let message
     if (!currentUserRole) {
-      await this.containerService.addContainerUser(
+      await this.containerService(container._id).addContainerUser(
         container._id,
         permittedRole,
         userID,
         null
       )
-      message = container.title
-        ? `You have been added to project "${container.title}".`
+      const containerTitle = ContainerService.containerTitle(container)
+      message = containerTitle
+        ? `You have been added to project "${containerTitle}".`
         : 'You have been added to a project.'
     } else if (
       currentUserRole === ContainerRole.Viewer &&
       permittedRole === ContainerRole.Writer
     ) {
-      await this.containerService.updateContainerUser(
+      await this.containerService(container._id).updateContainerUser(
         container._id,
         permittedRole,
         user
@@ -617,19 +639,23 @@ export class ContainerInvitationService implements IContainerInvitationService {
     invitedUser: User
   ): Promise<ContainerInvitationResponse> {
 
-    const currentUserRole = this.containerService.getUserRole(
+    const currentUserRole = this.containerService(invitationToAccept.containerID).getUserRole(
       container,
       invitedUser._id
     )
     let message
     if (!currentUserRole) {
-      await this.containerService.addContainerUser(
+      await this.containerService(invitationToAccept.containerID).addContainerUser(
         invitationToAccept.containerID,
         roleToAssign,
         invitedUser._id,
         invitingUser
       )
-      message = container.title ? `You have been added to project "${container.title}".` : 'You have been added to a project.'
+      const containerTitle = ContainerService.containerTitle(container)
+
+      message = containerTitle
+        ? `You have been added to project "${containerTitle}".`
+        : 'You have been added to a project.'
       await this.markInvitationAsAccepted(invitationToAccept._id)
     } else if (invitationToAccept.acceptedAt) {
       message = `Invitation already accepted.`
@@ -639,7 +665,7 @@ export class ContainerInvitationService implements IContainerInvitationService {
         currentUserRole
       ) === 1
   ) {
-      await this.containerService.updateContainerUser(
+      await this.containerService(invitationToAccept.containerID).updateContainerUser(
       container._id,
       roleToAssign,
       invitedUser

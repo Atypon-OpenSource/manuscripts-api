@@ -14,15 +14,18 @@
  * limitations under the License.
  */
 
-import { errors } from 'couchbase'
+import { LibraryCollection } from '@manuscripts/manuscripts-json-schema'
 
-export function databaseErrorMessage (errorCode: errors | undefined, message: string | null): string {
-  switch (errorCode) {
-    case errors.keyAlreadyExists:
-      return 'Document id already exists.'
-    case errors.keyNotFound:
-      return "Document doesn't exist in db."
-    default:
-      return message || `General Couchbase error (code ${errorCode}).`
-  }
-}
+import { LibraryCollectionLike } from './Models'
+import { PatchLibraryCollection } from '../../Models/LibraryCollectionModels'
+import { IContainerRepository } from './IContainerRepository'
+
+/**
+ * Manages library collections persistent storage operations.
+ */
+export interface ILibraryCollectionRepository
+  extends IContainerRepository<
+    LibraryCollection,
+    LibraryCollectionLike,
+    PatchLibraryCollection
+  > {}

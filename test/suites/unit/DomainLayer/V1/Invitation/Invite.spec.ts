@@ -19,8 +19,7 @@ import '../../../../../utilities/dbMock'
 import {
   InvalidCredentialsError,
   ValidationError,
-  ConflictingRecordError,
-  RecordNotFoundError
+  ConflictingRecordError
 } from '../../../../../../src/Errors'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
 import {
@@ -222,37 +221,11 @@ describe('Invitation - inviteToContainer', () => {
       containerInvitationService.inviteToContainer(
         'foo',
         [{ email: 'baz@bar.com' }],
-        'project-id',
+        'MPProject:project-id',
         'not-valid-role',
         null
       )
     ).rejects.toThrowError(ValidationError)
-  })
-
-  test('should fail if project does not exist', async () => {
-    const containerInvitationService: any =
-      DIContainer.sharedContainer.containerInvitationService
-
-    containerInvitationService.userRepository = {
-      getById: async () =>
-        Promise.resolve({
-          email: 'foo@bar.com'
-        })
-    }
-
-    containerInvitationService.containerService.containerRepository = {
-      getById: async () => Promise.resolve(null)
-    }
-
-    return expect(
-      containerInvitationService.inviteToContainer(
-        'foo',
-        [{ email: 'baz@bar.com' }],
-        'project-id',
-        'Viewer',
-        null
-      )
-    ).rejects.toThrowError(RecordNotFoundError)
   })
 
   test('inviting user can not invite others if he is not a project owner', async () => {
@@ -267,7 +240,7 @@ describe('Invitation - inviteToContainer', () => {
         })
     }
 
-    containerInvitationService.containerService = {
+    containerInvitationService.projectService = {
       getContainer: async () => Promise.resolve(validProject)
     }
 
@@ -275,7 +248,7 @@ describe('Invitation - inviteToContainer', () => {
       containerInvitationService.inviteToContainer(
         'foo',
         [{ email: 'baz@bar.com' }],
-        'project-id',
+        'MPProject:project-id',
         'Viewer',
         null
       )
@@ -296,10 +269,10 @@ describe('Invitation - inviteToContainer', () => {
           email: 'foo@bar.com',
           _id: 'User|foo@bar.com'
         }),
-      getOne: async () => Promise.resolve({ _id: 'User|foobar@manuscripts.com' })
+      getOne: async () => Promise.resolve({ _id: 'User|foo@bar.com' })
     }
 
-    containerInvitationService.containerService = {
+    containerInvitationService.projectService = {
       getContainer: async () => Promise.resolve(validProject3),
       isContainerUser: () => true
     }
@@ -313,7 +286,7 @@ describe('Invitation - inviteToContainer', () => {
       containerInvitationService.inviteToContainer(
         'foo',
         [{ email: 'baz@bar.com' }],
-        'project-id',
+        'MPProject:project-id',
         'Viewer',
         null
       )
@@ -337,7 +310,7 @@ describe('Invitation - inviteToContainer', () => {
       patch: jest.fn(() => Promise.resolve({ _id: 'ProjectInvitation|bar' }))
     }
 
-    containerInvitationService.containerService = {
+    containerInvitationService.projectService = {
       isContainerUser: () => false,
       getContainer: () => Promise.resolve(validProject3)
     }
@@ -371,7 +344,7 @@ describe('Invitation - inviteToContainer', () => {
         })
     }
 
-    containerInvitationService.containerService = {
+    containerInvitationService.projectService = {
       getContainer: async () => Promise.resolve(validProject3),
       isContainerUser: () => false
     }
@@ -386,7 +359,7 @@ describe('Invitation - inviteToContainer', () => {
     await containerInvitationService.inviteToContainer(
       'User|foo',
       [{ email: 'baz@bar.com' }],
-      'project-id',
+      'MPProject:project-id',
       'Viewer',
       null
     )
@@ -414,7 +387,7 @@ describe('Invitation - inviteToContainer', () => {
         })
     }
 
-    containerInvitationService.containerService = {
+    containerInvitationService.projectService = {
       getContainer: async () => Promise.resolve(validProject3),
       isContainerUser: () => false
     }
@@ -429,7 +402,7 @@ describe('Invitation - inviteToContainer', () => {
     await containerInvitationService.inviteToContainer(
       'User|foo',
       [{ email: 'baz@bar.com' }],
-      'project-id',
+      'MPProject:project-id',
       'Viewer',
       null
     )

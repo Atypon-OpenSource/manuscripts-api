@@ -26,7 +26,7 @@ import { DatabaseError, UnexpectedViewStateError } from '../../Errors'
 import { date, objectValuedObject } from '../validators'
 import { DatabaseView } from '../DatabaseView'
 import { ViewMapFunctionMeta, ViewReducer } from '../../Models/DatabaseViewModels'
-import { databaseErrorMessage } from '../DatabaseErrorMessage'
+import { databaseErrorMessage } from '../DatabaseResponseFunctions'
 import { PatchOptions } from '../Interfaces/IndexedRepository'
 
 /**

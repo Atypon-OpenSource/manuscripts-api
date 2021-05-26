@@ -28,7 +28,7 @@ import {
 } from '../../Models/UserModels'
 import { required, maxLength, validEmail } from '../validators'
 import { N1qlQuery } from 'couchbase'
-import { databaseErrorMessage } from '../DatabaseErrorMessage'
+import { databaseErrorMessage } from '../DatabaseResponseFunctions'
 import { DatabaseError } from '../../Errors'
 import { timestamp } from '../../Utilities/JWT/LoginTokenPayload'
 
@@ -105,10 +105,8 @@ export class UserRepository extends CBRepository<User, INewUser, Partial<IUpdate
   public getUsersToDelete (): Promise<User[] | null > {
     const currentTime = Math.floor(timestamp())
 
-    const n1ql = `SELECT * FROM ${this.bucketName}
-                  WHERE _type = 'User'
-                  AND deleteAt IS VALUED
-                  AND deleteAt <= ${currentTime}`
+    const n1ql = `SELECT * FROM ${this.bucketName} WHERE _type = 'User' AND deleteAt IS VALUED AND deleteAt <= ${currentTime}`
+
     return new Promise((resolve, reject) => {
       this.database.bucket.query(N1qlQuery.fromString(n1ql)
       , (error, results) => {

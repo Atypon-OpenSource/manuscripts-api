@@ -26,7 +26,7 @@ export class TemplatesController extends ContainedBaseController implements ITem
     const output = []
     const projects = await this.findUserProjects()
     for (const project of projects) {
-      const templates = await DIContainer.sharedContainer.projectRepository.findTemplatesInProject(project._id)
+      const templates = await DIContainer.sharedContainer.projectRepository.findTemplatesInContainer(project._id)
       for (const template of templates) {
         output.push(template)
         const templateItems = await DIContainer.sharedContainer.projectRepository.findModelsInTemplate(project._id, template._id)
@@ -41,7 +41,7 @@ export class TemplatesController extends ContainedBaseController implements ITem
     const projects: any[] = []
     const allowedOwners = config.template.allowedOwners
     for (const owner of allowedOwners) {
-      const userProject = await DIContainer.sharedContainer.projectRepository.getUserProjects(owner)
+      const userProject = await DIContainer.sharedContainer.projectRepository.getUserContainers(owner)
       projects.push(...userProject)
     }
     return projects

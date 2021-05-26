@@ -37,6 +37,7 @@ import { stringify } from 'querystring'
 import { SES } from '../External/AWS'
 import { AWSError } from 'aws-sdk'
 import { SendEmailResponse } from 'aws-sdk/clients/ses'
+import { ContainerService } from '../Container/ContainerService'
 
 interface MessageOptions {
   actionURL: string | null
@@ -89,7 +90,7 @@ export class EmailService {
   ): Promise<void> {
     if (opts.container) {
       opts.containerTitle = `${this.htmlToText(
-        opts.container.title || 'Untitled Project'
+        ContainerService.containerTitle(opts.container) || 'Untitled Project'
       )}` // double quoted.
     }
     opts.frontendAppBaseURL = this.emailConfiguration.fromBaseURL

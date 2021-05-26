@@ -32,7 +32,7 @@ import {
 import { username as sgUsername } from '../DomainServices/Sync/SyncService'
 import { BucketKey } from '../Config/ConfigurationTypes'
 import { Database } from './Database'
-import { databaseErrorMessage } from './DatabaseErrorMessage'
+import { databaseErrorMessage } from './DatabaseResponseFunctions'
 import { timestamp } from '../Utilities/JWT/LoginTokenPayload'
 
 export abstract class SGRepository<

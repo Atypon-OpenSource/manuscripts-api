@@ -29,7 +29,7 @@ import { isNumber, isString } from '../util'
 import { Database } from './Database'
 import { SchemaDefinition as OttomanSchemaDefinition, ModelInstance as OttomanModelInstance, ModelInstanceCtor as OttomanModelInstanceCtor, ModelOptions as OttomanModelOptions } from 'ottoman'
 import { DatabaseView, DatabaseDesignDocument } from './DatabaseView'
-import { databaseErrorMessage } from './DatabaseErrorMessage'
+import { databaseErrorMessage } from './DatabaseResponseFunctions'
 import { Environment, BucketKey } from '../Config/ConfigurationTypes'
 
 const registeredSchemas = new Map<string, OttomanModelInstanceCtor>()

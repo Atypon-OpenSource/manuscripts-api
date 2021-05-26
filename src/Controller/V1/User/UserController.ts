@@ -66,7 +66,7 @@ export class UserController extends BaseController implements IUserController {
   }
 
   async userContainers (req: Request): Promise<Container[]> {
-    return DIContainer.sharedContainer.projectRepository.getUserProjects(
+    return DIContainer.sharedContainer.projectRepository.getUserContainers(
       req.user._id
     )
   }

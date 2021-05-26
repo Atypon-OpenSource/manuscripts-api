@@ -23,7 +23,7 @@ export interface IContainerService {
    * Create container.
    * @param token User's token
    */
-  containerCreate (token: string, _id: string | null): Promise<Container>
+  createContainer (token: string, _id: string | null): Promise<Container>
 
   /**
    * Deletes the container with all resources.
@@ -65,11 +65,6 @@ export interface IContainerService {
   ): Promise<void>
 
   /**
-   * Checks if the user is in the container.
-   */
-  isContainerUser (container: Container, userId: string): boolean
-
-  /**
    * Gets the role of a user.
    */
   getUserRole (container: Container, userId: string): ContainerRole | null
@@ -78,11 +73,6 @@ export interface IContainerService {
    * Gets the container.
    */
   getContainer (containerId: string): Promise<Container>
-
-  /**
-   * Checks if the user is an owner.
-   */
-  isOwner (container: Container, userId: string): boolean
 
   /**
    * Gets an archive (ZIP file) of the container

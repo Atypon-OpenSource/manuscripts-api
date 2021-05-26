@@ -20,7 +20,10 @@ export interface SeedOptions {
   singleUseTokens?: boolean
   invitations?: boolean
   projects?: boolean
+  libraries?: boolean
+  libraryCollections?: boolean
   projectInvitations?: boolean
+  libraryInvitations?: boolean
   invitationTokens?: boolean
   userProfiles?: boolean
   userTokens?: boolean

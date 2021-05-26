@@ -254,7 +254,7 @@ export class UserService implements IUserService {
 
   private async removeUserFromProjects (userId: string) {
     const sgUserID = sgUsername(userId)
-    const userProjects = await this.projectRepository.getUserProjects(sgUserID)
+    const userProjects = await this.projectRepository.getUserContainers(sgUserID)
 
     for (const project of userProjects) {
       const { owners, writers, viewers } = project

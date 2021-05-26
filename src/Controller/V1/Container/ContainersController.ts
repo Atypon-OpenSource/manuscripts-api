@@ -49,7 +49,7 @@ export class ContainersController extends ContainedBaseController
 
     return DIContainer.sharedContainer.containerService[
       containerType
-    ].containerCreate(token, _id)
+    ].createContainer(token, _id)
   }
 
   async delete (req: Request): Promise<void> {

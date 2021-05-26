@@ -188,34 +188,34 @@ describe('ContainerService - getProjectUserRole', () => {
   })
 })
 
-describe('ProjectService - isOwner/isWriter/isViewer', () => {
+describe('ProjectService - isOwner/isWriter/isViewer/isEditor/isViewer', () => {
   test('should throw if project is null in isOwner', () => {
     expect(() =>
-      DIContainer.sharedContainer.containerService[ContainerType.project].isOwner(null as any, 'userId')
+      ContainerService.isOwner(null as any, 'userId')
     ).toThrowError(RecordNotFoundError)
   })
 
   test('should throw if project is null in isWriter', () => {
     expect(() =>
-      DIContainer.sharedContainer.containerService[ContainerType.project].isWriter(null as any, 'userId')
+      ContainerService.isWriter(null as any, 'userId')
     ).toThrowError(RecordNotFoundError)
   })
 
   test('should throw if project is null in isViewer', () => {
     expect(() =>
-      DIContainer.sharedContainer.containerService[ContainerType.project].isViewer(null as any, 'userId')
+      ContainerService.isViewer(null as any, 'userId')
     ).toThrowError(RecordNotFoundError)
   })
 
   test('should throw if project is null in isEditor', () => {
     expect(() =>
-      DIContainer.sharedContainer.containerService[ContainerType.project].isEditor(null as any, 'userId')
+      ContainerService.isEditor(null as any, 'userId')
     ).toThrowError(RecordNotFoundError)
   })
 
   test('should throw if project is null in isAnnotator', () => {
     expect(() =>
-      DIContainer.sharedContainer.containerService[ContainerType.project].isAnnotator(null as any, 'userId')
+     ContainerService.isAnnotator(null as any, 'userId')
     ).toThrowError(RecordNotFoundError)
   })
 })

@@ -33,6 +33,7 @@ import {
 import { manuscriptIDTypes, Model } from '@manuscripts/manuscripts-json-schema'
 import { remove } from 'fs-extra'
 import jsonwebtoken from 'jsonwebtoken'
+import { ContainerService } from '../../../DomainServices/Container/ContainerService'
 import { isLoginTokenPayload } from '../../../Utilities/JWT/LoginTokenPayload'
 import uuid from 'uuid'
 import tempy from 'tempy'
@@ -50,9 +51,9 @@ export class ProjectController extends BaseController implements IProjectControl
 
     const { id }: any = await DIContainer.sharedContainer.containerService[
       ContainerType.project
-    ].containerCreate(token, null)
+    ].createContainer(token, null)
 
-    await DIContainer.sharedContainer.containerService[ContainerType.project].updateContainer(
+    await DIContainer.sharedContainer.containerService[ContainerType.project].updateContainerTitleAndCollaborators(
       id,
       title,
       owners,
@@ -82,7 +83,7 @@ export class ProjectController extends BaseController implements IProjectControl
 
     const project = await DIContainer.sharedContainer.containerService[ContainerType.project].getContainer(projectId)
 
-    if (!DIContainer.sharedContainer.containerService[ContainerType.project].isOwner(project,req.user._id)) throw new UserRoleError('User must be an owner to add manuscripts',req.user._id)
+    if (!ContainerService.isOwner(project,req.user._id)) throw new UserRoleError('User must be an owner to add manuscripts',req.user._id)
 
     const container = await this.upsertManuscriptToProject(project, manuscript, manuscriptId, templateId)
 

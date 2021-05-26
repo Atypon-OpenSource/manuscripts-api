@@ -155,7 +155,7 @@ describe('UserController - getProfile', () => {
 })
 
 describe('UserController - userContainers', () => {
-  test('should call getUserProjects', async () => {
+  test('should call getUserContainers', async () => {
     const req: any = {
       headers: {
         authorization: 'Bearer ' + new Chance().string()
@@ -165,11 +165,11 @@ describe('UserController - userContainers', () => {
 
     const projectRepository = DIContainer.sharedContainer.projectRepository
 
-    projectRepository.getUserProjects = jest.fn()
+    projectRepository.getUserContainers = jest.fn()
 
     const userController = new UserController()
     await userController.userContainers(req)
 
-    return expect(projectRepository.getUserProjects).toBeCalled()
+    return expect(projectRepository.getUserContainers).toBeCalled()
   })
 })

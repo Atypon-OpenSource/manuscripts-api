@@ -39,7 +39,7 @@ beforeEach(() => {
 })
 
 describe('ContainersController - create', () => {
-  test('should call containerCreate() with a specified _id', async () => {
+  test('should call createContainer() with a specified _id', async () => {
     const containerService: any =
       DIContainer.sharedContainer.containerService[ContainerType.project]
 
@@ -54,15 +54,15 @@ describe('ContainersController - create', () => {
       }
     }
 
-    containerService.containerCreate = jest.fn(() => {})
+    containerService.createContainer = jest.fn(() => {})
 
     const containersController: ContainersController = new ContainersController()
     await containersController.create(req)
 
-    expect(containerService.containerCreate).toBeCalled()
+    expect(containerService.createContainer).toBeCalled()
   })
 
-  test('should call containerCreate()', async () => {
+  test('should call createContainer()', async () => {
     const containerService: any =
       DIContainer.sharedContainer.containerService[ContainerType.project]
 
@@ -75,12 +75,12 @@ describe('ContainersController - create', () => {
       }
     }
 
-    containerService.containerCreate = jest.fn(() => {})
+    containerService.createContainer = jest.fn(() => {})
 
     const containersController: ContainersController = new ContainersController()
     await containersController.create(req)
 
-    expect(containerService.containerCreate).toBeCalled()
+    expect(containerService.createContainer).toBeCalled()
   })
 
   test('should fail if a wrong containerType set', async () => {
@@ -96,7 +96,7 @@ describe('ContainersController - create', () => {
       }
     }
 
-    containerService.containerCreate = jest.fn(() => {})
+    containerService.createContainer = jest.fn(() => {})
 
     const containersController: ContainersController = new ContainersController()
 
@@ -139,7 +139,7 @@ describe('ContainersController - create', () => {
       }
     }
 
-    containerService.containerCreate = jest.fn(() => {})
+    containerService.createContainer = jest.fn(() => {})
 
     const containersController: ContainersController = new ContainersController()
 

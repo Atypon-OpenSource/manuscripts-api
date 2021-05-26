@@ -16,7 +16,7 @@
 
 import '../../../../../utilities/dbMock'
 
-import { InvalidCredentialsError, ValidationError, RecordNotFoundError } from '../../../../../../src/Errors'
+import { InvalidCredentialsError, ValidationError } from '../../../../../../src/Errors'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
 import { validProject2 } from '../../../../../data/fixtures/projects'
 import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
@@ -57,27 +57,6 @@ describe('Invitation - uninvite', () => {
       ).rejects.toThrowError(ValidationError)
   })
 
-  test('should fail if project does not exist', async () => {
-    const containerInvitationService: any = DIContainer.sharedContainer.containerInvitationService
-    containerInvitationService.userRepository = {
-      getById: async () => Promise.resolve({
-        email: 'foo@bar.com'
-      })
-    }
-
-    containerInvitationService.containerInvitationRepository = {
-      getById: async () => Promise.resolve({})
-    }
-
-    containerInvitationService.containerService.containerRepository = {
-      getById: async () => Promise.resolve(null)
-    }
-
-    return expect(
-      containerInvitationService.uninvite('foo', 'bar')
-    ).rejects.toThrowError(RecordNotFoundError)
-  })
-
   test('user cannot uninvite others in a project he is not an owner of', async () => {
     const containerInvitationService: any = DIContainer.sharedContainer.containerInvitationService
     containerInvitationService.userRepository = {
@@ -87,9 +66,10 @@ describe('Invitation - uninvite', () => {
       })
     }
     containerInvitationService.containerInvitationRepository = {
-      getById: async () => Promise.resolve({})
+      getById: async () => Promise.resolve({ containerID: 'MPProject:valid-project-id-2' })
     }
-    containerInvitationService.containerService = {
+
+    containerInvitationService.projectService = {
       getContainer: async () => Promise.resolve(validProject2)
     }
     return expect(
@@ -106,10 +86,10 @@ describe('Invitation - uninvite', () => {
       })
     }
     containerInvitationService.containerInvitationRepository = {
-      getById: async () => Promise.resolve({}),
+      getById: async () => Promise.resolve({ containerID: 'MPProject:valid-project-id-2' }),
       remove: jest.fn(() => Promise.resolve())
     }
-    containerInvitationService.containerService = {
+    containerInvitationService.projectService = {
       getContainer: async () => Promise.resolve(validProject2)
     }
 

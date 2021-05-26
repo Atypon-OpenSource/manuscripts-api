@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-import { N1qlQuery, CouchbaseError } from 'couchbase'
 import { ContainerInvitation } from '@manuscripts/manuscripts-json-schema'
 
 import { SGRepository } from '../SGRepository'
 import { ContainerInvitationLike } from '../Interfaces/Models'
-import { DatabaseError } from '../../Errors'
-import { databaseErrorMessage } from '../DatabaseErrorMessage'
+import { selectN1QLQuery } from '../DatabaseResponseFunctions'
 import { PatchContainerInvitation } from '../../Models/ContainerModels'
 import { User } from '../../Models/UserModels'
 
@@ -41,42 +39,17 @@ export class ContainerInvitationRepository extends SGRepository<
     containerID: string,
     userEmail: string
   ): Promise<ContainerInvitation[]> {
-    const n1ql = `SELECT META().id, * FROM ${this.bucketName}
-                  WHERE objectType = \"${this.objectType}\"
-                  AND invitedUserEmail = $1 AND containerID = $2`
+    const n1ql = `SELECT META().id, * FROM ${this.bucketName} WHERE objectType = \"${this.objectType}\" AND invitedUserEmail = $1 AND containerID = $2`
 
-    const statement = N1qlQuery.fromString(n1ql)
-      .adhoc(false)
-      .consistency(this.n1qlConsistency)
-
-    return new Promise<ContainerInvitation[]>((resolve, reject) => {
-      this.database.bucket.query(
-        statement,
-        [userEmail, containerID],
-        (error: CouchbaseError | null, results: any) => {
-          if (error) {
-            const errorMsg: string = databaseErrorMessage(
-              error.code,
-              error.message
-            )
-
-            return reject(
-              new DatabaseError(error.code, errorMsg, userEmail, error)
-            )
-          }
-
-          const invitations = results.map((result: any) => {
-            delete result[this.bucketName]._sync
-            return {
-              ...result[this.bucketName],
-              _id: result.id
-            } as ContainerInvitation
-          })
-
-          return resolve(invitations)
-        }
-      )
+    const callbackFn = (results: any) => results.map((result: any) => {
+      delete result[this.bucketName]._sync
+      return {
+        ...result[this.bucketName],
+        _id: result.id
+      } as ContainerInvitation
     })
+
+    return selectN1QLQuery<ContainerInvitation[]>(this.database.bucket, n1ql, [userEmail, containerID], callbackFn)
   }
 
   public async deleteInvitations (
@@ -94,40 +67,16 @@ export class ContainerInvitationRepository extends SGRepository<
   }
 
   public async getAllByEmail (email: string) {
-    const n1ql = `SELECT META().id, * FROM ${this.bucketName}
-                  WHERE objectType = \'${this.objectType}\'
-                  AND invitedUserEmail = $1
-                  AND _deleted IS MISSING`
+    const n1ql = `SELECT META().id, * FROM ${this.bucketName} WHERE objectType = \'${this.objectType}\' AND invitedUserEmail = $1 AND _deleted IS MISSING`
 
-    const statement = N1qlQuery.fromString(n1ql)
-      .adhoc(false)
-      .consistency(this.n1qlConsistency)
-
-    return new Promise<ContainerInvitation[]>((resolve, reject) => {
-      this.database.bucket.query(
-        statement,
-        [email],
-        (error: CouchbaseError | null, results: any) => {
-          if (error) {
-            const errorMsg: string = databaseErrorMessage(
-              error.code,
-              error.message
-            )
-
-            return reject(new DatabaseError(error.code, errorMsg, null, error))
-          }
-
-          const objects = results.map((result: any) => {
-            const obj = {
-              ...result[this.bucketName],
-              _id: result.id
-            }
-            return obj
-          })
-
-          return resolve(objects)
-        }
-      )
+    const callbackFn = (results: any) => results.map((result: any) => {
+      const obj = {
+        ...result[this.bucketName],
+        _id: result.id
+      }
+      return obj
     })
+
+    return selectN1QLQuery<ContainerInvitation[]>(this.database.bucket, n1ql, [email], callbackFn)
   }
 }

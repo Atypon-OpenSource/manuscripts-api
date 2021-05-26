@@ -19,7 +19,6 @@ import '../../../../../utilities/dbMock'
 import {
   ValidationError,
   InvalidCredentialsError,
-  RecordNotFoundError,
   RecordGoneError
 } from '../../../../../../src/Errors'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
@@ -53,26 +52,6 @@ describe('Invitation - acceptInvitationToken', () => {
     ).rejects.toThrowError(InvalidCredentialsError)
   })
 
-  test('should fail if the project does not exist in the db', () => {
-    const containerInvitationService: any =
-      DIContainer.sharedContainer.containerInvitationService
-    containerInvitationService.userRepository = {
-      getById: async () => Promise.resolve(validUser1)
-    }
-
-    containerInvitationService.containerService.containerRepository = {
-      getById: async () => Promise.resolve(null)
-    }
-
-    containerInvitationService.invitationTokenRepository = {
-      getOne: async () => Promise.resolve(validInvitationToken)
-    }
-
-    return expect(
-      containerInvitationService.acceptInvitationToken(validInvitationToken.token, 'bar')
-    ).rejects.toThrowError(RecordNotFoundError)
-  })
-
   test('should fail if the role is invalid', () => {
     const containerInvitationService: any =
       DIContainer.sharedContainer.containerInvitationService
@@ -80,7 +59,7 @@ describe('Invitation - acceptInvitationToken', () => {
       getById: async () => Promise.resolve(validUser1)
     }
 
-    containerInvitationService.containerService = {
+    containerInvitationService.projectService = {
       getContainer: async () => Promise.resolve(validProject)
     }
 
@@ -103,7 +82,7 @@ describe('Invitation - acceptInvitationToken', () => {
       getById: async () => Promise.resolve(validUser1)
     }
 
-    containerInvitationService.containerService = {
+    containerInvitationService.projectService = {
       getContainer: async () => Promise.resolve(validProject)
     }
 
@@ -124,7 +103,7 @@ describe('Invitation - acceptInvitationToken', () => {
       getById: async () => Promise.resolve(validUser1)
     }
 
-    containerInvitationService.containerService = {
+    containerInvitationService.projectService = {
       getContainer: async () => Promise.resolve(validProject),
       getUserRole: () => null,
       addContainerUser: jest.fn()
@@ -143,7 +122,7 @@ describe('Invitation - acceptInvitationToken', () => {
       'User|bar'
     )
 
-    return expect(containerInvitationService.containerService.addContainerUser).toBeCalled()
+    return expect(containerInvitationService.projectService.addContainerUser).toBeCalled()
   })
 
   test('should call updateContainerUser successfully', async () => {
@@ -154,7 +133,7 @@ describe('Invitation - acceptInvitationToken', () => {
       getById: async () => Promise.resolve(validUser1)
     }
 
-    containerInvitationService.containerService = {
+    containerInvitationService.projectService = {
       getContainer: async () => Promise.resolve(validProject),
       getUserRole: () => ContainerRole.Viewer,
       updateContainerUser: jest.fn()
@@ -174,7 +153,7 @@ describe('Invitation - acceptInvitationToken', () => {
     )
 
     return expect(
-      containerInvitationService.containerService.updateContainerUser
+      containerInvitationService.projectService.updateContainerUser
     ).toBeCalled()
   })
 
@@ -185,7 +164,7 @@ describe('Invitation - acceptInvitationToken', () => {
       getById: async () => Promise.resolve(validUser1)
     }
 
-    containerInvitationService.containerService = {
+    containerInvitationService.projectService = {
       getContainer: async () => Promise.resolve(validProject),
       getUserRole: () => ContainerRole.Writer,
       updateContainerUser: jest.fn()
@@ -214,7 +193,7 @@ describe('Invitation - acceptInvitationToken', () => {
       getById: async () => Promise.resolve(validUser1)
     }
 
-    containerInvitationService.containerService = {
+    containerInvitationService.projectService = {
       getContainer: async () => Promise.resolve(validProject),
       getUserRole: () => ContainerRole.Owner,
       updateContainerUser: jest.fn()
@@ -246,7 +225,7 @@ describe('Invitation - acceptInvitationToken', () => {
       getById: async () => Promise.resolve(validUser1)
     }
 
-    containerInvitationService.containerService = {
+    containerInvitationService.projectService = {
       getContainer: async () => Promise.resolve(validProject),
       getUserRole: () => ContainerRole.Owner,
       updateContainerUser: jest.fn(),
@@ -258,7 +237,7 @@ describe('Invitation - acceptInvitationToken', () => {
     }
 
     containerInvitationService.containerInvitationRepository = {
-      getInvitationsForUser: async () => Promise.resolve([{ role: 'Owner' }]),
+      getInvitationsForUser: async () => Promise.resolve([{ role: 'Owner', containerID: 'MPProject:valid-project-id' }]),
       patch: async () => Promise.resolve()
     }
 

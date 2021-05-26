@@ -73,12 +73,12 @@ describe('Invitation - requestInvitationToken', () => {
         })
     }
 
-    containerInvitationService.containerService.containerRepository = {
+    containerInvitationService.projectService.containerRepository = {
       getById: async () => Promise.resolve(null)
     }
 
     return expect(
-      containerInvitationService.requestInvitationToken('foo', 'bar', 'Writer')
+      containerInvitationService.requestInvitationToken('foo', 'MPProject:bar', 'Writer')
     ).rejects.toThrowError(RecordNotFoundError)
   })
 
@@ -90,17 +90,17 @@ describe('Invitation - requestInvitationToken', () => {
       getById: async () =>
         Promise.resolve({
           email: 'foo@bar.com',
-          _id: 'foo@bar.com'
+          _id: 'User|foo@bar.com'
         })
     }
 
-    containerInvitationService.containerService = {
+    containerInvitationService.projectService = {
       getContainer: async () => Promise.resolve(validProject),
       isOwner: () => false
     }
 
     return expect(
-      containerInvitationService.requestInvitationToken('foo', 'bar', 'Writer')
+      containerInvitationService.requestInvitationToken('foo', 'MPProject:bar', 'Writer')
     ).rejects.toThrowError(UserRoleError)
   })
 
@@ -111,12 +111,13 @@ describe('Invitation - requestInvitationToken', () => {
     containerInvitationService.userRepository = {
       getById: async () =>
         Promise.resolve({
-          email: 'foo@bar.com'
+          email: 'foo@bar.com',
+          _id: 'User|foo@bar.com'
         })
     }
 
-    containerInvitationService.containerService = {
-      getContainer: async () => Promise.resolve(validProject),
+    containerInvitationService.projectService = {
+      getContainer: async () => Promise.resolve({ ...validProject, owners: ['User_foo@bar.com'] }),
       isOwner: () => true
     }
 
@@ -125,7 +126,7 @@ describe('Invitation - requestInvitationToken', () => {
       touch: jest.fn(() => Promise.resolve({ _id: 'InvitationToken|bar' }))
     }
 
-    await containerInvitationService.requestInvitationToken('foo', 'bar', 'Writer')
+    await containerInvitationService.requestInvitationToken('foo', 'MPProject:bar', 'Writer')
     expect(containerInvitationService.invitationTokenRepository.touch).toBeCalled()
   })
 
@@ -136,7 +137,8 @@ describe('Invitation - requestInvitationToken', () => {
     containerInvitationService.userRepository = {
       getById: async () =>
         Promise.resolve({
-          email: 'foo@bar.com'
+          email: 'foo@bar.com',
+          _id: 'User|foo@bar.com'
         })
     }
 
@@ -147,8 +149,8 @@ describe('Invitation - requestInvitationToken', () => {
         })
     }
 
-    containerInvitationService.containerService = {
-      getContainer: async () => Promise.resolve(validProject),
+    containerInvitationService.projectService = {
+      getContainer: async () => Promise.resolve({ ...validProject, owners: ['User_foo@bar.com'] }),
       isOwner: () => true
     }
 
@@ -157,7 +159,7 @@ describe('Invitation - requestInvitationToken', () => {
       create: jest.fn(() => Promise.resolve({ _id: 'InvitationToken|bar' }))
     }
 
-    await containerInvitationService.requestInvitationToken('foo', 'bar', 'Writer')
+    await containerInvitationService.requestInvitationToken('foo', 'MPProject:bar', 'Writer')
     expect(containerInvitationService.invitationTokenRepository.create).toBeCalled()
   })
 })

@@ -24,7 +24,7 @@ import {
   NoBucketError,
   DatabaseError
 } from '../../Errors'
-import { databaseErrorMessage } from '../DatabaseErrorMessage'
+import { databaseErrorMessage } from '../DatabaseResponseFunctions'
 import { username as sgUsername } from '../../DomainServices/Sync/SyncService'
 
 export class ProjectMementoRepository extends SGRepository<any, any, any, any> {

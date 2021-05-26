@@ -15,7 +15,7 @@
  */
 
 import { errors } from 'couchbase'
-import { databaseErrorMessage } from '../../../../src/DataAccess/DatabaseErrorMessage'
+import { databaseErrorMessage } from '../../../../src/DataAccess/DatabaseResponseFunctions'
 
 describe('databaseErrorMessage', () => {
   test('should return a meaningful error for "key already exists"', () => {

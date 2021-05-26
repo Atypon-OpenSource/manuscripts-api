@@ -20,70 +20,70 @@ import { ContainerRole } from '../../../src/Models/ContainerModels'
 
 export const invalidRoleInvitationToken = {
   _id: 'MPInvitationToken:valid-project-id+Owner',
-  projectId: 'MPProject:valid-project-id',
+  containerID: 'MPProject:valid-project-id',
   permittedRole: ContainerRole.Owner,
   token: cryptoRandomString(40)
 }
 
 export const validInvitationToken = {
   _id: 'MPInvitationToken:valid-project-id+Viewer',
-  projectId: 'MPProject:valid-project-id',
+  containerID: 'MPProject:valid-project-id',
   permittedRole: ContainerRole.Viewer,
   token: cryptoRandomString(40)
 }
 
 export const validInvitationToken2 = {
   _id: 'MPInvitationToken:valid-project-id-8+Writer',
-  projectId: 'MPProject:valid-project-id-8',
+  containerID: 'MPProject:valid-project-id-8',
   permittedRole: ContainerRole.Writer,
   token: cryptoRandomString(40)
 }
 
 export const validInvitationToken3 = {
   _id: 'MPInvitationToken:valid-project-id-8+Viewer',
-  projectId: 'MPProject:valid-project-id-8',
+  containerID: 'MPProject:valid-project-id-8',
   permittedRole: ContainerRole.Viewer,
   token: cryptoRandomString(40)
 }
 
 export const validInvitationToken4 = {
   _id: 'MPInvitationToken:valid-project-id-7+Viewer',
-  projectId: 'MPProject:valid-project-id-7',
+  containerID: 'MPProject:valid-project-id-7',
   permittedRole: ContainerRole.Viewer,
   token: cryptoRandomString(40)
 }
 
 export const validInvitationTokenProjectNotInDB = {
   id: 'valid-project-id-3+Writer',
-  projectId: 'MPProject:valid-project-id-3',
+  containerID: 'MPProject:valid-project-id-3',
   permittedRole: ContainerRole.Writer,
   token: cryptoRandomString(40)
 }
 
 export const validInvitationTokenNotInDB = {
   _id: 'MPInvitationToken:valid-project-id-6+Writer',
-  projectId: 'MPProject:valid-project-id-6',
+  containerID: 'MPProject:valid-project-id-6',
   permittedRole: ContainerRole.Writer,
   token: cryptoRandomString(40)
 }
 
 export const validTokenButInvitationExist = {
   _id: 'MPInvitationToken:valid-project-id-2+Viewer',
-  projectId: 'MPProject:valid-project-id-2',
+  containerID: 'MPProject:valid-project-id-2',
   permittedRole: ContainerRole.Viewer,
   token: cryptoRandomString(40)
 }
 
 export const validTokenButInvitationExistBetterRole = {
   _id: 'MPInvitationToken:valid-project-id+Writer',
-  projectId: 'MPProject:valid-project-id',
+  containerID: 'MPProject:valid-project-id',
   permittedRole: ContainerRole.Writer,
   token: cryptoRandomString(40)
 }
 
 export const validInvitationToken5 = {
   _id: 'MPInvitationToken:valid-project-id-9+Writer',
-  projectId: 'MPProject:valid-project-id-9',
+  containerID: 'MPProject:valid-project-id-9',
   permittedRole: ContainerRole.Writer,
   token: cryptoRandomString(40)
 }

@@ -27,6 +27,7 @@ import { ContainerType } from '../../../../../../src/Models/ContainerModels'
 import archiver from 'archiver'
 import { generateLoginToken } from '../../../../../../src/Utilities/JWT/LoginTokenPayload'
 import tempy from 'tempy'
+import { ContainerService } from '../../../../../../src/DomainServices/Container/ContainerService'
 
 jest.setTimeout(TEST_TIMEOUT)
 
@@ -40,7 +41,7 @@ beforeEach(async () => {
   DIContainer.sharedContainer.pressroomService.importJATS = jest.fn(async (): Promise<any> => {})
 
   const containerService: any = DIContainer.sharedContainer.containerService[ContainerType.project]
-  containerService.containerCreate = jest.fn(async (): Promise<any> => ({ id: testProjectId }))
+  containerService.createContainer = jest.fn(async (): Promise<any> => ({ id: testProjectId }))
   containerService.updateContainer = jest.fn(async (): Promise<any> => {})
   containerService.getContainer = jest.fn(async (): Promise<any> => {})
 })
@@ -71,15 +72,24 @@ describe('ProjectController', () => {
       const containerService: any = DIContainer.sharedContainer.containerService[ContainerType.project]
 
       const controller: any = new ProjectController()
+
+      containerService.createContainer = jest.fn(async () => ({ id: testProjectId }))
+      containerService.updateContainerTitleAndCollaborators = jest.fn()
+      containerService.getContainer = jest.fn()
+
       await expect(controller.create(validProjectCreateReq)).resolves.not.toThrow()
 
-      expect(containerService.containerCreate).toBeCalled()
-      expect(containerService.updateContainer).toBeCalled()
+      expect(containerService.createContainer).toBeCalled()
+      expect(containerService.updateContainerTitleAndCollaborators).toBeCalled()
       expect(containerService.getContainer).toBeCalledWith(testProjectId)
     })
 
     test('should work without parameters', async () => {
       const controller: any = new ProjectController()
+      const containerService: any = DIContainer.sharedContainer.containerService[ContainerType.project]
+      containerService.createContainer = jest.fn(async () => ({ id: testProjectId }))
+      containerService.updateContainerTitleAndCollaborators = jest.fn()
+      containerService.getContainer = jest.fn()
       await expect(controller.create({ ...validProjectCreateReq, body: {} })).resolves.not.toThrow()
     })
 
@@ -95,7 +105,7 @@ describe('ProjectController', () => {
         const controller: any = new ProjectController()
 
         controller.upsertManuscriptToProject = jest.fn(async () => {})
-        DIContainer.sharedContainer.containerService[ContainerType.project].isOwner = jest.fn(() => true)
+        ContainerService.isOwner = jest.fn(() => true)
 
         await controller.add({
           headers: authorizationHeader(chance.string()),
@@ -115,7 +125,7 @@ describe('ProjectController', () => {
         const controller: any = new ProjectController()
 
         controller.upsertManuscriptToProject = jest.fn(async () => {})
-        DIContainer.sharedContainer.containerService[ContainerType.project].isOwner = jest.fn(() => true)
+        ContainerService.isOwner = jest.fn(() => true)
 
         await controller.add({
           headers: authorizationHeader(chance.string()),

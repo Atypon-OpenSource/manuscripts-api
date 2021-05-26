@@ -98,7 +98,7 @@ describe('ContainerRequestService - create', () => {
         ...authHeader
       },
       { role: ContainerRole.Writer },
-      { containerID: `MPProject:${validProject._id}` }
+      { containerID: validProject._id }
     )
 
     expect(response.status).toBe(HttpStatus.OK)

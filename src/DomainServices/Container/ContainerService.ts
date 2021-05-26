@@ -26,7 +26,8 @@ import {
   ContainerRole,
   Container,
   ContainerType,
-  ContainerRepository
+  ContainerRepository,
+  ContainerObjectType
 } from '../../Models/ContainerModels'
 import { isLoginTokenPayload, timestamp } from '../../Utilities/JWT/LoginTokenPayload'
 import {
@@ -48,9 +49,10 @@ import { ContainerInvitationRepository } from '../../DataAccess/ContainerInvitat
 import { config } from '../../Config/Config'
 import { ScopedAccessTokenConfiguration } from '../../Config/ConfigurationTypes'
 import { ManuscriptNoteRepository } from '../../DataAccess/ManuscriptNoteRepository/ManuscriptNoteRepository'
-import { ManuscriptNote, ExternalFile, ObjectTypes, Snapshot } from '@manuscripts/manuscripts-json-schema'
 import { UserService } from '../User/UserService'
 import { DIContainer } from '../../DIContainer/DIContainer'
+import { LibraryCollectionRepository } from '../../DataAccess/LibraryCollectionRepository/LibraryCollectionRepository'
+import { ManuscriptNote, ExternalFile, ObjectTypes, Snapshot } from '@manuscripts/manuscripts-json-schema'
 import { ExternalFileRepository } from '../../DataAccess/ExternalFileRepository/ExternalFileRepository'
 import { CorrectionRepository } from '../../DataAccess/CorrectionRepository/CorrectionRepository'
 import { IManuscriptRepository } from '../../DataAccess/Interfaces/IManuscriptRepository'
@@ -69,6 +71,7 @@ export class ContainerService implements IContainerService {
     private containerRepository: ContainerRepository,
     private containerInvitationRepository: ContainerInvitationRepository,
     private emailService: EmailService,
+    private libraryCollectionRepository: LibraryCollectionRepository,
     private manuscriptRepository: IManuscriptRepository,
     private manuscriptNoteRepository: ManuscriptNoteRepository,
     private externalFileRepository: ExternalFileRepository,
@@ -77,7 +80,7 @@ export class ContainerService implements IContainerService {
     private templateRepository: TemplateRepository
   ) {}
 
-  public async containerCreate (
+  public async createContainer (
     token: string,
     _id: string | null
   ): Promise<Container> {
@@ -111,7 +114,7 @@ export class ContainerService implements IContainerService {
 
     const containerID = _id ? _id : uuid_v4()
 
-    const newContainer = this.createContainer(
+    const newContainer = this.handleContainerCreation(
       containerID,
       ContainerService.userIdForSync(user._id)
     )
@@ -126,17 +129,11 @@ export class ContainerService implements IContainerService {
   }
 
   public async deleteContainer (containerId: string, user: User): Promise<void> {
-    const container = await this.containerRepository.getById(containerId)
-
-    if (!container) {
-      throw new RecordNotFoundError(
-        `Container with id ${containerId} was not found.`
-      )
-    }
+    const container = await this.getContainer(containerId)
 
     const userID = ContainerService.userIdForSync(user._id)
 
-    if (!container.owners.includes(userID)) {
+    if (!ContainerService.isOwner(container, userID)) {
       throw new InvalidCredentialsError(
         `User ${userID} is not an owner.`
       )
@@ -174,7 +171,7 @@ export class ContainerService implements IContainerService {
       throw new ValidationError('Invalid managed user id', managedUser)
     }
 
-    if (!this.isOwner(container, user._id)) {
+    if (!ContainerService.isOwner(container, user._id)) {
       throw new UserRoleError('User must be an owner to manage roles', newRole)
     }
 
@@ -182,11 +179,56 @@ export class ContainerService implements IContainerService {
 
     await this.validateManagedUser(managedUserObj._id, user._id, container, newRole, isServer)
 
-    if (this.isOwner(container, managedUserObj._id) && container.owners.length < 2) {
+    if (ContainerService.isOwner(container, managedUserObj._id) && container.owners.length < 2) {
       throw new UserRoleError('User is the only owner', newRole)
     }
 
     await this.updateContainerUser(containerId, newRole, managedUserObj)
+  }
+
+  // tslint:disable-next-line: cyclomatic-complexity
+  private async setUsersRolesInContainedLibraryCollections (
+    containerId: string,
+    userId: string,
+    role: ContainerRole | null
+  ) {
+    const libraryCollections = await this.containerRepository.getContainedLibraryCollections(
+      containerId
+    )
+    const syncUserId = ContainerService.userIdForSync(userId)
+    for (let lc of libraryCollections) {
+      const { owners, writers, viewers, editors, annotators } =
+        this.updatedRoles(lc, userId, role)
+      let inherited
+
+      if (lc.inherited) {
+        inherited = lc.inherited.includes(syncUserId)
+          ? lc.inherited
+          : [...lc.inherited, syncUserId]
+      } else {
+        inherited = [syncUserId]
+      }
+
+      await this.libraryCollectionRepository.patch(
+        lc._id,
+        {
+          _id: containerId,
+          owners:
+            owners && owners.map((u) => ContainerService.userIdForSync(u)),
+          writers:
+            writers && writers.map((u) => ContainerService.userIdForSync(u)),
+          viewers:
+            viewers && viewers.map((u) => ContainerService.userIdForSync(u)),
+          editors:
+            editors && editors.map((u) => ContainerService.userIdForSync(u)),
+          annotators:
+            annotators &&
+            annotators.map((u) => ContainerService.userIdForSync(u)),
+          inherited
+        },
+        {}
+      )
+    }
   }
 
   private validateSecret = (secret?: string) =>
@@ -203,7 +245,7 @@ export class ContainerService implements IContainerService {
       !isServer &&
       managedUserId !== '*' &&
       userId !== managedUserId &&
-      !this.isContainerUser(container, managedUserId)
+      !ContainerService.isContainerUser(container, managedUserId)
     ) {
       throw new ValidationError('User is not in container', managedUserId)
     }
@@ -220,6 +262,10 @@ export class ContainerService implements IContainerService {
     return addedUser
   }
 
+  public static containerTitle (container: Container) {
+    return container.objectType === ObjectTypes.Project ? container.title : undefined
+  }
+
   public async addContainerUser (
     containerID: string,
     role: ContainerRole,
@@ -230,25 +276,27 @@ export class ContainerService implements IContainerService {
 
     const addedUser = await this.getValidUser(userId)
 
-    const title: string | undefined = container.title
-    const owners = _.cloneDeep(container.owners)
-    const writers = _.cloneDeep(container.writers)
-    const viewers = _.cloneDeep(container.viewers)
+    this.ensureValidRole(role)
 
-    userId = ContainerService.userIdForSync(userId)
+    const title = ContainerService.containerTitle(container)
+    const { owners, writers, viewers, editors, annotators } = this.updatedRoles(
+      container,
+      userId,
+      role
+    )
 
-    if (role === ContainerRole.Owner) {
-      owners.push(userId)
-    } else if (role === ContainerRole.Viewer) {
-      viewers.push(userId)
-    } else if (role === ContainerRole.Writer) {
-      writers.push(userId)
-    } else {
-      throw new ValidationError('Invalid role.', role)
-    }
+    if (!ContainerService.isContainerUser(container, userId)) {
+      await this.updateContainerTitleAndCollaborators(
+        containerID,
+        title,
+        owners,
+        writers,
+        viewers,
+        editors,
+        annotators
+      )
+      await this.setUsersRolesInContainedLibraryCollections(containerID, userId, role)
 
-    if (!this.isContainerUser(container, userId)) {
-      await this.updateContainer(containerID, title, owners, writers, viewers)
       await this.notifyForAddingUser(container, role, addedUser, addingUser)
 
       return true
@@ -269,11 +317,42 @@ export class ContainerService implements IContainerService {
     user: User
   ): Promise<void> {
     const container = await this.getContainer(containerID)
-    const syncUserId = ContainerService.userIdForSync(user._id)
-
     this.ensureValidRole(role)
+    const { owners, writers, viewers, editors, annotators } = this.updatedRoles(
+      container,
+      user._id,
+      role
+    )
 
-    const title = container.title
+    const title = ContainerService.containerTitle(container)
+    await this.handleInvitations(role, user, containerID)
+
+    await this.updateContainerTitleAndCollaborators(
+      containerID,
+      title,
+      owners,
+      writers,
+      viewers,
+      editors,
+      annotators
+    )
+    await this.setUsersRolesInContainedLibraryCollections(containerID, user._id, role)
+  }
+
+  // tslint:disable-next-line: cyclomatic-complexity
+  private updatedRoles (
+    container: Container,
+    userId: string,
+    role: ContainerRole | null
+  ): {
+    owners: string[],
+    writers: string[],
+    viewers: string[],
+    editors?: string[],
+    annotators?: string[]
+  } {
+    const syncUserId = ContainerService.userIdForSync(userId)
+
     const owners = _.cloneDeep(container.owners)
     const writers = _.cloneDeep(container.writers)
     const viewers = _.cloneDeep(container.viewers)
@@ -329,12 +408,10 @@ export class ContainerService implements IContainerService {
         break
     }
 
-    await this.handleRole(role, user, containerID)
-
-    await this.updateContainer(containerID, title, owners, writers, viewers, editors, annotators)
+    return { owners, writers, viewers, editors, annotators }
   }
 
-  private async handleRole (
+  private async handleInvitations (
     role: ContainerRole | null,
     user: User,
     containerID: string
@@ -347,7 +424,7 @@ export class ContainerService implements IContainerService {
     }
   }
 
-  public async updateContainer (
+  public async updateContainerTitleAndCollaborators (
     containerId: string,
     title: string | undefined,
     owners: string[] | undefined,
@@ -371,7 +448,7 @@ export class ContainerService implements IContainerService {
     )
   }
 
-  public isContainerUser (container: Container, userId: string): boolean {
+  public static isContainerUser (container: Container, userId: string): boolean {
     return (
       this.isOwner(container, userId) ||
       this.isWriter(container, userId) ||
@@ -385,15 +462,15 @@ export class ContainerService implements IContainerService {
     container: Container,
     userId: string
   ): ContainerRole | null {
-    if (this.isOwner(container, userId)) {
+    if (ContainerService.isOwner(container, userId)) {
       return ContainerRole.Owner
-    } else if (this.isWriter(container, userId)) {
+    } else if (ContainerService.isWriter(container, userId)) {
       return ContainerRole.Writer
-    } else if (this.isViewer(container, userId)) {
+    } else if (ContainerService.isViewer(container, userId)) {
       return ContainerRole.Viewer
-    } else if (this.isEditor(container, userId)) {
+    } else if (ContainerService.isEditor(container, userId)) {
       return ContainerRole.Editor
-    } else if (this.isAnnotator(container, userId)) {
+    } else if (ContainerService.isAnnotator(container, userId)) {
       return ContainerRole.Annotator
     } else {
       return null
@@ -483,7 +560,7 @@ export class ContainerService implements IContainerService {
     const index = { version: '2.0', data: projectResourcesData }
     if (!options.getAttachments) return index
 
-    const attachments = await this.containerRepository.getProjectAttachments(containerID, manuscriptID)
+    const attachments = await this.containerRepository.getContainerAttachments(containerID, manuscriptID)
 
     const zip = new JSZip()
     zip.file('index.manuscript-json', JSON.stringify(index))
@@ -561,8 +638,12 @@ export class ContainerService implements IContainerService {
   }
 
   public async checkUserContainerAccess (userID: string, containerID: string): Promise<boolean> {
-    const { owners, writers, viewers } = await this.getContainer(containerID)
-    return [...owners, ...writers, ...viewers].includes(ContainerService.userIdForSync(userID))
+    let { owners, writers, viewers, editors, annotators } = await this.getContainer(containerID)
+
+    editors = editors || []
+    annotators = annotators || []
+
+    return [...owners, ...writers, ...viewers, ...editors, ...annotators].includes(ContainerService.userIdForSync(userID))
   }
 
   public async checkIfOwnerOrWriter (userID: string, containerID: string): Promise<boolean> {
@@ -685,31 +766,31 @@ export class ContainerService implements IContainerService {
     }
   }
 
-  public isOwner = (container: Container, userId: string) => {
+  public static isOwner (container: Container, userId: string) {
     if (!container) {
-      throw new RecordNotFoundError(`Record not found`)
+      throw new RecordNotFoundError('Record not found')
     }
     return container.owners.indexOf(ContainerService.userIdForSync(userId)) > -1
   }
 
-  public isWriter (container: Container, userId: string): boolean {
+  public static isWriter (container: Container, userId: string): boolean {
     if (!container) {
-      throw new RecordNotFoundError(`Record not found`)
+      throw new RecordNotFoundError('Record not found')
     }
     return container.writers.indexOf(ContainerService.userIdForSync(userId)) > -1
   }
 
-  public isViewer (container: Container, userId: string): boolean {
+  public static isViewer (container: Container, userId: string): boolean {
     if (!container) {
-      throw new RecordNotFoundError(`${this.containerType} not found`)
+      throw new RecordNotFoundError('Record not found')
     }
 
     return container.viewers.indexOf(ContainerService.userIdForSync(userId)) > -1
   }
 
-  public isEditor (container: Container, userId: string): boolean {
+  public static isEditor (container: Container, userId: string): boolean {
     if (!container) {
-      throw new RecordNotFoundError(`${this.containerType} not found`)
+      throw new RecordNotFoundError(`Record not found`)
     }
     const editors = container.editors
     if (editors && editors.length) {
@@ -718,9 +799,9 @@ export class ContainerService implements IContainerService {
     return false
   }
 
-  public isAnnotator (container: Container, userId: string): boolean {
+  public static isAnnotator (container: Container, userId: string): boolean {
     if (!container) {
-      throw new RecordNotFoundError(`${this.containerType} not found`)
+      throw new RecordNotFoundError(`Record not found`)
     }
     const annotators = container.annotators
     if (annotators && annotators.length) {
@@ -736,21 +817,19 @@ export class ContainerService implements IContainerService {
     return container.viewers.indexOf('*') > -1
   }
 
-  private async createContainer (
+  private async handleContainerCreation (
     containerId: string,
     ownerId: string
   ): Promise<Container> {
-    const newContainer = await this.containerRepository.create(
-      {
-        _id: containerId,
-        owners: [ownerId],
-        writers: [],
-        viewers: [],
-        objectType: this.containerObjectType()
-      },
-      {}
-    )
-    return newContainer
+    const newContainer: any = {
+      _id: containerId,
+      owners: [ownerId],
+      writers: [],
+      viewers: [],
+      objectType: this.containerObjectType()
+    }
+
+    return this.containerRepository.create(newContainer, {})
   }
 
   async addManuscript (
@@ -783,11 +862,14 @@ export class ContainerService implements IContainerService {
     return id.replace('_', '|')
   }
 
-  // TODO: Add other types.
-  private containerObjectType (): 'MPProject' {
+  private containerObjectType (): ContainerObjectType {
     switch (this.containerType) {
       case ContainerType.project:
-        return 'MPProject'
+        return ObjectTypes.Project
+      case ContainerType.library:
+        return ObjectTypes.Library
+      case ContainerType.libraryCollection:
+        return ObjectTypes.LibraryCollection
     }
   }
 
@@ -796,7 +878,7 @@ export class ContainerService implements IContainerService {
     const container = await this.getContainer(containerID)
 
     const canAccess =
-      this.isOwner(container, userID) || this.isWriter(container, userID)
+    ContainerService.isOwner(container, userID) || ContainerService.isWriter(container, userID)
     if (!canAccess) {
       throw new ValidationError(
         'User must be a contributor in the container',

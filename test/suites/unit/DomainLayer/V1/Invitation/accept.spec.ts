@@ -191,7 +191,7 @@ describe('Invitation - acceptContainerInvite', () => {
     const invitationService: any =
       DIContainer.sharedContainer.containerInvitationService
 
-    invitationService.containerService = {
+    invitationService.projectService = {
       getContainer: async () => Promise.reject()
     }
 
@@ -220,14 +220,15 @@ describe('Invitation - acceptContainerInvite', () => {
         Promise.resolve({
           invitedUserEmail: 'valid-user-1@manuscriptsapp.com',
           role: 'Owner',
-          invitingUserID: 'User_id'
+          invitingUserID: 'User_id',
+          containerID: 'MPProject:something'
         }),
       patch: jest.fn(() => Promise.resolve()),
       getInvitationsForUser: async () => []
     }
 
-    invitationService.containerService = {
-      getContainer: async () => Promise.resolve({}),
+    invitationService.projectService = {
+      getContainer: jest.fn(() => Promise.resolve({})),
       updateContainerUser: jest.fn(),
       getUserRole: () => 'Viewer'
     }
@@ -237,7 +238,7 @@ describe('Invitation - acceptContainerInvite', () => {
     }
 
     await invitationService.acceptContainerInvite('foo', { _id: 'User|id', email: 'valid-user-1@manuscriptsapp.com' })
-    expect(invitationService.containerService.updateContainerUser).toBeCalled()
+    expect(invitationService.projectService.updateContainerUser).toBeCalled()
   })
 
   test('should return a message if the same role permitted', async () => {
@@ -249,13 +250,14 @@ describe('Invitation - acceptContainerInvite', () => {
         Promise.resolve({
           invitedUserEmail: 'valid-user-1@manuscriptsapp.com',
           role: 'Owner',
-          invitingUserID: 'User_id'
+          invitingUserID: 'User_id',
+          containerID: 'MPProject:something'
         }),
       remove: jest.fn(),
       getInvitationsForUser: async () => []
     }
 
-    invitationService.containerService = {
+    invitationService.projectService = {
       getContainer: async () => Promise.resolve({}),
       updateContainerUser: jest.fn(),
       getUserRole: () => 'Owner'
@@ -277,13 +279,14 @@ describe('Invitation - acceptContainerInvite', () => {
         Promise.resolve({
           invitedUserEmail: 'valid-user-1@manuscriptsapp.com',
           role: 'Viewer',
-          invitingUserID: 'User_id'
+          invitingUserID: 'User_id',
+          containerID: 'MPProject:something'
         }),
       remove: jest.fn(),
       getInvitationsForUser: async () => []
     }
 
-    invitationService.containerService = {
+    invitationService.projectService = {
       getContainer: async () => Promise.resolve({}),
       updateContainerUser: jest.fn(),
       getUserRole: () => 'Owner'
@@ -306,13 +309,14 @@ describe('Invitation - acceptContainerInvite', () => {
           invitedUserEmail: 'valid-user-1@manuscriptsapp.com',
           role: 'Viewer',
           invitingUserID: 'User_id',
-          acceptedAt: (new Chance()).timestamp()
+          acceptedAt: (new Chance()).timestamp(),
+          containerID: 'MPProject:something'
         }),
       remove: jest.fn(),
       getInvitationsForUser: async () => []
     }
 
-    invitationService.containerService = {
+    invitationService.projectService = {
       getContainer: async () => Promise.resolve({}),
       updateContainerUser: jest.fn(),
       getUserRole: () => 'Owner'
@@ -334,14 +338,15 @@ describe('Invitation - acceptContainerInvite', () => {
         Promise.resolve({
           invitedUserEmail: 'valid-user-1@manuscriptsapp.com',
           role: 'Writer',
-          invitingUserID: 'User_id'
+          invitingUserID: 'User_id',
+          containerID: 'MPProject:something'
         }),
       patch: jest.fn(() => Promise.resolve()),
-      getInvitationsForUser: async () => Promise.resolve([{ role: 'Owner' }])
+      getInvitationsForUser: async () => Promise.resolve([{ role: 'Owner', containerID: 'MPProject:something' }])
 
     }
 
-    invitationService.containerService = {
+    invitationService.projectService = {
       getContainer: async () => Promise.resolve({}),
       addContainerUser: jest.fn(() => true),
       getUserRole: () => null
@@ -352,7 +357,7 @@ describe('Invitation - acceptContainerInvite', () => {
     }
 
     await invitationService.acceptContainerInvite('foo', { _id: 'User|id', email: 'valid-user-1@manuscriptsapp.com' })
-    expect(invitationService.containerService.addContainerUser).toBeCalled()
+    expect(invitationService.projectService.addContainerUser).toBeCalled()
   })
 
   test('should find and accept the least limiting invitation and delete others', async () => {
@@ -364,15 +369,23 @@ describe('Invitation - acceptContainerInvite', () => {
         Promise.resolve({
           invitedUserEmail: 'valid-user-1@manuscriptsapp.com',
           role: 'Viewer',
-          invitingUserID: 'User_id'
+          invitingUserID: 'User_id',
+          containerID: 'MPProject:something'
         }),
       patch: jest.fn(() => Promise.resolve()),
       remove: jest.fn(),
-      getInvitationsForUser: async () => Promise.resolve([{ role: 'Writer' }, { role: 'Viewer', _id: 'MPContainerInvitation:valid' }])
-
+      getInvitationsForUser: async () =>
+        Promise.resolve([
+          { role: 'Writer', containerID: 'MPProject:something' },
+          {
+            role: 'Viewer',
+            _id: 'MPContainerInvitation:valid',
+            containerID: 'MPProject:something'
+          }
+        ])
     }
 
-    invitationService.containerService = {
+    invitationService.projectService = {
       getContainer: async () => Promise.resolve({}),
       addContainerUser: jest.fn(() => true),
       getUserRole: () => null
@@ -383,6 +396,6 @@ describe('Invitation - acceptContainerInvite', () => {
     }
 
     await invitationService.acceptContainerInvite('foo', { _id: 'User|id', email: 'valid-user-1@manuscriptsapp.com' })
-    expect(invitationService.containerService.addContainerUser).toBeCalled()
+    expect(invitationService.projectService.addContainerUser).toBeCalled()
   })
 })

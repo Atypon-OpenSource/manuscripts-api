@@ -242,6 +242,6 @@ describe('SGRepository getById', () => {
     const repository = new ProjectRepository(BucketKey.Data, db)
     const project: any = await repository.getById(validProject._id)
 
-    expect(project._id).toBe(`MPProject:${validProject._id}`)
+    expect(project._id).toBe(validProject._id)
   })
 })

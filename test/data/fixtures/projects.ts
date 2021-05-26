@@ -17,7 +17,7 @@
 import { ProjectLike } from 'src/DataAccess/Interfaces/Models'
 
 export const validProject: ProjectLike = {
-  _id: 'valid-project-id',
+  _id: 'MPProject:valid-project-id',
   objectType: 'MPProject',
   owners: ['User_test'],
   writers: [],
@@ -49,7 +49,7 @@ export const validProject6: ProjectLike = {
 }
 
 export const validProject2: ProjectLike = {
-  _id: 'valid-project-id-2',
+  _id: 'MPProject:valid-project-id-2',
   objectType: 'MPProject',
   owners: ['User_test', 'User_valid-user-1@manuscriptsapp.com'],
   writers: [],
@@ -57,7 +57,7 @@ export const validProject2: ProjectLike = {
 }
 
 export const validProject3: ProjectLike = {
-  _id: 'valid-project-id-3',
+  _id: 'MPProject:valid-project-id-3',
   objectType: 'MPProject',
   owners: ['User_foo@bar.com'],
   writers: [],

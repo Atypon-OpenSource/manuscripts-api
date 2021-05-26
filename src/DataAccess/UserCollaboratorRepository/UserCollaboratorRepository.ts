@@ -20,7 +20,7 @@ import { SGRepository } from '../SGRepository'
 import { GatewayOptions } from '../Interfaces/KeyValueRepository'
 import { MethodNotAllowedError, DatabaseError } from '../../Errors'
 import { username as sgUsername } from '../../DomainServices/Sync/SyncService'
-import { databaseErrorMessage } from '../DatabaseErrorMessage'
+import { databaseErrorMessage } from '../DatabaseResponseFunctions'
 import { UserCollaborator } from '@manuscripts/manuscripts-json-schema'
 
 export class UserCollaboratorRepository extends SGRepository<

@@ -237,7 +237,7 @@ describe('User - deleteUser', () => {
 
     userService.projectRepository = {
       patch: jest.fn(),
-      getUserProjects: jest.fn(() =>
+      getUserContainers: jest.fn(() =>
         Promise.resolve([
           {
             owners: [validUser1._id.replace('|', '_'), 'User_test'],
@@ -305,7 +305,7 @@ describe('User - deleteUser', () => {
 
     userService.projectRepository = {
       removeWithAllResources: jest.fn(),
-      getUserProjects: jest.fn(() =>
+      getUserContainers: jest.fn(() =>
         Promise.resolve([
           {
             owners: [validUser1._id.replace('|', '_')],
@@ -363,7 +363,7 @@ describe('User - deleteUser', () => {
     }
 
     userService.projectRepository = {
-      getUserProjects: jest.fn(async () => Promise.resolve([]))
+      getUserContainers: jest.fn(async () => Promise.resolve([]))
     }
 
     const deleted = await userService.deleteUser('userId')

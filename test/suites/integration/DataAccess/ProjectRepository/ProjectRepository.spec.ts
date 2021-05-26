@@ -22,7 +22,6 @@ import { BucketKey } from '../../../../../src/Config/ConfigurationTypes'
 import { ProjectRepository } from '../../../../../src/DataAccess/ProjectRepository/ProjectRepository'
 import { validProject } from '../../../../data/fixtures/projects'
 import { ContainerInvitationRepository } from '../../../../../src/DataAccess/ContainerInvitationRepository/ContainerInvitationRepository'
-import { ValidationError } from '../../../../../src/Errors'
 
 jest.setTimeout(TEST_TIMEOUT)
 
@@ -68,17 +67,9 @@ describe('ProjectRepository removeWithAllResources', () => {
     expect(projectAfter).toBeNull()
     expect(invitationAfter).toBeNull()
   })
-
-  test('should fail to remove project if id is missing', async () => {
-    const repository = new ProjectRepository(BucketKey.Data, db)
-
-    return expect(
-      repository.removeWithAllResources(null as any)
-    ).rejects.toThrowError(ValidationError)
-  })
 })
 
-describe('ProjectRepository getUserProjects', () => {
+describe('ProjectRepository getUserContainers', () => {
   beforeEach(async () => {
     await drop()
     await dropBucket(BucketKey.Data)
@@ -88,31 +79,13 @@ describe('ProjectRepository getUserProjects', () => {
   test('should get project by user id', async () => {
     const repository = new ProjectRepository(BucketKey.Data, db)
     const validUserId = 'User_test'
-    const projects = await repository.getUserProjects(validUserId)
+    const projects = await repository.getUserContainers(validUserId)
 
     expect(
       projects.find(
-        (project) => project._id === `MPProject:${validProject._id}`
+        (project) => project._id === validProject._id
       )!._id
-    ).toBe(`MPProject:${validProject._id}`)
-  })
-})
-
-describe('ProjectRepository getContainerResourcesIDs', () => {
-  beforeEach(async () => {
-    await drop()
-    await dropBucket(BucketKey.Data)
-    await seed({ projects: true, projectInvitations: true })
-  })
-
-  test('should get resources ids', async () => {
-    const repository = new ProjectRepository(BucketKey.Data, db)
-    const validId = `MPProject:valid-project-id-6`
-    const resources = await repository.getContainerResourcesIDs(validId)
-
-    expect(resources!.find((resource) => resource._id === validId)!._id).toBe(
-      validId
-    )
+    ).toBe(validProject._id)
   })
 })
 

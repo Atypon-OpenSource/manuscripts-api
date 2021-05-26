@@ -86,6 +86,8 @@ import { log } from '../Utilities/Logger'
 import { IPressroomService } from '../DomainServices/Pressroom/IPressroomService'
 import { PressroomService } from '../DomainServices/Pressroom/PressroomService'
 import { ManuscriptNoteRepository } from '../DataAccess/ManuscriptNoteRepository/ManuscriptNoteRepository'
+import { LibraryRepository } from '../DataAccess/LibraryRepository/LibraryRepository'
+import { LibraryCollectionRepository } from '../DataAccess/LibraryCollectionRepository/LibraryCollectionRepository'
 import { ExternalFileRepository } from '../DataAccess/ExternalFileRepository/ExternalFileRepository'
 import { IManuscriptRepository } from '../DataAccess/Interfaces/IManuscriptRepository'
 import { ManuscriptRepository } from '../DataAccess/ManuscriptRepository/ManuscriptRepository'
@@ -141,6 +143,8 @@ export class DIContainer {
   readonly containerInvitationService: IContainerInvitationService
   readonly invitationService: InvitationService
   readonly projectRepository: ProjectRepository
+  readonly libraryRepository: LibraryRepository
+  readonly libraryCollectionRepository: LibraryCollectionRepository
   readonly userProfileRepository: UserProfileRepository
   readonly containerService: ContainerServiceMap
   readonly containerRequestService: IContainerRequestService
@@ -217,6 +221,14 @@ export class DIContainer {
       BucketKey.Data,
       this.dataBucket
     )
+    this.libraryRepository = new LibraryRepository(
+      BucketKey.Data,
+      this.dataBucket
+    )
+    this.libraryCollectionRepository = new LibraryCollectionRepository(
+      BucketKey.Data,
+      this.dataBucket
+    )
     this.userProfileRepository = new UserProfileRepository(
       BucketKey.Data,
       this.dataBucket
@@ -290,6 +302,41 @@ export class DIContainer {
         this.projectRepository,
         this.containerInvitationRepository,
         this.emailService,
+        this.libraryCollectionRepository,
+        this.manuscriptRepository,
+        this.manuscriptNotesRepository,
+        this.externalFileRepository,
+        this.correctionRepository,
+        this.externalFileRepository,
+        this.templateRepository
+      ),
+      [ContainerType.library]: new ContainerService(
+        ContainerType.library,
+        this.userRepository,
+        this.userService,
+        this.activityTrackingService,
+        this.userStatusRepository,
+        this.libraryRepository,
+        this.containerInvitationRepository,
+        this.emailService,
+        this.libraryCollectionRepository,
+        this.manuscriptRepository,
+        this.manuscriptNotesRepository,
+        this.externalFileRepository,
+        this.correctionRepository,
+        this.externalFileRepository,
+        this.templateRepository
+      ),
+      [ContainerType.libraryCollection]: new ContainerService(
+        ContainerType.libraryCollection,
+        this.userRepository,
+        this.userService,
+        this.activityTrackingService,
+        this.userStatusRepository,
+        this.libraryCollectionRepository,
+        this.containerInvitationRepository,
+        this.emailService,
+        this.libraryCollectionRepository,
         this.manuscriptRepository,
         this.manuscriptNotesRepository,
         this.externalFileRepository,
@@ -302,6 +349,8 @@ export class DIContainer {
         this.userProfileRepository,
         this.emailService,
         this.containerService[ContainerType.project],
+        this.containerService[ContainerType.library],
+        this.containerService[ContainerType.libraryCollection],
         this.containerInvitationRepository,
         this.invitationTokenRepository,
         this.activityTrackingService
@@ -320,6 +369,8 @@ export class DIContainer {
       this.userProfileRepository,
       this.userRepository,
       this.containerService[ContainerType.project],
+      this.containerService[ContainerType.library],
+      this.containerService[ContainerType.libraryCollection],
       this.emailService
     )
     this.authService = new AuthService(

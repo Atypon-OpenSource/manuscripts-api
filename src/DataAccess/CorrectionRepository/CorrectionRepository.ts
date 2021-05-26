@@ -17,7 +17,7 @@
 import { SGRepository } from '../SGRepository'
 import { DatabaseError ,NoBucketError } from '../../Errors'
 import { CouchbaseError ,N1qlQuery } from 'couchbase'
-import { databaseErrorMessage } from '../DatabaseErrorMessage'
+import { databaseErrorMessage } from '../DatabaseResponseFunctions'
 import { CorrectionLike } from '../Interfaces/Models'
 import { Correction } from '@manuscripts/manuscripts-json-schema/dist/types'
 
