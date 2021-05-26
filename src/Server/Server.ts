@@ -154,7 +154,7 @@ export class Server implements IServer {
         }
 
         res.status(statusCode)
-           .json({ error: JSON.stringify(error) })
+           .json({ error: JSON.stringify(error), message: error.message })
            .end()
       }
     )
