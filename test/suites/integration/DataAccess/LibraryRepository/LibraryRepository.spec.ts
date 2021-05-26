@@ -22,7 +22,6 @@ import { BucketKey } from '../../../../../src/Config/ConfigurationTypes'
 import { LibraryRepository } from '../../../../../src/DataAccess/LibraryRepository/LibraryRepository'
 import { validLibrary } from '../../../../data/fixtures/libraries'
 import { ContainerInvitationRepository } from '../../../../../src/DataAccess/ContainerInvitationRepository/ContainerInvitationRepository'
-import { MethodNotAllowedError } from '../../../../../src/Errors'
 
 jest.setTimeout(TEST_TIMEOUT)
 
