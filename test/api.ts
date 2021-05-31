@@ -467,11 +467,12 @@ export async function updateExternalFile (headers: any, body: object, params: an
     .set(headers)
     .send(body)
 }
-export async function createSnapshot (headers: any, params: any): Promise<supertest.Response> {
+export async function createSnapshot (headers: any, params: any, body: any): Promise<supertest.Response> {
   const server: IServer = await createServer()
   return supertest(server.app)
     .post(`/api/v1/snapshot/${params.containerID}/create`)
     .set(headers)
+    .send(body)
 }
 
 export async function getCorrectionStatus (headers: any, params: any): Promise<supertest.Response> {

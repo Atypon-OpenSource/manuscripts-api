@@ -33,7 +33,8 @@ import {
   addExternalFiles,
   updateExternalFile,
   createManuscript,
-  getCorrectionStatus
+  getCorrectionStatus,
+  createSnapshot
 } from '../../../../api'
 import { drop, dropBucket, seed, testDatabase } from '../../../../utilities/db'
 import { validBody, validBody2 } from '../../../../data/fixtures/credentialsRequestPayload'
@@ -1105,4 +1106,37 @@ describe('ContainerService - getCorrectionStatus', () => {
     expect(response.status).toBe(HttpStatus.NO_CONTENT)
   })
 
+})
+
+describe('ContainerService - saveSnapshot', () => {
+  beforeEach(async () => {
+    await drop()
+    await dropBucket(BucketKey.Data)
+    await seed({ users: true, applications: true, projects: true })
+  })
+  test('should save snapshot', async () => {
+    const loginResponse: supertest.Response = await basicLogin(
+      validBody,
+      ValidHeaderWithApplicationKey
+    )
+    expect(loginResponse.status).toBe(HttpStatus.OK)
+    const authHeader = authorizationHeader(loginResponse.body.token)
+    const shacklesService: any = DIContainer.sharedContainer.shacklesService
+    shacklesService.createSnapshot = jest.fn(() => {
+      return {
+        key: 'testKey'
+      }
+    })
+    const saveSnapshotResponse: supertest.Response = await createSnapshot(
+      {
+        ...ValidContentTypeAcceptJsonHeader,
+        ...authHeader
+      },{
+        containerID: 'MPProject:valid-project-id-4'
+      }, {
+        name: 'testSnap'
+      }
+    )
+    expect(saveSnapshotResponse.status).toBe(HttpStatus.OK)
+  })
 })

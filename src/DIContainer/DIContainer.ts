@@ -307,7 +307,7 @@ export class DIContainer {
         this.manuscriptNotesRepository,
         this.externalFileRepository,
         this.correctionRepository,
-        this.externalFileRepository,
+        this.snapshotRepository,
         this.templateRepository
       ),
       [ContainerType.library]: new ContainerService(
@@ -324,7 +324,7 @@ export class DIContainer {
         this.manuscriptNotesRepository,
         this.externalFileRepository,
         this.correctionRepository,
-        this.externalFileRepository,
+        this.snapshotRepository,
         this.templateRepository
       ),
       [ContainerType.libraryCollection]: new ContainerService(
