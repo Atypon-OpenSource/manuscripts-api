@@ -14,10 +14,38 @@
  * limitations under the License.
  */
 
+import '../../../../../utilities/dbMock'
 import { TemplatesController } from '../../../../../../src/Controller/V1/Templates/TemplatesController'
+import { validProject2 } from '../../../../../data/fixtures/projects'
+import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
+import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
 
-describe('TemplatesController - create', () => {
+jest.setTimeout(TEST_TIMEOUT)
+
+beforeEach(() => {
+  (DIContainer as any)._sharedContainer = null
+  return DIContainer.init()
+})
+
+describe('TemplatesController - fetchTemplates', () => {
   test('should execute TemplatesController', async () => {
+    const prjectRepo: any = DIContainer.sharedContainer.projectRepository
+    prjectRepo.getById = jest.fn((id) => {
+      if (id === 'MPProject:valid-project-id-2') {
+        return validProject2
+      } else {
+        return null
+      }
+    })
+    prjectRepo.getUserContainers = jest.fn(() => [validProject2])
+    prjectRepo.findModelsInTemplate = jest.fn(() => [validProject2])
+    prjectRepo.findTemplatesInContainer = jest.fn(() => [{
+      containerID: 'MPProject:valid-project-id-2',
+      title: 'Valid Template Title',
+      _id: 'MPManuscriptTemplate:valid-template-2',
+      objectType: 'MPManuscriptTemplate'
+    }])
+
     const templatesController: TemplatesController = new TemplatesController()
     const output = await templatesController.fetchPublishedTemplates()
     expect(output).toBeTruthy()

@@ -136,7 +136,8 @@ jest.mock('../../src/Config/Config', () => {
     },
 
     template: {
-      allowedOwners: []
+      allowedOwners: ['User_valid-user@manuscriptsapp.com'],
+      allowedProjects: ['MPProject:valid-project-id-2', 'MPProject:valid-project-id-invalid']
     },
     createBucketOptions: () => {
       return {}

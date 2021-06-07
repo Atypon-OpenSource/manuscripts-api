@@ -156,6 +156,7 @@ export interface ShacklesConfiguration {
 
 export interface TemplateConfiguration {
   readonly allowedOwners: string[]
+  readonly allowedProjects: string[]
 }
 
 export interface ConfigurationContainer {

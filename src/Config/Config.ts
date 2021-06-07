@@ -71,6 +71,20 @@ function getArray (value: string, key: string, separator: string): string [] {
   return arrayParts
 }
 
+function getOptionalArray (envVar: string | undefined, key: string, separator: string): string [] {
+  if (envVar === undefined || envVar === '') {
+    return []
+  }
+  const value = getString(envVar, key)
+  const arrayParts = value.split(separator)
+  for (const part of arrayParts) {
+    if (!isString(part) || part.length === 0) {
+      throw new ConfigurationError(key, value)
+    }
+  }
+  return arrayParts
+}
+
 // undefined intentionally here,
 // in order to avoid creating an object with null values
 // (which the relevant 3rd party code may not interpret similarly).
@@ -246,7 +260,8 @@ export class Configuration implements ConfigurationContainer {
     }
 
     this.template = {
-      allowedOwners: getArray(env.APP_COUCHBASE_ALLOWED_OWNERS ? getString(env.APP_COUCHBASE_ALLOWED_OWNERS, 'APP_COUCHBASE_ALLOWED_OWNERS') : '', 'APP_COUCHBASE_ALLOWED_OWNERS', ';')
+      allowedOwners: getOptionalArray(env.APP_COUCHBASE_ALLOWED_OWNERS, 'APP_COUCHBASE_ALLOWED_OWNERS', ';'),
+      allowedProjects: getOptionalArray(env.APP_COUCHBASE_ALLOWED_PROJECTS, 'APP_COUCHBASE_ALLOWED_PROJECTS', ';')
     }
   }
 

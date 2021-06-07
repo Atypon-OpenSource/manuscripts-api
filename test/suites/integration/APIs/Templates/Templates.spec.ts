@@ -23,7 +23,7 @@ import { drop, dropBucket, seed, testDatabase } from '../../../../utilities/db'
 import { SeedOptions } from '../../../../../src/DataAccess/Interfaces/SeedOptions'
 import { BucketKey } from '../../../../../src/Config/ConfigurationTypes'
 
-const seedOptions: SeedOptions = { users: true, applications: true }
+const seedOptions: SeedOptions = { users: true, applications: true, templates: true, projects: true }
 
 let db: any = null
 beforeAll(async () => {
@@ -44,7 +44,8 @@ describe('TemplateService - Fetch published templates', () => {
   test('Should fetch list of templates', async () => {
     const response: supertest.Response = await fetchTemplates()
     expect(response.status).toBe(HttpStatus.OK)
-    expect(response.body).toBeTruthy()
+    const templates: [] = JSON.parse(response.text)
+    expect(templates.length).toBeGreaterThan(0)
   })
 }
 )
