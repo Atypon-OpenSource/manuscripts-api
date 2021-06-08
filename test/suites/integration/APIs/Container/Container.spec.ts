@@ -943,6 +943,32 @@ describe('ContainerService - createManuscript', () => {
       JSON.parse(response.text).id.startsWith('MPManuscript')
     ).toBeTruthy()
   })
+
+  test('should create a manuscript', async () => {
+    const loginResponse: supertest.Response = await basicLogin(
+      validBody2,
+      ValidHeaderWithApplicationKey
+    )
+    expect(loginResponse.status).toBe(HttpStatus.OK)
+
+    const authHeader = authorizationHeader(loginResponse.body.token)
+    const response: supertest.Response = await createManuscript(
+      {
+        ...ValidContentTypeAcceptJsonHeader,
+        ...authHeader
+      },
+      {
+        containerID: `MPProject:valid-project-id-11`
+      },
+      {
+        templateId: 'MPManuscriptTemplate:www-zotero-org-styles-nature-genetics-Nature-Genetics-Journal-Publication-Article'
+      }
+    )
+    expect(response.status).toBe(HttpStatus.OK)
+    expect(
+      JSON.parse(response.text).id.startsWith('MPManuscript')
+    ).toBeTruthy()
+  })
 })
 
 describe('ContainerService - getProductionNotes', () => {

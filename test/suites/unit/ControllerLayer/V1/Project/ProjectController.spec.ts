@@ -198,6 +198,7 @@ describe('ProjectController', () => {
       DIContainer.sharedContainer.containerService[ContainerType.project].addManuscript = jest.fn(async () => {})
       DIContainer.sharedContainer.manuscriptRepository.create = jest.fn()
       DIContainer.sharedContainer.templateRepository.getById = jest.fn(() => Promise.resolve(null))
+      DIContainer.sharedContainer.pressroomService.validateTemplateId = jest.fn(() => Promise.resolve(false))
       const archive = archiver('zip')
       archive.append(JSON.stringify({
         data: [
@@ -212,11 +213,34 @@ describe('ProjectController', () => {
         .rejects.toThrow(RecordNotFoundError)
     })
 
+    test('should not fail if template is found in pressroom', async () => {
+      const controller: any = new ProjectController()
+
+      DIContainer.sharedContainer.containerService[ContainerType.project].addManuscript = jest.fn(async () => {})
+      DIContainer.sharedContainer.manuscriptRepository.create = jest.fn()
+      DIContainer.sharedContainer.templateRepository.getById = jest.fn(() => Promise.resolve(null))
+      DIContainer.sharedContainer.pressroomService.validateTemplateId = jest.fn(() => Promise.resolve(true))
+      const archive = archiver('zip')
+      archive.append(JSON.stringify({
+        data: [
+          { _id: 'MPManuscript:abc', objectType: 'MPManuscript' },
+          { _id: 'MPCitation:abc', objectType: 'MPCitation' },
+          { _id: 'MPMPAuxiliaryObjectReference:abc', objectType: 'MPAuxiliaryObjectReference' }
+        ]
+      }), { name: 'index.manuscript-json' })
+      await archive.finalize()
+      await controller.upsertManuscriptToProject({ _id: 'MPProject:abc' }, archive, null, 'templateId')
+
+      expect(DIContainer.sharedContainer.manuscriptRepository.create).toBeCalled()
+      expect(DIContainer.sharedContainer.containerService[ContainerType.project].addManuscript).toBeCalled()
+    })
+
     test('successfully create a mansucript and all contained resources', async () => {
       const controller: any = new ProjectController()
 
       DIContainer.sharedContainer.containerService[ContainerType.project].addManuscript = jest.fn(async () => {})
       DIContainer.sharedContainer.manuscriptRepository.create = jest.fn()
+      DIContainer.sharedContainer.pressroomService.validateTemplateId = jest.fn(() => Promise.resolve(false))
 
       const archive = archiver('zip')
       archive.append(JSON.stringify({

@@ -129,4 +129,29 @@ describe('ContainerService - createProject', () => {
     )
     expect(sendFileResponse.status).toBe(HttpStatus.OK)
   })
+
+  test('should import jats and update manuscript with templateId', async () => {
+    const loginResponse: supertest.Response = await basicLogin(
+      validBody,
+      ValidHeaderWithApplicationKey
+    )
+
+    expect(loginResponse.status).toBe(HttpStatus.OK)
+
+    const authHeader = authorizationHeader(loginResponse.body.token)
+
+    const sendFileResponse = await importManuscript(
+      {
+        ...ValidContentTypeAcceptJsonHeader,
+        ...authHeader
+      },
+      {
+        containerID: 'MPProject:valid-project-id-2'
+      },
+      'test/data/fixtures/jats-arc.zip',
+      validManuscript._id,
+      'MPManuscriptTemplate:www-zotero-org-styles-nature-genetics-Nature-Genetics-Journal-Publication-Article'
+    )
+    expect(sendFileResponse.status).toBe(HttpStatus.OK)
+  })
 })

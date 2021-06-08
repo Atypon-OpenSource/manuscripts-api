@@ -1829,6 +1829,7 @@ describe('ContainerService - createManuscript', () => {
     containerService.manuscriptRepository.getById = jest.fn(() => Promise.resolve(null))
     containerService.manuscriptRepository.create = jest.fn()
     containerService.templateRepository.getById = jest.fn(() => Promise.resolve(null))
+    DIContainer.sharedContainer.pressroomService.validateTemplateId = jest.fn(() => Promise.resolve(false))
     const containerID = validNote1.containerID
     const manuscriptID = validNote1.manuscriptID
     const userID = 'User_test'
@@ -1838,10 +1839,30 @@ describe('ContainerService - createManuscript', () => {
     ).rejects.toThrow(RecordNotFoundError)
   })
 
+  test('should not fail if template found in pressroom', async () => {
+    const containerService: any =
+      DIContainer.sharedContainer.containerService[ContainerType.project]
+    containerService.getContainer = jest.fn(() => Promise.resolve(validProject))
+    containerService.manuscriptRepository.getById = jest.fn(() => Promise.resolve(null))
+    containerService.manuscriptRepository.create = jest.fn()
+    containerService.templateRepository.getById = jest.fn(() => Promise.resolve(null))
+    DIContainer.sharedContainer.pressroomService.validateTemplateId = jest.fn(() => Promise.resolve(true))
+    const containerID = validNote1.containerID
+    const manuscriptID = validNote1.manuscriptID
+    const userID = 'User_test'
+
+    await containerService.createManuscript(userID, containerID, manuscriptID, 'templateId')
+    expect(
+      containerService.manuscriptRepository.create
+    ).toBeCalled()
+  })
+
   test('should create a manuscript', async () => {
     const containerService: any =
       DIContainer.sharedContainer.containerService[ContainerType.project]
     containerService.getContainer = jest.fn(() => Promise.resolve(validProject))
+    containerService.templateRepository.getById = jest.fn(() => Promise.resolve(null))
+    DIContainer.sharedContainer.pressroomService.validateTemplateId = jest.fn(() => Promise.resolve(true))
     containerService.manuscriptRepository = {
       getById: jest.fn(() => Promise.resolve(null)),
       create: jest.fn()
@@ -1850,7 +1871,7 @@ describe('ContainerService - createManuscript', () => {
     const manuscriptID = validNote1.manuscriptID
     const userID = 'User_test'
 
-    await containerService.createManuscript(userID, containerID, manuscriptID)
+    await containerService.createManuscript(userID, containerID, manuscriptID, 'templateId')
     expect(
       containerService.manuscriptRepository.create
     ).toBeCalled()

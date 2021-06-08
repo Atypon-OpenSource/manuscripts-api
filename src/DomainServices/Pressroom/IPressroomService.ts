@@ -25,4 +25,6 @@ export interface IPressroomService {
     archive: Buffer,
     manuscriptID: string
   ): Promise<Buffer>
+
+  validateTemplateId (templateID: string): Promise<boolean>
 }

@@ -96,6 +96,7 @@ export class ProjectController extends BaseController implements IProjectControl
    * Create/update the imported manuscript and it's resources.
    * @returns the created/updated manuscript
    */
+  // tslint:disable-next-line:cyclomatic-complexity
   async upsertManuscriptToProject (project: Container, manuscript: Readable, manuscriptId?: string, templateId?: string): Promise<Container> {
     const buffer = await getStream.buffer(manuscript)
 
@@ -131,7 +132,13 @@ export class ProjectController extends BaseController implements IProjectControl
       ? await DIContainer.sharedContainer.templateRepository.getById(templateId)
       : null
 
-    if (templateId && !template) {
+    let templateFound: boolean = templateId !== undefined && template !== null
+
+    if (!templateFound && templateId) {
+      templateFound = await DIContainer.sharedContainer.pressroomService.validateTemplateId(templateId)
+    }
+
+    if (!templateFound && templateId) {
       throw new RecordNotFoundError(
         'Template with id not found'
       )

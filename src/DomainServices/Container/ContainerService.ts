@@ -899,11 +899,17 @@ export class ContainerService implements IContainerService {
       )
     }
 
-    const template = templateId
+    let template = templateId
       ? await this.templateRepository.getById(templateId)
       : null
 
-    if (templateId && !template) {
+    let templateFound: boolean = templateId !== undefined && template !== null
+
+    if (!templateFound && templateId) {
+      templateFound = await DIContainer.sharedContainer.pressroomService.validateTemplateId(templateId)
+    }
+
+    if (!templateFound && templateId) {
       throw new RecordNotFoundError(
         'Template with id not found'
       )
