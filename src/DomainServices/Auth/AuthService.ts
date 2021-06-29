@@ -124,6 +124,10 @@ export class AuthService implements IAuthService {
     return typeof value === 'string' && value.startsWith('Bearer ')
   }
 
+  static normalizeEmail (email: string) {
+    return email.toLowerCase()
+  }
+
   public static ensureNonConnectAuthEnabled () {
     if (process.env.NODE_ENV !== 'test' && !config.auth.enableNonConnectAuth) {
       throw new OperationDisabledError(
@@ -156,7 +160,7 @@ export class AuthService implements IAuthService {
   public async login (credentials: Credentials): Promise<AuthorizedUser> {
     AuthService.ensureNonConnectAuthEnabled()
 
-    const email = credentials.email.toLowerCase()
+    const email = AuthService.normalizeEmail(credentials.email)
     const { appId, password, deviceId } = credentials
 
     const user = await this.userRepository.getOne({ email })
@@ -231,7 +235,9 @@ export class AuthService implements IAuthService {
     if (connectUserID) {
       user = await this.userRepository.getOne({ connectUserID })
     } else if (email) {
-      user = await this.userRepository.getOne({ email })
+      user = await this.userRepository.getOne({
+        email: AuthService.normalizeEmail(email)
+      })
     }
 
     if (!user) {
@@ -376,7 +382,7 @@ export class AuthService implements IAuthService {
   ): Promise<AuthorizedUser> {
     AuthService.ensureNonConnectAuthEnabled()
 
-    const email = googleAccess.email.toLowerCase()
+    const email = AuthService.normalizeEmail(googleAccess.email)
     const {
       appId,
       deviceId,
@@ -607,7 +613,8 @@ export class AuthService implements IAuthService {
    * Sends email to reset password.
    */
   public async sendPasswordResetInstructions (email: string): Promise<void> {
-    const user = await this.userRepository.getOne({ email: email.toLowerCase() })
+    const normalizedEmail = AuthService.normalizeEmail(email)
+    const user = await this.userRepository.getOne({ email: normalizedEmail })
     if (!user) {
       throw new InvalidCredentialsError(`No user with email address '${email}'`)
     }
@@ -1023,7 +1030,7 @@ export class AuthService implements IAuthService {
     deviceID: string | null
   ): Promise<CreatedIAMDetails> {
     const { name, aud: appID, sub: connectUserID } = iamOauthToken
-    const email = iamOauthToken.email.toLowerCase()
+    const email = AuthService.normalizeEmail(iamOauthToken.email)
 
     try {
       const userEmailID = this.userEmailID(email)

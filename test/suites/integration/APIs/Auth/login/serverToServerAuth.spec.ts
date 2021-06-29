@@ -105,6 +105,27 @@ describe('Server to Server Auth - POST api/v1/auth/admin', () => {
     expect(response.body).toEqual({})
   })
 
+  test('ensures admin can log in with email (upper case)', async () => {
+    const response: supertest.Response = await serverToServerAuth(
+      { deviceId: chance.guid() },
+      {
+        ...ValidHeaderWithApplicationKey,
+        authorization: `Bearer ${jsonwebtoken.sign(
+          { email: validBody.email.toUpperCase() },
+          config.auth.serverSecret
+        )}`
+      }
+    )
+
+    expect(response.status).toBe(HttpStatus.OK)
+    expect(response.body.token).toBeDefined()
+
+    delete response.body.token
+    delete response.body.refreshToken
+
+    expect(response.body).toEqual({})
+  })
+
   test('ensures admin can log in with connectUserID', async () => {
     const response: supertest.Response = await serverToServerAuth(
       { deviceId: chance.guid() },
