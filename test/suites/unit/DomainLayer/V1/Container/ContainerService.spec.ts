@@ -1959,6 +1959,7 @@ describe('ContainerService - addExternalFiles', () => {
   test('should add externalFiles', async () => {
     const containerService: any =
       DIContainer.sharedContainer.containerService[ContainerType.project]
+    DIContainer.sharedContainer.projectRepository.patch = jest.fn()
     const repo: any = DIContainer.sharedContainer.externalFileRepository
     repo.bulkDocs = jest.fn(() => [externalFile])
     await containerService.addExternalFiles([externalFile])
@@ -1970,6 +1971,7 @@ describe('ContainerService - updateExternalFile', () => {
   test('should update externalFile', async () => {
     const containerService: any =
       DIContainer.sharedContainer.containerService[ContainerType.project]
+    DIContainer.sharedContainer.projectRepository.patch = jest.fn()
     const repo: any = DIContainer.sharedContainer.externalFileRepository
     repo.getById = jest.fn(() => externalFile)
     repo.update = jest.fn()

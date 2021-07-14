@@ -984,12 +984,14 @@ export class ContainerService implements IContainerService {
     externalFileID: string,
     updatedDocument: ExternalFile
   ): Promise<ExternalFile> {
-    const externalFile = await this.externalFileRepository.getById(externalFileID)
+    const externalFile: ExternalFile = await this.externalFileRepository.getById(externalFileID)
     if (!externalFile) {
       throw new RecordNotFoundError(`External file not found for id: ${externalFileID}`)
     }
     _.extend(externalFile, updatedDocument)
-    return this.externalFileRepository.update(externalFileID, externalFile, {})
+    const result = this.externalFileRepository.update(externalFileID, externalFile, {})
+    await this.updateDocumentSessionId(externalFile.containerID)
+    return result
   }
 
   public async addExternalFiles (docs: ExternalFile[]) {
@@ -1004,8 +1006,14 @@ export class ContainerService implements IContainerService {
         updatedAt: stamp,
         sessionID: uuid_v4()
       })
+      await this.updateDocumentSessionId(externalFile.containerID)
     }
     return this.externalFileRepository.bulkDocs(externalFiles)
+  }
+
+  public async updateDocumentSessionId (docId: string) {
+    const sessionID = uuid_v4()
+    await DIContainer.sharedContainer.projectRepository.patch(docId, { _id: docId, sessionID }, {})
   }
 
   public async saveSnapshot (key: string, containerID: string, creator: string, name?: string) {

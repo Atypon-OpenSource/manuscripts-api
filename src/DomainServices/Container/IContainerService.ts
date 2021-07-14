@@ -161,6 +161,12 @@ export interface IContainerService {
    */
   addExternalFiles (docs: ExternalFile[]): void
 
+  /**
+   * Updates the document (project) sessionID
+   * @param docId the document/project ID
+   */
+  updateDocumentSessionId (docId: string): void
+
   saveSnapshot (key: string, containerId: string, creator: string, name?: string): Promise<Snapshot>
 }
 
