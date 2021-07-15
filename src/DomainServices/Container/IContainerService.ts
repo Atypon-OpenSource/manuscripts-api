@@ -38,7 +38,8 @@ export interface IContainerService {
     containerId: string,
     role: ContainerRole,
     userId: string,
-    addingUser: User | null
+    addingUser: User | null,
+    skipEmail?: boolean
   ): Promise<boolean>
 
   /**

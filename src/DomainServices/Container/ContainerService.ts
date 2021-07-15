@@ -270,7 +270,8 @@ export class ContainerService implements IContainerService {
     containerID: string,
     role: ContainerRole,
     userId: string,
-    addingUser: User | null
+    addingUser: User | null,
+    skipEmail?: boolean
   ): Promise<boolean> {
     const container = await this.getContainer(containerID)
 
@@ -297,7 +298,9 @@ export class ContainerService implements IContainerService {
       )
       await this.setUsersRolesInContainedLibraryCollections(containerID, userId, role)
 
-      await this.notifyForAddingUser(container, role, addedUser, addingUser)
+      if (!skipEmail) {
+        await this.notifyForAddingUser(container, role, addedUser, addingUser)
+      }
 
       return true
     }

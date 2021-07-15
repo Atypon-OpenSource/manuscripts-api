@@ -275,7 +275,8 @@ export class ContainerInvitationService implements IContainerInvitationService {
 
   public async acceptContainerInvite (
     invitationId: string,
-    user: User
+    user: User,
+    skipEmail?: boolean
   ): Promise<ContainerInvitationResponse> {
     const invitation = await this.containerInvitationRepository.getById(
       invitationId
@@ -354,7 +355,8 @@ export class ContainerInvitationService implements IContainerInvitationService {
       invitationToAccept,
       roleToAssign,
       invitingUser,
-      invitedUser
+      invitedUser,
+      skipEmail
     )
     return response
   }
@@ -484,7 +486,8 @@ export class ContainerInvitationService implements IContainerInvitationService {
 
   public async acceptInvitationToken (
     token: string,
-    invitedUserId: string
+    invitedUserId: string,
+    skipEmail?: boolean
   ): Promise<ContainerInvitationResponse> {
     const invitedUser = await this.userRepository.getById(invitedUserId)
 
@@ -513,7 +516,7 @@ export class ContainerInvitationService implements IContainerInvitationService {
       throw new ValidationError('Invalid role', permittedRole)
     }
 
-    return this.addUserToContainer(container, invitedUser, permittedRole)
+    return this.addUserToContainer(container, invitedUser, permittedRole, skipEmail)
   }
 
   public async updateInvitedUserID (userID: string, userEmail: string) {
@@ -533,7 +536,8 @@ export class ContainerInvitationService implements IContainerInvitationService {
   private async addUserToContainer (
     container: Container,
     user: User,
-    permittedRole: ContainerRole
+    permittedRole: ContainerRole,
+    skipEmail?: boolean
   ): Promise<ContainerInvitationResponse> {
     const invitations = await this.containerInvitationRepository.getInvitationsForUser(
       container._id,
@@ -564,7 +568,8 @@ export class ContainerInvitationService implements IContainerInvitationService {
         invitationToAccept.containerID,
         roleToAssign,
         userID,
-        null
+        null,
+        skipEmail
       )
       await this.markInvitationAsAccepted(invitationToAccept._id)
       return {
@@ -584,7 +589,8 @@ export class ContainerInvitationService implements IContainerInvitationService {
         container._id,
         permittedRole,
         userID,
-        null
+        null,
+        skipEmail
       )
       const containerTitle = ContainerService.containerTitle(container)
       message = containerTitle
@@ -636,7 +642,8 @@ export class ContainerInvitationService implements IContainerInvitationService {
     invitationToAccept: ContainerInvitationLike,
     roleToAssign: ContainerRole,
     invitingUser: User,
-    invitedUser: User
+    invitedUser: User,
+    skipEmail?: boolean
   ): Promise<ContainerInvitationResponse> {
 
     const currentUserRole = this.containerService(invitationToAccept.containerID).getUserRole(
@@ -649,7 +656,8 @@ export class ContainerInvitationService implements IContainerInvitationService {
         invitationToAccept.containerID,
         roleToAssign,
         invitedUser._id,
-        invitingUser
+        invitingUser,
+        skipEmail
       )
       const containerTitle = ContainerService.containerTitle(container)
 

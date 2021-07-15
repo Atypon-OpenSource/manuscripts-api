@@ -54,7 +54,8 @@ export const acceptSchema: Joi.SchemaMap = {
       .max(100)
       .min(8),
     name: Joi.string()
-      .max(100)
+      .max(100),
+    skipEmail: Joi.bool()
   }),
   headers: jsonHeadersSchema.headers
 }
@@ -81,7 +82,8 @@ export const refreshInvitationTokenSchema: Joi.SchemaMap = {
 
 export const accessSharedUriSchema: Joi.SchemaMap = {
   body: Joi.object({
-    token: Joi.string().required()
+    token: Joi.string().required(),
+    skipEmail: Joi.bool()
   }),
   headers: jsonHeadersSchema.headers
 }

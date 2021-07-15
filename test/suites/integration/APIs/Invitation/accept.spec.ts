@@ -38,6 +38,7 @@ import { ValidContentTypeAcceptJsonHeader, ValidHeaderWithApplicationKey, author
 import { accept, basicLogin } from '../../../../api'
 import { SeedOptions } from '../../../../../src/DataAccess/Interfaces/SeedOptions'
 import { validBody2 } from '../../../../../test/data/fixtures/credentialsRequestPayload'
+import { DIContainer } from '../../../../../src/DIContainer/DIContainer'
 
 let db: any = null
 const seedOptions: SeedOptions = {
@@ -135,6 +136,12 @@ describe('InvitationService - acceptProjectInvite', () => {
 
     expect(loginResponse.status).toBe(HttpStatus.OK)
 
+    const containerInvitationService: any =
+      DIContainer.sharedContainer.containerInvitationService
+    containerInvitationService.emailService.sendContainerInvitationAcceptance = jest.fn(() =>
+      Promise.resolve({})
+    )
+
     const header = authorizationHeader(loginResponse.body.token)
     const response: supertest.Response = await accept(
       {
@@ -149,5 +156,46 @@ describe('InvitationService - acceptProjectInvite', () => {
     )
 
     expect(response.status).toBe(HttpStatus.OK)
+    expect(containerInvitationService.emailService.sendContainerInvitationAcceptance).toBeCalled()
+    containerInvitationService.emailService.sendContainerInvitationAcceptance.mockClear()
+  })
+
+  test('should allow opting out of notification email', async () => {
+    const loginResponse: supertest.Response = await basicLogin(
+      validBody2,
+      ValidHeaderWithApplicationKey
+    )
+
+    expect(loginResponse.status).toBe(HttpStatus.OK)
+
+    const containerInvitationService: any =
+      DIContainer.sharedContainer.containerInvitationService
+    containerInvitationService.emailService.sendContainerInvitationAcceptance = jest.fn(() =>
+      Promise.resolve({})
+    )
+    containerInvitationService.emailService.sendOwnerNotificationOfCollaborator = jest.fn(() =>
+      Promise.resolve({})
+    )
+
+    const header = authorizationHeader(loginResponse.body.token)
+    const response: supertest.Response = await accept(
+      {
+        invitationId: `MPContainerInvitation:${checksum(
+          'valid-user@manuscriptsapp.com-valid-user-6@manuscriptsapp.com-valid-project-id-6',
+          { algorithm: 'sha1' }
+        )}`,
+        skipEmail: true
+      },
+      {
+        ...ValidContentTypeAcceptJsonHeader,
+        ...header
+      }
+    )
+
+    expect(response.status).toBe(HttpStatus.OK)
+    expect(containerInvitationService.emailService.sendContainerInvitationAcceptance).not.toBeCalled()
+    expect(containerInvitationService.emailService.sendOwnerNotificationOfCollaborator).not.toBeCalled()
+    containerInvitationService.emailService.sendContainerInvitationAcceptance.mockClear()
+    containerInvitationService.emailService.sendOwnerNotificationOfCollaborator.mockClear()
   })
 })

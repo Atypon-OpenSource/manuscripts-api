@@ -35,7 +35,8 @@ export interface IContainerInvitationService {
 
   acceptContainerInvite (
     invitationId: string,
-    user: User
+    user: User,
+    skipEmail?: boolean
   ): Promise<ContainerInvitationResponse>
 
   uninvite (userId: string, invitationId: string): Promise<void>
@@ -54,7 +55,8 @@ export interface IContainerInvitationService {
 
   acceptInvitationToken (
     token: string,
-    userId: string
+    userId: string,
+    skipEmail?: boolean
   ): Promise<ContainerInvitationResponse>
 
   markInvitationAsAccepted (

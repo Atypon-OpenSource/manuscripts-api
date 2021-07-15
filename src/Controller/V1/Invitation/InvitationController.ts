@@ -95,7 +95,7 @@ export class InvitationController extends ContainedBaseController
   }
 
   async accept (req: Request): Promise<ContainerInvitationResponse> {
-    const { invitationId, password, name } = req.body
+    const { invitationId, password, name, skipEmail } = req.body
 
     if (!isString(invitationId)) {
       throw new ValidationError('invitationId should be string.', invitationId)
@@ -122,7 +122,8 @@ export class InvitationController extends ContainedBaseController
 
       return DIContainer.sharedContainer.containerInvitationService.acceptContainerInvite(
         invitationId,
-        user
+        user,
+        skipEmail
       )
     }
   }
@@ -211,7 +212,7 @@ export class InvitationController extends ContainedBaseController
   async acceptInvitationToken (
     req: Request
   ): Promise<ContainerInvitationResponse> {
-    const { token } = req.body
+    const { token, skipEmail } = req.body
     const { containerType } = req.params
 
     if (!(containerType in ContainerType)) {
@@ -228,7 +229,8 @@ export class InvitationController extends ContainedBaseController
 
     return DIContainer.sharedContainer.containerInvitationService.acceptInvitationToken(
       token,
-      authHeader.userId
+      authHeader.userId,
+      skipEmail
     )
   }
 }
