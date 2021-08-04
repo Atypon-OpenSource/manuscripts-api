@@ -149,8 +149,11 @@ export class ProjectController extends BaseController implements IProjectControl
       createdAt,
       updatedAt: createdAt,
       sessionID,
-      containerID: project._id,
-      prototype: templateId
+      containerID: project._id
+    }
+
+    if (templateFound) {
+      manuscriptObject['prototype'] = templateId
     }
 
     manuscriptId
