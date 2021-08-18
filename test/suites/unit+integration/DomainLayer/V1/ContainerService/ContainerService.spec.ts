@@ -19,7 +19,7 @@ import '../../../../../utilities/dbMock'
 import { ContainerService } from '../../../../../../src/DomainServices/Container/ContainerService'
 import { ContainerRole, ContainerType } from '../../../../../../src/Models/ContainerModels'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
-import { InvalidCredentialsError, RecordNotFoundError, ValidationError } from '../../../../../../src/Errors'
+import { InvalidCredentialsError, ValidationError } from '../../../../../../src/Errors'
 import { validProject } from '../../../../../data/fixtures/projects'
 import { log } from '../../../../../../src/Utilities/Logger'
 
@@ -185,38 +185,6 @@ describe('ContainerService - getProjectUserRole', () => {
         'User_validId'
       )
     ).toBeNull()
-  })
-})
-
-describe('ProjectService - isOwner/isWriter/isViewer/isEditor/isViewer', () => {
-  test('should throw if project is null in isOwner', () => {
-    expect(() =>
-      ContainerService.isOwner(null as any, 'userId')
-    ).toThrowError(RecordNotFoundError)
-  })
-
-  test('should throw if project is null in isWriter', () => {
-    expect(() =>
-      ContainerService.isWriter(null as any, 'userId')
-    ).toThrowError(RecordNotFoundError)
-  })
-
-  test('should throw if project is null in isViewer', () => {
-    expect(() =>
-      ContainerService.isViewer(null as any, 'userId')
-    ).toThrowError(RecordNotFoundError)
-  })
-
-  test('should throw if project is null in isEditor', () => {
-    expect(() =>
-      ContainerService.isEditor(null as any, 'userId')
-    ).toThrowError(RecordNotFoundError)
-  })
-
-  test('should throw if project is null in isAnnotator', () => {
-    expect(() =>
-     ContainerService.isAnnotator(null as any, 'userId')
-    ).toThrowError(RecordNotFoundError)
   })
 })
 

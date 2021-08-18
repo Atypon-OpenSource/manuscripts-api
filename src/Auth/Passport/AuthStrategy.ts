@@ -86,7 +86,7 @@ export class AuthStrategy {
           req.user = user
           return next()
         }
-        return next(new InvalidCredentialsError(`Invalid token`))
+        return next(new InvalidCredentialsError('Invalid token.'))
       }
       )(req, res, next)
     }
@@ -147,13 +147,13 @@ export class AuthStrategy {
       !decode.payload ||
       !decode.header
     ) {
-      return next(new InvalidCredentialsError('Invalid IAM token'))
+      return next(new InvalidCredentialsError('Invalid IAM token.'))
     }
 
     const { payload, header: { kid: keyID } } = decode
 
     if (!req.headers.cookie) {
-      return next(new MissingCookieError('Cookie header is missing'))
+      return next(new MissingCookieError())
     }
 
     const parsedCookie = cookie.parse(req.headers.cookie)
@@ -218,7 +218,7 @@ export class AuthStrategy {
       !decoded.payload ||
       !decoded.header
     ) {
-      return next(new InvalidCredentialsError('Invalid Logout token'))
+      return next(new InvalidCredentialsError('Invalid logout token.'))
     }
 
     const { payload, header: { kid: keyID } } = decoded
@@ -262,7 +262,7 @@ export class AuthStrategy {
   ) {
     const authHeader = req.headers.authorization
     if (!authHeader) {
-      return next(new InvalidServerCredentialsError('Admin token not set'))
+      return next(new InvalidServerCredentialsError('Admin token not set.'))
     }
 
     const adminToken = authorizationBearerToken(req)
@@ -270,7 +270,7 @@ export class AuthStrategy {
     try {
       jsonwebtoken.verify(adminToken, config.auth.serverSecret)
     } catch (e) {
-      return next(new InvalidServerCredentialsError('Admin token is invalid'))
+      return next(new InvalidServerCredentialsError('Admin token is invalid.'))
     }
 
     return next()

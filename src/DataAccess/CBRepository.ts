@@ -279,7 +279,17 @@ export abstract class CBRepository<TEntity,
       this.database.bucket.touch(key, expiry, {}, (error: CouchbaseError | null, _cas: any) => {
         if (error) {
           if (isNumber(error)) {
-            return reject(new DatabaseError(error, databaseErrorMessage(error, `Couchbase error with code ${error} occurred`), key, new NumericalError(error)))
+            return reject(
+              new DatabaseError(
+                error,
+                databaseErrorMessage(
+                  error,
+                  `Couchbase error with code ${error} occurred.`
+                ),
+                key,
+                new NumericalError(error)
+              )
+            )
           } else {
             const errorMsg: string = databaseErrorMessage(error.code, error.message)
             return reject(new DatabaseError(error.code, errorMsg, key, error))

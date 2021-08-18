@@ -22,7 +22,7 @@ import { IContainersController } from './IContainersController'
 import {
   authorizationBearerToken
 } from '../../BaseController'
-import { IllegalStateError, ValidationError } from '../../../Errors'
+import { IllegalStateError, ManuscriptContentParsingError, ValidationError } from '../../../Errors'
 import { DIContainer } from '../../../DIContainer/DIContainer'
 import { ContainerType, Container } from '../../../Models/ContainerModels'
 import { ContainedBaseController, getContainerType } from '../../ContainedBaseController'
@@ -146,14 +146,18 @@ export class ContainersController extends ContainedBaseController
     const containerType = getContainerType(containerID)
 
     const userID = req.user._id
-    return DIContainer.sharedContainer.containerService[
-      containerType
-    ].getArchive(userID, containerID, manuscriptID, token, {
-      getAttachments,
-      onlyIDs: onlyIDs === 'true',
-      allowOrphanedDocs,
-      includeExt: false
-    })
+    try {
+      return DIContainer.sharedContainer.containerService[
+        containerType
+      ].getArchive(userID, containerID, manuscriptID, token, {
+        getAttachments,
+        onlyIDs: onlyIDs === 'true',
+        allowOrphanedDocs,
+        includeExt: false
+      })
+    } catch (e) {
+      throw new ManuscriptContentParsingError('Failed to make an archive.', e)
+    }
   }
 
   async getAttachment (req: Request) {
@@ -207,7 +211,7 @@ export class ContainersController extends ContainedBaseController
 
     await DIContainer.sharedContainer.pressroomService.fetchHtml(archive, manuscriptID)
       .then(result => finish(result))
-      .catch(reason => { throw new IllegalStateError('Failed to fetch html bundle', reason) })
+      .catch(reason => { throw new IllegalStateError('Failed to fetch html bundle.', reason) })
   }
 
   async accessToken (

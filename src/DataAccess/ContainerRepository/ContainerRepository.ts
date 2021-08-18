@@ -208,9 +208,7 @@ export abstract class ContainerRepository<
 
           response = await request(options)
         } catch (error) {
-          throw new GatewayInaccessibleError(
-            `Request to URL ${uri} is failing`
-          )
+          throw new GatewayInaccessibleError(uri)
         }
 
         if (

@@ -22,13 +22,13 @@ import { SingleUseTokenType } from '../../Models/SingleUseTokenModels'
 import {
   ConflictingRecordError,
   NoTokenError,
-  UnexpectedUserStatusError,
+  MissingUserStatusError,
   InvalidCredentialsError,
-  RecordNotFoundError,
   ValidationError,
   ConflictingUnverifiedUserExistsError,
   InvalidServerCredentialsError,
-  DuplicateEmailError
+  DuplicateEmailError,
+  MissingUserRecordError
 } from '../../Errors'
 import { IUserRegistrationService } from './IUserRegistrationService'
 import { ISyncService } from '../Sync/ISyncService'
@@ -67,14 +67,14 @@ export class UserRegistrationService implements IUserRegistrationService {
     })
 
     if (user) {
-      throw new ConflictingRecordError('User email already exists', user.email)
+      throw new DuplicateEmailError(user.email)
     }
 
     try {
       const userEmailID = this.userEmailID(email)
       await this.userEmailRepository.create({ _id: userEmailID }, {})
     } catch (error) {
-      throw new DuplicateEmailError(`Email ${email} is not available`)
+      throw new DuplicateEmailError(email)
     }
 
     const newUser = await this.userRepository.create({ email, name, connectUserID }, {})
@@ -118,7 +118,7 @@ export class UserRegistrationService implements IUserRegistrationService {
       const userEmailID = this.userEmailID(email)
       await this.userEmailRepository.create({ _id: userEmailID }, {})
     } catch (error) {
-      throw new DuplicateEmailError(`Email ${email} is not available`)
+      throw new DuplicateEmailError(email)
     }
 
     const newUser = await this.userRepository.create({ email, name }, {})
@@ -176,16 +176,13 @@ export class UserRegistrationService implements IUserRegistrationService {
           null,
           null
         )
-      throw new UnexpectedUserStatusError('User status not found', user)
+      throw new MissingUserStatusError(user._id)
     }
 
     if (userStatus.isVerified) {
-      throw new ConflictingRecordError('User already exists', user)
+      throw new ConflictingRecordError('User already exists.', user)
     } else {
-      throw new ConflictingUnverifiedUserExistsError(
-        'User already exists but not verified',
-        user
-      )
+      throw new ConflictingUnverifiedUserExistsError(user)
     }
   }
 
@@ -216,12 +213,12 @@ export class UserRegistrationService implements IUserRegistrationService {
   public async requestVerificationEmail (email: string): Promise<void> {
     const user = await this.userRepository.getOne({ email: email.toLowerCase() })
     if (!user) {
-      throw new RecordNotFoundError('User not found')
+      throw new MissingUserRecordError(email)
     }
     const userStatus = await this.userStatusRepository.statusForUserId(user._id)
 
     if (!userStatus) {
-      throw new UnexpectedUserStatusError('User not found', user)
+      throw new MissingUserStatusError(user._id)
     }
 
     if (userStatus.isVerified) {

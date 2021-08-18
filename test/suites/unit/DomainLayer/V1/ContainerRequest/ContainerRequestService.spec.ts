@@ -17,7 +17,7 @@
 import '../../../../../utilities/dbMock'
 import { Chance } from 'chance'
 
-import { ValidationError, UserRoleError } from '../../../../../../src/Errors'
+import { ValidationError, UserRoleError, RoleDoesNotPermitOperationError } from '../../../../../../src/Errors'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
 import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
 import { validProject } from '../../../../../data/fixtures/projects'
@@ -243,7 +243,7 @@ describe('ContainerRequestService - response', () => {
         { _id: `User_${chance.guid()}` },
         false
       )
-    ).rejects.toThrowError(UserRoleError)
+    ).rejects.toThrowError(RoleDoesNotPermitOperationError)
   })
 
   test('should fail if requesting user has a less limiting role', () => {
@@ -276,7 +276,7 @@ describe('ContainerRequestService - response', () => {
         { _id: `User_${chance.guid()}` },
         true
       )
-    ).rejects.toThrowError(UserRoleError)
+    ).rejects.toThrowError(RoleDoesNotPermitOperationError)
   })
 
   test('should accept access request to the project', async () => {

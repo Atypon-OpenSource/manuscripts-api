@@ -169,7 +169,7 @@ paths:
           schema:
             $ref: "#/definitions/TokenSchema"
         401:
-          description: "Invalid token, email or connectUserID, or UnexpectedUserStatusError this could be the result of signing up and never signing in, the resolution to this is to log in once interactively"
+          description: "Invalid token, email or connectUserID, or MissingUserStatusError this could be the result of signing up and never signing in, the resolution to this is to log in once interactively"
   /auth/token/:connectUserID:
     post:
       tags:
@@ -198,7 +198,7 @@ paths:
           schema:
             $ref: "#/definitions/TokenSchema"
         401:
-          description: "Invalid token or connectUserID, or UnexpectedUserStatusError this could be the result of signing up and never signing in, the resolution to this is to log in once interactively"
+          description: "Invalid token or connectUserID, or MissingUserStatusError this could be the result of signing up and never signing in, the resolution to this is to log in once interactively"
   /auth/google:
     get:
       tags:

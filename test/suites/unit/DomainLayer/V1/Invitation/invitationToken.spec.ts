@@ -19,8 +19,8 @@ import '../../../../../utilities/dbMock'
 import {
   InvalidCredentialsError,
   ValidationError,
-  RecordNotFoundError,
-  UserRoleError
+  UserRoleError,
+  MissingContainerError
 } from '../../../../../../src/Errors'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
 import { validProject } from '../../../../../data/fixtures/projects'
@@ -79,7 +79,7 @@ describe('Invitation - requestInvitationToken', () => {
 
     return expect(
       containerInvitationService.requestInvitationToken('foo', 'MPProject:bar', 'Writer')
-    ).rejects.toThrowError(RecordNotFoundError)
+    ).rejects.toThrowError(MissingContainerError)
   })
 
   test('should fail if the user requesting invitation token is not a project owner', async () => {

@@ -69,7 +69,10 @@ export abstract class SGRepository<
     try {
       response = await request(options)
     } catch (error) {
-      if (error.statusCode === HttpStatus.SERVICE_UNAVAILABLE) throw new GatewayInaccessibleError(`Request to URL ${options.uri} failed with ${HttpStatus.SERVICE_UNAVAILABLE} (SERVICE_UNAVAILABLE)`)
+      if (error.statusCode === HttpStatus.SERVICE_UNAVAILABLE) {
+        throw new GatewayInaccessibleError(options.uri)
+      }
+
       throw new SyncError(`Request to URL ${options.uri} failed`,response && response.body)
     }
 
@@ -77,7 +80,7 @@ export abstract class SGRepository<
 
     if (response.statusCode === HttpStatus.CREATED || response.statusCode === HttpStatus.OK) return response.body
 
-    throw new SyncError(`SyncGateway object creation failed`, response.body)
+    throw new SyncError('SyncGateway object creation failed.', response.body)
   }
 
   /**

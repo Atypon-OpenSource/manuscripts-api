@@ -82,7 +82,6 @@ describe('change Password - POST api/v1/auth/changePassword', () => {
       ...header
     })
 
-    expect(response.status).toBe(HttpStatus.FORBIDDEN)
+    expect(response.status).toBe(HttpStatus.UNAUTHORIZED)
   })
-
 })

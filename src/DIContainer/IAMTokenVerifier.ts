@@ -40,7 +40,7 @@ export interface IIAMTokenVerifier {
 export class IAMTokenVerifier implements IIAMTokenVerifier {
   constructor () {
     this.setIssuer().catch((e) => {
-      throw new IAMIssuerError(`Error retrieving issuer from IAM server: ${e}`)
+      throw new IAMIssuerError(e)
     })
   }
 

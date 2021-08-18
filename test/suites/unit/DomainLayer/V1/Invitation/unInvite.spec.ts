@@ -16,7 +16,7 @@
 
 import '../../../../../utilities/dbMock'
 
-import { InvalidCredentialsError, ValidationError } from '../../../../../../src/Errors'
+import { InvalidCredentialsError, RoleDoesNotPermitOperationError, ValidationError } from '../../../../../../src/Errors'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
 import { validProject2 } from '../../../../../data/fixtures/projects'
 import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
@@ -74,7 +74,7 @@ describe('Invitation - uninvite', () => {
     }
     return expect(
       containerInvitationService.uninvite('foo', 'bar')
-    ).rejects.toThrowError(ValidationError)
+    ).rejects.toThrowError(RoleDoesNotPermitOperationError)
   })
 
   test('project owner can successfully uninvite other user', async () => {

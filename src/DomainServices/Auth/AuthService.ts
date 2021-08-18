@@ -45,16 +45,16 @@ import { ISingleUseTokenRepository } from '../../DataAccess/Interfaces/ISingleUs
 import {
   InvalidCredentialsError,
   NoTokenError,
-  UnexpectedUserStatusError,
+  MissingUserStatusError,
   UserBlockedError,
   UserNotVerifiedError,
   ValidationError,
-  IllegalStateError,
   InvalidPasswordError,
   AccountNotFoundError,
   OperationDisabledError,
   DuplicateEmailError,
-  InvalidBackchannelLogoutError
+  InvalidBackchannelLogoutError,
+  MissingUserRecordError
 } from '../../Errors'
 import { IUserTokenRepository } from '../../DataAccess/Interfaces/IUserTokenRepository'
 import {
@@ -166,7 +166,7 @@ export class AuthService implements IAuthService {
     const user = await this.userRepository.getOne({ email })
 
     if (!user) {
-      throw new AccountNotFoundError(`No user with email ${email}`)
+      throw new AccountNotFoundError(email)
     }
 
     const userStatus = await this.ensureValidUserStatus(
@@ -202,9 +202,7 @@ export class AuthService implements IAuthService {
         )
       }
 
-      throw new InvalidCredentialsError(
-        `Password does not match for user '${email}'`
-      )
+      throw new InvalidPasswordError(user)
     }
 
     const userModel: User = {
@@ -241,7 +239,7 @@ export class AuthService implements IAuthService {
     }
 
     if (!user) {
-      throw new AccountNotFoundError(`User account not found.`)
+      throw new AccountNotFoundError(connectUserID ? connectUserID : email)
     }
 
     return this.createUserSessionAndToken(user, appId, deviceId, true)
@@ -254,7 +252,7 @@ export class AuthService implements IAuthService {
     let user = await this.userRepository.getOne({ connectUserID })
 
     if (!user) {
-      throw new AccountNotFoundError(`User account not found.`)
+      throw new AccountNotFoundError(connectUserID)
     }
 
     return this.createUserSessionAndToken(user, appId, deviceId, false, true)
@@ -400,7 +398,7 @@ export class AuthService implements IAuthService {
       try {
         await this.userEmailRepository.create({ _id: userEmailID }, {})
       } catch (error) {
-        throw new DuplicateEmailError(`Email ${email} is not available`)
+        throw new DuplicateEmailError(email)
       }
 
       const u = await this.userRepository.create({ name, email }, {})
@@ -445,7 +443,8 @@ export class AuthService implements IAuthService {
         appId,
         deviceId
       )
-      throw new IllegalStateError('User status not found for user', user._id)
+
+      throw new MissingUserStatusError(user._id)
     }
 
     const credentials = {
@@ -582,7 +581,7 @@ export class AuthService implements IAuthService {
         appID,
         deviceId
       )
-      throw new IllegalStateError('User status not found for user', user._id)
+      throw new MissingUserStatusError(user._id)
     }
 
     const { syncSessions, userToken } = await this.createUserSessions(
@@ -622,7 +621,7 @@ export class AuthService implements IAuthService {
     if (!userStatus) {
       // tslint:disable-next-line: no-floating-promises
       this.activityTrackingService.createEvent(user._id, UserActivityEventType.StatusNotFound, null, null)
-      throw new UnexpectedUserStatusError('user status not found', user)
+      throw new MissingUserStatusError(user._id)
     }
 
     const tokenId = await this.singleUseTokenRepository.ensureTokenExists(user, SingleUseTokenType.ResetPasswordToken, RESET_PASSWORD_TOKEN_TIMEOUT())
@@ -650,7 +649,7 @@ export class AuthService implements IAuthService {
 
     const user = await this.userRepository.getById(resetToken.userId)
     if (!user) {
-      throw new InvalidCredentialsError('User not found')
+      throw new MissingUserRecordError(resetToken.userId)
     }
 
     const userStatus = await this.userStatusRepository.patchStatusWithUserId(
@@ -725,7 +724,7 @@ export class AuthService implements IAuthService {
     const userStatus = await this.userStatusRepository.statusForUserId(userToken.userId)
 
     if (userStatus === null) {
-      throw new IllegalStateError('Unable to retrieve UserStatus for user', userToken.userId)
+      throw new MissingUserStatusError(userToken.userId)
     }
 
     await this.syncService.removeGatewaySessions(
@@ -794,7 +793,7 @@ export class AuthService implements IAuthService {
     const userStatus = await this.userStatusRepository.statusForUserId(userToken.userId)
 
     if (userStatus === null) {
-      throw new IllegalStateError('Unable to retrieve UserStatus for user', userToken.userId)
+      throw new MissingUserStatusError(userToken.userId)
     }
 
     await this.syncService.removeGatewaySessions(
@@ -829,13 +828,13 @@ export class AuthService implements IAuthService {
     const userStatus = await this.userStatusRepository.statusForUserId(user._id)
 
     if (!userStatus) {
-      throw new UnexpectedUserStatusError('User status not found.', user)
+      throw new MissingUserStatusError(user._id)
     }
 
     const matchedPassword: boolean = await compare(credentials.currentPassword, userStatus.password)
 
     if (!matchedPassword) {
-      throw new InvalidPasswordError(`Password does not match for user '${user.email}'`, user)
+      throw new InvalidPasswordError(user)
     }
 
     await this.userStatusRepository.patchStatusWithUserId(
@@ -888,11 +887,11 @@ export class AuthService implements IAuthService {
         appId,
         deviceId
       )
-      throw new UnexpectedUserStatusError('User status not found', user)
+      throw new MissingUserStatusError(user._id)
     }
 
     if (isBlocked(userStatus, new Date())) {
-      throw new UserBlockedError('User account is blocked', user, userStatus)
+      throw new UserBlockedError(user, userStatus)
     } else if (userStatus.blockUntil !== null) {
       await this.userStatusRepository.patch(
         userStatus._id,
@@ -902,7 +901,7 @@ export class AuthService implements IAuthService {
     }
 
     if (!isAdmin && !userStatus.isVerified) {
-      throw new UserNotVerifiedError('User is not verified', user, userStatus)
+      throw new UserNotVerifiedError(user, userStatus)
     }
 
     return userStatus
@@ -1036,7 +1035,7 @@ export class AuthService implements IAuthService {
       const userEmailID = this.userEmailID(email)
       await this.userEmailRepository.create({ _id: userEmailID }, {})
     } catch (error) {
-      throw new DuplicateEmailError(`Email ${email} is not available`)
+      throw new DuplicateEmailError(email)
     }
 
     let user: User

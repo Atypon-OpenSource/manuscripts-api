@@ -134,7 +134,7 @@ describe('reset Password - POST api/v1/auth/resetPassword', () => {
       ValidHeaderWithApplicationKey
     )
 
-    expect(response.status).toBe(HttpStatus.UNAUTHORIZED)
+    expect(response.status).toBe(HttpStatus.NOT_FOUND)
   })
 
   test('should fail if deviceId is missing', async () => {

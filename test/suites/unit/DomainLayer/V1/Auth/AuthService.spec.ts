@@ -49,15 +49,15 @@ import {
   InvalidCredentialsError,
   NoTokenError,
   ValidationError,
-  UnexpectedUserStatusError,
+  MissingUserStatusError,
   UserBlockedError,
   UserNotVerifiedError,
   EmailServiceError,
   AccountNotFoundError,
   InvalidPasswordError,
-  IllegalStateError,
   DuplicateEmailError,
-  InvalidBackchannelLogoutError
+  InvalidBackchannelLogoutError,
+  MissingUserRecordError
 } from '../../../../../../src/Errors'
 import {
   userWithValidCredentials,
@@ -119,7 +119,7 @@ describe('AuthService - Login', () => {
 
     return expect(
       authService.login(invalidPasswordCredentials)
-    ).rejects.toThrowError(UnexpectedUserStatusError)
+    ).rejects.toThrowError(MissingUserStatusError)
   })
 
   test('should fail if user is blocked', () => {
@@ -169,7 +169,7 @@ describe('AuthService - Login', () => {
 
     return expect(
       authService.login(invalidPasswordCredentials)
-    ).rejects.toThrowError(InvalidCredentialsError)
+    ).rejects.toThrowError(InvalidPasswordError)
   })
 
   test('should fail if password is wrong', async () => {
@@ -195,7 +195,7 @@ describe('AuthService - Login', () => {
 
     return expect(
       authService.login(invalidPasswordCredentials)
-    ).rejects.toThrowError(InvalidCredentialsError)
+    ).rejects.toThrowError(InvalidPasswordError)
   })
 
   test('should fail if user is not verified', () => {
@@ -1039,7 +1039,7 @@ describe('AuthService - resetPassword', () => {
     expect.assertions(1)
     return expect(
       authService.resetPassword(resetPasswordCredentials)
-    ).rejects.toThrowError(InvalidCredentialsError)
+    ).rejects.toThrowError(MissingUserRecordError)
   })
 
   test('should reset the password', () => {
@@ -1233,7 +1233,7 @@ describe('AuthService - changePassword', () => {
     }
     return expect(
       authService.changePassword({ userId: 'foo' })
-    ).rejects.toThrowError(UnexpectedUserStatusError)
+    ).rejects.toThrowError(MissingUserStatusError)
   })
 
   test('should fail if password does not match', async () => {
@@ -1466,7 +1466,7 @@ describe('AuthService - iamOAuthCallback', () => {
 
     await expect(
       authService.iamOAuthCallback(payload, state)
-    ).rejects.toThrowError(IllegalStateError)
+    ).rejects.toThrowError(MissingUserStatusError)
   })
 
   test('should fail if email is already used', async () => {

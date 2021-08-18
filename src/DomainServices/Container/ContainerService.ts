@@ -32,14 +32,21 @@ import {
 import { isLoginTokenPayload, timestamp } from '../../Utilities/JWT/LoginTokenPayload'
 import {
   InvalidCredentialsError,
-  UnexpectedUserStatusError,
+  MissingUserStatusError,
   UserBlockedError,
   UserNotVerifiedError,
   ValidationError,
   UserRoleError,
   RecordNotFoundError,
   InvalidScopeNameError,
-  ConflictingRecordError
+  ConflictingRecordError,
+  MissingContainerError,
+  MissingProductionNoteError,
+  MissingUserRecordError,
+  MissingTemplateError,
+  RoleDoesNotPermitOperationError,
+  ProductionNotesLoadError,
+  ProductionNotesUpdateError
 } from '../../Errors'
 import { isBlocked, User } from '../../Models/UserModels'
 import { UserActivityEventType } from '../../Models/UserEventModels'
@@ -101,15 +108,15 @@ export class ContainerService implements IContainerService {
     )
 
     if (!userStatus) {
-      throw new UnexpectedUserStatusError('User status not found.', user)
+      throw new MissingUserStatusError(user._id)
     }
 
     if (isBlocked(userStatus, new Date())) {
-      throw new UserBlockedError('User account is blocked', user, userStatus)
+      throw new UserBlockedError(user, userStatus)
     }
 
     if (!userStatus.isVerified) {
-      throw new UserNotVerifiedError('User is not verified.', user, userStatus)
+      throw new UserNotVerifiedError(user, userStatus)
     }
 
     const containerID = _id ? _id : uuid_v4()
@@ -134,8 +141,9 @@ export class ContainerService implements IContainerService {
     const userID = ContainerService.userIdForSync(user._id)
 
     if (!ContainerService.isOwner(container, userID)) {
-      throw new InvalidCredentialsError(
-        `User ${userID} is not an owner.`
+      throw new RoleDoesNotPermitOperationError(
+        `User ${userID} is not an owner.`,
+        userID
       )
     }
 
@@ -146,9 +154,7 @@ export class ContainerService implements IContainerService {
     const container = await this.containerRepository.getById(containerId)
 
     if (!container) {
-      throw new RecordNotFoundError(
-        `Container with id ${containerId} was not found`
-      )
+      throw new MissingContainerError(containerId)
     }
 
     return container
@@ -172,7 +178,7 @@ export class ContainerService implements IContainerService {
     }
 
     if (!ContainerService.isOwner(container, user._id)) {
-      throw new UserRoleError('User must be an owner to manage roles', newRole)
+      throw new RoleDoesNotPermitOperationError('User must be an owner to manage roles.', newRole)
     }
 
     const isServer = this.validateSecret(secret)
@@ -490,7 +496,7 @@ export class ContainerService implements IContainerService {
     const container = await this.containerRepository.getById(containerID)
 
     if (!container) {
-      throw new RecordNotFoundError(`Container not found.`)
+      throw new MissingContainerError(containerID)
     }
 
     if (this.isPublic(container)) {
@@ -600,14 +606,14 @@ export class ContainerService implements IContainerService {
   public async getAttachment (userID: string, documentID: string, attachmentID?: string) {
     const doc: any = await this.containerRepository.getById(documentID)
     if (!doc) {
-      throw new RecordNotFoundError(`Attachment document not found`)
+      throw new MissingContainerError(`Attachment document not found`)
     }
 
     const containerID = doc.containerID || doc.projectID
     const container = await this.containerRepository.getById(containerID)
 
     if (!container) {
-      throw new RecordNotFoundError('container not found')
+      throw new MissingContainerError(containerID)
     }
     if (!this.isPublic(container)) {
       const canAccess = await this.checkUserContainerAccess(userID, containerID)
@@ -631,10 +637,7 @@ export class ContainerService implements IContainerService {
     const scopeInfo = configScopes.find(s => s.name === scope)
 
     if (!scopeInfo) {
-      throw new InvalidScopeNameError(
-        `The scope '${scope}' is invalid`,
-        scope
-      )
+      throw new InvalidScopeNameError(scope)
     }
 
     return scopeInfo
@@ -770,31 +773,18 @@ export class ContainerService implements IContainerService {
   }
 
   public static isOwner (container: Container, userId: string) {
-    if (!container) {
-      throw new RecordNotFoundError('Record not found')
-    }
     return container.owners.indexOf(ContainerService.userIdForSync(userId)) > -1
   }
 
   public static isWriter (container: Container, userId: string): boolean {
-    if (!container) {
-      throw new RecordNotFoundError('Record not found')
-    }
     return container.writers.indexOf(ContainerService.userIdForSync(userId)) > -1
   }
 
   public static isViewer (container: Container, userId: string): boolean {
-    if (!container) {
-      throw new RecordNotFoundError('Record not found')
-    }
-
     return container.viewers.indexOf(ContainerService.userIdForSync(userId)) > -1
   }
 
   public static isEditor (container: Container, userId: string): boolean {
-    if (!container) {
-      throw new RecordNotFoundError(`Record not found`)
-    }
     const editors = container.editors
     if (editors && editors.length) {
       return editors.indexOf(ContainerService.userIdForSync(userId)) > -1
@@ -803,9 +793,6 @@ export class ContainerService implements IContainerService {
   }
 
   public static isAnnotator (container: Container, userId: string): boolean {
-    if (!container) {
-      throw new RecordNotFoundError(`Record not found`)
-    }
     const annotators = container.annotators
     if (annotators && annotators.length) {
       return annotators.indexOf(ContainerService.userIdForSync(userId)) > -1
@@ -814,9 +801,6 @@ export class ContainerService implements IContainerService {
   }
 
   public isPublic (container: Container): boolean {
-    if (!container) {
-      throw new RecordNotFoundError(`container not found`)
-    }
     return container.viewers.indexOf('*') > -1
   }
 
@@ -913,9 +897,7 @@ export class ContainerService implements IContainerService {
     }
 
     if (!templateFound && templateId) {
-      throw new RecordNotFoundError(
-        'Template with id not found'
-      )
+      throw new MissingTemplateError(templateId)
     }
 
     return this.manuscriptRepository.create(
@@ -935,7 +917,7 @@ export class ContainerService implements IContainerService {
 
     const user = await DIContainer.sharedContainer.userRepository.getOne({ connectUserID })
     if (!user) {
-      throw new RecordNotFoundError('user not found')
+      throw new MissingUserRecordError(connectUserID)
     }
     // will fail of the user is not a collaborator on the project
     const canAccess = await this.checkIfUserCanCreateNote(user._id, containerID)
@@ -948,39 +930,47 @@ export class ContainerService implements IContainerService {
     if (target) {
       const note = await this.manuscriptNoteRepository.getById(target)
       if (!note) {
-        throw new RecordNotFoundError(`Manuscript note with ID ${target} not found`)
+        throw new MissingProductionNoteError(target)
       }
     }
-    return this.manuscriptNoteRepository.create(
-      {
-        _id: `${this.manuscriptNoteRepository.objectType}:${uuid_v4()}`,
-        createdAt: stamp,
-        updatedAt: stamp,
-        sessionID: uuid_v4(),
-        objectType: this.manuscriptNoteRepository.objectType,
-        containerID: containerID,
-        manuscriptID: manuscriptID,
-        contents: contents,
-        target: target ? target : manuscriptID,
-        source: source,
-        contributions: [
-          {
-            _id: `MPContribution:${uuid_v4()}`,
-            objectType: 'MPContribution',
-            profileID: userProfileID,
-            timestamp: stamp
-          }
-        ]
-      },
-      {}
-    )
+    try {
+      return this.manuscriptNoteRepository.create(
+        {
+          _id: `${this.manuscriptNoteRepository.objectType}:${uuid_v4()}`,
+          createdAt: stamp,
+          updatedAt: stamp,
+          sessionID: uuid_v4(),
+          objectType: this.manuscriptNoteRepository.objectType,
+          containerID: containerID,
+          manuscriptID: manuscriptID,
+          contents: contents,
+          target: target ? target : manuscriptID,
+          source: source,
+          contributions: [
+            {
+              _id: `MPContribution:${uuid_v4()}`,
+              objectType: 'MPContribution',
+              profileID: userProfileID,
+              timestamp: stamp
+            }
+          ]
+        },
+        {}
+      )
+    } catch (e) {
+      throw new ProductionNotesUpdateError()
+    }
   }
 
   public async getProductionNotes (
     containerID: string,
     manuscriptID: string
   ): Promise<ManuscriptNote[]> {
-    return this.manuscriptNoteRepository.getProductionNotes(containerID, manuscriptID)
+    try {
+      return this.manuscriptNoteRepository.getProductionNotes(containerID, manuscriptID)
+    } catch (e) {
+      throw new ProductionNotesLoadError()
+    }
   }
 
   public async updateExternalFile (

@@ -26,8 +26,8 @@ import getStream from 'get-stream'
 import decompress from 'decompress'
 import {
   InvalidCredentialsError,
-  RecordNotFoundError,
-  UserRoleError,
+  MissingTemplateError,
+  RoleDoesNotPermitOperationError,
   ValidationError
 } from '../../../Errors'
 import { manuscriptIDTypes, Model } from '@manuscripts/manuscripts-json-schema'
@@ -83,7 +83,12 @@ export class ProjectController extends BaseController implements IProjectControl
 
     const project = await DIContainer.sharedContainer.containerService[ContainerType.project].getContainer(projectId)
 
-    if (!ContainerService.isOwner(project,req.user._id)) throw new UserRoleError('User must be an owner to add manuscripts',req.user._id)
+    if (!ContainerService.isOwner(project, req.user._id)) {
+      throw new RoleDoesNotPermitOperationError(
+        'User must be an owner to add manuscripts.',
+        req.user._id
+      )
+    }
 
     const container = await this.upsertManuscriptToProject(project, manuscript, manuscriptId, templateId)
 
@@ -139,9 +144,7 @@ export class ProjectController extends BaseController implements IProjectControl
     }
 
     if (!templateFound && templateId) {
-      throw new RecordNotFoundError(
-        'Template with id not found'
-      )
+      throw new MissingTemplateError(templateId)
     }
 
     manuscriptObject = {

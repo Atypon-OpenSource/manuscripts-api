@@ -41,12 +41,13 @@ import { userList } from '../../../../../data/dump/user'
 import {
   ConflictingRecordError,
   NoTokenError,
-  UnexpectedUserStatusError,
-  RecordNotFoundError,
+  MissingUserStatusError,
   ValidationError,
   InvalidCredentialsError,
   ConflictingUnverifiedUserExistsError,
-  InvalidServerCredentialsError
+  InvalidServerCredentialsError,
+  MissingUserRecordError,
+  DuplicateEmailError
 } from '../../../../../../src/Errors'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
 import { SingleUseTokenType } from '../../../../../../src/Models/SingleUseTokenModels'
@@ -91,7 +92,7 @@ describe('Registration - Signup', () => {
 
     return expect(
       userRegistrationService.signup(userList[0])
-    ).rejects.toThrowError(UnexpectedUserStatusError)
+    ).rejects.toThrowError(MissingUserStatusError)
   })
 
   test('should fail if verified user already exist', () => {
@@ -364,14 +365,14 @@ describe('Registration - createEvent', () => {
 })
 
 describe('Registration - requestVerificationEmail', () => {
-  test('should fail user not found', () => {
+  test('should fail if user not found', () => {
     const userRegistrationService: any = DIContainer.sharedContainer.userRegistrationService
 
     userRegistrationService.userRepository = {
       getOne: async () => null
     }
 
-    return expect(userRegistrationService.requestVerificationEmail('foo@bar.com')).rejects.toThrowError(RecordNotFoundError)
+    return expect(userRegistrationService.requestVerificationEmail('foo@bar.com')).rejects.toThrowError(MissingUserRecordError)
   })
 
   test('should fail user status not found', () => {
@@ -390,7 +391,7 @@ describe('Registration - requestVerificationEmail', () => {
 
     return expect(
       userRegistrationService.requestVerificationEmail('foo@bar.com')
-    ).rejects.toThrowError(UnexpectedUserStatusError)
+    ).rejects.toThrowError(MissingUserStatusError)
   })
 
   test('should fail if user already verified', () => {
@@ -456,7 +457,7 @@ describe('Registration - connectSignup', () => {
     }
     return expect(
         userRegistrationService.connectSignup(cred)
-    ).rejects.toThrowError(ConflictingRecordError)
+    ).rejects.toThrowError(DuplicateEmailError)
   })
 
   test('should create user', async () => {

@@ -89,7 +89,7 @@ export class SyncService implements ISyncService {
     try {
       response = await request(options)
     } catch (error) {
-      throw new GatewayInaccessibleError(`Request to URL ${url} is failing`)
+      throw new GatewayInaccessibleError(url)
     }
     if (response.statusCode === HttpStatus.OK) {
       return true
@@ -111,7 +111,7 @@ export class SyncService implements ISyncService {
     try {
       response = await request(options)
     } catch (error) {
-      throw new GatewayInaccessibleError(`Request to URL ${url} is failing`)
+      throw new GatewayInaccessibleError(url)
     }
     if (response.statusCode === HttpStatus.OK) {
       return true
@@ -146,7 +146,7 @@ export class SyncService implements ISyncService {
         const response = request(options)
         return response
       } catch (error) {
-        throw new GatewayInaccessibleError(`Request to URL ${options.uri} is failing`)
+        throw new GatewayInaccessibleError(options.uri)
       }
     }))
 
@@ -177,7 +177,7 @@ export class SyncService implements ISyncService {
     try {
       response = await request(options)
     } catch (error) {
-      throw new GatewayInaccessibleError(`Request to URL ${options.uri} is failing`)
+      throw new GatewayInaccessibleError(options.uri)
     }
     if (response.statusCode === HttpStatus.OK) {
       return true
@@ -210,7 +210,7 @@ export class SyncService implements ISyncService {
     try {
       response = await request(options)
     } catch (error) {
-      throw new GatewayInaccessibleError(`Request to URL ${options.uri} is failing`)
+      throw new GatewayInaccessibleError(options.uri)
     }
     if (response.statusCode === HttpStatus.CREATED) {
       return sgUsername
@@ -238,7 +238,7 @@ export class SyncService implements ISyncService {
     try {
       response = await request(options)
     } catch (error) {
-      throw new GatewayInaccessibleError(`Request to URL ${options.uri} is failing`)
+      throw new GatewayInaccessibleError(options.uri)
     }
     if (response.statusCode === HttpStatus.CREATED) {
       return
@@ -268,7 +268,7 @@ export class SyncService implements ISyncService {
       try {
         response = request(options)
       } catch (error) {
-        throw new GatewayInaccessibleError(`Request to URL ${uri} is failing`)
+        throw new GatewayInaccessibleError(options.uri)
       }
       return response
     })
@@ -305,7 +305,7 @@ export class SyncService implements ISyncService {
         try {
           response = await request(options)
         } catch (error) {
-          throw new GatewayInaccessibleError(`Request to URL ${uri} is failing`)
+          throw new GatewayInaccessibleError(options.uri)
         }
         if (!response || !response.body || !response.body.session_id) {
           throw new SyncError(`Unable to parse session_id from response body (${JSON.stringify((response || {}).body)}`, response.body)
@@ -370,7 +370,7 @@ export class SyncService implements ISyncService {
     try {
       response = await request(options)
     } catch (error) {
-      throw new GatewayInaccessibleError(`Request to URL ${uri} is failing`)
+      throw new GatewayInaccessibleError(options.uri)
     }
     if (
       response.statusCode === HttpStatus.OK ||
@@ -399,7 +399,7 @@ export class SyncService implements ISyncService {
       try {
         response = request(options)
       } catch (error) {
-        throw new GatewayInaccessibleError(`Request to URL ${uri} is failing`)
+        throw new GatewayInaccessibleError(options.uri)
       }
       return response
     })

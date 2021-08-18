@@ -20,7 +20,7 @@ import '../../../../../utilities/dbMock'
 import '../../../../../utilities/configMock'
 
 import {
-  UnexpectedUserStatusError,
+  MissingUserStatusError,
   InvalidCredentialsError,
   UserBlockedError,
   UserNotVerifiedError,
@@ -28,7 +28,11 @@ import {
   UserRoleError,
   RecordNotFoundError,
   InvalidScopeNameError,
-  ConflictingRecordError
+  ConflictingRecordError,
+  MissingContainerError,
+  RoleDoesNotPermitOperationError,
+  MissingTemplateError,
+  MissingProductionNoteError
 } from '../../../../../../src/Errors'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
 import {
@@ -112,7 +116,7 @@ describe('containerService - createContainer', () => {
 
     return expect(
       containerService.createContainer(validJWTToken)
-    ).rejects.toThrowError(UnexpectedUserStatusError)
+    ).rejects.toThrowError(MissingUserStatusError)
   })
 
   test('should fail if user is blocked', () => {
@@ -247,7 +251,7 @@ describe('containerService - deleteContainer', () => {
 
     return expect(
       containerService.deleteContainer(chance.guid(), { _id: chance.guid() })
-    ).rejects.toThrowError(RecordNotFoundError)
+    ).rejects.toThrowError(MissingContainerError)
   })
 
   test('should fail if user is not an owner', () => {
@@ -260,7 +264,7 @@ describe('containerService - deleteContainer', () => {
 
     return expect(
       containerService.deleteContainer(chance.guid(), { _id: `User|${chance.guid()}` })
-    ).rejects.toThrowError(InvalidCredentialsError)
+    ).rejects.toThrowError(RoleDoesNotPermitOperationError)
   })
 
   test('should delete a project', async () => {
@@ -295,7 +299,7 @@ describe('containerService - addContainerUser', () => {
         'User|userId',
         {}
       )
-    ).rejects.toThrowError(RecordNotFoundError)
+    ).rejects.toThrowError(MissingContainerError)
   })
 
   test('should fail if the added user is not in the database', () => {
@@ -807,7 +811,7 @@ describe('containerService - manageUserRole', () => {
         chance.string(),
         chance.string()
       )
-    ).rejects.toThrowError(RecordNotFoundError)
+    ).rejects.toThrowError(MissingContainerError)
   })
 
   test('should fail if the user record is missing in the db', () => {
@@ -855,7 +859,7 @@ describe('containerService - manageUserRole', () => {
         { userId: `User|${chance.string()}` },
         chance.string()
       )
-    ).rejects.toThrowError(UserRoleError)
+    ).rejects.toThrowError(RoleDoesNotPermitOperationError)
   })
 
   test('should fail if the managedUser is not in the project', () => {
@@ -1033,7 +1037,7 @@ describe('containerService - updateContainerUser', () => {
           email: 'foobar@baz.com'
         }
       )
-    ).rejects.toThrowError(RecordNotFoundError)
+    ).rejects.toThrowError(MissingContainerError)
   })
 
   test('should fail if wrong role assigned', async () => {
@@ -1525,7 +1529,7 @@ describe('containerService - getArchive', () => {
 
     return expect(
       containerService.getArchive(validProject4._id)
-    ).rejects.toThrow(RecordNotFoundError)
+    ).rejects.toThrow(MissingContainerError)
   })
 
   test('should return an object if project is public and attachments are not requested', async () => {
@@ -1645,7 +1649,7 @@ describe('containerService - getAttachment', () => {
 
     return expect(
       containerService.getAttachment('MPFigure:12345')
-    ).rejects.toThrow(RecordNotFoundError)
+    ).rejects.toThrow(MissingContainerError)
   })
 
   test('should return a contentType and body', () => {
@@ -1727,7 +1731,7 @@ describe('containerService - getAttachment', () => {
 
     return expect(
       containerService.getAttachment('MPFigure:12345')
-    ).rejects.toThrow(RecordNotFoundError)
+    ).rejects.toThrow(MissingContainerError)
   })
 
   test('should fail if the attachment is not found', () => {
@@ -1836,7 +1840,7 @@ describe('ContainerService - createManuscript', () => {
 
     await expect(
       containerService.createManuscript(userID, containerID, manuscriptID, chance.string())
-    ).rejects.toThrow(RecordNotFoundError)
+    ).rejects.toThrow(MissingTemplateError)
   })
 
   test('should not fail if template found in pressroom', async () => {
@@ -1896,7 +1900,7 @@ describe('ContainerService - addProductionNote', () => {
     const userID = 'User_test'
     const target = 'invalidTarget'
     const source = 'DASHBOARD'
-    await expect(containerService.createManuscriptNote(containerID, manuscriptID, content, userID, source, target)).rejects.toThrow(RecordNotFoundError)
+    await expect(containerService.createManuscriptNote(containerID, manuscriptID, content, userID, source, target)).rejects.toThrow(MissingProductionNoteError)
   })
 
   test('should fail if user not contributor', async () => {
@@ -2015,7 +2019,7 @@ describe('ContainerService - getCorrectionStatus', () => {
     })
     const repo: any = DIContainer.sharedContainer.correctionRepository
     repo.getCorrectionStatus = jest.fn()
-    await expect(containerService.getCorrectionStatus('MPProject:project-id', 'User_validId')).rejects.toThrow(RecordNotFoundError)
+    await expect(containerService.getCorrectionStatus('MPProject:project-id', 'User_validId')).rejects.toThrow(MissingContainerError)
   })
 
   test('should fail if user is not a contributor', async () => {

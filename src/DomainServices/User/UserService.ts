@@ -20,7 +20,7 @@ import checksum from 'checksum'
 import { ObjectTypes } from '@manuscripts/manuscripts-json-schema'
 
 import {
-  UnexpectedUserStatusError,
+  MissingUserStatusError,
   InvalidCredentialsError,
   InvalidPasswordError,
   NoTokenError,
@@ -161,7 +161,7 @@ export class UserService implements IUserService {
       )
 
       if (!userStatus) {
-        throw new UnexpectedUserStatusError('User status not found.', user)
+        throw new MissingUserStatusError(user._id)
       }
 
       const matchedPassword: boolean = await compare(
@@ -170,7 +170,7 @@ export class UserService implements IUserService {
       )
 
       if (!matchedPassword) {
-        throw new InvalidPasswordError(`Password does not match for user '${user.email}'`, user)
+        throw new InvalidPasswordError(user)
       }
 
     }

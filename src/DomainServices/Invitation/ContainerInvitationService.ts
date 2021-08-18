@@ -24,7 +24,8 @@ import {
   ConflictingRecordError,
   UserRoleError,
   MissingContainerError,
-  RecordGoneError
+  RecordGoneError,
+  RoleDoesNotPermitOperationError
 } from '../../Errors'
 import { IContainerInvitationService } from './IContainerInvitationService'
 import { IUserRepository } from '../../DataAccess/Interfaces/IUserRepository'
@@ -297,10 +298,7 @@ export class ContainerInvitationService implements IContainerInvitationService {
       ).getContainer(invitation.containerID)
     } catch (e) {
       await this.containerInvitationRepository.remove(invitationId)
-      throw new MissingContainerError(
-        'Project does not exist',
-        invitation.containerID
-      )
+      throw new MissingContainerError(invitation.containerID)
     }
 
     const role = ContainerInvitationService.ensureValidRole(invitation.role)
@@ -394,8 +392,8 @@ export class ContainerInvitationService implements IContainerInvitationService {
     const owners = container.owners
 
     if (owners.indexOf(sgUsername(user._id)) < 0) {
-      throw new ValidationError(
-        `Only owners can uninvite other users.`,
+      throw new RoleDoesNotPermitOperationError(
+        'Only owners can uninvite other users.',
         user.email
       )
     }

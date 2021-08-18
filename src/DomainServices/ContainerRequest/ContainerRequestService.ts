@@ -20,7 +20,7 @@ import { ObjectTypes } from '@manuscripts/manuscripts-json-schema'
 
 import { IContainerRequestService } from './IContainerRequestService'
 import { ContainerRole } from '../../Models/ContainerModels'
-import { ValidationError, UserRoleError } from '../../Errors'
+import { ValidationError, UserRoleError, RoleDoesNotPermitOperationError } from '../../Errors'
 import { User } from '../../Models/UserModels'
 import { ContainerRequestRepository } from '../../DataAccess/ContainerRequestRepository/ContainerRequestRepository'
 import { IContainerService } from '../Container/IContainerService'
@@ -143,8 +143,8 @@ export class ContainerRequestService implements IContainerRequestService {
     )
 
     if (!ContainerService.isOwner(container, acceptingUser._id)) {
-      throw new UserRoleError(
-        'Only owners can accept user requests.',
+      throw new RoleDoesNotPermitOperationError(
+        'Only owners allowed to accept user requests.',
         acceptingUser._id
       )
     }

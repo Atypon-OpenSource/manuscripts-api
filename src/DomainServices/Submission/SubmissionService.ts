@@ -16,7 +16,7 @@
 
 import { ISubmissionService } from './ISubmissionService'
 import { ISubmissionRepository } from '../../DataAccess/Interfaces/ISubmissionRepository'
-import { RecordNotFoundError, ValidationError } from '../../Errors'
+import { MissingSubmissionError, ValidationError } from '../../Errors'
 import { SubmissionStatus } from '../../Models/SubmissionModels'
 import { log } from '../../Utilities/Logger'
 
@@ -32,7 +32,7 @@ export class SubmissionService implements ISubmissionService {
     )
 
     if (!submission) {
-      throw new RecordNotFoundError('Submission is not found.')
+      throw new MissingSubmissionError(submissionId)
     }
 
     if (!(status in SubmissionStatus)) {

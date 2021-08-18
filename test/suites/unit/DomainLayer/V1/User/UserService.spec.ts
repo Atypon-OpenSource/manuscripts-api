@@ -18,7 +18,7 @@ import { Chance } from 'chance'
 import '../../../../../utilities/dbMock'
 
 import {
-  UnexpectedUserStatusError,
+  MissingUserStatusError,
   InvalidCredentialsError,
   EmailServiceError,
   InvalidPasswordError,
@@ -95,7 +95,7 @@ describe('User - markUserForDeletion', () => {
 
     return expect(
       userService.markUserForDeletion('userId', chance.string())
-    ).rejects.toThrowError(UnexpectedUserStatusError)
+    ).rejects.toThrowError(MissingUserStatusError)
   })
 
   test('should fail if password mismatched', () => {

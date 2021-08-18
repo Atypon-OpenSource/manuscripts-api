@@ -18,7 +18,7 @@ import { Chance } from 'chance'
 import '../../../../../utilities/dbMock'
 import '../../../../../utilities/configMock'
 
-import { RecordNotFoundError, ValidationError } from '../../../../../../src/Errors'
+import { MissingTemplateError, ValidationError } from '../../../../../../src/Errors'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
 import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
 import { ProjectController } from '../../../../../../src/Controller/V1/Project/ProjectController'
@@ -210,7 +210,7 @@ describe('ProjectController', () => {
       await archive.finalize()
 
       await expect(controller.upsertManuscriptToProject({ _id: 'MPProject:abc' }, archive, null, 'templateId'))
-        .rejects.toThrow(RecordNotFoundError)
+        .rejects.toThrow(MissingTemplateError)
     })
 
     test('should not fail if template is found in pressroom', async () => {

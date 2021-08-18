@@ -17,7 +17,7 @@
 import { Chance } from 'chance'
 import '../../../../../utilities/dbMock'
 
-import { RecordNotFoundError, ValidationError } from '../../../../../../src/Errors'
+import { MissingSubmissionError, ValidationError } from '../../../../../../src/Errors'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
 import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
 import { SubmissionStatus } from '../../../../../../src/Models/SubmissionModels'
@@ -44,7 +44,7 @@ describe('Submission - updateStatus', () => {
         SubmissionStatus.SUCCESS,
         chance.string()
       )
-    ).rejects.toThrowError(RecordNotFoundError)
+    ).rejects.toThrowError(MissingSubmissionError)
   })
 
   test('should fail if status is invalid', () => {
