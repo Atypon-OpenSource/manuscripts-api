@@ -147,20 +147,10 @@ export interface IContainerService {
   ): Promise<ManuscriptNote[]>
 
   /**
-   * Update a externalFile document
-   * @param externalFileID external file id to be updated
-   * @param updatedDocument the new updated document
+   * create/update given list of external files
+   * @param docs list of ExternalFile document to be created/updated
    */
-  updateExternalFile (
-    externalFileID: string,
-    updatedDocument: ExternalFile
-  ): Promise<ExternalFile>
-
-  /**
-   * create given list of external files
-   * @param docs list of ExternalFile document to be created
-   */
-  addExternalFiles (docs: ExternalFile[]): void
+  submitExternalFiles (docs: ExternalFile[]): void
 
   /**
    * Updates the document (project) sessionID

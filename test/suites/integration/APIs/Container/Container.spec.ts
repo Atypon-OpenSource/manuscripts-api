@@ -30,8 +30,7 @@ import {
   pickerBundle,
   addProductionNote,
   getProductionNotes,
-  addExternalFiles,
-  updateExternalFile,
+  submitExternalFiles,
   createManuscript,
   getCorrectionStatus,
   createSnapshot
@@ -1013,7 +1012,7 @@ describe('ContainerService - addExternalFiles', () => {
   beforeEach(async () => {
     await drop()
     await dropBucket(BucketKey.Data)
-    await seed({ users: true, applications: true, projects: true })
+    await seed({ users: true, applications: true, projects: true, externalFile: true })
     await DIContainer.sharedContainer.syncService.createGatewayContributor(
       {
         _id: `User|${validBody2.email}`,
@@ -1032,32 +1031,19 @@ describe('ContainerService - addExternalFiles', () => {
 
     const authHeader = authorizationHeader(loginResponse.body.token)
     const { _id, ...noId } = externalFile
-    const addExternalFilesResponse: supertest.Response = await addExternalFiles(
+    const externalFilesResponse: supertest.Response = await submitExternalFiles(
       {
         ...ValidContentTypeAcceptJsonHeader,
         ...authHeader
       },
       {
-        content: [noId]
+        content: [{
+          ...noId,
+          publicUrl: 'http://exampleUrl.com/path3'
+        }]
       }
     )
-    expect(addExternalFilesResponse.status).toBe(HttpStatus.OK)
-  })
-})
-
-describe('ContainerService - updateExternalFile', () => {
-  beforeEach(async () => {
-    await drop()
-    await dropBucket(BucketKey.Data)
-    await seed({ users: true, applications: true, projects: true, externalFile: true })
-    await DIContainer.sharedContainer.syncService.createGatewayContributor(
-      {
-        _id: `User|${validBody2.email}`,
-        name: 'foobar',
-        email: validBody2.email
-      },
-      BucketKey.Data
-    )
+    expect(externalFilesResponse.status).toBe(HttpStatus.OK)
   })
 
   test('should update external files', async () => {
@@ -1069,18 +1055,16 @@ describe('ContainerService - updateExternalFile', () => {
 
     const authHeader = authorizationHeader(loginResponse.body.token)
     const { _id, ...noId } = externalFile
-    const updateExternalFileResponse: supertest.Response = await updateExternalFile(
+    const externalFilesResponse: supertest.Response = await submitExternalFiles(
       {
         ...ValidContentTypeAcceptJsonHeader,
         ...authHeader
       },
       {
-        content: noId
-      },{
-        externalFileID: _id
+        content: [noId]
       }
     )
-    expect(updateExternalFileResponse.status).toBe(HttpStatus.OK)
+    expect(externalFilesResponse.status).toBe(HttpStatus.OK)
   })
 })
 

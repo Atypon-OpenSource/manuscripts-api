@@ -926,54 +926,21 @@ describe('ContainersController - addProductionNote', () => {
     expect(containerService.createManuscriptNote).toBeCalled()
   })
 })
-describe('ContainersController - addExternalFiles', () => {
+describe('ContainersController - submitExternalFiles', () => {
   test('should call addExternalFiles', async () => {
     const containerService = DIContainer.sharedContainer.containerService[ContainerType.project]
-    containerService.addExternalFiles = jest.fn()
+    containerService.submitExternalFiles = jest.fn()
     const req: any = {
       body: {
         content: [externalFile, externalFile1]
       }
     }
     const containersController: ContainersController = new ContainersController()
-    await containersController.addExternalFiles(req)
-    expect(containerService.addExternalFiles).toBeCalled()
+    await containersController.submitExternalFiles(req)
+    expect(containerService.submitExternalFiles).toBeCalled()
   })
 })
-describe('ContainersController - updateExternalFile', () => {
-  test('should fail if external file id is not a string', async () => {
-    const containerService = DIContainer.sharedContainer.containerService[ContainerType.project]
-    containerService.updateExternalFile = jest.fn()
-    const chance = new Chance()
-    const req: any = {
-      body: {
-        content: externalFile
-      },
-      params: {
-        externalFileID: chance.integer()
-      }
-    }
-    const containersController: ContainersController = new ContainersController()
-    await expect(containersController.updateExternalFile(req)).rejects.toThrow(ValidationError)
-  })
 
-  test('should call updateExternalFiles', async () => {
-    const containerService = DIContainer.sharedContainer.containerService[ContainerType.project]
-    UserService.profileID = jest.fn()
-    containerService.updateExternalFile = jest.fn()
-    const req: any = {
-      body: {
-        content: externalFile
-      },
-      params: {
-        externalFileID: externalFile._id
-      }
-    }
-    const containersController: ContainersController = new ContainersController()
-    await containersController.updateExternalFile(req)
-    expect(containerService.updateExternalFile).toBeCalled()
-  })
-})
 describe('ContainerController - createSnapshot', () => {
   test('should fail createSnapshot', async () => {
     const chance = new Chance()

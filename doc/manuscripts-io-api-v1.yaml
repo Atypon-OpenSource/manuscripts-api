@@ -962,13 +962,13 @@ paths:
           description: "Invalid authorization token"
         404:
           description: "manuscript not found"
-  /external-files/add:
+  /external-files/submit:
     post:
       tags:
         - "container"
-      summary: "Add External-Files"
+      summary: "Add/update External-Files"
       description: ""
-      operationId: "add-external-files"
+      operationId: "submit-external-files"
       consumes:
         - "application/json"
       produces:
@@ -980,38 +980,12 @@ paths:
           description: ""
           required: true
           schema:
-            $ref: "#/definitions/addExternalFilesSchema"
+            $ref: "#/definitions/submitExternalFilesSchema"
       responses:
         202:
-          description: "External files created successfully"
+          description: "External files created/updated successfully"
         401:
           description: "Invalid authorization token"
-  /external-files/:externalFileID/update:
-    get:
-      tags:
-        - "container"
-      summary: "Update External-File"
-      description: ""
-      operationId: "update-external-file"
-      consumes:
-        - "application/json"
-      produces:
-        - "application/json"
-      parameters:
-        - $ref: "#/parameters/AuthorizationTokenHeaderSchema"
-        - in: "body"
-          name: "body"
-          description: ""
-          required: true
-          schema:
-            $ref: "#/definitions/updateExternalFileSchema"
-      responses:
-        202:
-          description: "External file update successfully"
-        401:
-          description: "Invalid authorization token"
-        404:
-          description: "External file not found"
   /projects/:containerID/suggestions/status:
     get:
       tags:
@@ -1382,20 +1356,38 @@ definitions:
         type: string
       target:
         type: string
-  addExternalFilesSchema:
+  submitExternalFilesSchema:
     type: "object"
     required:
       - "content"
     properties:
       content:
         type: "array"
-  updateExternalFileSchema:
-    type: "object"
-    required:
-      - "content"
-    properties:
-      content:
-        type: "object"
+        items:
+          type: "object"
+          required:
+            - "containerID"
+            - "manuscriptID"
+            - "publicUrl"
+          properties:
+            containerID:
+              type: string
+            manuscriptID:
+              type: string
+            publicUrl:
+              type: string
+            fileName:
+              type: string
+            MIME:
+              type: string
+            designation:
+              type: string
+            displayName:
+              type: string
+            description:
+              type: string
+            storeId:
+              type: string
   createSnapshotSchema:
     type: "object"
     required:

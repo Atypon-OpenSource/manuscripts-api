@@ -973,35 +973,37 @@ export class ContainerService implements IContainerService {
     }
   }
 
-  public async updateExternalFile (
-    externalFileID: string,
-    updatedDocument: ExternalFile
-  ): Promise<ExternalFile> {
-    const externalFile: ExternalFile = await this.externalFileRepository.getById(externalFileID)
-    if (!externalFile) {
-      throw new RecordNotFoundError(`External file not found for id: ${externalFileID}`)
-    }
-    _.extend(externalFile, updatedDocument)
-    const result = this.externalFileRepository.update(externalFileID, externalFile, {})
-    await this.updateDocumentSessionId(externalFile.containerID)
-    return result
-  }
-
-  public async addExternalFiles (docs: ExternalFile[]) {
+  public async submitExternalFiles (docs: ExternalFile[]) {
     const stamp = timestamp()
     const externalFiles: ExternalFile[] = []
-    for (const externalFile of docs) {
-      externalFiles.push({
-        ...externalFile,
-        _id: `${this.externalFileRepository.objectType}:${uuid_v4()}`,
-        objectType: 'MPExternalFile',
-        createdAt: stamp,
-        updatedAt: stamp,
-        sessionID: uuid_v4()
-      })
-      await this.updateDocumentSessionId(externalFile.containerID)
+    const containerIDs: string[] = []
+    const output: any[] = []
+    for (const incomingDoc of docs) {
+      const existingDoc = await this.externalFileRepository.findByContainerIDAndPublicUrl(incomingDoc.containerID, incomingDoc.manuscriptID, incomingDoc.publicUrl)
+      if (existingDoc) {
+        _.extend(existingDoc, [incomingDoc, { updatedAt: stamp }])
+        const result = await this.externalFileRepository.update(existingDoc._id, existingDoc, {})
+        output.push(result)
+      } else {
+        externalFiles.push({
+          ...incomingDoc,
+          _id: `${this.externalFileRepository.objectType}:${uuid_v4()}`,
+          objectType: 'MPExternalFile',
+          createdAt: stamp,
+          updatedAt: stamp,
+          sessionID: uuid_v4()
+        })
+      }
+      if (containerIDs.indexOf(incomingDoc.containerID) < 0) {
+        containerIDs.push(incomingDoc.containerID)
+        await this.updateDocumentSessionId(incomingDoc.containerID)
+      }
     }
-    return this.externalFileRepository.bulkDocs(externalFiles)
+    if (externalFiles.length > 0) {
+      const result = await this.externalFileRepository.bulkDocs(externalFiles)
+      output.push(result)
+    }
+    return output
   }
 
   public async updateDocumentSessionId (docId: string) {

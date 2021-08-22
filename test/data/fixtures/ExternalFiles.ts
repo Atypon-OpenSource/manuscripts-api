@@ -28,7 +28,7 @@ export const externalFile: ExternalFile = {
   updatedAt: 0,
   manuscriptID: 'MPManuscript:valid-manuscript-id-1',
   sessionID: 'test',
-  publicUrl: 'http://exampleUrl.com/path'
+  publicUrl: 'http://exampleUrl.com/path1'
 }
 
 export const externalFile1: ExternalFile = {
@@ -43,5 +43,5 @@ export const externalFile1: ExternalFile = {
   updatedAt: 0,
   manuscriptID: 'MPManuscript:valid-manuscript-id-1',
   sessionID: 'test',
-  publicUrl: 'http://exampleUrl.com/path'
+  publicUrl: 'http://exampleUrl.com/path22'
 }

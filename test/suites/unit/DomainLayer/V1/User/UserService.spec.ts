@@ -32,6 +32,7 @@ import {
 } from '../../../../../data/fixtures/authServiceUser'
 import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
 import { timestamp } from '../../../../../../src/Utilities/JWT/LoginTokenPayload'
+import { validUserToken } from '../../../../../data/fixtures/UserTokenRepository'
 
 jest.setTimeout(TEST_TIMEOUT)
 
@@ -393,5 +394,23 @@ describe('User - getProfile', () => {
     }
     const user = await userService.profile(validJWTToken)
     expect(user).toBe(validUser1)
+  })
+})
+
+describe('User - authenticateUser', () => {
+
+  test('should authenticate user', async () => {
+    const userService: any = DIContainer.sharedContainer.userService
+    userService.isScopedTokenPayload = jest.fn(() => false)
+    userService.isLoginTokenPayload = jest.fn(() => true)
+    const tokenRepo: any = DIContainer.sharedContainer.userTokenRepository
+    tokenRepo.fullyQualifiedId = jest.fn(() => Promise.resolve(validUser1._id))
+    tokenRepo.getById = jest.fn(() => Promise.resolve(validUserToken))
+    const userRepo: any = DIContainer.sharedContainer.userRepository
+    userRepo.getById = jest.fn(() => Promise.resolve(validUser1))
+    userService.userProfileRepository = {
+      getById: async () => Promise.resolve(validUser1)
+    }
+    await expect(userService.authenticateUser(validJWTToken)).resolves.not.toThrow()
   })
 })

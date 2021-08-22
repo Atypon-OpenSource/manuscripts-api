@@ -30,8 +30,7 @@ import {
   getPickerBuilderSchema,
   getProductionNotesSchema,
   addProductionNoteSchema,
-  addExternalFiles,
-  updateExternalFile,
+  submitExternalFiles,
   createManuscriptSchema,
   suggestionStatusSchema,
   createSnapshotSchema
@@ -190,26 +189,16 @@ export class ContainerRoute extends BaseRoute {
     )
 
     router.post(
-      `/external-files/add`,
-      expressJoiMiddleware(addExternalFiles, {}),
+      `/external-files/submit`,
+      expressJoiMiddleware(submitExternalFiles, {}),
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
-          res.send(await this.containersController.addExternalFiles(req))
+          res.send(await this.containersController.submitExternalFiles(req))
         }, next)
       }
     )
 
-    router.post(
-      `/external-files/:externalFileID/update`,
-      expressJoiMiddleware(updateExternalFile, {}),
-      AuthStrategy.JWTAuth,
-      (req: Request, res: Response, next: NextFunction) => {
-        return this.runWithErrorHandling(async () => {
-          res.send(await this.containersController.updateExternalFile(req))
-        }, next)
-      }
-    )
     router.post(
       `/snapshot/:containerID/create`,
       expressJoiMiddleware(createSnapshotSchema, {}),

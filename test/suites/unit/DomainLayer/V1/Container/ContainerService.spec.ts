@@ -1959,37 +1959,28 @@ describe('ContainerService - getProductionNotes', () => {
   })
 })
 
-describe('ContainerService - addExternalFiles', () => {
+describe('ContainerService - submitExternalFile', () => {
   test('should add externalFiles', async () => {
     const containerService: any =
       DIContainer.sharedContainer.containerService[ContainerType.project]
     DIContainer.sharedContainer.projectRepository.patch = jest.fn()
     const repo: any = DIContainer.sharedContainer.externalFileRepository
     repo.bulkDocs = jest.fn(() => [externalFile])
-    await containerService.addExternalFiles([externalFile])
+    await containerService.submitExternalFiles([externalFile])
     expect(repo.bulkDocs).toBeCalled()
   })
 })
 
-describe('ContainerService - updateExternalFile', () => {
+describe('ContainerService - submitExternalFile', () => {
   test('should update externalFile', async () => {
     const containerService: any =
       DIContainer.sharedContainer.containerService[ContainerType.project]
     DIContainer.sharedContainer.projectRepository.patch = jest.fn()
     const repo: any = DIContainer.sharedContainer.externalFileRepository
-    repo.getById = jest.fn(() => externalFile)
+    repo.findByContainerIDAndPublicUrl = jest.fn(() => externalFile)
     repo.update = jest.fn()
-    await containerService.updateExternalFile(externalFile._id, externalFile)
+    await containerService.submitExternalFiles([externalFile])
     expect(repo.update).toBeCalled()
-  })
-
-  test('should fail if externalFile does not exists', async () => {
-    const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
-    const repo: any = DIContainer.sharedContainer.externalFileRepository
-    repo.getById = jest.fn(() => {})
-    repo.update = jest.fn()
-    await expect(containerService.updateExternalFile(externalFile._id, externalFile)).rejects.toThrow(RecordNotFoundError)
   })
 })
 

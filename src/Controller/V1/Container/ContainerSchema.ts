@@ -17,6 +17,9 @@
 import * as Joi from 'joi'
 
 import { appJsonAndCharset } from '../../BaseSchema'
+const allowUnknownObjectsSchema = Joi.defaults((schema) => schema.options({
+  allowUnknown: true
+}))
 
 export const createSchema: Joi.SchemaMap = {
   headers: Joi.object({
@@ -129,18 +132,13 @@ export const addProductionNoteSchema: Joi.SchemaMap = {
   })
 }
 
-export const addExternalFiles: Joi.SchemaMap = {
+export const submitExternalFiles: Joi.SchemaMap = {
   body: Joi.object({
-    content: Joi.array().required()
-  })
-}
-
-export const updateExternalFile: Joi.SchemaMap = {
-  params: Joi.object({
-    externalFileID: Joi.string().required()
-  }),
-  body: Joi.object({
-    content: Joi.object().required()
+    content: Joi.array().items(allowUnknownObjectsSchema.object({
+      containerID: Joi.string().required(),
+      manuscriptID: Joi.string().required(),
+      publicUrl: Joi.string().required()
+    })).required()
   })
 }
 

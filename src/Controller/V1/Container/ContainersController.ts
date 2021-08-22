@@ -316,22 +316,10 @@ export class ContainersController extends ContainedBaseController
     return DIContainer.sharedContainer.containerService[containerType].createManuscriptNote(containerID, manuscriptID, content, connectUserID, source, target)
   }
 
-  async addExternalFiles (req: Request) {
+  async submitExternalFiles (req: Request) {
     const { content } = req.body
     const externalFiles: ExternalFile[] = content
-    return DIContainer.sharedContainer.containerService[ContainerType.project].addExternalFiles(externalFiles)
-  }
-
-  async updateExternalFile (req: Request) {
-    const { externalFileID } = req.params
-
-    if (!isString(externalFileID)) {
-      throw new ValidationError('userConnectID should be string', externalFileID)
-    }
-
-    const { content } = req.body
-    const externalFile: ExternalFile = content
-    return DIContainer.sharedContainer.containerService[ContainerType.project].updateExternalFile(externalFileID, externalFile)
+    return DIContainer.sharedContainer.containerService[ContainerType.project].submitExternalFiles(externalFiles)
   }
 
   async getCorrectionStatus (req: Request) {

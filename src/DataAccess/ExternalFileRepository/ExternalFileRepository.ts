@@ -15,9 +15,10 @@
  */
 
 import { SGRepository } from '../SGRepository'
-import {
-  NoBucketError
-} from '../../Errors'
+import { ExternalFile, ObjectTypes } from '@manuscripts/manuscripts-json-schema'
+import { DatabaseError, NoBucketError } from '../../Errors'
+import { CouchbaseError, N1qlQuery } from 'couchbase'
+import { databaseErrorMessage } from '../DatabaseResponseFunctions'
 
 class ExternalFileRepository extends SGRepository<any, any, any, any> {
   public get objectType (): string {
@@ -30,6 +31,37 @@ class ExternalFileRepository extends SGRepository<any, any, any, any> {
     }
 
     return (this.database.bucket as any)._name
+  }
+
+  public async findByContainerIDAndPublicUrl (containerID: string, manuscriptID: string, publicUrl: string): Promise<ExternalFile> {
+    const n1ql = `SELECT *, META().id FROM ${
+      this.bucketName
+    } WHERE containerID = $1 and manuscriptID = $2 and publicUrl = $3 and objectType = '${ObjectTypes.ExternalFile}' AND _deleted IS MISSING limit 1`
+
+    const statement = N1qlQuery.fromString(n1ql)
+      .adhoc(false)
+      .consistency(N1qlQuery.Consistency.STATEMENT_PLUS)
+
+    return new Promise<ExternalFile>((resolve, reject) => {
+      this.database.bucket.query(
+        statement,
+        [containerID, manuscriptID, publicUrl],
+        (error: CouchbaseError | null, results: any) => {
+          if (error) {
+            const errorMsg: string = databaseErrorMessage(
+              error.code,
+              error.message
+            )
+            return reject(
+              new DatabaseError(error.code, errorMsg, [containerID, manuscriptID, publicUrl], error)
+            )
+          }
+
+          return resolve(results.length > 0 ? { ...results[0], _id: results[0].id } : undefined)
+        }
+
+      )
+    })
   }
 }
 
