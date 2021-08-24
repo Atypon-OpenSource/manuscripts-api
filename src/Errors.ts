@@ -504,7 +504,7 @@ export class InvalidServerCredentialsError
 
 export class DuplicateEmailError extends Error implements StatusCoded {
   readonly internalErrorCode = InternalErrorCode.DuplicateEmailError
-  readonly statusCode = HttpStatus.FORBIDDEN
+  readonly statusCode = HttpStatus.CONFLICT
   constructor (email: string) {
     super(`Email '${email}' is not available.`)
     this.name = 'DuplicateEmailError'
