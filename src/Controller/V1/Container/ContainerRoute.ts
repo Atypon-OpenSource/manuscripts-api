@@ -56,7 +56,7 @@ export class ContainerRoute extends BaseRoute {
     )
 
     router.delete(
-      [`/:containerID`, `projects/:containerID`],
+      [`/:containerID`, `/:containerType/:containerID`],
       expressJoiMiddleware(deleteSchema, {}),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
