@@ -981,7 +981,7 @@ export class ContainerService implements IContainerService {
     for (const incomingDoc of docs) {
       const existingDoc = await this.externalFileRepository.findByContainerIDAndPublicUrl(incomingDoc.containerID, incomingDoc.manuscriptID, incomingDoc.publicUrl)
       if (existingDoc) {
-        _.extend(existingDoc, [incomingDoc, { updatedAt: stamp }])
+        _.extend(existingDoc, { ...incomingDoc, updatedAt: stamp })
         const result = await this.externalFileRepository.update(existingDoc._id, existingDoc, {})
         output.push(result)
       } else {

@@ -57,7 +57,12 @@ class ExternalFileRepository extends SGRepository<any, any, any, any> {
             )
           }
 
-          return resolve(results.length > 0 ? { ...results[0], _id: results[0].id } : undefined)
+          if (results.length) {
+            const result = { ...results[0].projects, _id: results[0].id }
+            const { id, createdAt, _sync, ...oldDoc } = result
+            return resolve(oldDoc)
+          }
+          return resolve(undefined)
         }
 
       )
