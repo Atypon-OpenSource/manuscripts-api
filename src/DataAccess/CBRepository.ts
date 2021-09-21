@@ -350,10 +350,10 @@ export abstract class CBRepository<TEntity,
       }
 
       const where = this.whereClause(criteria)
-      const n1ql = `SELECT * FROM \`${this.bucketName}\` WHERE ${where.N1QL} LIMIT 1;`
-      const statement = ensureTypeBound(N1qlQuery.fromString(n1ql)
-                                                 .adhoc(false)
-                                                 .consistency(this.consistency))
+      const n1ql = `SELECT * FROM \`${this.bucketName}\` WHERE _type = '${this.documentType}' AND ${where.N1QL} LIMIT 1;`
+      const statement = ensureTypeBound(
+        N1qlQuery.fromString(n1ql).adhoc(false).consistency(this.consistency)
+      )
 
       this.database.bucket.query(
         statement,
