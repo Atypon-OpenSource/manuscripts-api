@@ -28,7 +28,7 @@ services:
 <% } -%>
 
   <%- app_gateway_hostname %>:
-    image: registry.gitlab.com/mpapp-public/manuscripts-sync/sync_gateway:0.29.5
+    image: registry.gitlab.com/mpapp-public/manuscripts-sync/sync_gateway:0.29.14
     depends_on:
       - <%- app_couchbase_hostname %>
     environment:
