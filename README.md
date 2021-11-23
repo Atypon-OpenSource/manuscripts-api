@@ -204,13 +204,13 @@ placed at the root of the repository.
   <dd>Express.js specific environment variable whose acceptable values are enforced by manuscripts-api to be "development" and "production" (see <a href="https://expressjs.com/en/advanced/best-practice-performance.html#set-node_env-to-production">Express.js docs</a> re production specific behaviour).</dd>
 
   <dt>APP_STORE_ONLY_SSL_TRANSMITTED_COOKIES<dt>
-  <dd>If set to '0', cookies transmitted over SSL encrypted connections will be stored (see <a href="https://expressjs.com/en/advanced/best-practice-security.html#use-cookies-securely">"Set cookie security options"</a> in Express.js documentation for more info).</dd>
+  <dd>If set to '0', cookies transmitted over SSL encrypted connections will be stored (see <a href="https://expressjs.com/en/advanced/best-practice-security.html#use-cookies-securely">"Set cookie security options"</a> in Express.js documentation for more info), also the samesite cookie will be Strict</dd>
 
   <dt>APP_ALLOWED_CORS_ORIGINS</dt>
   <dd>Allowed CORS origins for manuscripts-api and the Sync Gateway.</dd>
 
   <dt>APP_GATEWAY_COOKIE_DOMAIN</dt>
-  <dd>The domain to which this manuscripts-api instance sets its Sync Gateway cookie domain for.</dd>
+  <dd>The domain to which this manuscripts-api instance sets its Sync Gateway cookie domain for. for local development will set this to `localhost`</dd>
 
   <dt>APP_PROJECTS_GATEWAY_COOKIE_DOMAIN</dt>
   <dd>The domain at which Sync Gateway serves projects data at.</dd>

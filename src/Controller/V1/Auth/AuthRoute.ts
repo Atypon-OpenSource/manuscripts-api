@@ -397,7 +397,7 @@ export class AuthRoute extends BaseRoute {
     domain,
     maxAge: includeAge ? SYNC_GATEWAY_COOKIE_EXPIRY_IN_MS : 0,
     httpOnly: true,
-    sameSite: 'None',
+    sameSite: config.server.storeOnlySSLTransmittedCookies && 'None' || 'Strict',
     secure: config.server.storeOnlySSLTransmittedCookies
   })
 
