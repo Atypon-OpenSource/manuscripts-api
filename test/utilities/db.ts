@@ -20,7 +20,7 @@ import checksum from 'checksum'
 
 import { appDataAdminGatewayURI } from '../../src/Config/ConfigAccessors'
 import { BucketKey } from '../../src/Config/ConfigurationTypes'
-import { userList, singleUseTokens } from '../data/dump/user'
+import { singleUseTokens, userList } from '../data/dump/user'
 import { userStatusList } from '../data/dump/userStatus'
 import { invitationsList } from '../data/dump/invitation'
 import { projectInvitationsList } from '../data/dump/projectInvitation'
@@ -416,6 +416,36 @@ export async function dropBucket (bucketKey: BucketKey): Promise<void> {
 
   payload = snapshotList.reduce((acc: any, doc: any) => {
     acc[doc._id] = ['*']
+    return acc
+  }, {})
+  await purge(bucketKey, payload)
+
+  payload = libraryCollectionsList.reduce((acc: any, doc: any) => {
+    acc['MPLibraryCollection:' + doc._id] = ['*']
+    return acc
+  }, {})
+  await purge(bucketKey, payload)
+
+  payload = projectInvitationsList.reduce((acc: any, doc: any) => {
+    acc['MPContainerInvitation:' + doc._id] = ['*']
+    return acc
+  }, {})
+  await purge(bucketKey, payload)
+
+  payload = containerRequestList.reduce((acc: any, doc: any) => {
+    acc['MPContainerRequest:' + doc._id] = ['*']
+    return acc
+  }, {})
+  await purge(bucketKey, payload)
+
+  payload = librariesList.reduce((acc: any, doc: any) => {
+    acc['MPLibrary:' + doc._id] = ['*']
+    return acc
+  }, {})
+  await purge(bucketKey, payload)
+
+  payload = invitationsList.reduce((acc: any, doc: any) => {
+    acc['MPInvitation:' + doc._id] = ['*']
     return acc
   }, {})
   await purge(bucketKey, payload)

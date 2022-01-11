@@ -161,10 +161,10 @@ describe('CBRepository Consistency', () => {
     expect(repository.consistency).toBe(N1qlQuery.Consistency.REQUEST_PLUS)
   })
 
-  test('should be STATEMENT_PLUS', async () => {
-    const repository = new UserRepository(testDatabase(), N1qlQuery.Consistency.STATEMENT_PLUS)
+  test('should be REQUEST_PLUS', async () => {
+    const repository = new UserRepository(testDatabase(), N1qlQuery.Consistency.REQUEST_PLUS)
 
-    expect(repository.consistency).toBe(N1qlQuery.Consistency.STATEMENT_PLUS)
+    expect(repository.consistency).toBe(N1qlQuery.Consistency.REQUEST_PLUS)
   })
 })
 

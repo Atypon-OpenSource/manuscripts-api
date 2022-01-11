@@ -62,6 +62,38 @@ projectInvitationsList.push({
 
 projectInvitationsList.push({
   _id: checksum(
+    'valid-user@manuscriptsapp.com-valid-google2@manuscriptsapp.com-valid-project-id-2',
+    { algorithm: 'sha1' }
+  ),
+  invitingUserProfile,
+  invitingUserID: 'User_valid-user@manuscriptsapp.com',
+  invitedUserEmail: 'valid-google@manuscriptsapp.com',
+  containerID: 'MPProject:valid-project-id-2',
+  role: ContainerRole.Viewer,
+  message: 'Message',
+  createdAt: 1522231220,
+  updatedAt: 1522231220,
+  objectType: 'MPContainerInvitation'
+})
+
+projectInvitationsList.push({
+  _id: checksum(
+    'valid-user@manuscriptsapp.com-valid-google@manuscriptsapp.com-MPProject:valid-project-id-2',
+    { algorithm: 'sha1' }
+  ),
+  invitingUserProfile,
+  invitingUserID: 'User_valid-user@manuscriptsapp.com',
+  invitedUserEmail: 'valid-google@manuscriptsapp.com',
+  containerID: 'MPProject:valid-project-id-2',
+  role: ContainerRole.Viewer,
+  message: 'Message',
+  createdAt: 1522231220,
+  updatedAt: 1522231220,
+  objectType: 'MPContainerInvitation'
+})
+
+projectInvitationsList.push({
+  _id: checksum(
     'valid-user@manuscriptsapp.com-valid-user-2@manuscriptsapp.com-valid-project-id-2',
     { algorithm: 'sha1' }
   ),

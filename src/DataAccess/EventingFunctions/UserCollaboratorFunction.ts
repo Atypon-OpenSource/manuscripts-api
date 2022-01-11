@@ -58,7 +58,7 @@ export const userCollaboratorFunction = (
     function collaboratorUserProfile (userID: string): UserProfile | null {
       try {
         var userProfile = new N1qlQuery(
-          'SELECT META().id, * FROM ' +
+          'SELECT META().id, META().xattrs._sync, * FROM ' +
             sourceBucketName +
             ' WHERE objectType = "MPUserProfile" AND userID = $userID;',
           { namedParams: { $userID: userID } }

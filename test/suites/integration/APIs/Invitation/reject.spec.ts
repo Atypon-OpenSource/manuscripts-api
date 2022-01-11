@@ -24,6 +24,7 @@ import { ValidContentTypeAcceptJsonHeader } from '../../../../data/fixtures/head
 import { InvitationRepository } from '../../../../../src/DataAccess/InvitationRepository/InvitationRepository'
 import { reject } from '../../../../api'
 import { BucketKey } from '../../../../../src/Config/ConfigurationTypes'
+import { createInvitation, createProjectInvitation, purgeContainerInvitation } from '../../../../data/fixtures/misc'
 
 let db: any = null
 
@@ -41,7 +42,7 @@ describe('InvitationService - reject', () => {
   beforeEach(async () => {
     await drop()
     await dropBucket(BucketKey.Data)
-    await seed({ invitations: true })
+    await seed({ })
   })
 
   test('should reject invitation successfully', async () => {
@@ -50,6 +51,7 @@ describe('InvitationService - reject', () => {
       'valid-user@manuscriptsapp.com-valid-google@manuscriptsapp.com',
       { algorithm: 'sha1' }
     )
+    await createInvitation(hash)
     const rejectResponse: supertest.Response = await reject(
       { invitationId: `MPInvitation:${hash}` },
       {
@@ -70,7 +72,7 @@ describe('InvitationService - rejectProjectInvite', () => {
   beforeEach(async () => {
     await drop()
     await dropBucket(BucketKey.Data)
-    await seed({ projectInvitations: true })
+    await seed({ })
   })
 
   test('should reject invitation successfully', async () => {
@@ -78,6 +80,8 @@ describe('InvitationService - rejectProjectInvite', () => {
       'valid-user@manuscriptsapp.com-valid-user-4@manuscriptsapp.com-valid-project-id-2',
       { algorithm: 'sha1' }
     )
+    await purgeContainerInvitation(invitationTupleHash)
+    await createProjectInvitation(invitationTupleHash)
     const rejectResponse: supertest.Response = await reject(
       { invitationId: `MPContainerInvitation:${invitationTupleHash}` },
       {

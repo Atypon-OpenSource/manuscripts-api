@@ -39,7 +39,7 @@ export class ContainerInvitationRepository extends SGRepository<
     containerID: string,
     userEmail: string
   ): Promise<ContainerInvitation[]> {
-    const n1ql = `SELECT META().id, * FROM ${this.bucketName} WHERE objectType = \"${this.objectType}\" AND invitedUserEmail = $1 AND containerID = $2`
+    const n1ql = `SELECT META().id, META().xattrs._sync, * FROM ${this.bucketName} WHERE objectType = \"${this.objectType}\" AND invitedUserEmail = $1 AND containerID = $2`
 
     const callbackFn = (results: any) => results.map((result: any) => {
       delete result[this.bucketName]._sync

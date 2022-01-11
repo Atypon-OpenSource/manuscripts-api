@@ -22,6 +22,7 @@ import { BucketKey } from '../../../../../src/Config/ConfigurationTypes'
 import { ProjectRepository } from '../../../../../src/DataAccess/ProjectRepository/ProjectRepository'
 import { validProject } from '../../../../data/fixtures/projects'
 import { ContainerInvitationRepository } from '../../../../../src/DataAccess/ContainerInvitationRepository/ContainerInvitationRepository'
+import { createProjectInvitation } from '../../../../data/fixtures/misc'
 
 jest.setTimeout(TEST_TIMEOUT)
 
@@ -33,7 +34,7 @@ describe('ProjectRepository removeWithAllResources', () => {
   beforeEach(async () => {
     await drop()
     await dropBucket(BucketKey.Data)
-    await seed({ projects: true, projectInvitations: true })
+    await seed({ projects: true })
   })
 
   test('should remove project with all its resources', async () => {
@@ -44,12 +45,12 @@ describe('ProjectRepository removeWithAllResources', () => {
     )
     const validId = `MPProject:valid-project-id-6`
     const projectBefore = await repository.getById(validId)
-    const invitationBefore = await projectInvitationRepository.getById(
-      checksum(
-        'valid-user@manuscriptsapp.com-valid-user-6@manuscriptsapp.com-valid-project-id-6',
-        { algorithm: 'sha1' }
-      )
+    const invId = checksum(
+      'valid-user@manuscriptsapp.com-valid-user-6@manuscriptsapp.com-valid-project-id-6',
+      { algorithm: 'sha1' }
     )
+    await createProjectInvitation(invId)
+    const invitationBefore = await projectInvitationRepository.getById(invId)
 
     expect(projectBefore!._id).toBe(validId)
     expect(invitationBefore).not.toBeNull()

@@ -25,6 +25,7 @@ import { SeedOptions } from '../../../../../src/DataAccess/Interfaces/SeedOption
 import { BucketKey } from '../../../../../src/Config/ConfigurationTypes'
 import { DIContainer } from '../../../../../src/DIContainer/DIContainer'
 import { SubmissionStatus } from '../../../../../src/Models/SubmissionModels'
+import { createSubmission } from '../../../../data/fixtures/misc'
 
 let db: any = null
 beforeAll(async () => {
@@ -39,8 +40,7 @@ describe('SubmissionService - updateStatus', () => {
   beforeEach(async () => {
     const seedOptions: SeedOptions = {
       users: true,
-      applications: true,
-      submission: true
+      applications: true
     }
 
     await drop()
@@ -49,6 +49,7 @@ describe('SubmissionService - updateStatus', () => {
   })
 
   test('updateStatus should get update status field', async () => {
+    await createSubmission('MPSubmission:valid-submission-id')
     const response: supertest.Response = await updateStatus(
       ValidContentTypeAcceptJsonHeader,
       {

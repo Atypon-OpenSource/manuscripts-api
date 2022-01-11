@@ -50,6 +50,7 @@ import { ContainerRole } from '../../../../../src/Models/ContainerModels'
 import { BucketKey } from '../../../../../src/Config/ConfigurationTypes'
 import { GATEWAY_BUCKETS } from '../../../../../src/DomainServices/Sync/SyncService'
 import { validProject } from '../../../../data/fixtures/projects'
+import { createContainerReq, purgeContainerReq } from '../../../../data/fixtures/misc'
 
 let db: any = null
 
@@ -90,7 +91,9 @@ describe('ContainerRequestService - create', () => {
     )
 
     expect(loginResponse.status).toBe(HttpStatus.OK)
-
+    await purgeContainerReq(`MPContainerRequest:${checksum(
+      'User_valid-user@manuscriptsapp.com-MPProject:valid-project-id'
+    )}`)
     const authHeader = authorizationHeader(loginResponse.body.token)
     const response: supertest.Response = await createContainerRequest(
       {
@@ -105,12 +108,14 @@ describe('ContainerRequestService - create', () => {
   })
 
   test('should update container request if anotehr request exists', async () => {
-    await seed({ userProfiles: true, containerRequest: true })
+    await seed({ userProfiles: true })
     const loginResponse: supertest.Response = await basicLogin(
       validBody,
       ValidHeaderWithApplicationKey
     )
-
+    await createContainerReq(`MPContainerRequest:${checksum(
+      'User_valid-user@manuscriptsapp.com-MPProject:valid-project-id-request-4'
+    )}`)
     expect(loginResponse.status).toBe(HttpStatus.OK)
 
     const authHeader = authorizationHeader(loginResponse.body.token)
@@ -135,8 +140,7 @@ describe('ContainerRequestService - accept', () => {
     await seed({
       users: true,
       applications: true,
-      projects: true,
-      containerRequest: true
+      projects: true
     })
   })
 
@@ -147,7 +151,9 @@ describe('ContainerRequestService - accept', () => {
     )
 
     expect(loginResponse.status).toBe(HttpStatus.OK)
-
+    await createContainerReq(`MPContainerRequest:${checksum(
+      'User_valid-user-3@manuscriptsapp.com-MPProject:valid-project-id-request-2'
+    )}`)
     const authHeader = authorizationHeader(loginResponse.body.token)
     const response: supertest.Response = await acceptContainerRequest(
       {
@@ -172,7 +178,9 @@ describe('ContainerRequestService - accept', () => {
     )
 
     expect(loginResponse.status).toBe(HttpStatus.OK)
-
+    await createContainerReq(`MPContainerRequest:${checksum(
+      'User_valid-user-3@manuscriptsapp.com-MPProject:valid-project-id-request'
+    )}`)
     const authHeader = authorizationHeader(loginResponse.body.token)
     const response: supertest.Response = await acceptContainerRequest(
       {
@@ -186,7 +194,6 @@ describe('ContainerRequestService - accept', () => {
       },
       { containerID: `MPProject:valid-project-id-request` }
     )
-
     expect(response.status).toBe(HttpStatus.OK)
   })
 
@@ -199,8 +206,7 @@ describe('ContainerRequestService - reject', () => {
     await seed({
       users: true,
       applications: true,
-      projects: true,
-      containerRequest: true
+      projects: true
     })
   })
 
@@ -211,7 +217,9 @@ describe('ContainerRequestService - reject', () => {
     )
 
     expect(loginResponse.status).toBe(HttpStatus.OK)
-
+    await createContainerReq(`MPContainerRequest:${checksum(
+      'User_valid-user-3@manuscriptsapp.com-MPProject:valid-project-id-request-2'
+    )}`)
     const authHeader = authorizationHeader(loginResponse.body.token)
     const response: supertest.Response = await rejectContainerRequest(
       {

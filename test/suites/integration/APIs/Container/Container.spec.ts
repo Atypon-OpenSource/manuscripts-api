@@ -62,6 +62,8 @@ import { validManuscript, validManuscript1 } from '../../../../data/fixtures/man
 import { validNote1 } from '../../../../data/fixtures/ManuscriptNote'
 import { config } from '../../../../../src/Config/Config'
 import { externalFile } from '../../../../data/fixtures/ExternalFiles'
+import _ from 'lodash'
+import { createProject, createLibraryCollection, createProjectInvitation, createLibrary } from '../../../../data/fixtures/misc'
 
 jest.mock('email-templates', () =>
   jest.fn().mockImplementation(() => {
@@ -154,7 +156,7 @@ describe('ContainerService - delete', () => {
   beforeEach(async () => {
     await drop()
     await dropBucket(BucketKey.Data)
-    await seed({ ...seedOptions, projects: true, projectInvitations: true })
+    await seed({ ...seedOptions })
   })
 
   test('should delete a project with all its resources', async () => {
@@ -168,10 +170,12 @@ describe('ContainerService - delete', () => {
     const authHeader = authorizationHeader(loginResponse.body.token)
 
     const validContainerId = `MPProject:valid-project-id-6`
+    await createProject('valid-project-id-6')
     const validInvitationId = checksum(
       'valid-user@manuscriptsapp.com-valid-user-6@manuscriptsapp.com-valid-project-id-6',
       { algorithm: 'sha1' }
     )
+    await createProjectInvitation(validInvitationId)
 
     const projectBefore = await DIContainer.sharedContainer.projectRepository.getById(
       validContainerId
@@ -210,7 +214,7 @@ describe('ContainerService - delete', () => {
     )
 
     expect(loginResponse.status).toBe(HttpStatus.OK)
-
+    await createProject('valid-project-id-9')
     const authHeader = authorizationHeader(loginResponse.body.token)
     const response: supertest.Response = await deleteContainer(
       {
@@ -230,13 +234,14 @@ describe('containerService - addContainerUser', () => {
   beforeEach(async () => {
     await drop()
     await dropBucket(BucketKey.Data)
-    await seed({ projects: true, users: true, applications: true })
+    await seed({ users: true, applications: true })
   })
 
   test('should add an owner to a project and return true', async () => {
     const containerService =
       DIContainer.sharedContainer.containerService[ContainerType.project]
 
+    await createProject('valid-project-id')
     const didAdd = await containerService.addContainerUser(
       validProject._id,
       ContainerRole.Owner,
@@ -250,7 +255,7 @@ describe('containerService - addContainerUser', () => {
   test('should add a writer to a project and return true', async () => {
     const containerService =
       DIContainer.sharedContainer.containerService[ContainerType.project]
-
+    await createProject('valid-project-id')
     const didAdd = await containerService.addContainerUser(
       validProject._id,
       ContainerRole.Writer,
@@ -264,7 +269,7 @@ describe('containerService - addContainerUser', () => {
   test('should add a viewer to a project and return true', async () => {
     const containerService =
       DIContainer.sharedContainer.containerService[ContainerType.project]
-
+    await createProject('valid-project-id')
     const didAdd = await containerService.addContainerUser(
       validProject._id,
       ContainerRole.Viewer,
@@ -282,7 +287,7 @@ describe('containerService - addContainerUser', () => {
     )
 
     expect(loginResponse.status).toBe(HttpStatus.OK)
-
+    await createProject('valid-project-id-4')
     const authHeader = authorizationHeader(loginResponse.body.token)
     const response: supertest.Response = await addUser(
       {
@@ -308,7 +313,7 @@ describe('containerService - addContainerUser', () => {
     )
 
     expect(loginResponse.status).toBe(HttpStatus.OK)
-
+    await createProject('valid-project-id-4')
     const authHeader = authorizationHeader(loginResponse.body.token)
     const response: supertest.Response = await addUser(
       {
@@ -334,7 +339,7 @@ describe('containerService - addContainerUser', () => {
     )
 
     expect(loginResponse.status).toBe(HttpStatus.OK)
-
+    await createProject('valid-project-id-2')
     const authHeader = authorizationHeader(loginResponse.body.token)
     const response: supertest.Response = await addUser(
       {
@@ -358,13 +363,15 @@ describe('containerService - addContainerUser (for libraries)', () => {
   beforeEach(async () => {
     await drop()
     await dropBucket(BucketKey.Data)
-    await seed({ users: true, applications: true, libraries: true, libraryCollections: true })
+    await seed({ users: true, applications: true })
   })
 
   test('should add an owner to a library and cascade the role to library collections', async () => {
     const containerService =
       DIContainer.sharedContainer.containerService[ContainerType.library]
 
+    await createLibraryCollection()
+    await createLibrary('valid-library-id')
     const didAdd = await containerService.addContainerUser(
       validLibrary._id,
       ContainerRole.Owner,
@@ -384,7 +391,8 @@ describe('containerService - addContainerUser (for libraries)', () => {
   test('should add a writer to a library and cascade the role to library collections', async () => {
     const containerService =
       DIContainer.sharedContainer.containerService[ContainerType.library]
-
+    await createLibraryCollection()
+    await createLibrary('valid-library-id')
     const didAdd = await containerService.addContainerUser(
       validLibrary._id,
       ContainerRole.Writer,
@@ -404,7 +412,8 @@ describe('containerService - addContainerUser (for libraries)', () => {
   test('should add a viewer to a library and cascade the role to library collections', async () => {
     const containerService =
       DIContainer.sharedContainer.containerService[ContainerType.library]
-
+    await createLibraryCollection()
+    await createLibrary('valid-library-id')
     const didAdd = await containerService.addContainerUser(
       validLibrary._id,
       ContainerRole.Viewer,
@@ -602,9 +611,11 @@ describe('containerService - manageUserRole', () => {
 
     expect(loginResponse.status).toBe(HttpStatus.OK)
 
+    const randomId = chance.integer()
+
     await DIContainer.sharedContainer.containerInvitationRepository.create(
       {
-        _id: 'MPContainerInvitation:valid-project-id-4',
+        _id: `MPContainerInvitation:valid-project-id-${randomId}`,
         invitedUserEmail: 'valid-user-2@manuscriptsapp.com',
         invitingUserID: 'User_invitingUser',
         invitingUserProfile: {
@@ -627,7 +638,7 @@ describe('containerService - manageUserRole', () => {
     )
 
     const beforeInvitation = await DIContainer.sharedContainer.containerInvitationRepository.getById(
-      'MPContainerInvitation:valid-project-id-4'
+      `MPContainerInvitation:valid-project-id-${randomId}`
     )
 
     expect(beforeInvitation).not.toBeNull()
@@ -648,11 +659,12 @@ describe('containerService - manageUserRole', () => {
     )
 
     const afterInvitation = await DIContainer.sharedContainer.containerInvitationRepository.getById(
-      'MPContainerInvitation:valid-project-id-4'
+      `MPContainerInvitation:valid-project-id-${randomId}`
     )
 
     expect(afterInvitation).toBeNull()
     expect(response.status).toBe(HttpStatus.OK)
+    await DIContainer.sharedContainer.containerInvitationRepository.purge(`MPContainerInvitation:valid-project-id-${randomId}`)
   })
 })
 

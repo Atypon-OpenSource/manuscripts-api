@@ -47,7 +47,7 @@ export abstract class CBRepository<TEntity,
 
   readonly modelConstructor: OttomanModelInstanceCtor
 
-  constructor (readonly database: Database, consistency: N1qlQuery.Consistency = N1qlQuery.Consistency.STATEMENT_PLUS) {
+  constructor (readonly database: Database, consistency: N1qlQuery.Consistency = N1qlQuery.Consistency.REQUEST_PLUS) {
     this.consistency = consistency
     const registeredSchema = registeredSchemas.get(this._documentType)
     // Ignoring the following from tests because testing it is likely to break all the time depending on previously executed tests: requires never having initialized a certain kind of repository before.

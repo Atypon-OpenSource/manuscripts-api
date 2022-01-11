@@ -51,7 +51,7 @@ export abstract class SGRepository<
     readonly bucketKey: BucketKey,
     readonly database: Database,
     n1qlConsistency: N1qlQuery.Consistency = N1qlQuery.Consistency
-      .STATEMENT_PLUS
+      .REQUEST_PLUS
   ) {
     this.n1qlConsistency = n1qlConsistency
   }
@@ -269,7 +269,7 @@ export abstract class SGRepository<
   }
 
   public async getAllIDs () {
-    const n1ql = `SELECT _sync, META().id FROM ${this.bucketName}
+    const n1ql = `SELECT META().xattrs._sync, META().id FROM ${this.bucketName}
                   WHERE objectType = \'${this.objectType}\'
                   AND _deleted IS MISSING`
 

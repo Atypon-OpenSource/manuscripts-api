@@ -47,7 +47,7 @@ export abstract class ContainerRepository<
     const existIn = (arrayName: string) =>
       `ANY id IN ${arrayName} SATISFIES id = $1 END`
 
-    const n1ql = `SELECT *, META().id FROM ${
+    const n1ql = `SELECT *, META().id, META().xattrs._sync FROM ${
       this.bucketName
     } WHERE objectType = \'${this.objectType}\' AND (${existIn(
       'owners'
@@ -151,7 +151,7 @@ export abstract class ContainerRepository<
   private getContainerResourcesMetadata (
     containerId: string
   ): Promise<DocumentIdentifyingMetadata[]> {
-    const n1ql = `SELECT META().id, _sync.rev FROM ${this.bucketName} WHERE projectID = $1 OR containerID = $1`
+    const n1ql = `SELECT META().id, META().xattrs._sync.rev FROM ${this.bucketName} WHERE projectID = $1 OR containerID = $1`
 
     const callbackFn = (results: any) => results
 
@@ -238,7 +238,7 @@ export abstract class ContainerRepository<
       return null
     }
 
-    let n1ql = `SELECT _sync.attachments, META().id FROM ${this.bucketName} WHERE containerID = $1 AND _sync.attachments is not missing`
+    let n1ql = `SELECT META().xattrs._sync.attachments, META().id FROM ${this.bucketName} WHERE containerID = $1 AND _sync.attachments is not missing`
 
     if (manuscriptID) {
       n1ql += ` AND (manuscriptID = $2 or manuscriptID is missing)`
@@ -295,7 +295,7 @@ export abstract class ContainerRepository<
   public getContainedLibraryCollections (
     containerId: string
   ): Promise<LibraryCollection[]> {
-    const n1ql = `SELECT *, META().id, _sync.rev FROM \`${this.bucketName}\` WHERE objectType = 'MPLibraryCollection' AND containerID = $1 AND _deleted IS MISSING`
+    const n1ql = `SELECT *, META().id, META().xattrs._sync.rev FROM \`${this.bucketName}\` WHERE objectType = 'MPLibraryCollection' AND containerID = $1 AND _deleted IS MISSING`
 
     const callbackFn = (results: any) => {
       return results.map((row: any) => ({

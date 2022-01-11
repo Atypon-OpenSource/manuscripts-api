@@ -31,13 +31,13 @@ import {
   authorizationHeader
 } from '../../../../data/fixtures/headers'
 import { SeedOptions } from '../../../../../src/DataAccess/Interfaces/SeedOptions'
+import { createProjectInvitation } from '../../../../data/fixtures/misc'
 
 let db: any = null
 const seedOptions: SeedOptions = {
   users: true,
   applications: true,
-  projects: true,
-  projectInvitations: true
+  projects: true
 }
 
 beforeAll(async () => {
@@ -79,6 +79,7 @@ describe('InvitationService - uninvite', () => {
       'valid-user@manuscriptsapp.com-valid-google@manuscriptsapp.com-valid-project-id-2',
       { algorithm: 'sha1' }
     )
+    await createProjectInvitation(invitationTupleHash)
     const response: supertest.Response = await uninvite(
       { invitationId: `MPContainerInvitation:${invitationTupleHash}` },
       {

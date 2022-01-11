@@ -22,6 +22,7 @@ import { BucketKey } from '../../../../../src/Config/ConfigurationTypes'
 import { LibraryRepository } from '../../../../../src/DataAccess/LibraryRepository/LibraryRepository'
 import { validLibrary } from '../../../../data/fixtures/libraries'
 import { ContainerInvitationRepository } from '../../../../../src/DataAccess/ContainerInvitationRepository/ContainerInvitationRepository'
+import { createLibrary, createLibraryInvitation } from '../../../../data/fixtures/misc'
 
 jest.setTimeout(TEST_TIMEOUT)
 
@@ -33,7 +34,7 @@ describe('LibraryRepository - removeWithAllResources', () => {
   beforeEach(async () => {
     await drop()
     await dropBucket(BucketKey.Data)
-    await seed({ libraries: true, libraryInvitations: true })
+    await seed({ })
   })
 
   test('should remove library with all its resources', async () => {
@@ -43,6 +44,11 @@ describe('LibraryRepository - removeWithAllResources', () => {
       db
     )
     const validId = `MPLibrary:valid-library-id-6`
+    await createLibrary('valid-library-id-6')
+    await createLibraryInvitation(checksum(
+      'valid-user@manuscriptsapp.com-valid-user-6@manuscriptsapp.com-valid-library-id-6',
+      { algorithm: 'sha1' }
+    ))
     const libraryBefore = await repository.getById(validId)
     const invitationBefore = await libraryInvitationRepository.getById(
       checksum(

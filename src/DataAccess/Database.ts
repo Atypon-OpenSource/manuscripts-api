@@ -140,7 +140,7 @@ export class Database {
       const bucketName = config.DB.buckets[this.bucketKey]
 
       this.bucket.query(
-        N1qlQuery.fromString(q).adhoc(false).consistency(N1qlQuery.Consistency.STATEMENT_PLUS),
+        N1qlQuery.fromString(q).adhoc(false).consistency(N1qlQuery.Consistency.REQUEST_PLUS),
         [indexName, bucketName],
         (error: CouchbaseError | null, result: any) => {
           if (error) {
@@ -169,7 +169,7 @@ export class Database {
       this.bucket.query(
         N1qlQuery.fromString(n1ql)
           .adhoc(false)
-          .consistency(N1qlQuery.Consistency.STATEMENT_PLUS),
+          .consistency(N1qlQuery.Consistency.REQUEST_PLUS),
         (error: CouchbaseError | null) => {
           if (error) {
             log.error(
@@ -194,7 +194,7 @@ export class Database {
       this.bucket.query(
         N1qlQuery.fromString(indexCreateStatement)
                  .adhoc(false)
-                 .consistency(N1qlQuery.Consistency.STATEMENT_PLUS), [],
+                 .consistency(N1qlQuery.Consistency.REQUEST_PLUS), [],
         error => {
           if (error) {
             log.error(`An error occurred while creating index ${indexName}`, error)

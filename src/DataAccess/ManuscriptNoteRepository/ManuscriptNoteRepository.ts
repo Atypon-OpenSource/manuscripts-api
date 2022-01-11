@@ -40,7 +40,7 @@ class ManuscriptNoteRepository extends SGRepository<any, any, any, any> {
 
     const statement = N1qlQuery.fromString(n1ql)
       .adhoc(false)
-      .consistency(N1qlQuery.Consistency.STATEMENT_PLUS)
+      .consistency(N1qlQuery.Consistency.REQUEST_PLUS)
     return new Promise<ManuscriptNote[]>((resolve, reject) => {
       this.database.bucket.query(
         statement,

@@ -76,9 +76,9 @@ describe('CBRepository Consistency', () => {
     expect(repository.consistency).toBe(N1qlQuery.Consistency.REQUEST_PLUS)
   })
 
-  test('should be STATEMENT_PLUS', () => {
-    const repository = new UserRepository(db, N1qlQuery.Consistency.STATEMENT_PLUS)
-    expect(repository.consistency).toBe(N1qlQuery.Consistency.STATEMENT_PLUS)
+  test('should be REQUEST_PLUS', () => {
+    const repository = new UserRepository(db, N1qlQuery.Consistency.REQUEST_PLUS)
+    expect(repository.consistency).toBe(N1qlQuery.Consistency.REQUEST_PLUS)
   })
 })
 

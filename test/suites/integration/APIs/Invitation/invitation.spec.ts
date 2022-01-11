@@ -52,6 +52,8 @@ import {
 import { BucketKey } from '../../../../../src/Config/ConfigurationTypes'
 import { GATEWAY_BUCKETS } from '../../../../../src/DomainServices/Sync/SyncService'
 import { SeedOptions } from '../../../../../src/DataAccess/Interfaces/SeedOptions'
+import { createProjectInvitation, purgeContainerInvitation } from '../../../../data/fixtures/misc'
+import checksum from 'checksum'
 
 let db: any = null
 const seedOptions: SeedOptions = {
@@ -147,10 +149,13 @@ describe('InvitationService - inviteToContainer', () => {
   beforeEach(async () => {
     await drop()
     await dropBucket(BucketKey.Data)
+    await purgeContainerInvitation(checksum(
+      'valid-user@manuscriptsapp.com-valid-google2@manuscriptsapp.com-MPProject:valid-project-id-2',
+      { algorithm: 'sha1' }
+    ))
     await seed({
       users: true,
       projects: true,
-      projectInvitations: true,
       userProfiles: true,
       applications: true
     })
@@ -200,7 +205,10 @@ describe('InvitationService - inviteToContainer', () => {
     )
 
     expect(loginResponse.status).toBe(HttpStatus.OK)
-
+    await createProjectInvitation(checksum(
+      'valid-user@manuscriptsapp.com-valid-google2@manuscriptsapp.com-valid-project-id-2',
+      { algorithm: 'sha1' }
+    ))
     const containerInvitationService: any =
       DIContainer.sharedContainer.containerInvitationService
 
@@ -235,7 +243,10 @@ describe('InvitationService - inviteToContainer', () => {
       validBody,
       ValidHeaderWithApplicationKey
     )
-
+    await createProjectInvitation(checksum(
+      'valid-user@manuscriptsapp.com-valid-google@manuscriptsapp.com-valid-project-id-2',
+      { algorithm: 'sha1' }
+    ))
     expect(loginResponse.status).toBe(HttpStatus.OK)
 
     const containerInvitationService: any =

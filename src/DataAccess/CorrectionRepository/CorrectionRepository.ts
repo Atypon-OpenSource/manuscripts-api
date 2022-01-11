@@ -46,7 +46,7 @@ class CorrectionRepository
     } WHERE containerID =$1 AND objectType = '${this.objectType}' AND _deleted IS MISSING`
     const statement = N1qlQuery.fromString(n1ql)
       .adhoc(false)
-      .consistency(N1qlQuery.Consistency.STATEMENT_PLUS)
+      .consistency(N1qlQuery.Consistency.REQUEST_PLUS)
 
     return new Promise((resolve, reject) => {
       this.database.bucket.query(
