@@ -300,7 +300,7 @@ export class AuthStrategy {
         return next(new InvalidClientApplicationError(appId))
       } else if (appSecret && application.secret !== null) {
         if (!isString(appSecret) || application.secret !== appSecret) {
-          return next(new InvalidClientApplicationError(appId))
+          return next(new InvalidServerCredentialsError(appId))
         }
       }
 

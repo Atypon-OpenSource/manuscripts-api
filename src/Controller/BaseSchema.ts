@@ -20,7 +20,7 @@ import { APP_ID_HEADER_KEY, APP_SECRET_HEADER_KEY } from './V1/Auth/AuthControll
 export const emailSchema: Joi.StringSchema = Joi.string().max(100).email({ minDomainAtoms: 2 })
 export const appIdSchema: Joi.StringSchema = Joi.string().max(100).required()
 export const deviceIdSchema: Joi.StringSchema = Joi.string().max(100).required()
-export const appSecretSchema: Joi.StringSchema = Joi.string().optional().allow('')
+export const appSecretSchema: Joi.StringSchema = Joi.string().required()
 export const appJsonAndCharset: Joi.StringSchema = Joi.string().required()
 
 export const jsonHeadersSchema: Joi.SchemaMap = {
@@ -36,5 +36,13 @@ export const appSecretHeadersSchema: Joi.SchemaMap = {
     'content-type': appJsonAndCharset,
     [APP_ID_HEADER_KEY]: appIdSchema,
     [APP_SECRET_HEADER_KEY]: appSecretSchema
+  }).options({ allowUnknown: true })
+}
+
+export const appIdHeadersSchema: Joi.SchemaMap = {
+  headers: Joi.object({
+    accept: appJsonAndCharset,
+    'content-type': appJsonAndCharset,
+    [APP_ID_HEADER_KEY]: appIdSchema
   }).options({ allowUnknown: true })
 }

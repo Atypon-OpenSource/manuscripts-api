@@ -117,7 +117,6 @@ export class AuthRoute extends BaseRoute {
       `${this.basePath}/token/:connectUserID`,
       expressJoiMiddleware(serverToServerTokenAuthSchema, {}),
       AuthStrategy.JsonHeadersValidation,
-      AuthStrategy.verifyAdminToken,
       AuthStrategy.applicationValidation(),
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {

@@ -20,7 +20,8 @@ import {
   jsonHeadersSchema,
   appSecretHeadersSchema,
   emailSchema,
-  deviceIdSchema
+  deviceIdSchema,
+  appIdHeadersSchema
 } from '../../BaseSchema'
 import { APP_ID_HEADER_KEY, APP_SECRET_HEADER_KEY } from './AuthController'
 
@@ -30,7 +31,7 @@ export const credentialsSchema: Joi.SchemaMap = {
     email: emailSchema.required(),
     password: Joi.string().max(100).required()
   }),
-  headers: appSecretHeadersSchema.headers
+  headers: appIdHeadersSchema.headers
 }
 
 export const serverToServerAuthSchema: Joi.SchemaMap = {
@@ -116,7 +117,7 @@ export const forgotPasswordSchema: Joi.SchemaMap = {
 }
 
 export const resetPasswordSchema: Joi.SchemaMap = {
-  headers: appSecretHeadersSchema.headers,
+  headers: appIdHeadersSchema.headers,
   body: Joi.object({
     password: Joi.string().max(100).required(),
     token: Joi.string().required(),
