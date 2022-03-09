@@ -17,21 +17,18 @@
 import * as nodemailer from 'nodemailer'
 import EmailTemplate from 'email-templates'
 
-import {
-  EmailConfiguration,
-  AWSConfiguration
-} from '../../Config/ConfigurationTypes'
+import { EmailConfiguration, AWSConfiguration } from '../../Config/ConfigurationTypes'
 import { MessageType, templateNameForMessageType } from './MessageTypes'
 import { User, UserStatus } from '../../Models/UserModels'
 import {
   InvitedUserData,
   Container,
   ContainerType,
-  ContainerRole
+  ContainerRole,
 } from '../../Models/ContainerModels'
 import { EmailServiceError } from '../../Errors'
 import * as htmlToText from 'html-to-text'
-import * as url from 'url'
+import { URL } from 'url'
 import { config } from '../../Config/Config'
 import { stringify } from 'querystring'
 import { SES } from '../External/AWS'
@@ -63,27 +60,27 @@ interface MessageOptions {
 
 export class EmailService {
   private emailer: EmailTemplate
-  constructor (
+  constructor(
     readonly emailConfiguration: EmailConfiguration,
     readonly AWSConfiguration: AWSConfiguration
   ) {
     const transport = nodemailer.createTransport({
-      SES: { apiVersion: '2010-12-01', ...SES }
+      SES: { apiVersion: '2010-12-01', ...SES },
     })
 
     this.emailer = new EmailTemplate({
       message: {
-        from: emailConfiguration.fromAddress
+        from: emailConfiguration.fromAddress,
       },
       transport,
-      htmlToText: true
+      htmlToText: true,
     })
   }
 
   /**
    * Send an email to a specified address.
    */
-  async sendMessage (
+  async sendMessage(
     emailType: MessageType,
     to: User | InvitedUserData,
     opts: MessageOptions
@@ -94,7 +91,7 @@ export class EmailService {
       )}` // double quoted.
     }
     opts.frontendAppBaseURL = this.emailConfiguration.fromBaseURL
-    opts.frontendAppHostname = url.parse(config.email.fromBaseURL).hostname
+    opts.frontendAppHostname = new URL(config.email.fromBaseURL).hostname
     const template = templateNameForMessageType(emailType)
 
     /* // FIXME: Replace the aws-sdk based sending method with the email-templates send.
@@ -112,12 +109,12 @@ export class EmailService {
     }*/
     const messageHTML = await this.emailer.render(template + '/html', {
       to,
-      ...opts
+      ...opts,
     })
 
     const subjectHTML = await this.emailer.render(template + '/subject', {
       to,
-      ...opts
+      ...opts,
     })
 
     return new Promise<void>((resolve, reject) => {
@@ -128,24 +125,24 @@ export class EmailService {
           Message: {
             Subject: {
               Data: this.htmlToText(subjectHTML),
-              Charset: 'UTF-8'
+              Charset: 'UTF-8',
             },
             Body: {
               Text: {
                 Data: htmlToText.fromString(messageHTML),
-                Charset: 'UTF-8'
+                Charset: 'UTF-8',
               },
               Html: {
                 Data: messageHTML,
-                Charset: 'UTF-8'
-              }
-            }
+                Charset: 'UTF-8',
+              },
+            },
           },
           ReplyToAddresses: [this.emailConfiguration.fromAddress],
           ReturnPath: this.emailConfiguration.fromAddress,
           // SourceArn: '…',
           // ReturnPathArn: '…',
-          Tags: [{ Name: 'template', Value: template }]
+          Tags: [{ Name: 'template', Value: template }],
         },
         (err: AWSError, _data: SendEmailResponse) => {
           if (err) {
@@ -155,37 +152,31 @@ export class EmailService {
         }
       )
       if (!req) {
-        reject(
-          new EmailServiceError('Failed to create email sending request', null)
-        )
+        reject(new EmailServiceError('Failed to create email sending request', null))
       }
     })
   }
 
   htmlToText = (input: string) =>
     htmlToText.fromString(input, {
-      wordwrap: false
+      wordwrap: false,
     })
 
-  sendPasswordResetInstructions = (
-    to: User,
-    userStatus: UserStatus,
-    tokenID: string
-  ) =>
+  sendPasswordResetInstructions = (to: User, userStatus: UserStatus, tokenID: string) =>
     this.sendMessage(MessageType.PasswordReset, to, {
       userStatus,
       token: tokenID,
       actionURL: `${this.emailConfiguration.fromBaseURL}/recover#${stringify({
-        token: tokenID
-      })}`
+        token: tokenID,
+      })}`,
     })
 
   sendAccountVerification = (to: User, tokenID: string) =>
     this.sendMessage(MessageType.AccountVerify, to, {
       token: tokenID,
       actionURL: `${this.emailConfiguration.fromBaseURL}/signup#${stringify({
-        token: tokenID
-      })}`
+        token: tokenID,
+      })}`,
     })
 
   sendAccountDeletionConfirmation = (to: User) =>
@@ -193,19 +184,16 @@ export class EmailService {
 
   sendAccountDeletionNotification = (to: User) =>
     this.sendMessage(MessageType.AccountMarkedForDeletion, to, {
-      actionURL: `${this.emailConfiguration.fromBaseURL}/retrieve-account`})
+      actionURL: `${this.emailConfiguration.fromBaseURL}/retrieve-account`,
+    })
 
-  sendInvitation = (
-    to: User | InvitedUserData,
-    invitingUser: User,
-    tokenID: string
-  ) =>
+  sendInvitation = (to: User | InvitedUserData, invitingUser: User, tokenID: string) =>
     this.sendMessage(MessageType.Invitation, to, {
       invitingUser,
       token: tokenID,
-      actionURL: `${this.emailConfiguration.fromBaseURL}/invitation#${stringify(
-        { token: tokenID }
-      )}`
+      actionURL: `${this.emailConfiguration.fromBaseURL}/invitation#${stringify({
+        token: tokenID,
+      })}`,
     })
 
   // TODO: create separate email templates for different container types.
@@ -223,7 +211,7 @@ export class EmailService {
       role,
       actionURL: `${this.emailConfiguration.fromBaseURL}/invitation#${stringify(
         { token: invitationID } // FIXME: Must be changed to invitationID instead of token when corresponding changes are made in manuscripts-frontend.
-      )}`
+      )}`,
     })
 
   sendContainerInvitationAcceptance = (
@@ -237,9 +225,9 @@ export class EmailService {
       invitingUser: invitingUser || undefined,
       container,
       role,
-      actionURL: `${
-        this.emailConfiguration.fromBaseURL
-      }/${this.containerTypeForURL(containerType)}/${container._id}`
+      actionURL: `${this.emailConfiguration.fromBaseURL}/${this.containerTypeForURL(
+        containerType
+      )}/${container._id}`,
     })
 
   sendOwnerNotificationOfCollaborator = (
@@ -255,9 +243,9 @@ export class EmailService {
       invitingUser: invitingUser || undefined,
       container,
       role,
-      actionURL: `${
-        this.emailConfiguration.fromBaseURL
-      }/${this.containerTypeForURL(containerType)}/${container._id}`
+      actionURL: `${this.emailConfiguration.fromBaseURL}/${this.containerTypeForURL(
+        containerType
+      )}/${container._id}`,
     })
 
   sendContainerRequest = (
@@ -265,14 +253,15 @@ export class EmailService {
     requestingUser: User,
     container: Container,
     role: ContainerRole
-  ) => this.sendMessage(MessageType.ContainerRequest, to, {
-    requestingUser,
-    container,
-    role,
-    actionURL: `${
-      this.emailConfiguration.fromBaseURL
-    }/${this.containerTypeForURL(ContainerType.project)}/${container._id}`
-  })
+  ) =>
+    this.sendMessage(MessageType.ContainerRequest, to, {
+      requestingUser,
+      container,
+      role,
+      actionURL: `${this.emailConfiguration.fromBaseURL}/${this.containerTypeForURL(
+        ContainerType.project
+      )}/${container._id}`,
+    })
 
   requestResponse = (
     to: User,
@@ -282,21 +271,19 @@ export class EmailService {
     accept: boolean
   ) =>
     this.sendMessage(
-      accept
-        ? MessageType.ContainerRequestAcceptance
-        : MessageType.ContainerRequestRejection,
+      accept ? MessageType.ContainerRequestAcceptance : MessageType.ContainerRequestRejection,
       to,
       {
         acceptingUser,
         container,
         role,
-        actionURL: `${
-          this.emailConfiguration.fromBaseURL
-        }/${this.containerTypeForURL(ContainerType.project)}/${container._id}`
+        actionURL: `${this.emailConfiguration.fromBaseURL}/${this.containerTypeForURL(
+          ContainerType.project
+        )}/${container._id}`,
       }
     )
 
-  private containerTypeForURL (containerType: ContainerType) {
+  private containerTypeForURL(containerType: ContainerType) {
     switch (containerType) {
       case ContainerType.project:
         return 'projects'

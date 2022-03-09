@@ -23,5 +23,4 @@ import { PatchProject } from '../../Models/ProjectModels'
 /**
  * Manages project persistent storage operations.
  */
-export interface IProjectRepository
-  extends IContainerRepository<Project, ProjectLike, PatchProject> {}
+export type IProjectRepository = IContainerRepository<Project, ProjectLike, PatchProject>

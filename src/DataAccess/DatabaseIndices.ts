@@ -17,7 +17,7 @@
 import { ObjectTypes } from '@manuscripts/manuscripts-json-schema'
 
 import { BucketKey } from '../Config/ConfigurationTypes'
-import { config } from '../Config/Config'
+// import { config } from '../Config/Config'
 
 export interface Index {
   /**
@@ -30,119 +30,123 @@ export interface Index {
   script: string
 }
 
-// Object with sets of fields to be indexed using GSI for each objectType
+// Object with sets of fields to be indexed using GIN for each objectType
 const indexesObj = {
-  [BucketKey.Data]: {
+  [BucketKey.Project]: {
     // The bucket level indicies
     bucket: [
-      { fields: ['objectType'], gsi: true },
-      { fields: ['containerID'], gsi: true }
+      { fields: ['objectType'], gin: true },
+      { fields: ['containerID'], gin: true },
     ],
     [ObjectTypes.ContainerInvitation]: [
-      { fields: ['invitedUserEmail'], gsi: true },
-      { fields: ['containerID'], gsi: true }
+      { fields: ['invitedUserEmail'], gin: true },
+      { fields: ['containerID'], gin: true },
     ],
-    [ObjectTypes.UserProfile]: [{ fields: ['userID'], gsi: true }],
+    [ObjectTypes.UserProfile]: [{ fields: ['userID'], gin: true }],
     [ObjectTypes.BibliographyItem]: [
-      { fields: ['containerID'], gsi: true },
-      { fields: ['DOI'], gsi: true }
+      { fields: ['containerID'], gin: true },
+      { fields: ['DOI'], gin: true },
     ],
-    [ObjectTypes.Keyword]: [{ fields: ['containerID'], gsi: true }],
-    [ObjectTypes.UserProject]: [{ fields: ['projectID'], gsi: true }],
-    [ObjectTypes.ProjectInvitation]: [{ fields: ['projectID'], gsi: true }],
+    [ObjectTypes.Keyword]: [{ fields: ['containerID'], gin: true }],
+    [ObjectTypes.UserProject]: [{ fields: ['projectID'], gin: true }],
+    [ObjectTypes.ProjectInvitation]: [{ fields: ['projectID'], gin: true }],
     [ObjectTypes.ExternalFile]: [
-      { fields: ['containerID'], gsi: true },
-      { fields: ['manuscriptID'], gsi: true },
-      { fields: ['publicUrl'], gsi: true }
-    ]
+      { fields: ['containerID'], gin: true },
+      { fields: ['manuscriptID'], gin: true },
+      { fields: ['publicUrl'], gin: true },
+    ],
   } as any,
   [BucketKey.DerivedData]: {
     // The bucket level indicies
-    bucket: [
-      { fields: ['objectType'], gsi: true }
-    ],
-    [ObjectTypes.ProjectMemento]: [{ fields: ['userID'], gsi: true }, { fields: ['projectID'], gsi: true }],
+    bucket: [{ fields: ['objectType'], gin: true }],
     [ObjectTypes.UserCollaborator]: [
-      { fields: ['userID'], gsi: true },
-      { fields: ['collaboratorID'], gsi: true }
-    ]
-  } as any
+      { fields: ['userID'], gin: true },
+      { fields: ['collaboratorID'], gin: true },
+    ],
+  } as any,
 }
 
 const arrayIndexesObj = {
-  [BucketKey.Data]: {
+  [BucketKey.Project]: {
     [ObjectTypes.Project]: [
-      { fields: ['owners'], gsi: true },
-      { fields: ['writers'], gsi: true },
-      { fields: ['viewers'], gsi: true }
+      { fields: ['owners'], gin: true },
+      { fields: ['writers'], gin: true },
+      { fields: ['viewers'], gin: true },
     ],
-    [ObjectTypes.BibliographyItem]: [{ fields: ['keywordIDs'], gsi: true }]
+    [ObjectTypes.BibliographyItem]: [{ fields: ['keywordIDs'], gin: true }],
   } as any,
   [BucketKey.DerivedData]: {
-    [ObjectTypes.UserCollaborator]: [{ fields: ['projects'], gsi: true }]
-  } as any
+    [ObjectTypes.UserCollaborator]: [{ fields: ['projects'], gin: true }],
+  } as any,
 }
 
-function buildIndex (
+function buildIndex(
   objectType: string,
   bucketName: string,
   fields: string[],
-  gsi: boolean
+  _gin: boolean
 ): Index {
   const indexName = `${objectType}__${fields.join('_')}`
   return {
     name: indexName,
-    script: `CREATE INDEX \`${indexName}\` ON \`${bucketName}\`(${fields
+    /*script: `CREATE INDEX \`${indexName}\` ON \`${bucketName}\`(${fields
       .map(field => `\`${field}\``)
       .join(',')}) WHERE (\`objectType\` = "${objectType}")${
-      gsi ? ' USING GSI' : ''
-    };`
+      gin ? ' USING GIN' : ''
+    };`*/
+    script: `CREATE INDEX IF NOT EXISTS "${indexName}" ON "${bucketName}" USING HASH ((data ->> ${fields
+      .map((field) => `'${field}'`)
+      .join(',')})) WHERE ((data ->> 'objectType')) = '${objectType}'`,
   }
 }
 
-function buildBucketIndex (
-  bucketName: string,
-  fields: string[],
-  gsi: boolean
-): Index {
+function buildBucketIndex(bucketName: string, fields: string[], _gin: boolean): Index {
   const indexName = `${bucketName}__${fields.join('_')}`
   return {
     name: indexName,
-    script: `CREATE INDEX \`${indexName}\` ON \`${bucketName}\`(${fields
+    /*script: `CREATE INDEX \`${indexName}\` ON \`${bucketName}\`(${fields
       .map(field => `\`${field}\``)
-      .join(',')})${gsi ? ' USING GSI' : ''};`
+      .join(',')})${gin ? ' USING GIN' : ''};`*/
+    script: `CREATE INDEX IF NOT EXISTS "${indexName}" ON "${bucketName}" USING HASH ((data ->> ${fields
+      .map((field) => `'${field}'`)
+      .join(',')}))`,
   }
 }
 
-function buildArrayIndex (
+function buildArrayIndex(
   objectType: string,
   bucketName: string,
   field: string,
-  gsi: boolean
+  _gin: boolean
 ): Index {
   const indexName = `${objectType}__${field}`
   return {
     name: indexName,
-    script: `CREATE INDEX \`${indexName}\` ON ${bucketName} (DISTINCT ARRAY userID FOR userID IN \`${field}\` END) WHERE objectType = '${objectType}' AND _deleted IS MISSING${
-      gsi ? ' USING GSI' : ''
-    };`
+    /*script: `CREATE INDEX \`${indexName}\` ON ${bucketName} (DISTINCT ARRAY userID FOR userID IN \`${field}\` END) WHERE objectType = '${objectType}' AND _deleted IS MISSING${
+      gin ? ' USING GIN' : ''
+    };`,*/
+    script: `CREATE INDEX IF NOT EXISTS "${indexName}" ON "${bucketName}" USING GIN ((data ->> '${field}')) WHERE ((data ->> 'objectType')) = '${objectType}'`,
   }
 }
 
-export function indices (bucketKey: BucketKey): Index[] {
-  if (bucketKey !== BucketKey.Data && bucketKey !== BucketKey.DerivedData) {
+function capitalizeFirstLetter(str: string) {
+  return str.charAt(0).toUpperCase() + str.slice(1)
+}
+
+export function indices(bucketKey: BucketKey): Index[] {
+  if (bucketKey !== BucketKey.Project && bucketKey !== BucketKey.DerivedData) {
     return []
   }
 
-  const bucketName = config.DB.buckets[bucketKey]
+  const bucketName = capitalizeFirstLetter(bucketKey) // config.DB.buckets[bucketKey]
   const indicesArray: Index[] = []
 
   for (const objectType of Object.keys(indexesObj[bucketKey])) {
     for (const fieldSets of indexesObj[bucketKey][objectType]) {
       const index =
         objectType === 'bucket'
-          ? buildBucketIndex(bucketName, fieldSets.fields, fieldSets.gsi)
-          : buildIndex(objectType, bucketName, fieldSets.fields, fieldSets.gsi)
+          ? buildBucketIndex(bucketName, fieldSets.fields, fieldSets.gin)
+          : buildIndex(objectType, bucketName, fieldSets.fields, fieldSets.gin)
 
       indicesArray.push(index)
     }
@@ -150,12 +154,7 @@ export function indices (bucketKey: BucketKey): Index[] {
 
   for (const objectType of Object.keys(arrayIndexesObj[bucketKey])) {
     for (const fieldSets of arrayIndexesObj[bucketKey][objectType]) {
-      const index = buildArrayIndex(
-        objectType,
-        bucketName,
-        fieldSets.fields[0],
-        fieldSets.gsi
-      )
+      const index = buildArrayIndex(objectType, bucketName, fieldSets.fields[0], fieldSets.gin)
 
       indicesArray.push(index)
     }

@@ -23,41 +23,41 @@ export interface IInvitationController {
    * Invites a user.
    * @param req Request express request.
    */
-  invite (req: Request): Promise<void>
+  invite(req: Request): Promise<void>
   /**
    * Invite a user to a container.
    * @param req Request express request.
    * @returns Array of all generated invitations.
    */
-  inviteToContainer (req: Request): Promise<[string, string][]>
+  inviteToContainer(req: Request): Promise<[string, string][]>
   /**
    * Reject an invitation.
    * @param req Request express request.
    */
-  reject (req: Request): Promise<void>
+  reject(req: Request): Promise<void>
   /**
    * Accept an invitation.
    * @param req Request express request.
    */
-  accept (req: Request): Promise<ContainerInvitationResponse>
+  accept(req: Request): Promise<ContainerInvitationResponse>
   /**
    * Remove a sent invitation.
    * @param req Request express request.
    */
-  uninvite (req: Request): Promise<void>
+  uninvite(req: Request): Promise<void>
   /**
    * Request an invitation token, to be used as part of inviation URL.
    * @param req Request express request.
    */
-  requestInvitationToken (req: Request): Promise<InvitationToken>
+  requestInvitationToken(req: Request): Promise<InvitationToken>
   /**
    * Request the invitation token TTL.
    * @param req Request express request.
    */
-  refreshInvitationToken (req: Request): Promise<InvitationToken>
+  refreshInvitationToken(req: Request): Promise<InvitationToken>
   /**
    * Accept the invitation token.
    * @param req Request express request.
    */
-  acceptInvitationToken (req: Request): Promise<ContainerInvitationResponse>
+  acceptInvitationToken(req: Request): Promise<ContainerInvitationResponse>
 }

@@ -24,7 +24,7 @@ export class PassportAuth {
   /**
    * Initialize passport authentication middleware.
    */
-  public static init (app: Application): void {
+  public static init(app: Application): void {
     // load required strategies
     JwtAuthStrategy.use()
     GoogleAuthStrategy.use()

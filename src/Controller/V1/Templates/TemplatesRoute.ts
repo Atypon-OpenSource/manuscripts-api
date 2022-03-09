@@ -21,18 +21,12 @@ import { TemplatesController } from './TemplatesController'
 
 export class TemplatesRoute extends BaseRoute {
   private templateController = new TemplatesController()
-  public create (router: Router): void {
-    router.get(
-        `/publishedTemplates`,
-        (_req: Request, res: Response, next: NextFunction) => {
-          return this.runWithErrorHandling(async () => {
-            const output = await this.templateController.fetchPublishedTemplates()
-            res
-              .status(HttpStatus.OK)
-              .json(output)
-              .end()
-          }, next)
-        }
-      )
+  public create(router: Router): void {
+    router.get(`/publishedTemplates`, (_req: Request, res: Response, next: NextFunction) => {
+      return this.runWithErrorHandling(async () => {
+        const output = await this.templateController.fetchPublishedTemplates()
+        res.status(HttpStatus.OK).json(output).end()
+      }, next)
+    })
   }
 }

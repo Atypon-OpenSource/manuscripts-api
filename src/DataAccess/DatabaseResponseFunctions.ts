@@ -17,7 +17,10 @@
 import { Bucket, CouchbaseError, errors, N1qlQuery } from 'couchbase'
 import { DatabaseError } from '../Errors'
 
-export function databaseErrorMessage (errorCode: errors | undefined, message: string | null): string {
+export function databaseErrorMessage(
+  errorCode: errors | undefined,
+  message: string | null
+): string {
   switch (errorCode) {
     case errors.keyAlreadyExists:
       return 'Document id already exists.'
@@ -28,29 +31,21 @@ export function databaseErrorMessage (errorCode: errors | undefined, message: st
   }
 }
 
-export async function selectN1QLQuery<Entity> (
+export async function selectN1QLQuery<Entity>(
   bucket: Bucket,
   n1ql: string,
   queryParams: Array<string | null>,
   callback: Function
 ) {
   const statement = N1qlQuery.fromString(n1ql)
-      .adhoc(false)
-      .consistency(N1qlQuery.Consistency.REQUEST_PLUS)
+    .adhoc(false)
+    .consistency(N1qlQuery.Consistency.REQUEST_PLUS)
 
   return new Promise<Entity>((resolve, reject) => {
-    bucket.query(
-    statement,
-    queryParams,
-    (error: CouchbaseError | null, results: any) => {
+    bucket.query(statement, queryParams, (error: CouchbaseError | null, results: any) => {
       if (error) {
-        const errorMsg: string = databaseErrorMessage(
-          error.code,
-          error.message
-        )
-        return reject(
-          new DatabaseError(error.code, errorMsg, queryParams, error)
-        )
+        const errorMsg: string = databaseErrorMessage(error.code, error.message)
+        return reject(new DatabaseError(error.code, errorMsg, queryParams, error))
       }
       return resolve(callback(results))
     })

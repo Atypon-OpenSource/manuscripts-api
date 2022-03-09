@@ -17,19 +17,11 @@
 import { ProjectRepository } from '../../../../src/DataAccess/ProjectRepository/ProjectRepository'
 import { BucketKey } from '../../../../src/Config/ConfigurationTypes'
 import { UserRepository } from '../../../../src/DataAccess/UserRepository/UserRepository'
-import { CBRepository } from '../../../../src/DataAccess/CBRepository'
+import { SQLRepository } from '../../../../src/DataAccess/SQLRepository'
 import { SGRepository } from '../../../../src/DataAccess/SGRepository'
 import { MemorizingRepository } from '../../../../src/DataAccess/MemorizingRepository/MemorizingRepository'
 
 const { DIContainer } = require('../../../../src/DIContainer/DIContainer')
-
-jest.mock('../../../../src/DataAccess/FunctionService', () => ({
-  FunctionService: jest.fn(() => ({
-    synchronize: () => Promise.resolve()
-  })),
-  // Below not strictly correct impl, but should do. Get the real func if this causes issues.
-  applicationFromSource: (x: any) => x
-}))
 
 afterEach(() => {
   DIContainer._sharedContainer = null
@@ -56,11 +48,6 @@ describe('DIContainer', () => {
     expect(DIContainer.isSGRepositoryLike(sgRepo)).toBeTruthy()
     expect(DIContainer.isRepositoryLike(cbRepo)).toBeTruthy()
     expect(DIContainer.isRepositoryLike({ create: () => ({}) })).toBeFalsy()
-
-    expect(DIContainer.isDatabaseViewManager(sgRepo)).toBeFalsy()
-    expect(
-      DIContainer.isDatabaseViewManager({ pushDesignDocument: () => ({}) })
-    ).toBeFalsy()
   })
 
   test('DIContainer instance methods', () => {
@@ -68,15 +55,9 @@ describe('DIContainer', () => {
     const container = new DIContainer(db, db, db, db, false, null)
     DIContainer._sharedContainer = container
     expect(
-      container.databaseViewManagers.every(
-        (x: any) =>
-          x instanceof CBRepository || x instanceof MemorizingRepository
-      )
-    ).toBeTruthy()
-    expect(
       container.repositories.every(
         (x: any) =>
-          x instanceof CBRepository ||
+          x instanceof SQLRepository ||
           x instanceof SGRepository ||
           x instanceof MemorizingRepository
       )

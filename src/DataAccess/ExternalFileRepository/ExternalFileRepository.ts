@@ -16,16 +16,16 @@
 
 import { SGRepository } from '../SGRepository'
 import { ExternalFile, ObjectTypes } from '@manuscripts/manuscripts-json-schema'
-import { DatabaseError, NoBucketError } from '../../Errors'
-import { CouchbaseError, N1qlQuery } from 'couchbase'
-import { databaseErrorMessage } from '../DatabaseResponseFunctions'
+import { /*DatabaseError,*/ NoBucketError } from '../../Errors'
+// import { CouchbaseError, N1qlQuery } from 'couchbase'
+// import { databaseErrorMessage } from '../DatabaseResponseFunctions'
 
 class ExternalFileRepository extends SGRepository<any, any, any, any> {
-  public get objectType (): string {
+  public get objectType(): string {
     return 'MPExternalFile'
   }
 
-  public get bucketName (): string {
+  public get bucketName(): string {
     if (!this.database.bucket) {
       throw new NoBucketError()
     }
@@ -33,8 +33,12 @@ class ExternalFileRepository extends SGRepository<any, any, any, any> {
     return (this.database.bucket as any)._name
   }
 
-  public async findByContainerIDAndPublicUrl (containerID: string, manuscriptID: string, publicUrl: string): Promise<ExternalFile> {
-    const n1ql = `SELECT *, META().id FROM ${
+  public async findByContainerIDAndPublicUrl(
+    containerID: string,
+    manuscriptID: string,
+    publicUrl: string
+  ): Promise<ExternalFile> {
+    /*const n1ql = `SELECT *, META().id FROM ${
       this.bucketName
     } WHERE containerID = $1 and manuscriptID = $2 and publicUrl = $3 and objectType = '${ObjectTypes.ExternalFile}' AND _deleted IS MISSING limit 1`
 
@@ -62,10 +66,56 @@ class ExternalFileRepository extends SGRepository<any, any, any, any> {
             const { id, createdAt, _sync, ...oldDoc } = result
             return resolve(oldDoc)
           }
+          //@ts-ignore
           return resolve(undefined)
         }
 
       )
+    })*/
+
+    const Q = {
+      AND: [
+        {
+          data: {
+            path: ['containerID'],
+            equals: containerID,
+          },
+        },
+        {
+          data: {
+            path: ['manuscriptID'],
+            equals: manuscriptID,
+          },
+        },
+        {
+          data: {
+            path: ['publicUrl'],
+            equals: publicUrl,
+          },
+        },
+        {
+          data: {
+            path: ['objectType'],
+            equals: ObjectTypes.ExternalFile,
+          },
+        },
+      ],
+    } as any
+
+    if (manuscriptID) {
+      Q.AND.push({
+        data: {
+          path: ['manuscriptID'],
+          equals: manuscriptID,
+        },
+      })
+    }
+
+    return this.database.bucket.query(Q).then((res: any) => {
+      if (!res.length) {
+        return undefined
+      }
+      return res
     })
   }
 }

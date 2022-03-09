@@ -20,19 +20,15 @@ import { appJsonAndCharset } from '../../BaseSchema'
 
 export const updateStatusSchema: Joi.SchemaMap = {
   headers: Joi.object({
-    accept: appJsonAndCharset
+    accept: appJsonAndCharset,
   }).options({ allowUnknown: true }),
   body: Joi.object({
-    eventKey: Joi.string()
-      .required()
-      .max(100),
+    eventKey: Joi.string().required().max(100),
     eventMessage: Joi.string(),
     submissionID: Joi.string().max(100),
-    depositoryCode: Joi.string()
+    depositoryCode: Joi.string(),
   }),
   params: Joi.object({
-    id: Joi.string()
-      .required()
-      .max(100)
-  })
+    id: Joi.string().required().max(100),
+  }),
 }

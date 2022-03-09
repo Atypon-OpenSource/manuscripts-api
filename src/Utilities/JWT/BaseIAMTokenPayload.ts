@@ -49,12 +49,12 @@ export interface BaseIAMTokenPayload {
 
 const requiredStringFields = ['sub', 'sid']
 
-function isValidIssuer (issuer: string) {
+function isValidIssuer(issuer: string) {
   return issuer === config.IAM.authServerURL
 }
 
 // Basic check about base IAM token structure validation
-export function isBaseIAMTokenPayload (
+export function isBaseIAMTokenPayload(
   obj: string | { [key: string]: any } | null
 ): obj is { [key: string]: any } {
   if (!obj) {
@@ -64,8 +64,5 @@ export function isBaseIAMTokenPayload (
     return false
   }
 
-  return (
-    requiredStringFields.every(key => typeof obj[key] === 'string') &&
-    isValidIssuer(obj.iss)
-  )
+  return requiredStringFields.every((key) => typeof obj[key] === 'string') && isValidIssuer(obj.iss)
 }

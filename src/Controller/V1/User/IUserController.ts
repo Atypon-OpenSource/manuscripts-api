@@ -21,11 +21,11 @@ export interface IUserController {
    * Sets the user deleteAt property.
    * @param req Request express request.
    */
-  markUserForDeletion (req: Request): Promise<void>
+  markUserForDeletion(req: Request): Promise<void>
 
   /**
    * Sets the user deleteAt property to undefined.
    * @param req Request express request.
    */
-  unmarkUserForDeletion (req: Request): Promise<void>
+  unmarkUserForDeletion(req: Request): Promise<void>
 }

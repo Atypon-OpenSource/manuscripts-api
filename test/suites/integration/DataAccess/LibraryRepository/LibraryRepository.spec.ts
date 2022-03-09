@@ -27,7 +27,7 @@ import { createLibrary, createLibraryInvitation } from '../../../../data/fixture
 jest.setTimeout(TEST_TIMEOUT)
 
 let db: any = null
-beforeAll(async () => (db = await testDatabase(false, false, BucketKey.Data)))
+beforeAll(async () => (db = await testDatabase(false, BucketKey.Data)))
 afterAll(() => db.bucket.disconnect())
 
 describe('LibraryRepository - removeWithAllResources', () => {
@@ -90,7 +90,7 @@ describe('LibraryRepository - getUserContainers', () => {
     expect(
       libraries.find(
         (library) => library._id === validLibrary._id
-      )!._id
+      )._id
     ).toBe(validLibrary._id)
   })
 })

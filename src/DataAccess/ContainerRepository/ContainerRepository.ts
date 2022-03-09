@@ -16,8 +16,8 @@
 
 import {
   Model,
-  ManuscriptTemplate,
-  LibraryCollection
+  // ManuscriptTemplate,
+  LibraryCollection,
 } from '@manuscripts/manuscripts-json-schema'
 import { selectActiveResources } from '@manuscripts/manuscripts-json-schema-utils'
 import request from 'request-promise-native'
@@ -26,25 +26,19 @@ import * as HttpStatus from 'http-status-codes'
 import { SGRepository } from '../SGRepository'
 import { GatewayInaccessibleError, SyncError } from '../../Errors'
 import { SYNC_GATEWAY_COOKIE_NAME } from '../../DomainServices/Sync/SyncService'
-import { selectN1QLQuery } from '../DatabaseResponseFunctions'
-import {
-  appDataPublicGatewayURI,
-  appDataAdminGatewayURI
-} from '../../Config/ConfigAccessors'
+// import { selectN1QLQuery } from '../DatabaseResponseFunctions'
+import { appDataPublicGatewayURI, appDataAdminGatewayURI } from '../../Config/ConfigAccessors'
 import {
   DocumentIdentifyingMetadata,
-  IContainerRepository
+  IContainerRepository,
 } from '../Interfaces/IContainerRepository'
 
-export abstract class ContainerRepository<
-    Container,
-    ContainerLike,
-    PatchContainer
-  >
+export abstract class ContainerRepository<Container, ContainerLike, PatchContainer>
   extends SGRepository<Container, ContainerLike, ContainerLike, PatchContainer>
-  implements IContainerRepository<Container, ContainerLike, PatchContainer> {
-  public async getUserContainers (userID: string) {
-    const existIn = (arrayName: string) =>
+  implements IContainerRepository<Container, ContainerLike, PatchContainer>
+{
+  public async getUserContainers(userID: string) {
+    /*const existIn = (arrayName: string) =>
       `ANY id IN ${arrayName} SATISFIES id = $1 END`
 
     const n1ql = `SELECT *, META().id, META().xattrs._sync FROM ${
@@ -53,9 +47,55 @@ export abstract class ContainerRepository<
       'owners'
     )} OR ${existIn('writers')} OR ${existIn(
       'viewers'
-    )}) AND _deleted IS MISSING`
+    )}) AND _deleted IS MISSING`*/
+
+    const Q = {
+      AND: [
+        {
+          data: {
+            path: ['objectType'],
+            equals: this.objectType,
+          },
+        },
+        {
+          OR: [
+            {
+              data: {
+                path: ['owners'],
+                array_contains: userID,
+              },
+            },
+            {
+              data: {
+                path: ['writers'],
+                array_contains: userID,
+              },
+            },
+            {
+              data: {
+                path: ['viewers'],
+                array_contains: userID,
+              },
+            },
+          ],
+        },
+        /*{
+          data: {
+            path: ["_deleted"],
+            equals: undefined
+          }
+        }*/
+      ],
+    }
 
     const callbackFn = (results: any) =>
+      results.map((result: any) => {
+        return { ...this.buildModel(result) } as Container
+      })
+
+    return this.database.bucket.query(Q).then((res: any) => callbackFn(res))
+
+    /*const callbackFn = (results: any) =>
       results.map((result: any) => {
         delete result[this.bucketName]._sync
         return { ...result[this.bucketName], _id: result.id } as Container
@@ -66,10 +106,10 @@ export abstract class ContainerRepository<
       n1ql,
       [userID],
       callbackFn
-    )
+    )*/
   }
 
-  public async getContainerResources (
+  public async getContainerResources(
     containerId: string,
     manuscriptID: string | null,
     allowOrphanedDocs?: boolean
@@ -79,9 +119,77 @@ export abstract class ContainerRepository<
       return null
     }
 
+    const callbackFn = (results: any) => {
+      const otherDocs = results.map(
+        (result: any) => ({ ...this.buildModel(result), _id: result.id } as Model)
+      )
+
+      return containerId.startsWith(`${this.objectType}:`) && !allowOrphanedDocs
+        ? selectActiveResources([container, ...otherDocs])
+        : [container, ...otherDocs]
+    }
+
+    const Q = {
+      OR: [
+        {
+          data: {
+            path: ['containerID'],
+            equals: containerId,
+          },
+        },
+        {
+          AND: [
+            {
+              data: {
+                path: ['projectID'],
+                equals: containerId,
+              },
+            },
+            {
+              OR: [
+                {
+                  data: {
+                    path: ['objectType'],
+                    equals: 'MPUserProject',
+                  },
+                },
+                {
+                  data: {
+                    path: ['objectType'],
+                    equals: 'MPProjectInvitation',
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    } as any
+
+    if (manuscriptID) {
+      Q.OR[1].AND.push({
+        OR: [
+          {
+            data: {
+              path: ['manuscriptID'],
+              equals: manuscriptID,
+            },
+          },
+          {
+            data: {
+              path: ['id'],
+              equals: manuscriptID,
+            },
+          },
+        ],
+      })
+    }
+
+    return this.database.bucket.query(Q).then((res: any) => callbackFn(res))
+
     // Index selection for a query solely depends on the filter on the where statement, and
     // since containerID is a partial index we are adding objectTypes explicitly
-    let n1ql = `SELECT *, META().id FROM ${this.bucketName} WHERE containerID = $1 OR (projectID = $1 and objectType in ['MPUserProject','MPProjectInvitation'])`
+    /*let n1ql = `SELECT *, META().id FROM ${this.bucketName} WHERE containerID = $1 OR (projectID = $1 and objectType in ['MPUserProject','MPProjectInvitation'])`
 
     if (manuscriptID) {
       n1ql +=
@@ -104,10 +212,10 @@ export abstract class ContainerRepository<
       n1ql,
       [containerId, manuscriptID],
       callbackFn
-    )
+    )*/
   }
 
-  public async getContainerResourcesIDs (containerId: string) {
+  public async getContainerResourcesIDs(containerId: string) {
     const container = await this.getById(containerId)
     if (!container) {
       return null
@@ -115,7 +223,7 @@ export abstract class ContainerRepository<
 
     // Index selection for a query solely depends on the filter on the where statement, and
     // since containerID is a partial index we are adding objectTypes explicitly
-    const n1ql = `SELECT META().id FROM ${this.bucketName} WHERE containerID = $1 OR (projectID = $1 and objectType in ['MPUserProject','MPProjectInvitation'])`
+    /*const n1ql = `SELECT META().id FROM ${this.bucketName} WHERE containerID = $1 OR (projectID = $1 and objectType in ['MPUserProject','MPProjectInvitation'])`
 
     const callbackFn = (results: any) => {
       const otherDocs = results.map(
@@ -132,14 +240,61 @@ export abstract class ContainerRepository<
       n1ql,
       [containerId],
       callbackFn
-    )
+    )*/
+
+    const callbackFn = (results: any) => {
+      const otherDocs = results.map((result: any) => ({ _id: result.id } as Model))
+
+      return containerId.startsWith(`${this.objectType}:`)
+        ? selectActiveResources([container, ...otherDocs])
+        : [container, ...otherDocs]
+    }
+
+    const Q = {
+      OR: [
+        {
+          data: {
+            path: ['containerID'],
+            equals: containerId,
+          },
+        },
+        {
+          AND: [
+            {
+              data: {
+                path: ['projectID'],
+                equals: containerId,
+              },
+            },
+            {
+              OR: [
+                {
+                  data: {
+                    path: ['objectType'],
+                    equals: 'MPUserProject',
+                  },
+                },
+                {
+                  data: {
+                    path: ['objectType'],
+                    equals: 'MPProjectInvitation',
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    }
+
+    return this.database.bucket.query(Q).then((res: any) => callbackFn(res))
   }
 
   /**
    * Overriding the remove method to make it delete all related resources.
    * @param id The Id of a container.
    */
-  public async removeWithAllResources (id: string): Promise<void> {
+  public async removeWithAllResources(id: string): Promise<void> {
     const containerResources = await this.getContainerResourcesMetadata(id)
 
     for (const resource of containerResources) {
@@ -148,30 +303,43 @@ export abstract class ContainerRepository<
     await this.purge(id)
   }
 
-  private getContainerResourcesMetadata (
+  private getContainerResourcesMetadata(
     containerId: string
   ): Promise<DocumentIdentifyingMetadata[]> {
-    const n1ql = `SELECT META().id, META().xattrs._sync.rev FROM ${this.bucketName} WHERE projectID = $1 OR containerID = $1`
+    // const n1ql = `SELECT META().id, META().xattrs._sync.rev FROM ${this.bucketName} WHERE projectID = $1 OR containerID = $1`
+    const Q = {
+      OR: [
+        {
+          data: {
+            path: ['projectId'],
+            equals: containerId,
+          },
+        },
+        {
+          data: {
+            path: ['containerID'],
+            equals: containerId,
+          },
+        },
+      ],
+    }
 
-    const callbackFn = (results: any) => results
+    return this.database.bucket.findMany(Q)
+
+    /*const callbackFn = (results: any) => results
 
     return selectN1QLQuery<DocumentIdentifyingMetadata[]>(
       this.database.bucket,
       n1ql,
       [containerId],
       callbackFn
-    )
+    )*/
   }
 
   // TODO:: should cover in the tests
   /* istanbul ignore next */
-  public async removeContainerResources (
-    containerId: string,
-    syncSession: string
-  ) {
-    const containerResources = await this.getContainerResourcesMetadata(
-      containerId
-    )
+  public async removeContainerResources(containerId: string, syncSession: string) {
+    const containerResources = await this.getContainerResourcesMetadata(containerId)
 
     for (const resource of containerResources) {
       let uri
@@ -184,16 +352,12 @@ export abstract class ContainerRepository<
       ) {
         try {
           if (resource.id.startsWith('MPUserProject:')) {
-            uri = `${appDataAdminGatewayURI(this.bucketKey)}/${
-              resource.id
-            }?rev=${resource.rev}`
+            uri = `${appDataAdminGatewayURI(this.bucketKey)}/${resource.id}?rev=${resource.rev}`
           } else {
-            uri = `${appDataPublicGatewayURI(this.bucketKey)}/${
-              resource.id
-            }?rev=${resource.rev}`
+            uri = `${appDataPublicGatewayURI(this.bucketKey)}/${resource.id}?rev=${resource.rev}`
 
             headers = {
-              cookie: `${SYNC_GATEWAY_COOKIE_NAME}=${syncSession}`
+              cookie: `${SYNC_GATEWAY_COOKIE_NAME}=${syncSession}`,
             }
           }
 
@@ -203,7 +367,7 @@ export abstract class ContainerRepository<
             headers,
             json: true,
             resolveWithFullResponse: true,
-            simple: false
+            simple: false,
           }
 
           response = await request(options)
@@ -211,10 +375,7 @@ export abstract class ContainerRepository<
           throw new GatewayInaccessibleError(uri)
         }
 
-        if (
-          response.statusCode !== HttpStatus.OK &&
-          response.statusCode !== HttpStatus.NOT_FOUND
-        ) {
+        if (response.statusCode !== HttpStatus.OK && response.statusCode !== HttpStatus.NOT_FOUND) {
           throw new SyncError(
             `Failed to delete SyncGateway document (${uri}: ${response.statusCode})`,
             response
@@ -229,16 +390,50 @@ export abstract class ContainerRepository<
   /**
    * Get all container resources attachments and return map with document id as key and the attachments as the map value.
    */
-  public async getContainerAttachments (
-    containerID: string,
-    manuscriptID: string | null
-  ) {
+  public async getContainerAttachments(containerID: string, manuscriptID: string | null) {
     const container = await this.getById(containerID)
     if (!container) {
       return null
     }
 
-    let n1ql = `SELECT META().xattrs._sync.attachments, META().id FROM ${this.bucketName} WHERE containerID = $1 AND _sync.attachments is not missing`
+    const callbackFn = (results: any) => {
+      const attachments: Map<string, any> = new Map()
+
+      for (let index = 0; index < results.length; index++) {
+        attachments.set(results[index].id, results[index].attachments)
+      }
+      return attachments
+    }
+
+    const Q = {
+      AND: [
+        {
+          data: {
+            path: ['containerID'],
+            equals: containerID,
+          },
+        },
+        {
+          data: {
+            path: ['attachments'],
+            not: [],
+          },
+        },
+      ],
+    } as any
+
+    if (manuscriptID) {
+      Q.AND.push({
+        data: {
+          path: ['manuscriptID'],
+          equals: manuscriptID,
+        },
+      })
+    }
+
+    return this.database.bucket.query(Q).then((res: any) => callbackFn(res))
+
+    /*let n1ql = `SELECT META().xattrs._sync.attachments, META().id FROM ${this.bucketName} WHERE containerID = $1 AND _sync.attachments is not missing`
 
     if (manuscriptID) {
       n1ql += ` AND (manuscriptID = $2 or manuscriptID is missing)`
@@ -258,11 +453,11 @@ export abstract class ContainerRepository<
       n1ql,
       [containerID, manuscriptID],
       callbackFn
-    )
+    )*/
   }
 
-  public async findTemplatesInContainer (containerId: string) {
-    const n1ql = `SELECT *, META().id FROM \`${this.bucketName}\` WHERE objectType = 'MPManuscriptTemplate' AND containerID = $1 AND _deleted IS MISSING`
+  public async findTemplatesInContainer(containerId: string) {
+    /*const n1ql = `SELECT *, META().id FROM \`${this.bucketName}\` WHERE objectType = 'MPManuscriptTemplate' AND containerID = $1 AND _deleted IS MISSING`
 
     const callbackFn = (results: any) => results.map(this.buildItem)
 
@@ -271,11 +466,41 @@ export abstract class ContainerRepository<
       n1ql,
       [containerId],
       callbackFn
-    )
+    )*/
+    const Q = {
+      AND: [
+        {
+          data: {
+            path: ['objectType'],
+            equals: 'MPManuscriptTemplate',
+          },
+        },
+        {
+          data: {
+            path: ['containerID'],
+            equals: containerId,
+          },
+        },
+        /*{
+          data: {
+            path: ["_deleted"],
+            equals: undefined
+          }
+        }*/
+      ],
+    }
+
+    const callbackFn = (results: any) => {
+      return results.map((row: any) => ({
+        ...this.buildModel(row),
+      }))
+    }
+
+    return this.database.bucket.query(Q).then((res: any) => callbackFn(res))
   }
 
-  public async findModelsInTemplate (containerId: string, templateId: string) {
-    const n1ql = `SELECT *, META().id FROM \`${this.bucketName}\` WHERE containerID = $1 AND templateID = $2 AND _deleted IS MISSING`
+  public async findModelsInTemplate(containerId: string, templateId: string) {
+    /*const n1ql = `SELECT *, META().id FROM \`${this.bucketName}\` WHERE containerID = $1 AND templateID = $2 AND _deleted IS MISSING`
 
     const callbackFn = (results: any) => results.map(this.buildItem)
 
@@ -284,7 +509,38 @@ export abstract class ContainerRepository<
       n1ql,
       [containerId, templateId],
       callbackFn
-    )
+    )*/
+
+    const Q = {
+      AND: [
+        {
+          data: {
+            path: ['templateID'],
+            equals: templateId,
+          },
+        },
+        {
+          data: {
+            path: ['containerID'],
+            equals: containerId,
+          },
+        },
+        /*{
+          data: {
+            path: ["_deleted"],
+            equals: undefined
+          }
+        }*/
+      ],
+    }
+
+    const callbackFn = (results: any) => {
+      return results.map((row: any) => ({
+        ...this.buildModel(row),
+      }))
+    }
+
+    return this.database.bucket.query(Q).then((res: any) => callbackFn(res))
   }
 
   public buildItem = (row: any) => {
@@ -292,10 +548,8 @@ export abstract class ContainerRepository<
     return { ...item, _id: row.id }
   }
 
-  public getContainedLibraryCollections (
-    containerId: string
-  ): Promise<LibraryCollection[]> {
-    const n1ql = `SELECT *, META().id, META().xattrs._sync.rev FROM \`${this.bucketName}\` WHERE objectType = 'MPLibraryCollection' AND containerID = $1 AND _deleted IS MISSING`
+  public getContainedLibraryCollections(containerId: string): Promise<LibraryCollection[]> {
+    /*const n1ql = `SELECT *, META().id, META().xattrs._sync.rev FROM \`${this.bucketName}\` WHERE objectType = 'MPLibraryCollection' AND containerID = $1 AND _deleted IS MISSING`
 
     const callbackFn = (results: any) => {
       return results.map((row: any) => ({
@@ -309,6 +563,37 @@ export abstract class ContainerRepository<
       n1ql,
       [containerId],
       callbackFn
-    )
+    )*/
+
+    const Q = {
+      AND: [
+        {
+          data: {
+            path: ['objectType'],
+            equals: 'MPLibraryCollection',
+          },
+        },
+        {
+          data: {
+            path: ['containerID'],
+            equals: containerId,
+          },
+        },
+        /*{
+          data: {
+            path: ["_deleted"],
+            equals: undefined
+          }
+        }*/
+      ],
+    }
+
+    const callbackFn = (results: any) => {
+      return results.map((row: any) => ({
+        ...this.buildModel(row),
+      }))
+    }
+
+    return this.database.bucket.query(Q).then((res: any) => callbackFn(res))
   }
 }

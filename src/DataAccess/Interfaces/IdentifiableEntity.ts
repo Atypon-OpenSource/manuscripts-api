@@ -21,4 +21,5 @@ export interface TypedEntity {
 export interface IdentifiableEntity {
   _id: string
   _type: string
+  expiry: number
 }

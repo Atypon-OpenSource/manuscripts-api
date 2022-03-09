@@ -27,15 +27,15 @@ export class UserActivityTrackingService {
   private creationCount: number
   private enabled: boolean
 
-  constructor (userEventRepository: IUserEventRepository, enabled: boolean) {
+  constructor(userEventRepository: IUserEventRepository, enabled: boolean) {
     this.userEventRepository = userEventRepository
-    this.eventLifetime = (timestamp()) + (30 * 24 * 60 * 60) // add 30 days in seconds to current time.
+    this.eventLifetime = timestamp() + 30 * 24 * 60 * 60 // add 30 days in seconds to current time.
     this.awaitCreateResolvers = []
     this.creationCount = 0
     this.enabled = enabled
   }
 
-  awaitCreation (): Promise<void> {
+  awaitCreation(): Promise<void> {
     if (this.creationCount === 0) {
       return Promise.resolve()
     }
@@ -46,42 +46,49 @@ export class UserActivityTrackingService {
     })
   }
 
-  createEvent (userId: string, eventType: UserActivityEventType, appId: string | null, deviceId: string | null): Promise <UserActivityEvent> | null {
+  createEvent(
+    userId: string,
+    eventType: UserActivityEventType,
+    appId: string | null,
+    deviceId: string | null
+  ): Promise<UserActivityEvent> | null {
     if (this.enabled) {
       const event = {
         userId,
         createdAt: new Date(),
         eventType,
         appId,
-        deviceId
+        deviceId,
       }
 
       this.creationCount++
 
-      const eventCreationPromise = this.userEventRepository.create(event, { expiry: this.eventLifetime })
+      const eventCreationPromise = this.userEventRepository.create(event, {
+        expiry: this.eventLifetime,
+      })
       eventCreationPromise
-      .then((event: UserActivityEvent) => {
-        /* istanbul ignore if */
-        if (process.env.NODE_ENV !== Environment.Test) {
-          log.debug(`Logged user activity event: ${event.userId} - ${event.eventType}`)
-        }
-        this.creationCount--
-        if (this.creationCount === 0 && this.awaitCreateResolvers.length > 0) {
-          this.awaitCreateResolvers.forEach((r) => r())
-          this.awaitCreateResolvers = []
-        }
-      })
-      .catch((error: Error) => {
-        /* istanbul ignore if */
-        if (process.env.NODE_ENV !== Environment.Test) {
-          log.error('An error occurred while creating login event', { event, error })
-        }
-        this.creationCount--
-        if (this.creationCount === 0 && this.awaitCreateResolvers.length > 0) {
-          this.awaitCreateResolvers.forEach((r) => r())
-          this.awaitCreateResolvers = []
-        }
-      })
+        .then((event: UserActivityEvent) => {
+          /* istanbul ignore if */
+          if (process.env.NODE_ENV !== Environment.Test) {
+            log.debug(`Logged user activity event: ${event.userId} - ${event.eventType}`)
+          }
+          this.creationCount--
+          if (this.creationCount === 0 && this.awaitCreateResolvers.length > 0) {
+            this.awaitCreateResolvers.forEach((r) => r())
+            this.awaitCreateResolvers = []
+          }
+        })
+        .catch((error: Error) => {
+          /* istanbul ignore if */
+          if (process.env.NODE_ENV !== Environment.Test) {
+            log.error('An error occurred while creating login event', { event, error })
+          }
+          this.creationCount--
+          if (this.creationCount === 0 && this.awaitCreateResolvers.length > 0) {
+            this.awaitCreateResolvers.forEach((r) => r())
+            this.awaitCreateResolvers = []
+          }
+        })
       return eventCreationPromise
     }
     return null

@@ -22,16 +22,16 @@ export interface IAMState {
   /**
    * Device ID passed by the client
    */
-  deviceId: string,
+  deviceId: string
   /**
    * Uri tracked by the client application to return the user back to the originally requested url, before
    * OAuth flow was started by the client application
    */
-  redirectUri: string | null,
+  redirectUri: string | null
   /**
    * Represents UI theme used by the client application
    */
-  theme: string | null,
+  theme: string | null
 
   /**
    * Represents the base url which the api should redirect at

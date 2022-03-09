@@ -32,7 +32,7 @@ import { ContainerRequestLike } from '../../DataAccess/Interfaces/Models'
 import { ContainerService } from '../Container/ContainerService'
 
 export class ContainerRequestService implements IContainerRequestService {
-  constructor (
+  constructor(
     private containerRequestRepository: ContainerRequestRepository,
     private userProfileRepository: UserProfileRepository,
     private userRepository: IUserRepository,
@@ -42,7 +42,7 @@ export class ContainerRequestService implements IContainerRequestService {
     private emailService: EmailService
   ) {}
 
-  public async create (user: User, containerID: string, role: ContainerRole) {
+  public async create(user: User, containerID: string, role: ContainerRole) {
     const userID = user._id.replace('|', '_')
     const containerService = this.containerService(containerID)
     const container = await containerService.getContainer(containerID)
@@ -53,29 +53,18 @@ export class ContainerRequestService implements IContainerRequestService {
     const userProfile = await this.userProfileRepository.getById(userProfileID)
 
     if (!userProfile) {
-      throw new ValidationError(
-        "Inviting user's profile could not be retrieved",
-        userProfileID
-      )
+      throw new ValidationError("Inviting user's profile could not be retrieved", userProfileID)
     }
 
-    const currentUserRole = containerService.getUserRole(
-      container,
-      userID
-    )
+    const currentUserRole = containerService.getUserRole(container, userID)
 
-    if (
-      currentUserRole &&
-      ContainerService.compareRoles(currentUserRole, role) >= 0
-    ) {
+    if (currentUserRole && ContainerService.compareRoles(currentUserRole, role) >= 0) {
       throw new UserRoleError(
         `User ${userID} has a less limiting or the same role in the container as the requested role`,
         role
       )
     }
-    const requestID = `${ObjectTypes.ContainerRequest}:${checksum(
-      `${userID}-${containerID}`
-    )}`
+    const requestID = `${ObjectTypes.ContainerRequest}:${checksum(`${userID}-${containerID}`)}`
 
     const userRequest = await this.containerRequestRepository.getById(requestID)
 
@@ -86,43 +75,29 @@ export class ContainerRequestService implements IContainerRequestService {
         role,
         containerID,
         objectType: ObjectTypes.ContainerRequest,
-        userProfile
+        userProfile,
       }
 
       await this.containerRequestRepository.create(request, {})
     } else {
-      await this.containerRequestRepository.patch(
-        requestID,
-        { role, userProfile },
-        {}
-      )
+      await this.containerRequestRepository.patch(requestID, { role, userProfile }, {})
     }
 
     for (const ownerID of container.owners) {
       const owner = await this.userRepository.getById(ownerID)
-      if (!owner) continue
+      if (!owner) {
+        continue
+      }
 
-      await this.emailService.sendContainerRequest(
-        owner,
-        user,
-        container,
-        role
-      )
+      await this.emailService.sendContainerRequest(owner, user, container, role)
     }
   }
 
-  public async response (
-    requestID: string,
-    acceptingUser: User,
-    accept: boolean
-  ) {
+  public async response(requestID: string, acceptingUser: User, accept: boolean) {
     const request = await this.containerRequestRepository.getById(requestID)
 
     if (!request) {
-      throw new ValidationError(
-        `Request with id ${requestID} does not exist`,
-        requestID
-      )
+      throw new ValidationError(`Request with id ${requestID} does not exist`, requestID)
     }
 
     const userID = request.userID.replace('_', '|')
@@ -130,17 +105,12 @@ export class ContainerRequestService implements IContainerRequestService {
     const requestingUser = await this.userRepository.getById(userID)
 
     if (!requestingUser) {
-      throw new ValidationError(
-        `The user of the request was not found`,
-        userID
-      )
+      throw new ValidationError(`The user of the request was not found`, userID)
     }
 
     const containerService = this.containerService(request.containerID)
 
-    const container = await containerService.getContainer(
-      request.containerID
-    )
+    const container = await containerService.getContainer(request.containerID)
 
     if (!ContainerService.isOwner(container, acceptingUser._id)) {
       throw new RoleDoesNotPermitOperationError(
@@ -152,10 +122,7 @@ export class ContainerRequestService implements IContainerRequestService {
     const requestedRole = request.role as ContainerRole
 
     if (accept) {
-      const currentUserRole = containerService.getUserRole(
-        container,
-        userID
-      )
+      const currentUserRole = containerService.getUserRole(container, userID)
 
       if (!currentUserRole) {
         await containerService.addContainerUser(
@@ -164,19 +131,14 @@ export class ContainerRequestService implements IContainerRequestService {
           userID,
           acceptingUser
         )
-      } else if (
-        ContainerService.compareRoles(requestedRole, currentUserRole) === 1
-      ) {
+      } else if (ContainerService.compareRoles(requestedRole, currentUserRole) === 1) {
         await containerService.updateContainerUser(
           request.containerID,
           requestedRole,
           requestingUser
         )
       } else {
-        throw new UserRoleError(
-          'User already has a less limiting role',
-          requestedRole
-        )
+        throw new UserRoleError('User already has a less limiting role', requestedRole)
       }
     }
 
@@ -192,7 +154,7 @@ export class ContainerRequestService implements IContainerRequestService {
   }
 
   /* istanbul ignore next */
-  private containerService (containerID: string) {
+  private containerService(containerID: string) {
     if (containerID.startsWith('MPProject')) {
       return this.projectService
     }

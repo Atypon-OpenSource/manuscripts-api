@@ -18,55 +18,71 @@ import * as _ from 'lodash'
 import { ValidationError } from '../Errors'
 import moment from 'moment'
 
-export function required (val: string | number, fieldName: string) {
+export function required(val: string | number, fieldName: string) {
   if (_.isEmpty(val.toString()) || _.isEmpty(val.toString().trim())) {
     throw new ValidationError(`${fieldName} can't be null, empty, undefined or white spaces.`, val)
   }
 }
 
-const EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+const EMAIL_REGEX =
+  /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
-export function validEmail (val: string, fieldName: string) {
+export function validEmail(val: string, fieldName: string) {
   if (!EMAIL_REGEX.test(val)) {
     throw new ValidationError(`${fieldName} should be in valid email format.`, val)
   }
 }
 
-export function maxLength (val: string, length: number, fieldName: string) {
+export function maxLength(val: string, length: number, fieldName: string) {
   if (_.size(val) > length) {
     throw new ValidationError(`${fieldName} length should be less than ${length}.`, val)
   }
 }
 
-export function date (val: Date, fieldName: string) {
+export function date(val: Date, fieldName: string) {
   if (!moment(val).isValid()) {
-    throw new ValidationError(`${fieldName} date should be valid.`,moment(val).format('DD/MM/YYYY'))
+    throw new ValidationError(
+      `${fieldName} date should be valid.`,
+      moment(val).format('DD/MM/YYYY')
+    )
   }
 }
 
-export function stringValuedObject (val: object, fieldName: string) {
+export function stringValuedObject(val: object, fieldName: string) {
   if (!_.isPlainObject(val) || !_.values(val).every(_.isString)) {
-    throw new ValidationError(`${val} should be a plain object and its key ${fieldName} should have a string as value.`, val)
+    throw new ValidationError(
+      `${val} should be a plain object and its key ${fieldName} should have a string as value.`,
+      val
+    )
   }
 }
 
-export function arrayValuedObject (val: object, fieldName: string) {
+export function arrayValuedObject(val: object, fieldName: string) {
   if (!_.isPlainObject(val) || !_.values(val).every(_.isArray)) {
-    throw new ValidationError(`${val} should be a plain object and its key ${fieldName} should have an array as value.`, val)
+    throw new ValidationError(
+      `${val} should be a plain object and its key ${fieldName} should have an array as value.`,
+      val
+    )
   }
 }
 
-export function objectValuedObject (val: object, fieldName: string) {
+export function objectValuedObject(val: object, fieldName: string) {
   if (!_.isPlainObject(val) || !_.values(val).every(_.isObject)) {
-    throw new ValidationError(`${val} should be a plain object and its key ${fieldName} should have an object as value.`, val)
+    throw new ValidationError(
+      `${val} should be a plain object and its key ${fieldName} should have an object as value.`,
+      val
+    )
   }
 }
 
-export function stringValuedNestedObject (val: object, fieldName: string) {
+export function stringValuedNestedObject(val: object, fieldName: string) {
   if (_.isPlainObject(val)) {
     for (const obj of _.values(val)) {
       if (!_.isPlainObject(obj) || !_.values(obj).every(_.isString)) {
-        throw new ValidationError(`${fieldName} object should be a plain object with strings as values.`, obj)
+        throw new ValidationError(
+          `${fieldName} object should be a plain object with strings as values.`,
+          obj
+        )
       }
     }
   } else {
@@ -74,7 +90,7 @@ export function stringValuedNestedObject (val: object, fieldName: string) {
   }
 }
 
-export function plainObject (val: object, fieldName: string) {
+export function plainObject(val: object, fieldName: string) {
   if (!_.isPlainObject(val)) {
     throw new ValidationError(`${fieldName} should be plain object.`, val)
   }

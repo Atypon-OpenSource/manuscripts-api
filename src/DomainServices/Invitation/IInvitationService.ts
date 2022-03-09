@@ -17,19 +17,12 @@
 import { ContainerInvitationResponse } from '../../Models/ContainerModels'
 
 export interface IInvitationService {
-  invite (
-    invitingUserId: string,
-    invitedUserIds: string[],
-    message: string | null
-  ): Promise<void>
-  reject (invitationId: string): Promise<void>
-  accept (
+  invite(invitingUserId: string, invitedUserIds: string[], message: string | null): Promise<void>
+  reject(invitationId: string): Promise<void>
+  accept(
     invitationId: string,
     password: string | null,
     name: string | null
   ): Promise<ContainerInvitationResponse>
-  updateInvitedUserID (
-    userID: string,
-    userEmail: string
-  ): Promise<void>
+  updateInvitedUserID(userID: string, userEmail: string): Promise<void>
 }

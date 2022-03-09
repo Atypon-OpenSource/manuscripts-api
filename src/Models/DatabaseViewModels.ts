@@ -15,12 +15,10 @@
  */
 
 export interface ViewMapFunctionMeta {
-  id: string,
-  rev: string,
-  expiration: number,
+  id: string
+  rev: string
+  expiration: number
   flags: number
 }
 
-export interface ViewReducer {
-
-}
+export interface ViewReducer {}

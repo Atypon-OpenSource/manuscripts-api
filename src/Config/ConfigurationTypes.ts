@@ -21,7 +21,7 @@ import { RSA_JWK } from 'pem-jwk'
 export enum Environment {
   Test = 'test',
   Development = 'development',
-  Production = 'production'
+  Production = 'production',
 }
 
 /**
@@ -39,20 +39,19 @@ export type APIConfiguration = {
 export enum BucketKey {
   User = 'user',
   Data = 'data',
+  Project = 'project',
   AppState = 'state',
   DerivedData = 'derivedData',
-  Discussions = 'discussions'
 }
 
 export type DatabaseConfiguration = {
-  readonly initializeContents: boolean,
-  readonly username: string,
-  readonly password: string,
-  readonly bucketAdminPassword: string,
-  readonly uri: string,
-  readonly buckets: { [name in BucketKey]: string },
-  readonly bucketOptions: CreateBucketOptions,
-  readonly startFunctionService: boolean
+  readonly initializeContents: boolean
+  readonly username: string
+  readonly password: string
+  readonly bucketAdminPassword: string
+  readonly uri: string
+  readonly buckets: { [name in BucketKey]: string }
+  readonly bucketOptions: CreateBucketOptions
 }
 
 export type ScopedAccessTokenConfiguration = {
@@ -76,8 +75,8 @@ export type AuthConfiguration = {
 }
 
 export type AWSConfiguration = {
-  accessKeyId: string,
-  secretAccessKey: string,
+  accessKeyId: string
+  secretAccessKey: string
   region: string
 }
 
@@ -85,8 +84,8 @@ export type AWSConfiguration = {
  * Represents Google authentication configuration.
  */
 export type GoogleConfiguration = {
-  readonly clientID: string,
-  readonly clientSecret: string,
+  readonly clientID: string
+  readonly clientSecret: string
   readonly authCallback: string
 }
 
@@ -95,13 +94,13 @@ export type GoogleConfiguration = {
  */
 export type IAMConfiguration = {
   // application's client ID configured on IAM server
-  readonly clientID: string,
+  readonly clientID: string
   // URL of the IAM server
-  readonly authServerURL: string,
+  readonly authServerURL: string
   // Api server path (endpoint) for IAM callback
-  readonly authCallbackPath: string,
+  readonly authCallbackPath: string
   // URL of the library web application
-  readonly libraryURL: string,
+  readonly libraryURL: string
   // URL of the Manuscript's api server - ie. current server
   readonly apiServerURL: string[]
   // URL of the IAM allowed servers
@@ -170,20 +169,11 @@ export interface ConfigurationContainer {
   readonly gateway: GatewayConfiguration
   readonly server: ServerConfiguration
   readonly apps: ClientApplicationsConfiguration
-  readonly discourse: DiscourseConfiguration | null
   readonly scopes: ScopedAccessTokenConfiguration[]
   readonly pressroom: PressroomConfiguration
   readonly shackles: ShacklesConfiguration
   readonly literatum: LiteratumConfiguration
   readonly template: TemplateConfiguration
 
-  createBucketOptions (env: NodeJS.ProcessEnv): CreateBucketOptions
-}
-
-export interface DiscourseConfiguration {
-  readonly ssoSecret: string
-  readonly url: string
-  readonly feedbackCategoryID: string
-  readonly apiKey: string
-  readonly adminUsername: string
+  createBucketOptions(env: NodeJS.ProcessEnv): CreateBucketOptions
 }

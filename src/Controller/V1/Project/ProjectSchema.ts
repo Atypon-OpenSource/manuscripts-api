@@ -24,17 +24,17 @@ export const createSchema: Joi.SchemaMap = {
     title: Joi.string(),
     owners: Joi.array().items(Joi.string()),
     writers: Joi.array().items(Joi.string()),
-    viewers: Joi.array().items(Joi.string())
-  })
+    viewers: Joi.array().items(Joi.string()),
+  }),
 }
 
 export const addSchema: Joi.SchemaMap = {
   headers: Joi.object({
     accept: appJsonAndCharset,
-    'content-type': Joi.string().required()
+    'content-type': Joi.string().required(),
   }).options({ allowUnknown: true }),
   body: Joi.object({
     manuscriptId: Joi.string(),
-    templateId: Joi.string()
-  })
+    templateId: Joi.string(),
+  }),
 }

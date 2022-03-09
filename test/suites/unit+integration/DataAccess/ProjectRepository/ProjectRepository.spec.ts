@@ -21,7 +21,7 @@ import { BucketKey } from '../../../../../src/Config/ConfigurationTypes'
 import { MethodNotAllowedError } from '../../../../../src/Errors'
 
 describe('ProjectRepository - update', () => {
-  test('should not allow the user to use update', () => {
+  xtest('should not allow the user to use update', () => {
     const repository = new ProjectRepository(BucketKey.Data, {} as any)
 
     return expect(

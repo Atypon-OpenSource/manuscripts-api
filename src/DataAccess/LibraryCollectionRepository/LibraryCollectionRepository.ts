@@ -18,27 +18,24 @@ import { LibraryCollection } from '@manuscripts/manuscripts-json-schema'
 
 import { LibraryCollectionLike } from '../Interfaces/Models'
 import { PatchLibraryCollection } from '../../Models/LibraryCollectionModels'
-import { GatewayOptions } from '../Interfaces/KeyValueRepository'
-import { MethodNotAllowedError } from '../../Errors'
+// import { GatewayOptions } from '../Interfaces/KeyValueRepository'
+// import { MethodNotAllowedError } from '../../Errors'
 import { ILibraryCollectionRepository } from '../Interfaces/ILibraryCollectionRepository'
 import { ContainerRepository } from '../ContainerRepository/ContainerRepository'
 
 export class LibraryCollectionRepository
-  extends ContainerRepository<
-    LibraryCollection,
-    LibraryCollectionLike,
-    PatchLibraryCollection
-  >
-  implements ILibraryCollectionRepository {
-  public get objectType (): string {
+  extends ContainerRepository<LibraryCollection, LibraryCollectionLike, PatchLibraryCollection>
+  implements ILibraryCollectionRepository
+{
+  public get objectType(): string {
     return 'MPLibraryCollection'
   }
 
-  public async update (
+  /*public async update (
     _id: string,
     _updatedDocument: LibraryCollectionLike,
     _updateOptions: GatewayOptions
   ): Promise<LibraryCollection> {
     throw new MethodNotAllowedError('LibraryCollectionRepository', 'update')
-  }
+  }*/
 }

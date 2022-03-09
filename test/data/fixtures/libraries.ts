@@ -32,22 +32,6 @@ export const validLibraryRequest: LibraryLike = {
   viewers: ['User_valid-user-3@manuscriptsapp.com']
 }
 
-export const validLibraryForMemento: LibraryLike = {
-  _id: 'valid-library-id-memento',
-  objectType: 'MPLibrary',
-  owners: [],
-  writers: [],
-  viewers: []
-}
-
-export const validLibraryForSummary: LibraryLike = {
-  _id: 'valid-library-id-summary',
-  objectType: 'MPLibrary',
-  owners: [],
-  writers: [],
-  viewers: []
-}
-
 export const validLibrary6: LibraryLike = {
   _id: 'valid-library-id-6',
   objectType: 'MPLibrary',

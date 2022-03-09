@@ -28,7 +28,7 @@ import {
   InvalidCredentialsError,
   MissingTemplateError,
   RoleDoesNotPermitOperationError,
-  ValidationError
+  ValidationError,
 } from '../../../Errors'
 import { manuscriptIDTypes, Model } from '@manuscripts/manuscripts-json-schema'
 import { remove } from 'fs-extra'
@@ -39,13 +39,15 @@ import uuid from 'uuid'
 import tempy from 'tempy'
 
 export class ProjectController extends BaseController implements IProjectController {
-  async create (req: Request): Promise<Container> {
+  async create(req: Request): Promise<Container> {
     const title = req.body.title
 
     const token = authorizationBearerToken(req)
     const payload = jsonwebtoken.decode(token)
 
-    if (!isLoginTokenPayload(payload)) throw new InvalidCredentialsError('Unexpected token payload.')
+    if (!isLoginTokenPayload(payload)) {
+      throw new InvalidCredentialsError('Unexpected token payload.')
+    }
 
     const owners = [payload.userId]
 
@@ -53,35 +55,41 @@ export class ProjectController extends BaseController implements IProjectControl
       ContainerType.project
     ].createContainer(token, null)
 
-    await DIContainer.sharedContainer.containerService[ContainerType.project].updateContainerTitleAndCollaborators(
-      id,
-      title,
-      owners,
-      undefined,
-      undefined
-    )
+    await DIContainer.sharedContainer.containerService[
+      ContainerType.project
+    ].updateContainerTitleAndCollaborators(id, title, owners, undefined, undefined)
 
     return DIContainer.sharedContainer.containerService[ContainerType.project].getContainer(id)
   }
 
-  async add (req: Request): Promise<Container> {
+  async add(req: Request): Promise<Container> {
     const file = req.file
     const { projectId } = req.params
     const { manuscriptId, templateId } = req.body
 
-    if (!projectId) throw new ValidationError('projectId parameter must be specified',projectId)
+    if (!projectId) {
+      throw new ValidationError('projectId parameter must be specified', projectId)
+    }
 
-    if (!file || !file.path) throw new ValidationError('no file found, please upload a JATS XML file to import',projectId)
+    if (!file || !file.path) {
+      throw new ValidationError('no file found, please upload a JATS XML file to import', projectId)
+    }
 
     const token = authorizationBearerToken(req)
     const profile = await DIContainer.sharedContainer.userService.profile(token)
-    if (!profile) throw new ValidationError('Profile not found for token',profile)
+    if (!profile) {
+      throw new ValidationError('Profile not found for token', profile)
+    }
 
     const stream = fs.createReadStream(file.path)
-    const manuscript: Readable = await DIContainer.sharedContainer.pressroomService.importJATS(stream)
+    const manuscript: Readable = await DIContainer.sharedContainer.pressroomService.importJATS(
+      stream
+    )
     stream.close()
 
-    const project = await DIContainer.sharedContainer.containerService[ContainerType.project].getContainer(projectId)
+    const project = await DIContainer.sharedContainer.containerService[
+      ContainerType.project
+    ].getContainer(projectId)
 
     if (!ContainerService.isOwner(project, req.user._id)) {
       throw new RoleDoesNotPermitOperationError(
@@ -90,7 +98,12 @@ export class ProjectController extends BaseController implements IProjectControl
       )
     }
 
-    const container = await this.upsertManuscriptToProject(project, manuscript, manuscriptId, templateId)
+    const container = await this.upsertManuscriptToProject(
+      project,
+      manuscript,
+      manuscriptId,
+      templateId
+    )
 
     await remove(file.path)
 
@@ -102,16 +115,23 @@ export class ProjectController extends BaseController implements IProjectControl
    * @returns the created/updated manuscript
    */
   // tslint:disable-next-line:cyclomatic-complexity
-  async upsertManuscriptToProject (project: Container, manuscript: Readable, manuscriptId?: string, templateId?: string): Promise<Container> {
+  async upsertManuscriptToProject(
+    project: Container,
+    manuscript: Readable,
+    manuscriptId?: string,
+    templateId?: string
+  ): Promise<Container> {
     const buffer = await getStream.buffer(manuscript)
 
     const unzipRoot = tempy.directory()
     const files = await decompress(buffer, unzipRoot)
-    const byPath: any = files.reduce((acc,v) => ({ ...acc,[v.path]: v }),{})
+    const byPath: any = files.reduce((acc, v) => ({ ...acc, [v.path]: v }), {})
 
     const json = JSON.parse(byPath['index.manuscript-json'].data)
     let manuscriptObject = json.data.find((model: Model) => model.objectType === 'MPManuscript')
-    if (manuscriptId) manuscriptObject._id = manuscriptId
+    if (manuscriptId) {
+      manuscriptObject._id = manuscriptId
+    }
 
     const sessionID = uuid.v4()
     const createdAt = Math.round(Date.now() / 1000)
@@ -123,10 +143,12 @@ export class ProjectController extends BaseController implements IProjectControl
           createdAt,
           updatedAt: createdAt,
           sessionID,
-          containerID: project._id
+          containerID: project._id,
         }
 
-        if (manuscriptIDTypes.has(doc.objectType)) doc.manuscriptID = manuscriptObject._id
+        if (manuscriptIDTypes.has(doc.objectType)) {
+          doc.manuscriptID = manuscriptObject._id
+        }
 
         return doc
       })
@@ -140,7 +162,9 @@ export class ProjectController extends BaseController implements IProjectControl
     let templateFound: boolean = templateId !== undefined && template !== null
 
     if (!templateFound && templateId) {
-      templateFound = await DIContainer.sharedContainer.pressroomService.validateTemplateId(templateId)
+      templateFound = await DIContainer.sharedContainer.pressroomService.validateTemplateId(
+        templateId
+      )
     }
 
     if (!templateFound && templateId) {
@@ -152,7 +176,7 @@ export class ProjectController extends BaseController implements IProjectControl
       createdAt,
       updatedAt: createdAt,
       sessionID,
-      containerID: project._id
+      containerID: project._id,
     }
 
     if (templateFound) {
@@ -165,10 +189,7 @@ export class ProjectController extends BaseController implements IProjectControl
           manuscriptObject,
           {}
         )
-      : await DIContainer.sharedContainer.manuscriptRepository.create(
-          manuscriptObject,
-          {}
-        )
+      : await DIContainer.sharedContainer.manuscriptRepository.create(manuscriptObject, {})
 
     await DIContainer.sharedContainer.containerService[ContainerType.project].addManuscript(docs)
 

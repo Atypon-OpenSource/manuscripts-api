@@ -24,22 +24,6 @@ export const validProject: ProjectLike = {
   viewers: []
 }
 
-export const validProjectForMemento: ProjectLike = {
-  _id: 'valid-project-id-memento',
-  objectType: 'MPProject',
-  owners: [],
-  writers: [],
-  viewers: []
-}
-
-export const validProjectForSummary: ProjectLike = {
-  _id: 'valid-project-id-summary',
-  objectType: 'MPProject',
-  owners: [],
-  writers: [],
-  viewers: []
-}
-
 export const validProject6: ProjectLike = {
   _id: 'valid-project-id-6',
   objectType: 'MPProject',

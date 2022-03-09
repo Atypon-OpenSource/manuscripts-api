@@ -30,11 +30,11 @@ export class SubmissionRoute extends BaseRoute {
    * Returns submission route base path.
    * @returns string
    */
-  private get basePath (): string {
+  private get basePath(): string {
     return '/submission'
   }
 
-  public create (router: Router): void {
+  public create(router: Router): void {
     router.post(
       `${this.basePath}/status/:id`,
       AuthStrategy.verifyIpAddress,
@@ -43,10 +43,7 @@ export class SubmissionRoute extends BaseRoute {
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           const user = await this.submissionController.updateStatus(req)
-          res
-            .status(HttpStatus.OK)
-            .json(user)
-            .end()
+          res.status(HttpStatus.OK).json(user).end()
         }, next)
       }
     )

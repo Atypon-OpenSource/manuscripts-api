@@ -17,12 +17,12 @@
 import {
   ContainerRole,
   ContainerInvitationResponse,
-  InvitedUserData
+  InvitedUserData,
 } from '../../Models/ContainerModels'
 import { InvitationToken, User } from '../../Models/UserModels'
 
 export interface IContainerInvitationService {
-  inviteToContainer (
+  inviteToContainer(
     invitingUserId: string,
     invitedUser: InvitedUserData[],
     containerID: string,
@@ -31,40 +31,35 @@ export interface IContainerInvitationService {
     skipEmail: boolean | undefined
   ): Promise<[string, string][]>
 
-  rejectContainerInvite (invitationId: string): Promise<void>
+  rejectContainerInvite(invitationId: string): Promise<void>
 
-  acceptContainerInvite (
+  acceptContainerInvite(
     invitationId: string,
     user: User,
     skipEmail?: boolean
   ): Promise<ContainerInvitationResponse>
 
-  uninvite (userId: string, invitationId: string): Promise<void>
+  uninvite(userId: string, invitationId: string): Promise<void>
 
-  requestInvitationToken (
+  requestInvitationToken(
     clientId: string,
     containerID: string,
     role: ContainerRole
   ): Promise<InvitationToken>
 
-  refreshInvitationToken (
+  refreshInvitationToken(
     clientId: string,
     containerID: string,
     role: ContainerRole
   ): Promise<InvitationToken>
 
-  acceptInvitationToken (
+  acceptInvitationToken(
     token: string,
     userId: string,
     skipEmail?: boolean
   ): Promise<ContainerInvitationResponse>
 
-  markInvitationAsAccepted (
-    invitationId: string
-  ): Promise<void>
+  markInvitationAsAccepted(invitationId: string): Promise<void>
 
-  updateInvitedUserID (
-    userID: string,
-    userEmail: string
-  ): Promise<void>
+  updateInvitedUserID(userID: string, userEmail: string): Promise<void>
 }

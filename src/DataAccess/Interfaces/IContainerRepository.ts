@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 
-import {
-  ManuscriptTemplate,
-  Model
-} from '@manuscripts/manuscripts-json-schema'
+import { ManuscriptTemplate, Model } from '@manuscripts/manuscripts-json-schema'
 
 import { KeyValueRepository } from './KeyValueRepository'
 
@@ -25,39 +22,31 @@ import { KeyValueRepository } from './KeyValueRepository'
  * Manages container persistent storage operations.
  */
 export interface IContainerRepository<Container, ContainerLike, PatchContainer>
-  extends KeyValueRepository<
-    Container,
-    ContainerLike,
-    ContainerLike,
-    PatchContainer
-  > {
+  extends KeyValueRepository<Container, ContainerLike, ContainerLike, PatchContainer> {
   /**
    * Gets all the containers associated to a user
    * @param id user's id
    */
-  getUserContainers (id: string): Promise<Container[]>
+  getUserContainers(id: string): Promise<Container[]>
   /**
    * Removes the container and contained resource.
    * @param id container's id
    * @param syncSession user's sync session
    */
-  removeWithAllResources (id: string, syncSession: string): Promise<void>
+  removeWithAllResources(id: string, syncSession: string): Promise<void>
 
   /**
    * Gets ManuscriptTemplates from container
    * @param id container's id
    */
-  findTemplatesInContainer (id: string): Promise<ManuscriptTemplate[]>
+  findTemplatesInContainer(id: string): Promise<ManuscriptTemplate[]>
 
   /**
    * Gets Models from ManuscriptTemplates
    * @param containerId container's id
    * @param templateId template's id
    */
-  findModelsInTemplate (
-    containerId: String,
-    templateId: String
-  ): Promise<Model[]>
+  findModelsInTemplate(containerId: string, templateId: string): Promise<Model[]>
 }
 
 /**

@@ -20,6 +20,7 @@ import { isString, isNumber } from './util'
 import { InternalErrorCode } from './InternalErrorCodes'
 import { CouchbaseError, errors } from 'couchbase'
 import { BucketKey } from './Config/ConfigurationTypes'
+import { Prisma } from '@prisma/client'
 
 /** An error-like object that has a code. Used amongst error types to describe those error types that have their own natural HTTP status code. */
 export interface StatusCoded {
@@ -29,7 +30,7 @@ export interface StatusCoded {
   readonly internalErrorCode: InternalErrorCode
 }
 
-export function isStatusCoded (err: Error): err is StatusCoded {
+export function isStatusCoded(err: Error): err is StatusCoded {
   const statusCode = (err as any).statusCode
   if (typeof statusCode !== 'number') {
     return false
@@ -48,30 +49,13 @@ export class SyncError extends Error implements StatusCoded {
   readonly statusCode = HttpStatus.INTERNAL_SERVER_ERROR
   readonly internalErrorCode = InternalErrorCode.SyncError
 
-  constructor (message: string, responseBody: any) {
+  constructor(message: string, responseBody: any) {
     super(
       message +
-        ` (body: ${
-          typeof responseBody === 'string'
-            ? responseBody
-            : JSON.stringify(responseBody)
-        })`
+        ` (body: ${typeof responseBody === 'string' ? responseBody : JSON.stringify(responseBody)})`
     )
     this.name = 'SyncError'
     this.syncGatewayResponseBody = responseBody
-    Object.setPrototypeOf(this, new.target.prototype)
-  }
-}
-
-export class DiscourseError extends Error implements StatusCoded {
-  readonly internalErrorCode = InternalErrorCode.DiscourseError
-  constructor (
-    message: string,
-    readonly statusCode: number,
-    readonly responseBody: any
-  ) {
-    super(message)
-    this.name = 'DiscourseError'
     Object.setPrototypeOf(this, new.target.prototype)
   }
 }
@@ -82,7 +66,7 @@ export class DiscourseError extends Error implements StatusCoded {
  */
 export class NumericalError extends Error {
   readonly internalErrorCode = InternalErrorCode.NumericalError
-  constructor (readonly code: number) {
+  constructor(readonly code: number) {
     super()
     this.name = 'NumericalError'
     Object.setPrototypeOf(this, new.target.prototype)
@@ -99,19 +83,19 @@ export class DatabaseError extends Error implements StatusCoded {
   // underlyingError = the error the backend API returned.
   readonly statusCode = HttpStatus.INTERNAL_SERVER_ERROR
 
-  constructor (
-    readonly underlyingCode: errors | undefined,
+  constructor(
+    readonly underlyingCode: errors | string | undefined,
     message: string,
     readonly value: any,
     readonly underlyingError: Error
   ) {
     super(
-      `Database error with code ${underlyingCode}: ${message}\nUnderlying error: ${underlyingError}`
+      `SQLDatabase error with code ${underlyingCode}: ${message}\nUnderlying error: ${underlyingError}`
     )
     this.name = 'DatabaseError'
   }
 
-  static fromPotentiallyNumericalError (
+  static fromPotentiallyNumericalError(
     underlyingError: number | CouchbaseError,
     message: string,
     value: any
@@ -131,12 +115,25 @@ export class DatabaseError extends Error implements StatusCoded {
       underlyingError
     )
   }
+
+  static fromPrismaError(
+    underlyingError: Prisma.PrismaClientKnownRequestError,
+    message: string,
+    value: any
+  ) {
+    return new DatabaseError(
+      underlyingError.code,
+      `SQLDatabase error with code ${underlyingError.code} occurred: ${message}`,
+      value,
+      underlyingError
+    )
+  }
 }
 
 export class BucketExistenceCheckError extends Error implements StatusCoded {
   readonly internalErrorCode = InternalErrorCode.BucketExistenceCheckError
   readonly statusCode = HttpStatus.INTERNAL_SERVER_ERROR
-  constructor (message: string, readonly underlyingStatusCode: number) {
+  constructor(message: string, readonly underlyingStatusCode: number) {
     super(`${message} (underlying status code ${underlyingStatusCode})`)
     this.name = 'BucketExistenceCheckError'
   }
@@ -146,11 +143,9 @@ export class NoBucketError extends Error implements StatusCoded {
   readonly internalErrorCode = InternalErrorCode.NoBucketError
   readonly statusCode = HttpStatus.INTERNAL_SERVER_ERROR
 
-  constructor (message?: string) {
+  constructor(message?: string) {
     super(
-      isString(message)
-        ? message
-        : `Database has no bucket. Bucket has not been yet opened?`
+      isString(message) ? message : `SQLDatabase has no bucket. Bucket has not been yet opened?`
     )
     this.name = 'NoBucketError'
     Object.setPrototypeOf(this, new.target.prototype)
@@ -161,22 +156,19 @@ export class InvalidBucketError extends Error implements StatusCoded {
   readonly internalErrorCode = InternalErrorCode.InvalidBucketError
   readonly statusCode = HttpStatus.INTERNAL_SERVER_ERROR
 
-  constructor (bucketKey: BucketKey) {
+  constructor(bucketKey: BucketKey) {
     super(`No bucket for key '${bucketKey}'`)
     this.name = 'InvalidBucketError'
     Object.setPrototypeOf(this, new.target.prototype)
   }
 }
 
-export class DatabaseDesignDocumentInaccessibleError
-  extends Error
-  implements StatusCoded {
-  readonly internalErrorCode =
-    InternalErrorCode.DatabaseDesignDocumentInaccessibleError
+export class DatabaseDesignDocumentInaccessibleError extends Error implements StatusCoded {
+  readonly internalErrorCode = InternalErrorCode.DatabaseDesignDocumentInaccessibleError
   readonly statusCode = HttpStatus.INTERNAL_SERVER_ERROR
   readonly databaseStatusCode: number
 
-  constructor (uri: string, databaseStatusCode: number) {
+  constructor(uri: string, databaseStatusCode: number) {
     super(
       `Requesting headers of database design document at URL '${uri}' failed with status code ${databaseStatusCode}`
     )
@@ -189,7 +181,7 @@ export class GatewayInaccessibleError extends Error implements StatusCoded {
   readonly internalErrorCode = InternalErrorCode.GatewayInaccessibleError
   readonly statusCode = HttpStatus.SERVICE_UNAVAILABLE
 
-  constructor (uri: string | undefined) {
+  constructor(uri: string | undefined) {
     super(`Gateway is inaccessible: Request to URL ${uri} is failing.`)
     this.name = 'GatewayInaccessibleError'
   }
@@ -199,7 +191,7 @@ export class NoDocumentMapperError extends Error implements StatusCoded {
   readonly internalErrorCode = InternalErrorCode.NoDocumentMapperError
   readonly statusCode = HttpStatus.INTERNAL_SERVER_ERROR
 
-  constructor () {
+  constructor() {
     super(`Ottoman document mapper instance has not yet been created`)
     this.name = 'NoDocumentMapperError'
     Object.setPrototypeOf(this, new.target.prototype)
@@ -210,7 +202,7 @@ export class ProductionNotesUpdateError extends Error implements StatusCoded {
   readonly internalErrorCode = InternalErrorCode.ProductionNotesUpdateError
   readonly statusCode = HttpStatus.INTERNAL_SERVER_ERROR
 
-  constructor () {
+  constructor() {
     super('Failed to create/update production note.')
     this.name = 'ProductionNotesUpdateError'
     Object.setPrototypeOf(this, new.target.prototype)
@@ -221,7 +213,7 @@ export class ProductionNotesLoadError extends Error implements StatusCoded {
   readonly internalErrorCode = InternalErrorCode.ProductionNotesLoadError
   readonly statusCode = HttpStatus.INTERNAL_SERVER_ERROR
 
-  constructor () {
+  constructor() {
     super('Failed to retrieve production note.')
     this.name = 'ProductionNotesLoadError'
     Object.setPrototypeOf(this, new.target.prototype)
@@ -233,7 +225,7 @@ export class MissingQueryParameterError extends Error implements StatusCoded {
   readonly queryParamKey: string
   readonly statusCode = HttpStatus.BAD_REQUEST
 
-  constructor (queryParamKey: any) {
+  constructor(queryParamKey: any) {
     super(`Missing query parameter key: ${queryParamKey}`)
     this.queryParamKey = queryParamKey
     this.name = 'MissingQueryParameterError'
@@ -246,7 +238,7 @@ export class MissingContainerError extends Error implements StatusCoded {
   readonly invalidValue: any
   readonly statusCode = HttpStatus.NOT_FOUND
 
-  constructor (invalidValue: any) {
+  constructor(invalidValue: any) {
     super(`Container '${invalidValue}' was not found.`)
     this.invalidValue = invalidValue
     this.name = 'MissingContainerError'
@@ -259,7 +251,7 @@ export class MissingProductionNoteError extends Error implements StatusCoded {
   readonly invalidValue: any
   readonly statusCode = HttpStatus.NOT_FOUND
 
-  constructor (invalidValue: any) {
+  constructor(invalidValue: any) {
     super(`Manuscript note with ID '${invalidValue}' not found.`)
     this.invalidValue = invalidValue
     this.name = 'MissingProductionNoteError'
@@ -272,7 +264,7 @@ export class MissingUserRecordError extends Error implements StatusCoded {
   readonly invalidValue: any
   readonly statusCode = HttpStatus.NOT_FOUND
 
-  constructor (invalidValue: any) {
+  constructor(invalidValue: any) {
     super(`User record '${invalidValue}' is not found.`)
     this.invalidValue = invalidValue
     this.name = 'MissingUserRecordError'
@@ -285,7 +277,7 @@ export class MissingTemplateError extends Error implements StatusCoded {
   readonly invalidValue: any
   readonly statusCode = HttpStatus.NOT_FOUND
 
-  constructor (invalidValue: any) {
+  constructor(invalidValue: any) {
     super(`Template '${invalidValue}' is not found.`)
     this.invalidValue = invalidValue
     this.name = 'MissingTemplateError'
@@ -298,7 +290,7 @@ export class MissingDeviceIDError extends Error implements StatusCoded {
   readonly invalidValue: any
   readonly statusCode = HttpStatus.BAD_REQUEST
 
-  constructor (invalidValue: any) {
+  constructor(invalidValue: any) {
     super('Missing deviceID.')
     this.invalidValue = invalidValue
     this.name = 'MissingDeviceIDError'
@@ -311,7 +303,7 @@ export class ValidationError extends Error implements StatusCoded {
   readonly invalidValue: any
   readonly statusCode = HttpStatus.BAD_REQUEST
 
-  constructor (message: string, invalidValue: any) {
+  constructor(message: string, invalidValue: any) {
     super(`Validation error: ${message}`)
     this.invalidValue = invalidValue
     this.name = 'ValidationError'
@@ -319,14 +311,12 @@ export class ValidationError extends Error implements StatusCoded {
   }
 }
 
-export class InvalidBackchannelLogoutError
-  extends Error
-  implements StatusCoded {
+export class InvalidBackchannelLogoutError extends Error implements StatusCoded {
   readonly internalErrorCode = InternalErrorCode.InvalidBackchannelLogoutError
   readonly invalidValue: any
   readonly statusCode = HttpStatus.BAD_REQUEST
 
-  constructor (message: string, invalidValue: any) {
+  constructor(message: string, invalidValue: any) {
     super(`Invalid backchannel logout error: ${message}`)
     this.invalidValue = invalidValue
     this.name = 'InvalidBackchannelLogoutError'
@@ -339,7 +329,7 @@ export class InvalidScopeNameError extends Error implements StatusCoded {
   readonly invalidValue: any
   readonly statusCode = HttpStatus.BAD_REQUEST
 
-  constructor (invalidValue: any) {
+  constructor(invalidValue: any) {
     super(`The scope '${invalidValue}' is invalid.`)
     this.invalidValue = invalidValue
     this.name = 'InvalidScopeNameError'
@@ -351,7 +341,7 @@ export class MissingUserStatusError extends Error implements StatusCoded {
   readonly internalErrorCode = InternalErrorCode.MissingUserStatusError
   readonly statusCode = HttpStatus.UNAUTHORIZED
   readonly user: User
-  constructor (userID: string) {
+  constructor(userID: string) {
     super(`User status for user '${userID}' is not found.`)
     this.name = 'MissingUserStatusError'
     Object.setPrototypeOf(this, new.target.prototype)
@@ -363,7 +353,7 @@ export class UnexpectedViewStateError extends Error implements StatusCoded {
   readonly statusCode = HttpStatus.INTERNAL_SERVER_ERROR
   readonly key: any
   readonly invalidValue: any
-  constructor (message: string, key: any, invalidValue: any) {
+  constructor(message: string, key: any, invalidValue: any) {
     super(`View contains unexpected data: ${message}`)
     this.key = key
     this.invalidValue = invalidValue
@@ -377,7 +367,7 @@ export class UserBlockedError extends Error implements StatusCoded {
   readonly statusCode = HttpStatus.FORBIDDEN
   readonly user: User
   readonly userStatus: UserStatus
-  constructor (user: User, userStatus: UserStatus) {
+  constructor(user: User, userStatus: UserStatus) {
     super(`User '${user._id}' account is blocked.`)
     this.user = user
     this.userStatus = userStatus
@@ -391,7 +381,7 @@ export class UserNotVerifiedError extends Error implements StatusCoded {
   readonly statusCode = HttpStatus.FORBIDDEN
   readonly user: User
   readonly userStatus: UserStatus
-  constructor (user: User, userStatus: UserStatus) {
+  constructor(user: User, userStatus: UserStatus) {
     super(`User '${user._id}' account is not verified.`)
     this.user = user
     this.userStatus = userStatus
@@ -405,7 +395,7 @@ export class UserRoleError extends Error implements StatusCoded {
   readonly invalidValue: any
   readonly statusCode = HttpStatus.FORBIDDEN
 
-  constructor (message: string, invalidValue: any) {
+  constructor(message: string, invalidValue: any) {
     super(message)
     this.invalidValue = invalidValue
     this.name = 'UserRoleError'
@@ -413,15 +403,12 @@ export class UserRoleError extends Error implements StatusCoded {
   }
 }
 
-export class RoleDoesNotPermitOperationError
-  extends Error
-  implements StatusCoded {
-  readonly internalErrorCode =
-    InternalErrorCode.RoleDoesNotPermitOperationError
+export class RoleDoesNotPermitOperationError extends Error implements StatusCoded {
+  readonly internalErrorCode = InternalErrorCode.RoleDoesNotPermitOperationError
   readonly invalidValue: any
   readonly statusCode = HttpStatus.UNAUTHORIZED
 
-  constructor (message: string, invalidValue: any) {
+  constructor(message: string, invalidValue: any) {
     super(message)
     this.invalidValue = invalidValue
     this.name = 'RoleDoesNotPermitOperationError'
@@ -431,31 +418,9 @@ export class RoleDoesNotPermitOperationError
 
 export class DatabaseDesignDocumentError extends Error {
   readonly internalErrorCode = InternalErrorCode.DatabaseDesignDocumentError
-  constructor (message: string) {
+  constructor(message: string) {
     super(message)
     this.name = 'DatabaseDesignDocumentError'
-    Object.setPrototypeOf(this, new.target.prototype)
-  }
-}
-
-export class FunctionServiceLogicError extends Error {
-  readonly internalErrorCode = InternalErrorCode.FunctionServiceLogicError
-  constructor (message: string) {
-    super(message)
-    this.name = 'FunctionServiceLogicError'
-    Object.setPrototypeOf(this, new.target.prototype)
-  }
-}
-
-export class FunctionServiceRESTError extends Error {
-  readonly internalErrorCode = InternalErrorCode.FunctionServiceRESTError
-  constructor (
-    message: string,
-    readonly statusCode: number,
-    readonly responseBody: object
-  ) {
-    super(message)
-    this.name = 'FunctionServiceRESTError'
     Object.setPrototypeOf(this, new.target.prototype)
   }
 }
@@ -463,7 +428,7 @@ export class FunctionServiceRESTError extends Error {
 export class InvalidCredentialsError extends Error implements StatusCoded {
   readonly internalErrorCode = InternalErrorCode.InvalidCredentialsError
   readonly statusCode = HttpStatus.UNAUTHORIZED
-  constructor (message: string) {
+  constructor(message: string) {
     super(message)
     this.name = 'InvalidCredentialsError'
     Object.setPrototypeOf(this, new.target.prototype)
@@ -473,7 +438,7 @@ export class InvalidCredentialsError extends Error implements StatusCoded {
 export class MissingCookieError extends Error implements StatusCoded {
   readonly internalErrorCode = InternalErrorCode.MissingCookieError
   readonly statusCode = HttpStatus.UNAUTHORIZED
-  constructor () {
+  constructor() {
     super('Cookie header is missing.')
     this.name = 'MissingCookieError'
     Object.setPrototypeOf(this, new.target.prototype)
@@ -483,19 +448,17 @@ export class MissingCookieError extends Error implements StatusCoded {
 export class IAMIssuerError extends Error implements StatusCoded {
   readonly internalErrorCode = InternalErrorCode.IAMIssuerError
   readonly statusCode = HttpStatus.INTERNAL_SERVER_ERROR
-  constructor (readonly underlyingError?: Error) {
+  constructor(readonly underlyingError?: Error) {
     super(`Error retrieving issuer from IAM server: ${underlyingError}.`)
     this.name = 'IAMIssuerError'
     Object.setPrototypeOf(this, new.target.prototype)
   }
 }
 
-export class InvalidServerCredentialsError
-  extends Error
-  implements StatusCoded {
+export class InvalidServerCredentialsError extends Error implements StatusCoded {
   readonly internalErrorCode = InternalErrorCode.InvalidServerCredentialsError
   readonly statusCode = HttpStatus.UNAUTHORIZED
-  constructor (message: string) {
+  constructor(message: string) {
     super(message)
     this.name = 'InvalidServerCredentialsError'
     Object.setPrototypeOf(this, new.target.prototype)
@@ -505,7 +468,7 @@ export class InvalidServerCredentialsError
 export class DuplicateEmailError extends Error implements StatusCoded {
   readonly internalErrorCode = InternalErrorCode.DuplicateEmailError
   readonly statusCode = HttpStatus.CONFLICT
-  constructor (email: string) {
+  constructor(email: string) {
     super(`Email '${email}' is not available.`)
     this.name = 'DuplicateEmailError'
     Object.setPrototypeOf(this, new.target.prototype)
@@ -515,7 +478,7 @@ export class DuplicateEmailError extends Error implements StatusCoded {
 export class AccountNotFoundError extends Error implements StatusCoded {
   readonly internalErrorCode = InternalErrorCode.AccountNotFoundError
   readonly statusCode = HttpStatus.UNAUTHORIZED
-  constructor (credentials: string | undefined) {
+  constructor(credentials: string | undefined) {
     super(`User '${credentials}' is not found.`)
     this.name = 'AccountNotFoundError'
     Object.setPrototypeOf(this, new.target.prototype)
@@ -525,7 +488,7 @@ export class AccountNotFoundError extends Error implements StatusCoded {
 export class OperationDisabledError extends Error implements StatusCoded {
   readonly internalErrorCode = InternalErrorCode.OperationDisabledError
   readonly statusCode = HttpStatus.SERVICE_UNAVAILABLE
-  constructor (message: string) {
+  constructor(message: string) {
     super(message)
     this.name = 'OperationDisabledError'
     Object.setPrototypeOf(this, new.target.prototype)
@@ -536,7 +499,7 @@ export class NoTokenError extends Error implements StatusCoded {
   readonly internalErrorCode = InternalErrorCode.NoTokenError
   readonly statusCode = HttpStatus.UNAUTHORIZED
   readonly ID: string
-  constructor (ID: string) {
+  constructor(ID: string) {
     super(`Token does not exist in the database for ID '${ID}'`)
     this.ID = ID
     this.name = 'NoTokenError'
@@ -544,12 +507,10 @@ export class NoTokenError extends Error implements StatusCoded {
   }
 }
 
-export class InvalidClientApplicationError
-  extends Error
-  implements StatusCoded {
+export class InvalidClientApplicationError extends Error implements StatusCoded {
   readonly internalErrorCode = InternalErrorCode.InvalidClientApplicationError
   readonly statusCode = HttpStatus.UNAUTHORIZED
-  constructor (appID: string | string[] | undefined, deviceID?: string) {
+  constructor(appID: string | string[] | undefined, deviceID?: string) {
     super(`Invalid application ID ${appID} (device ID: ${deviceID})`)
     this.name = 'InvalidClientApplicationError'
     Object.setPrototypeOf(this, new.target.prototype)
@@ -559,19 +520,17 @@ export class InvalidClientApplicationError
 export class InvalidJsonHeadersError extends Error implements StatusCoded {
   readonly internalErrorCode = InternalErrorCode.InvalidJsonHeadersError
   readonly statusCode = HttpStatus.BAD_REQUEST
-  constructor (acceptHeader: string | string[] | undefined) {
+  constructor(acceptHeader: string | string[] | undefined) {
     super(`Invalid accept header ${acceptHeader}`)
     this.name = 'InvalidJsonHeadersError'
     Object.setPrototypeOf(this, new.target.prototype)
   }
 }
 
-export class InvalidClientApplicationStateError
-  extends Error
-  implements StatusCoded {
+export class InvalidClientApplicationStateError extends Error implements StatusCoded {
   readonly internalErrorCode = InternalErrorCode.InvalidClientApplicationStateError
   readonly statusCode = HttpStatus.UNAUTHORIZED
-  constructor (state: any) {
+  constructor(state: any) {
     super(`Invalid client application state ${state}`)
     this.name = 'InvalidClientApplicationStateError'
     Object.setPrototypeOf(this, new.target.prototype)
@@ -582,7 +541,7 @@ export class RecordNotFoundError extends Error implements StatusCoded {
   readonly internalErrorCode = InternalErrorCode.RecordNotFoundError
   readonly statusCode = HttpStatus.NOT_FOUND
 
-  constructor (message: string) {
+  constructor(message: string) {
     super(message)
     this.name = 'RecordNotFoundError'
     Object.setPrototypeOf(this, new.target.prototype)
@@ -593,7 +552,7 @@ export class MissingSubmissionError extends Error implements StatusCoded {
   readonly internalErrorCode = InternalErrorCode.MissingSubmissionError
   readonly statusCode = HttpStatus.NOT_FOUND
 
-  constructor (submissionID: string) {
+  constructor(submissionID: string) {
     super(`Submission '${submissionID}' is not found.`)
     this.name = 'MissingSubmissionError'
     Object.setPrototypeOf(this, new.target.prototype)
@@ -604,7 +563,7 @@ export class EmailServiceError extends Error implements StatusCoded {
   readonly internalErrorCode = InternalErrorCode.EmailServiceError
   readonly statusCode = HttpStatus.INTERNAL_SERVER_ERROR
 
-  constructor (email: string, readonly underlyingError: Error | null) {
+  constructor(email: string, readonly underlyingError: Error | null) {
     super(`Error occurred while sending email: ${email}`)
     this.name = 'EmailServiceError'
     Object.setPrototypeOf(this, new.target.prototype)
@@ -616,12 +575,8 @@ export class IllegalStateError extends Error implements StatusCoded {
   readonly illegalState: any
   readonly statusCode = HttpStatus.INTERNAL_SERVER_ERROR
 
-  constructor (message: string, illegalState: any) {
-    super(
-      `Program is in illegal state: ${message} (state: ${JSON.stringify(
-        illegalState
-      )})`
-    )
+  constructor(message: string, illegalState: any) {
+    super(`Program is in illegal state: ${message} (state: ${JSON.stringify(illegalState)})`)
     this.illegalState = illegalState
     this.name = 'IllegalStateError'
     Object.setPrototypeOf(this, new.target.prototype)
@@ -633,7 +588,7 @@ export class ConflictingRecordError extends Error implements StatusCoded {
   readonly existingValue: any
   readonly statusCode = HttpStatus.CONFLICT
 
-  constructor (message: string, existingValue: any) {
+  constructor(message: string, existingValue: any) {
     super(`Conflict error: ${message}`)
     this.existingValue = existingValue
     this.name = 'ConflictingRecordError'
@@ -641,15 +596,12 @@ export class ConflictingRecordError extends Error implements StatusCoded {
   }
 }
 
-export class ConflictingUnverifiedUserExistsError
-  extends Error
-  implements StatusCoded {
-  readonly internalErrorCode =
-    InternalErrorCode.ConflictingUnverifiedUserExistsError
+export class ConflictingUnverifiedUserExistsError extends Error implements StatusCoded {
+  readonly internalErrorCode = InternalErrorCode.ConflictingUnverifiedUserExistsError
   readonly existingValue: any
   readonly statusCode = HttpStatus.CONFLICT
 
-  constructor (existingValue: any) {
+  constructor(existingValue: any) {
     super(`User '${existingValue}' already exists but not verified.`)
     this.existingValue = existingValue
     this.name = 'ConflictingUnverifiedUserExistsError'
@@ -659,11 +611,11 @@ export class ConflictingUnverifiedUserExistsError
 
 export class SecondaryIndexMissingError extends Error implements StatusCoded {
   readonly internalErrorCode = InternalErrorCode.SecondaryIndexMissingError
-  readonly documentType: String
-  readonly unindexedKey: String
+  readonly documentType: string
+  readonly unindexedKey: string
   readonly statusCode = HttpStatus.INTERNAL_SERVER_ERROR
 
-  constructor (documentType: string, key: string) {
+  constructor(documentType: string, key: string) {
     super(`Expecting secondary index for ${documentType}:'${key}'`)
     this.documentType = documentType
     this.unindexedKey = key
@@ -678,7 +630,7 @@ export class MethodNotAllowedError extends Error implements StatusCoded {
   readonly className: string
   readonly statusCode = HttpStatus.INTERNAL_SERVER_ERROR
 
-  constructor (className: string, methodName: string) {
+  constructor(className: string, methodName: string) {
     super(`Method '${methodName}' not allowed in '${className}'`)
     this.methodName = methodName
     this.className = className
@@ -693,7 +645,7 @@ export class ConfigurationError extends Error implements StatusCoded {
   readonly value: any
   readonly statusCode = HttpStatus.INTERNAL_SERVER_ERROR
 
-  constructor (key: string, value: any) {
+  constructor(key: string, value: any) {
     super(
       `Configuration value for key '${key}' unexpectedly missing, empty, or not a string: '${value}'`
     )
@@ -708,7 +660,7 @@ export class ForbiddenOriginError extends Error implements StatusCoded {
   readonly internalErrorCode = InternalErrorCode.ForbiddenOriginError
   readonly statusCode = HttpStatus.FORBIDDEN
 
-  constructor (requestOrigin: string) {
+  constructor(requestOrigin: string) {
     super(`'${requestOrigin}' not amongst allowed origins`)
     this.name = 'ForbiddenOriginError'
     Object.setPrototypeOf(this, new.target.prototype)
@@ -719,7 +671,7 @@ export class InvalidPasswordError extends Error implements StatusCoded {
   readonly internalErrorCode = InternalErrorCode.InvalidPasswordError
   readonly statusCode = HttpStatus.UNAUTHORIZED
   readonly user: User
-  constructor (user: User) {
+  constructor(user: User) {
     super(`Password does not match for user '${user.email}'`)
     this.user = user
     this.name = 'InvalidPasswordError'
@@ -730,7 +682,7 @@ export class InvalidPasswordError extends Error implements StatusCoded {
 export class ManuscriptContentParsingError extends Error implements StatusCoded {
   readonly internalErrorCode = InternalErrorCode.ManuscriptContentParsingError
   readonly statusCode = HttpStatus.FORBIDDEN
-  constructor (message: string, readonly underlyingError: Error) {
+  constructor(message: string, readonly underlyingError: Error) {
     super(`${message} (Underlying error = ${underlyingError})`)
     this.name = 'ManuscriptContentParsingError'
     Object.setPrototypeOf(this, new.target.prototype)
@@ -741,7 +693,7 @@ export class RecordGoneError extends Error implements StatusCoded {
   readonly internalErrorCode = InternalErrorCode.RecordGoneError
   readonly statusCode = HttpStatus.GONE
 
-  constructor (message: string) {
+  constructor(message: string) {
     super(message)
     this.name = 'RecordGoneError'
     Object.setPrototypeOf(this, new.target.prototype)
@@ -752,7 +704,7 @@ export class RequestError extends Error implements StatusCoded {
   readonly internalErrorCode = InternalErrorCode.RequestError
   readonly statusCode = HttpStatus.INTERNAL_SERVER_ERROR
 
-  constructor (message: string) {
+  constructor(message: string) {
     super(message)
     this.name = 'RequestError'
     Object.setPrototypeOf(this, new.target.prototype)

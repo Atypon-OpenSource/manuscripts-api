@@ -22,10 +22,7 @@ import multer from 'multer'
 import { BaseRoute } from '../../BaseRoute'
 import { ProjectController } from './ProjectController'
 import { AuthStrategy } from '../../../Auth/Passport/AuthStrategy'
-import {
-  addSchema,
-  createSchema
-} from './ProjectSchema'
+import { addSchema, createSchema } from './ProjectSchema'
 
 export class ProjectRoute extends BaseRoute {
   private projectController = new ProjectController()
@@ -35,11 +32,11 @@ export class ProjectRoute extends BaseRoute {
    *
    * @returns string
    */
-  private get basePath (): string {
+  private get basePath(): string {
     return '/project'
   }
 
-  public create (router: Router): void {
+  public create(router: Router): void {
     router.post(
       `${this.basePath}`,
       expressJoiMiddleware(createSchema),

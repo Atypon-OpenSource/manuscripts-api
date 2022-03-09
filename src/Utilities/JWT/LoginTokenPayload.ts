@@ -65,8 +65,8 @@ export interface LoginTokenPayload {
 }
 
 type LoginTokenPayloadLike = Pick<
-LoginTokenPayload,
-Exclude<keyof LoginTokenPayload, 'aud' | 'iss'>
+  LoginTokenPayload,
+  Exclude<keyof LoginTokenPayload, 'aud' | 'iss'>
 >
 
 export const generateLoginToken = (
@@ -76,7 +76,7 @@ export const generateLoginToken = (
   const fullPayload: LoginTokenPayload = {
     ...payload,
     aud: config.email.fromBaseURL,
-    iss: config.API.hostname
+    iss: config.API.hostname,
   }
 
   if (expiryTime) {
@@ -86,16 +86,25 @@ export const generateLoginToken = (
   return jsonwebtoken.sign(fullPayload, config.auth.jwtSecret)
 }
 
-export function isLoginTokenPayload (obj: string | object | null): obj is LoginTokenPayload {
-  if (!obj) return false
-  if (typeof obj === 'string') return false
+export function isLoginTokenPayload(obj: string | object | null): obj is LoginTokenPayload {
+  if (!obj) {
+    return false
+  }
+  if (typeof obj === 'string') {
+    return false
+  }
 
-  return (obj as any).tokenId && typeof ((obj as any).tokenId) === 'string'
-      && (obj as any).userId && typeof ((obj as any).userId) === 'string'
-      && (obj as any).appId && typeof ((obj as any).appId) === 'string'
+  return (
+    (obj as any).tokenId &&
+    typeof (obj as any).tokenId === 'string' &&
+    (obj as any).userId &&
+    typeof (obj as any).userId === 'string' &&
+    (obj as any).appId &&
+    typeof (obj as any).appId === 'string'
+  )
 }
 
-export function timestamp () {
+export function timestamp() {
   return new Date().getTime() / 1000
 }
 

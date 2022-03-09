@@ -19,6 +19,5 @@ export interface ITemplatesController {
   /**
    * Fetch published templates for a predefined list of users (APP_COUCHBASE_ALLOWED_OWNERS)
    */
-  fetchPublishedTemplates (): Promise<Model[]>
-
+  fetchPublishedTemplates(): Promise<Model[]>
 }

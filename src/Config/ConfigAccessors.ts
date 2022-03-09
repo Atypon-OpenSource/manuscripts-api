@@ -20,26 +20,36 @@ import { IllegalStateError } from '../Errors'
 
 // The following functions are free functions in a separate module from Config to make mocking independently of the Configuration object easier.
 
-export function appDataPublicGatewayBaseURI (): string {
+export function appDataPublicGatewayBaseURI(): string {
   return `http://${config.gateway.hostname}:${config.gateway.ports.public}`
 }
 
-export function appDataAdminGatewayBaseURI (): string {
+export function appDataAdminGatewayBaseURI(): string {
   return `http://${config.gateway.hostname}:${config.gateway.ports.admin}`
 }
 
-export function appDataPublicGatewayURI (bucketKey: BucketKey): string {
+export function appDataPublicGatewayURI(bucketKey: BucketKey): string {
   const bucket = config.DB.buckets[bucketKey]
   if (!bucket) {
-    throw new IllegalStateError(`No bucket with key '${bucketKey}' amongst configured buckets with public gateway URI: ${JSON.stringify(config.DB.buckets)}`, config.DB.buckets)
+    throw new IllegalStateError(
+      `No bucket with key '${bucketKey}' amongst configured buckets with public gateway URI: ${JSON.stringify(
+        config.DB.buckets
+      )}`,
+      config.DB.buckets
+    )
   }
   return `${appDataPublicGatewayBaseURI()}/${bucket}`
 }
 
-export function appDataAdminGatewayURI (bucketKey: BucketKey): string {
+export function appDataAdminGatewayURI(bucketKey: BucketKey): string {
   const bucket = config.DB.buckets[bucketKey]
   if (!bucket) {
-    throw new IllegalStateError(`No bucket with key '${bucketKey}' amongst configured buckets with admin gateway URI: ${JSON.stringify(config.DB.buckets)}`, config.DB.buckets)
+    throw new IllegalStateError(
+      `No bucket with key '${bucketKey}' amongst configured buckets with admin gateway URI: ${JSON.stringify(
+        config.DB.buckets
+      )}`,
+      config.DB.buckets
+    )
   }
   return `${appDataAdminGatewayBaseURI()}/${bucket}`
 }

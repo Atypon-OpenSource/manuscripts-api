@@ -19,5 +19,5 @@ import * as Joi from 'joi'
 // enforce empty query string and request body.
 export const appVersionSchema: Joi.SchemaMap = {
   query: Joi.object({}),
-  body: Joi.object({})
+  body: Joi.object({}),
 }

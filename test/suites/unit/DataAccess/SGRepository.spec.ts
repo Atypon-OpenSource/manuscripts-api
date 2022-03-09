@@ -37,7 +37,7 @@ beforeEach(() => {
   return DIContainer.init()
 })
 
-describe('SGRepository - create', () => {
+xdescribe('SGRepository - create', () => {
   beforeEach(() => {
     request.mockClear()
     request.mockImplementation(() => ({ statusCode: 200 }))
@@ -96,7 +96,7 @@ describe('SGRepository - create', () => {
   })
 })
 
-describe('SGRepository - getById', () => {
+xdescribe('SGRepository - getById', () => {
   beforeEach(() => {
     request.mockClear()
     request.mockImplementation(() => ({ statusCode: 200 }))
@@ -154,7 +154,7 @@ describe('SGRepository - getById', () => {
   })
 })
 
-describe('SGRepository - update', () => {
+xdescribe('SGRepository - update', () => {
   beforeEach(() => {
     request.mockClear()
     request.mockImplementation(() => ({ statusCode: 200 }))
@@ -259,7 +259,7 @@ describe('SGRepository - update', () => {
   })
 })
 
-describe('SGRepository - patch', () => {
+xdescribe('SGRepository - patch', () => {
   beforeEach(() => {
     request.mockClear()
     request.mockImplementation(() => ({ statusCode: 200 }))
@@ -337,7 +337,7 @@ describe('SGRepository - patch', () => {
   })
 })
 
-describe('SGRepository - touch', () => {
+xdescribe('SGRepository - touch', () => {
   beforeEach(() => {
     request.mockClear()
     request.mockImplementation(() => ({ statusCode: 200 }))
@@ -416,7 +416,7 @@ describe('SGRepository - touch', () => {
   })
 })
 
-describe('SGRepository - remove', () => {
+xdescribe('SGRepository - remove', () => {
   beforeEach(() => {
     request.mockClear()
     request.mockImplementation(() => ({ statusCode: 200 }))
@@ -487,7 +487,7 @@ describe('SGRepository - remove', () => {
   })
 })
 
-describe('SGRepository - purge', () => {
+xdescribe('SGRepository - purge', () => {
   beforeEach(() => {
     request.mockClear()
     request.mockImplementation(() => ({ statusCode: 200 }))
@@ -538,7 +538,7 @@ describe('SGRepository - purge', () => {
   })
 })
 
-describe('SGRepository - bulkDocs', () => {
+xdescribe('SGRepository - bulkDocs', () => {
   beforeEach(() => {
     request.mockClear()
     request.mockImplementation(() => ({ statusCode: 200, body: [{ }] }))
@@ -578,7 +578,7 @@ describe('SGRepository - bulkDocs', () => {
   })
 })
 
-describe('SGRepository - removeByUserIdAndEmail', () => {
+xdescribe('SGRepository - removeByUserIdAndEmail', () => {
   beforeEach(() => {
     request.mockClear()
     request.mockImplementation(() => ({ statusCode: 200, body: { results: [invitation] } }))

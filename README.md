@@ -99,7 +99,7 @@ Two configuration variables control the initialization time behaviour:
 
 Editing this variables is not commonly necessary for local development purposes because the scripts under `bin` take care of setting the above variables to appropriate values. You will need to adjust them for production purposes.
 
-## Resyncing Database
+## Resyncing SQLDatabase
 
 To resync the database there is a script inside `./bin` folder `resync-db.js`, and a shell script (`resync-db.sh`) that calls the earlier and provides the required environment veriables, running this shell script will do the job.
 
@@ -126,10 +126,10 @@ placed at the root of the repository.
 
 <dl>
   <dt>APP_COUCHBASE_ADMIN_USER</dt>
-  <dd>Database server admin username, used internally by the service when making database calls.</dd>
+  <dd>SQLDatabase server admin username, used internally by the service when making database calls.</dd>
 
   <dt>APP_COUCHBASE_ADMIN_PASS</dt>
-  <dd>Database server admin password, used internally by the service when making database calls.</dd>
+  <dd>SQLDatabase server admin password, used internally by the service when making database calls.</dd>
 
   <dt>APP_BASE_URL</dt>
   <dd>The *client* app base URL (the manuscripts-frontend instance) corresponding to this service.</dd>
@@ -197,9 +197,6 @@ placed at the root of the repository.
   <dt>APP_DERIVED_DATA_BUCKET</dt>
   <dd>The name of a database bucket for secondary data derived from data in <pre>$APP_DATA_BUCKET</pre>.</dd>
 
-  <dt>APP_DISCUSSIONS_BUCKET</dt>
-  <dd>The name of a database bucket for saving comments and annotations data.</dd>
-
   <dt>NODE_ENV</dt>
   <dd>Express.js specific environment variable whose acceptable values are enforced by manuscripts-api to be "development" and "production" (see <a href="https://expressjs.com/en/advanced/best-practice-performance.html#set-node_env-to-production">Express.js docs</a> re production specific behaviour).</dd>
 
@@ -236,9 +233,8 @@ placed at the root of the repository.
   <dt>APP_COUCHBASE_CLUSTER_ANTIAFFINITY</dt>
   <dd>When running Couchbase on Kubernetes using the autonomous Operator, this setting determines "whether or not two or more pods are allowed to be run on the same Kubernetes node". Quoting <a href="http://docs.couchbase.com/prerelease/couchbase-operator/beta/couchbaseClusterConfig.html#antiaffinity">Couchbase documentation on <b>antiAffinity</b></a> further: "In a production setting this parameter should always be set to true in order to reduce the chance of data loss in case a Kubernetes node crashes."</dd>
 
-  <dt>APP_DISCOURSE_SSO_SECRET</dt>
-  <dd>Secret used as part of Discourse SSO login request validation (see https://meta.discourse.org/t/official-single-sign-on-for-discourse-sso/13045 for details of this flow). The value is optional and only required by the `/api/v1/auth/discourseLogin` endpoint.</dd>
-
-  <dt>APP_DISCOURSE_URL</dt>
-  <dd>The base URL to a Discourse forum that this API server can be optionally linked with. The value is optional and only required by the `/api/v1/auth/discourseLogin` endpoint.</dd>
 </dl>
+
+
+
+ADD TRIGGER FOR EXPIRE

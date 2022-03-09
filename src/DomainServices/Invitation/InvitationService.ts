@@ -41,7 +41,7 @@ export class InvitationService implements IInvitationService {
    */
   public static invitationExpiryInDays = () => getExpirationTime(30 * 24)
 
-  constructor (
+  constructor(
     private userRepository: IUserRepository,
     private userProfileRepository: IUserProfileRepository,
     private emailService: EmailService,
@@ -51,7 +51,7 @@ export class InvitationService implements IInvitationService {
     private userRegistrationService: IUserRegistrationService
   ) {}
 
-  public async invite (
+  public async invite(
     invitingUserId: string,
     invitedUserEmails: string[],
     message: string
@@ -63,17 +63,11 @@ export class InvitationService implements IInvitationService {
     }
 
     if (invitedUserEmails.length === 0) {
-      throw new ValidationError(
-        'invitedUserEmails unexpectedly empty',
-        invitedUserEmails
-      )
+      throw new ValidationError('invitedUserEmails unexpectedly empty', invitedUserEmails)
     }
 
     if (invitedUserEmails.indexOf(invitingUser.email) >= 0) {
-      throw new ValidationError(
-        'Inviting user can not invite himself.',
-        invitingUser.email
-      )
+      throw new ValidationError('Inviting user can not invite himself.', invitingUser.email)
     }
 
     const invitingUserProfile = await this.userProfileRepository.getById(
@@ -95,10 +89,9 @@ export class InvitationService implements IInvitationService {
       }
 
       const invitedEmail = invitedUserEmail.toLowerCase()
-      const invitationTupleHash = checksum(
-        `${invitingUser.email}-${invitedEmail}`,
-        { algorithm: 'sha1' }
-      )
+      const invitationTupleHash = checksum(`${invitingUser.email}-${invitedEmail}`, {
+        algorithm: 'sha1',
+      })
 
       const invitationID = `${ObjectTypes.Invitation}:${invitationTupleHash}`
 
@@ -117,19 +110,15 @@ export class InvitationService implements IInvitationService {
             invitedUserEmail: invitedEmail,
             invitedUserID,
             message,
-            objectType: ObjectTypes.Invitation
+            objectType: ObjectTypes.Invitation,
           },
           {
-            expiry: InvitationService.invitationExpiryInDays()
+            expiry: InvitationService.invitationExpiryInDays(),
           }
         )
       }
 
-      await this.emailService.sendInvitation(
-        { email: invitedEmail },
-        invitingUser,
-        invitationID
-      )
+      await this.emailService.sendInvitation({ email: invitedEmail }, invitingUser, invitationID)
     }
 
     // tslint:disable-next-line: no-floating-promises
@@ -141,7 +130,7 @@ export class InvitationService implements IInvitationService {
     )
   }
 
-  public async accept (
+  public async accept(
     invitationID: string,
     password: string | null,
     name: string | null
@@ -155,7 +144,7 @@ export class InvitationService implements IInvitationService {
     const invitedEmail = invitation.invitedUserEmail.toLowerCase()
 
     let invitedUser = await this.userRepository.getOne({
-      email: invitedEmail
+      email: invitedEmail,
     })
 
     if (!invitedUser && (!isString(name) || !isString(password))) {
@@ -166,12 +155,12 @@ export class InvitationService implements IInvitationService {
       await this.userRegistrationService.signup({
         email: invitedEmail,
         name: name as string,
-        password: password || undefined
+        password: password || undefined,
       })
     }
 
     invitedUser = await this.userRepository.getOne({
-      email: invitedEmail
+      email: invitedEmail,
     })
 
     if (!invitedUser) {
@@ -184,39 +173,30 @@ export class InvitationService implements IInvitationService {
         _id: uuid_v4(),
         invitingUserID: invitation.invitingUserID,
         invitedUserID: sgUsername(invitedUser._id),
-        objectType: ObjectTypes.Collaboration
+        objectType: ObjectTypes.Collaboration,
       },
       {}
     )
     return {
       containerID: null,
-      message: 'Invitation accepted'
+      message: 'Invitation accepted',
     }
   }
 
-  public async reject (invitationID: string): Promise<void> {
+  public async reject(invitationID: string): Promise<void> {
     const invitation = await this.invitationRepository.getById(invitationID)
 
     if (!invitation) {
-      throw new ValidationError(
-        `Invitation with id ${invitationID} does not exist`,
-        invitationID
-      )
+      throw new ValidationError(`Invitation with id ${invitationID} does not exist`, invitationID)
     }
 
     await this.invitationRepository.remove(invitationID)
   }
 
-  public async updateInvitedUserID (userID: string, userEmail: string) {
-    const invitations = await this.invitationRepository.getAllByEmail(
-      userEmail
-    )
+  public async updateInvitedUserID(userID: string, userEmail: string) {
+    const invitations = await this.invitationRepository.getAllByEmail(userEmail)
     for (let invitation of invitations) {
-      await this.invitationRepository.patch(
-        invitation._id,
-        { invitedUserID: userID },
-        {}
-      )
+      await this.invitationRepository.patch(invitation._id, { invitedUserID: userID }, {})
     }
   }
 }

@@ -16,7 +16,6 @@
 
 export enum InternalErrorCode {
   SyncError = 'SG_ERR',
-  DiscourseError = 'DISCOURSE_ERR',
   NumericalError = 'NUMERICAL_ERR',
   BucketExistenceCheckError = 'CB_BUCKET_EXISTANCE_CHECK_FAIL',
   NoBucketError = 'CB_BUCKET_NOT_FOUND',
@@ -40,8 +39,6 @@ export enum InternalErrorCode {
   UserRoleError = 'USER_ROLE_ERR',
   RoleDoesNotPermitOperationError = 'OP_NOT_PERMITTED',
   DatabaseDesignDocumentError = 'DB_DESIGN_DOC_ERR',
-  FunctionServiceLogicError = 'FUNC_SER_LOGIC_ERR',
-  FunctionServiceRESTError = 'FUNC_SER_REST_ERR',
   InvalidCredentialsError = 'INV_CREDENTIALS',
   MissingCookieError = 'COOKIE_NOT_FOUND',
   MethodNotAllowedError = 'METHOD_NOT_ALLOWED',
@@ -68,5 +65,5 @@ export enum InternalErrorCode {
   SecondaryIndexMissingError = 'SEC_IDX_NOT_FOUND',
   ProductionNotesUpdateError = 'PN_NOTES_NOT_UPDATED',
   ProductionNotesLoadError = 'PN_NOTES_NOT_LOADED',
-  ManuscriptContentParsingError = 'MANUSCRIPT_CONTENT_PARSING_FAILED'
+  ManuscriptContentParsingError = 'MANUSCRIPT_CONTENT_PARSING_FAILED',
 }

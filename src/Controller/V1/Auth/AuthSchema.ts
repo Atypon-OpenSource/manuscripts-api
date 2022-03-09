@@ -21,7 +21,7 @@ import {
   appSecretHeadersSchema,
   emailSchema,
   deviceIdSchema,
-  appIdHeadersSchema
+  appIdHeadersSchema,
 } from '../../BaseSchema'
 import { APP_ID_HEADER_KEY, APP_SECRET_HEADER_KEY } from './AuthController'
 
@@ -29,38 +29,26 @@ export const credentialsSchema: Joi.SchemaMap = {
   body: Joi.object({
     deviceId: deviceIdSchema,
     email: emailSchema.required(),
-    password: Joi.string().max(100).required()
+    password: Joi.string().max(100).required(),
   }),
-  headers: appIdHeadersSchema.headers
+  headers: appIdHeadersSchema.headers,
 }
 
 export const serverToServerAuthSchema: Joi.SchemaMap = {
   body: Joi.object({
-    deviceId: deviceIdSchema
+    deviceId: deviceIdSchema,
   }),
-  headers: appSecretHeadersSchema.headers
+  headers: appSecretHeadersSchema.headers,
 }
 
 export const serverToServerTokenAuthSchema: Joi.SchemaMap = {
   body: Joi.object({
-    deviceId: deviceIdSchema
+    deviceId: deviceIdSchema,
   }),
   params: {
-    connectUserID: Joi.string().required()
+    connectUserID: Joi.string().required(),
   },
-  headers: appSecretHeadersSchema.headers
-}
-
-export const discourseAccountSchema: Joi.SchemaMap = {
-  headers: jsonHeadersSchema.headers
-}
-
-export const discourseLoginSchema: Joi.SchemaMap = {
-  query: Joi.object({
-    sso: Joi.string().required(),
-    sig: Joi.string().required()
-  }),
-  headers: Joi.object({}).options({ allowUnknown: true })
+  headers: appSecretHeadersSchema.headers,
 }
 
 export const googleLoginSchema: Joi.SchemaMap = {
@@ -68,22 +56,22 @@ export const googleLoginSchema: Joi.SchemaMap = {
     deviceId: deviceIdSchema,
     [APP_ID_HEADER_KEY]: Joi.string().max(100),
     [APP_SECRET_HEADER_KEY]: Joi.string().max(100),
-    invitationId: Joi.string().max(100)
+    invitationId: Joi.string().max(100),
   }),
   headers: Joi.object({
-    [APP_ID_HEADER_KEY] : Joi.string().max(100),
-    [APP_SECRET_HEADER_KEY] : Joi.string().max(100)
-  }).options({ allowUnknown: true })
+    [APP_ID_HEADER_KEY]: Joi.string().max(100),
+    [APP_SECRET_HEADER_KEY]: Joi.string().max(100),
+  }).options({ allowUnknown: true }),
 }
 
 export const iamOAuthStartSchema: Joi.SchemaMap = {
   query: Joi.object({
     deviceId: deviceIdSchema,
-    [APP_ID_HEADER_KEY]: Joi.string().max(100)
+    [APP_ID_HEADER_KEY]: Joi.string().max(100),
   }).options({ allowUnknown: true }),
   headers: Joi.object({
-    [APP_ID_HEADER_KEY] : Joi.string().max(100)
-  }).options({ allowUnknown: true })
+    [APP_ID_HEADER_KEY]: Joi.string().max(100),
+  }).options({ allowUnknown: true }),
 }
 
 export const iamOAuthCallbackSchema: Joi.SchemaMap = {
@@ -91,29 +79,29 @@ export const iamOAuthCallbackSchema: Joi.SchemaMap = {
     id_token: Joi.string(), // TODO: confirm if id_token should be required
     state: Joi.string().required(),
     error: Joi.string(),
-    error_description: Joi.string()
-  })
+    error_description: Joi.string(),
+  }),
 }
 
 export const backchannelLogoutSchema: Joi.SchemaMap = {
   query: Joi.object({
-    logout_token: Joi.string().required()
-  })
+    logout_token: Joi.string().required(),
+  }),
 }
 
 export const googleRedirectSchema: Joi.SchemaMap = {
   query: Joi.object({
     code: Joi.string().required(),
     state: Joi.string().required(),
-    scope: Joi.string().required()
-  })
+    scope: Joi.string().required(),
+  }),
 }
 
 export const forgotPasswordSchema: Joi.SchemaMap = {
   headers: jsonHeadersSchema.headers,
   body: Joi.object({
-    email: emailSchema.required()
-  })
+    email: emailSchema.required(),
+  }),
 }
 
 export const resetPasswordSchema: Joi.SchemaMap = {
@@ -121,8 +109,8 @@ export const resetPasswordSchema: Joi.SchemaMap = {
   body: Joi.object({
     password: Joi.string().max(100).required(),
     token: Joi.string().required(),
-    deviceId: deviceIdSchema
-  })
+    deviceId: deviceIdSchema,
+  }),
 }
 
 export const changePasswordSchema: Joi.SchemaMap = {
@@ -130,12 +118,12 @@ export const changePasswordSchema: Joi.SchemaMap = {
   body: Joi.object({
     deviceId: deviceIdSchema,
     currentPassword: Joi.string().max(100).required(),
-    newPassword: Joi.string().max(100).required()
-  })
+    newPassword: Joi.string().max(100).required(),
+  }),
 }
 
 export const authorizationTokenSchema: Joi.SchemaMap = {
   params: Joi.object({
-    scope: Joi.string().required()
-  })
+    scope: Joi.string().required(),
+  }),
 }

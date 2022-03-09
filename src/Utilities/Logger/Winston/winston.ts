@@ -25,21 +25,21 @@ export class WinstonLogger implements ILogger {
    */
   private logger: winston.LoggerInstance
 
-  constructor () {
+  constructor() {
     this.configure()
   }
 
   /**
    * Configures winston.
    */
-  public configure (): void {
+  public configure(): void {
     this.logger = new winston.Logger()
 
     this.logger.add(winston.transports.Console, {
       level: 'debug',
       showLevel: true,
       // exceptionsLevel: ["info"],
-      colorize: process.env.NODE_ENV === Environment.Development
+      colorize: process.env.NODE_ENV === Environment.Development,
       // json: true,
       // maxsize: 5242880, // 5MB
       // maxFiles: 5
@@ -52,7 +52,7 @@ export class WinstonLogger implements ILogger {
 
       json: true,
       maxsize: 5242880, // 5MB
-      maxFiles: 5
+      maxFiles: 5,
     })
 
     this.logger.add(winston.transports.File, {
@@ -63,7 +63,7 @@ export class WinstonLogger implements ILogger {
       json: true,
       maxsize: 5242880, // 5MB
       maxFiles: 5,
-      levelOnly: true
+      levelOnly: true,
     })
 
     this.logger.add(winston.transports.File, {
@@ -73,34 +73,32 @@ export class WinstonLogger implements ILogger {
 
       json: true,
       maxsize: 5242880, // 5MB
-      maxFiles: 5
+      maxFiles: 5,
     })
   }
 
   /**
    * Logs information data.
    */
-  info (msg: string, meta: any): void {
+  info(msg: string, meta: any): void {
     this.logger.info(msg, meta)
   }
 
   /**
    * Logs errors.
    */
-  error (msg: string, meta: any): void {
+  error(msg: string, meta: any): void {
     this.logger.error(msg, meta)
   }
 
   /**
    * Logs debug data
    */
-  debug (msg: string, meta: any): void {
+  debug(msg: string, meta: any): void {
     // disable debug if node env is production, or force log debug data flag is set 1
     if (process.env.FORCE_DEBUG === '1') {
       this.logger.debug(msg, meta)
-    } else if (
-      process.env.NODE_ENV === Environment.Production
-    ) {
+    } else if (process.env.NODE_ENV === Environment.Production) {
       // nothing to do.
     } else {
       this.logger.debug(msg, meta)

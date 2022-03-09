@@ -26,16 +26,16 @@ export interface IServer {
   /**
    * Checks if all prerequisites of the app are up and healthy
    */
-  checkPrerequisites (): void
+  checkPrerequisites(): void
   /**
    * Bootstrap the application.
    *
    * @class Server
    * @method bootstrap
    */
-  bootstrap (): void
+  bootstrap(): void
   /**
    * Starts web server.
    */
-  start (port: number): Promise<void>
+  start(port: number): Promise<void>
 }

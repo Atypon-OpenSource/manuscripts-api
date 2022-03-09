@@ -18,23 +18,24 @@ import { Library } from '@manuscripts/manuscripts-json-schema'
 
 import { LibraryLike } from '../Interfaces/Models'
 import { PatchLibrary } from '../../Models/LibraryModels'
-import { GatewayOptions } from '../Interfaces/KeyValueRepository'
-import { MethodNotAllowedError } from '../../Errors'
+// import { GatewayOptions } from '../Interfaces/KeyValueRepository'
+// import { MethodNotAllowedError } from '../../Errors'
 import { ILibraryRepository } from '../Interfaces/ILibraryRepository'
 import { ContainerRepository } from '../ContainerRepository/ContainerRepository'
 
 export class LibraryRepository
   extends ContainerRepository<Library, LibraryLike, PatchLibrary>
-  implements ILibraryRepository {
-  public get objectType (): string {
+  implements ILibraryRepository
+{
+  public get objectType(): string {
     return 'MPLibrary'
   }
 
-  public async update (
+  /*public async update (
     _id: string,
     _updatedDocument: LibraryLike,
     _updateOptions: GatewayOptions
   ): Promise<Library> {
     throw new MethodNotAllowedError('LibraryRepository', 'update')
-  }
+  }*/
 }

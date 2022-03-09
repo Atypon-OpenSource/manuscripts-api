@@ -14,81 +14,73 @@
  * limitations under the License.
  */
 
-import { SchemaDefinition as OttomanSchemaDefinition, ModelOptions as OttomanModelOptions } from 'ottoman'
-import { CouchbaseError, ViewQuery } from 'couchbase'
-import { isNumber } from '../../util'
+import {
+  SchemaDefinition as OttomanSchemaDefinition,
+  ModelOptions as OttomanModelOptions,
+} from 'ottoman'
+// import { CouchbaseError, ViewQuery } from 'couchbase'
+// import { isNumber } from '../../util'
 
-import { CBRepository } from '../CBRepository'
+import { SQLRepository } from '../SQLRepository'
 import { IUserStatusRepository } from '../Interfaces/IUserStatusRepository'
 import { QueryCriteria } from '../Interfaces/QueryCriteria'
-import { UserStatus, UpdateUserStatus, UserStatusViewFunctionDocument } from '../../Models/UserModels'
-import { DatabaseError, UnexpectedViewStateError } from '../../Errors'
+import { UserStatus, UpdateUserStatus } from '../../Models/UserModels'
+// import { DatabaseError, UnexpectedViewStateError } from '../../Errors'
 import { date, objectValuedObject } from '../validators'
 import { DatabaseView } from '../DatabaseView'
-import { ViewMapFunctionMeta, ViewReducer } from '../../Models/DatabaseViewModels'
-import { databaseErrorMessage } from '../DatabaseResponseFunctions'
+// import { databaseErrorMessage } from '../DatabaseResponseFunctions'
 import { PatchOptions } from '../Interfaces/IndexedRepository'
+
+import { Chance } from 'chance'
+
+const chance = new Chance()
+const fakeStatus: UserStatus = {
+  _id: chance.string(),
+  password: chance.string(),
+  isVerified: chance.bool(),
+  blockUntil: chance.date(),
+  createdAt: chance.date(),
+  deviceSessions: {},
+}
 
 /**
  * Manages user status persistent storage operations.
  */
-export class UserStatusRepository extends CBRepository<UserStatus, UserStatus, UpdateUserStatus, QueryCriteria> implements IUserStatusRepository {
-  /* istanbul ignore next */
-  private failedLoginCountView: DatabaseView = {
-    name: 'failedLoginCount',
-    map: function (doc: UserStatusViewFunctionDocument, _meta: ViewMapFunctionMeta) {
-      if (doc._type === 'UserEvent' && ['SuccessfulLogin', 'FailedLogin'].indexOf(doc.eventType) >= 0) {
-        emit(doc.userId, doc)
-      }
-    },
-    reduce: function (_key: string, values: UserStatusViewFunctionDocument[], _rereduce: ViewReducer) {
-      values.sort(function (a: UserStatusViewFunctionDocument, b: UserStatusViewFunctionDocument) {
-        return b.timestamp - a.timestamp
-      })
-
-      let failedCount = 0
-      values.forEach(function (doc: any) {
-        if (doc.eventType === 'SuccessfulLogin') {
-          return false
-        }
-        failedCount++
-      })
-
-      return failedCount
-    }
-  }
-
+export class UserStatusRepository
+  extends SQLRepository<UserStatus, UserStatus, UpdateUserStatus, QueryCriteria>
+  implements IUserStatusRepository
+{
   /**
    * Returns document type
    */
-  public get documentType (): string {
+  public get documentType(): string {
     return 'UserStatus'
   }
 
-  public buildModelOptions (): OttomanModelOptions {
+  public buildModelOptions(): OttomanModelOptions {
     return {
       index: {
         findByUserId: {
           type: 'n1ql',
-          by: 'userId'
-        }
-      }
+          by: 'userId',
+        },
+      },
     }
   }
 
-  public buildSchemaDefinition (): OttomanSchemaDefinition {
+  public buildSchemaDefinition(): OttomanSchemaDefinition {
     return {
       _id: {
         type: 'string',
         auto: 'uuid',
-        readonly: true
+        readonly: true,
       },
       password: {
-        type: 'string'
+        type: 'string',
       },
       isVerified: {
         type: 'boolean',
-        default: false
+        default: false,
       },
       blockUntil: {
         type: 'Date',
@@ -97,88 +89,65 @@ export class UserStatusRepository extends CBRepository<UserStatus, UserStatus, U
           if (val) {
             date(val, 'blockUntil')
           }
-        }
+        },
       },
       createdAt: {
         type: 'Date',
         validator: (val: Date) => {
           date(val, 'createdAt')
-        }
+        },
       },
       deviceSessions: {
         type: 'Mixed',
         validator: (val: object) => {
           objectValuedObject(val, 'deviceSessions')
-        }
+        },
       },
       // This is needed because old user records may still have this preceding removal of wayf-cloud support,
       // and without it would fail validation.
       allowsTracking: {
-        type: 'boolean'
-      }
+        type: 'boolean',
+      },
     }
   }
 
-  public buildViews (): ReadonlyArray<DatabaseView> {
-    return [this.failedLoginCountView]
+  public buildViews(): ReadonlyArray<DatabaseView> {
+    return []
   }
 
-  /**
-   * Returns an approximate number of failed login attempts since last success login.
-   * The value returned is only approximately correct because it is queried with the ViewQuery.Update.AFTER consistency setting.
-   */
-  public failedLoginCount (key: string): Promise<number> {
-    return new Promise((resolve, reject) => {
-      // we're happy with an eventually consistent view of failed login counts.
-      const view = ViewQuery.from(this.designDocumentName, this.failedLoginCountView.name)
-                            .key(key)
-                            .reduce(true)
-                            .stale(ViewQuery.Update.AFTER)
-
-      this.database.bucket.query(view as any, (error: CouchbaseError, rows: any[]) => {
-        if (error) {
-          const errorMsg = databaseErrorMessage(error.code, error.message)
-          return reject(new DatabaseError(error.code, errorMsg, key, error))
-        }
-        if (rows.length) {
-          const value = rows[0].value
-          if (!isNumber(value)) {
-            return reject(new UnexpectedViewStateError(`The returned result of view :${this.failedLoginCountView.name} should be numeric value`, key, value))
-          } else {
-            return resolve(value)
-          }
-        } else {
-          return resolve(0)
-        }
-      })
-    })
+  public buildSemiFake(data: any): UserStatus {
+    return Object.assign(fakeStatus, data)
   }
 
   /**
    * Returns the user status for a specific user id.
    */
-  public async statusForUserId (userId: string): Promise<UserStatus | null> {
+  public async statusForUserId(userId: string): Promise<UserStatus | null> {
     return this.getById(this.userStatusId(userId))
   }
 
   /**
    * Patches existing user status by a specific user id.
    */
-  public async patchStatusWithUserId (userId: string, dataToPatch: Partial<UpdateUserStatus>, options: PatchOptions): Promise<UserStatus> {
+  public async patchStatusWithUserId(
+    userId: string,
+    dataToPatch: Partial<UpdateUserStatus>,
+    options: PatchOptions
+  ): Promise<UserStatus> {
     return this.patch(this.userStatusId(userId), dataToPatch, options)
   }
 
   /**
    * Builds a user status model from a user row object.
    */
-  public buildModel (userStatus: UserStatus): UserStatus {
+  public buildModel(userStatus: UserStatus): UserStatus {
     return userStatus
   }
 
   /**
    * Returns user status id based on user id
    */
-  public userStatusId (userId: string): string {
+  public userStatusId(userId: string): string {
     return this.fullyQualifiedId(userId)
   }
 }

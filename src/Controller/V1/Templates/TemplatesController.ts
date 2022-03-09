@@ -21,8 +21,7 @@ import { ContainedBaseController } from '../../ContainedBaseController'
 import { config } from '../../../Config/Config'
 
 export class TemplatesController extends ContainedBaseController implements ITemplatesController {
-
-  async fetchPublishedTemplates (): Promise<Model[]> {
+  async fetchPublishedTemplates(): Promise<Model[]> {
     const userPublishedTemplate = await this.fetchUserPublishedTemplates()
     const projectPublishedTemplate = await this.fetchProjectsPublishedTemplates()
 
@@ -32,14 +31,19 @@ export class TemplatesController extends ContainedBaseController implements ITem
     return output
   }
 
-  async fetchUserPublishedTemplates (): Promise<Model[]> {
+  async fetchUserPublishedTemplates(): Promise<Model[]> {
     const output = []
     const projects = await this.findUserProjects()
     for (const project of projects) {
-      const templates = await DIContainer.sharedContainer.projectRepository.findTemplatesInContainer(project._id)
+      const templates =
+        await DIContainer.sharedContainer.projectRepository.findTemplatesInContainer(project._id)
       for (const template of templates) {
         output.push(template)
-        const templateItems = await DIContainer.sharedContainer.projectRepository.findModelsInTemplate(project._id, template._id)
+        const templateItems =
+          await DIContainer.sharedContainer.projectRepository.findModelsInTemplate(
+            project._id,
+            template._id
+          )
         output.push(...templateItems)
       }
     }
@@ -47,14 +51,19 @@ export class TemplatesController extends ContainedBaseController implements ITem
     return output
   }
 
-  async fetchProjectsPublishedTemplates (): Promise<Model[]> {
+  async fetchProjectsPublishedTemplates(): Promise<Model[]> {
     const output = []
     const projects = await this.getSelectedProjects()
     for (const project of projects) {
-      const templates = await DIContainer.sharedContainer.projectRepository.findTemplatesInContainer(project._id)
+      const templates =
+        await DIContainer.sharedContainer.projectRepository.findTemplatesInContainer(project._id)
       for (const template of templates) {
         output.push(template)
-        const templateItems = await DIContainer.sharedContainer.projectRepository.findModelsInTemplate(project._id, template._id)
+        const templateItems =
+          await DIContainer.sharedContainer.projectRepository.findModelsInTemplate(
+            project._id,
+            template._id
+          )
         output.push(...templateItems)
       }
     }
@@ -62,17 +71,19 @@ export class TemplatesController extends ContainedBaseController implements ITem
     return output
   }
 
-  public async findUserProjects (): Promise<Project[]> {
+  public async findUserProjects(): Promise<Project[]> {
     const projects: any[] = []
     const allowedOwners = config.template.allowedOwners
     for (const owner of allowedOwners) {
-      const userProject = await DIContainer.sharedContainer.projectRepository.getUserContainers(owner)
+      const userProject = await DIContainer.sharedContainer.projectRepository.getUserContainers(
+        owner
+      )
       projects.push(...userProject)
     }
     return projects
   }
 
-  public async getSelectedProjects (): Promise<Project[]> {
+  public async getSelectedProjects(): Promise<Project[]> {
     const projects: Project[] = []
     const projectIds = config.template.allowedProjects
     for (const projectId of projectIds) {

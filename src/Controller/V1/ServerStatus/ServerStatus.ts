@@ -20,7 +20,7 @@ import { IllegalStateError } from '../../../Errors'
 const pjson = require('../../../../package.json')
 
 export class ServerStatus {
-  static get version (): string {
+  static get version(): string {
     /* istanbul ignore if */
     if (!isString(pjson.version)) {
       throw new IllegalStateError('App version is unexpectedly not a string', pjson.version)

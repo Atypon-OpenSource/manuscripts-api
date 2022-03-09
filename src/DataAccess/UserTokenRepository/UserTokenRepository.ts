@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 
-import { SchemaDefinition as OttomanSchemaDefinition, ModelOptions as OttomanModelOptions } from 'ottoman'
+import {
+  SchemaDefinition as OttomanSchemaDefinition,
+  ModelOptions as OttomanModelOptions,
+} from 'ottoman'
 
-import { CBRepository } from '../CBRepository'
+import { SQLRepository } from '../SQLRepository'
 import { IUserTokenRepository } from '../Interfaces/IUserTokenRepository'
 import { UserToken } from '../../Models/UserModels'
 import { UserTokenQueryCriteria } from '../Interfaces/QueryCriteria'
@@ -26,86 +29,87 @@ import { required, maxLength, stringValuedNestedObject } from '../validators'
  * Manages user token persistent storage operations.
  */
 export class UserTokenRepository
-  extends CBRepository<UserToken, UserToken, UserToken, UserTokenQueryCriteria>
-  implements IUserTokenRepository {
-  public get documentType (): string {
+  extends SQLRepository<UserToken, UserToken, UserToken, UserTokenQueryCriteria>
+  implements IUserTokenRepository
+{
+  public get documentType(): string {
     return 'UserToken'
   }
 
-  public buildModelOptions (): OttomanModelOptions {
+  public buildModelOptions(): OttomanModelOptions {
     return {
       index: {
         findByUserId: {
           type: 'n1ql',
-          by: 'userId'
+          by: 'userId',
         },
         findByDeviceId: {
           type: 'n1ql',
-          by: 'deviceId'
+          by: 'deviceId',
         },
         findByAppId: {
           type: 'n1ql',
-          by: 'appId'
+          by: 'appId',
         },
         findByIamSessionID: {
           type: 'n1ql',
-          by: 'iamSessionID'
-        }
-      }
+          by: 'iamSessionID',
+        },
+      },
     }
   }
 
-  public buildSchemaDefinition (): OttomanSchemaDefinition {
+  public buildSchemaDefinition(): OttomanSchemaDefinition {
     return {
       _id: {
         type: 'string',
         auto: 'uuid',
-        readonly: true
+        readonly: true,
       },
       userId: {
         type: 'string',
         validator: (val: string) => {
           required(val, 'userId')
-        }
+        },
       },
       deviceId: {
         type: 'string',
         validator: (val: string) => {
           maxLength(val, 100, 'deviceId')
           required(val, 'deviceId')
-        }
+        },
       },
       hasExpiry: {
-        type: 'boolean'
+        type: 'boolean',
       },
       appId: {
         type: 'string',
         validator: (val: string) => {
           required(val, 'appId')
-        }
+        },
       },
       token: {
         type: 'string',
         validator: (val: string) => {
           required(val, 'token')
-        }
+        },
       },
       iamSessionID: {
-        type: 'string'
+        type: 'string',
       },
       credentials: {
         type: 'Mixed',
         validator: (val: object) => {
           stringValuedNestedObject(val, 'credentials')
-        }
-      }
+        },
+      },
     }
   }
 
   /**
    * Builds a user token model from a user token object.
    */
-  public buildModel (userToken: UserToken): UserToken {
+  public buildModel(userToken: UserToken): UserToken {
     return { ...userToken }
   }
 }

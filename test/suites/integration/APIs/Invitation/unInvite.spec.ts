@@ -42,15 +42,22 @@ const seedOptions: SeedOptions = {
 
 beforeAll(async () => {
   db = await testDatabase()
-  await Promise.all(
+  /*await Promise.all(
     GATEWAY_BUCKETS.map(key => {
       return DIContainer.sharedContainer.syncService.createGatewayAccount(
         'User|' + validBody.email,
         key
       )
     })
-  )
+  )*/
 })
+
+async function seedAccounts () {
+  await DIContainer.sharedContainer.syncService.createGatewayAccount(
+      'User|' + validBody.email,
+      null
+    )
+}
 
 afterAll(() => {
   db.bucket.disconnect()
@@ -63,6 +70,7 @@ describe('InvitationService - uninvite', () => {
     await drop()
     await dropBucket(BucketKey.Data)
     await seed(seedOptions)
+    await seedAccounts()
   })
 
   test('project owner successfully uninvite other user', async () => {

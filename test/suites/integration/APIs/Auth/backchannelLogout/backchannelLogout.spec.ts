@@ -45,17 +45,22 @@ const seedOptions: SeedOptions = { users: true, userTokens: true }
 
 beforeAll(async () => {
   db = await testDatabase()
-  await Promise.all(
+  /*await Promise.all(
     GATEWAY_BUCKETS.map(key => {
       return DIContainer.sharedContainer.syncService.createGatewayAccount(
         'User|' + validBody.email,
         key
       )
     })
-  )
-
-  return db
+  )*/
 })
+
+async function seedAccounts () {
+  await DIContainer.sharedContainer.syncService.createGatewayAccount(
+      'User|' + validBody.email,
+      null
+    )
+}
 
 afterAll(() => db.bucket.disconnect())
 
@@ -64,6 +69,7 @@ describe('backchannelLogout - POST api/v1/auth/backchannel_logout', () => {
     await drop()
     await dropBucket(BucketKey.Data)
     await seed(seedOptions)
+    await seedAccounts()
 
     AuthStrategy.verifyLogoutToken = (
       _req: Request,

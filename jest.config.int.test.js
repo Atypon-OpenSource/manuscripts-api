@@ -40,16 +40,14 @@ module.exports = {
         "!src/**/Interfaces/*",
         "!src/Server/**",
         "!src/Utilities/**",
-        "!src/DataAccess/Database.ts",
+        "!src/DataAccess/SQLDatabase.ts",
         "!src/DataAccess/DatabaseIndices.ts",
         "!src/DataAccess/QueryKind.ts",
         "!src/Auth/Passport/AuthStrategy.ts",
         "!src/Config/**",
         "!src/DIContainer/DIContainer.ts",
         "!src/DataAccess/EventingFunctions/*.ts",
-        "!src/DataAccess/ProjectMementoRepository/ProjectMementoRepository.ts",
         "!src/DataAccess/UserCollaboratorRepository/UserCollaboratorRepository.ts",
-        "!src/DataAccess/ProjectSummaryRepository/ProjectSummaryRepository.ts",
         "!src/DataAccess/ExternalFileRepository/ExternalFileRepository.ts",
         "!src/DomainServices/Shackles/ShacklesService.ts"
     ]

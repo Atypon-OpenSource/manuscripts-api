@@ -23,11 +23,11 @@ export abstract class BaseController {}
  * Type guard function for Express header-like objects which may or may not be shaped like a bearer token string.
  * @param value a header value.
  */
-export function isBearerHeaderValue (value: string | string[] | undefined): boolean {
+export function isBearerHeaderValue(value: string | string[] | undefined): boolean {
   return typeof value === 'string' && value.startsWith('Bearer ')
 }
 
-export function authorizationBearerToken (req: Request) {
+export function authorizationBearerToken(req: Request) {
   if (!req.headers) {
     throw new ValidationError('Request unexpectedly missing headers', req.headers)
   }

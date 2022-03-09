@@ -14,12 +14,7 @@
  * limitations under the License.
  */
 
-import {
-  N1qlStringQuery,
-  InsertOptions,
-  ReplaceOptions,
-  UpsertOptions
-} from 'couchbase'
+import { N1qlStringQuery, InsertOptions, ReplaceOptions, UpsertOptions } from 'couchbase'
 import { SchemaDefinition, ModelOptions } from 'ottoman'
 
 import { QueryOptions } from './QueryOptions'
@@ -38,7 +33,8 @@ export interface IndexedRepository<
   TNewEntity extends Partial<IdentifiableEntity>,
   TUpdateEntity extends Partial<IdentifiableEntity>,
   TQueryCriteria extends QueryCriteria
-> extends IDatabaseViewManager, Repository<TEntity> {
+> extends IDatabaseViewManager,
+    Repository<TEntity> {
   /**
    * Returns document type
    */
@@ -48,28 +44,23 @@ export interface IndexedRepository<
    * Creates new document.
    * @param newDocument The new document wants to be added.
    */
-  create (newDocument: TNewEntity, options: CreateOptions): Promise<TEntity>
+  create(newDocument: TNewEntity, options: CreateOptions): Promise<TEntity>
+
+  upsert(id: string, newDocument: TNewEntity): Promise<TEntity>
 
   /**
    * Replaces existing document.
    * @param id document id's wants to be replaced.
    * @param newDocument The new object that will be replaced.
    */
-  update (
-    updatedDocument: TUpdateEntity,
-    options: UpdateOptions
-  ): Promise<TEntity>
+  update(updatedDocument: TUpdateEntity, options: UpdateOptions): Promise<TEntity>
 
   /**
    * Replaces values for the keys specified. Leaves any other keys unmodified on the document.
    * @param id document id's wants to be patched.
    * @param dataToPatch document properties want to be patched.
    */
-  patch (
-    id: string,
-    dataToPatch: TUpdateEntity,
-    options: UpdateOptions
-  ): Promise<TEntity>
+  patch(id: string, dataToPatch: TUpdateEntity, options: UpdateOptions): Promise<TEntity>
 
   /**
    * Update document ttl.
@@ -77,53 +68,50 @@ export interface IndexedRepository<
    * @param expiry document ttl in seconds.
    */
 
-  touch (key: string, expiry: number): Promise<void>
+  touch(key: string, expiry: number): Promise<void>
 
   /**
    * Returns single document based on criteria.
    * @param criteria extra where conditions.
    */
-  getOne (criteria: TQueryCriteria): Promise<TEntity | null>
+  getOne(criteria: TQueryCriteria): Promise<TEntity | null>
 
   /**
    * Returns count of documents based on criteria.
    * @param criteria extra where conditions.
    */
-  count (criteria: TQueryCriteria | null): Promise<number>
+  count(criteria: TQueryCriteria | null): Promise<number>
 
   /**
    * Returns all document based on criteria.
    * @param criteria extra where conditions.
    */
-  getAll (
-    criteria: TQueryCriteria,
-    options: QueryOptions | null
-  ): Promise<TEntity[]>
+  getAll(criteria: TQueryCriteria, options: QueryOptions | null): Promise<TEntity[]>
 
   /**
    * Removes existing document.
    * @param criteria Extra update criteria.
    */
-  remove (criteria: TQueryCriteria | null): Promise<boolean>
+  remove(criteria: TQueryCriteria | null): Promise<boolean>
 
   /**
    * Returns document id schema saved in couchbase.
    * @param id document unique id.
    */
-  fullyQualifiedId (id: string): string
+  fullyQualifiedId(id: string): string
 
-  buildSchemaDefinition (): SchemaDefinition
+  buildSchemaDefinition(): SchemaDefinition
 
-  buildModelOptions (): ModelOptions
+  buildModelOptions(): ModelOptions
 }
 
-export interface CreateOptions extends InsertOptions {}
+export type CreateOptions = InsertOptions
 
-export interface UpdateOptions extends ReplaceOptions {}
+export type UpdateOptions = ReplaceOptions
 
-export interface PatchOptions extends UpsertOptions {}
+export type PatchOptions = UpsertOptions
 
-export function ensureTypeBound (query: N1qlStringQuery): N1qlStringQuery {
+export function ensureTypeBound(query: N1qlStringQuery): N1qlStringQuery {
   const queryStr = (query as any).options.statement
   if (queryStr.indexOf(`_type = `) < 0) {
     throw new ValidationError(
@@ -135,7 +123,7 @@ export function ensureTypeBound (query: N1qlStringQuery): N1qlStringQuery {
 }
 
 /** Sets the document's _type property if it were null before. Throws an exception if an unexpected non-null value is set. */
-export function ensureValidDocumentType (
+export function ensureValidDocumentType(
   document: Partial<IdentifiableEntity>,
   documentType: string
 ): void {
@@ -149,18 +137,16 @@ export function ensureValidDocumentType (
   }
 }
 
-export interface RepositoryLike
-  extends IndexedRepository<
-    TypedEntity,
-    Partial<IdentifiableEntity>,
-    Partial<IdentifiableEntity>,
-    QueryCriteria
-  > {}
+export type RepositoryLike = IndexedRepository<
+  TypedEntity,
+  Partial<IdentifiableEntity>,
+  Partial<IdentifiableEntity>,
+  QueryCriteria
+>
 
-export interface SGRepositoryLike
-  extends KeyValueRepository<
-    TypedEntity,
-    Partial<IdentifiableEntity>,
-    Partial<IdentifiableEntity>,
-    QueryCriteria
-  > {}
+export type SGRepositoryLike = KeyValueRepository<
+  TypedEntity,
+  Partial<IdentifiableEntity>,
+  Partial<IdentifiableEntity>,
+  QueryCriteria
+>

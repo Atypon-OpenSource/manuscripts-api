@@ -39,7 +39,7 @@ module.exports = {
         "!src/Server/**",
         "!src/Utilities/Logger/**",
         "!src/Utilities/fs-promise.ts",
-        "!src/DataAccess/Database.ts",
+        "!src/DataAccess/SQLDatabase.ts",
         "!src/DataAccess/DatabaseIndices.ts",
         "!src/DataAccess/**Repository/**",
         "!src/DataAccess/QueryKind.ts",

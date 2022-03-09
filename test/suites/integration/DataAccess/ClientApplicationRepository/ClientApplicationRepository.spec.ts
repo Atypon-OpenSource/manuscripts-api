@@ -50,9 +50,8 @@ describe('Creating application records', () => {
   })
 
   test('fails if there is a backend error', () => {
-    (DIContainer.sharedContainer.userBucket.bucket as any).upsert = (_q: any, _p: any[], cb: Function) => {
-      cb(new Error('backend derp'), null)
-    }
+    DIContainer.sharedContainer.userBucket.bucket.upsert = (_id: string, _doc: any) => Promise.reject(new Error('backend derp'))
+
     const apps = clientApplicationsFromSplitString('x,y,z;y,u,v', ';', ',')
     expect(apps.length).toEqual(2)
     return expect(DIContainer.sharedContainer.applicationRepository.ensureApplicationsExist(apps)).rejects.toThrow(DatabaseError)

@@ -1,0 +1,31 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["filterJson", "extendedIndexes"]
+}
+
+model User {
+  id                  String   @id @default(uuid())
+  data                Json?  
+}
+
+model Project {
+  id                  String   @id @default(uuid())
+  data                Json?
+}
+
+
+model DerivedData {
+  id                  String   @id @default(uuid())
+  data                Json?
+}
+
+
+model State {
+  id                  String   @id @default(uuid())
+  data                Json?
+}

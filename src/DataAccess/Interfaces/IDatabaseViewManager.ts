@@ -20,6 +20,5 @@ import { DatabaseView } from '../DatabaseView'
  * Manages view persistent storage operations.
  */
 export interface IDatabaseViewManager {
-  buildViews (): ReadonlyArray<DatabaseView>
-  pushDesignDocument (): Promise<void>
+  buildViews(): ReadonlyArray<DatabaseView>
 }

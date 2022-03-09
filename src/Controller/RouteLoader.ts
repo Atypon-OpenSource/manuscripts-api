@@ -32,7 +32,7 @@ import { TemplatesRoute } from './V1/Templates/TemplatesRoute'
  * Creates routes.
  * router Express router.
  */
-export function loadRoutes (router: Router) {
+export function loadRoutes(router: Router) {
   // push all routes
   const routes: BaseRoute[] = [
     new AuthRoute(),
@@ -44,7 +44,7 @@ export function loadRoutes (router: Router) {
     new ProjectRoute(),
     new ContainerRequestRoute(),
     new SubmissionRoute(),
-    new TemplatesRoute()
+    new TemplatesRoute(),
   ]
 
   for (const route of routes) {

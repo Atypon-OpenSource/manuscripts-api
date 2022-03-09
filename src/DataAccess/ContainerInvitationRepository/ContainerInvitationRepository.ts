@@ -18,7 +18,7 @@ import { ContainerInvitation } from '@manuscripts/manuscripts-json-schema'
 
 import { SGRepository } from '../SGRepository'
 import { ContainerInvitationLike } from '../Interfaces/Models'
-import { selectN1QLQuery } from '../DatabaseResponseFunctions'
+// import { selectN1QLQuery } from '../DatabaseResponseFunctions'
 import { PatchContainerInvitation } from '../../Models/ContainerModels'
 import { User } from '../../Models/UserModels'
 
@@ -31,15 +31,15 @@ export class ContainerInvitationRepository extends SGRepository<
   ContainerInvitationLike,
   PatchContainerInvitation
 > {
-  public get objectType (): string {
+  public get objectType(): string {
     return 'MPContainerInvitation'
   }
 
-  public async getInvitationsForUser (
+  public async getInvitationsForUser(
     containerID: string,
     userEmail: string
   ): Promise<ContainerInvitation[]> {
-    const n1ql = `SELECT META().id, META().xattrs._sync, * FROM ${this.bucketName} WHERE objectType = \"${this.objectType}\" AND invitedUserEmail = $1 AND containerID = $2`
+    /*const n1ql = `SELECT META().id, META().xattrs._sync, * FROM ${this.bucketName} WHERE objectType = \"${this.objectType}\" AND invitedUserEmail = $1 AND containerID = $2`
 
     const callbackFn = (results: any) => results.map((result: any) => {
       delete result[this.bucketName]._sync
@@ -49,25 +49,49 @@ export class ContainerInvitationRepository extends SGRepository<
       } as ContainerInvitation
     })
 
-    return selectN1QLQuery<ContainerInvitation[]>(this.database.bucket, n1ql, [userEmail, containerID], callbackFn)
+    return selectN1QLQuery<ContainerInvitation[]>(this.database.bucket, n1ql, [userEmail, containerID], callbackFn)*/
+
+    const Q = {
+      AND: [
+        {
+          data: {
+            path: ['objectType'],
+            equals: this.objectType,
+          },
+        },
+        {
+          data: {
+            path: ['invitedUserEmail'],
+            equals: userEmail,
+          },
+        },
+        {
+          data: {
+            path: ['containerID'],
+            equals: containerID,
+          },
+        },
+      ],
+    }
+
+    const callbackFn = (results: any) =>
+      results.map((result: any) => {
+        return { ...this.buildModel(result) } as ContainerInvitation
+      })
+
+    return this.database.bucket.query(Q).then((res: any) => callbackFn(res))
   }
 
-  public async deleteInvitations (
-    containerID: string,
-    user: User
-  ): Promise<void> {
-    const invitations = await this.getInvitationsForUser(
-      containerID,
-      user.email
-    )
+  public async deleteInvitations(containerID: string, user: User): Promise<void> {
+    const invitations = await this.getInvitationsForUser(containerID, user.email)
 
     for (let invitation of invitations) {
       await this.remove(invitation._id)
     }
   }
 
-  public async getAllByEmail (email: string) {
-    const n1ql = `SELECT META().id, * FROM ${this.bucketName} WHERE objectType = \'${this.objectType}\' AND invitedUserEmail = $1 AND _deleted IS MISSING`
+  public async getAllByEmail(email: string) {
+    /*const n1ql = `SELECT META().id, * FROM ${this.bucketName} WHERE objectType = \'${this.objectType}\' AND invitedUserEmail = $1 AND _deleted IS MISSING`
 
     const callbackFn = (results: any) => results.map((result: any) => {
       const obj = {
@@ -77,6 +101,36 @@ export class ContainerInvitationRepository extends SGRepository<
       return obj
     })
 
-    return selectN1QLQuery<ContainerInvitation[]>(this.database.bucket, n1ql, [email], callbackFn)
+    return selectN1QLQuery<ContainerInvitation[]>(this.database.bucket, n1ql, [email], callbackFn)*/
+
+    const Q = {
+      AND: [
+        {
+          data: {
+            path: ['objectType'],
+            equals: this.objectType,
+          },
+        },
+        {
+          data: {
+            path: ['invitedUserEmail'],
+            equals: email,
+          },
+        },
+        /*{
+          data: {
+            path: ["_deleted"],
+            equals: undefined
+          }
+        }*/
+      ],
+    }
+
+    const callbackFn = (results: any) =>
+      results.map((result: any) => {
+        return { ...this.buildModel(result) } as ContainerInvitation
+      })
+
+    return this.database.bucket.query(Q).then((res: any) => callbackFn(res))
   }
 }

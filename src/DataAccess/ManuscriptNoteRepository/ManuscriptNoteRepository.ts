@@ -16,16 +16,17 @@
 
 import { SGRepository } from '../SGRepository'
 import { DatabaseError, NoBucketError } from '../../Errors'
-import { CouchbaseError, N1qlQuery } from 'couchbase'
-import { ManuscriptNote } from '@manuscripts/manuscripts-json-schema'
-import { databaseErrorMessage } from '../DatabaseResponseFunctions'
+// import { CouchbaseError, N1qlQuery } from 'couchbase'
+// import { ManuscriptNote } from '@manuscripts/manuscripts-json-schema'
+// import { databaseErrorMessage } from '../DatabaseResponseFunctions'
+import { Prisma } from '@prisma/client'
 
 class ManuscriptNoteRepository extends SGRepository<any, any, any, any> {
-  public get objectType (): string {
+  public get objectType(): string {
     return 'MPManuscriptNote'
   }
 
-  public get bucketName (): string {
+  public get bucketName(): string {
     if (!this.database.bucket) {
       throw new NoBucketError()
     }
@@ -33,8 +34,8 @@ class ManuscriptNoteRepository extends SGRepository<any, any, any, any> {
     return (this.database.bucket as any)._name
   }
 
-  public async getProductionNotes (containerID: string, manuscriptID: string) {
-    let n1ql = `SELECT *, META().id FROM ${
+  public async getProductionNotes(containerID: string, manuscriptID: string) {
+    /*let n1ql = `SELECT *, META().id FROM ${
       this.bucketName
     } WHERE containerID = $1 and manuscriptID = $2 and objectType = 'MPManuscriptNote' AND _deleted IS MISSING`
 
@@ -60,7 +61,48 @@ class ManuscriptNoteRepository extends SGRepository<any, any, any, any> {
         }
 
       )
-    })
+    })*/
+
+    const Q = {
+      AND: [
+        {
+          data: {
+            path: ['objectType'],
+            equals: 'MPManuscriptNote',
+          },
+        },
+        {
+          data: {
+            path: ['containerID'],
+            equals: containerID,
+          },
+        },
+        {
+          data: {
+            path: ['manuscriptID'],
+            equals: manuscriptID,
+          },
+        },
+        /*{
+          data: {
+            path: ["_deleted"],
+            equals: undefined
+          }
+        }*/
+      ],
+    }
+
+    return this.database.bucket
+      .query(Q)
+      .catch((error: Prisma.PrismaClientKnownRequestError) =>
+        Promise.reject(
+          DatabaseError.fromPrismaError(
+            error,
+            `Error getProductionNotes of type ${this.objectType}`,
+            JSON.stringify(Q)
+          )
+        )
+      )
   }
 }
 

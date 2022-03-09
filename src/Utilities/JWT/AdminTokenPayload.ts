@@ -31,11 +31,15 @@ export interface AdminTokenPayload {
   email?: string
 }
 
-export function isAdminTokenPayload (
+export function isAdminTokenPayload(
   obj: AdminTokenPayload | string | null
 ): obj is AdminTokenPayload {
-  if (!obj) return false
-  if (typeof obj === 'string') return false
+  if (!obj) {
+    return false
+  }
+  if (typeof obj === 'string') {
+    return false
+  }
 
   // NOTE: Either email or connectUserID must be set.
   return isNonEmptyString(obj.connectUserID) || isNonEmptyString(obj.email)

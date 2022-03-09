@@ -24,20 +24,17 @@ import { DIContainer } from '../../../DIContainer/DIContainer'
 const expressJoiMiddleware = require('express-joi-middleware')
 
 export class ServerStatusRoute extends BaseRoute {
-  private get basePath (): string {
+  private get basePath(): string {
     return '/app'
   }
 
-  private static getVersion (_req: Request, res: Response, _next: NextFunction) {
+  private static getVersion(_req: Request, res: Response, _next: NextFunction) {
     const version = ServerStatus.version
 
-    return res
-      .status(HttpStatus.OK)
-      .json({ version: version })
-      .end()
+    return res.status(HttpStatus.OK).json({ version: version }).end()
   }
 
-  public create (router: Router): void {
+  public create(router: Router): void {
     router.get(
       `${this.basePath}/version`,
       expressJoiMiddleware(appVersionSchema, {}),

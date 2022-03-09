@@ -19,15 +19,16 @@ import { ICollaborationsRepository } from '../Interfaces/ICollaborationsReposito
 import { UpdateCollaboration } from '../../Models/CollaborationsModels'
 import { CollaborationLike } from '../Interfaces/Models'
 
-export class CollaborationsRepository extends SGRepository<
-  CollaborationLike,
-  CollaborationLike,
-  UpdateCollaboration,
-  UpdateCollaboration
-  > implements ICollaborationsRepository {
-
-  public get objectType (): string {
+export class CollaborationsRepository
+  extends SGRepository<
+    CollaborationLike,
+    CollaborationLike,
+    UpdateCollaboration,
+    UpdateCollaboration
+  >
+  implements ICollaborationsRepository
+{
+  public get objectType(): string {
     return 'MPCollaboration'
   }
-
 }

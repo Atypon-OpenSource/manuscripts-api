@@ -16,9 +16,9 @@
 
 import { TouchOptions, Bucket, ViewQuery, N1qlQuery } from 'couchbase'
 
-jest.mock('../../src/DataAccess/Database', () => {
+jest.mock('../../src/DataAccess/SQLDatabase', () => {
   return {
-    Database: jest.fn(() => ({
+    SQLDatabase: jest.fn(() => ({
       loadDatabaseModels: jest.fn(),
       createDesignDocument: jest.fn(),
       getDesignDocument: jest.fn(),
@@ -42,6 +42,43 @@ jest.mock('../../src/DataAccess/Database', () => {
         touch: jest.fn((_key: any | Buffer, _expiry: number, _options: TouchOptions, callback: Bucket.OpCallback) => callback(null, null)),
         replace: jest.fn((_id: String, _document: any, callback: Function) => callback(null)),
         upsert: jest.fn((_id: String, _document: any, callback: Function) => callback(null)),
+        _name: 'BUCKET_NAME'
+      }
+    }))
+  }
+})
+
+jest.mock('../../src/DataAccess/SQLDatabase', () => {
+  return {
+    SQLDatabase: jest.fn(() => ({
+      loadDatabaseModels: jest.fn(),
+      createDesignDocument: jest.fn(),
+      getDesignDocument: jest.fn(),
+      ensureSecondaryIndicesExist: jest.fn(),
+      documentMapper: {
+        ensureIndices: jest.fn((_DeferBuild: boolean, callback: Function) => {
+          callback(null)
+        }),
+        model: jest.fn(),
+        models: {
+          User: {
+            create: jest.fn(),
+            getById: jest.fn(),
+            fromData: jest.fn()
+          }
+        }
+      },
+      bucket: {
+        insert: jest.fn((doc: any) => Promise.resolve(null)),
+        query: jest.fn((_query: any) => Promise.resolve([])),
+        findMany: jest.fn((_query: any) => Promise.resolve([])),
+        remove: jest.fn((_query: any) => Promise.resolve([])),
+        count: jest.fn((_query: any) => Promise.resolve(0)),
+        findFirst: jest.fn((_query: any) => Promise.resolve(null)),
+        findUnique: jest.fn((_query: any) => Promise.resolve(null)),
+        touch: jest.fn((_key: any | Buffer, _expiry: number, _options: TouchOptions, callback: Bucket.OpCallback) => callback(null, null)),
+        replace: jest.fn((_id: String, _document: any) => Promise.resolve(null)),
+        upsert: jest.fn((_id: String, _document: any) => Promise.resolve(null)),
         _name: 'BUCKET_NAME'
       }
     }))

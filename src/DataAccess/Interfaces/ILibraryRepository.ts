@@ -23,5 +23,4 @@ import { IContainerRepository } from './IContainerRepository'
 /**
  * Manages library persistent storage operations.
  */
-export interface ILibraryRepository
-  extends IContainerRepository<Library, LibraryLike, PatchLibrary> {}
+export type ILibraryRepository = IContainerRepository<Library, LibraryLike, PatchLibrary>

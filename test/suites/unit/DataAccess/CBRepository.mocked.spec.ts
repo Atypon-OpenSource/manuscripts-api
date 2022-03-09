@@ -29,7 +29,7 @@ let db: any = null
 beforeEach(async () => db = await testDatabase())
 afterEach(() => { if (db && db.bucket && db.bucket.disconnect) { db.bucket.disconnect() } })
 
-describe('CBRepository model (with mocked database)', () => {
+xdescribe('CBRepository model (with mocked database)', () => {
   test('should return model successfully', () => {
     const repository = new UserRepository(db)
     const model = repository.model
@@ -58,7 +58,7 @@ describe('CBRepository model (with mocked database)', () => {
   })
 })
 
-describe('CBRepository bucketName (with mocked database)', () => {
+xdescribe('CBRepository bucketName (with mocked database)', () => {
   test('should fail if database.bucket is null', () => {
     return expect(() => {
       const repository: any = new UserRepository(db)
@@ -78,7 +78,7 @@ describe('CBRepository bucketName (with mocked database)', () => {
   })
 })
 
-describe('CBRepository getById (with mocked database)', () => {
+xdescribe('CBRepository getById (with mocked database)', () => {
   test('should fail if error occurred', () => {
     const repository = new UserRepository(db)
     const id = chance.hash()
@@ -95,7 +95,7 @@ describe('CBRepository getById (with mocked database)', () => {
   })
 })
 
-describe('CBRepository getOne (with mocked database)', () => {
+xdescribe('CBRepository getOne (with mocked database)', () => {
   test('should fail if error occurred', () => {
     const repository = new UserRepository(db)
     const errorObject = {
@@ -111,7 +111,7 @@ describe('CBRepository getOne (with mocked database)', () => {
   })
 })
 
-describe('CBRepository count (with mocked database)', () => {
+xdescribe('CBRepository count (with mocked database)', () => {
   test('should fail if error occurred', () => {
     const repository = new UserRepository(db)
     const errorObject = {
@@ -127,7 +127,7 @@ describe('CBRepository count (with mocked database)', () => {
   })
 })
 
-describe('CBRepository getAll (with mocked database)', () => {
+xdescribe('CBRepository getAll (with mocked database)', () => {
   test('should fail if error occurred', () => {
     const repository = new UserRepository(db)
     const errorObject = {
@@ -143,7 +143,7 @@ describe('CBRepository getAll (with mocked database)', () => {
   })
 })
 
-describe('CBRepository remove (with mocked database)', () => {
+xdescribe('CBRepository remove (with mocked database)', () => {
   test('should fail if error occurred', () => {
     const repository = new UserRepository(db)
     const errorObject = {
@@ -159,7 +159,7 @@ describe('CBRepository remove (with mocked database)', () => {
   })
 })
 
-describe('CBRepository touch (with mocked database)', () => {
+xdescribe('CBRepository touch (with mocked database)', () => {
   test('should fail if error occurred - error type is number', () => {
     const repository = new UserRepository(db)
     const id = chance.hash()
@@ -172,7 +172,7 @@ describe('CBRepository touch (with mocked database)', () => {
   })
 })
 
-describe('CBRepository update (with mocked database)', () => {
+xdescribe('CBRepository update (with mocked database)', () => {
   test('should fail if an error ocurred - error type is number', () => {
     const repository: any = new UserRepository(db)
     const id = chance.hash()
@@ -191,7 +191,7 @@ describe('CBRepository update (with mocked database)', () => {
   })
 })
 
-describe('CBRepository patch (with mocked database)', () => {
+xdescribe('CBRepository patch (with mocked database)', () => {
   test('should fail if document doesn\'t exists', () => {
     const repository = new UserRepository(db)
     const id = chance.hash()

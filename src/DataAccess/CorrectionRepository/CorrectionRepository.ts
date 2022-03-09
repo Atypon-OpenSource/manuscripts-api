@@ -15,24 +15,24 @@
  */
 
 import { SGRepository } from '../SGRepository'
-import { DatabaseError ,NoBucketError } from '../../Errors'
-import { CouchbaseError ,N1qlQuery } from 'couchbase'
-import { databaseErrorMessage } from '../DatabaseResponseFunctions'
+import { DatabaseError, NoBucketError } from '../../Errors'
+// import { CouchbaseError ,N1qlQuery } from 'couchbase'
+// import { databaseErrorMessage } from '../DatabaseResponseFunctions'
 import { CorrectionLike } from '../Interfaces/Models'
 import { Correction } from '@manuscripts/manuscripts-json-schema/dist/types'
+import { Prisma } from '@prisma/client'
 
-class CorrectionRepository
-  extends SGRepository<
-    Correction,
-    CorrectionLike,
-    CorrectionLike,
-    Partial<Correction>
-  > {
-  public get objectType (): string {
+class CorrectionRepository extends SGRepository<
+  Correction,
+  CorrectionLike,
+  CorrectionLike,
+  Partial<Correction>
+> {
+  public get objectType(): string {
     return 'MPCorrection'
   }
 
-  public get bucketName (): string {
+  public get bucketName(): string {
     if (!this.database.bucket) {
       throw new NoBucketError()
     }
@@ -40,8 +40,8 @@ class CorrectionRepository
     return (this.database.bucket as any)._name
   }
 
-  public async getCorrectionStatus (containerID: string) {
-    let n1ql = `SELECT projects.status.label, META().id FROM ${
+  public async getCorrectionStatus(containerID: string) {
+    /*let n1ql = `SELECT projects.status.label, META().id FROM ${
       this.bucketName
     } WHERE containerID =$1 AND objectType = '${this.objectType}' AND _deleted IS MISSING`
     const statement = N1qlQuery.fromString(n1ql)
@@ -74,9 +74,57 @@ class CorrectionRepository
           }
           return resolve(status)
         })
-    })
-  }
+    })*/
 
+    const Q = {
+      AND: [
+        {
+          data: {
+            path: ['objectType'],
+            equals: this.objectType,
+          },
+        },
+        {
+          data: {
+            path: ['containerID'],
+            equals: containerID,
+          },
+        },
+        /*{
+          data: {
+            path: ["_deleted"],
+            equals: undefined
+          }
+        }*/
+      ],
+    }
+
+    return this.database.bucket
+      .query(Q)
+      .catch((error: Prisma.PrismaClientKnownRequestError) =>
+        Promise.reject(
+          DatabaseError.fromPrismaError(
+            error,
+            `Error getProductionNotes of type ${this.objectType}`,
+            JSON.stringify(Q)
+          )
+        )
+      )
+      .then((results: any) => {
+        const groupByStatus = results.reduce((objectsByKeyValue: any, object: any) => {
+          const obj = this.buildModel(object)
+          const value = obj['status']['label']
+          objectsByKeyValue[value] = (objectsByKeyValue[value] || []).concat(obj)
+          return objectsByKeyValue
+        }, {})
+        let status: any = {}
+        for (const [key, value] of Object.entries(groupByStatus)) {
+          const items = value as []
+          status[key] = items.length
+        }
+        return status
+      })
+  }
 }
 
 export { CorrectionRepository }

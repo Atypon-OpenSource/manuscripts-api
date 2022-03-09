@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-export function isString (value: any): value is string {
+export function isString(value: any): value is string {
   return typeof value === 'string'
 }
 
-export function isNonEmptyString (value: any): value is string {
+export function isNonEmptyString(value: any): value is string {
   return isString(value) && value.length > 0
 }
 
-export function isNumber (value: any): value is number {
+export function isNumber(value: any): value is number {
   return typeof value === 'number'
 }
 
-export function isBoolean (value: any): value is boolean {
+export function isBoolean(value: any): value is boolean {
   return typeof value === 'boolean'
 }
 
@@ -34,7 +34,7 @@ export function isBoolean (value: any): value is boolean {
  * Returns a new object with empty/null/undefined values removed from the passed object
  * @param o - object with keys as string
  */
-export function removeEmptyValuesFromObj (o: { [index: string]: any }): { [index: string]: any } {
+export function removeEmptyValuesFromObj(o: { [index: string]: any }): { [index: string]: any } {
   let newObj: { [index: string]: any } = {}
   Object.keys(o).forEach((key) => {
     const val = o[key]

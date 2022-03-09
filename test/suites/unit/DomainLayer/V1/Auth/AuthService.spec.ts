@@ -259,7 +259,7 @@ describe('AuthService - Login', () => {
     expect(user).toMatchSnapshot()
   })
 
-  test('should call createGatewaySessions when logging in successfully', async () => {
+  xtest('should call createGatewaySessions when logging in successfully', async () => {
     const authService: any = DIContainer.sharedContainer.authService
 
     authService.userRepository = {
@@ -353,7 +353,7 @@ describe('AuthService - serverToServerAuth', () => {
     ).rejects.toThrowError(AccountNotFoundError)
   })
 
-  test('should call createGatewaySessions if email provided', async () => {
+  xtest('should call createGatewaySessions if email provided', async () => {
     const authService: any = DIContainer.sharedContainer.authService
 
     authService.userRepository = {
@@ -398,7 +398,7 @@ describe('AuthService - serverToServerAuth', () => {
     expect(syncService.createGatewaySessions).toBeCalled()
   })
 
-  test('should call createGatewaySessions if connectUserID provided', async () => {
+  xtest('should call createGatewaySessions if connectUserID provided', async () => {
     const authService: any = DIContainer.sharedContainer.authService
 
     authService.userRepository = {
@@ -1417,7 +1417,7 @@ describe('AuthService - iamOAuthCallback', () => {
     }
 
     const x = await authService.iamOAuthCallback(payload, state)
-    expect(x).toEqual({ syncSessions: 'session', token: 'foobar', user: { _id: 'User|foobarovic' } })
+    expect(x).toEqual({ token: 'foobar', user: { _id: 'User|foobarovic' } })
   })
 
   test('should fail if user status of the new user is missing', async () => {
@@ -1585,7 +1585,7 @@ describe('AuthService - iamOAuthCallback', () => {
     }
 
     const x = await authService.iamOAuthCallback(payload, state)
-    expect(x).toEqual({ syncSessions: 'session', token: 'foobar', user: { _id: 'User|foobarovic' } })
+    expect(x).toEqual({ token: 'foobar', user: { _id: 'User|foobarovic' } })
   })
 
   test('should create and log in the user', async () => {
@@ -1642,7 +1642,6 @@ describe('AuthService - iamOAuthCallback', () => {
 
     const x = await authService.iamOAuthCallback(payload, state)
     expect(x).toEqual({
-      syncSessions: 'session',
       token: 'foobar',
       user: { _id: 'User|someone' }
     })

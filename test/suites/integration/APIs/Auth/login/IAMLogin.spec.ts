@@ -45,19 +45,24 @@ let db: any = null
 const seedOptions: SeedOptions = { users: true, applications: true }
 const existingConfig: any = _.cloneDeep(config)
 
-beforeAll(() => {
-  return testDatabase(true).then(database => {
-    db = database
-    return Promise.all(
-      GATEWAY_BUCKETS.map(key => {
-        return DIContainer.sharedContainer.syncService.createGatewayAccount(
-          'User|' + validBody.email,
-          key
-        )
-      })
-    )
-  })
+beforeAll(async () => {
+  db = await testDatabase()
+  /*await Promise.all(
+    GATEWAY_BUCKETS.map(key => {
+      return DIContainer.sharedContainer.syncService.createGatewayAccount(
+        'User|' + validBody.email,
+        key
+      )
+    })
+  )*/
 })
+
+async function seedAccounts () {
+  await DIContainer.sharedContainer.syncService.createGatewayAccount(
+      'User|' + validBody.email,
+      null
+    )
+}
 
 afterAll(() => db.bucket.disconnect())
 afterEach(() => {
@@ -72,6 +77,7 @@ describe('IAM Login - GET api/v1/auth/iam', () => {
     await drop()
     await dropBucket(BucketKey.Data)
     await seed(seedOptions)
+    await seedAccounts()
   })
 
   test('should redirect to IAM auth portal when the app ID is included in the headers', async () => {

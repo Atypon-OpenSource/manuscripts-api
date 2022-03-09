@@ -15,43 +15,49 @@
  */
 
 export interface ScopedTokenPayload {
-
   /**
    * issuer.
    */
-  iss: string,
+  iss: string
 
   /**
    * Unique, persistent, user identifier.
    */
-  sub: string,
+  sub: string
 
   /**
    * Project ID
    */
-  containerID: string,
+  containerID: string
 
   /**
    * audience.
    */
-  aud: string,
+  aud: string
 
   /**
    * epoc timestamp when the id_token was issued
    */
-  iat: number,
+  iat: number
 
   /**
    * Token expiry
    */
   exp: number
-
 }
 
-export function isScopedTokenPayload (obj: string | object | null): obj is ScopedTokenPayload {
-  if (!obj) return false
-  if (typeof obj === 'string') return false
+export function isScopedTokenPayload(obj: string | object | null): obj is ScopedTokenPayload {
+  if (!obj) {
+    return false
+  }
+  if (typeof obj === 'string') {
+    return false
+  }
 
-  return (obj as any).containerID && typeof ((obj as any).containerID) === 'string'
-      && (obj as any).sub && typeof ((obj as any).sub) === 'string'
+  return (
+    (obj as any).containerID &&
+    typeof (obj as any).containerID === 'string' &&
+    (obj as any).sub &&
+    typeof (obj as any).sub === 'string'
+  )
 }

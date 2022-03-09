@@ -23,7 +23,7 @@ import { validProjectInvitationObject } from '../../../../data/fixtures/invitati
 jest.setTimeout(TEST_TIMEOUT)
 
 let db: any = null
-beforeAll(async () => (db = await testDatabase(false, false, BucketKey.Data)))
+beforeAll(async () => (db = await testDatabase(false, BucketKey.Data)))
 afterAll(() => db.bucket.disconnect())
 
 describe('ContainerInvitationRepository getInvitationsForUser', () => {

@@ -18,20 +18,20 @@ export interface ILogger {
   /**
    * Configures logger.
    */
-  configure (): void
+  configure(): void
 
   /**
    * Logs information data.
    */
-  info (msg: string, meta: any): void
+  info(msg: string, meta: any): void
 
   /**
    * Logs errors.
    */
-  error (msg: string, meta: any): void
+  error(msg: string, meta: any): void
 
   /**
    * Logs debug data
    */
-  debug (msg: string, meta: any): void
+  debug(msg: string, meta: any): void
 }

@@ -42,7 +42,7 @@ export type DatabaseViewStatus = {
 }
 
 export type DesignDocument = {
-  readonly name: DesignDocumentName,
+  readonly name: DesignDocumentName
   views: {
     [key: string]: NewDatabaseView
   }
@@ -50,7 +50,7 @@ export type DesignDocument = {
 }
 
 export type DatabaseDesignDocument = {
-  readonly name: DesignDocumentName,
+  readonly name: DesignDocumentName
   viewsStatus: {
     [key: string]: DatabaseViewName
   }

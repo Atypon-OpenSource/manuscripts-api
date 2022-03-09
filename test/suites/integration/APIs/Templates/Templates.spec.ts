@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import '../../../../utilities/configMock'
+
 import * as HttpStatus from 'http-status-codes'
 import * as supertest from 'supertest'
 

@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 
-export function normalizeURL (url: string) {
+export function normalizeURL(url: string) {
   return url.replace(/\/$/, '')
 }

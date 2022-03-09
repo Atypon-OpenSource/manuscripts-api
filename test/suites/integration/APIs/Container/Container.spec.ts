@@ -84,15 +84,22 @@ const seedOptions: SeedOptions = { users: true, applications: true }
 
 beforeAll(async () => {
   db = await testDatabase()
-  await Promise.all(
+  /*await Promise.all(
     GATEWAY_BUCKETS.map(key => {
       return DIContainer.sharedContainer.syncService.createGatewayAccount(
         'User|' + validBody.email,
         key
       )
     })
-  )
+  )*/
 })
+
+async function seedAccounts () {
+  await DIContainer.sharedContainer.syncService.createGatewayAccount(
+      'User|' + validBody.email,
+      null
+    )
+}
 
 afterAll(() => {
   db.bucket.disconnect()
@@ -105,6 +112,7 @@ describe('ContainerService - createProject', () => {
     await drop()
     await dropBucket(BucketKey.Data)
     await seed(seedOptions)
+    await seedAccounts()
   })
 
   test('should create the project', async () => {
@@ -112,7 +120,6 @@ describe('ContainerService - createProject', () => {
       validBody,
       ValidHeaderWithApplicationKey
     )
-
     expect(loginResponse.status).toBe(HttpStatus.OK)
 
     const authHeader = authorizationHeader(loginResponse.body.token)
@@ -157,6 +164,7 @@ describe('ContainerService - delete', () => {
     await drop()
     await dropBucket(BucketKey.Data)
     await seed({ ...seedOptions })
+    await seedAccounts()
   })
 
   test('should delete a project with all its resources', async () => {
@@ -235,6 +243,7 @@ describe('containerService - addContainerUser', () => {
     await drop()
     await dropBucket(BucketKey.Data)
     await seed({ users: true, applications: true })
+    await seedAccounts()
   })
 
   test('should add an owner to a project and return true', async () => {
@@ -364,6 +373,7 @@ describe('containerService - addContainerUser (for libraries)', () => {
     await drop()
     await dropBucket(BucketKey.Data)
     await seed({ users: true, applications: true })
+    await seedAccounts()
   })
 
   test('should add an owner to a library and cascade the role to library collections', async () => {
@@ -436,6 +446,7 @@ describe('containerService - manageUserRole', () => {
     await drop()
     await dropBucket(BucketKey.Data)
     await seed({ users: true, applications: true, projects: true })
+    await seedAccounts()
     await DIContainer.sharedContainer.syncService.createGatewayContributor(
       {
         _id: `User|${validBody.email}`,
@@ -673,6 +684,7 @@ describe('ContainerService - getArchive', () => {
     await drop()
     await dropBucket(BucketKey.Data)
     await seed({ users: true, applications: true, projects: true })
+    await seedAccounts()
     await DIContainer.sharedContainer.syncService.createGatewayContributor(
       {
         _id: `User|${validBody.email}`,
@@ -734,6 +746,7 @@ describe('ContainerService - accessToken', () => {
     await drop()
     await dropBucket(BucketKey.Data)
     await seed({ users: true, applications: true, projects: true })
+    await seedAccounts()
     await DIContainer.sharedContainer.syncService.createGatewayContributor(
       {
         _id: `User|${validBody.email}`,
@@ -772,6 +785,7 @@ describe('ContainerService - pickerBundle', () => {
     await drop()
     await dropBucket(BucketKey.Data)
     await seed({ users: true, applications: true, projects: true, manuscript: true })
+    await seedAccounts()
     await DIContainer.sharedContainer.syncService.createGatewayContributor(
       {
         _id: `User|${validBody.email}`,
@@ -896,6 +910,7 @@ describe('ContainerService - createManuscript', () => {
     await drop()
     await dropBucket(BucketKey.Data)
     await seed({ users: true, applications: true, projects: true, manuscript: true, manuscriptNotes: true, templates: true })
+    await seedAccounts()
     await DIContainer.sharedContainer.syncService.createGatewayContributor(
       {
         _id: `User|${validBody2.email}`,
@@ -1085,6 +1100,7 @@ describe('ContainerService - getCorrectionStatus', () => {
     await drop()
     await dropBucket(BucketKey.Data)
     await seed({ users: true, applications: true, corrections: true, projects: true })
+    await seedAccounts()
   })
   test('should get correction status', async () => {
     const loginResponse: supertest.Response = await basicLogin(
@@ -1135,6 +1151,7 @@ describe('ContainerService - saveSnapshot', () => {
     await drop()
     await dropBucket(BucketKey.Data)
     await seed({ users: true, applications: true, projects: true })
+    await seedAccounts()
   })
   test('should save snapshot', async () => {
     const loginResponse: supertest.Response = await basicLogin(

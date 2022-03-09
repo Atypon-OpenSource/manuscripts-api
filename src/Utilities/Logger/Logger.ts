@@ -22,21 +22,21 @@ class Logger {
   /**
    * Logs information data.
    */
-  public info (msg: string, meta?: any): void {
+  public info(msg: string, meta?: any): void {
     sharedLogger.info(msg, meta)
   }
 
   /**
    * Logs errors.
    */
-  public error (msg: string, meta?: any): void {
+  public error(msg: string, meta?: any): void {
     sharedLogger.error(msg, meta)
   }
 
   /**
    * Logs debug data
    */
-  public debug (msg: string, meta?: any): void {
+  public debug(msg: string, meta?: any): void {
     sharedLogger.debug(msg, meta)
   }
 }

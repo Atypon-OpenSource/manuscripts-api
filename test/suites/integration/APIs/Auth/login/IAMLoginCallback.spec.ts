@@ -261,7 +261,7 @@ describe('GET api/v1/auth/iam/callback', () => {
     )
   })
 
-  test('should set SG cookie as a wild card based on redirectBaseUri', async () => {
+  xtest('should set SG cookie as a wild card based on redirectBaseUri', async () => {
     const token = jsonwebtoken.sign(
       {
         email: 'foo@bar96.com',
@@ -302,7 +302,7 @@ describe('GET api/v1/auth/iam/callback', () => {
     expect(part[1]).toEqual('.ciplit.com')
   })
 
-  test('should redirect to default URL when redirectBaseUri is not permitted', async () => {
+  xtest('should redirect to default URL when redirectBaseUri is not permitted', async () => {
     const token = jsonwebtoken.sign(
         {
           email: 'valid-user@manuscriptsapp.com',

@@ -23,13 +23,15 @@ import { ValidationError } from '../../../Errors'
 import { DIContainer } from '../../../DIContainer/DIContainer'
 import { ContainerRole } from '../../../Models/ContainerModels'
 
-export class ContainerRequestController extends BaseController
-  implements IContainerRequestController {
-  async create (req: Request): Promise<void> {
+export class ContainerRequestController
+  extends BaseController
+  implements IContainerRequestController
+{
+  async create(req: Request): Promise<void> {
     const {
       params: { containerID },
       body: { role },
-      user
+      user,
     } = req
 
     if (!isString(containerID)) {
@@ -37,24 +39,17 @@ export class ContainerRequestController extends BaseController
     }
 
     if (!(role in ContainerRole)) {
-      throw new ValidationError(
-        'role should be one of allowed container roles',
-        role
-      )
+      throw new ValidationError('role should be one of allowed container roles', role)
     }
 
-    return DIContainer.sharedContainer.containerRequestService.create(
-      user,
-      containerID,
-      role
-    )
+    return DIContainer.sharedContainer.containerRequestService.create(user, containerID, role)
   }
 
-  async response (req: Request, accept: boolean): Promise<void> {
+  async response(req: Request, accept: boolean): Promise<void> {
     const {
       params: { containerID },
       body: { requestID },
-      user
+      user,
     } = req
 
     if (!isString(containerID)) {
@@ -65,10 +60,6 @@ export class ContainerRequestController extends BaseController
       throw new ValidationError('requestID should be string', requestID)
     }
 
-    return DIContainer.sharedContainer.containerRequestService.response(
-      requestID,
-      user,
-      accept
-    )
+    return DIContainer.sharedContainer.containerRequestService.response(requestID, user, accept)
   }
 }

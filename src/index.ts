@@ -27,49 +27,49 @@ process.on('unhandledRejection', (reason, promise) => {
   log.error(`Unhandled rejection – reason: ${reason}, promise: ${promise}`)
 })
 
-function main () {
+function main() {
   log.debug('Initializing Manuscripts.io container…')
-  DIContainer.init(true, config.DB.startFunctionService)
-  .catch(error => {
-    log.error(error)
-    return DIContainer.init(true, config.DB.startFunctionService)
-  })
-  .then((container) => {
-    return container.server.checkPrerequisites()
-  })
-  .then(() => {
-    const container = DIContainer.sharedContainer
-    /* istanbul ignore next */
-    if (config.DB.initializeContents) {
-      log.debug(`Disconnecting from database backend…`)
-      container.userBucket.bucket.disconnect()
-      container.dataBucket.bucket.disconnect()
-      container.appStateBucket.bucket.disconnect()
-      container.derivedDataBucket.bucket.disconnect()
-      return Promise.resolve()
-    }
-    container.server.bootstrap()
-    return container.server.start(config.API.port)
-  })
-  .then(() => {
-    if (config.DB.initializeContents) {
-      log.info(`Manuscripts.io ${ServerStatus.version} state initialized 👷`)
-    } else {
-      log.info(`Manuscripts.io ${ServerStatus.version} started 🚀`)
-    }
-  })
-  .then(() => {
-    if (!config.DB.initializeContents) {
-      cron.schedule('0 1 * * *', async () => {
-        log.debug('running a task every day')
-        await DIContainer.sharedContainer.userService.clearUsersData()
-      })
-    }
-  })
-  .catch((error) => {
-    log.error('An error occurred while bootstrapping app:', error)
-    process.exit(-1)
-  })
+  DIContainer.init(true)
+    .catch((error) => {
+      log.error(error)
+      return DIContainer.init(true)
+    })
+    .then((container) => {
+      return container.server.checkPrerequisites()
+    })
+    .then(async () => {
+      const container = DIContainer.sharedContainer
+      /* istanbul ignore next */
+      if (config.DB.initializeContents) {
+        log.debug(`Disconnecting from database backend…`)
+        await container.userBucket.bucket.disconnect()
+        await container.dataBucket.bucket.disconnect()
+        await container.appStateBucket.bucket.disconnect()
+        await container.derivedDataBucket.bucket.disconnect()
+        return Promise.resolve()
+      }
+      container.server.bootstrap()
+      return container.server.start(config.API.port)
+    })
+    .then(() => {
+      if (config.DB.initializeContents) {
+        log.info(`Manuscripts.io ${ServerStatus.version} state initialized 👷`)
+      } else {
+        log.info(`Manuscripts.io ${ServerStatus.version} started 🚀`)
+      }
+    })
+    .then(() => {
+      if (!config.DB.initializeContents) {
+        cron.schedule('0 1 * * *', async () => {
+          log.debug('running a task every day')
+          await DIContainer.sharedContainer.userService.clearUsersData()
+        })
+      }
+    })
+    .catch((error) => {
+      log.error('An error occurred while bootstrapping app:', error)
+      process.exit(-1)
+    })
 }
 
 main()

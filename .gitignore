@@ -24,6 +24,7 @@ docker/docker-compose.yml
 docker/values.yml
 docker/couchbase-values.yml
 docker/syncgw-values.yml
+postgres-data/
 Vagrantfile
 
 .env
@@ -38,3 +39,5 @@ manuscripts-api/helm_repo/manuscripts-api/certs
 emails/rendered/*.html
 
 junit.xml
+
+.prisma

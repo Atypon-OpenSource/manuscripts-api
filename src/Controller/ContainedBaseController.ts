@@ -20,9 +20,9 @@ import { BaseController } from './BaseController'
 
 export abstract class ContainedBaseController implements BaseController {}
 
-export function getContainerType (containerID: string): ContainerType {
+export function getContainerType(containerID: string): ContainerType {
   const objectType = containerID.split(':')[0]
-  const containerType = objectType.toLocaleLowerCase().replace(/^mp/,'')
+  const containerType = objectType.toLocaleLowerCase().replace(/^mp/, '')
 
   if (!(containerType in ContainerType)) {
     throw new ValidationError('containerType should be valid', containerType)

@@ -15,12 +15,12 @@
  */
 
 export interface PatchProject {
-  _id: string,
-  title?: string,
-  owners?: string[],
-  writers?: string[],
-  viewers?: string[],
-  editors?: string[],
-  annotators?: string[],
-  sessionID?: string,
+  _id: string
+  title?: string
+  owners?: string[]
+  writers?: string[]
+  viewers?: string[]
+  editors?: string[]
+  annotators?: string[]
+  sessionID?: string
 }

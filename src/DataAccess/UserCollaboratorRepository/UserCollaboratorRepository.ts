@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import { N1qlQuery, CouchbaseError } from 'couchbase'
+// import { N1qlQuery, CouchbaseError } from 'couchbase'
 
 import { SGRepository } from '../SGRepository'
 import { GatewayOptions } from '../Interfaces/KeyValueRepository'
-import { MethodNotAllowedError, DatabaseError } from '../../Errors'
-import { username as sgUsername } from '../../DomainServices/Sync/SyncService'
-import { databaseErrorMessage } from '../DatabaseResponseFunctions'
+import { MethodNotAllowedError /*, DatabaseError*/ } from '../../Errors'
+// import { username as sgUsername } from '../../DomainServices/Sync/SyncService'
+// import { databaseErrorMessage } from '../DatabaseResponseFunctions'
 import { UserCollaborator } from '@manuscripts/manuscripts-json-schema'
 
 export class UserCollaboratorRepository extends SGRepository<
@@ -29,11 +29,11 @@ export class UserCollaboratorRepository extends SGRepository<
   UserCollaborator,
   UserCollaborator
 > {
-  public get objectType (): string {
+  public get objectType(): string {
     return 'MPUserCollaborator'
   }
 
-  public async update (
+  public async update(
     _id: string,
     _updatedDocument: any,
     _updateOptions: GatewayOptions
@@ -41,7 +41,7 @@ export class UserCollaboratorRepository extends SGRepository<
     throw new MethodNotAllowedError('UserCollaboratorRepository', 'update')
   }
 
-  public async clearUserCollaborators (userId: string): Promise<void> {
+  public async clearUserCollaborators(userId: string): Promise<void> {
     const userCollaborators = await this.getByUserId(userId)
 
     for (const userCollaborator of userCollaborators) {
@@ -52,8 +52,36 @@ export class UserCollaboratorRepository extends SGRepository<
    * Get user collaborator by user id.
    * @param userId user id.
    */
-  public async getByUserId (userId: string): Promise<UserCollaborator[]> {
-    const syncUserId = sgUsername(userId)
+  public async getByUserId(userId: string): Promise<UserCollaborator[]> {
+    const Q = {
+      AND: [
+        {
+          data: {
+            path: ['objectType'],
+            equals: this.objectType,
+          },
+        },
+        {
+          OR: [
+            {
+              data: {
+                path: ['userID'],
+                equals: userId,
+              },
+            },
+            {
+              data: {
+                path: ['collaboratorProfile', 'data', 'userID'],
+                equals: userId,
+              },
+            },
+          ],
+        },
+      ],
+    }
+
+    return this.database.bucket.query(Q).then((res: any) => res.map((i: any) => this.buildModel(i)))
+    /*const syncUserId = sgUsername(userId)
 
     const n1ql = `SELECT *, META().id FROM ${this.bucketName}
                   WHERE objectType = \'${this.objectType}\'
@@ -96,6 +124,6 @@ export class UserCollaboratorRepository extends SGRepository<
           return resolve([])
         }
       )
-    })
+    })*/
   }
 }

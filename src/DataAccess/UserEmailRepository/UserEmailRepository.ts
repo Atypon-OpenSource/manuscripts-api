@@ -16,32 +16,34 @@
 
 import { SchemaDefinition as OttomanSchemaDefinition } from 'ottoman'
 
-import { CBRepository } from '../CBRepository'
+import { SQLRepository } from '../SQLRepository'
 import { IUserEmailRepository } from '../Interfaces/IUserEmailRepository'
 import { UserEmail } from '../../Models/UserModels'
 
 /**
  * Manages user email persistent storage operations.
  */
-class UserEmailRepository extends CBRepository<UserEmail, UserEmail, {}, {}>
-  implements IUserEmailRepository {
-  public get documentType (): string {
+class UserEmailRepository
+  extends SQLRepository<UserEmail, UserEmail, {}, {}>
+  implements IUserEmailRepository
+{
+  public get documentType(): string {
     return 'UserEmail'
   }
 
-  public buildSchemaDefinition (): OttomanSchemaDefinition {
+  public buildSchemaDefinition(): OttomanSchemaDefinition {
     return {
       _id: {
         type: 'string',
-        readonly: true
-      }
+        readonly: true,
+      },
     }
   }
 
   /**
    * Builds a user email model from a user email object.
    */
-  public buildModel (userEmail: UserEmail): UserEmail {
+  public buildModel(userEmail: UserEmail): UserEmail {
     return { ...userEmail }
   }
 }

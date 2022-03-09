@@ -17,10 +17,9 @@
 import { Request } from 'express'
 
 export interface IRegistrationController {
+  signup(req: Request): Promise<void>
 
-  signup (req: Request): Promise<void>
+  verify(req: Request): Promise<void>
 
-  verify (req: Request): Promise<void>
-
-  requestVerificationEmail (req: Request): Promise<void>
+  requestVerificationEmail(req: Request): Promise<void>
 }

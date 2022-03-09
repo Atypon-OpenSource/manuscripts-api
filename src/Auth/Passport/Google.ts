@@ -26,8 +26,10 @@ import { isString } from '../../util'
 import { DIContainer } from '../../DIContainer/DIContainer'
 import { InvalidClientApplicationStateError } from '../../Errors'
 
-export function validateAndGetState (encryptedState: string): AuthState {
-  const plainState = AES.decrypt(encryptedState, config.API.oauthStateEncryptionKey).toString(enc.Utf8)
+export function validateAndGetState(encryptedState: string): AuthState {
+  const plainState = AES.decrypt(encryptedState, config.API.oauthStateEncryptionKey).toString(
+    enc.Utf8
+  )
   let state: any
 
   try {
@@ -49,27 +51,29 @@ export function validateAndGetState (encryptedState: string): AuthState {
   return {
     appId,
     deviceId,
-    invitationId
+    invitationId,
   }
 }
 
 export class GoogleAuthStrategy {
-  public static use (): void {
+  public static use(): void {
     const authService = DIContainer.sharedContainer.authService
 
     const opts = {
       clientID: config.google.clientID,
       clientSecret: config.google.clientSecret,
       callbackURL: config.google.authCallback,
-      passReqToCallback: true
+      passReqToCallback: true,
     }
 
-    passport.use(AuthStrategyTypes.google,
+    passport.use(
+      AuthStrategyTypes.google,
       new OAuth2Strategy(
         opts,
-        async (req: Request,
-           accessToken: string,
-           refreshToken: string,
+        async (
+          req: Request,
+          accessToken: string,
+          refreshToken: string,
           profile: Profile,
           done: Function
         ) => {
@@ -79,7 +83,7 @@ export class GoogleAuthStrategy {
             const lastName = profile.name ? profile.name.familyName : ''
             const encryptedState = req.query.state
 
-            const state = validateAndGetState(encryptedState)
+            const state = validateAndGetState(encryptedState as string)
             const applicationRepository = DIContainer.sharedContainer.applicationRepository
 
             try {
@@ -87,7 +91,13 @@ export class GoogleAuthStrategy {
               if (!application) {
                 return done(null, false)
               } else {
-                const user = await authService.loginGoogle({ email: email.toLowerCase(), name: `${firstName} ${lastName}`.trim(), ...state, accessToken, refreshToken })
+                const user = await authService.loginGoogle({
+                  email: email.toLowerCase(),
+                  name: `${firstName} ${lastName}`.trim(),
+                  ...state,
+                  accessToken,
+                  refreshToken,
+                })
                 return done(null, user)
               }
             } catch (error) {

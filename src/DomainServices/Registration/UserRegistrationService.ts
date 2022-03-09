@@ -28,11 +28,11 @@ import {
   ConflictingUnverifiedUserExistsError,
   InvalidServerCredentialsError,
   DuplicateEmailError,
-  MissingUserRecordError
+  MissingUserRecordError,
 } from '../../Errors'
 import { IUserRegistrationService } from './IUserRegistrationService'
 import { ISyncService } from '../Sync/ISyncService'
-import { GATEWAY_BUCKETS } from '../Sync/SyncService'
+// import { GATEWAY_BUCKETS } from '../Sync/SyncService'
 import { ISingleUseTokenRepository } from '../../DataAccess/Interfaces/ISingleUseTokenRepository'
 import { IUserRepository } from '../../DataAccess/Interfaces/IUserRepository'
 import { IUserStatusRepository } from '../../DataAccess/Interfaces/IUserStatusRepository'
@@ -49,7 +49,7 @@ import { IUserEmailRepository } from '../../DataAccess/Interfaces/IUserEmailRepo
 const VERIFICATION_TOKEN_TIMEOUT = () => getExpirationTime(24)
 
 export class UserRegistrationService implements IUserRegistrationService {
-  constructor (
+  constructor(
     private userRepository: IUserRepository,
     private userEmailRepository: IUserEmailRepository,
     private emailService: EmailService,
@@ -59,11 +59,11 @@ export class UserRegistrationService implements IUserRegistrationService {
     private syncService: ISyncService
   ) {}
 
-  public async connectSignup (credentials: ConnectSignupCredentials): Promise<void> {
+  public async connectSignup(credentials: ConnectSignupCredentials): Promise<void> {
     const { email, name, connectUserID } = credentials
 
     const user = await this.userRepository.getOne({
-      email
+      email,
     })
 
     if (user) {
@@ -90,7 +90,7 @@ export class UserRegistrationService implements IUserRegistrationService {
     ) // intentional fire and forget.
   }
 
-  public async signup (credentials: SignupCredentials): Promise<void> {
+  public async signup(credentials: SignupCredentials): Promise<void> {
     const { token, email, name, password } = credentials
     if (token) {
       try {
@@ -107,7 +107,7 @@ export class UserRegistrationService implements IUserRegistrationService {
     const skipVerification = token ? true : config.auth.skipVerification
 
     const user = await this.userRepository.getOne({
-      email
+      email,
     })
 
     if (user) {
@@ -138,16 +138,16 @@ export class UserRegistrationService implements IUserRegistrationService {
     ) // intentional fire and forget.
   }
 
-  private userEmailID (email: string) {
+  private userEmailID(email: string) {
     return checksum(email, { algorithm: 'sha1' })
   }
 
-  private async createUserDetails (user: User, skipVerification: boolean, password?: string) {
-    await Promise.all(
+  private async createUserDetails(user: User, skipVerification: boolean, password?: string) {
+    /*await Promise.all(
       GATEWAY_BUCKETS.map(key =>
         this.syncService.createGatewayAccount(user._id, key)
       )
-    )
+    )*/
     await this.syncService.createGatewayContributor(user, BucketKey.Data)
 
     await this.userStatusRepository.create(
@@ -157,25 +157,23 @@ export class UserRegistrationService implements IUserRegistrationService {
         isVerified: skipVerification,
         password: password ? await AuthService.createPassword(password) : '',
         createdAt: new Date(),
-        deviceSessions: {}
+        deviceSessions: {},
       },
       {}
     )
   }
 
-  private async handleUserExistence (user: User) {
-    const userStatus = await this.userStatusRepository.statusForUserId(
-      user._id
-    )
+  private async handleUserExistence(user: User) {
+    const userStatus = await this.userStatusRepository.statusForUserId(user._id)
 
     if (!userStatus) {
-        // tslint:disable-next-line: no-floating-promises
+      // tslint:disable-next-line: no-floating-promises
       this.activityTrackingService.createEvent(
-          user._id,
-          UserActivityEventType.StatusNotFound,
-          null,
-          null
-        )
+        user._id,
+        UserActivityEventType.StatusNotFound,
+        null,
+        null
+      )
       throw new MissingUserStatusError(user._id)
     }
 
@@ -186,19 +184,26 @@ export class UserRegistrationService implements IUserRegistrationService {
     }
   }
 
-  public async sendAccountVerification (user: User) {
-    const tokenId = await this.singleUseTokenRepository.ensureTokenExists(user, SingleUseTokenType.VerifyEmailToken, VERIFICATION_TOKEN_TIMEOUT())
+  public async sendAccountVerification(user: User) {
+    const tokenId = await this.singleUseTokenRepository.ensureTokenExists(
+      user,
+      SingleUseTokenType.VerifyEmailToken,
+      VERIFICATION_TOKEN_TIMEOUT()
+    )
     await this.emailService.sendAccountVerification(user, tokenId)
   }
 
-  public async verify (tokenId: string): Promise<void> {
+  public async verify(tokenId: string): Promise<void> {
     const userVerificationToken = await this.singleUseTokenRepository.getById(tokenId)
 
     if (!userVerificationToken) {
       throw new NoTokenError(tokenId)
     }
 
-    await this.singleUseTokenRepository.remove({ userId: userVerificationToken.userId , tokenType: userVerificationToken.tokenType })
+    await this.singleUseTokenRepository.remove({
+      userId: userVerificationToken.userId,
+      tokenType: userVerificationToken.tokenType,
+    })
     const user = await this.userRepository.getById(userVerificationToken.userId)
     if (!user) {
       throw new InvalidCredentialsError('User not found')
@@ -207,10 +212,15 @@ export class UserRegistrationService implements IUserRegistrationService {
     await this.userStatusRepository.patchStatusWithUserId(user._id, { isVerified: true }, {})
 
     // tslint:disable-next-line: no-floating-promises
-    this.activityTrackingService.createEvent(userVerificationToken.userId, UserActivityEventType.EmailVerified, null, null) // intentional fire and forget.
+    this.activityTrackingService.createEvent(
+      userVerificationToken.userId,
+      UserActivityEventType.EmailVerified,
+      null,
+      null
+    ) // intentional fire and forget.
   }
 
-  public async requestVerificationEmail (email: string): Promise<void> {
+  public async requestVerificationEmail(email: string): Promise<void> {
     const user = await this.userRepository.getOne({ email: email.toLowerCase() })
     if (!user) {
       throw new MissingUserRecordError(email)
@@ -227,6 +237,11 @@ export class UserRegistrationService implements IUserRegistrationService {
 
     await this.sendAccountVerification(user)
     // tslint:disable-next-line: no-floating-promises
-    this.activityTrackingService.createEvent(user._id, UserActivityEventType.RequestEmailVerification, null, null) // intentional fire and forget.
+    this.activityTrackingService.createEvent(
+      user._id,
+      UserActivityEventType.RequestEmailVerification,
+      null,
+      null
+    ) // intentional fire and forget.
   }
 }

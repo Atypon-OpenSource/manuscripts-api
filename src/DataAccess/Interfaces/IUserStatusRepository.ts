@@ -23,21 +23,20 @@ import { QueryCriteria } from './QueryCriteria'
  */
 export interface IUserStatusRepository
   extends IndexedRepository<UserStatus, UserStatus, UpdateUserStatus, QueryCriteria> {
-
-  /**
-   * Returns the last login timestamp.
-   */
-  failedLoginCount (key: string): Promise<number>
   /**
    * Returns user status id based on user id
    */
-  userStatusId (userId: string): string
+  userStatusId(userId: string): string
   /**
    * Returns the user status for a specific user.
    */
-  statusForUserId (userId: string): Promise<UserStatus | null>
+  statusForUserId(userId: string): Promise<UserStatus | null>
   /**
    * Patches existing user status by a specific user id.
    */
-  patchStatusWithUserId (userId: string, dataToPatch: Partial<UpdateUserStatus>, options: PatchOptions): Promise<UserStatus>
+  patchStatusWithUserId(
+    userId: string,
+    dataToPatch: Partial<UpdateUserStatus>,
+    options: PatchOptions
+  ): Promise<UserStatus>
 }

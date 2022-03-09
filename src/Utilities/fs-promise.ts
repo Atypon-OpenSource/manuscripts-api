@@ -18,8 +18,7 @@ import { readFile as fsReadFile } from 'fs'
 
 export const readFile = async (path: string, encoding: string) =>
   new Promise<string>((resolve, reject) =>
-    fsReadFile(path, encoding, (err, data) => {
-      return err
-        ? reject(err)
-        : resolve(data)
-    }))
+    fsReadFile(path, encoding as BufferEncoding, (err: any, data: string | PromiseLike<string>) => {
+      return err ? reject(err) : resolve(data)
+    })
+  )

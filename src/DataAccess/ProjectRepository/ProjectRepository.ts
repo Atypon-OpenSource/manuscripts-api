@@ -19,22 +19,23 @@ import { Project } from '@manuscripts/manuscripts-json-schema'
 import { IProjectRepository } from '../Interfaces/IProjectRepository'
 import { ProjectLike } from '../Interfaces/Models'
 import { PatchProject } from '../../Models/ProjectModels'
-import { GatewayOptions } from '../Interfaces/KeyValueRepository'
-import { MethodNotAllowedError } from '../../Errors'
+// import { GatewayOptions } from '../Interfaces/KeyValueRepository'
+// import { MethodNotAllowedError } from '../../Errors'
 import { ContainerRepository } from '../ContainerRepository/ContainerRepository'
 
 export class ProjectRepository
   extends ContainerRepository<Project, ProjectLike, PatchProject>
-  implements IProjectRepository {
-  public get objectType (): string {
+  implements IProjectRepository
+{
+  public get objectType(): string {
     return 'MPProject'
   }
 
-  public async update (
+  /*public async update (
     _id: string,
     _updatedDocument: ProjectLike,
     _updateOptions: GatewayOptions
   ): Promise<Project> {
     throw new MethodNotAllowedError('ProjectRepository', 'update')
-  }
+  }*/
 }

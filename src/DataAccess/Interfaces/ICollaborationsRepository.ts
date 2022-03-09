@@ -21,10 +21,9 @@ import { CollaborationLike } from './Models'
 /**
  * Manages user persistent storage operations.
  */
-export interface ICollaborationsRepository
-  extends KeyValueRepository<
+export type ICollaborationsRepository = KeyValueRepository<
   CollaborationLike,
   CollaborationLike,
   UpdateCollaboration,
   UpdateCollaboration
-    > {}
+>

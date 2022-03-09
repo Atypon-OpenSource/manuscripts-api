@@ -16,12 +16,8 @@
 
 import { Repository } from './Repository'
 
-export interface KeyValueRepository<
-  TEntity,
-  TNewEntity,
-  TUpdateEntity,
-  TPatchEntity
-> extends Repository<TEntity> {
+export interface KeyValueRepository<TEntity, TNewEntity, TUpdateEntity, TPatchEntity>
+  extends Repository<TEntity> {
   /**
    * Returns object type
    */
@@ -31,35 +27,24 @@ export interface KeyValueRepository<
    * Creates new document.
    * @param newDocument The new document wants to be added.
    */
-  create (
-    newDocument: TNewEntity,
-    createOptions: GatewayOptions
-  ): Promise<TEntity>
+  create(newDocument: TNewEntity, createOptions: GatewayOptions): Promise<TEntity>
 
   /**
    * Removes existing document.
    * @param id the document's unique id.
    */
-  remove (id: string | null): Promise<void>
+  remove(id: string | null): Promise<void>
 
   /**
    * Replaces existing document.
    * @param id document id's wants to be replaced.
    * @param updateDocument The new object that will be replaced.
    */
-  update (
-    id: string,
-    updateDocument: TUpdateEntity,
-    updateOptions: GatewayOptions
-  ): Promise<TEntity>
+  update(id: string, updateDocument: TUpdateEntity, updateOptions: GatewayOptions): Promise<TEntity>
 
-  patch (
-    id: string,
-    dataToPatch: TPatchEntity,
-    patchOptions: GatewayOptions
-  ): Promise<TEntity>
+  patch(id: string, dataToPatch: TPatchEntity, patchOptions: GatewayOptions): Promise<TEntity>
 
-  purge (id: string): Promise<void>
+  purge(id: string): Promise<void>
 }
 
 export interface GatewayOptions {

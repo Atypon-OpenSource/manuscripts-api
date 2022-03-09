@@ -233,13 +233,11 @@ async function createSnapshot (): Promise<void> {
 let _db: any = null
 export async function testDatabase (
   enableActivityTracking: boolean = false,
-  enableFunctionService: boolean = false,
   bucketKey: BucketKey = BucketKey.User
 ) {
   if (_db === null) {
     const container = await DIContainer.init(
-      enableActivityTracking,
-      enableFunctionService
+      enableActivityTracking
     )
     switch (bucketKey) {
       case BucketKey.User: _db = container.userBucket
@@ -262,7 +260,6 @@ export async function testDatabase (
       isValidIssuer: () => Promise.resolve(true),
       loginVerify: () => true
     }
-
     if (!_db) {
       throw new NoBucketError(
         'Failed to initialize testDatabase()! Is the database definitely up and accessible, and are you sure mocks are alright?'
@@ -376,13 +373,12 @@ const syncGatewayRepositories = new Set<string>([
 ])
 
 const derivedBucketRepositories = new Set<string>([
-  'MPUserCollaborator',
-  'MPProjectMemento',
-  'MPProjectSummary'
+  'MPUserCollaborator'
 ])
 
 export async function dropBucket (bucketKey: BucketKey): Promise<void> {
-  let payload = projectsList.reduce((acc: any, doc: any) => {
+  return
+  /*let payload = projectsList.reduce((acc: any, doc: any) => {
     acc['MPProject:' + doc._id] = ['*']
     return acc
   }, {})
@@ -448,7 +444,7 @@ export async function dropBucket (bucketKey: BucketKey): Promise<void> {
     acc['MPInvitation:' + doc._id] = ['*']
     return acc
   }, {})
-  await purge(bucketKey, payload)
+  await purge(bucketKey, payload)*/
 }
 
 async function purge (bucketKey: BucketKey, payload: any) {
@@ -464,16 +460,16 @@ async function purge (bucketKey: BucketKey, payload: any) {
 
 export async function drop (): Promise<void> {
   await testDatabase()
-  const repositories = DIContainer.sharedContainer.repositories.filter(
+  const repositories = DIContainer.sharedContainer.repositories/*.filter(
     (x: any) =>
       !syncGatewayRepositories.has(x.objectType) &&
       !derivedBucketRepositories.has(x.objectType)
-  )
+  )*/
 
-  const gatewayRepositories = DIContainer.sharedContainer.gatewayRepositories.filter(
+  const gatewayRepositories = DIContainer.sharedContainer.gatewayRepositories/*.filter(
     (x: any) =>
       syncGatewayRepositories.has(x.objectType)
-  )
+  )*/
 
   await Promise.all([
     ...repositories.map(x => x.remove(null)) as any,

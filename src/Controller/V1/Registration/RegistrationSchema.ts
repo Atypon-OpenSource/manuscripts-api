@@ -21,37 +21,29 @@ import { jsonHeadersSchema, emailSchema, appSecretHeadersSchema } from '../../Ba
 export const signupSchema: Joi.SchemaMap = {
   body: Joi.object({
     email: emailSchema.required(),
-    password: Joi.string()
-      .max(100)
-      .min(8)
-      .required(),
-    name: Joi.string()
-      .max(100)
-      .required()
+    password: Joi.string().max(100).min(8).required(),
+    name: Joi.string().max(100).required(),
   }),
-  headers: jsonHeadersSchema.headers
+  headers: jsonHeadersSchema.headers,
 }
 
 export const connectSignupSchema: Joi.SchemaMap = {
   body: Joi.object({
     email: emailSchema.required(),
-    name: Joi.string()
-      .max(100)
-      .required(),
-    connectUserID: Joi.string().required()
+    name: Joi.string().max(100).required(),
+    connectUserID: Joi.string().required(),
   }),
-  headers: appSecretHeadersSchema.headers
+  headers: appSecretHeadersSchema.headers,
 }
 
 export const verificationSchema: Joi.SchemaMap = {
   body: Joi.object({
-    token: Joi.string()
-      .required()
-  })
+    token: Joi.string().required(),
+  }),
 }
 
 export const requestVerificationEmailSchema: Joi.SchemaMap = {
   body: Joi.object({
-    email: emailSchema.required()
-  })
+    email: emailSchema.required(),
+  }),
 }

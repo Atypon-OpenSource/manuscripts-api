@@ -19,7 +19,7 @@ import jwksClientRSA from 'jwks-rsa' // the concrete JWKS client implementation
 import { config } from '../Config/Config'
 import { BucketKey } from '../Config/ConfigurationTypes'
 
-import { Database } from '../DataAccess/Database'
+import { SQLDatabase } from '../DataAccess/SQLDatabase'
 
 import { IAMTokenVerifier } from './IAMTokenVerifier'
 import { JWKSClient } from './JWKSClient' // our internal interface for JWKS
@@ -27,7 +27,6 @@ import { JWKSClient } from './JWKSClient' // our internal interface for JWKS
 import { IServer } from '../Server/IServer'
 import { Server } from '../Server/Server'
 
-import { IDatabaseViewManager } from '../DataAccess/Interfaces/IDatabaseViewManager'
 import { ContainerType, ContainerServiceMap } from '../Models/ContainerModels'
 import { RepositoryLike, SGRepositoryLike } from '../DataAccess/Interfaces/IndexedRepository'
 
@@ -40,8 +39,6 @@ import { IInvitationTokenRepository } from '../DataAccess/Interfaces/IInvitation
 import { IUserStatusRepository } from '../DataAccess/Interfaces/IUserStatusRepository'
 import { IUserEventRepository } from '../DataAccess/Interfaces/IUserEventRepository'
 import { UserCollaboratorRepository } from '../DataAccess/UserCollaboratorRepository/UserCollaboratorRepository'
-import { ProjectMementoRepository } from '../DataAccess/ProjectMementoRepository/ProjectMementoRepository'
-import { ProjectSummaryRepository } from '../DataAccess/ProjectSummaryRepository/ProjectSummaryRepository'
 
 import { InvitationRepository } from '../DataAccess/InvitationRepository/InvitationRepository'
 import { UserRepository } from '../DataAccess/UserRepository/UserRepository'
@@ -74,8 +71,6 @@ import { IUserService } from '../DomainServices/User/IUserService'
 import { UserActivityTrackingService } from '../DomainServices/UserActivity/UserActivityTrackingService'
 import { ContainerInvitationService } from '../DomainServices/Invitation/ContainerInvitationService'
 import { ContainerService } from '../DomainServices/Container/ContainerService'
-import { FunctionService } from '../DataAccess/FunctionService'
-import { DiscourseService } from '../DomainServices/Discourse/DiscourseService'
 import { InvitationService } from '../DomainServices/Invitation/InvitationService'
 import { IContainerInvitationService } from '../DomainServices/Invitation/IContainerInvitationService'
 import { IContainerRequestService } from '../DomainServices/ContainerRequest/IContainerRequestService'
@@ -98,14 +93,14 @@ import { IShacklesService } from '../DomainServices/Shackles/IShacklesService'
 import { TemplateRepository } from '../DataAccess/TemplateRepository/TemplateRepository'
 
 export class UninitializedContainerError extends Error {
-  constructor () {
+  constructor() {
     super()
     Object.setPrototypeOf(this, new.target.prototype)
   }
 }
 
 export class ContainerReinitializationError extends Error {
-  constructor () {
+  constructor() {
     super()
     Object.setPrototypeOf(this, new.target.prototype)
   }
@@ -114,7 +109,7 @@ export class ContainerReinitializationError extends Error {
 export class DIContainer {
   private static _sharedContainer: DIContainer | null = null
 
-  static get sharedContainer (): DIContainer {
+  static get sharedContainer(): DIContainer {
     if (DIContainer._sharedContainer === null) {
       throw new UninitializedContainerError()
     } else {
@@ -148,14 +143,10 @@ export class DIContainer {
   readonly userProfileRepository: UserProfileRepository
   readonly containerService: ContainerServiceMap
   readonly containerRequestService: IContainerRequestService
-  readonly functionService: FunctionService
   readonly userCollaboratorRepository: UserCollaboratorRepository
-  readonly projectMementoRepository: ProjectMementoRepository
-  readonly projectSummaryRepository: ProjectSummaryRepository
   readonly containerRequestRepository: ContainerRequestRepository
   readonly submissionRepository: ISubmissionRepository
   readonly submissionService: ISubmissionService
-  readonly discourseService: DiscourseService | null
   readonly jwksClient: JWKSClient
   readonly iamTokenVerifier: IAMTokenVerifier
   readonly pressroomService: IPressroomService
@@ -170,44 +161,42 @@ export class DIContainer {
   /**
    * WARNING: internal method.
    *
-   * We need to await promises (Database initialization), which cannot be done
+   * We need to await promises (SQLDatabase initialization), which cannot be done
    * in a constructor.
    *
    * This constructor should only be called by the DIContainer.init() method.
    */
-  constructor (
-    readonly userBucket: Database,
-    readonly dataBucket: Database,
-    readonly appStateBucket: Database,
-    readonly derivedDataBucket: Database,
-    readonly discussionsBucket: Database,
+  constructor(
+    readonly userBucket: SQLDatabase,
+    readonly dataBucket: SQLDatabase,
+    readonly appStateBucket: SQLDatabase,
+    readonly derivedDataBucket: SQLDatabase,
     readonly enableActivityTracking: boolean
   ) {
-    this.userCollaboratorRepository = new UserCollaboratorRepository(BucketKey.DerivedData, this.derivedDataBucket)
-    this.projectMementoRepository = new ProjectMementoRepository(
+    this.userCollaboratorRepository = new UserCollaboratorRepository(
       BucketKey.DerivedData,
       this.derivedDataBucket
     )
-    this.projectSummaryRepository = new ProjectSummaryRepository(
-      BucketKey.DerivedData,
-      this.derivedDataBucket
+    this.applicationRepository = new MemorizingClientApplicationRepository(
+      new ClientApplicationRepository(this.userBucket),
+      60
     )
-    this.applicationRepository = new MemorizingClientApplicationRepository(new ClientApplicationRepository(this.userBucket), 60)
     this.server = new Server(this.userBucket)
     this.userRepository = new UserRepository(this.userBucket)
     this.userTokenRepository = new UserTokenRepository(this.userBucket)
     this.userEmailRepository = new UserEmailRepository(this.userBucket)
     this.singleUseTokenRepository = new SingleUseTokenRepository(this.userBucket)
     this.invitationTokenRepository = new InvitationTokenRepository(this.userBucket)
-    this.collaborationsRepository = new CollaborationsRepository(
-      BucketKey.Data,
-      this.dataBucket
-    )
+    this.collaborationsRepository = new CollaborationsRepository(BucketKey.Project, this.dataBucket)
     this.emailService = new EmailService(config.email, config.AWS)
     this.userEventRepository = new UserEventRepository(this.userBucket)
-    this.activityTrackingService = new UserActivityTrackingService(this.userEventRepository, this.enableActivityTracking)
+    this.activityTrackingService = new UserActivityTrackingService(
+      this.userEventRepository,
+      this.enableActivityTracking
+    )
     this.userStatusRepository = new UserStatusRepository(this.userBucket)
-    this.syncService = new SyncService(this.userStatusRepository)
+    this.userProfileRepository = new UserProfileRepository(BucketKey.Project, this.dataBucket)
+    this.syncService = new SyncService(this.userStatusRepository, this.userProfileRepository)
     this.userRegistrationService = new UserRegistrationService(
       this.userRepository,
       this.userEmailRepository,
@@ -217,65 +206,32 @@ export class DIContainer {
       this.userStatusRepository,
       this.syncService
     )
-    this.projectRepository = new ProjectRepository(
-      BucketKey.Data,
-      this.dataBucket
-    )
-    this.libraryRepository = new LibraryRepository(
-      BucketKey.Data,
-      this.dataBucket
-    )
+    this.projectRepository = new ProjectRepository(BucketKey.Project, this.dataBucket)
+    this.libraryRepository = new LibraryRepository(BucketKey.Project, this.dataBucket)
     this.libraryCollectionRepository = new LibraryCollectionRepository(
-      BucketKey.Data,
+      BucketKey.Project,
       this.dataBucket
     )
-    this.userProfileRepository = new UserProfileRepository(
-      BucketKey.Data,
-      this.dataBucket
-    )
-    this.invitationRepository = new InvitationRepository(
-      BucketKey.Data,
-      this.dataBucket
-    )
+    this.invitationRepository = new InvitationRepository(BucketKey.Project, this.dataBucket)
     this.containerInvitationRepository = new ContainerInvitationRepository(
-      BucketKey.Data,
+      BucketKey.Project,
       this.dataBucket
     )
     this.containerRequestRepository = new ContainerRequestRepository(
-      BucketKey.Data,
+      BucketKey.Project,
       this.dataBucket
     )
-    this.submissionRepository = new SubmissionRepository(
-      BucketKey.Data,
-      this.dataBucket
-    )
-    this.submissionService = new SubmissionService(
-      this.submissionRepository
-    )
-    this.manuscriptRepository = new ManuscriptRepository(
-      BucketKey.Data,
-      this.dataBucket
-    )
+    this.submissionRepository = new SubmissionRepository(BucketKey.Project, this.dataBucket)
+    this.submissionService = new SubmissionService(this.submissionRepository)
+    this.manuscriptRepository = new ManuscriptRepository(BucketKey.Project, this.dataBucket)
     this.manuscriptNotesRepository = new ManuscriptNoteRepository(
-      BucketKey.Data,
+      BucketKey.Project,
       this.dataBucket
     )
-    this.externalFileRepository = new ExternalFileRepository(
-      BucketKey.Data,
-      this.dataBucket
-    )
-    this.correctionRepository = new CorrectionRepository(
-      BucketKey.Data,
-      this.dataBucket
-    )
-    this.snapshotRepository = new SnapshotRepository(
-      BucketKey.Data,
-      this.dataBucket
-    )
-    this.templateRepository = new TemplateRepository(
-      BucketKey.Data,
-      this.dataBucket
-    )
+    this.externalFileRepository = new ExternalFileRepository(BucketKey.Project, this.dataBucket)
+    this.correctionRepository = new CorrectionRepository(BucketKey.Project, this.dataBucket)
+    this.snapshotRepository = new SnapshotRepository(BucketKey.Project, this.dataBucket)
+    this.templateRepository = new TemplateRepository(BucketKey.Project, this.dataBucket)
     this.userService = new UserService(
       this.userRepository,
       this.singleUseTokenRepository,
@@ -289,7 +245,6 @@ export class DIContainer {
       this.syncService,
       this.userProfileRepository,
       this.projectRepository,
-      this.projectMementoRepository,
       this.userCollaboratorRepository
     )
     this.containerService = {
@@ -343,18 +298,19 @@ export class DIContainer {
         this.correctionRepository,
         this.snapshotRepository,
         this.templateRepository
-      )}
+      ),
+    }
     this.containerInvitationService = new ContainerInvitationService(
-        this.userRepository,
-        this.userProfileRepository,
-        this.emailService,
-        this.containerService[ContainerType.project],
-        this.containerService[ContainerType.library],
-        this.containerService[ContainerType.libraryCollection],
-        this.containerInvitationRepository,
-        this.invitationTokenRepository,
-        this.activityTrackingService
-      )
+      this.userRepository,
+      this.userProfileRepository,
+      this.emailService,
+      this.containerService[ContainerType.project],
+      this.containerService[ContainerType.library],
+      this.containerService[ContainerType.libraryCollection],
+      this.containerInvitationRepository,
+      this.invitationTokenRepository,
+      this.activityTrackingService
+    )
     this.invitationService = new InvitationService(
       this.userRepository,
       this.userProfileRepository,
@@ -386,14 +342,6 @@ export class DIContainer {
       this.invitationService,
       this.containerInvitationService
     )
-    this.functionService = new FunctionService(
-      this.userBucket,
-      this.dataBucket,
-      this.appStateBucket,
-      this.derivedDataBucket,
-      this.discussionsBucket
-    )
-    this.discourseService = config.discourse ? new DiscourseService(config.discourse) : null
     this.jwksClient = jwksClientRSA({
       cache: true,
       cacheMaxEntries: 5,
@@ -401,39 +349,33 @@ export class DIContainer {
       strictSsl: true,
       rateLimit: true,
       jwksRequestsPerMinute: 1,
-      jwksUri: `${config.IAM.authServerURL}/api/oidc/jwk.json`
+      jwksUri: `${config.IAM.authServerURL}/api/oidc/jwk.json`,
     }) as any
     this.iamTokenVerifier = new IAMTokenVerifier()
-    this.pressroomService = new PressroomService(
-      config.pressroom.baseurl,
-      config.pressroom.apiKey
-    )
-    this.shacklesService = new ShacklesService(
-      config.shackles.baseUrl
-    )
+    this.pressroomService = new PressroomService(config.pressroom.baseurl, config.pressroom.apiKey)
+    this.shacklesService = new ShacklesService(config.shackles.baseUrl)
   }
 
   /**
    * Initializes the container
    *
-   * This method creates a Database instance and passes it to the
+   * This method creates a SQLDatabase instance and passes it to the
    * services/repositories.
    *
    * This method should be called once at app startup.
    *
    * The server is then retrieved from the container and bootstrapped.
    */
-  static async init (enableActivityTracking: boolean = false, enableFunctionService = false) {
+  static async init(enableActivityTracking = false) {
     if (DIContainer._sharedContainer !== null) {
       throw new ContainerReinitializationError()
     }
-    const userBucket = new Database(config.DB, BucketKey.User)
+    const userBucket = new SQLDatabase(config.DB, BucketKey.User)
 
     // no loading of database models needed from this bucket (no Ottoman models are mapped there).
-    const dataBucket = new Database(config.DB, BucketKey.Data)
-    const appStateBucket = new Database(config.DB, BucketKey.AppState)
-    const derivedDataBucket = new Database(config.DB, BucketKey.DerivedData)
-    const discussionsBucket = new Database(config.DB, BucketKey.Discussions)
+    const dataBucket = new SQLDatabase(config.DB, BucketKey.Project)
+    const appStateBucket = new SQLDatabase(config.DB, BucketKey.AppState)
+    const derivedDataBucket = new SQLDatabase(config.DB, BucketKey.DerivedData)
 
     // do NOT parallelise these. Deferred PRIMARY index creation appears buggy in CB.
     await userBucket.loadDatabaseModels()
@@ -446,7 +388,6 @@ export class DIContainer {
       dataBucket,
       appStateBucket,
       derivedDataBucket,
-      discussionsBucket,
       enableActivityTracking
     )
 
@@ -454,85 +395,73 @@ export class DIContainer {
 
     /* istanbul ignore else */
     if (config.DB.initializeContents) {
-      log.debug(`Initializing contents`)
+      // log.debug(`Initializing contents`)
 
       await userBucket.ensureSecondaryIndicesExist()
-      log.debug(`User bucket secondary indices ensured.`)
+      // log.debug(`User bucket secondary indices ensured.`)
       await dataBucket.ensureSecondaryIndicesExist()
-      log.debug(`Data bucket secondary indices ensured.`)
+      // log.debug(`Data bucket secondary indices ensured.`)
 
-      const initActions = [
-        DIContainer._sharedContainer.pushDesignDocuments(),
-        DIContainer._sharedContainer.applicationRepository.ensureApplicationsExist(config.apps && config.apps.knownClientApplications || []),
-        DIContainer._sharedContainer.createBucketAdministrators()]
-      if (enableFunctionService) {
-        log.debug(`Synchronizing functions`)
-
-        initActions.concat([
-          DIContainer._sharedContainer.functionService.synchronize(BucketKey.Data)])
-
-        log.debug(`Synchronized functions`)
-      }
+      const initActions: any[] = [
+        // DIContainer._sharedContainer.pushDesignDocuments(),
+        // DIContainer._sharedContainer.applicationRepository.ensureApplicationsExist(config.apps && config.apps.knownClientApplications || []),
+        // DIContainer._sharedContainer.createBucketAdministrators()
+      ]
 
       await Promise.all(initActions)
     }
     return DIContainer._sharedContainer
   }
 
-  public async createBucketAdministrators (): Promise<void> {
-    await Promise.all(Object.values(BucketKey)
-    .filter(key => (key !== BucketKey.User && key !== BucketKey.AppState)) // the user bucket is not featured in the Sync Gateway.
-    .map(key => this.syncService.createGatewayAdministrator(`${config.DB.buckets[key]}_admin`, config.DB.bucketAdminPassword, key, ['*'], [])))
+  public async createBucketAdministrators(): Promise<void> {
+    await Promise.all(
+      Object.values(BucketKey)
+        .filter((key) => key !== BucketKey.User && key !== BucketKey.AppState) // the user bucket is not featured in the Sync Gateway.
+        .map((key) =>
+          this.syncService.createGatewayAdministrator(
+            `${config.DB.buckets[key]}_admin`,
+            config.DB.bucketAdminPassword,
+            key,
+            ['*'],
+            []
+          )
+        )
+    )
     log.debug('Bucket administrators created successfully.')
   }
 
-  public bucketForKey (bucketKey: BucketKey): Database | null {
+  public bucketForKey(bucketKey: BucketKey): SQLDatabase | null {
     switch (bucketKey) {
       case BucketKey.User:
         return this.userBucket
       case BucketKey.Data:
         return this.dataBucket
+      case BucketKey.Project:
+        return this.dataBucket
       case BucketKey.AppState:
         return this.appStateBucket
       case BucketKey.DerivedData:
         return this.derivedDataBucket
-      case BucketKey.Discussions:
-        return this.discussionsBucket
       default:
         return null
     }
   }
 
-  public async pushDesignDocuments (): Promise<void> {
-    await Promise.all(this.databaseViewManagers.map(x => x.pushDesignDocument()))
-    log.debug('Design documents pushed successfully.')
-  }
-
-  public static isDatabaseViewManager (obj: any): obj is IDatabaseViewManager {
-    return obj && obj.buildViews != null && obj.pushDesignDocument != null
-  }
-
-  public static isRepositoryLike (obj: any): obj is RepositoryLike {
+  public static isRepositoryLike(obj: any): obj is RepositoryLike {
     return obj && obj.create != null && obj.documentType != null
   }
 
-  public static isSGRepositoryLike (obj: any): obj is SGRepositoryLike {
+  public static isSGRepositoryLike(obj: any): obj is SGRepositoryLike {
     return obj && obj.create != null && obj.objectType != null
   }
 
-  public get databaseViewManagers (): ReadonlyArray<IDatabaseViewManager> {
-    const viewManagers = (Object as any).values(this).filter(DIContainer.isDatabaseViewManager)
-    const viewManagerSet: Set<IDatabaseViewManager> = new Set(viewManagers)
-    return Array.from(viewManagerSet)
-  }
-
-  public get repositories (): RepositoryLike[] {
+  public get repositories(): RepositoryLike[] {
     const repositories = (Object as any).values(this).filter(DIContainer.isRepositoryLike)
     const repositorySet: Set<RepositoryLike> = new Set(repositories)
     return Array.from(repositorySet)
   }
 
-  public get gatewayRepositories (): SGRepositoryLike[] {
+  public get gatewayRepositories(): SGRepositoryLike[] {
     const repositories = (Object as any).values(this).filter(DIContainer.isSGRepositoryLike)
     const repositorySet: Set<SGRepositoryLike> = new Set(repositories)
     return Array.from(repositorySet)

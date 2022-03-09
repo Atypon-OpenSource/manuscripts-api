@@ -21,7 +21,9 @@ import { QueryCriteria } from './QueryCriteria'
 /**
  * Manages user event persistent storage operations.
  */
-export interface IUserEventRepository
-  extends IndexedRepository<UserActivityEvent, UserActivityEvent, UserActivityEvent, QueryCriteria> {
-
-}
+export type IUserEventRepository = IndexedRepository<
+  UserActivityEvent,
+  UserActivityEvent,
+  UserActivityEvent,
+  QueryCriteria
+>

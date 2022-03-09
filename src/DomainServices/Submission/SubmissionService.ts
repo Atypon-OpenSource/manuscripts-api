@@ -21,15 +21,10 @@ import { SubmissionStatus } from '../../Models/SubmissionModels'
 import { log } from '../../Utilities/Logger'
 
 export class SubmissionService implements ISubmissionService {
-  constructor (private submissionRepository: ISubmissionRepository) {}
+  constructor(private submissionRepository: ISubmissionRepository) {}
 
-  public async updateStatus (
-    submissionId: string,
-    status: string
-  ): Promise<void> {
-    const submission = await this.submissionRepository.getById(
-      submissionId
-    )
+  public async updateStatus(submissionId: string, status: string): Promise<void> {
+    const submission = await this.submissionRepository.getById(submissionId)
 
     if (!submission) {
       throw new MissingSubmissionError(submissionId)
@@ -39,10 +34,7 @@ export class SubmissionService implements ISubmissionService {
       throw new ValidationError('Invalid status recieved.', status)
     }
 
-    if (
-      status === SubmissionStatus.FAILURE ||
-      status === SubmissionStatus.PACKAGING_FAILURE
-    ) {
+    if (status === SubmissionStatus.FAILURE || status === SubmissionStatus.PACKAGING_FAILURE) {
       log.info(`Submission ${submission._id} failed with status: ${status}`)
     }
 

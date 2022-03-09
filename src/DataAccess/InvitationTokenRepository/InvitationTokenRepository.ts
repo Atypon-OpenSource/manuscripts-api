@@ -14,66 +14,90 @@
  * limitations under the License.
  */
 
-import { SchemaDefinition as OttomanSchemaDefinition, ModelOptions as OttomanModelOptions } from 'ottoman'
+import {
+  SchemaDefinition as OttomanSchemaDefinition,
+  ModelOptions as OttomanModelOptions,
+} from 'ottoman'
 
-import { CBRepository } from '../CBRepository'
+import { SQLRepository } from '../SQLRepository'
 import { IInvitationTokenRepository } from '../Interfaces/IInvitationTokenRepository'
 import { InvitationToken, UpdateInvitationToken } from '../../Models/UserModels'
 import { InvitationTokenQueryCriteria } from '../Interfaces/QueryCriteria'
 import { required } from '../validators'
 
+import { Chance } from 'chance'
+
+const chance = new Chance()
+const fakeToken: InvitationToken = {
+  _id: chance.string(),
+  containerID: chance.string(),
+  permittedRole: 'viewer' as any,
+  token: chance.string(),
+}
+
 /**
  * Manages invitation token persistent storage operations.
  */
-export class InvitationTokenRepository extends CBRepository<InvitationToken, InvitationToken, UpdateInvitationToken, InvitationTokenQueryCriteria> implements IInvitationTokenRepository {
-
-  public get documentType (): string {
+export class InvitationTokenRepository
+  extends SQLRepository<
+    InvitationToken,
+    InvitationToken,
+    UpdateInvitationToken,
+    InvitationTokenQueryCriteria
+  >
+  implements IInvitationTokenRepository
+{
+  public get documentType(): string {
     return 'InvitationToken'
   }
 
-  public buildModelOptions (): OttomanModelOptions {
+  public buildModelOptions(): OttomanModelOptions {
     return {
       index: {
         findByToken: {
           type: 'n1ql',
-          by: 'token'
-        }
-      }
+          by: 'token',
+        },
+      },
     }
   }
 
-  public buildSchemaDefinition (): OttomanSchemaDefinition {
+  public buildSchemaDefinition(): OttomanSchemaDefinition {
     return {
       _id: {
         type: 'string',
         auto: 'uuid',
-        readonly: true
+        readonly: true,
       },
       containerID: {
         type: 'string',
         validator: (val: string) => {
           required(val, 'containerID')
-        }
+        },
       },
       permittedRole: {
         type: 'string',
         validator: (val: string) => {
           required(val, 'permittedRole')
-        }
+        },
       },
       token: {
         type: 'string',
         validator: (val: string) => {
           required(val, 'token')
-        }
-      }
+        },
+      },
     }
   }
 
   /**
    * Builds an invitation token model from a invitation token object.
    */
-  public buildModel (invitationToken: InvitationToken): InvitationToken {
+  public buildModel(invitationToken: InvitationToken): InvitationToken {
     return { ...invitationToken }
+  }
+
+  public buildSemiFake(data: any): InvitationToken {
+    return Object.assign(fakeToken, data)
   }
 }

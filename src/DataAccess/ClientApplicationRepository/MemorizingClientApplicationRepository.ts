@@ -15,15 +15,29 @@
  */
 
 import { MemorizingRepository } from '../MemorizingRepository/MemorizingRepository'
-import { ClientApplication, ClientApplicationQueryCriteria } from '../../Models/ClientApplicationModels'
+import {
+  ClientApplication,
+  ClientApplicationQueryCriteria,
+} from '../../Models/ClientApplicationModels'
 import { IClientApplicationRepository } from '../Interfaces/IClientApplicationRepository'
 
-export class MemorizingClientApplicationRepository extends MemorizingRepository<ClientApplication, ClientApplication, ClientApplication, ClientApplicationQueryCriteria> implements IClientApplicationRepository {
-  constructor (private applicationRepository: IClientApplicationRepository, cacheTTLSeconds: number) {
+export class MemorizingClientApplicationRepository
+  extends MemorizingRepository<
+    ClientApplication,
+    ClientApplication,
+    ClientApplication,
+    ClientApplicationQueryCriteria
+  >
+  implements IClientApplicationRepository
+{
+  constructor(
+    private applicationRepository: IClientApplicationRepository,
+    cacheTTLSeconds: number
+  ) {
     super(applicationRepository, cacheTTLSeconds)
   }
 
-  public ensureApplicationsExist (applications: ReadonlyArray<ClientApplication>): Promise<void> {
+  public ensureApplicationsExist(applications: ReadonlyArray<ClientApplication>): Promise<void> {
     return this.applicationRepository.ensureApplicationsExist(applications)
   }
 }

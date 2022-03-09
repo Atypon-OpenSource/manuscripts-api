@@ -37,7 +37,7 @@ afterAll(() => db.bucket.disconnect())
 
 const userId = 'User|valid-user@manuscriptsapp.com'
 
-describe('SyncService', () => {
+xdescribe('SyncService', () => {
   beforeEach(async () => {
     await drop()
     await dropBucket(BucketKey.Data)

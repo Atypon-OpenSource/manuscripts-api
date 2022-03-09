@@ -20,5 +20,5 @@ export type JWKSSigningKeyCallback = (
 ) => void
 
 export interface JWKSClient {
-  getSigningKey (kid: string, callback: JWKSSigningKeyCallback): void
+  getSigningKey(kid: string, callback: JWKSSigningKeyCallback): void
 }

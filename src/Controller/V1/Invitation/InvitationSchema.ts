@@ -21,69 +21,69 @@ import { jsonHeadersSchema, emailSchema, appJsonAndCharset } from '../../BaseSch
 export const inviteSchema: Joi.SchemaMap = {
   body: Joi.object({
     invitedUsersEmails: Joi.array().items(emailSchema).unique().required(),
-    message: Joi.string().max(500)
+    message: Joi.string().max(500),
   }),
-  headers: jsonHeadersSchema.headers
+  headers: jsonHeadersSchema.headers,
 }
 
 export const containerInviteSchema: Joi.SchemaMap = {
   body: Joi.object({
-    invitedUsers: Joi.array().items(Joi.object({
-      name: Joi.string().max(100),
-      email: emailSchema.required()
-    })).required(),
+    invitedUsers: Joi.array()
+      .items(
+        Joi.object({
+          name: Joi.string().max(100),
+          email: emailSchema.required(),
+        })
+      )
+      .required(),
     role: Joi.string().required(),
     message: Joi.string().max(500),
-    skipEmail: Joi.bool()
+    skipEmail: Joi.bool(),
   }),
-  headers: jsonHeadersSchema.headers
+  headers: jsonHeadersSchema.headers,
 }
 
 export const rejectSchema: Joi.SchemaMap = {
   body: Joi.object({
-    invitationId: Joi.string().required()
+    invitationId: Joi.string().required(),
   }),
-  headers: jsonHeadersSchema.headers
+  headers: jsonHeadersSchema.headers,
 }
 
 export const acceptSchema: Joi.SchemaMap = {
   body: Joi.object({
-    invitationId: Joi.string()
-      .required(),
-    password: Joi.string()
-      .max(100)
-      .min(8),
-    name: Joi.string()
-      .max(100),
-    skipEmail: Joi.bool()
+    invitationId: Joi.string().required(),
+    password: Joi.string().max(100).min(8),
+    name: Joi.string().max(100),
+    skipEmail: Joi.bool(),
   }),
-  headers: jsonHeadersSchema.headers
+  headers: jsonHeadersSchema.headers,
 }
 
 export const uninviteSchema: Joi.SchemaMap = {
   body: Joi.object({
-    invitationId: Joi.string().required()
+    invitationId: Joi.string().required(),
   }),
-  headers: jsonHeadersSchema.headers
+  headers: jsonHeadersSchema.headers,
 }
 
 export const requestInvitationTokenSchema: Joi.SchemaMap = {
   params: Joi.object({
     containerID: Joi.string().required(),
-    role: Joi.string().required()
-  })
+    role: Joi.string().required(),
+  }),
 }
 
 export const refreshInvitationTokenSchema: Joi.SchemaMap = {
   headers: Joi.object({
-    accept: appJsonAndCharset
-  }).options({ allowUnknown: true })
+    accept: appJsonAndCharset,
+  }).options({ allowUnknown: true }),
 }
 
 export const accessSharedUriSchema: Joi.SchemaMap = {
   body: Joi.object({
     token: Joi.string().required(),
-    skipEmail: Joi.bool()
+    skipEmail: Joi.bool(),
   }),
-  headers: jsonHeadersSchema.headers
+  headers: jsonHeadersSchema.headers,
 }

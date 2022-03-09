@@ -19,25 +19,21 @@ import * as jsonwebtoken from 'jsonwebtoken'
 
 import { isString, isNumber } from '../../../util'
 import { IAuthController } from './IAuthController'
-import {
-  BaseController,
-  isBearerHeaderValue,
-  authorizationBearerToken
-} from '../../BaseController'
+import { BaseController, isBearerHeaderValue, authorizationBearerToken } from '../../BaseController'
 import {
   ValidationError,
   InvalidClientApplicationError,
   MissingQueryParameterError,
   InvalidCredentialsError,
   InvalidServerCredentialsError,
-  InvalidBackchannelLogoutError
+  InvalidBackchannelLogoutError,
 } from '../../../Errors'
 import { DIContainer } from '../../../DIContainer/DIContainer'
 import { AuthorizedUser, BucketSessions } from '../../../Models/UserModels'
 import { isIAMOAuthTokenPayload } from '../../../Utilities/JWT/IAMAuthTokenPayload'
 import { IAMState } from '../../../Auth/Interfaces/IAMState'
 import { isIAMLogoutTokenPayload } from '../../../Utilities/JWT/IAMLogoutTokenPayload'
-import { isAdminTokenPayload } from '../../../Utilities/JWT/AdminTokenPayload'
+import { AdminTokenPayload, isAdminTokenPayload } from '../../../Utilities/JWT/AdminTokenPayload'
 import { ContainerService } from '../../../DomainServices/Container/ContainerService'
 import { config } from '../../../Config/Config'
 
@@ -55,10 +51,7 @@ export class AuthController extends BaseController implements IAuthController {
   /**
    * Logs user into the system.
    */
-  async login (
-    req: Request
-  ): Promise<AuthorizedUser> {
-
+  async login(req: Request): Promise<AuthorizedUser> {
     const appId = req.headers[APP_ID_HEADER_KEY]
 
     if (!isString(appId)) {
@@ -73,7 +66,7 @@ export class AuthController extends BaseController implements IAuthController {
       return DIContainer.sharedContainer.authService.login({
         appId,
         email: req.body.email.toLowerCase(),
-        deviceId: req.body.deviceId
+        deviceId: req.body.deviceId,
       })
     }
 
@@ -85,11 +78,11 @@ export class AuthController extends BaseController implements IAuthController {
       appId,
       email: req.body.email.toLowerCase(),
       password: req.body.password,
-      deviceId: req.body.deviceId
+      deviceId: req.body.deviceId,
     })
   }
 
-  async serverToServerAuth (req: Request): Promise<AuthorizedUser> {
+  async serverToServerAuth(req: Request): Promise<AuthorizedUser> {
     const token = authorizationBearerToken(req)
 
     const appId = req.headers[APP_ID_HEADER_KEY]
@@ -104,23 +97,20 @@ export class AuthController extends BaseController implements IAuthController {
       throw new InvalidCredentialsError('Device id must be string.')
     }
 
-    const tokenPayload = jsonwebtoken.decode(token)
+    const tokenPayload = jsonwebtoken.decode(token) as AdminTokenPayload
     if (!isAdminTokenPayload(tokenPayload)) {
-      throw new InvalidServerCredentialsError(
-        'Admin token missing email and connectUserID.'
-      )
+      throw new InvalidServerCredentialsError('Admin token missing email and connectUserID.')
     }
 
     return DIContainer.sharedContainer.authService.serverToServerAuth({
       connectUserID: tokenPayload.connectUserID,
       email: tokenPayload.email,
       deviceId,
-      appId
+      appId,
     })
   }
 
-  async serverToServerTokenAuth (req: Request): Promise<AuthorizedUser> {
-
+  async serverToServerTokenAuth(req: Request): Promise<AuthorizedUser> {
     const appId = req.headers[APP_ID_HEADER_KEY]
 
     if (!isString(appId)) {
@@ -140,14 +130,11 @@ export class AuthController extends BaseController implements IAuthController {
     return DIContainer.sharedContainer.authService.serverToServerTokenAuth({
       connectUserID: connectUserID,
       deviceId,
-      appId
+      appId,
     })
   }
 
-  async iamOAuthCallback (
-    req: Request,
-    state: IAMState
-  ): Promise<AuthorizedUser> {
+  async iamOAuthCallback(req: Request, state: IAMState): Promise<AuthorizedUser> {
     const token = req.query.id_token
     if (!isString(token)) {
       return Promise.reject(new MissingQueryParameterError('id_token'))
@@ -172,23 +159,21 @@ export class AuthController extends BaseController implements IAuthController {
   /**
    * Sends email to reset password.
    */
-  async sendPasswordResetInstructions (
-    req: Request
-  ): Promise<void> {
+  async sendPasswordResetInstructions(req: Request): Promise<void> {
     const email = req.body.email
     if (!isString(email)) {
       throw new ValidationError('email should be string', email)
     }
 
-    return DIContainer.sharedContainer.authService.sendPasswordResetInstructions(email.toLowerCase())
+    return DIContainer.sharedContainer.authService.sendPasswordResetInstructions(
+      email.toLowerCase()
+    )
   }
 
   /**
    * Resets with new password.
    */
-  async resetPassword (
-    req: Request
-  ): Promise<AuthorizedUser> {
+  async resetPassword(req: Request): Promise<AuthorizedUser> {
     const { password, token, deviceId } = req.body
 
     if (!isString(password) || !isString(token) || !isString(deviceId)) {
@@ -205,14 +190,14 @@ export class AuthController extends BaseController implements IAuthController {
       deviceId,
       appId,
       tokenId: token,
-      newPassword: password
+      newPassword: password,
     })
   }
 
   /*
    * Logs the user out of the system.
    */
-  async logout (req: Request): Promise<void> {
+  async logout(req: Request): Promise<void> {
     // The 'authorization' header's value after prefix 'Bearer ' is the JWT payload.
     const authHeader = req.headers.authorization
 
@@ -229,34 +214,26 @@ export class AuthController extends BaseController implements IAuthController {
     return DIContainer.sharedContainer.authService.logout(token)
   }
 
-  async backchannelLogout (req: Request): Promise<void> {
+  async backchannelLogout(req: Request): Promise<void> {
     const logoutToken = req.query.logout_token
 
     if (!isString(logoutToken)) {
-      throw new InvalidBackchannelLogoutError(
-        'Logout token must be a string',
-        logoutToken
-      )
+      throw new InvalidBackchannelLogoutError('Logout token must be a string', logoutToken)
     }
 
     const tokenPayload = jsonwebtoken.decode(logoutToken)
 
     if (!isIAMLogoutTokenPayload(tokenPayload)) {
-      throw new InvalidBackchannelLogoutError(
-        'Invalid backchannel logout token',
-        tokenPayload
-      )
+      throw new InvalidBackchannelLogoutError('Invalid backchannel logout token', tokenPayload)
     }
 
-    return DIContainer.sharedContainer.authService.backchannelLogout(
-      tokenPayload.sid
-    )
+    return DIContainer.sharedContainer.authService.backchannelLogout(tokenPayload.sid)
   }
 
   /*
    * Refreshes the sync session for the given device
    */
-  async refreshSyncSessions (req: Request): Promise<BucketSessions> {
+  async refreshSyncSessions(req: Request): Promise<BucketSessions> {
     // The 'authorization' header's value after prefix 'Bearer ' is the JWT payload.
     const authHeader = req.headers.authorization
 
@@ -273,9 +250,7 @@ export class AuthController extends BaseController implements IAuthController {
     return DIContainer.sharedContainer.authService.refreshSyncSessions(token)
   }
 
-  async changePassword (
-    req: Request
-  ): Promise<void> {
+  async changePassword(req: Request): Promise<void> {
     const { currentPassword, newPassword, deviceId } = req.body
     const user = req.user
 
@@ -288,13 +263,14 @@ export class AuthController extends BaseController implements IAuthController {
     }
 
     return DIContainer.sharedContainer.authService.changePassword({
-      userId: user._id, currentPassword, newPassword, deviceId
+      userId: user._id,
+      currentPassword,
+      newPassword,
+      deviceId,
     })
   }
 
-  async createAuthorizationToken (
-    req: Request
-  ): Promise<string> {
+  async createAuthorizationToken(req: Request): Promise<string> {
     const { scope } = req.params
     const user = req.user
 
@@ -310,16 +286,17 @@ export class AuthController extends BaseController implements IAuthController {
       iss: config.API.hostname,
       sub: syncUserID,
       aud: scopeInfo.name,
-      email: user.email
+      email: user.email,
     }
 
-    return jsonwebtoken.sign(
-      payload,
-      scopeInfo.secret,
-      {
-        header: { kid: scopeInfo.identifier },
-        algorithm: scopeInfo.publicKeyPEM === null ? 'HS256' : 'RS256',
-        expiresIn: `${scopeInfo.expiry}m`
-      })
+    const options = {
+      header: {
+        kid: scopeInfo.identifier,
+      },
+      algorithm: scopeInfo.publicKeyPEM === null ? 'HS256' : 'RS256',
+      expiresIn: `${scopeInfo.expiry}m`,
+    }
+
+    return jsonwebtoken.sign(payload, scopeInfo.secret, options as any)
   }
 }

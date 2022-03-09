@@ -17,142 +17,148 @@
 import * as Joi from 'joi'
 
 import { appJsonAndCharset } from '../../BaseSchema'
-const allowUnknownObjectsSchema = Joi.defaults((schema) => schema.options({
-  allowUnknown: true
-}))
+const allowUnknownObjectsSchema = Joi.defaults((schema) =>
+  schema.options({
+    allowUnknown: true,
+  })
+)
 
 export const createSchema: Joi.SchemaMap = {
   headers: Joi.object({
-    accept: appJsonAndCharset
+    accept: appJsonAndCharset,
   }).options({ allowUnknown: true }),
   body: Joi.object({
-    _id: Joi.string()
-  })
+    _id: Joi.string(),
+  }),
 }
 
 export const deleteSchema: Joi.SchemaMap = {
   headers: Joi.object({
-    accept: appJsonAndCharset
-  }).options({ allowUnknown: true })
+    accept: appJsonAndCharset,
+  }).options({ allowUnknown: true }),
 }
 
 export const manageUserRoleSchema: Joi.SchemaMap = {
   headers: Joi.object({
-    accept: appJsonAndCharset
+    accept: appJsonAndCharset,
   }).options({ allowUnknown: true }),
   body: Joi.object({
     managedUserId: Joi.string(),
     managedUserConnectId: Joi.string(),
     newRole: Joi.string().allow(null),
-    secret: Joi.string()
+    secret: Joi.string(),
   }),
   params: Joi.object({
-    containerID: Joi.string().required()
-  })
+    containerID: Joi.string().required(),
+  }),
 }
 
 export const addUserSchema: Joi.SchemaMap = {
   headers: Joi.object({
-    accept: appJsonAndCharset
+    accept: appJsonAndCharset,
   }).options({ allowUnknown: true }),
   body: Joi.object({
     userId: Joi.string().required(),
-    role: Joi.string().required()
+    role: Joi.string().required(),
   }),
   params: Joi.object({
-    containerID: Joi.string().required()
-  })
+    containerID: Joi.string().required(),
+  }),
 }
 
 export const getArchiveSchema: Joi.SchemaMap = {
   headers: Joi.object({
-    accept: appJsonAndCharset
+    accept: appJsonAndCharset,
   }).options({ allowUnknown: true }),
   params: Joi.object({
     containerID: Joi.string().required(),
-    manuscriptID: Joi.string()
+    manuscriptID: Joi.string(),
   }),
   query: Joi.object({
-    allowOrphanedDocs: Joi.string()
-  })
+    allowOrphanedDocs: Joi.string(),
+  }),
 }
 
 export const getPickerBuilderSchema: Joi.SchemaMap = {
   headers: Joi.object({
-    accept: appJsonAndCharset
+    accept: appJsonAndCharset,
   }).options({ allowUnknown: true }),
   params: Joi.object({
     containerID: Joi.string().required(),
-    manuscriptID: Joi.string().required()
-  })
+    manuscriptID: Joi.string().required(),
+  }),
 }
 
 export const accessTokenSchema: Joi.SchemaMap = {
   params: Joi.object({
     containerType: Joi.string().required(),
     containerID: Joi.string().required(),
-    scope: Joi.string().required()
-  })
+    scope: Joi.string().required(),
+  }),
 }
 
 export const accessTokenJWKSchema: Joi.SchemaMap = {
   params: Joi.object({
     containerType: Joi.string().required(),
-    scope: Joi.string().required()
-  })
+    scope: Joi.string().required(),
+  }),
 }
 
 export const createManuscriptSchema: Joi.SchemaMap = {
   params: Joi.object({
     containerID: Joi.string().required(),
-    manuscriptID: Joi.string()
+    manuscriptID: Joi.string(),
   }),
   body: Joi.object({
-    templateId: Joi.string()
-  })
+    templateId: Joi.string(),
+  }),
 }
 
 export const getProductionNotesSchema: Joi.SchemaMap = {
   params: Joi.object({
     containerID: Joi.string().required(),
-    manuscriptID: Joi.string().required()
-  })
+    manuscriptID: Joi.string().required(),
+  }),
 }
 
 export const addProductionNoteSchema: Joi.SchemaMap = {
   params: Joi.object({
     containerID: Joi.string().required(),
-    manuscriptID: Joi.string().required()
+    manuscriptID: Joi.string().required(),
   }),
   body: Joi.object({
     content: Joi.string().required(),
     connectUserID: Joi.string().required(),
     source: Joi.string().required().valid('EDITOR', 'EMAIL', 'DASHBOARD'),
-    target: Joi.string()
-  })
+    target: Joi.string(),
+  }),
 }
 
 export const submitExternalFiles: Joi.SchemaMap = {
   body: Joi.object({
-    content: Joi.array().items(allowUnknownObjectsSchema.object({
-      containerID: Joi.string().required(),
-      manuscriptID: Joi.string().required(),
-      publicUrl: Joi.string().required()
-    })).required()
-  })
+    content: Joi.array()
+      .items(
+        allowUnknownObjectsSchema.object({
+          containerID: Joi.string().required(),
+          manuscriptID: Joi.string().required(),
+          publicUrl: Joi.string().required(),
+        })
+      )
+      .required(),
+  }),
 }
 
 export const suggestionStatusSchema: Joi.SchemaMap = {
   params: Joi.object({
-    containerID: Joi.string().required()
-  })
+    containerID: Joi.string().required(),
+  }),
 }
 
 export const createSnapshotSchema: Joi.SchemaMap = {
   params: Joi.object({
-    containerID: Joi.string().required()
+    containerID: Joi.string().required(),
   }),
   body: Joi.object({
-    name: Joi.string()
-  })
+    name: Joi.string(),
+  }),
 }

@@ -20,11 +20,19 @@ import * as HttpStatus from 'http-status-codes'
 
 import { BaseRoute } from '../../BaseRoute'
 import { InvitationController } from './InvitationController'
-import { inviteSchema, rejectSchema, acceptSchema, uninviteSchema, containerInviteSchema, requestInvitationTokenSchema, refreshInvitationTokenSchema, accessSharedUriSchema } from './InvitationSchema'
+import {
+  inviteSchema,
+  rejectSchema,
+  acceptSchema,
+  uninviteSchema,
+  containerInviteSchema,
+  requestInvitationTokenSchema,
+  refreshInvitationTokenSchema,
+  accessSharedUriSchema,
+} from './InvitationSchema'
 import { AuthStrategy } from '../../../Auth/Passport/AuthStrategy'
 
 export class InvitationRoute extends BaseRoute {
-
   private invitationController = new InvitationController()
 
   /**
@@ -32,11 +40,11 @@ export class InvitationRoute extends BaseRoute {
    *
    * @returns string
    */
-  private get basePath (): string {
+  private get basePath(): string {
     return '/invitation'
   }
 
-  public create (router: Router): void {
+  public create(router: Router): void {
     router.post(
       `${this.basePath}/invite`,
       expressJoiMiddleware(inviteSchema, {}),
@@ -45,10 +53,7 @@ export class InvitationRoute extends BaseRoute {
         return this.runWithErrorHandling(async () => {
           const result = await this.invitationController.invite(req)
 
-          res
-            .status(HttpStatus.OK)
-            .json(result)
-            .end()
+          res.status(HttpStatus.OK).json(result).end()
         }, next)
       }
     )
@@ -61,10 +66,7 @@ export class InvitationRoute extends BaseRoute {
         return this.runWithErrorHandling(async () => {
           const result = await this.invitationController.inviteToContainer(req)
 
-          res
-            .status(HttpStatus.OK)
-            .json(result)
-            .end()
+          res.status(HttpStatus.OK).json(result).end()
         }, next)
       }
     )
@@ -75,10 +77,7 @@ export class InvitationRoute extends BaseRoute {
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           const result = await this.invitationController.reject(req)
-          res
-            .status(HttpStatus.OK)
-            .json(result)
-            .end()
+          res.status(HttpStatus.OK).json(result).end()
         }, next)
       }
     )
@@ -86,20 +85,17 @@ export class InvitationRoute extends BaseRoute {
     router.post(
       `${this.basePath}/accept`,
       expressJoiMiddleware(acceptSchema, {}),
-       (req: Request, res: Response, next: NextFunction) => {
-         if (req.body.invitationId.startsWith('MPContainerInvitation')) {
-           AuthStrategy.JWTAuth(req, res, next)
-         } else {
-           next()
-         }
-       }
-      ,(req: Request, res: Response, next: NextFunction) => {
+      (req: Request, res: Response, next: NextFunction) => {
+        if (req.body.invitationId.startsWith('MPContainerInvitation')) {
+          AuthStrategy.JWTAuth(req, res, next)
+        } else {
+          next()
+        }
+      },
+      (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           const result = await this.invitationController.accept(req)
-          res
-            .status(HttpStatus.OK)
-            .json(result)
-            .end()
+          res.status(HttpStatus.OK).json(result).end()
         }, next)
       }
     )
@@ -111,24 +107,19 @@ export class InvitationRoute extends BaseRoute {
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           const result = await this.invitationController.uninvite(req)
-          res
-            .status(HttpStatus.OK)
-            .json(result)
-            .end()
+          res.status(HttpStatus.OK).json(result).end()
         }, next)
       }
     )
 
-    router.get([`${this.basePath}/:containerID/:role`, `${this.basePath}/project/:containerID/:role`],
+    router.get(
+      [`${this.basePath}/:containerID/:role`, `${this.basePath}/project/:containerID/:role`],
       expressJoiMiddleware(requestInvitationTokenSchema, {}),
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           const token = await this.invitationController.requestInvitationToken(req)
-          res
-            .status(HttpStatus.OK)
-            .send(token)
-            .end()
+          res.status(HttpStatus.OK).send(token).end()
         }, next)
       }
     )
@@ -139,9 +130,7 @@ export class InvitationRoute extends BaseRoute {
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           const response = await this.invitationController.acceptInvitationToken(req)
-          res.status(HttpStatus.OK)
-            .send(response)
-            .end()
+          res.status(HttpStatus.OK).send(response).end()
         }, next)
       }
     )
@@ -153,9 +142,7 @@ export class InvitationRoute extends BaseRoute {
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           await this.invitationController.refreshInvitationToken(req)
-          res
-          .status(HttpStatus.OK)
-          .end()
+          res.status(HttpStatus.OK).end()
         }, next)
       }
     )

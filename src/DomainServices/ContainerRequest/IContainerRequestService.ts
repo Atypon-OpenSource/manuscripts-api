@@ -23,7 +23,7 @@ export interface IContainerRequestService {
    * @param containerID The id of the container wanted to be accessed.
    * @param role The requested role.
    */
-  create (user: User, containerID: string, role: ContainerRole): Promise<void>
+  create(user: User, containerID: string, role: ContainerRole): Promise<void>
 
   /**
    * Accepts the container access request and give the specified role to the user or rejects it and removes the request.
@@ -31,5 +31,5 @@ export interface IContainerRequestService {
    * @param acceptingUser The user who accepted the request.
    * @param accept If true then the request is accepted else rejected
    */
-  response (requestID: string, acceptingUser: User, accept: boolean): Promise<void>
+  response(requestID: string, acceptingUser: User, accept: boolean): Promise<void>
 }

@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-import {
-  BaseIAMTokenPayload
-} from './BaseIAMTokenPayload'
+import { BaseIAMTokenPayload } from './BaseIAMTokenPayload'
 
 /**
  * Represents contents of JWT token returned by IAM
@@ -59,7 +57,7 @@ export interface IAMAuthTokenPayload extends BaseIAMTokenPayload {
 
 const requiredStringFields = ['email', 'sub', 'nonce', 'iss']
 
-export function isCurrent (token: { exp?: number; iat?: number }) {
+export function isCurrent(token: { exp?: number; iat?: number }) {
   const now = Date.now()
   if (!token.exp || !token.iat) {
     return false
@@ -70,7 +68,7 @@ export function isCurrent (token: { exp?: number; iat?: number }) {
 }
 
 // Basic check about IAM token structure validation
-export function isIAMOAuthTokenPayload (
+export function isIAMOAuthTokenPayload(
   obj: string | { [key: string]: any } | null
 ): obj is IAMAuthTokenPayload {
   if (!obj) {
@@ -81,7 +79,7 @@ export function isIAMOAuthTokenPayload (
   }
 
   return (
-    requiredStringFields.every(key => typeof obj[key] === 'string') &&
+    requiredStringFields.every((key) => typeof obj[key] === 'string') &&
     obj.email_verified &&
     isCurrent(obj)
   )

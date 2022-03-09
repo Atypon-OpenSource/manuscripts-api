@@ -74,7 +74,7 @@ export interface SingleUseToken {
 }
 
 export enum SingleUseTokenType {
-    ResetPasswordToken = 'resetPasswordToken',
-    VerifyEmailToken = 'verifyEmailToken',
-    InvitationEmailToken = 'InvitationEmailToken'
-  }
+  ResetPasswordToken = 'resetPasswordToken',
+  VerifyEmailToken = 'verifyEmailToken',
+  InvitationEmailToken = 'InvitationEmailToken',
+}

@@ -26,16 +26,14 @@ jest.mock('../../src/Config/Config', () => {
         user: 'manuscripts_user',
         data: 'bkt',
         state: 'state',
-        derivedData: 'derived_data',
-        discussions: 'discussions'
+        derivedData: 'derived_data'
       },
       initializeContents: false,
       username: 'Administrator',
       password: '123456',
       bucketAdminPassword: 'zuippadui',
       uri: 'couchbase://couchbase/',
-      bucketOptions: {},
-      startFunctionService: false
+      bucketOptions: {}
     },
     gateway: {
       hostname: 'sync_gateway',
@@ -61,13 +59,6 @@ jest.mock('../../src/Config/Config', () => {
       hashSaltRounds: 3,
       serverSecret: '123456789',
       enableNonConnectAuth: true
-    },
-    discourse: {
-      ssoSecret: '123456',
-      url: 'https://community.manuscripts.io',
-      adminUsername: 'discourse-admin',
-      apiKey: '123456',
-      feedbackCategoryID: '123'
     },
     google: {
       clientID: 'herp',

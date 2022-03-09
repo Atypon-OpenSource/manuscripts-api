@@ -15,8 +15,5 @@
  */
 
 export interface ISubmissionService {
-  updateStatus (
-    submissionId: string,
-    status: string
-  ): Promise<void>
+  updateStatus(submissionId: string, status: string): Promise<void>
 }

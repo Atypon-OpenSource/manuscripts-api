@@ -33,7 +33,7 @@ import {
   submitExternalFiles,
   createManuscriptSchema,
   suggestionStatusSchema,
-  createSnapshotSchema
+  createSnapshotSchema,
 } from './ContainerSchema'
 import { ContainersController } from './ContainersController'
 import { AuthStrategy } from '../../../Auth/Passport/AuthStrategy'
@@ -41,7 +41,7 @@ import { AuthStrategy } from '../../../Auth/Passport/AuthStrategy'
 export class ContainerRoute extends BaseRoute {
   private containersController = new ContainersController()
 
-  public create (router: Router): void {
+  public create(router: Router): void {
     router.post(
       `/:containerType/create`,
       expressJoiMiddleware(createSchema, {}),

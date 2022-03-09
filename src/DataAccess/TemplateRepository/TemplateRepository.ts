@@ -15,9 +15,7 @@
  */
 
 import { SGRepository } from '../SGRepository'
-import {
-  NoBucketError
-} from '../../Errors'
+import { NoBucketError } from '../../Errors'
 import { ManuscriptTemplateLike } from '../Interfaces/Models'
 import { ManuscriptTemplate } from '@manuscripts/manuscripts-json-schema/dist/types'
 
@@ -26,12 +24,12 @@ class TemplateRepository extends SGRepository<
   ManuscriptTemplateLike,
   ManuscriptTemplateLike,
   ManuscriptTemplateLike
-  > {
-  public get objectType (): string {
+> {
+  public get objectType(): string {
     return 'MPManuscriptTemplate'
   }
 
-  public get bucketName (): string {
+  public get bucketName(): string {
     if (!this.database.bucket) {
       throw new NoBucketError()
     }

@@ -21,14 +21,10 @@ import { ISubmissionRepository } from '../Interfaces/ISubmissionRepository'
 import { SubmissionLike } from '../Interfaces/Models'
 
 export class SubmissionRepository
-  extends SGRepository<
-    Submission,
-    SubmissionLike,
-    SubmissionLike,
-    Partial<Submission>
-  >
-  implements ISubmissionRepository {
-  public get objectType (): string {
+  extends SGRepository<Submission, SubmissionLike, SubmissionLike, Partial<Submission>>
+  implements ISubmissionRepository
+{
+  public get objectType(): string {
     return 'MPSubmission'
   }
 }

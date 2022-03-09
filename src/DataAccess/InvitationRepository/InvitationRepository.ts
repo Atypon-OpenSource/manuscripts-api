@@ -17,7 +17,7 @@
 import { Invitation } from '@manuscripts/manuscripts-json-schema'
 import { PatchInvitation } from 'src/Models/InvitationModels'
 
-import { selectN1QLQuery } from '../DatabaseResponseFunctions'
+// import { selectN1QLQuery } from '../DatabaseResponseFunctions'
 import { InvitationLike } from '../Interfaces/Models'
 import { SGRepository } from '../SGRepository'
 
@@ -30,12 +30,12 @@ export class InvitationRepository extends SGRepository<
   InvitationLike,
   PatchInvitation
 > {
-  public get objectType (): string {
+  public get objectType(): string {
     return 'MPInvitation'
   }
 
-  public async getAllByEmail (email: string) {
-    const n1ql = `SELECT META().id, * FROM ${this.bucketName} WHERE objectType = \'${this.objectType}\' AND invitedUserEmail = $1 AND _deleted IS MISSING`
+  public async getAllByEmail(email: string) {
+    /*const n1ql = `SELECT META().id, * FROM ${this.bucketName} WHERE objectType = \'${this.objectType}\' AND invitedUserEmail = $1 AND _deleted IS MISSING`
 
     const callbackFn = (results: any) => results.map((result: any) => {
       const obj = {
@@ -45,6 +45,36 @@ export class InvitationRepository extends SGRepository<
       return obj
     })
 
-    return selectN1QLQuery<Invitation[]>(this.database.bucket, n1ql, [email], callbackFn)
+    return selectN1QLQuery<Invitation[]>(this.database.bucket, n1ql, [email], callbackFn)*/
+
+    const Q = {
+      AND: [
+        {
+          data: {
+            path: ['objectType'],
+            equals: this.objectType,
+          },
+        },
+        {
+          data: {
+            path: ['invitedUserEmail'],
+            equals: email,
+          },
+        },
+        /*{
+          data: {
+            path: ["_deleted"],
+            equals: undefined
+          }
+        }*/
+      ],
+    }
+
+    const callbackFn = (results: any) =>
+      results.map((result: any) => {
+        return { ...this.buildModel(result) } as Invitation
+      })
+
+    return this.database.bucket.query(Q).then((res: any) => callbackFn(res))
   }
 }

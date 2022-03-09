@@ -26,5 +26,5 @@ export interface IUserRepository
   /**
    * Returns users based on the value of property `deleteAt`.
    */
-  getUsersToDelete (): Promise<User[] | null>
+  getUsersToDelete(): Promise<User[] | null>
 }

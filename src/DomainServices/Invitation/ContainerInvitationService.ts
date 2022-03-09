@@ -25,7 +25,7 @@ import {
   UserRoleError,
   MissingContainerError,
   RecordGoneError,
-  RoleDoesNotPermitOperationError
+  RoleDoesNotPermitOperationError,
 } from '../../Errors'
 import { IContainerInvitationService } from './IContainerInvitationService'
 import { IUserRepository } from '../../DataAccess/Interfaces/IUserRepository'
@@ -35,13 +35,10 @@ import {
   ContainerRole,
   ContainerInvitationResponse,
   InvitedUserData,
-  Container
+  Container,
 } from '../../Models/ContainerModels'
 import { IContainerService } from '../Container/IContainerService'
-import {
-  getExpirationTime,
-  timestamp
-} from '../../Utilities/JWT/LoginTokenPayload'
+import { getExpirationTime, timestamp } from '../../Utilities/JWT/LoginTokenPayload'
 import { IInvitationTokenRepository } from '../../DataAccess/Interfaces/IInvitationTokenRepository'
 import { ContainerService } from '../Container/ContainerService'
 import { EmailService } from '../Email/EmailService'
@@ -69,7 +66,7 @@ export class ContainerInvitationService implements IContainerInvitationService {
    */
   public static invitationTokenTimeout = () => getExpirationTime(14 * 24) // 14 days
 
-  constructor (
+  constructor(
     private userRepository: IUserRepository,
     private userProfileRepository: IUserProfileRepository,
     private emailService: EmailService,
@@ -81,7 +78,7 @@ export class ContainerInvitationService implements IContainerInvitationService {
     private activityTrackingService: UserActivityTrackingService
   ) {}
 
-  public async inviteToContainer (
+  public async inviteToContainer(
     invitingUserId: string,
     invitedUsers: InvitedUserData[],
     containerID: string,
@@ -97,13 +94,11 @@ export class ContainerInvitationService implements IContainerInvitationService {
     )
 
     const invitingUserProfileID = UserService.profileID(invitingUser._id)
-    const invitingUserProfile = await this.userProfileRepository.getById(
-      invitingUserProfileID
-    )
+    const invitingUserProfile = await this.userProfileRepository.getById(invitingUserProfileID)
 
     if (!invitingUserProfile) {
       throw new ValidationError(
-        'Inviting user\'s profile could not be retrieved',
+        "Inviting user's profile could not be retrieved",
         invitingUserProfileID
       )
     }
@@ -112,17 +107,12 @@ export class ContainerInvitationService implements IContainerInvitationService {
 
     for (const invitedUser of invitedUsers) {
       const invitedUserDoc = await this.userRepository.getOne({
-        email: invitedUser.email.toLowerCase()
+        email: invitedUser.email.toLowerCase(),
       })
       let invitedUserID
       if (invitedUserDoc) {
         invitedUserID = invitedUserDoc._id.replace('|', '_')
-        if (
-          ContainerService.isContainerUser(
-            container,
-            invitedUserID
-          )
-        ) {
+        if (ContainerService.isContainerUser(container, invitedUserID)) {
           throw new ConflictingRecordError(
             'User already a collaborator on the container',
             invitedUserDoc
@@ -136,9 +126,7 @@ export class ContainerInvitationService implements IContainerInvitationService {
       )
 
       const invitationId = `${ObjectTypes.ContainerInvitation}:${invitationTupleHash}`
-      let invitation = await this.containerInvitationRepository.getById(
-        invitationId
-      )
+      let invitation = await this.containerInvitationRepository.getById(invitationId)
 
       if (invitation) {
         await this.containerInvitationRepository.patch(
@@ -158,13 +146,12 @@ export class ContainerInvitationService implements IContainerInvitationService {
           containerID,
           containerTitle: ContainerService.containerTitle(container),
           role,
-          message
+          message,
         }
 
-        await this.containerInvitationRepository.create(
-          newInvitation,
-          { expiry: ContainerInvitationService.invitationExpiryInDays() }
-        )
+        await this.containerInvitationRepository.create(newInvitation, {
+          expiry: ContainerInvitationService.invitationExpiryInDays(),
+        })
       }
 
       if (!skipEmail) {
@@ -192,7 +179,7 @@ export class ContainerInvitationService implements IContainerInvitationService {
   }
 
   /* istanbul ignore next */
-  private containerService (containerID: string) {
+  private containerService(containerID: string) {
     if (containerID.startsWith('MPProject')) {
       return this.projectService
     }
@@ -208,29 +195,21 @@ export class ContainerInvitationService implements IContainerInvitationService {
     throw new ValidationError('Invalid container id.', containerID)
   }
 
-  private async resolveInvitationDetails (
+  private async resolveInvitationDetails(
     invitingUserId: string,
     invitedUsers: InvitedUserData[],
     containerID: string,
     role: ContainerRole
   ): Promise<ContainerInvitationDetails> {
-    const invitingUser = this.ensureValidUser(
-      await this.userRepository.getById(invitingUserId)
-    )
+    const invitingUser = this.ensureValidUser(await this.userRepository.getById(invitingUserId))
 
     if (invitedUsers.length === 0) {
-      throw new ValidationError(
-        'invitedUsers unexpectedly empty',
-        invitedUsers
-      )
+      throw new ValidationError('invitedUsers unexpectedly empty', invitedUsers)
     }
 
     for (const invitedUser of invitedUsers) {
       if (invitedUser.email === invitingUser.email) {
-        throw new ValidationError(
-          'Inviting user can not invite himself.',
-          invitingUser.email
-        )
+        throw new ValidationError('Inviting user can not invite himself.', invitingUser.email)
       }
     }
 
@@ -251,22 +230,17 @@ export class ContainerInvitationService implements IContainerInvitationService {
     return { invitingUser, container }
   }
 
-  public async rejectContainerInvite (invitationId: string): Promise<void> {
-    const invitation = await this.containerInvitationRepository.getById(
-      invitationId
-    )
+  public async rejectContainerInvite(invitationId: string): Promise<void> {
+    const invitation = await this.containerInvitationRepository.getById(invitationId)
 
     if (!invitation) {
-      throw new ValidationError(
-        `Invitation with id ${invitationId} does not exist`,
-        invitationId
-      )
+      throw new ValidationError(`Invitation with id ${invitationId} does not exist`, invitationId)
     }
 
     await this.containerInvitationRepository.remove(invitationId)
   }
 
-  public static ensureValidRole (role: string): ContainerRole {
+  public static ensureValidRole(role: string): ContainerRole {
     if (!(role in ContainerRole)) {
       throw new ValidationError(`Invalid role '${role}'.`, role)
     }
@@ -274,28 +248,24 @@ export class ContainerInvitationService implements IContainerInvitationService {
     return role as ContainerRole
   }
 
-  public async acceptContainerInvite (
+  public async acceptContainerInvite(
     invitationId: string,
     user: User,
     skipEmail?: boolean
   ): Promise<ContainerInvitationResponse> {
-    const invitation = await this.containerInvitationRepository.getById(
-      invitationId
-    )
+    const invitation = await this.containerInvitationRepository.getById(invitationId)
 
     if (!invitation) {
-      throw new RecordGoneError(
-        'The invitation does not exist.'
-      )
+      throw new RecordGoneError('The invitation does not exist.')
     }
 
     const invitedUser = await this.checkInvitedUser(invitation, user)
 
     let container
     try {
-      container = await this.containerService(
+      container = await this.containerService(invitation.containerID).getContainer(
         invitation.containerID
-      ).getContainer(invitation.containerID)
+      )
     } catch (e) {
       await this.containerInvitationRepository.remove(invitationId)
       throw new MissingContainerError(invitation.containerID)
@@ -307,10 +277,7 @@ export class ContainerInvitationService implements IContainerInvitationService {
       invitation.invitingUserID.replace('_', '|')
     )
     if (!invitingUser) {
-      throw new ValidationError(
-        'Inviting user does not exist',
-        invitation.invitingUserID
-      )
+      throw new ValidationError('Inviting user does not exist', invitation.invitingUserID)
     }
 
     let roleToAssign = role
@@ -321,17 +288,15 @@ export class ContainerInvitationService implements IContainerInvitationService {
     )
 
     const ownerInvitation = invitations.find(
-      invitation => invitation.role === ContainerRole.Owner
+      (invitation) => invitation.role === ContainerRole.Owner
     )
     const writerInvitation = invitations.find(
-      invitation => invitation.role === ContainerRole.Writer
+      (invitation) => invitation.role === ContainerRole.Writer
     )
 
-    if (ownerInvitation &&
-      ContainerService.compareRoles(
-        invitation.role as ContainerRole,
-        ContainerRole.Owner
-      ) === -1
+    if (
+      ownerInvitation &&
+      ContainerService.compareRoles(invitation.role as ContainerRole, ContainerRole.Owner) === -1
     ) {
       roleToAssign = ContainerRole.Owner
       invitationToAccept = ownerInvitation
@@ -342,10 +307,8 @@ export class ContainerInvitationService implements IContainerInvitationService {
 
     await Promise.all(
       invitations
-        .filter(invitation => invitation._id !== invitationToAccept._id)
-        .map(invitation =>
-          this.containerInvitationRepository.remove(invitation._id)
-        )
+        .filter((invitation) => invitation._id !== invitationToAccept._id)
+        .map((invitation) => this.containerInvitationRepository.remove(invitation._id))
     )
 
     const response = await this.handleInvitation(
@@ -359,7 +322,7 @@ export class ContainerInvitationService implements IContainerInvitationService {
     return response
   }
 
-  public async markInvitationAsAccepted (invitationId: string) {
+  public async markInvitationAsAccepted(invitationId: string) {
     await this.containerInvitationRepository.patch(
       invitationId,
       { acceptedAt: timestamp() },
@@ -367,22 +330,17 @@ export class ContainerInvitationService implements IContainerInvitationService {
     )
   }
 
-  public async uninvite (userId: string, invitationId: string): Promise<void> {
+  public async uninvite(userId: string, invitationId: string): Promise<void> {
     const user = await this.userRepository.getById(userId)
 
     if (!user) {
       throw new InvalidCredentialsError(`User not found`)
     }
 
-    const invitation = await this.containerInvitationRepository.getById(
-      invitationId
-    )
+    const invitation = await this.containerInvitationRepository.getById(invitationId)
 
     if (!invitation) {
-      throw new ValidationError(
-        `Invitation with id ${invitationId} does not exist`,
-        invitationId
-      )
+      throw new ValidationError(`Invitation with id ${invitationId} does not exist`, invitationId)
     }
 
     const container = await this.containerService(invitation.containerID).getContainer(
@@ -392,23 +350,18 @@ export class ContainerInvitationService implements IContainerInvitationService {
     const owners = container.owners
 
     if (owners.indexOf(sgUsername(user._id)) < 0) {
-      throw new RoleDoesNotPermitOperationError(
-        'Only owners can uninvite other users.',
-        user.email
-      )
+      throw new RoleDoesNotPermitOperationError('Only owners can uninvite other users.', user.email)
     }
 
     await this.containerInvitationRepository.remove(invitationId)
   }
 
-  public async resolveInvitationTokenDetails (
+  public async resolveInvitationTokenDetails(
     userId: string,
     containerID: string,
     role: ContainerRole
   ): Promise<void> {
-    const user = this.ensureValidUser(
-      await this.userRepository.getById(userId)
-    )
+    const user = this.ensureValidUser(await this.userRepository.getById(userId))
 
     if (role !== ContainerRole.Viewer && role !== ContainerRole.Writer) {
       throw new ValidationError(`role '${role}' is not valid`, role)
@@ -421,16 +374,12 @@ export class ContainerInvitationService implements IContainerInvitationService {
     }
   }
 
-  public async requestInvitationToken (
+  public async requestInvitationToken(
     clientId: string,
     containerID: string,
     permittedRole: ContainerRole
   ): Promise<InvitationToken> {
-    await this.resolveInvitationTokenDetails(
-      clientId,
-      containerID,
-      permittedRole
-    )
+    await this.resolveInvitationTokenDetails(clientId, containerID, permittedRole)
 
     let invitationToken = await this.invitationTokenRepository.getById(
       `InvitationToken|${containerID}+${permittedRole}`
@@ -446,10 +395,10 @@ export class ContainerInvitationService implements IContainerInvitationService {
         _id: tokenId,
         token,
         containerID,
-        permittedRole
+        permittedRole,
       }
       return this.invitationTokenRepository.create(invitationToken, {
-        expiry: expiryTime
+        expiry: expiryTime,
       })
     } else {
       await this.invitationTokenRepository.touch(
@@ -460,7 +409,7 @@ export class ContainerInvitationService implements IContainerInvitationService {
     }
   }
 
-  public async refreshInvitationToken (
+  public async refreshInvitationToken(
     clientId: string,
     containerID: string,
     role: ContainerRole
@@ -482,7 +431,7 @@ export class ContainerInvitationService implements IContainerInvitationService {
     return invitationToken
   }
 
-  public async acceptInvitationToken (
+  public async acceptInvitationToken(
     token: string,
     invitedUserId: string,
     skipEmail?: boolean
@@ -494,44 +443,33 @@ export class ContainerInvitationService implements IContainerInvitationService {
     }
 
     const invitationToken = await this.invitationTokenRepository.getOne({
-      token
+      token,
     })
 
     if (!invitationToken) {
-      throw new RecordGoneError(
-        'The invitation does not exist.'
-      )
+      throw new RecordGoneError('The invitation does not exist.')
     }
 
     const { containerID, permittedRole } = invitationToken
 
     const container = await this.containerService(containerID).getContainer(containerID)
 
-    if (
-      permittedRole !== ContainerRole.Viewer &&
-      permittedRole !== ContainerRole.Writer
-    ) {
+    if (permittedRole !== ContainerRole.Viewer && permittedRole !== ContainerRole.Writer) {
       throw new ValidationError('Invalid role', permittedRole)
     }
 
     return this.addUserToContainer(container, invitedUser, permittedRole, skipEmail)
   }
 
-  public async updateInvitedUserID (userID: string, userEmail: string) {
-    const invitations = await this.containerInvitationRepository.getAllByEmail(
-      userEmail
-    )
+  public async updateInvitedUserID(userID: string, userEmail: string) {
+    const invitations = await this.containerInvitationRepository.getAllByEmail(userEmail)
     for (let invitation of invitations) {
-      await this.containerInvitationRepository.patch(
-        invitation._id,
-        { invitedUserID: userID },
-        {}
-      )
+      await this.containerInvitationRepository.patch(invitation._id, { invitedUserID: userID }, {})
     }
   }
 
   // tslint:disable-next-line:cyclomatic-complexity
-  private async addUserToContainer (
+  private async addUserToContainer(
     container: Container,
     user: User,
     permittedRole: ContainerRole,
@@ -546,12 +484,7 @@ export class ContainerInvitationService implements IContainerInvitationService {
     let invitationToAccept: ContainerInvitation | null = null
 
     for (let invitation of invitations) {
-      if (
-        ContainerService.compareRoles(
-          invitation.role as ContainerRole,
-          roleToAssign
-        ) >= 0
-      ) {
+      if (ContainerService.compareRoles(invitation.role as ContainerRole, roleToAssign) >= 0) {
         roleToAssign = invitation.role as ContainerRole
         invitationToAccept = invitation
       } else {
@@ -572,14 +505,11 @@ export class ContainerInvitationService implements IContainerInvitationService {
       await this.markInvitationAsAccepted(invitationToAccept._id)
       return {
         containerID: container._id,
-        message: 'Invitation with a less limiting role was found and accepted.'
+        message: 'Invitation with a less limiting role was found and accepted.',
       }
     }
 
-    const currentUserRole = this.containerService(container._id).getUserRole(
-      container,
-      userID
-    )
+    const currentUserRole = this.containerService(container._id).getUserRole(container, userID)
 
     let message
     if (!currentUserRole) {
@@ -594,10 +524,7 @@ export class ContainerInvitationService implements IContainerInvitationService {
       message = containerTitle
         ? `You have been added to project "${containerTitle}".`
         : 'You have been added to a project.'
-    } else if (
-      currentUserRole === ContainerRole.Viewer &&
-      permittedRole === ContainerRole.Writer
-    ) {
+    } else if (currentUserRole === ContainerRole.Viewer && permittedRole === ContainerRole.Writer) {
       await this.containerService(container._id).updateContainerUser(
         container._id,
         permittedRole,
@@ -607,19 +534,15 @@ export class ContainerInvitationService implements IContainerInvitationService {
     } else if (currentUserRole === permittedRole) {
       message = 'You already have this role.'
     } else {
-      message =
-        'Your current role in the project is already of higher privilege.'
+      message = 'Your current role in the project is already of higher privilege.'
     }
     return {
       containerID: container._id,
-      message
+      message,
     }
   }
 
-  private async checkInvitedUser (
-    invitation: ContainerInvitationLike,
-    user: User
-  ): Promise<User> {
+  private async checkInvitedUser(invitation: ContainerInvitationLike, user: User): Promise<User> {
     if (invitation.invitedUserEmail !== user.email) {
       throw new InvalidCredentialsError('Only the invited user could accept invitation.')
     }
@@ -627,7 +550,7 @@ export class ContainerInvitationService implements IContainerInvitationService {
     return user
   }
 
-  private ensureValidUser (user: User | null): User {
+  private ensureValidUser(user: User | null): User {
     if (!user) {
       throw new InvalidCredentialsError('User not found')
     }
@@ -635,7 +558,7 @@ export class ContainerInvitationService implements IContainerInvitationService {
     return user
   }
 
-  private async handleInvitation (
+  private async handleInvitation(
     container: Container,
     invitationToAccept: ContainerInvitationLike,
     roleToAssign: ContainerRole,
@@ -643,7 +566,6 @@ export class ContainerInvitationService implements IContainerInvitationService {
     invitedUser: User,
     skipEmail?: boolean
   ): Promise<ContainerInvitationResponse> {
-
     const currentUserRole = this.containerService(invitationToAccept.containerID).getUserRole(
       container,
       invitedUser._id
@@ -665,17 +587,12 @@ export class ContainerInvitationService implements IContainerInvitationService {
       await this.markInvitationAsAccepted(invitationToAccept._id)
     } else if (invitationToAccept.acceptedAt) {
       message = `Invitation already accepted.`
-    } else if (
-      ContainerService.compareRoles(
-        roleToAssign,
-        currentUserRole
-      ) === 1
-  ) {
+    } else if (ContainerService.compareRoles(roleToAssign, currentUserRole) === 1) {
       await this.containerService(invitationToAccept.containerID).updateContainerUser(
-      container._id,
-      roleToAssign,
-      invitedUser
-    )
+        container._id,
+        roleToAssign,
+        invitedUser
+      )
       message = 'Your role was updated successfully.'
       await this.markInvitationAsAccepted(invitationToAccept._id)
     } else if (currentUserRole === roleToAssign) {
@@ -687,7 +604,7 @@ export class ContainerInvitationService implements IContainerInvitationService {
     }
     return {
       containerID: container._id,
-      message
+      message,
     }
   }
 }

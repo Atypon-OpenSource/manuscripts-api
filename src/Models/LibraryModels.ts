@@ -15,8 +15,8 @@
  */
 
 export interface PatchLibrary {
-  _id: string,
-  owners?: string[],
-  writers?: string[],
-  viewers?: string[],
+  _id: string
+  owners?: string[]
+  writers?: string[]
+  viewers?: string[]
 }

@@ -17,10 +17,10 @@
 import { UserProfileLike } from '../../DataAccess/Interfaces/Models'
 
 export interface IUserService {
-  deleteUser (userId: string): Promise<boolean>
-  markUserForDeletion (userId: string, password?: string): Promise<void>
-  unmarkUserForDeletion (userId: string): Promise<void>
-  clearUsersData (): Promise<void>
-  profile (token: string): Promise<UserProfileLike | null>
-  authenticateUser (token: string): Promise<void>
+  deleteUser(userId: string): Promise<boolean>
+  markUserForDeletion(userId: string, password?: string): Promise<void>
+  unmarkUserForDeletion(userId: string): Promise<void>
+  clearUsersData(): Promise<void>
+  profile(token: string): Promise<UserProfileLike | null>
+  authenticateUser(token: string): Promise<void>
 }

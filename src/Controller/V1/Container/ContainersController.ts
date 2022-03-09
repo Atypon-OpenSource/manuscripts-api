@@ -14,14 +14,17 @@
  * limitations under the License.
  */
 
-import { Correction, ExternalFile, ObjectTypes, Snapshot } from '@manuscripts/manuscripts-json-schema'
+import {
+  Correction,
+  ExternalFile,
+  ObjectTypes,
+  Snapshot,
+} from '@manuscripts/manuscripts-json-schema'
 import { Request } from 'express'
 import { isString } from '../../../util'
 
 import { IContainersController } from './IContainersController'
-import {
-  authorizationBearerToken
-} from '../../BaseController'
+import { authorizationBearerToken } from '../../BaseController'
 import { IllegalStateError, ManuscriptContentParsingError, ValidationError } from '../../../Errors'
 import { DIContainer } from '../../../DIContainer/DIContainer'
 import { ContainerType, Container } from '../../../Models/ContainerModels'
@@ -30,10 +33,8 @@ import { config } from '../../../Config/Config'
 import { RSA_JWK } from 'pem-jwk'
 import { ContainerService } from '../../../DomainServices/Container/ContainerService'
 
-export class ContainersController extends ContainedBaseController
-  implements IContainersController {
-
-  async create (req: Request): Promise<Container> {
+export class ContainersController extends ContainedBaseController implements IContainersController {
+  async create(req: Request): Promise<Container> {
     const _id = req.body._id
     const token = authorizationBearerToken(req)
 
@@ -47,12 +48,10 @@ export class ContainersController extends ContainedBaseController
       throw new ValidationError('container id should be a string', _id)
     }
 
-    return DIContainer.sharedContainer.containerService[
-      containerType
-    ].createContainer(token, _id)
+    return DIContainer.sharedContainer.containerService[containerType].createContainer(token, _id)
   }
 
-  async delete (req: Request): Promise<void> {
+  async delete(req: Request): Promise<void> {
     const { containerID } = req.params
 
     if (!containerID || !isString(containerID)) {
@@ -61,13 +60,14 @@ export class ContainersController extends ContainedBaseController
 
     const containerType = getContainerType(containerID)
 
-    await DIContainer.sharedContainer.containerService[
-      containerType
-    ].deleteContainer(containerID, req.user)
+    await DIContainer.sharedContainer.containerService[containerType].deleteContainer(
+      containerID,
+      req.user
+    )
   }
 
   // tslint:disable-next-line:cyclomatic-complexity
-  async manageUserRole (req: Request): Promise<void> {
+  async manageUserRole(req: Request): Promise<void> {
     const { managedUserId, managedUserConnectId, newRole, secret } = req.body
     const { containerID } = req.params
 
@@ -92,9 +92,7 @@ export class ContainersController extends ContainedBaseController
 
     const containerType = getContainerType(containerID)
 
-    await DIContainer.sharedContainer.containerService[
-      containerType
-    ].manageUserRole(
+    await DIContainer.sharedContainer.containerService[containerType].manageUserRole(
       req.user,
       containerID,
       { userId: managedUserId, connectUserId: managedUserConnectId },
@@ -103,7 +101,7 @@ export class ContainersController extends ContainedBaseController
     )
   }
 
-  async addUser (req: Request): Promise<void> {
+  async addUser(req: Request): Promise<void> {
     const { userId, role } = req.body
     const { containerID } = req.params
     const { user: addingUser } = req
@@ -122,16 +120,19 @@ export class ContainersController extends ContainedBaseController
 
     const containerType = getContainerType(containerID)
 
-    await DIContainer.sharedContainer.containerService[
-      containerType
-    ].addContainerUser(containerID, role, userId, addingUser)
+    await DIContainer.sharedContainer.containerService[containerType].addContainerUser(
+      containerID,
+      role,
+      userId,
+      addingUser
+    )
   }
 
   /**
    * Get container archive.
    * @param req Request express request.
    */
-  async getArchive (req: Request) {
+  async getArchive(req: Request) {
     const { containerID, manuscriptID } = req.params
     const { allowOrphanedDocs, onlyIDs } = req.query
     const { accept: acceptHeader } = req.headers
@@ -147,32 +148,38 @@ export class ContainersController extends ContainedBaseController
 
     const userID = req.user._id
     try {
-      return DIContainer.sharedContainer.containerService[
-        containerType
-      ].getArchive(userID, containerID, manuscriptID, token, {
-        getAttachments,
-        onlyIDs: onlyIDs === 'true',
-        allowOrphanedDocs,
-        includeExt: false
-      })
+      return DIContainer.sharedContainer.containerService[containerType].getArchive(
+        userID,
+        containerID,
+        manuscriptID,
+        token,
+        {
+          getAttachments,
+          onlyIDs: onlyIDs === 'true',
+          allowOrphanedDocs,
+          includeExt: false,
+        } as any
+      )
     } catch (e) {
       throw new ManuscriptContentParsingError('Failed to make an archive.', e)
     }
   }
 
-  async getAttachment (req: Request) {
+  async getAttachment(req: Request) {
     const { id } = req.params
 
     if (!isString(id)) {
       throw new ValidationError('id should be a string', id)
     }
     const userID = req.user?._id
-    return DIContainer.sharedContainer.containerService[
-      ContainerType.project
-    ].getAttachment(userID, id, req.params.attachmentKey)
+    return DIContainer.sharedContainer.containerService[ContainerType.project].getAttachment(
+      userID,
+      id,
+      req.params.attachmentKey
+    )
   }
 
-  async getBundle (req: Request, finish: CallableFunction) {
+  async getBundle(req: Request, finish: CallableFunction) {
     const { containerID, manuscriptID } = req.params
     const { onlyIDs } = req.query
 
@@ -184,7 +191,7 @@ export class ContainersController extends ContainedBaseController
     // will fail of the user is not a collaborator on the project
     const canAccess = await DIContainer.sharedContainer.containerService[
       containerType
-      ].checkUserContainerAccess(req.user._id, containerID)
+    ].checkUserContainerAccess(req.user._id, containerID)
 
     if (!canAccess) {
       throw new ValidationError('User must be a contributor in the container', containerID)
@@ -200,23 +207,28 @@ export class ContainersController extends ContainedBaseController
     const includeExt = false
     const allowOrphanedDocs = false
     const userID = req.user._id
-    const archive = await DIContainer.sharedContainer.containerService[
-      containerType
-      ].getArchive(userID, containerID, null, token, {
+    const archive = await DIContainer.sharedContainer.containerService[containerType].getArchive(
+      userID,
+      containerID,
+      null,
+      token,
+      {
         getAttachments,
         onlyIDs: onlyIDs === 'true',
         allowOrphanedDocs,
-        includeExt
-      })
+        includeExt,
+      }
+    )
 
-    await DIContainer.sharedContainer.pressroomService.fetchHtml(archive, manuscriptID)
-      .then(result => finish(result))
-      .catch(reason => { throw new IllegalStateError('Failed to fetch html bundle.', reason) })
+    await DIContainer.sharedContainer.pressroomService
+      .fetchHtml(archive, manuscriptID)
+      .then((result) => finish(result))
+      .catch((reason) => {
+        throw new IllegalStateError('Failed to fetch html bundle.', reason)
+      })
   }
 
-  async accessToken (
-    req: Request
-  ): Promise<any> {
+  async accessToken(req: Request): Promise<any> {
     const { containerID, scope } = req.params
     const user = req.user
 
@@ -229,9 +241,7 @@ export class ContainersController extends ContainedBaseController
     }
 
     const containerType = getContainerType(containerID)
-    return DIContainer.sharedContainer.containerService[
-      containerType
-    ].accessToken(
+    return DIContainer.sharedContainer.containerService[containerType].accessToken(
       user._id,
       scope,
       containerID
@@ -239,7 +249,7 @@ export class ContainersController extends ContainedBaseController
   }
 
   // Deprecated (moved to .well-known)
-  jwksForAccessScope (req: Request): { keys: [ RSA_JWK ] } {
+  jwksForAccessScope(req: Request): { keys: [RSA_JWK] } {
     const { scope, containerType } = req.params
     if (!isString(containerType)) {
       throw new ValidationError('containerType should be a string', containerType)
@@ -253,10 +263,10 @@ export class ContainersController extends ContainedBaseController
     }
     const jwk: any = Object.assign({}, s.publicKeyJWK)
     jwk.kid = s.identifier // see https://tools.ietf.org/html/rfc7517#section-4.5 re: 'kid'
-    return { keys: [ jwk ] }
+    return { keys: [jwk] }
   }
 
-  async createManuscript (req: Request) {
+  async createManuscript(req: Request) {
     const { containerID, manuscriptID } = req.params
     const { user } = req
     const { templateId } = req.body
@@ -274,12 +284,15 @@ export class ContainersController extends ContainedBaseController
     }
 
     const containerType = getContainerType(containerID)
-    return DIContainer.sharedContainer.containerService[
-      containerType
-    ].createManuscript(user._id, containerID, manuscriptID, templateId)
+    return DIContainer.sharedContainer.containerService[containerType].createManuscript(
+      user._id,
+      containerID,
+      manuscriptID,
+      templateId
+    )
   }
 
-  async getProductionNotes (req: Request) {
+  async getProductionNotes(req: Request) {
     const { containerID, manuscriptID } = req.params
 
     if (!isString(containerID)) {
@@ -290,10 +303,13 @@ export class ContainersController extends ContainedBaseController
       throw new ValidationError('manuscriptID should be string', manuscriptID)
     }
     const containerType = getContainerType(containerID)
-    return DIContainer.sharedContainer.containerService[containerType].getProductionNotes(containerID, manuscriptID)
+    return DIContainer.sharedContainer.containerService[containerType].getProductionNotes(
+      containerID,
+      manuscriptID
+    )
   }
 
-  async addProductionNote (req: Request) {
+  async addProductionNote(req: Request) {
     const { containerID, manuscriptID } = req.params
     const { content, target, connectUserID, source } = req.body
     if (!isString(containerID)) {
@@ -313,25 +329,37 @@ export class ContainersController extends ContainedBaseController
     }
 
     const containerType = getContainerType(containerID)
-    return DIContainer.sharedContainer.containerService[containerType].createManuscriptNote(containerID, manuscriptID, content, connectUserID, source, target)
+    return DIContainer.sharedContainer.containerService[containerType].createManuscriptNote(
+      containerID,
+      manuscriptID,
+      content,
+      connectUserID,
+      source,
+      target
+    )
   }
 
-  async submitExternalFiles (req: Request) {
+  async submitExternalFiles(req: Request) {
     const { content } = req.body
     const externalFiles: ExternalFile[] = content
-    return DIContainer.sharedContainer.containerService[ContainerType.project].submitExternalFiles(externalFiles)
+    return DIContainer.sharedContainer.containerService[ContainerType.project].submitExternalFiles(
+      externalFiles
+    )
   }
 
-  async getCorrectionStatus (req: Request) {
+  async getCorrectionStatus(req: Request) {
     const { containerID } = req.params
     if (!isString(containerID)) {
       throw new ValidationError('containerID should be string', containerID)
     }
     const userID = req.user?._id
-    return DIContainer.sharedContainer.containerService[ContainerType.project].getCorrectionStatus(containerID, userID)
+    return DIContainer.sharedContainer.containerService[ContainerType.project].getCorrectionStatus(
+      containerID,
+      userID
+    )
   }
 
-  async createSnapshot (req: Request) {
+  async createSnapshot(req: Request) {
     const { containerID } = req.params
     const { name } = req.body
 
@@ -349,35 +377,49 @@ export class ContainersController extends ContainedBaseController
     const allowOrphanedDocs = false
     const userID = req.user._id
     const containerType = getContainerType(containerID)
-    const archive = await DIContainer.sharedContainer.containerService[
-      containerType
-      ].getArchive(userID, containerID, null, token, {
+    const archive = await DIContainer.sharedContainer.containerService[containerType].getArchive(
+      userID,
+      containerID,
+      null,
+      token,
+      {
         getAttachments,
         onlyIDs: false,
         allowOrphanedDocs,
-        includeExt
-      })
-    const shacklesToken = await DIContainer.sharedContainer.containerService[containerType]
-      .accessToken(userID, 'shackles', containerID)
-    const res = await DIContainer.sharedContainer.shacklesService.createSnapshot(archive, shacklesToken)
-    return DIContainer.sharedContainer.containerService[
+        includeExt,
+      }
+    )
+    const shacklesToken = await DIContainer.sharedContainer.containerService[
       containerType
-      ].saveSnapshot(res.key, containerID, userID, name)
+    ].accessToken(userID, 'shackles', containerID)
+    const res = await DIContainer.sharedContainer.shacklesService.createSnapshot(
+      archive,
+      shacklesToken
+    )
+    return DIContainer.sharedContainer.containerService[containerType].saveSnapshot(
+      res.key,
+      containerID,
+      userID,
+      name
+    )
   }
 
-  async hasPendingCorrections (req: Request) {
+  async hasPendingCorrections(req: Request) {
     const userID = req.user._id
     const { containerID, manuscriptID } = req.params
     const containerType = getContainerType(containerID)
     let token = authorizationBearerToken(req)
 
-    const projectJSON = await DIContainer.sharedContainer.containerService[containerType].getProject(userID, containerID, manuscriptID, token)
+    const projectJSON = await DIContainer.sharedContainer.containerService[
+      containerType
+    ].getProject(userID, containerID, manuscriptID, token)
 
-    const snapshots = projectJSON && projectJSON.length
-      ? projectJSON
-        .filter(doc => doc.objectType === ObjectTypes.Snapshot)
-        .sort((a, b) => b.createdAt - a.createdAt)
-      : []
+    const snapshots =
+      projectJSON && projectJSON.length
+        ? projectJSON
+            .filter((doc: { objectType: ObjectTypes }) => doc.objectType === ObjectTypes.Snapshot)
+            .sort((a: { createdAt: number }, b: { createdAt: number }) => b.createdAt - a.createdAt)
+        : []
 
     const latestSnapshot = snapshots.length ? (snapshots[0] as Snapshot) : null
 
@@ -385,14 +427,16 @@ export class ContainersController extends ContainedBaseController
       return false
     }
 
-    const pendingCorrections = (projectJSON && projectJSON.length
-      ? projectJSON
-        .filter((doc) =>
-          doc.objectType === ObjectTypes.Correction &&
-          (doc as Correction).snapshotID === latestSnapshot._id &&
-          (doc as Correction).status.label !== 'proposed'
-        )
-      : []) as Correction[]
+    const pendingCorrections = (
+      projectJSON && projectJSON.length
+        ? projectJSON.filter(
+            (doc: Correction) =>
+              doc.objectType === ObjectTypes.Correction &&
+              doc.snapshotID === latestSnapshot._id &&
+              doc.status.label !== 'proposed'
+          )
+        : []
+    ) as Correction[]
 
     return !!pendingCorrections.length
   }

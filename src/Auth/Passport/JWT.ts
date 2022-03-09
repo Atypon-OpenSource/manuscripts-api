@@ -23,18 +23,20 @@ import { DIContainer } from '../../DIContainer/DIContainer'
 import { UserClaim } from '../Interfaces/UserClaim'
 
 export class JwtAuthStrategy {
-  public static use (): void {
+  public static use(): void {
     const opts = {
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       secretOrKey: config.auth.jwtSecret,
       issuer: config.API.hostname,
-      audience: config.email.fromBaseURL
+      audience: config.email.fromBaseURL,
     }
 
     passport.use(
       AuthStrategyTypes.jwt,
       new Strategy(opts, async (jwtPayload: UserClaim, done: Function) => {
-        const idSchema = DIContainer.sharedContainer.userTokenRepository.fullyQualifiedId(jwtPayload.tokenId)
+        const idSchema = DIContainer.sharedContainer.userTokenRepository.fullyQualifiedId(
+          jwtPayload.tokenId
+        )
         const token = await DIContainer.sharedContainer.userTokenRepository.getById(idSchema)
 
         if (!token) {

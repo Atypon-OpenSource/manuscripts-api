@@ -18,18 +18,18 @@ import * as Joi from 'joi'
 
 export const createRequestSchema: Joi.SchemaMap = {
   params: Joi.object({
-    containerID: Joi.string().required()
+    containerID: Joi.string().required(),
   }),
   body: {
-    role: Joi.string().required()
-  }
+    role: Joi.string().required(),
+  },
 }
 
 export const containerRequestSchema: Joi.SchemaMap = {
   params: Joi.object({
-    containerID: Joi.string().required()
+    containerID: Joi.string().required(),
   }),
   body: {
-    requestID: Joi.string().required()
-  }
+    requestID: Joi.string().required(),
+  },
 }

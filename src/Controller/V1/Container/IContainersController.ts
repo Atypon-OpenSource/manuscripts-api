@@ -22,11 +22,11 @@ export interface IContainersController {
    * Create a container.
    * @param req Express request.
    */
-  create (req: Request): Promise<Container>
+  create(req: Request): Promise<Container>
 
   /**
    * Edit the role of users (owner, writer, viewer)
    * @param req Express request.
    */
-  manageUserRole (req: Request): Promise<void>
+  manageUserRole(req: Request): Promise<void>
 }

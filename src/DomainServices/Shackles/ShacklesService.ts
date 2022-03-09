@@ -21,12 +21,12 @@ import { RequestError } from '../../Errors'
 import JSZip from 'jszip'
 
 export class ShacklesService implements IShacklesService {
-  constructor (private baseurl: string) {}
+  constructor(private baseurl: string) {}
 
-  public async getSnapshot (key: string, token: string) {
+  public async getSnapshot(key: string, token: string) {
     const headers = {
-      'authorization': `Bearer ${token}`,
-      'responseType': 'arraybuffer'
+      authorization: `Bearer ${token}`,
+      responseType: 'arraybuffer',
     }
     const res = await fetch(`${this.baseurl}/api/v1/snapshot/${key}`, { method: 'GET', headers })
     const data = await res.arrayBuffer()
@@ -35,18 +35,24 @@ export class ShacklesService implements IShacklesService {
     return JSON.parse(json)
   }
 
-  public async createSnapshot (archive: Buffer, token: string) {
+  public async createSnapshot(archive: Buffer, token: string) {
     const form = new FormData()
     form.append('file', archive, { filename: 'file.zip', contentType: 'application/zip' })
 
     const headers = {
       ...form.getHeaders(),
-      'authorization': `Bearer ${token}`
+      authorization: `Bearer ${token}`,
     }
-    const res = await fetch(`${this.baseurl}/api/v1/snapshot`,{ method: 'POST', body: form, headers })
+    const res = await fetch(`${this.baseurl}/api/v1/snapshot`, {
+      method: 'POST',
+      body: form,
+      headers,
+    })
     if (res.ok) {
       return JSON.parse(await res.text())
     }
-    throw new RequestError(`Shackles request '/snapshot' failed with error: code(${res.status}) - message(${res.statusText})`)
+    throw new RequestError(
+      `Shackles request '/snapshot' failed with error: code(${res.status}) - message(${res.statusText})`
+    )
   }
 }

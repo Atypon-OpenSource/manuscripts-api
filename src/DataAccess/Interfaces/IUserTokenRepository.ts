@@ -21,10 +21,9 @@ import { UserTokenQueryCriteria } from './QueryCriteria'
 /**
  * Manages user token persistent storage operations.
  */
-export interface IUserTokenRepository
-  extends IndexedRepository<
-      UserToken,
-      UserToken,
-      UserToken,
-      UserTokenQueryCriteria
-    > {}
+export type IUserTokenRepository = IndexedRepository<
+  UserToken,
+  UserToken,
+  UserToken,
+  UserTokenQueryCriteria
+>

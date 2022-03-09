@@ -20,14 +20,10 @@ import { ManuscriptLike } from '../Interfaces/Models'
 import { SGRepository } from '../SGRepository'
 
 export class ManuscriptRepository
-  extends SGRepository<
-    Manuscript,
-    ManuscriptLike,
-    ManuscriptLike,
-    Partial<Manuscript>
-  >
-  implements IManuscriptRepository {
-  public get objectType (): string {
+  extends SGRepository<Manuscript, ManuscriptLike, ManuscriptLike, Partial<Manuscript>>
+  implements IManuscriptRepository
+{
+  public get objectType(): string {
     return 'MPManuscript'
   }
 }

@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 
-import {
-  BaseIAMTokenPayload,
-  isBaseIAMTokenPayload
-} from './BaseIAMTokenPayload'
+import { BaseIAMTokenPayload, isBaseIAMTokenPayload } from './BaseIAMTokenPayload'
 
 /**
  * Represents contents of JWT token returned by IAM
@@ -34,7 +31,7 @@ export interface LogoutTokenPayload extends BaseIAMTokenPayload {
 }
 
 // Basic check about logout IAM token structure validation
-export function isIAMLogoutTokenPayload (
+export function isIAMLogoutTokenPayload(
   obj: string | { [key: string]: any } | null
 ): obj is LogoutTokenPayload {
   if (!isBaseIAMTokenPayload(obj)) {

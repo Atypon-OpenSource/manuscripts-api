@@ -22,59 +22,70 @@ import getStream from 'get-stream'
 import { RequestError } from '../../Errors'
 
 export class PressroomService implements IPressroomService {
-  constructor (private baseurl: string, private apiKey: string) {}
+  constructor(private baseurl: string, private apiKey: string) {}
 
-  public async importJATS (
-    stream: Readable
-  ): Promise<Readable> {
-
+  public async importJATS(stream: Readable): Promise<Readable> {
     const form = new FormData()
-    form.append('file', await getStream.buffer(stream), { filename: 'file.zip', contentType: 'application/zip' })
+    form.append('file', await getStream.buffer(stream), {
+      filename: 'file.zip',
+      contentType: 'application/zip',
+    })
     form.append('addBundledData', 'true')
 
     const headers = {
       ...form.getHeaders(),
-      'pressroom-api-key': this.apiKey
+      'pressroom-api-key': this.apiKey,
     }
 
-    const res = await fetch(`${this.baseurl}/api/v2/import/jats-arc`,{ method: 'POST', body: form, headers })
+    const res = await fetch(`${this.baseurl}/api/v2/import/jats-arc`, {
+      method: 'POST',
+      body: form,
+      headers,
+    })
     if (res.ok) {
       const duplex = new PassThrough()
       res.body.pipe(duplex)
       return duplex
     }
     // should only apply in case of server client errors
-    throw new RequestError(`Pressroom request 'import/zip' failed with error: code(${res.status}) - message(${res.statusText})`)
+    throw new RequestError(
+      `Pressroom request 'import/zip' failed with error: code(${res.status}) - message(${res.statusText})`
+    )
   }
 
-  public async fetchHtml (
-    archive: Buffer,
-    manuscriptID: string
-  ): Promise<Buffer> {
-
+  public async fetchHtml(archive: Buffer, manuscriptID: string): Promise<Buffer> {
     const form = new FormData()
     form.append('file', archive, { filename: 'file.zip', contentType: 'application/zip' })
     form.append('manuscriptID', manuscriptID)
 
     const headers = {
       ...form.getHeaders(),
-      'pressroom-api-key': this.apiKey
+      'pressroom-api-key': this.apiKey,
     }
 
-    const res = await fetch(`${this.baseurl}/api/v2/export/html`,{ method: 'POST', body: form, headers })
+    const res = await fetch(`${this.baseurl}/api/v2/export/html`, {
+      method: 'POST',
+      body: form,
+      headers,
+    })
     if (res.ok) {
       return getStream.buffer(res.body)
     }
     // should only apply in case of server client errors
-    throw new RequestError(`Pressroom request 'export/html' failed with error: code(${res.status}) - message(${res.statusText})`)
+    throw new RequestError(
+      `Pressroom request 'export/html' failed with error: code(${res.status}) - message(${res.statusText})`
+    )
   }
 
-  public async validateTemplateId (templateID: string): Promise<boolean> {
+  public async validateTemplateId(templateID: string): Promise<boolean> {
     const headers = {
-      'pressroom-api-key': this.apiKey
+      'pressroom-api-key': this.apiKey,
     }
 
-    const res = await fetch(`${this.baseurl}/api/v2/validate/templateId/${templateID}`,{ method: 'POST', headers })
+    const res = await fetch(`${this.baseurl}/api/v2/validate/templateId/${templateID}`, {
+      method: 'POST',
+      headers,
+    })
     if (res.ok) {
       return true
     } else if (res.status === 404) {
@@ -82,6 +93,8 @@ export class PressroomService implements IPressroomService {
     }
 
     // should only apply in case of server client errors
-    throw new RequestError(`Pressroom request 'validate/templateId' failed with error: code(${res.status}) - message(${res.statusText})`)
+    throw new RequestError(
+      `Pressroom request 'validate/templateId' failed with error: code(${res.status}) - message(${res.statusText})`
+    )
   }
 }

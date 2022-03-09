@@ -17,12 +17,6 @@
 import { Model } from '@manuscripts/manuscripts-json-schema'
 
 export interface IShacklesService {
-  getSnapshot (
-    s3Id: string,
-    token: string
-  ): Promise<{ version: string, data: Model[] | null }>
-  createSnapshot (
-    archive: Buffer,
-    containerID: string
-  ): Promise<any>
+  getSnapshot(s3Id: string, token: string): Promise<{ version: string; data: Model[] | null }>
+  createSnapshot(archive: Buffer, containerID: string): Promise<any>
 }

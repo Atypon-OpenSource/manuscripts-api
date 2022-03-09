@@ -16,7 +16,7 @@
 
 import '../../../../test/utilities/dbMock'
 
-import { Database } from '../../../../src/DataAccess/Database'
+import { SQLDatabase } from '../../../../src/DataAccess/SQLDatabase'
 import { UserRepository } from '../../../../src/DataAccess/UserRepository/UserRepository'
 import { config } from '../../../../src/Config/Config'
 import { BucketKey } from '../../../../src/Config/ConfigurationTypes'
@@ -25,10 +25,10 @@ import { TEST_TIMEOUT } from '../../../utilities/testSetup'
 jest.setTimeout(TEST_TIMEOUT)
 
 function testDatabase (): any {
-  return new Database(config.DB, BucketKey.User)
+  return new SQLDatabase(config.DB, BucketKey.User)
 }
 
-describe('CBRepository buildGetAllN1qlString', () => {
+describe('SQLRepository buildGetAllN1qlString', () => {
   test('should return query with _type only', async () => {
     const repository = new UserRepository(testDatabase())
     const statement = repository.getAllQuery(null, null)

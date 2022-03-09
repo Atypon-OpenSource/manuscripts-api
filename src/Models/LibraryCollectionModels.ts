@@ -15,11 +15,11 @@
  */
 
 export interface PatchLibraryCollection {
-  _id: string,
-  owners?: string[],
-  writers?: string[],
-  viewers?: string[],
-  editors?: string[],
-  annotators?: string[],
+  _id: string
+  owners?: string[]
+  writers?: string[]
+  viewers?: string[]
+  editors?: string[]
+  annotators?: string[]
   inherited?: string[]
 }

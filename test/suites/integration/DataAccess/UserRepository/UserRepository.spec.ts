@@ -51,7 +51,7 @@ describe('UserRepository getUsersToDelete', () => {
 
     const user = await repository.create(newDocument, {})
 
-    await repository.patch(user._id, { deleteAt: 12345678 }, {})
+    await repository.patch(user._id, { deleteAt: new Date() }, {})
 
     expect(await repository.getUsersToDelete()).toHaveLength(1)
   })
@@ -73,7 +73,6 @@ describe('UserRepository create', () => {
     }
 
     const user = await repository.create(newDocument, {})
-
     expect(user._id).toBe(newDocument._id)
     expect(user.email).toBe(newDocument.email)
     expect(user.name).toBe(newDocument.name)

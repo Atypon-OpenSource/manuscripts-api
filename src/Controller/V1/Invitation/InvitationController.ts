@@ -24,14 +24,13 @@ import { AuthService } from '../../../DomainServices/Auth/AuthService'
 import {
   ContainerRole,
   ContainerInvitationResponse,
-  ContainerType
+  ContainerType,
 } from '../../../Models/ContainerModels'
 import { InvitationToken, ensureValidUser } from '../../../Models/UserModels'
 import { ContainedBaseController } from '../../ContainedBaseController'
 
-export class InvitationController extends ContainedBaseController
-  implements IInvitationController {
-  async invite (req: Request): Promise<void> {
+export class InvitationController extends ContainedBaseController implements IInvitationController {
+  async invite(req: Request): Promise<void> {
     const { invitedUsersEmails, message } = req.body
     const user = req.user
 
@@ -42,10 +41,7 @@ export class InvitationController extends ContainedBaseController
     AuthService.ensureValidAuthorizationBearer(req.headers.authorization)
 
     if (!Array.isArray(invitedUsersEmails)) {
-      throw new ValidationError(
-        'should have a list of invited emails.',
-        invitedUsersEmails
-      )
+      throw new ValidationError('should have a list of invited emails.', invitedUsersEmails)
     }
 
     if (message && !isString(message)) {
@@ -59,7 +55,7 @@ export class InvitationController extends ContainedBaseController
     )
   }
 
-  async inviteToContainer (req: Request): Promise<[string, string][]> {
+  async inviteToContainer(req: Request): Promise<[string, string][]> {
     const { invitedUsers, role, message, skipEmail } = req.body
     const { containerID } = req.params
     const user = ensureValidUser(req.user)
@@ -67,10 +63,7 @@ export class InvitationController extends ContainedBaseController
     AuthService.ensureValidAuthorizationBearer(req.headers.authorization)
 
     if (!Array.isArray(invitedUsers)) {
-      throw new ValidationError(
-        'should have a list of invited emails.',
-        invitedUsers
-      )
+      throw new ValidationError('should have a list of invited emails.', invitedUsers)
     }
 
     if (!isString(containerID)) {
@@ -94,7 +87,7 @@ export class InvitationController extends ContainedBaseController
     )
   }
 
-  async accept (req: Request): Promise<ContainerInvitationResponse> {
+  async accept(req: Request): Promise<ContainerInvitationResponse> {
     const { invitationId, password, name, skipEmail } = req.body
 
     if (!isString(invitationId)) {
@@ -109,11 +102,7 @@ export class InvitationController extends ContainedBaseController
       if (name && !isString(name)) {
         throw new ValidationError('name should be string', name)
       }
-      return DIContainer.sharedContainer.invitationService.accept(
-        invitationId,
-        password,
-        name
-      )
+      return DIContainer.sharedContainer.invitationService.accept(invitationId, password, name)
     } else {
       const user = req.user
       if (!user) {
@@ -128,20 +117,15 @@ export class InvitationController extends ContainedBaseController
     }
   }
 
-  async reject (req: Request): Promise<void> {
+  async reject(req: Request): Promise<void> {
     const { invitationId } = req.body
 
     if (!isString(invitationId)) {
-      throw new ValidationError(
-        'invitationId should be a string',
-        invitationId
-      )
+      throw new ValidationError('invitationId should be a string', invitationId)
     }
 
     if (invitationId.startsWith('MPInvitation')) {
-      return DIContainer.sharedContainer.invitationService.reject(
-        invitationId
-      )
+      return DIContainer.sharedContainer.invitationService.reject(invitationId)
     } else {
       return DIContainer.sharedContainer.containerInvitationService.rejectContainerInvite(
         invitationId
@@ -149,7 +133,7 @@ export class InvitationController extends ContainedBaseController
     }
   }
 
-  async uninvite (req: Request): Promise<void> {
+  async uninvite(req: Request): Promise<void> {
     const { invitationId } = req.body
     const user = req.user
 
@@ -160,21 +144,13 @@ export class InvitationController extends ContainedBaseController
     AuthService.ensureValidAuthorizationBearer(req.headers.authorization)
 
     if (!isString(invitationId)) {
-      throw new ValidationError(
-        'invitationId should be a string',
-        invitationId
-      )
+      throw new ValidationError('invitationId should be a string', invitationId)
     }
 
-    return DIContainer.sharedContainer.containerInvitationService.uninvite(
-      user._id,
-      invitationId
-    )
+    return DIContainer.sharedContainer.containerInvitationService.uninvite(user._id, invitationId)
   }
 
-  public ensureValidInvitationParams (
-    params: any
-  ): { containerID: string; role: ContainerRole } {
+  public ensureValidInvitationParams(params: any): { containerID: string; role: ContainerRole } {
     const { containerID, role } = params
     if (!isString(containerID)) {
       throw new ValidationError('containerID should be string', containerID)
@@ -187,7 +163,7 @@ export class InvitationController extends ContainedBaseController
     return { containerID, role }
   }
 
-  async requestInvitationToken (req: Request): Promise<InvitationToken> {
+  async requestInvitationToken(req: Request): Promise<InvitationToken> {
     const { containerID, role } = this.ensureValidInvitationParams(req.params)
     const user = ensureValidUser(req.user)
 
@@ -198,7 +174,7 @@ export class InvitationController extends ContainedBaseController
     )
   }
 
-  async refreshInvitationToken (req: Request): Promise<InvitationToken> {
+  async refreshInvitationToken(req: Request): Promise<InvitationToken> {
     const { containerID, role } = this.ensureValidInvitationParams(req.params)
     const user = ensureValidUser(req.user)
 
@@ -209,9 +185,7 @@ export class InvitationController extends ContainedBaseController
     )
   }
 
-  async acceptInvitationToken (
-    req: Request
-  ): Promise<ContainerInvitationResponse> {
+  async acceptInvitationToken(req: Request): Promise<ContainerInvitationResponse> {
     const { token, skipEmail } = req.body
     const { containerType } = req.params
 
@@ -223,9 +197,7 @@ export class InvitationController extends ContainedBaseController
       throw new ValidationError('Token must be string', token)
     }
 
-    const authHeader = AuthService.ensureValidAuthorizationBearer(
-      req.headers.authorization
-    )
+    const authHeader = AuthService.ensureValidAuthorizationBearer(req.headers.authorization)
 
     return DIContainer.sharedContainer.containerInvitationService.acceptInvitationToken(
       token,

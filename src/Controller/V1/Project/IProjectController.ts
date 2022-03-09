@@ -18,6 +18,6 @@ import { Request } from 'express'
 import { Container } from '../../../Models/ContainerModels'
 
 export interface IProjectController {
-  create (req: Request): Promise<Container>
-  add (req: Request): Promise<Container>
+  create(req: Request): Promise<Container>
+  add(req: Request): Promise<Container>
 }

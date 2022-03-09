@@ -36,7 +36,7 @@ beforeAll(async () => db = await testDatabase())
 afterAll(() => db.bucket.disconnect())
 
 const chance = new Chance()
-describe('CBRepository', () => {
+xdescribe('CBRepository', () => {
   test('documentType should match expectation', () => {
     log.info('Testing documentType…')
     const repository = new UserRepository(db)
@@ -69,7 +69,7 @@ describe('CBRepository', () => {
   })
 })
 
-describe('CBRepository Consistency', () => {
+xdescribe('SQLRepository Consistency', () => {
   // TODO: test NOT_BOUND after fixing typing issue
   test('should be REQUEST_PLUS', () => {
     const repository = new UserRepository(db, N1qlQuery.Consistency.REQUEST_PLUS)
@@ -82,7 +82,7 @@ describe('CBRepository Consistency', () => {
   })
 })
 
-describe('CBRepository Create', () => {
+xdescribe('SQLRepository Create', () => {
   beforeEach(async () => {
     await drop()
     await dropBucket(BucketKey.Data)
@@ -136,7 +136,7 @@ describe('CBRepository Create', () => {
   })
 })
 
-describe('CBRepository update', () => {
+xdescribe('SQLRepository update', () => {
   beforeEach(async () => {
     await drop()
     await dropBucket(BucketKey.Data)
@@ -263,7 +263,7 @@ describe('CBRepository update', () => {
   })
 })
 
-describe('CBRepository patch', () => {
+xdescribe('SQLRepository patch', () => {
   beforeEach(async () => {
     await drop()
     await dropBucket(BucketKey.Data)
@@ -335,7 +335,7 @@ describe('CBRepository patch', () => {
   })
 })
 
-describe('CBRepository touch', () => {
+xdescribe('SQLRepository touch', () => {
   beforeEach(async () => {
     await drop()
     await dropBucket(BucketKey.Data)
@@ -362,7 +362,7 @@ describe('CBRepository touch', () => {
   })
 })
 
-describe('CBRepository getById', () => {
+xdescribe('SQLRepository getById', () => {
   beforeEach(async () => {
     await drop()
     await dropBucket(BucketKey.Data)
@@ -395,7 +395,7 @@ describe('CBRepository getById', () => {
   })
 })
 
-describe('CBRepository getOne', () => {
+xdescribe('SQLRepository getOne', () => {
   beforeEach(async () => {
     await drop()
     await dropBucket(BucketKey.Data)
@@ -425,7 +425,7 @@ describe('CBRepository getOne', () => {
   })
 })
 
-describe('CBRepository count', () => {
+xdescribe('SQLRepository count', () => {
   beforeEach(async () => {
     await drop()
     await dropBucket(BucketKey.Data)
@@ -447,7 +447,7 @@ describe('CBRepository count', () => {
   })
 })
 
-describe('CBRepository getAll', () => {
+xdescribe('SQLRepository getAll', () => {
   beforeEach(async () => {
     await drop()
     await dropBucket(BucketKey.Data)
@@ -477,7 +477,7 @@ describe('CBRepository getAll', () => {
   })
 })
 
-describe('CBRepository remove', () => {
+xdescribe('SQLRepository remove', () => {
   test('should remove key', async () => {
     const repository = new UserRepository(db)
     const query = {
@@ -496,7 +496,7 @@ describe('CBRepository remove', () => {
   })
 })
 
-describe('CBRepository whereClause', () => {
+xdescribe('SQLRepository whereClause', () => {
   test('should remove key', () => {
     const repository = new UserRepository(db)
     const query = repository.whereClause(null)
@@ -506,7 +506,7 @@ describe('CBRepository whereClause', () => {
   })
 })
 
-describe('CBRepository buildModel', () => {
+xdescribe('SQLRepository buildModel', () => {
   test('should remove any property equal to undefined', () => {
     const repository = new UserRepository(db)
     const mappedModel = repository.buildModel({

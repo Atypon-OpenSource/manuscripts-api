@@ -19,21 +19,31 @@ import { BucketKey } from '../../Config/ConfigurationTypes'
 
 export interface ISyncService {
   /** Gets a Sync Gateway user in the specified bucket using the SG Admin API. */
-  gatewayAccountExists (userId: string, bucketKey: BucketKey): Promise<boolean>
+  gatewayAccountExists(userId: string, bucketKey: BucketKey): Promise<boolean>
 
   /** Creates a Sync Gateway user using the SG Admin API. If password passed is null, a random password is given. */
-  createGatewayAccount (userId: string, bucketKey: BucketKey): Promise<string>
-  createGatewayAdministrator (username: string, password: string, bucketKey: BucketKey, adminChannels: ReadonlyArray<string>, adminRoles: ReadonlyArray<string>): Promise<void>
+  createGatewayAccount(userId: string, bucketKey: BucketKey): Promise<string>
+  createGatewayAdministrator(
+    username: string,
+    password: string,
+    bucketKey: BucketKey,
+    adminChannels: ReadonlyArray<string>,
+    adminRoles: ReadonlyArray<string>
+  ): Promise<void>
 
-  removeGatewayAccount (userId: string): Promise<void>
+  removeGatewayAccount(userId: string): Promise<void>
 
-  createGatewaySessions (userId: string, deviceId: string, userStatus: UserStatus): Promise<BucketSessions>
+  createGatewaySessions(
+    userId: string,
+    deviceId: string,
+    userStatus: UserStatus
+  ): Promise<BucketSessions>
 
   /** Removes all Sync Gateway sessions for the [user, device] combo, returning `true` if all* were deleted, `false` otherwise. */
-  removeGatewaySessions (userId: string, deviceId: string, userStatus: UserStatus): Promise<boolean>
+  removeGatewaySessions(userId: string, deviceId: string, userStatus: UserStatus): Promise<boolean>
 
   /** Removes all Sync Gateway sessions for the user, returning `true` if all* were deleted, `false` otherwise. */
-  removeAllGatewaySessions (userId: string): Promise<boolean>
+  removeAllGatewaySessions(userId: string): Promise<boolean>
 
-  createGatewayContributor (user: User, bucketKey: BucketKey): Promise<void>
+  createGatewayContributor(user: User, bucketKey: BucketKey): Promise<void>
 }

@@ -14,7 +14,13 @@
  * limitations under the License.
  */
 
-import { Library, LibraryCollection, ObjectTypes, Project, UserProfile } from '@manuscripts/manuscripts-json-schema'
+import {
+  Library,
+  LibraryCollection,
+  ObjectTypes,
+  Project,
+  UserProfile,
+} from '@manuscripts/manuscripts-json-schema'
 
 import { LibraryRepository } from '../DataAccess/LibraryRepository/LibraryRepository'
 import { LibraryCollectionRepository } from '../DataAccess/LibraryCollectionRepository/LibraryCollectionRepository'
@@ -26,7 +32,7 @@ export enum ContainerRole {
   Writer = 'Writer',
   Viewer = 'Viewer',
   Editor = 'Editor',
-  Annotator = 'Annotator'
+  Annotator = 'Annotator',
 }
 
 export interface InvitedUserData {
@@ -42,7 +48,7 @@ export interface ContainerInvitationResponse {
 export enum ContainerType {
   project = 'project',
   library = 'library',
-  libraryCollection = 'libraryCollection'
+  libraryCollection = 'libraryCollection',
 }
 
 export type Container = Project | Library | LibraryCollection

@@ -17,11 +17,11 @@
 import { ConnectSignupCredentials, SignupCredentials } from '../../Models/UserModels'
 
 export interface IUserRegistrationService {
-  signup (credentials: SignupCredentials): Promise<void>
+  signup(credentials: SignupCredentials): Promise<void>
 
-  connectSignup (credentials: ConnectSignupCredentials): Promise<void>
+  connectSignup(credentials: ConnectSignupCredentials): Promise<void>
 
-  verify (token: string): Promise<void>
+  verify(token: string): Promise<void>
 
-  requestVerificationEmail (email: string): Promise<void>
+  requestVerificationEmail(email: string): Promise<void>
 }

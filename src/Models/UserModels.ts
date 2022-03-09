@@ -21,13 +21,13 @@ import { BucketKey } from '../Config/ConfigurationTypes'
 import { ContainerRole } from './ContainerModels'
 import { ValidationError } from '../Errors'
 
-export type IdentifiableUser = { _id: string, email?: string }
+export type IdentifiableUser = { _id: string; email?: string }
 
-export function isIdentifiableUser (user?: any): user is IdentifiableUser {
+export function isIdentifiableUser(user?: any): user is IdentifiableUser {
   return typeof user !== 'undefined' && typeof user._id === 'string'
 }
 
-export function ensureValidUser (user?: any): IdentifiableUser {
+export function ensureValidUser(user?: any): IdentifiableUser {
   if (!isIdentifiableUser(user)) {
     throw new ValidationError('User undefined or lacks id', user)
   }
@@ -181,13 +181,13 @@ export interface User {
   deleteAt?: number
 }
 
-export function userForRow (userRowData: UserRow): User {
+export function userForRow(userRowData: UserRow): User {
   return {
-    _id: userRowData._id,
+    _id: (userRowData.id || userRowData._id) as string,
     name: userRowData.name,
     email: userRowData.email,
     connectUserID: userRowData.connectUserID,
-    ...userRowData.deleteAt && { deleteAt : userRowData.deleteAt }
+    ...(userRowData.deleteAt && { deleteAt: userRowData.deleteAt }),
   }
 }
 
@@ -208,7 +208,7 @@ export interface AuthorizedUser {
   /**
    * Session cookie for Sync Gateway
    */
-  syncSessions: BucketSessions
+  // syncSessions: BucketSessions
 }
 
 /**
@@ -218,7 +218,7 @@ export interface UserRow {
   /**
    * User's unique id.
    */
-  _id: string
+  id: string
   /**
    * User's name.
    */
@@ -235,6 +235,10 @@ export interface UserRow {
    * timestamp represents the time when the user going to be deleted.
    */
   deleteAt?: number
+  /**
+   * User's unique id as _id.
+   */
+  _id?: string
 }
 /**
  * Represents all possible fields for new user object.
@@ -376,7 +380,7 @@ export interface UserToken {
    */
   iamSessionID?: string
 
-  credentials?: { google: { accessToken: string , refreshToken: string } }
+  credentials?: { google: { accessToken: string; refreshToken: string } }
 }
 
 export interface UserEmail {
@@ -429,8 +433,10 @@ export interface UserStatus {
   createdAt: Date
 }
 
-export function isBlocked (userStatus: UserStatus, date: Date): boolean {
-  return userStatus.blockUntil !== null && moment(date).diff(userStatus.blockUntil) <= 0 ? true : false
+export function isBlocked(userStatus: UserStatus, date: Date): boolean {
+  return userStatus.blockUntil !== null && moment(date).diff(userStatus.blockUntil) <= 0
+    ? true
+    : false
 }
 
 export interface UpdateUserStatus {

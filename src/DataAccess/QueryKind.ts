@@ -22,5 +22,5 @@ export enum QueryKind {
   Count,
   GetAll,
   Remove,
-  GetRowObject
+  GetRowObject,
 }

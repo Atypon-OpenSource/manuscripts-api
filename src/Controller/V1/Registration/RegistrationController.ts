@@ -23,7 +23,7 @@ import { ValidationError } from '../../../Errors'
 import { DIContainer } from '../../../DIContainer/DIContainer'
 
 export class RegistrationController extends BaseController implements IRegistrationController {
-  async signup (req: Request): Promise<void> {
+  async signup(req: Request): Promise<void> {
     const { email, password, name } = req.body
 
     if (!isString(email) || !isString(password) || !isString(name)) {
@@ -38,13 +38,13 @@ export class RegistrationController extends BaseController implements IRegistrat
       email: email.toLowerCase(),
       isVerified: false,
       createdAt: new Date().getTime(),
-      token
+      token,
     }
 
     return DIContainer.sharedContainer.userRegistrationService.signup(credentials)
   }
 
-  async connectSignup (req: Request): Promise<void> {
+  async connectSignup(req: Request): Promise<void> {
     const { email, name, connectUserID } = req.body
 
     if (!isString(email) || !isString(connectUserID) || !isString(name)) {
@@ -55,13 +55,13 @@ export class RegistrationController extends BaseController implements IRegistrat
       name,
       email: email.toLowerCase(),
       isVerified: false,
-      createdAt: new Date().getTime()
+      createdAt: new Date().getTime(),
     }
 
     return DIContainer.sharedContainer.userRegistrationService.connectSignup(credentials)
   }
 
-  async verify (req: Request): Promise<void> {
+  async verify(req: Request): Promise<void> {
     const token = req.body.token
 
     if (!isString(token)) {
@@ -71,13 +71,15 @@ export class RegistrationController extends BaseController implements IRegistrat
     return DIContainer.sharedContainer.userRegistrationService.verify(token)
   }
 
-  async requestVerificationEmail (req: Request): Promise<void> {
+  async requestVerificationEmail(req: Request): Promise<void> {
     const email = req.body.email
 
     if (!isString(email)) {
       throw new ValidationError('email should be string', email)
     }
 
-    return DIContainer.sharedContainer.userRegistrationService.requestVerificationEmail(email.toLowerCase())
+    return DIContainer.sharedContainer.userRegistrationService.requestVerificationEmail(
+      email.toLowerCase()
+    )
   }
 }

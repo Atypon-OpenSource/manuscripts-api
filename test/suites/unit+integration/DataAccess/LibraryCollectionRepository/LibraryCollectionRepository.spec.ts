@@ -20,7 +20,7 @@ import { BucketKey } from '../../../../../src/Config/ConfigurationTypes'
 import { MethodNotAllowedError } from '../../../../../src/Errors'
 import { LibraryCollectionRepository } from '../../../../../src/DataAccess/LibraryCollectionRepository/LibraryCollectionRepository'
 
-describe('LibraryCollectionRepository - update', () => {
+xdescribe('LibraryCollectionRepository - update', () => {
   test('should not allow the user to use update', () => {
     const repository = new LibraryCollectionRepository(BucketKey.Data, {} as any)
 

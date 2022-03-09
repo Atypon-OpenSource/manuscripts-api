@@ -26,11 +26,11 @@ import { log } from '../Utilities/Logger'
 import { IServer } from './IServer'
 import { PassportAuth } from '../Auth/Passport/Passport'
 import { loadRoutes } from '../Controller/RouteLoader'
-import { Database } from '../DataAccess/Database'
+import { SQLDatabase } from '../DataAccess/SQLDatabase'
 import { isStatusCoded, ForbiddenOriginError, IllegalStateError } from '../Errors'
 import { config } from '../Config/Config'
-import { SyncService } from '../DomainServices/Sync/SyncService'
-import { DIContainer } from '../DIContainer/DIContainer'
+// import { SyncService } from '../DomainServices/Sync/SyncService'
+// import { DIContainer } from '../DIContainer/DIContainer'
 import { Environment } from '../Config/ConfigurationTypes'
 
 /**
@@ -41,25 +41,26 @@ import { Environment } from '../Config/ConfigurationTypes'
 export class Server implements IServer {
   public app: express.Application
 
-  constructor (public database: Database) {}
+  constructor(public database: SQLDatabase) {}
 
   /**
    * Validates that essential components necessary for the application are up and healthy
    */
-  public async checkPrerequisites () {
+  public async checkPrerequisites() {
     return Promise.all([
-      DIContainer.sharedContainer.userBucket.isViewServiceAlive(),
-      SyncService.isAlive()
+      // DIContainer.sharedContainer.userBucket.isViewServiceAlive(),
+      // SyncService.isAlive(),
+      SQLDatabase.ensureDBExtensions(),
     ])
   }
 
-  public bootstrap (): void {
+  public bootstrap(): void {
     this.app = express()
     this.config()
     this.loadRoutes()
   }
 
-  private config () {
+  private config() {
     this.app.use(express.static(path.join(__dirname, '../../public')))
 
     if (this.app.get('env') !== 'test') {
@@ -78,31 +79,36 @@ export class Server implements IServer {
     const originWildcard = allowedOrigins.indexOf('*') >= 0
 
     if (process.env.NODE_ENV === Environment.Production && originWildcard) {
-      throw new IllegalStateError('Attempting to execute in production mode with "APP_ALLOWED_CORS_ORIGINS" including "*". You probably didn\'t want to do this?', 'APP_ALLOWED_CORS_ORIGINS=*')
+      throw new IllegalStateError(
+        'Attempting to execute in production mode with "APP_ALLOWED_CORS_ORIGINS" including "*". You probably didn\'t want to do this?',
+        'APP_ALLOWED_CORS_ORIGINS=*'
+      )
     }
 
-    this.app.use(cors({
-      origin: (requestOrigin, callback) => {
-        // when request came from the same domain, requestOrigin === undefined.
-        if (!requestOrigin) {
-          return callback(null, true)
-        }
-        if (process.env.NODE_ENV === Environment.Development && originWildcard) {
-          return callback(null, true)
-        }
-        if (allowedOrigins.indexOf(requestOrigin) >= 0) {
-          return callback(null, true)
-        } else {
-          return callback(new ForbiddenOriginError(requestOrigin))
-        }
-      },
-      credentials: true
-    }))
+    this.app.use(
+      cors({
+        origin: (requestOrigin, callback) => {
+          // when request came from the same domain, requestOrigin === undefined.
+          if (!requestOrigin) {
+            return callback(null, true)
+          }
+          if (process.env.NODE_ENV === Environment.Development && originWildcard) {
+            return callback(null, true)
+          }
+          if (allowedOrigins.indexOf(requestOrigin) >= 0) {
+            return callback(null, true)
+          } else {
+            return callback(new ForbiddenOriginError(requestOrigin))
+          }
+        },
+        credentials: true,
+      })
+    )
 
     // use query string parser middleware
     this.app.use(
       bodyParser.urlencoded({
-        extended: true
+        extended: true,
       })
     )
 
@@ -111,7 +117,7 @@ export class Server implements IServer {
     PassportAuth.init(this.app)
   }
 
-  private loadRoutes () {
+  private loadRoutes() {
     const router: express.Router = express.Router()
 
     loadRoutes(router)
@@ -129,43 +135,35 @@ export class Server implements IServer {
     })
 
     // catch any error and forward to error handler
-    this.app.use(
-      (req: express.Request, res: express.Response, _next: Function) => {
-        if (process.env.NODE_ENV !== 'test') {
-          log.error(`The requested endpoint (${req.method} ${req.url}) doesn't exist. Status code: 404`)
-        }
-        res.status(404)
-           .json({})
-           .end()
+    this.app.use((req: express.Request, res: express.Response, _next: Function) => {
+      if (process.env.NODE_ENV !== 'test') {
+        log.error(
+          `The requested endpoint (${req.method} ${req.url}) doesn't exist. Status code: 404`
+        )
       }
-    )
+      res.status(404).json({}).end()
+    })
 
     // catch any error and forward to error handler
-    this.app.use(
-      (
-        error: Error,
-        req: express.Request,
-        res: express.Response,
-        _next: Function
-      ) => {
-        const statusCode = isStatusCoded(error) ? error.statusCode : 400
-        if (process.env.NODE_ENV !== 'test') {
-          log.error(`${req.method} ${req.url} (${statusCode}):`, error)
-        }
-
-        res.status(statusCode)
-           .json({ error: JSON.stringify(error), message: error.message })
-           .end()
+    this.app.use((error: Error, req: express.Request, res: express.Response, _next: Function) => {
+      const statusCode = isStatusCoded(error) ? error.statusCode : 400
+      if (process.env.NODE_ENV !== 'test') {
+        log.error(`${req.method} ${req.url} (${statusCode}):`, error)
       }
-    )
+
+      res
+        .status(statusCode)
+        .json({ error: JSON.stringify(error), message: error.message })
+        .end()
+    })
   }
 
   /**
    * Starts web server on specific port.
    */
-  public async start (port: number): Promise<void> {
+  public async start(port: number): Promise<void> {
     return new Promise<void>((resolve, reject) => {
-      this.app.listen(port, (error: Error) => {
+      /*this.app.listen(port, (error: Error) => {
         if (error) {
           log.error(`can't start server`, error)
           reject(error)
@@ -173,7 +171,17 @@ export class Server implements IServer {
           log.info(`Server started on port ${port}`)
           resolve()
         }
-      })
+      })*/
+
+      this.app
+        .listen(port, () => {
+          log.info(`Server started on port ${port}`)
+          resolve()
+        })
+        .on('error', (error: Error) => {
+          log.error(`can't start server`, error)
+          reject(error)
+        })
     })
   }
 }

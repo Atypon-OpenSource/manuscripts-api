@@ -26,8 +26,8 @@ export const appJsonAndCharset: Joi.StringSchema = Joi.string().required()
 export const jsonHeadersSchema: Joi.SchemaMap = {
   headers: Joi.object({
     accept: appJsonAndCharset,
-    'content-type': appJsonAndCharset
-  }).options({ allowUnknown: true })
+    'content-type': appJsonAndCharset,
+  }).options({ allowUnknown: true }),
 }
 
 export const appSecretHeadersSchema: Joi.SchemaMap = {
@@ -35,14 +35,14 @@ export const appSecretHeadersSchema: Joi.SchemaMap = {
     accept: appJsonAndCharset,
     'content-type': appJsonAndCharset,
     [APP_ID_HEADER_KEY]: appIdSchema,
-    [APP_SECRET_HEADER_KEY]: appSecretSchema
-  }).options({ allowUnknown: true })
+    [APP_SECRET_HEADER_KEY]: appSecretSchema,
+  }).options({ allowUnknown: true }),
 }
 
 export const appIdHeadersSchema: Joi.SchemaMap = {
   headers: Joi.object({
     accept: appJsonAndCharset,
     'content-type': appJsonAndCharset,
-    [APP_ID_HEADER_KEY]: appIdSchema
-  }).options({ allowUnknown: true })
+    [APP_ID_HEADER_KEY]: appIdSchema,
+  }).options({ allowUnknown: true }),
 }

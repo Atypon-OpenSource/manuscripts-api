@@ -15,6 +15,6 @@
  */
 
 export interface IAMStartData {
-  url: string,
+  url: string
   nonce: string
 }

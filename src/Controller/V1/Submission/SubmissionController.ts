@@ -22,12 +22,11 @@ import { ValidationError } from '../../../Errors'
 import { DIContainer } from '../../../DIContainer/DIContainer'
 import { ISubmissionController } from './ISubmissionController'
 
-export class SubmissionController extends BaseController
-  implements ISubmissionController {
+export class SubmissionController extends BaseController implements ISubmissionController {
   /**
    * Deletes user from the system and all related data.
    */
-  async updateStatus (req: Request): Promise<void> {
+  async updateStatus(req: Request): Promise<void> {
     const { eventKey } = req.body
     const { id } = req.params
 
@@ -39,9 +38,6 @@ export class SubmissionController extends BaseController
       throw new ValidationError('eventKey should be string.', eventKey)
     }
 
-    return DIContainer.sharedContainer.submissionService.updateStatus(
-      id,
-      eventKey
-    )
+    return DIContainer.sharedContainer.submissionService.updateStatus(id, eventKey)
   }
 }

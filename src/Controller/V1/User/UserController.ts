@@ -28,7 +28,7 @@ export class UserController extends BaseController implements IUserController {
   /**
    * Sets the user deleteAt property.
    */
-  async markUserForDeletion (req: Request): Promise<void> {
+  async markUserForDeletion(req: Request): Promise<void> {
     const { user } = req
     const { password } = req.body
 
@@ -40,34 +40,28 @@ export class UserController extends BaseController implements IUserController {
       throw new ValidationError('Password must be a string', req.body)
     }
 
-    return DIContainer.sharedContainer.userService.markUserForDeletion(
-      user._id, password
-    )
+    return DIContainer.sharedContainer.userService.markUserForDeletion(user._id, password)
   }
 
   /**
    * Sets the user deleteAt property to undefined.
    */
-  async unmarkUserForDeletion (req: Request): Promise<void> {
+  async unmarkUserForDeletion(req: Request): Promise<void> {
     const { user } = req
 
     if (!user) {
       throw new ValidationError('user not found', req.user)
     }
 
-    return DIContainer.sharedContainer.userService.unmarkUserForDeletion(
-      user._id
-    )
+    return DIContainer.sharedContainer.userService.unmarkUserForDeletion(user._id)
   }
 
-  async getProfile (req: Request): Promise<UserProfileLike | null> {
+  async getProfile(req: Request): Promise<UserProfileLike | null> {
     const token = authorizationBearerToken(req)
     return DIContainer.sharedContainer.userService.profile(token)
   }
 
-  async userContainers (req: Request): Promise<Container[]> {
-    return DIContainer.sharedContainer.projectRepository.getUserContainers(
-      req.user._id
-    )
+  async userContainers(req: Request): Promise<Container[]> {
+    return DIContainer.sharedContainer.projectRepository.getUserContainers(req.user._id)
   }
 }

@@ -64,16 +64,22 @@ const seedOptions: SeedOptions = {
 
 beforeAll(async () => {
   db = await testDatabase()
-
-  return Promise.all(
+  /*await Promise.all(
     GATEWAY_BUCKETS.map(key => {
       return DIContainer.sharedContainer.syncService.createGatewayAccount(
         'User|' + validBody.email,
         key
       )
     })
-  )
+  )*/
 })
+
+async function seedAccounts () {
+  await DIContainer.sharedContainer.syncService.createGatewayAccount(
+      'User|' + validBody.email,
+      null
+    )
+}
 
 afterAll(() => {
   db.bucket.disconnect()
@@ -86,6 +92,7 @@ describe('InvitationService - acceptInvitationToken', () => {
     await drop()
     await dropBucket(BucketKey.Data)
     await seed(seedOptions)
+    await seedAccounts()
   })
 
   test('should add new user to the project successfully', async () => {

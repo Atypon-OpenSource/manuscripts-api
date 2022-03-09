@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 
-import { SchemaDefinition as OttomanSchemaDefinition, ModelOptions as OttomanModelOptions } from 'ottoman'
+import {
+  SchemaDefinition as OttomanSchemaDefinition,
+  ModelOptions as OttomanModelOptions,
+} from 'ottoman'
 
-import { CBRepository } from '../CBRepository'
+import { SQLRepository } from '../SQLRepository'
 import { IUserEventRepository } from '../Interfaces/IUserEventRepository'
 import { QueryCriteria } from '../Interfaces/QueryCriteria'
 import { UserActivityEvent } from '../../Models/UserEventModels'
@@ -25,43 +28,46 @@ import { required, maxLength, date } from '../validators'
 /**
  * Manages user event persistent storage operations.
  */
-export class UserEventRepository extends CBRepository<UserActivityEvent, UserActivityEvent, UserActivityEvent, QueryCriteria> implements IUserEventRepository {
+export class UserEventRepository
+  extends SQLRepository<UserActivityEvent, UserActivityEvent, UserActivityEvent, QueryCriteria>
+  implements IUserEventRepository
+{
   /**
    * Returns document type
    */
-  public get documentType (): string {
+  public get documentType(): string {
     return 'UserEvent'
   }
 
-  public buildModelOptions (): OttomanModelOptions {
+  public buildModelOptions(): OttomanModelOptions {
     return {
       index: {
         findByUserId: {
           type: 'n1ql',
-          by: 'userId'
-        }
-      }
+          by: 'userId',
+        },
+      },
     }
   }
 
-  public buildSchemaDefinition (): OttomanSchemaDefinition {
+  public buildSchemaDefinition(): OttomanSchemaDefinition {
     return {
       _id: {
         type: 'string',
         auto: 'uuid',
-        readonly: true
+        readonly: true,
       },
       userId: {
         type: 'string',
         validator: (val: string) => {
           required(val, 'userId')
-        }
+        },
       },
       createdAt: {
         type: 'Date',
         validator: (val: Date) => {
           date(val, 'timestamp')
-        }
+        },
       },
       deviceId: {
         type: 'string',
@@ -69,7 +75,7 @@ export class UserEventRepository extends CBRepository<UserActivityEvent, UserAct
           if (val) {
             maxLength(val, 100, 'deviceId')
           }
-        }
+        },
       },
       appId: {
         type: 'string',
@@ -77,18 +83,18 @@ export class UserEventRepository extends CBRepository<UserActivityEvent, UserAct
           if (val) {
             maxLength(val, 100, 'appId')
           }
-        }
+        },
       },
       eventType: {
-        type: 'number'
-      }
+        type: 'number',
+      },
     }
   }
 
   /**
    * Builds a user model from a user row object.
    */
-  public buildModel (user: UserActivityEvent): UserActivityEvent {
+  public buildModel(user: UserActivityEvent): UserActivityEvent {
     return user
   }
 }

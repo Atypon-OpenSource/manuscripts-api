@@ -29,7 +29,7 @@ export class ContainerRequestRepository extends SGRepository<
   ContainerRequestLike,
   PatchContainerRequest
 > {
-  public get objectType (): string {
+  public get objectType(): string {
     return 'MPContainerRequest'
   }
 }

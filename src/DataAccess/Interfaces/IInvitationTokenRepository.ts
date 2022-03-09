@@ -21,10 +21,9 @@ import { InvitationTokenQueryCriteria } from './QueryCriteria'
 /**
  * Manages user token persistent storage operations.
  */
-export interface IInvitationTokenRepository
-  extends IndexedRepository<
-      InvitationToken,
-      InvitationToken,
-      UpdateInvitationToken,
-      InvitationTokenQueryCriteria
-    > {}
+export type IInvitationTokenRepository = IndexedRepository<
+  InvitationToken,
+  InvitationToken,
+  UpdateInvitationToken,
+  InvitationTokenQueryCriteria
+>

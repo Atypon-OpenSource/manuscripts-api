@@ -20,14 +20,10 @@ import { UserProfileLike } from '../Interfaces/Models'
 import { UserProfile } from '@manuscripts/manuscripts-json-schema'
 
 export class UserProfileRepository
-  extends SGRepository<
-    UserProfile,
-    UserProfileLike,
-    UserProfileLike,
-    UserProfileLike
-  >
-  implements IUserProfileRepository {
-  public get objectType (): string {
+  extends SGRepository<UserProfile, UserProfileLike, UserProfileLike, UserProfileLike>
+  implements IUserProfileRepository
+{
+  public get objectType(): string {
     return 'MPUserProfile'
   }
 }

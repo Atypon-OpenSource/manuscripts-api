@@ -29,8 +29,7 @@ buckets=\
 ($APP_DATA_BUCKET \
 $APP_USER_BUCKET \
 $APP_STATE_BUCKET \
-$APP_DERIVED_DATA_BUCKET \
-$APP_DISCUSSIONS_BUCKET)
+$APP_DERIVED_DATA_BUCKET)
 
 for bucket in "${buckets[@]}"; do
   bucket_attempts=0

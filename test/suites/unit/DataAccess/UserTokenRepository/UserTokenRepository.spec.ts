@@ -20,7 +20,7 @@ import { UserTokenRepository } from '../../../../../src/DataAccess/UserTokenRepo
 import { UserTokenQueryCriteria } from '../../../../../src/DataAccess/Interfaces/QueryCriteria'
 import { validUserToken } from '../../../../data/fixtures/UserTokenRepository'
 
-import { Database } from '../../../../../src/DataAccess/Database'
+import { SQLDatabase } from '../../../../../src/DataAccess/SQLDatabase'
 import { config } from '../../../../../src/Config/Config'
 import { BucketKey } from '../../../../../src/Config/ConfigurationTypes'
 import { TEST_TIMEOUT } from '../../../../utilities/testSetup'
@@ -28,7 +28,7 @@ import { TEST_TIMEOUT } from '../../../../utilities/testSetup'
 jest.setTimeout(TEST_TIMEOUT)
 
 function testDatabase (): any {
-  return new Database(config.DB, BucketKey.User)
+  return new SQLDatabase(config.DB, BucketKey.User)
 }
 
 describe('UserTokenRepository', () => {

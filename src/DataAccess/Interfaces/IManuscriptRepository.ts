@@ -22,10 +22,9 @@ import { ManuscriptLike } from './Models'
 /**
  * Manages manuscript persistent storage operations.
  */
-export interface IManuscriptRepository
-  extends KeyValueRepository<
-    Manuscript,
-    ManuscriptLike,
-    ManuscriptLike,
-    Partial<Manuscript>
-  > {}
+export type IManuscriptRepository = KeyValueRepository<
+  Manuscript,
+  ManuscriptLike,
+  ManuscriptLike,
+  Partial<Manuscript>
+>

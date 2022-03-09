@@ -24,21 +24,12 @@ import { isIAMLogoutTokenPayload } from '../Utilities/JWT/IAMLogoutTokenPayload'
 import { AuthService } from '../DomainServices/Auth/AuthService'
 
 export interface IIAMTokenVerifier {
-  loginVerify (
-    token: string,
-    secretOrPair: string,
-    nonce: string,
-    audience?: string
-  ): void
-  logoutVerify (
-    token: string,
-    secretOrPair: string,
-    audience?: string
-  ): void
+  loginVerify(token: string, secretOrPair: string, nonce: string, audience?: string): void
+  logoutVerify(token: string, secretOrPair: string, audience?: string): void
 }
 
 export class IAMTokenVerifier implements IIAMTokenVerifier {
-  constructor () {
+  constructor() {
     this.setIssuer().catch((e) => {
       throw new IAMIssuerError(e)
     })
@@ -46,26 +37,16 @@ export class IAMTokenVerifier implements IIAMTokenVerifier {
 
   private issuer: string
 
-  private verify (
-    token: string,
-    secret: string,
-    audience?: string,
-    hashedNonce?: string
-  ) {
+  private verify(token: string, secret: string, audience?: string, hashedNonce?: string) {
     return jsonwebtoken.verify(token, secret, {
       algorithms: ['RS512'],
       audience,
       issuer: this.issuer,
-      nonce: hashedNonce
+      nonce: hashedNonce,
     })
   }
 
-  public loginVerify (
-    token: string,
-    secret: string,
-    nonce: string,
-    audience?: string
-  ) {
+  public loginVerify(token: string, secret: string, nonce: string, audience?: string) {
     const hashedNonce = AuthService.hashNonce(nonce)
     const verifiedToken = this.verify(token, secret, audience, hashedNonce)
 
@@ -74,11 +55,7 @@ export class IAMTokenVerifier implements IIAMTokenVerifier {
     }
   }
 
-  public logoutVerify (
-    token: string,
-    secret: string,
-    audience?: string
-  ) {
+  public logoutVerify(token: string, secret: string, audience?: string) {
     const verifiedToken = this.verify(token, secret, audience)
 
     if (!isIAMLogoutTokenPayload(verifiedToken)) {
@@ -86,15 +63,13 @@ export class IAMTokenVerifier implements IIAMTokenVerifier {
     }
   }
 
-  public isValidIssuer (issuer: string) {
+  public isValidIssuer(issuer: string) {
     return this.issuer === issuer
   }
 
-  public async setIssuer () {
+  public async setIssuer() {
     if (process.env.NODE_ENV !== 'test') {
-      const body = await request.get(
-        `${config.IAM.authServerURL}/.well-known/openid-configuration`
-      )
+      const body = await request.get(`${config.IAM.authServerURL}/.well-known/openid-configuration`)
       this.issuer = JSON.parse(body).issuer
     } else {
       this.issuer = config.IAM.apiServerURL[0]

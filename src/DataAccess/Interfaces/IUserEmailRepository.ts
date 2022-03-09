@@ -20,5 +20,4 @@ import { UserEmail } from '../../Models/UserModels'
 /**
  * Manages user token persistent storage operations.
  */
-export interface IUserEmailRepository
-  extends IndexedRepository<UserEmail, UserEmail, {}, {}> {}
+export type IUserEmailRepository = IndexedRepository<UserEmail, UserEmail, {}, {}>

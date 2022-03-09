@@ -17,14 +17,9 @@
 import { Readable } from 'stream'
 
 export interface IPressroomService {
-  importJATS (
-    stream: Readable
-  ): Promise<Readable>
+  importJATS(stream: Readable): Promise<Readable>
 
-  fetchHtml (
-    archive: Buffer,
-    manuscriptID: string
-  ): Promise<Buffer>
+  fetchHtml(archive: Buffer, manuscriptID: string): Promise<Buffer>
 
-  validateTemplateId (templateID: string): Promise<boolean>
+  validateTemplateId(templateID: string): Promise<boolean>
 }

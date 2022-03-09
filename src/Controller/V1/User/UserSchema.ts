@@ -20,6 +20,6 @@ import { appJsonAndCharset } from '../../BaseSchema'
 
 export const userSchema: Joi.SchemaMap = {
   headers: Joi.object({
-    accept: appJsonAndCharset
-  }).options({ allowUnknown: true })
+    accept: appJsonAndCharset,
+  }).options({ allowUnknown: true }),
 }

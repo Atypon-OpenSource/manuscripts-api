@@ -22,20 +22,21 @@ import { AuthStrategyTypes } from './AuthStrategy'
 import { DIContainer } from '../../DIContainer/DIContainer'
 import { ScopedAccessTokenConfiguration } from '../../Config/ConfigurationTypes'
 class ScopedJwtAuthStrategy {
-  public static use (options: ArchiveOptions): void {
-
+  public static use(options: ArchiveOptions): void {
     const opts: StrategyOptions = {
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       algorithms: [options.scope.publicKeyPEM === null ? 'HS256' : 'RS256'],
       audience: options.scope.name,
       issuer: config.API.hostname,
-      secretOrKey:  options.scope.secret
+      secretOrKey: options.scope.secret,
     }
 
     passport.use(
       AuthStrategyTypes.scopedJwt,
       new Strategy(opts, async (payload: any, done: Function) => {
-        const user = await DIContainer.sharedContainer.userRepository.getById(payload.sub.replace('_', '|'))
+        const user = await DIContainer.sharedContainer.userRepository.getById(
+          payload.sub.replace('_', '|')
+        )
         if (!user) {
           return done(null, false)
         }

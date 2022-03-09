@@ -25,7 +25,7 @@ import {
   signupSchema,
   verificationSchema,
   requestVerificationEmailSchema,
-  connectSignupSchema
+  connectSignupSchema,
 } from './RegistrationSchema'
 
 export class RegistrationRoute extends BaseRoute {
@@ -36,11 +36,11 @@ export class RegistrationRoute extends BaseRoute {
    *
    * @returns string
    */
-  private get basePath (): string {
+  private get basePath(): string {
     return '/registration'
   }
 
-  public create (router: Router): void {
+  public create(router: Router): void {
     router.post(
       `${this.basePath}/signup`,
       expressJoiMiddleware(signupSchema, {}),

@@ -15,17 +15,20 @@
  */
 
 import { IndexedRepository } from './IndexedRepository'
-import { ClientApplication, ClientApplicationQueryCriteria } from '../../Models/ClientApplicationModels'
+import {
+  ClientApplication,
+  ClientApplicationQueryCriteria,
+} from '../../Models/ClientApplicationModels'
 
 /**
  * Manages application persistent storage operations.
  */
 export interface IClientApplicationRepository
   extends IndexedRepository<
-      ClientApplication,
-      ClientApplication,
-      ClientApplication,
-      ClientApplicationQueryCriteria
-    > {
-  ensureApplicationsExist (applications: ReadonlyArray<ClientApplication>): Promise<void>
+    ClientApplication,
+    ClientApplication,
+    ClientApplication,
+    ClientApplicationQueryCriteria
+  > {
+  ensureApplicationsExist(applications: ReadonlyArray<ClientApplication>): Promise<void>
 }

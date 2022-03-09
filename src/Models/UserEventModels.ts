@@ -17,7 +17,6 @@
 export enum UserActivityEventType {
   DeleteAccount = 'DeleteAccount',
   EmailVerified = 'EmailVerified',
-  FailedLogin = 'FailedLogin',
   Logout = 'Logout',
   RefreshSyncSession = 'RefreshSyncSession',
   Registration = 'Registration',
@@ -27,14 +26,14 @@ export enum UserActivityEventType {
   StatusNotFound = 'StatusNotFound',
   SuccessfulLogin = 'SuccessfulLogin',
   RequestEmailVerification = 'RequestEmailVerification',
-  ProjectCreated = 'ProjectCreated'
+  ProjectCreated = 'ProjectCreated',
 }
 
 export interface UserActivityEvent {
   _id?: string
   userId: string
   createdAt: Date
-  deviceId: string | null,
-  appId: string | null,
+  deviceId: string | null
+  appId: string | null
   eventType: UserActivityEventType
 }

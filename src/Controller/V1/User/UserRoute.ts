@@ -22,24 +22,19 @@ import { BaseRoute } from '../../BaseRoute'
 import { userSchema } from './UserSchema'
 import { UserController } from './UserController'
 import { AuthStrategy } from '../../../Auth/Passport/AuthStrategy'
-import { DiscourseController } from '../../../DomainServices/Discourse/DiscourseController'
-import { DIContainer } from '../../../DIContainer/DIContainer'
 
 export class UserRoute extends BaseRoute {
   private userController = new UserController()
-  private discourseController = DIContainer.sharedContainer.discourseService
-                                ? new DiscourseController(DIContainer.sharedContainer.discourseService)
-                                : null
 
   /**
    * Returns deletion route base path.
    * @returns string
    */
-  private get basePath (): string {
+  private get basePath(): string {
     return '/user'
   }
 
-  public create (router: Router): void {
+  public create(router: Router): void {
     router.post(
       `${this.basePath}/mark-for-deletion`,
       AuthStrategy.JsonHeadersValidation,
@@ -72,10 +67,7 @@ export class UserRoute extends BaseRoute {
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           const user = await this.userController.getProfile(req)
-          res
-            .status(HttpStatus.OK)
-            .json(user)
-            .end()
+          res.status(HttpStatus.OK).json(user).end()
         }, next)
       }
     )
@@ -89,21 +81,5 @@ export class UserRoute extends BaseRoute {
         }, next)
       }
     )
-
-    const discourseController = this.discourseController
-    if (discourseController) {
-      router.post(
-        `${this.basePath}/feedback`,
-        expressJoiMiddleware(userSchema, {}),
-        AuthStrategy.JsonHeadersValidation,
-        AuthStrategy.JWTAuth,
-        (req: Request, res: Response, next: NextFunction) => {
-          return this.runWithErrorHandling(async () => {
-            const response = await discourseController.postFeedback(req)
-            res.status(HttpStatus.OK).json(response).end()
-          }, next)
-        }
-      )
-    }
   }
 }

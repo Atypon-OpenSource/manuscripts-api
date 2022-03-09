@@ -21,5 +21,5 @@ export interface ISubmissionController {
    * Update submission status.
    * @param req Request express request.
    */
-  updateStatus (req: Request): Promise<void>
+  updateStatus(req: Request): Promise<void>
 }

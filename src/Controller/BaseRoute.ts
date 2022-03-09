@@ -21,12 +21,15 @@ export abstract class BaseRoute {
    * Creates routes.
    * router Express router.
    */
-  abstract create (router: Router): void
+  abstract create(router: Router): void
 
   /**
    * Runs the provided code and handles exceptions and passes them to the next middleware.
    */
-  protected async runWithErrorHandling (logic: () => Promise<void>, next: NextFunction): Promise<void> {
+  protected async runWithErrorHandling(
+    logic: () => Promise<void>,
+    next: NextFunction
+  ): Promise<void> {
     try {
       // run the logic
       await logic()

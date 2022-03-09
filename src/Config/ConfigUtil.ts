@@ -25,9 +25,13 @@ import { ValidationError } from '../Errors'
  * @param innerSeparator - marker that separates the key/value pairs
  * @param outerSeparator - marker that separates key and the value
  */
-export function getMap (configStr: string, innerSeparator: string, outerSeparator: string): Map<string, string> {
+export function getMap(
+  configStr: string,
+  innerSeparator: string,
+  outerSeparator: string
+): Map<string, string> {
   let map = new Map()
-  configStr.split(outerSeparator).map(x => {
+  configStr.split(outerSeparator).map((x) => {
     const configParts = x.split(innerSeparator)
     if (configParts.length !== 2) {
       throw new ValidationError('Expected two values in the config', configParts)

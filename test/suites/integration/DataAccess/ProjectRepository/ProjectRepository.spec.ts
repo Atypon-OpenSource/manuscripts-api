@@ -27,7 +27,7 @@ import { createProjectInvitation } from '../../../../data/fixtures/misc'
 jest.setTimeout(TEST_TIMEOUT)
 
 let db: any = null
-beforeAll(async () => (db = await testDatabase(false, false, BucketKey.Data)))
+beforeAll(async () => (db = await testDatabase(false, BucketKey.Data)))
 afterAll(() => db.bucket.disconnect())
 
 describe('ProjectRepository removeWithAllResources', () => {
@@ -85,7 +85,7 @@ describe('ProjectRepository getUserContainers', () => {
     expect(
       projects.find(
         (project) => project._id === validProject._id
-      )!._id
+      )._id
     ).toBe(validProject._id)
   })
 })
@@ -102,7 +102,7 @@ describe('ProjectRepository getContainerResourcesIDs', () => {
     const validId = `MPProject:valid-project-id-6`
     const resources = await repository.getContainerResourcesIDs(validId)
 
-    expect(resources!.find((resource) => resource._id === validId)!._id).toBe(
+    expect(resources.find((resource) => resource._id === validId)._id).toBe(
       validId
     )
   })

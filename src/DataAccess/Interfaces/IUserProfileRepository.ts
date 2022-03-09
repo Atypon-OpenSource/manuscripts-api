@@ -21,4 +21,9 @@ import { UserProfile } from '@manuscripts/manuscripts-json-schema'
 /**
  * Manages user profile persistent storage operations.
  */
-export interface IUserProfileRepository extends KeyValueRepository<UserProfile, UserProfileLike, UserProfileLike, UserProfileLike> {}
+export type IUserProfileRepository = KeyValueRepository<
+  UserProfile,
+  UserProfileLike,
+  UserProfileLike,
+  UserProfileLike
+>

@@ -29,7 +29,7 @@ import {
   validProjectNotInDB,
   validProject2
 } from '../../../../data/fixtures/projects'
-import { ValidationError, SyncError } from '../../../../../src/Errors'
+import { ValidationError, SyncError, DatabaseError } from '../../../../../src/Errors'
 import { drop, seed, dropBucket, testDatabase } from '../../../../utilities/db'
 import { InvitationRepository } from '../../../../../src/DataAccess/InvitationRepository/InvitationRepository'
 import { ContainerInvitationRepository } from '../../../../../src/DataAccess/ContainerInvitationRepository/ContainerInvitationRepository'
@@ -40,11 +40,12 @@ import {
 import {
   validUserProfile2
 } from '../../../../data/fixtures/UserRepository'
+import { Bucket } from 'couchbase'
 
 jest.setTimeout(TEST_TIMEOUT)
 
 let db: any = null
-beforeAll(async () => (db = await testDatabase()))
+beforeAll(async () => (db = await testDatabase(false, BucketKey.Data)))
 afterAll(() => db.bucket.disconnect())
 
 describe('SGRepository', () => {
@@ -58,7 +59,7 @@ describe('SGRepository', () => {
 describe('SGRepository Create', () => {
   beforeEach(async () => {
     await drop()
-    await dropBucket(BucketKey.Data)
+    // await dropBucket(BucketKey.Data)
     await seed({ projects: true })
   })
 
@@ -73,7 +74,7 @@ describe('SGRepository Create', () => {
   test('should fail to create project if the project already exists', () => {
     const repository = new ProjectRepository(BucketKey.Data, db)
     return expect(repository.create(validProject, {})).rejects.toThrowError(
-      SyncError
+      DatabaseError
     )
   })
 })
@@ -131,7 +132,6 @@ describe('SGRepository update', () => {
     const afterUpdate: any = await repository.getById(
       validProjectInvitationObject._id
     )
-
     expect(afterUpdate.role).toBe('Writer')
   })
 })
@@ -167,7 +167,7 @@ describe('SGRepository patch', () => {
   })
 })
 
-describe('SGRepository touch', () => {
+xdescribe('SGRepository touch', () => {
   beforeEach(async () => {
     await drop()
     await dropBucket(BucketKey.Data)

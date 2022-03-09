@@ -21,7 +21,7 @@ import { stringify } from 'querystring'
 import { removeEmptyValuesFromObj } from '../../../util'
 
 import { BaseRoute } from '../../BaseRoute'
-import { BucketSessions } from '../../../Models/UserModels'
+// import { BucketSessions } from '../../../Models/UserModels'
 import {
   credentialsSchema,
   googleRedirectSchema,
@@ -29,43 +29,37 @@ import {
   forgotPasswordSchema,
   resetPasswordSchema,
   changePasswordSchema,
-  discourseLoginSchema,
-  discourseAccountSchema,
   iamOAuthCallbackSchema,
   iamOAuthStartSchema,
   backchannelLogoutSchema,
   serverToServerAuthSchema,
   authorizationTokenSchema,
-  serverToServerTokenAuthSchema
+  serverToServerTokenAuthSchema,
 } from './AuthSchema'
 import { AuthController } from './AuthController'
 import { AuthStrategy } from '../../../Auth/Passport/AuthStrategy'
 import {
-  SYNC_GATEWAY_COOKIE_NAME,
-  SYNC_GATEWAY_COOKIE_EXPIRY_IN_MS
+  // SYNC_GATEWAY_COOKIE_NAME,
+  SYNC_GATEWAY_COOKIE_EXPIRY_IN_MS,
 } from '../../../DomainServices/Sync/SyncService'
 import { config } from '../../../Config/Config'
-import { BucketKey } from '../../../Config/ConfigurationTypes'
+// import { BucketKey } from '../../../Config/ConfigurationTypes'
 import { DIContainer } from '../../../DIContainer/DIContainer'
-import { DiscourseController } from '../../../DomainServices/Discourse/DiscourseController'
+import { URL } from 'url'
 
 export class AuthRoute extends BaseRoute {
-
   private authController = new AuthController()
-  private discourseController = DIContainer.sharedContainer.discourseService
-                                ? new DiscourseController(DIContainer.sharedContainer.discourseService)
-                                : null
 
   /**
    * Returns auth route base path.
    *
    * @returns string
    */
-  private get basePath (): string {
+  private get basePath(): string {
     return '/auth'
   }
 
-  public create (router: Router): void {
+  public create(router: Router): void {
     router.post(
       `${this.basePath}/login`,
       expressJoiMiddleware(credentialsSchema, {}),
@@ -75,11 +69,11 @@ export class AuthRoute extends BaseRoute {
         return this.runWithErrorHandling(async () => {
           const {
             token,
-            syncSessions,
-            user
+            // syncSessions,
+            user,
           } = await this.authController.login(req)
 
-          this.setSyncCookies(syncSessions, res)
+          // this.setSyncCookies(syncSessions, res)
 
           res
             .status(HttpStatus.OK)
@@ -100,15 +94,12 @@ export class AuthRoute extends BaseRoute {
         return this.runWithErrorHandling(async () => {
           const {
             token,
-            syncSessions
+            // syncSessions
           } = await this.authController.serverToServerAuth(req)
 
-          this.setSyncCookies(syncSessions, res)
+          // this.setSyncCookies(syncSessions, res)
 
-          res
-            .status(HttpStatus.OK)
-            .json({ token })
-            .end()
+          res.status(HttpStatus.OK).json({ token }).end()
         }, next)
       }
     )
@@ -120,46 +111,12 @@ export class AuthRoute extends BaseRoute {
       AuthStrategy.applicationValidation(),
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
-          const {
-            token
-          } = await this.authController.serverToServerTokenAuth(req)
+          const { token } = await this.authController.serverToServerTokenAuth(req)
 
-          res
-            .status(HttpStatus.OK)
-            .json({ token })
-            .end()
+          res.status(HttpStatus.OK).json({ token }).end()
         }, next)
       }
     )
-
-    const discourseController = this.discourseController
-    if (discourseController) {
-      router.get(
-        `${this.basePath}/discourseLogin`,
-        expressJoiMiddleware(discourseLoginSchema, {}),
-        AuthStrategy.JsonHeadersValidation,
-        (req: Request, res: Response, next: NextFunction) => {
-          return this.runWithErrorHandling(async () => {
-            res.status(HttpStatus.OK)
-              .json(discourseController.discourseLogin(req))
-              .end()
-          }, next)
-        }
-      )
-
-      router.get(
-        `${this.basePath}/discourseAccount`,
-        AuthStrategy.JWTAuth,
-        expressJoiMiddleware(discourseAccountSchema, {}),
-        (req: Request, res: Response, next: NextFunction) => {
-          return this.runWithErrorHandling(async () => {
-            res.status(HttpStatus.OK)
-              .json(await discourseController.discourseAccountDetails(req))
-              .end()
-          }, next)
-        }
-      )
-    }
 
     router.get(
       `${this.basePath}/google`,
@@ -170,31 +127,37 @@ export class AuthRoute extends BaseRoute {
 
     router.get(
       `${this.basePath}/google/callback`,
-      expressJoiMiddleware(googleRedirectSchema, { validationCallback:
-        (_req: Request, res: Response, next: NextFunction) => {
+      expressJoiMiddleware(googleRedirectSchema, {
+        validationCallback: (_req: Request, res: Response, next: NextFunction) => {
           return (error: any, _value: any) => {
             if (error) {
-              res.redirect(`${config.email.fromBaseURL}/login#${stringify({
-                error: 'validation-error'
-              })}`)
+              res.redirect(
+                `${config.email.fromBaseURL}/login#${stringify({
+                  error: 'validation-error',
+                })}`
+              )
             } else {
               return next()
             }
           }
-        }
+        },
       }),
       AuthStrategy.googleRedirect,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           if (!req.user || !req.user.syncSessions) {
-            res.redirect(`${config.email.fromBaseURL}/login#${stringify({
-              error: 'user-not-found'
-            })}`)
+            res.redirect(
+              `${config.email.fromBaseURL}/login#${stringify({
+                error: 'user-not-found',
+              })}`
+            )
           } else {
-            this.setSyncCookies(req.user.syncSessions, res)
-            res.redirect(`${config.email.fromBaseURL}/login#${stringify({
-              access_token: req.user.token
-            })}`)
+            // this.setSyncCookies(req.user.syncSessions, res)
+            res.redirect(
+              `${config.email.fromBaseURL}/login#${stringify({
+                access_token: req.user.token,
+              })}`
+            )
           }
         }, next)
       }
@@ -211,17 +174,14 @@ export class AuthRoute extends BaseRoute {
           const { redirectUri, deviceId, theme, action } = req.query
           const redirectBaseUri = req.get('referer') ?? null
           // Redirect user to IAM OAuth start endpoint
-          const {
-            url,
-            nonce
-          } = await DIContainer.sharedContainer.authService.iamOAuthStartData(
+          const { url, nonce } = await DIContainer.sharedContainer.authService.iamOAuthStartData(
             {
               deviceId,
               redirectUri,
               theme,
-              redirectBaseUri
-            },
-            action
+              redirectBaseUri,
+            } as any,
+            action as any
           )
 
           this.setNonceCookie(nonce, res, redirectBaseUri)
@@ -231,7 +191,7 @@ export class AuthRoute extends BaseRoute {
       }
     )
 
-    function getPermittedUrlFromReferer (referer?: string | null): string {
+    function getPermittedUrlFromReferer(referer?: string | null): string {
       let url = config.IAM.libraryURL
       if (referer) {
         const refererHost = new URL(referer).host
@@ -252,28 +212,48 @@ export class AuthRoute extends BaseRoute {
       AuthStrategy.verifyIAMToken,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
-          const state = DIContainer.sharedContainer.authService.decodeIAMState(req.query.state)
+          const state = DIContainer.sharedContainer.authService.decodeIAMState(
+            req.query.state as any
+          )
           const serverUrl = getPermittedUrlFromReferer(state.redirectBaseUri)
           this.clearNonceCookie(res, serverUrl)
           if (req.query.error) {
             const errorDescription = req.query.error_description
-            res.redirect(DIContainer.sharedContainer.authService.iamOAuthErrorURL(errorDescription, serverUrl))
+            res.redirect(
+              DIContainer.sharedContainer.authService.iamOAuthErrorURL(
+                errorDescription as any,
+                serverUrl
+              )
+            )
           } else {
-            const params = removeEmptyValuesFromObj({ redirectUri: state.redirectUri, theme: state.theme })
+            const params = removeEmptyValuesFromObj({
+              redirectUri: state.redirectUri,
+              theme: state.theme,
+            })
             try {
-              const { token, syncSessions, user } = await this.authController.iamOAuthCallback(req, state)
+              const { token, /*syncSessions,*/ user } = await this.authController.iamOAuthCallback(
+                req,
+                state
+              )
 
               if (!user) {
                 res.redirect(`${serverUrl}/login#${stringify({ error: 'user-not-found' })}`)
               } else {
-                this.setSyncCookies(syncSessions, res, serverUrl)
-                res.redirect(`${serverUrl}/login?${stringify(params)}#${stringify({
-                  access_token: token,
-                  recover: user.deleteAt ? true : false
-                })}`)
+                // this.setSyncCookies(syncSessions, res, serverUrl)
+                res.redirect(
+                  `${serverUrl}/login?${stringify(params)}#${stringify({
+                    access_token: token,
+                    recover: user.deleteAt ? true : false,
+                  })}`
+                )
               }
             } catch (error) {
-              res.redirect(`${serverUrl}/login#${stringify({ error: 'error', error_description: error.message })}`)
+              res.redirect(
+                `${serverUrl}/login#${stringify({
+                  error: 'error',
+                  error_description: error.message,
+                })}`
+              )
             }
           }
         }, next)
@@ -299,9 +279,7 @@ export class AuthRoute extends BaseRoute {
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           await this.authController.sendPasswordResetInstructions(req)
-          res
-            .status(HttpStatus.NO_CONTENT)
-            .end()
+          res.status(HttpStatus.NO_CONTENT).end()
         }, next)
       }
     )
@@ -315,25 +293,23 @@ export class AuthRoute extends BaseRoute {
         return this.runWithErrorHandling(async () => {
           const {
             token,
-            syncSessions
+            // syncSessions
           } = await this.authController.resetPassword(req)
 
-          this.setSyncCookies(syncSessions, res)
-          res
-            .status(HttpStatus.OK)
-            .json({ token })
-            .end()
+          // this.setSyncCookies(syncSessions, res)
+          res.status(HttpStatus.OK).json({ token }).end()
         }, next)
-      })
+      }
+    )
 
     router.post(
       `${this.basePath}/logout`,
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
-          const referer = req.get('referer')
+          // const referer = req.get('referer')
           await this.authController.logout(req)
-          this.clearSyncCookies(res, referer)
+          // this.clearSyncCookies(res, referer)
           res.redirect(
             HttpStatus.TEMPORARY_REDIRECT,
             `${config.IAM.authServerURL}/api/oidc/logout?redirect=${config.email.fromBaseURL}`
@@ -345,11 +321,11 @@ export class AuthRoute extends BaseRoute {
     router.post(
       `${this.basePath}/refreshSyncSessions`,
       AuthStrategy.JWTAuth,
-      (req: Request, res: Response, next: NextFunction) => {
+      (_req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
-          const sessions = await this.authController.refreshSyncSessions(req)
-          const referer = req.get('referer')
-          this.setSyncCookies(sessions, res, referer)
+          // const sessions = await this.authController.refreshSyncSessions(req)
+          // const referer = req.get('referer')
+          // this.setSyncCookies(sessions, res, referer)
           res.status(HttpStatus.NO_CONTENT).send()
         }, next)
       }
@@ -357,13 +333,12 @@ export class AuthRoute extends BaseRoute {
 
     router.post(
       `${this.basePath}/changePassword`,
-      expressJoiMiddleware(changePasswordSchema,{}),
+      expressJoiMiddleware(changePasswordSchema, {}),
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           await this.authController.changePassword(req)
-          res.status(HttpStatus.OK)
-             .end()
+          res.status(HttpStatus.OK).end()
         }, next)
       }
     )
@@ -378,76 +353,38 @@ export class AuthRoute extends BaseRoute {
 
           res.format({
             text: () => res.send(token),
-            json: () => res.send({ token })
+            json: () => res.send({ token }),
           })
         }, next)
       }
     )
   }
 
-  private cookieKey = (bucketKey: string) => `/${config.DB.buckets[bucketKey as BucketKey]}`
+  // private cookieKey = (bucketKey: string) => `/${config.DB.buckets[bucketKey as BucketKey]}`
 
-  private cookieOptions = (
-    domain: string,
-    includeAge: boolean,
-    path?: string
-  ) => ({
+  private cookieOptions = (domain: string, includeAge: boolean, path?: string) => ({
     path,
     domain,
     maxAge: includeAge ? SYNC_GATEWAY_COOKIE_EXPIRY_IN_MS : 0,
     httpOnly: true,
-    sameSite: config.server.storeOnlySSLTransmittedCookies && 'None' || 'Strict',
-    secure: config.server.storeOnlySSLTransmittedCookies
+    sameSite: (config.server.storeOnlySSLTransmittedCookies && 'None') || 'Strict',
+    secure: config.server.storeOnlySSLTransmittedCookies,
   })
 
-  private clearSyncCookies (res: Response, referer?: string) {
+  private clearNonceCookie(res: Response, referer?: string) {
     const refererDomain = AuthRoute.getCookieDomain(referer)
-    for (const key of [BucketKey.Data]) {
-      res.clearCookie(
-        this.cookieKey(key),
-        this.cookieOptions(
-          refererDomain,
-          false,
-          this.cookieKey(key)
-        )
-      )
-    }
+    res.clearCookie('nonce', this.cookieOptions(refererDomain, false) as any)
   }
 
-  private setSyncCookies (syncSessions: BucketSessions, res: Response, referer?: string) {
+  private setNonceCookie(nonce: string, res: Response, referer?: string | null) {
     const refererDomain = AuthRoute.getCookieDomain(referer)
-    for (const [key, session] of Object.entries(syncSessions)) {
-      res.cookie(
-        SYNC_GATEWAY_COOKIE_NAME,
-        session,
-        this.cookieOptions(
-          refererDomain,
-          true,
-          this.cookieKey(key)
-        )
-      )
-    }
+    res.cookie('nonce', nonce, this.cookieOptions(refererDomain, true) as any)
   }
 
-  private clearNonceCookie (res: Response, referer?: string) {
-    const refererDomain = AuthRoute.getCookieDomain(referer)
-    res.clearCookie(
-      'nonce',
-      this.cookieOptions(refererDomain, false)
-    )
-  }
-
-  private setNonceCookie (nonce: string, res: Response, referer?: string | null) {
-    const refererDomain = AuthRoute.getCookieDomain(referer)
-    res.cookie(
-      'nonce',
-      nonce,
-      this.cookieOptions(refererDomain, true)
-    )
-  }
-
-  private static getCookieDomain (referer?: string | null) {
+  private static getCookieDomain(referer?: string | null) {
     const refererHost = referer ? new URL(referer).host : config.gateway.cookieDomain
-    return !refererHost.startsWith('.') ? refererHost.substring(refererHost.indexOf('.')) : refererHost
+    return !refererHost.startsWith('.')
+      ? refererHost.substring(refererHost.indexOf('.'))
+      : refererHost
   }
 }

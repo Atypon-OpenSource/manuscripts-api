@@ -19,10 +19,7 @@ import { NextFunction, Request, Response, Router } from 'express'
 import * as HttpStatus from 'http-status-codes'
 
 import { BaseRoute } from '../../BaseRoute'
-import {
-  createRequestSchema,
-  containerRequestSchema
-} from './ContainerRequestSchema'
+import { createRequestSchema, containerRequestSchema } from './ContainerRequestSchema'
 import { ContainerRequestController } from './ContainerRequestController'
 import { AuthStrategy } from '../../../Auth/Passport/AuthStrategy'
 
@@ -34,11 +31,11 @@ export class ContainerRequestRoute extends BaseRoute {
    *
    * @returns string
    */
-  private get basePath (): string {
+  private get basePath(): string {
     return '/request'
   }
 
-  public create (router: Router): void {
+  public create(router: Router): void {
     router.post(
       `${this.basePath}/:containerID/create`,
       expressJoiMiddleware(createRequestSchema, {}),

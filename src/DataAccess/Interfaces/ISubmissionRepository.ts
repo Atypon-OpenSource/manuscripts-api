@@ -22,10 +22,9 @@ import { SubmissionLike } from '../Interfaces/Models'
 /**
  * Manages submission persistent storage operations.
  */
-export interface ISubmissionRepository
-  extends KeyValueRepository<
-    Submission,
-    SubmissionLike,
-    SubmissionLike,
-    Partial<Submission>
-  > {}
+export type ISubmissionRepository = KeyValueRepository<
+  Submission,
+  SubmissionLike,
+  SubmissionLike,
+  Partial<Submission>
+>

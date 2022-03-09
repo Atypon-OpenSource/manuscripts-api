@@ -24,7 +24,7 @@ import {
   InvalidCredentialsError,
   InvalidPasswordError,
   NoTokenError,
-  ValidationError
+  ValidationError,
 } from '../../Errors'
 import { IUserService } from './IUserService'
 import { ISyncService } from '../Sync/ISyncService'
@@ -44,12 +44,11 @@ import { UserProfileLike } from '../../DataAccess/Interfaces/Models'
 import { ProjectRepository } from '../../DataAccess/ProjectRepository/ProjectRepository'
 import { username as sgUsername } from '../../DomainServices/Sync/SyncService'
 import { ContainerRequestRepository } from '../../DataAccess/ContainerRequestRepository/ContainerRequestRepository'
-import { ProjectMementoRepository } from '../../DataAccess/ProjectMementoRepository/ProjectMementoRepository'
 import { UserCollaboratorRepository } from '../../DataAccess/UserCollaboratorRepository/UserCollaboratorRepository'
 import { isScopedTokenPayload } from '../../Utilities/JWT/ScopedTokenPayload'
 
 export class UserService implements IUserService {
-  constructor (
+  constructor(
     private userRepository: IUserRepository,
     private singleUseTokenRepository: ISingleUseTokenRepository,
     private activityTrackingService: UserActivityTrackingService,
@@ -62,14 +61,13 @@ export class UserService implements IUserService {
     private syncService: ISyncService,
     private userProfileRepository: IUserProfileRepository,
     private projectRepository: ProjectRepository,
-    private projectMementoRepository: ProjectMementoRepository,
     private userCollaboratorRepository: UserCollaboratorRepository
   ) {}
 
   /**
    * Retrieve email from user id.
    */
-  public static removeUserIDPrefix (id: string) {
+  public static removeUserIDPrefix(id: string) {
     if (id.startsWith('User|')) {
       return id.replace('User|', '')
     } else if (id.startsWith('User_')) {
@@ -82,11 +80,11 @@ export class UserService implements IUserService {
   /**
    * Deletes users from the system and all related data after a date passed.
    */
-  public async clearUsersData (): Promise<void> {
+  public async clearUsersData(): Promise<void> {
     const users = await this.userRepository.getUsersToDelete()
     if (users && users.length) {
       await Promise.all(
-        users.map(async user => {
+        users.map(async (user) => {
           const userDeleted = await this.deleteUser(user._id)
           if (userDeleted && !config.auth.skipVerification) {
             await this.emailService.sendAccountDeletionConfirmation(user)
@@ -100,7 +98,7 @@ export class UserService implements IUserService {
    * Deletes all related data to user.
    * @param userId User's id
    */
-  public async deleteUser (userId: string): Promise<boolean> {
+  public async deleteUser(userId: string): Promise<boolean> {
     const user = await this.userRepository.getById(userId)
 
     if (!user) {
@@ -108,11 +106,10 @@ export class UserService implements IUserService {
     }
 
     const userProfileId = `MPUserProfile:${checksum(user.email, {
-      algorithm: 'sha1'
+      algorithm: 'sha1',
     })}`
 
     await this.removeUserFromProjects(user._id)
-    await this.projectMementoRepository.clearMementos(user._id)
     await this.userCollaboratorRepository.clearUserCollaborators(user._id)
     await this.userProfileRepository.purge(userProfileId)
     await this.syncService.removeGatewayAccount(user._id)
@@ -124,17 +121,18 @@ export class UserService implements IUserService {
     await this.containerRequestRepository.removeByUserIdAndEmail(user._id, user.email)
 
     await this.userStatusRepository.remove({
-      _id: this.userStatusRepository.userStatusId(user._id)
+      _id: this.userStatusRepository.userStatusId(user._id),
     })
     const userDeleted = await this.userRepository.remove({ _id: user._id })
 
     if (userDeleted) {
-    // tslint:disable-next-line: no-floating-promises
+      // tslint:disable-next-line: no-floating-promises
       this.activityTrackingService.createEvent(
-      user._id,
-      UserActivityEventType.DeleteAccount,
-      null,
-      null)
+        user._id,
+        UserActivityEventType.DeleteAccount,
+        null,
+        null
+      )
     }
 
     return userDeleted
@@ -144,7 +142,7 @@ export class UserService implements IUserService {
    * Sets the user deleteAt property
    * @param userId User's id
    */
-  public async markUserForDeletion (userId: string, password?: string): Promise<void> {
+  public async markUserForDeletion(userId: string, password?: string): Promise<void> {
     const user = await this.userRepository.getById(userId)
 
     if (!user) {
@@ -156,23 +154,17 @@ export class UserService implements IUserService {
         throw new ValidationError('Password must be set', user)
       }
 
-      const userStatus = await this.userStatusRepository.statusForUserId(
-        user._id
-      )
+      const userStatus = await this.userStatusRepository.statusForUserId(user._id)
 
       if (!userStatus) {
         throw new MissingUserStatusError(user._id)
       }
 
-      const matchedPassword: boolean = await compare(
-        password,
-        userStatus.password
-      )
+      const matchedPassword: boolean = await compare(password, userStatus.password)
 
       if (!matchedPassword) {
         throw new InvalidPasswordError(user)
       }
-
     }
 
     const deleteAt = getExpirationTime(30 * 24)
@@ -188,7 +180,7 @@ export class UserService implements IUserService {
    * Sets the user deleteAt property to undefined
    * @param userId User's id
    */
-  public async unmarkUserForDeletion (userId: string): Promise<void> {
+  public async unmarkUserForDeletion(userId: string): Promise<void> {
     const user = await this.userRepository.getById(userId)
 
     if (!user) {
@@ -199,7 +191,7 @@ export class UserService implements IUserService {
     await this.userRepository.patch(userId, { deleteAt: deleteAt }, {})
   }
 
-  public static profileID (userID: string) {
+  public static profileID(userID: string) {
     const id = UserService.removeUserIDPrefix(userID)
     return `${ObjectTypes.UserProfile}:${checksum(id, { algorithm: 'sha1' })}`
   }
@@ -208,7 +200,7 @@ export class UserService implements IUserService {
    * Gets user's profile
    * @param token User's token
    */
-  public async profile (token: string): Promise<UserProfileLike | null> {
+  public async profile(token: string): Promise<UserProfileLike | null> {
     const payload = jsonwebtoken.decode(token)
 
     if (!isLoginTokenPayload(payload)) {
@@ -221,7 +213,7 @@ export class UserService implements IUserService {
     // TODO: Get the invitations
   }
 
-  public async authenticateUser (token: string): Promise<void> {
+  public async authenticateUser(token: string): Promise<void> {
     const payload = jsonwebtoken.decode(token)
     if (isScopedTokenPayload(payload)) {
       const user = await this.userRepository.getById(payload.sub.replace('_', '|'))
@@ -252,7 +244,7 @@ export class UserService implements IUserService {
     }
   }
 
-  private async removeUserFromProjects (userId: string) {
+  private async removeUserFromProjects(userId: string) {
     const sgUserID = sgUsername(userId)
     const userProjects = await this.projectRepository.getUserContainers(sgUserID)
 

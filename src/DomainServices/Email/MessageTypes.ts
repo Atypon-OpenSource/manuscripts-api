@@ -15,17 +15,17 @@
  */
 
 export enum MessageType {
-    AccountVerify = 'account-verify',
-    AccountDeleted = 'account-deleted',
-    AccountMarkedForDeletion = 'account-marked-for-deletion',
-    PasswordReset = 'reset-password',
-    Invitation = 'invitation',
-    ProjectInvitation = 'project-invitation',
-    ProjectInvitationAcceptance = 'invitation-acceptance',
-    ProjectInvitationOwnerNotification = 'project-invitation-owner-notification',
-    ContainerRequest = 'container-request',
-    ContainerRequestAcceptance = 'container-request-acceptance',
-    ContainerRequestRejection = 'container-request-rejection'
+  AccountVerify = 'account-verify',
+  AccountDeleted = 'account-deleted',
+  AccountMarkedForDeletion = 'account-marked-for-deletion',
+  PasswordReset = 'reset-password',
+  Invitation = 'invitation',
+  ProjectInvitation = 'project-invitation',
+  ProjectInvitationAcceptance = 'invitation-acceptance',
+  ProjectInvitationOwnerNotification = 'project-invitation-owner-notification',
+  ContainerRequest = 'container-request',
+  ContainerRequestAcceptance = 'container-request-acceptance',
+  ContainerRequestRejection = 'container-request-rejection',
 }
 
 // caches templates eagerly upon access time.

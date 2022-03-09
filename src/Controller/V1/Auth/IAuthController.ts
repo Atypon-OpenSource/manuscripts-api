@@ -22,10 +22,10 @@ export interface IAuthController {
   /**
    * Logs user into the system.
    */
-  login (req: Request): Promise<AuthorizedUser>
+  login(req: Request): Promise<AuthorizedUser>
 
   /**
    * Logs out from the system.
    */
-  logout (req: Request): Promise<void>
+  logout(req: Request): Promise<void>
 }

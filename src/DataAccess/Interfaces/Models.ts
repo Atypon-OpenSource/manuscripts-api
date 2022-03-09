@@ -29,28 +29,19 @@ import {
   Manuscript,
   Correction,
   ManuscriptTemplate,
-  Snapshot
+  Snapshot,
 } from '@manuscripts/manuscripts-json-schema'
 
-export type ProjectLike = Pick<
-  Project,
-  Exclude<keyof Project, 'createdAt' | 'updatedAt'>
->
+export type ProjectLike = Pick<Project, Exclude<keyof Project, 'createdAt' | 'updatedAt'>>
 
-export type LibraryLike = Pick<
-  Library,
-  Exclude<keyof Library, 'createdAt' | 'updatedAt'>
->
+export type LibraryLike = Pick<Library, Exclude<keyof Library, 'createdAt' | 'updatedAt'>>
 
 export type LibraryCollectionLike = Pick<
   LibraryCollection,
   Exclude<keyof LibraryCollection, 'createdAt' | 'updatedAt'>
 >
 
-export type InvitationLike = Pick<
-  Invitation,
-  Exclude<keyof Invitation, 'createdAt' | 'updatedAt'>
->
+export type InvitationLike = Pick<Invitation, Exclude<keyof Invitation, 'createdAt' | 'updatedAt'>>
 
 export type UserProfileLike = Pick<
   UserProfile,
@@ -72,37 +63,30 @@ export type ContainerRequestLike = Pick<
   Exclude<keyof ContainerRequest, 'createdAt' | 'updatedAt'>
 >
 
-export type SubmissionLike = Pick<
-  Submission,
-  Exclude<keyof Submission, 'createdAt' | 'updatedAt'>
->
+export type SubmissionLike = Pick<Submission, Exclude<keyof Submission, 'createdAt' | 'updatedAt'>>
 
 export type ManuscriptNoteLike = Pick<
   ManuscriptNote,
   Exclude<keyof ManuscriptNote, 'createdAt' | 'updatedAt'>
 >
 
-export type ManuscriptLike = Pick<
-  Manuscript,
-  Exclude<keyof Manuscript, 'createdAt' | 'updatedAt'>
->
+export type ManuscriptLike = Pick<Manuscript, Exclude<keyof Manuscript, 'createdAt' | 'updatedAt'>>
 
 export type ExternalFileLike = Pick<
   ExternalFile,
   Exclude<keyof ExternalFile, 'createdAt' | 'updatedAt'>
-  >
+>
 
-export type CorrectionLike = Pick<
-  Correction,
-  Exclude<keyof Correction, 'createdAt' | 'updatedAt'>
-  >
+export type CorrectionLike = Pick<Correction, Exclude<keyof Correction, 'createdAt' | 'updatedAt'>>
 
 export type ManuscriptTemplateLike = Pick<
   ManuscriptTemplate,
   Exclude<keyof ManuscriptTemplate, 'createdAt' | 'updatedAt'>
-  >
+>
 
-export type SnapshotLike = Pick<
-  Snapshot,
-  Exclude<keyof Snapshot, 'createdAt' | 'updatedAt'>
-  >
+export type SnapshotLike = Pick<Snapshot, Exclude<keyof Snapshot, 'createdAt' | 'updatedAt'>>
+
+export type PrismaModelLike = {
+  id: string
+  data: any
+}

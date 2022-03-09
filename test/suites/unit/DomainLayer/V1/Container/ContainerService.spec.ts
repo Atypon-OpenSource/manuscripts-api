@@ -1848,7 +1848,7 @@ describe('ContainerService - createManuscript', () => {
       DIContainer.sharedContainer.containerService[ContainerType.project]
     containerService.getContainer = jest.fn(() => Promise.resolve(validProject))
     containerService.manuscriptRepository.getById = jest.fn(() => Promise.resolve(null))
-    containerService.manuscriptRepository.create = jest.fn()
+    containerService.manuscriptRepository.create = jest.fn(() => Promise.resolve({}))
     containerService.templateRepository.getById = jest.fn(() => Promise.resolve(null))
     DIContainer.sharedContainer.pressroomService.validateTemplateId = jest.fn(() => Promise.resolve(true))
     const containerID = validNote1.containerID
@@ -1869,7 +1869,7 @@ describe('ContainerService - createManuscript', () => {
     DIContainer.sharedContainer.pressroomService.validateTemplateId = jest.fn(() => Promise.resolve(true))
     containerService.manuscriptRepository = {
       getById: jest.fn(() => Promise.resolve(null)),
-      create: jest.fn()
+      create: jest.fn(() => Promise.resolve({}))
     }
     const containerID = validNote1.containerID
     const manuscriptID = validNote1.manuscriptID
@@ -1931,8 +1931,8 @@ describe('ContainerService - addProductionNote', () => {
       return { _id: 'User_test', ...validBody2 }
     })
     const repo: any = DIContainer.sharedContainer.manuscriptNotesRepository
-    repo.create = jest.fn(() => validNote2)
-    repo.getById = jest.fn(() => validNote1)
+    repo.create = jest.fn(() => Promise.resolve(validNote2))
+    repo.getById = jest.fn(() => Promise.resolve(validNote1))
     const containerID = validNote2.containerID
     const manuscriptID = validNote2.manuscriptID
     const content = validNote2.contents
@@ -1941,7 +1941,7 @@ describe('ContainerService - addProductionNote', () => {
     const source = 'DASHBOARD'
     const note = await containerService.createManuscriptNote(containerID, manuscriptID, content, userID, source, target)
     expect(note).toBeTruthy()
-    expect(note._id).toBe('MPManuscriptNote:valid-note-id-2')
+    expect(note.id).toBe('MPManuscriptNote:valid-note-id-2')
   })
 })
 

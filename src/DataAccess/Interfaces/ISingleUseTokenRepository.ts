@@ -15,7 +15,12 @@
  */
 
 import { IndexedRepository } from './IndexedRepository'
-import { SingleUseToken, NewSingleUseToken, UpdateSingleUseToken, SingleUseTokenType } from '../../Models/SingleUseTokenModels'
+import {
+  SingleUseToken,
+  NewSingleUseToken,
+  UpdateSingleUseToken,
+  SingleUseTokenType,
+} from '../../Models/SingleUseTokenModels'
 import { SingleUseTokenQueryCriteria } from './QueryCriteria'
 import { User } from '../../Models/UserModels'
 
@@ -24,10 +29,14 @@ import { User } from '../../Models/UserModels'
  */
 export interface ISingleUseTokenRepository
   extends IndexedRepository<
-      SingleUseToken,
-      NewSingleUseToken,
-      UpdateSingleUseToken,
-      SingleUseTokenQueryCriteria
-    > {
-  ensureTokenExists (user: User, tokenType: SingleUseTokenType, expiry: number | undefined): Promise<string>
+    SingleUseToken,
+    NewSingleUseToken,
+    UpdateSingleUseToken,
+    SingleUseTokenQueryCriteria
+  > {
+  ensureTokenExists(
+    user: User,
+    tokenType: SingleUseTokenType,
+    expiry: number | undefined
+  ): Promise<string>
 }

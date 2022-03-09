@@ -56,15 +56,22 @@ let db: any = null
 
 beforeAll(async () => {
   db = await testDatabase()
-  await Promise.all(
+  /*await Promise.all(
     GATEWAY_BUCKETS.map(key => {
       return DIContainer.sharedContainer.syncService.createGatewayAccount(
         'User|' + validBody.email,
         key
       )
     })
-  )
+  )*/
 })
+
+async function seedAccounts () {
+  await DIContainer.sharedContainer.syncService.createGatewayAccount(
+      'User|' + validBody.email,
+      null
+    )
+}
 
 afterAll(() => {
   db.bucket.disconnect()
@@ -81,6 +88,7 @@ describe('ContainerRequestService - create', () => {
       applications: true,
       projects: true
     })
+    await seedAccounts()
   })
 
   test('should create container request', async () => {
@@ -107,7 +115,7 @@ describe('ContainerRequestService - create', () => {
     expect(response.status).toBe(HttpStatus.OK)
   })
 
-  test('should update container request if anotehr request exists', async () => {
+  test('should update container request if another request exists', async () => {
     await seed({ userProfiles: true })
     const loginResponse: supertest.Response = await basicLogin(
       validBody,
@@ -142,6 +150,7 @@ describe('ContainerRequestService - accept', () => {
       applications: true,
       projects: true
     })
+    await seedAccounts()
   })
 
   test('should accept container request', async () => {
@@ -208,6 +217,7 @@ describe('ContainerRequestService - reject', () => {
       applications: true,
       projects: true
     })
+    await seedAccounts()
   })
 
   test('should reject container request', async () => {
