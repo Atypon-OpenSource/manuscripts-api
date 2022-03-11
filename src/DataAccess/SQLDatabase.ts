@@ -234,7 +234,7 @@ export class SQLDatabase {
     this.isLoaded = true
     const options = { bucket: this._bucket, store: new CbStoreAdapter(this._bucket as any) }
     this._documentMapper = new Ottoman(options as any)
-    await prisma.$connect().catch(function (err) {
+    await prisma.$connect().catch(function (err: any) {
       log.error(`An error occurred while connecting to db`, err)
     })
 
@@ -276,7 +276,7 @@ export class SQLDatabase {
       .then(() => {
         return true
       })
-      .catch((error) => {
+      .catch((error: any) => {
         log.error(`An error occurred while ${_indexCreateStatement}`, error)
         return false
       })
@@ -428,7 +428,7 @@ export class SQLDatabase {
       .then(() => {
         return true
       })
-      .catch((error) => {
+      .catch((error: any) => {
         if (error.code !== 'P2010') {
           throw new Error(`ensureDBExtensions error ${error}`)
         }

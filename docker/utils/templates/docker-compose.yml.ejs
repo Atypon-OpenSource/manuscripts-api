@@ -1,65 +1,23 @@
 version: '3.4'
 
 services:
-  <%- app_couchbase_hostname %>:
-    image: registry.gitlab.com/mpapp-public/couchbase-images/couchbase:0.1.1-4-G6398
+  postgres:
+    image: postgres
+    hostname: postgres
+    ports:
+      - "5432:5432"
     environment:
-      APP_COUCHBASE_ADMIN_PASS: <%- app_couchbase_admin_pass %>
-      APP_COUCHBASE_ADMIN_USER: <%- app_couchbase_admin_user %>
-      APP_COUCHBASE_RBAC_PASSWORD: <%- app_couchbase_rbac_password %>
-      APP_DATA_BUCKET: <%- app_data_bucket %>
-      APP_DERIVED_DATA_BUCKET: <%- app_derived_data_bucket %>
-      APP_STATE_BUCKET: <%- app_state_bucket %>
-      APP_USER_BUCKET: <%- app_user_bucket %>
-      APP_INDEX_REPLICA_COUNT: <%- app_index_replica_count %>
-      COUCHBASE_INITIALIZE: "true"
-      NFS: "/data"
-<% if (node_env != 'production') { -%>
-    ports:
-      - "8091-8096:8091-8096"
-      - "11207-11211:11207-11211"
-      - "18091-18096:18091-18096"
-<%} else { -%>
-    expose:
-      - "8091-8096"
-      - "11207-11211"
-      - "18091-18096"
-<% } -%>
-
-  <%- app_gateway_hostname %>:
-    image: registry.gitlab.com/mpapp-public/manuscripts-sync/sync_gateway:1.0.0
-    depends_on:
-      - <%- app_couchbase_hostname %>
-    environment:
-      APP_COUCHBASE_ADMIN_PASS: <%- app_couchbase_admin_pass %>
-      APP_COUCHBASE_ADMIN_USER: <%- app_couchbase_admin_user %>
-      APP_COUCHBASE_HOSTNAME: <%- app_couchbase_hostname %>
-      APP_COUCHBASE_RBAC_PASSWORD: <%- app_couchbase_rbac_password %>
-      APP_ENABLE_SHARED_BUCKET_ACCESS: <%- app_enable_shared_bucket_access %>
-      APP_PROJECTS_GATEWAY_COOKIE_DOMAIN: "<%- app_gateway_cookie_domain %>"
-      APP_GATEWAY_ADMIN_PORT: "<%- app_gateway_admin_port %>"
-      APP_GATEWAY_PUBLIC_PORT: "<%- app_gateway_public_port %>"
-      APP_DATA_BUCKET: <%- app_data_bucket %>
-      APP_DERIVED_DATA_BUCKET: <%- app_derived_data_bucket %>
-      APP_STATE_BUCKET: <%- app_state_bucket %>
-      APP_USER_BUCKET: <%- app_user_bucket %>
-      APP_ALLOWED_CORS_ORIGINS: <%- app_allowed_cors_origins %>
-      APP_INDEX_REPLICA_COUNT: <%- app_index_replica_count %>
-<% if (node_env != 'production') { -%>
-    ports:
-      - "<%- app_gateway_public_port %>:<%- app_gateway_public_port %>"
-      - "<%- app_gateway_admin_port %>:<%- app_gateway_admin_port %>"
-<% } else { -%>
-    ports:
-      - "<%- app_gateway_public_port %>:<%- app_gateway_public_port %>"
-    expose:
-      - "<%- app_gateway_admin_port %>"
-<% } -%>
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: test
+    volumes:
+      - /tmp/postgres-data:/var/lib/postgresql/data:z
+    restart: unless-stopped
 
 <% if (node_env == 'development' || node_env == 'production') { -%>
   app:
     depends_on:
-      - <%- app_couchbase_hostname %>
+      - postgres
     ports:
       - "<%- app_port %>:<%- app_port %>"
     image: app
@@ -108,10 +66,11 @@ services:
       APP_PRESSROOM_BASE_URL: <%- app_pressroom_base_url %>
       APP_PRESSROOM_APIKEY: <%- app_pressroom_apikey %>
       APP_CONTAINER_TOKEN_SCOPES: <%- app_container_token_scopes %>
+      APP_DATABASE_URL: <%- app_database_url %>
 <% } else { -%>
   test_runner:
     depends_on:
-      - <%- app_couchbase_hostname %>
+      - postgres
     image: test_runner
     build:
       context: ../
@@ -159,4 +118,5 @@ services:
       APP_PRESSROOM_BASE_URL: <%- app_pressroom_base_url %>
       APP_PRESSROOM_APIKEY: <%- app_pressroom_apikey %>
       APP_CONTAINER_TOKEN_SCOPES: <%- app_container_token_scopes %>
+      APP_DATABASE_URL: <%- app_database_url %>
 <% } -%>

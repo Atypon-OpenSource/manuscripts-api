@@ -18,6 +18,7 @@ COPY package-lock.json ./
 RUN npm ci
 
 COPY ./src ./src
+COPY ./prisma ./prisma
 COPY ./bin ./bin
 COPY ./emails ./emails
 COPY ./build ./build
@@ -33,6 +34,7 @@ RUN ./bin/build-env.js .env.example > .env
 
 EXPOSE 3000
 
+RUN npm run attach-prisma
 RUN npm run build-app
 
 ENTRYPOINT ["/bin/bash"]

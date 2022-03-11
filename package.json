@@ -12,7 +12,7 @@
     "start": "run-s build-app run",
     "run": "node dist/index",
     "build": "run-s build-app",
-    "build-app": "tsc --project tsconfig.build.json && npm run attach-prisma",
+    "build-app": "tsc --project tsconfig.build.json",
     "attach-prisma": "npx prisma generate",
     "migrate-prisma": "npx prisma migrate dev --name init",
     "watch": "tsc-watch --onSuccess \"npm run run\"",
