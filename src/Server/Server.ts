@@ -50,7 +50,7 @@ export class Server implements IServer {
     return Promise.all([
       // DIContainer.sharedContainer.userBucket.isViewServiceAlive(),
       // SyncService.isAlive(),
-      SQLDatabase.ensureDBExtensions(),
+      //SQLDatabase.ensureDBExtensions(),
     ])
   }
 

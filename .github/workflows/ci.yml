@@ -105,13 +105,17 @@ jobs:
           key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
 
       - name: run_test_suite
+        env:
+          DEV_PRESSROOM_APIKEY: ${{secrets.DEV_PRESSROOM_APIKEY}}
         run: |
           npm ci
           ./bin/set-package-json-version.sh
           ./bin/build-env.js .env.example > .env
           export env $(grep -v '^#' ".env" | xargs)
-          NODE_ENV=test APP_TEST_ACTION=test:int npx gulp -f docker/utils/Gulpfile.js
+          NODE_ENV=test APP_TEST_ACTION=test:int APP_PRESSROOM_BASE_URL=https://pressroom-js-dev.manuscripts.io APP_PRESSROOM_APIKEY=$DEV_PRESSROOM_APIKEY npx gulp -f docker/utils/Gulpfile.js
           cd docker
           cp ../.env .env
           docker-compose build --pull
+          docker-compose up -d postgres
+          APP_DATABASE_URL=postgresql://postgres:admin@localhost:5432/test?schema=public npm run migrate-prisma
           docker-compose up --build --abort-on-container-exit test_runner
