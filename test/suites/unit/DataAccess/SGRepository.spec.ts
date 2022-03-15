@@ -16,9 +16,6 @@
 
 import '../../../utilities/dbMock'
 
-jest.mock('request-promise-native')
-
-const request = require('request-promise-native')
 
 import { DIContainer } from '../../../../src/DIContainer/DIContainer'
 import { config } from '../../../../src/Config/Config'
@@ -30,6 +27,8 @@ import {
 import { TEST_TIMEOUT } from '../../../utilities/testSetup'
 import { ContainerInvitationLike } from 'src/DataAccess/Interfaces/Models'
 
+
+
 jest.setTimeout(TEST_TIMEOUT)
 
 beforeEach(() => {
@@ -37,129 +36,71 @@ beforeEach(() => {
   return DIContainer.init()
 })
 
-xdescribe('SGRepository - create', () => {
-  beforeEach(() => {
-    request.mockClear()
-    request.mockImplementation(() => ({ statusCode: 200 }))
-  })
 
+describe('SGRepository - create', () => {
   const project = {
-    _id: 'foo',
+    _id: 'MPProject:foo',
     owners: []
   }
 
   test('should create a document', async () => {
     const projectRepository: any =
       DIContainer.sharedContainer.projectRepository
-
-    await projectRepository.create(project, {})
-    const payload = request.mock.calls[0][0]
-    project._id = `MPProject:${project._id}`;
-
-    (project as any).objectType = `MPProject`;
-    (project as any).createdAt = 123456789;
-    (project as any).updatedAt = 123456789
-
-    payload.body.createdAt = 123456789
-    payload.body.updatedAt = 123456789
-
-    expect(payload).toEqual({
-      json: true,
-      method: 'PUT',
-      resolveWithFullResponse: true,
-      uri: `http://${config.gateway.hostname}:${
-        config.gateway.ports.admin
-      }/bkt/${project._id}`,
-      body: project,
-      simple: false
-    })
+    projectRepository.database.bucket.insert.mockImplementationOnce((_document: any) => Promise.resolve(project))
+    const created = await projectRepository.create(project, {})
+    expect(created._id).toEqual('MPProject:foo')
   })
 
   test('should fail to create a document', () => {
-    request.mockImplementation(() => ({ statusCode: 400 }))
     const projectRepository: any =
       DIContainer.sharedContainer.projectRepository
+    const errorObj = new Error('database derp')
+    projectRepository.database.bucket.insert.mockImplementationOnce((_document: any) => Promise.reject(errorObj))
     return expect(projectRepository.create(project, {})).rejects.toThrowError(
-      SyncError
-    )
-  })
-
-  test('should fail to create a document when sync_gateway inAccessible', () => {
-    request.mockImplementation(() =>
-      Promise.reject(new GatewayInaccessibleError('Fake induced fail.'))
-    )
-    const projectRepository: any =
-      DIContainer.sharedContainer.projectRepository
-    return expect(projectRepository.create(project, {})).rejects.toThrowError(
-      GatewayInaccessibleError
+      Error
     )
   })
 })
 
-xdescribe('SGRepository - getById', () => {
-  beforeEach(() => {
-    request.mockClear()
-    request.mockImplementation(() => ({ statusCode: 200 }))
-  })
+describe('SGRepository - getById', () => {
 
   const project = {
-    _id: 'foo',
+    _id: 'MPProject:foo',
     owners: []
   }
 
   test('should get the document by Id', async () => {
     const projectRepository: any =
       DIContainer.sharedContainer.projectRepository
+    projectRepository.database.bucket.findUnique.mockImplementationOnce((_document: any) => Promise.resolve({ data: project, _id: project._id }))
 
-    await projectRepository.getById(project._id)
-    const payload = request.mock.calls[0][0]
-
-    expect(payload).toEqual({
-      json: true,
-      method: 'GET',
-      resolveWithFullResponse: true,
-      uri: `http://${config.gateway.hostname}:${
-        config.gateway.ports.admin
-      }/bkt/MPProject:foo`,
-      simple: false
-    })
+    const created = await projectRepository.getById(project._id)
+    expect(created._id).toEqual('MPProject:foo')
   })
 
   test('should return null if the document not exist', async () => {
-    request.mockImplementation(() => ({ statusCode: 404 }))
     const projectRepository: any =
       DIContainer.sharedContainer.projectRepository
+    projectRepository.database.bucket.findUnique.mockImplementationOnce((_document: any) => Promise.resolve(null))
+
     const projectReturn = await projectRepository.getById(project._id)
     return expect(projectReturn).toBeNull()
   })
 
   test('failing to get a document should throw', () => {
-    request.mockImplementation(() => ({ statusCode: 400 }))
     const projectRepository: any =
       DIContainer.sharedContainer.projectRepository
-    return expect(projectRepository.getById(project._id)).rejects.toThrowError(
-      SyncError
-    )
-  })
 
-  test('failing to get a document when sync_gateway inAccessible', () => {
-    request.mockImplementation(() =>
-      Promise.reject(new GatewayInaccessibleError('Fake induced fail.'))
-    )
-    const projectRepository: any =
-      DIContainer.sharedContainer.projectRepository
+    const errorObj = new Error('database derp')
+    projectRepository.database.bucket.findUnique.mockImplementationOnce((_document: any) => Promise.reject(errorObj))
+
     return expect(projectRepository.getById(project._id)).rejects.toThrowError(
-      GatewayInaccessibleError
+      Error
     )
   })
 })
 
-xdescribe('SGRepository - update', () => {
-  beforeEach(() => {
-    request.mockClear()
-    request.mockImplementation(() => ({ statusCode: 200 }))
-  })
-
+describe('SGRepository - update', () => {
   const invitation: ContainerInvitationLike = {
     _id: 'foo',
     invitedUserEmail: 'foo@bar.com',
@@ -186,38 +127,26 @@ xdescribe('SGRepository - update', () => {
       DIContainer.sharedContainer.containerInvitationRepository
     containerInvitationRepository.getById = async (_id: string) =>
       Promise.resolve({ ...invitation, _rev: 'rev1' })
+    containerInvitationRepository.database.bucket.replace.mockImplementationOnce((_document: any) => Promise.resolve())
 
-    await containerInvitationRepository.update(invitation._id, invitation, {})
-    const payload = request.mock.calls[0][0];
-
-    (invitation as any).updatedAt = 123456789
-    payload.body.updatedAt = 123456789
-
-    expect(payload).toEqual({
-      json: true,
-      method: 'PUT',
-      body: invitation,
-      resolveWithFullResponse: true,
-      uri: `http://${config.gateway.hostname}:${
-        config.gateway.ports.admin
-      }/bkt/MPContainerInvitation:foo?rev=rev1`
-    })
+    const updated = await containerInvitationRepository.update(invitation._id, invitation, {})
+    expect(updated._id).toEqual('MPContainerInvitation:foo')
   })
 
   test('failing to update a document should throw', () => {
-    request.mockImplementation(() => ({ statusCode: 400 }))
     const containerInvitationRepository: any =
       DIContainer.sharedContainer.containerInvitationRepository
     containerInvitationRepository.getById = async (_id: string) =>
       Promise.resolve({ ...invitation, _rev: 'rev1' })
+    const errorObj = new Error('database derp')
+    containerInvitationRepository.database.bucket.replace.mockImplementationOnce((_document: any) => Promise.reject(errorObj))
 
     return expect(
       containerInvitationRepository.update(invitation._id, invitation, {})
-    ).rejects.toThrowError(SyncError)
+    ).rejects.toThrowError(Error)
   })
 
   test('failing to update a document because it is not in the db', () => {
-    request.mockImplementation(() => ({ statusCode: 400 }))
     const containerInvitationRepository: any =
       DIContainer.sharedContainer.containerInvitationRepository
     containerInvitationRepository.getById = async (_id: string) =>
@@ -229,7 +158,6 @@ xdescribe('SGRepository - update', () => {
   })
 
   test('failing to update a document because objectType mismatched', () => {
-    request.mockImplementation(() => ({ statusCode: 400 }))
     const containerInvitationRepository: any =
       DIContainer.sharedContainer.containerInvitationRepository
     containerInvitationRepository.getById = async (_id: string) =>
@@ -243,28 +171,9 @@ xdescribe('SGRepository - update', () => {
       containerInvitationRepository.update(invitation._id, invitation, {})
     ).rejects.toThrowError(ValidationError)
   })
-
-  test('failing to update a document when sync_gateway inAccessible', () => {
-    request.mockImplementation(() =>
-      Promise.reject(new GatewayInaccessibleError('Fake induced fail.'))
-    )
-    const containerInvitationRepository: any =
-      DIContainer.sharedContainer.containerInvitationRepository
-    containerInvitationRepository.getById = async (_id: string) =>
-      Promise.resolve({ ...invitation, _rev: 'rev1' })
-
-    return expect(
-      containerInvitationRepository.update(invitation._id, invitation, {})
-    ).rejects.toThrowError(GatewayInaccessibleError)
-  })
 })
 
-xdescribe('SGRepository - patch', () => {
-  beforeEach(() => {
-    request.mockClear()
-    request.mockImplementation(() => ({ statusCode: 200 }))
-  })
-
+describe('SGRepository - patch', () => {
   const project = {
     _id: 'foo',
     owners: [],
@@ -281,29 +190,13 @@ xdescribe('SGRepository - patch', () => {
       DIContainer.sharedContainer.projectRepository
     projectRepository.getById = async (_id: string) =>
       Promise.resolve({ ...project, _rev: 'rev1' })
+    projectRepository.database.bucket.replace.mockImplementationOnce((_document: any) => Promise.resolve())
 
-    await projectRepository.patch(project._id, projectToPatch, {})
-    const payload = request.mock.calls[0][0]
-    payload.body.updatedAt = 123456789
-
-    expect(payload).toEqual({
-      json: true,
-      method: 'PUT',
-      body: {
-        ...projectToPatch,
-        objectType: 'MPProject',
-        _rev: 'rev1',
-        updatedAt: 123456789
-      },
-      resolveWithFullResponse: true,
-      uri: `http://${config.gateway.hostname}:${
-        config.gateway.ports.admin
-      }/bkt/MPProject:foo?rev=rev1`
-    })
+    const patched = await projectRepository.patch(project._id, projectToPatch, {})
+    expect(patched.owners[0]).toEqual(projectToPatch.owners[0])
   })
 
   test('failing to patch a document because it is not in the db', () => {
-    request.mockImplementation(() => ({ statusCode: 400 }))
     const projectRepository: any =
       DIContainer.sharedContainer.projectRepository
     projectRepository.getById = async (_id: string) => Promise.resolve(null)
@@ -313,36 +206,19 @@ xdescribe('SGRepository - patch', () => {
   })
 
   test('failing to patch a document should throw', () => {
-    request.mockImplementation(() => ({ statusCode: 400 }))
     const projectRepository: any =
       DIContainer.sharedContainer.projectRepository
     projectRepository.getById = async (_id: string) =>
       Promise.resolve({ ...project, _rev: 'rev1' })
+    const errorObj = new Error('database derp')
+    projectRepository.database.bucket.replace.mockImplementationOnce((_document: any) => Promise.reject(errorObj))
     return expect(
       projectRepository.patch(project._id, projectToPatch, {})
-    ).rejects.toThrowError(SyncError)
-  })
-
-  test('failing to patch a document when sync_gateway inAccessible', () => {
-    request.mockImplementation(() =>
-      Promise.reject(new GatewayInaccessibleError('Fake induced fail.'))
-    )
-    const projectRepository: any =
-      DIContainer.sharedContainer.projectRepository
-    projectRepository.getById = async (_id: string) =>
-      Promise.resolve({ ...project, _rev: 'rev1' })
-    return expect(
-      projectRepository.patch(project._id, projectToPatch, {})
-    ).rejects.toThrowError(GatewayInaccessibleError)
+    ).rejects.toThrowError(Error)
   })
 })
 
-xdescribe('SGRepository - touch', () => {
-  beforeEach(() => {
-    request.mockClear()
-    request.mockImplementation(() => ({ statusCode: 200 }))
-  })
-
+describe('SGRepository - touch', () => {
   const invitation = {
     _id:
       'MPInvitation:valid-user@manuscriptsapp.com-valid-google@manuscriptsapp.com',
@@ -358,28 +234,13 @@ xdescribe('SGRepository - touch', () => {
       DIContainer.sharedContainer.invitationRepository
     invitationRepository.getById = async (_id: string) =>
       Promise.resolve({ ...invitation, _rev: 'rev1' })
+    invitationRepository.database.bucket.replace.mockImplementationOnce((_document: any) => Promise.resolve())
 
-    await invitationRepository.touch(invitation._id, 1)
-    const payload = request.mock.calls[0][0]
-
-    expect(payload).toEqual({
-      json: true,
-      method: 'PUT',
-      body: {
-        ...invitation,
-        objectType: 'MPInvitation',
-        _rev: 'rev1',
-        _exp: 1
-      },
-      resolveWithFullResponse: true,
-      uri: `http://${config.gateway.hostname}:${
-        config.gateway.ports.admin
-      }/bkt/MPInvitation:valid-user@manuscriptsapp.com-valid-google@manuscriptsapp.com`
-    })
+    const touched = await invitationRepository.touch(invitation._id, 1)
+    expect(touched.expiry).toEqual(1)
   })
 
   test('failing to touch a document because it is not in the db', () => {
-    request.mockImplementation(() => ({ statusCode: 400 }))
     const invitationRepository: any =
       DIContainer.sharedContainer.invitationRepository
     invitationRepository.getById = async (_id: string) => Promise.resolve(null)
@@ -392,36 +253,19 @@ xdescribe('SGRepository - touch', () => {
   })
 
   test('failing to touch a document should throw', () => {
-    request.mockImplementation(() => ({ statusCode: 400 }))
     const invitationRepository: any =
       DIContainer.sharedContainer.invitationRepository
     invitationRepository.getById = async (_id: string) =>
       Promise.resolve({ ...invitation, _rev: 'rev1' })
+    const errorObj = new Error('database derp')
+    invitationRepository.database.bucket.replace.mockImplementationOnce((_document: any) => Promise.reject(errorObj))
     return expect(
       invitationRepository.touch(invitation._id, 1)
-    ).rejects.toThrowError(SyncError)
-  })
-
-  test('failing to touch a document when sync_gateway inAccessible', () => {
-    request.mockImplementation(() =>
-      Promise.reject(new GatewayInaccessibleError('Fake induced fail.'))
-    )
-    const invitationRepository: any =
-      DIContainer.sharedContainer.invitationRepository
-    invitationRepository.getById = async (_id: string) =>
-      Promise.resolve({ ...invitation, _rev: 'rev1' })
-    return expect(
-      invitationRepository.touch(invitation._id, 1)
-    ).rejects.toThrowError(GatewayInaccessibleError)
+    ).rejects.toThrowError(Error)
   })
 })
 
-xdescribe('SGRepository - remove', () => {
-  beforeEach(() => {
-    request.mockClear()
-    request.mockImplementation(() => ({ statusCode: 200 }))
-  })
-
+describe('SGRepository - remove', () => {
   const invitation: ContainerInvitationLike = {
     _id: 'foo',
     invitedUserEmail: 'foo@bar.com',
@@ -449,50 +293,12 @@ xdescribe('SGRepository - remove', () => {
     containerInvitationRepository.getById = async (_id: string) =>
       Promise.resolve({ ...invitation })
 
-    await containerInvitationRepository.remove(invitation._id)
-    const payload = request.mock.calls[0][0]
-
-    const body = {
-      docs: [
-        {
-          ...invitation,
-          _deleted: true
-        }
-      ]
-    }
-    expect(payload).toEqual({
-      json: true,
-      method: 'POST',
-      body: body,
-      resolveWithFullResponse: true,
-      uri: `http://${config.gateway.hostname}:${
-        config.gateway.ports.admin
-      }/bkt/_bulk_docs`,
-      simple: false
-    })
-  })
-
-  test('failing to mark a document as deleted when sync_gateway inAccessible', () => {
-    request.mockImplementation(() =>
-      Promise.reject(new GatewayInaccessibleError('Fake induced fail.'))
-    )
-    const containerInvitationRepository: any =
-      DIContainer.sharedContainer.containerInvitationRepository
-    containerInvitationRepository.getById = async (_id: string) =>
-      Promise.resolve({ ...invitation })
-
-    return expect(
-      containerInvitationRepository.remove(invitation._id)
-    ).rejects.toThrowError(GatewayInaccessibleError)
+    const removed = await containerInvitationRepository.remove(invitation._id)
+    expect(removed).toEqual(undefined)
   })
 })
 
-xdescribe('SGRepository - purge', () => {
-  beforeEach(() => {
-    request.mockClear()
-    request.mockImplementation(() => ({ statusCode: 200 }))
-  })
-
+describe('SGRepository - purge', () => {
   const project = {
     _id: 'foo',
     owners: []
@@ -502,48 +308,22 @@ xdescribe('SGRepository - purge', () => {
     const projectRepository: any =
       DIContainer.sharedContainer.projectRepository
 
-    await projectRepository.purge(project._id)
-    const payload = request.mock.calls[0][0]
-
-    expect(payload).toEqual({
-      json: true,
-      method: 'POST',
-      resolveWithFullResponse: true,
-      uri: `http://${config.gateway.hostname}:${
-        config.gateway.ports.admin
-      }/bkt/_purge`,
-      simple: false,
-      body: { 'MPProject:foo': ['*'] }
-    })
-  })
-
-  test('should fail to purge a document when sync_gateway inAccessible', () => {
-    request.mockImplementation(() =>
-      Promise.reject(new GatewayInaccessibleError('Fake induced fail.'))
-    )
-    const projectRepository: any =
-      DIContainer.sharedContainer.projectRepository
-    return expect(projectRepository.purge(project._id)).rejects.toThrowError(
-      GatewayInaccessibleError
-    )
+    const removed = await projectRepository.purge(project._id)
+    expect(removed).toEqual(undefined)
   })
 
   test('should throw sync error when fail to purge a document', () => {
-    request.mockImplementation(() => ({ statusCode: 404 }))
     const projectRepository: any =
       DIContainer.sharedContainer.projectRepository
+    const errorObj = new Error('database derp')
+    projectRepository.database.bucket.remove.mockImplementationOnce((_document: any) => Promise.reject(errorObj))
     return expect(projectRepository.purge(project._id)).rejects.toThrowError(
-      SyncError
+      Error
     )
   })
 })
 
-xdescribe('SGRepository - bulkDocs', () => {
-  beforeEach(() => {
-    request.mockClear()
-    request.mockImplementation(() => ({ statusCode: 200, body: [{ }] }))
-  })
-
+describe('SGRepository - bulkDocs', () => {
   const docUpdate = {
     _id: 'MPProject:abc',
     title: 'foo'
@@ -551,38 +331,25 @@ xdescribe('SGRepository - bulkDocs', () => {
 
   test('should POST _bulk_docs', async () => {
     const projectRepository: any = DIContainer.sharedContainer.projectRepository
-
-    await projectRepository.bulkDocs([ docUpdate ])
-    const payload = request.mock.calls[0][0]
-
-    expect(payload.uri).toEqual(`http://${config.gateway.hostname}:${config.gateway.ports.admin}/bkt/_bulk_docs`)
-    expect(payload.body.docs.length).toBeGreaterThan(0)
-  })
-
-  test('should fail to bulkDocs when sync_gateway inAccessible', () => {
-    request.mockImplementation(() => Promise.reject(new GatewayInaccessibleError('Fake induced fail.')))
-    const projectRepository: any = DIContainer.sharedContainer.projectRepository
-    return expect(projectRepository.bulkDocs([ docUpdate ])).rejects.toThrowError(GatewayInaccessibleError)
+    projectRepository.database.bucket.upsert.mockImplementationOnce((_document: any) => Promise.resolve(docUpdate))
+    const updated = await projectRepository.bulkDocs([ docUpdate ])
+    expect(updated.length).toBeGreaterThan(0)
   })
 
   test('should throw sync error when fail to bulkDocs', () => {
-    request.mockImplementation(() => ({ statusCode: 404 }))
     const projectRepository: any = DIContainer.sharedContainer.projectRepository
-    return expect(projectRepository.bulkDocs([ docUpdate ])).rejects.toThrowError(SyncError)
+    const errorObj = new Error('database derp')
+    projectRepository.database.bucket.upsert.mockImplementationOnce((_document: any) => Promise.reject(errorObj))
+    return expect(projectRepository.bulkDocs([ docUpdate ])).rejects.toThrowError(Error)
   })
 
-  test('should throw response with error messages when they are available', () => {
-    request.mockImplementation(() => ({ statusCode: 200, body: [{ error: 'forbidden' }] }))
+  xtest('should throw response with error messages when they are available', () => {
     const projectRepository: any = DIContainer.sharedContainer.projectRepository
     return expect(projectRepository.bulkDocs([ docUpdate ])).rejects.toThrow(/forbidden/)
   })
 })
 
 xdescribe('SGRepository - removeByUserIdAndEmail', () => {
-  beforeEach(() => {
-    request.mockClear()
-    request.mockImplementation(() => ({ statusCode: 200, body: { results: [invitation] } }))
-  })
 
   const invitation: ContainerInvitationLike = {
     _id: 'foo',
@@ -628,19 +395,5 @@ xdescribe('SGRepository - removeByUserIdAndEmail', () => {
       }/bkt/_changes?filter=sync_gateway/bychannel&channels=User_id`,
       simple: false
     })
-  })
-
-  test('should fail to purge invitations when sync_gateway inAccessible', () => {
-    request.mockImplementation(() =>
-      Promise.reject(new GatewayInaccessibleError('Fake induced fail.'))
-    )
-    const containerInvitationRepository: any =
-      DIContainer.sharedContainer.containerInvitationRepository
-    return expect(
-      containerInvitationRepository.removeByUserIdAndEmail(
-        'User|id',
-        'foo@bar.baz'
-      )
-    ).rejects.toThrowError(GatewayInaccessibleError)
   })
 })

@@ -29,7 +29,7 @@ import {
   InvalidBackchannelLogoutError,
 } from '../../../Errors'
 import { DIContainer } from '../../../DIContainer/DIContainer'
-import { AuthorizedUser, BucketSessions } from '../../../Models/UserModels'
+import { AuthorizedUser } from '../../../Models/UserModels'
 import { isIAMOAuthTokenPayload } from '../../../Utilities/JWT/IAMAuthTokenPayload'
 import { IAMState } from '../../../Auth/Interfaces/IAMState'
 import { isIAMLogoutTokenPayload } from '../../../Utilities/JWT/IAMLogoutTokenPayload'
@@ -228,26 +228,6 @@ export class AuthController extends BaseController implements IAuthController {
     }
 
     return DIContainer.sharedContainer.authService.backchannelLogout(tokenPayload.sid)
-  }
-
-  /*
-   * Refreshes the sync session for the given device
-   */
-  async refreshSyncSessions(req: Request): Promise<BucketSessions> {
-    // The 'authorization' header's value after prefix 'Bearer ' is the JWT payload.
-    const authHeader = req.headers.authorization
-
-    if (!authHeader || Array.isArray(authHeader)) {
-      throw new ValidationError('Unexpected user token', authHeader)
-    }
-
-    if (!isBearerHeaderValue(authHeader)) {
-      throw new ValidationError('Authorization header does not contain a bearer token', authHeader)
-    }
-
-    const token = authHeader.replace('Bearer ', '')
-
-    return DIContainer.sharedContainer.authService.refreshSyncSessions(token)
   }
 
   async changePassword(req: Request): Promise<void> {

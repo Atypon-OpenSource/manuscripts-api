@@ -96,7 +96,7 @@ describe('SQLRepository Create', () => {
     expect(user).toEqual(user)
   })
 
-  xtest('should fail if database.documentMapper not set', () => {
+  test('should fail if database.documentMapper not set', () => {
     const repository: any = new UserRepository(db)
     repository.database = {}
     return expect(repository.create(validUser1)).rejects.toThrowError(NoDocumentMapperError)
@@ -143,7 +143,7 @@ describe('SQLRepository update', () => {
     await seed({ users: true })
   })
 
-  xtest('should fail if database.documentMapper not set', () => {
+  test('should fail if database.documentMapper not set', () => {
     const repository: any = new UserRepository(db)
     repository.database = {}
 
@@ -270,7 +270,7 @@ describe('SQLRepository patch', () => {
     await seed({ users: true })
   })
 
-  xtest('should fail if database.documentMapper not set', () => {
+  test('should fail if database.documentMapper not set', () => {
     const repository: any = new UserRepository(db)
     repository.database = {}
     const id = chance.hash()
@@ -335,7 +335,7 @@ describe('SQLRepository patch', () => {
   })
 })
 
-xdescribe('SQLRepository touch', () => {
+describe('SQLRepository touch', () => {
   beforeEach(async () => {
     await drop()
     await dropBucket(BucketKey.Data)
@@ -369,7 +369,7 @@ describe('SQLRepository getById', () => {
     await seed({ users: true })
   })
 
-  xtest('should fail if database.bucket not set', () => {
+  test('should fail if database.bucket not set', () => {
     const repository: any = new UserRepository(db)
     repository.database = {}
     const id = chance.hash()
@@ -402,7 +402,7 @@ describe('SQLRepository getOne', () => {
     await seed({ users: true })
   })
 
-  xtest('should fail if database.bucket not set', () => {
+  test('should fail if database.bucket not set', () => {
     const repository: any = new UserRepository(db)
     repository.database = {}
     const _id = chance.hash()
@@ -439,7 +439,7 @@ describe('SQLRepository count', () => {
     expect(count).toBe(1)
   })
 
-  xtest('should fail if database.bucket not set', () => {
+  test('should fail if database.bucket not set', () => {
     const repository: any = new UserRepository(db)
     repository.database = {}
     const _id = chance.hash()
@@ -470,7 +470,7 @@ describe('SQLRepository getAll', () => {
     return expect(repository.getAll({ _id: validUser2._id }, null)).resolves.toMatchSnapshot()
   })
 
-  xtest('should fail if database.bucket not set', () => {
+  test('should fail if database.bucket not set', () => {
     const repository: any = new UserRepository(db)
     repository.database = {}
     return expect(repository.getAll({ _id: validUser2._id }, null)).rejects.toThrowError(NoBucketError)
@@ -488,7 +488,7 @@ describe('SQLRepository remove', () => {
     expect(user).toBeNull()
   })
 
-  xtest('should fail if database.bucket not set', () => {
+  test('should fail if database.bucket not set', () => {
     const repository: any = new UserRepository(db)
     repository.database = {}
     const query = { _id: validUser2._id }
@@ -518,7 +518,7 @@ describe('SQLRepository buildModel', () => {
     expect(mappedModel.name).toBeDefined()
   })
 
-  xtest('should fail if database.bucket not set', () => {
+  test('should fail if database.bucket not set', () => {
     const repository: any = new UserRepository(db)
     repository.database = {}
     const query = { _id: validUser2._id }

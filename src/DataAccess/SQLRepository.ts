@@ -211,12 +211,12 @@ export abstract class SQLRepository<
     doc.id = doc._id
 
     for (const key of Object.keys(doc)) {
-      if (doc[key] === undefined || key.startsWith('_')) {
+      if (doc[key] === undefined /* || key.startsWith('_')*/) {
         delete doc[key]
       }
     }
 
-    doc._id = doc.id
+    //doc._id = doc.id
 
     return {
       id: doc.id,
@@ -226,7 +226,12 @@ export abstract class SQLRepository<
 
   public fixQueryCriteria(criteria: TQueryCriteria | null): any {
     if (!criteria) {
-      return {}
+      return {
+        data: {
+          path: ['_type'],
+          equals: this._documentType,
+        },
+      }
     }
 
     const query: any = {}
@@ -515,7 +520,7 @@ export abstract class SQLRepository<
    * Removes existing document.
    */
   public remove(criteria: TQueryCriteria | null): Promise<boolean> {
-    // console.log(999, this.database.bucket.name)
+    //console.log(999, this._documentType)
     return new Promise((resolve, reject) => {
       if (!this.database.bucket) {
         throw new NoBucketError()

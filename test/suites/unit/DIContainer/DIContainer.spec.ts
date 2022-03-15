@@ -89,14 +89,4 @@ describe('DIContainer', () => {
       BucketKey.AppState
     )
   })
-
-  test('createBucketAdministrators', () => {
-    const db: any = { documentMapper: { model: () => ({}) } }
-    const container = new DIContainer(db, db, db, false, null)
-    const syncService = container.syncService
-    syncService.createGatewayAdministrator = () => Promise.resolve()
-    return expect(
-      container.createBucketAdministrators()
-    ).resolves.not.toThrow()
-  })
 })

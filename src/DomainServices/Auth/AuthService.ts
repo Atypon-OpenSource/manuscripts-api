@@ -28,7 +28,6 @@ import {
   User,
   Credentials,
   AuthorizedUser,
-  BucketSessions,
   GoogleAccessCredentials,
   UserToken,
   ResetPasswordCredentials,
@@ -622,7 +621,7 @@ export class AuthService implements IAuthService {
 
     // Token is valid unless update succeeds.
     await this.singleUseTokenRepository.remove({ _id: tokenId })
-    await this.syncService.removeAllGatewaySessions(resetToken.userId)
+    //await this.syncService.removeAllGatewaySessions(resetToken.userId)
     // remove all login (JWT) tokens
     await this.userTokenRepository.remove({ userId: resetToken.userId })
 
@@ -686,7 +685,7 @@ export class AuthService implements IAuthService {
       throw new MissingUserStatusError(userToken.userId)
     }
 
-    await this.syncService.removeGatewaySessions(userToken.userId, userToken.deviceId, userStatus)
+    //await this.syncService.removeGatewaySessions(userToken.userId, userToken.deviceId, userStatus)
 
     // tslint:disable-next-line: no-floating-promises
     this.activityTrackingService.createEvent(
@@ -704,7 +703,7 @@ export class AuthService implements IAuthService {
       throw new InvalidBackchannelLogoutError('Invalid IAM session id', iamSessionID)
     }
 
-    const { _id: tokenID, userId, deviceId } = userToken
+    const { _id: tokenID, userId } = userToken
 
     const userStatus = await this.userStatusRepository.statusForUserId(userId)
 
@@ -713,50 +712,10 @@ export class AuthService implements IAuthService {
     }
 
     await this.userTokenRepository.remove({ _id: tokenID })
-    await this.syncService.removeGatewaySessions(userId, deviceId, userStatus)
+    //await this.syncService.removeGatewaySessions(userId, deviceId, userStatus)
 
     // tslint:disable-next-line: no-floating-promises
     this.activityTrackingService.createEvent(userId, UserActivityEventType.Logout, null, null)
-  }
-
-  public async refreshSyncSessions(token: string): Promise<BucketSessions> {
-    const payload = jsonwebtoken.decode(token)
-
-    if (!isLoginTokenPayload(payload)) {
-      throw new InvalidCredentialsError('Unexpected token payload')
-    }
-
-    const id = this.userTokenRepository.fullyQualifiedId(payload.tokenId)
-
-    const userToken = await this.userTokenRepository.getById(id)
-
-    if (!userToken) {
-      throw new NoTokenError(id)
-    }
-
-    const userStatus = await this.userStatusRepository.statusForUserId(userToken.userId)
-
-    if (userStatus === null) {
-      throw new MissingUserStatusError(userToken.userId)
-    }
-
-    await this.syncService.removeGatewaySessions(userToken.userId, userToken.deviceId, userStatus)
-
-    const syncSessions = await this.syncService.createGatewaySessions(
-      userToken.userId,
-      userToken.deviceId,
-      userStatus
-    )
-
-    // tslint:disable-next-line: no-floating-promises
-    this.activityTrackingService.createEvent(
-      userToken.userId,
-      UserActivityEventType.RefreshSyncSession,
-      null,
-      null
-    )
-
-    return syncSessions
   }
 
   public async changePassword(credentials: ChangePasswordCredentials): Promise<void> {
@@ -791,9 +750,9 @@ export class AuthService implements IAuthService {
     for (const deviceId of deviceIds) {
       await this.userTokenRepository.remove({ userId: user._id, deviceId: deviceId })
     }
-    for (const deviceId of deviceIds) {
-      await this.syncService.removeGatewaySessions(user._id, deviceId, userStatus)
-    }
+    //for (const deviceId of deviceIds) {
+    //  await this.syncService.removeGatewaySessions(user._id, deviceId, userStatus)
+    //}
   }
 
   private async ensureValidUserStatus(

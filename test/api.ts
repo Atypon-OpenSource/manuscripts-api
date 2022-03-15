@@ -89,14 +89,6 @@ export async function backchannelLogout (headers: object, query: object): Promis
     .send()
 }
 
-export async function refreshSyncSessions (headers: object): Promise<supertest.Response> {
-  const server = await createServer()
-  return supertest(server.app)
-    .post('/api/v1/auth/refreshSyncSessions')
-    .set(headers)
-    .send()
-}
-
 export async function forgotPassword (body: any, headers: object): Promise<supertest.Response> {
   const server = await createServer()
   return supertest(server.app)

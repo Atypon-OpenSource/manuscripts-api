@@ -14,22 +14,14 @@
  * limitations under the License.
  */
 
-import * as HttpStatus from 'http-status-codes'
-import request from 'request-promise-native'
-
 import { UserProfile, ObjectTypes } from '@manuscripts/manuscripts-json-schema'
 import { v4 as uuid_v4 } from 'uuid'
 import { randomBytes } from 'crypto'
 import { promisify } from 'util'
 
-import { SyncError, ValidationError, GatewayInaccessibleError } from '../../Errors'
+import { ValidationError } from '../../Errors'
 import { BucketKey } from '../../Config/ConfigurationTypes'
-import {
-  appDataAdminGatewayURI,
-  appDataAdminGatewayBaseURI,
-  appDataPublicGatewayBaseURI,
-} from '../../Config/ConfigAccessors'
-import { UserStatus, User } from '../../Models/UserModels'
+import { User } from '../../Models/UserModels'
 import { IUserStatusRepository } from '../../DataAccess/Interfaces/IUserStatusRepository'
 import { ISyncService } from './ISyncService'
 import { timestamp } from '../../Utilities/JWT/LoginTokenPayload'
@@ -71,100 +63,7 @@ export class SyncService implements ISyncService {
   ) {}
 
   public static async isAlive() {
-    return Promise.all([SyncService.isAdminInterfaceAlive(), SyncService.isPublicInterfaceAlive()])
-  }
-
-  private static async isAdminInterfaceAlive(): Promise<boolean> {
-    const url = appDataAdminGatewayBaseURI()
-
-    const options = {
-      url: url,
-      method: 'HEAD',
-      resolveWithFullResponse: true,
-    }
-
-    let response: any
-    try {
-      response = await request(options)
-    } catch (error) {
-      throw new GatewayInaccessibleError(url)
-    }
-    if (response.statusCode === HttpStatus.OK) {
-      return true
-    } else {
-      throw new SyncError(`Header request to URL ${url} is failing`, response)
-    }
-  }
-
-  private static async isPublicInterfaceAlive(): Promise<boolean> {
-    const url = appDataPublicGatewayBaseURI()
-
-    const options = {
-      url: url,
-      method: 'HEAD',
-      resolveWithFullResponse: true,
-    }
-
-    let response: any
-    try {
-      response = await request(options)
-    } catch (error) {
-      throw new GatewayInaccessibleError(url)
-    }
-    if (response.statusCode === HttpStatus.OK) {
-      return true
-    } else {
-      throw new SyncError(`Header request to URL ${url} is failing`, response)
-    }
-  }
-
-  public async removeGatewaySessions(
-    userId: string,
-    deviceId: string,
-    userStatus: UserStatus
-  ): Promise<boolean> {
-    const { deviceSessions } = userStatus
-    const sessionIDs = deviceSessions[deviceId]
-
-    if (!sessionIDs || Object.values(sessionIDs).length === 0) {
-      return false
-    }
-
-    const deletionResponses = await Promise.all(
-      GATEWAY_BUCKETS.map((bucketKey) => {
-        const baseUrl = appDataAdminGatewayURI(bucketKey)
-        const sessionId = sessionIDs[bucketKey]
-        const options = {
-          uri: `${baseUrl}/_user/${username(userId)}/_session/${sessionId}`,
-          method: 'DELETE',
-          json: true,
-          simple: false,
-          resolveWithFullResponse: true,
-        }
-        try {
-          const response = request(options)
-          return response
-        } catch (error) {
-          throw new GatewayInaccessibleError(options.uri)
-        }
-      })
-    )
-
-    deletionResponses.forEach((response) => {
-      if ([HttpStatus.OK, HttpStatus.NOT_FOUND].indexOf(response.statusCode) < 0) {
-        throw new SyncError(
-          `Failed to delete SyncGateway session (${response.statusCode})`,
-          response
-        )
-      }
-    })
-
-    delete deviceSessions[deviceId]
-
-    await this.userStatusRepository.patchStatusWithUserId(userId, { deviceSessions }, {})
-
-    // return `true` if all DELETE requests actually deleted something, `false` otherwise.
-    return deletionResponses.every((response) => response.statusCode === HttpStatus.OK)
+    return Promise.resolve(true)
   }
 
   public async gatewayAccountExists(userId: string, _bucketKey: BucketKey): Promise<boolean> {
@@ -251,50 +150,16 @@ export class SyncService implements ISyncService {
     }*/
   }
 
-  // Creates a sync_gateway account
-  public async createGatewayAdministrator(
-    username: string,
-    password: string,
-    bucketKey: BucketKey,
-    adminChannels: ReadonlyArray<string>,
-    adminRoles: ReadonlyArray<string>
-  ) {
-    const options = {
-      method: 'PUT',
-      uri: `${appDataAdminGatewayURI(bucketKey)}/_user/${username}`,
-      body: {
-        password: password,
-        admin_channels: adminChannels,
-        admin_roles: adminRoles,
-      },
-      json: true,
-      resolveWithFullResponse: true,
-    }
-    let response: any
-    try {
-      response = await request(options)
-    } catch (error) {
-      throw new GatewayInaccessibleError(options.uri)
-    }
-    if (response.statusCode === HttpStatus.CREATED) {
-      return
-    } else if (response.statusCode === HttpStatus.OK) {
-      return
-    } else {
-      throw new SyncError(
-        `SyncGateway administrator account upsert failed (${response.statusCode})`,
-        response
-      )
-    }
-  }
-
   /**
    * removes a sync_gateway account.
    */
   public async removeGatewayAccount(userId: string) {
-    await this.removeAllGatewaySessions(userId)
-
-    const removeAccounts: request.RequestPromise[] = GATEWAY_BUCKETS.map((bucketKey) => {
+    const userStatus = await this.userStatusRepository.getById(userId)
+    if (!userStatus) {
+      throw new Error(`Failed to delete SyncGateway user ${userId}`)
+    }
+    await this.userStatusRepository.remove({ _id: userId })
+    /*const removeAccounts: request.RequestPromise[] = GATEWAY_BUCKETS.map((bucketKey) => {
       const uri = `${appDataAdminGatewayURI(bucketKey)}/_user/${username(userId)}`
       const options = {
         method: 'DELETE',
@@ -320,62 +185,7 @@ export class SyncService implements ISyncService {
           response
         )
       }
-    })
-  }
-
-  // Creates a session with a sync_gateway account
-  // Removes existing sessions by default
-  // TODO: rename this to make it clear it removes any existing session.
-  public async createGatewaySessions(userId: string, deviceId: string, userStatus: UserStatus) {
-    await this.removeGatewaySessions(userId, deviceId, userStatus)
-
-    const sessionResponses = await Promise.all(
-      GATEWAY_BUCKETS.map(async (bucketKey) => {
-        const uri = `${appDataAdminGatewayURI(bucketKey)}/_session`
-        const options = {
-          method: 'POST',
-          uri: uri,
-          body: {
-            name: username(userId),
-          },
-          json: true,
-          simple: false,
-          resolveWithFullResponse: true,
-        }
-
-        let response: any
-        try {
-          response = await request(options)
-        } catch (error) {
-          throw new GatewayInaccessibleError(options.uri)
-        }
-        if (!response || !response.body || !response.body.session_id) {
-          throw new SyncError(
-            `Unable to parse session_id from response body (${JSON.stringify(
-              (response || {}).body
-            )}`,
-            response.body
-          )
-        }
-
-        const sessionId = response.body.session_id as string
-
-        return [bucketKey, sessionId] as [BucketKey, string]
-      })
-    )
-
-    const { deviceSessions } = userStatus
-
-    const sessionIds = sessionResponses.reduce((acc, [bucketKey, sessionId]) => {
-      acc[bucketKey] = sessionId
-      return acc
-    }, {} as { [bucketKey in BucketKey]?: string })
-
-    deviceSessions[deviceId] = sessionIds
-
-    await this.userStatusRepository.patchStatusWithUserId(userId, { deviceSessions }, {})
-
-    return deviceSessions[deviceId]
+    })*/
   }
 
   public async createGatewayContributor(user: User, _bucketKey: BucketKey) {
@@ -401,7 +211,7 @@ export class SyncService implements ISyncService {
       updatedAt: date,
     }
 
-    await this.userProfileRepository.create(userProfile, {})
+    return this.userProfileRepository.create(userProfile, {})
     /*const uri = `${appDataAdminGatewayURI(bucketKey)}/`
 
     const [firstName] = user.name.split(' ', 1)
@@ -452,44 +262,5 @@ export class SyncService implements ISyncService {
       response.body
     )
     }*/
-  }
-
-  public async removeAllGatewaySessions(userId: string): Promise<boolean> {
-    /*const removeSessions = GATEWAY_BUCKETS.map(bucketKey => {
-      const uri = `${appDataAdminGatewayURI(bucketKey)}/_user/${username(userId)}/_session`
-      const options = {
-        method: 'DELETE',
-        uri: uri,
-        json: true,
-        resolveWithFullResponse: true,
-        simple: false
-      }
-      let response: any
-      try {
-        response = request(options)
-      } catch (error) {
-        throw new GatewayInaccessibleError(options.uri)
-      }
-      return response
-    })
-
-    const responses = await Promise.all(removeSessions)
-    responses.forEach(response => {
-      if ([HttpStatus.OK, HttpStatus.NOT_FOUND].indexOf(response.statusCode) < 0) {
-        throw new SyncError(`Failed to delete SyncGateway sessions (${response.url}: ${response.statusCode})`, response)
-      }
-    })*/
-
-    const patched = await this.userStatusRepository.patchStatusWithUserId(
-      userId,
-      { deviceSessions: {} },
-      {}
-    )
-    if (patched) {
-      return true
-    }
-    return false
-    // return `true` if all DELETE requests actually deleted something, `false` otherwise.
-    // return responses.every(response => response.statusCode === HttpStatus.OK)
   }
 }

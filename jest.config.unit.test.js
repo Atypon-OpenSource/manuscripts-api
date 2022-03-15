@@ -16,7 +16,6 @@ module.exports = {
         "json",
         "node"
     ],
-    "coverageReporters": ["text-summary"],
     "coverageDirectory": "coverage/unit",
     "coverageThreshold": {
         "global": {

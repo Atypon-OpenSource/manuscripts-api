@@ -19,7 +19,6 @@ import {
   Credentials,
   GoogleAccessCredentials,
   ResetPasswordCredentials,
-  BucketSessions,
   ChangePasswordCredentials,
   ServerToServerAuthCredentials,
 } from '../../Models/UserModels'
@@ -105,12 +104,6 @@ export interface IAuthService {
    * @param iamSessionID Connect session ID for the user.
    */
   backchannelLogout(iamSessionID: string): Promise<void>
-
-  /**
-   * Refreshes the sync session for the given device, removing any existing ones.
-   * @param token User's token.
-   */
-  refreshSyncSessions(token: string): Promise<BucketSessions>
 
   /**
    * Change the user password and delete sync sessions, token for all the other devices.

@@ -77,7 +77,6 @@ import { IContainerRequestService } from '../DomainServices/ContainerRequest/ICo
 import { ContainerRequestService } from '../DomainServices/ContainerRequest/ContainerRequestService'
 import { ISubmissionService } from '../DomainServices/Submission/ISubmissionService'
 import { SubmissionService } from '../DomainServices/Submission/SubmissionService'
-import { log } from '../Utilities/Logger'
 import { IPressroomService } from '../DomainServices/Pressroom/IPressroomService'
 import { PressroomService } from '../DomainServices/Pressroom/PressroomService'
 import { ManuscriptNoteRepository } from '../DataAccess/ManuscriptNoteRepository/ManuscriptNoteRepository'
@@ -411,23 +410,6 @@ export class DIContainer {
       await Promise.all(initActions)
     }
     return DIContainer._sharedContainer
-  }
-
-  public async createBucketAdministrators(): Promise<void> {
-    await Promise.all(
-      Object.values(BucketKey)
-        .filter((key) => key !== BucketKey.User && key !== BucketKey.AppState) // the user bucket is not featured in the Sync Gateway.
-        .map((key) =>
-          this.syncService.createGatewayAdministrator(
-            `${config.DB.buckets[key]}_admin`,
-            config.DB.bucketAdminPassword,
-            key,
-            ['*'],
-            []
-          )
-        )
-    )
-    log.debug('Bucket administrators created successfully.')
   }
 
   public bucketForKey(bucketKey: BucketKey): SQLDatabase | null {

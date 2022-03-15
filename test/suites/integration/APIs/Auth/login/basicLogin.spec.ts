@@ -123,7 +123,7 @@ describe('Basic Login - POST api/v1/auth/login', () => {
     return expect(response.status).toBe(HttpStatus.UNAUTHORIZED)
   })
 
-  xtest('should fail user is blocked', async () => {
+  test('should fail user is blocked', async () => {
     await DIContainer.sharedContainer.userStatusRepository.remove(null)
     await DIContainer.sharedContainer.userStatusRepository.create(blockedStatus, {})
 
@@ -135,7 +135,7 @@ describe('Basic Login - POST api/v1/auth/login', () => {
     return expect(response.status).toBe(HttpStatus.FORBIDDEN)
   })
 
-  xtest('should fail user is not verified', async () => {
+  test('should fail user is not verified', async () => {
     await DIContainer.sharedContainer.userStatusRepository.remove(null)
     await DIContainer.sharedContainer.userStatusRepository.create(notVerifiedStatus, {})
 
@@ -182,7 +182,7 @@ describe('Basic Login - POST api/v1/auth/login', () => {
     )
   })
 
-  xtest('should update user status to be unblocked and log in after blocking expires', async () => {
+  test('should update user status to be unblocked and log in after blocking expires', async () => {
     await DIContainer.sharedContainer.userStatusRepository.remove(null)
     await DIContainer.sharedContainer.userStatusRepository.create(blockedStatusButBlockTimeExpired, {})
 
@@ -202,7 +202,7 @@ describe('Basic Login - POST api/v1/auth/login', () => {
     expect(userStatus.blockUntil).toBe(null)
   })
 
-  xtest('ensures a user can not log in if email is valid but password not valid', async () => {
+  test('ensures a user can not log in if email is valid but password not valid', async () => {
     const response: supertest.Response = await basicLogin(
       validEmailBody,
       ValidHeaderWithApplicationKey

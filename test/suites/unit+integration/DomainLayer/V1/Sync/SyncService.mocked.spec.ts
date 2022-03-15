@@ -23,7 +23,7 @@ jest.setTimeout(TEST_TIMEOUT)
 jest.mock('request-promise-native')
 const request = require('request-promise-native')
 
-describe('SyncService', () => {
+xdescribe('SyncService', () => {
   test('should fail if the sync_gateway not working', () => {
     request.mockImplementation(() => ({ statusCode: 400 }))
     return expect(SyncService.isAlive()).rejects.toThrowError(SyncError)

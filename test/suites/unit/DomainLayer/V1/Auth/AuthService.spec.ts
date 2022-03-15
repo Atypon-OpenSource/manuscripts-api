@@ -565,97 +565,6 @@ describe('AuthService - loginGoogle', () => {
   })
 })
 
-describe('AuthService - refreshSyncSessions', () => {
-  test('should fail if there is no token in DB', () => {
-    const authService: any = DIContainer.sharedContainer.authService
-
-    authService.userTokenRepository = {
-      fullyQualifiedId: (id: string) => `UserToken|${id}`,
-      getById: () => Promise.resolve(null)
-    }
-    return expect(
-      authService.refreshSyncSessions(invalidUserJWTToken)
-    ).rejects.toThrowError(NoTokenError)
-  })
-
-  test('should fail if the token is invalid', () => {
-    const authService: any = DIContainer.sharedContainer.authService
-    return expect(
-      authService.refreshSyncSessions('aadada')
-    ).rejects.toThrowError(InvalidCredentialsError)
-  })
-
-  test('should call removeGatewaySessions and createGatewaySessions', async () => {
-    const authService: any = DIContainer.sharedContainer.authService
-
-    authService.userRepository = {
-      getById: () => Promise.resolve(defaultSystemUser)
-    }
-    authService.userEventRepository = {
-      create: async () => Promise.resolve(null)
-    }
-
-    authService.userTokenRepository = {
-      fullyQualifiedId: (id: string) => `UserToken|${id}`,
-      getById: () => Promise.resolve(validUserToken),
-      remove: jest.fn(() => {
-        return Promise.resolve(null)
-      })
-    }
-
-    authService.userStatusRepository = {
-      statusForUserId: () => Promise.resolve({}),
-      fullyQualifiedId: (id: string) => `UserStatus|${id}`
-    }
-
-    await authService.refreshSyncSessions(validJWTToken)
-    const syncService = DIContainer.sharedContainer.syncService
-    expect(syncService.removeGatewaySessions).toBeCalled()
-    expect(syncService.createGatewaySessions).toBeCalled()
-  })
-
-  test('should fail if user status does not exist', () => {
-    const authService: any = DIContainer.sharedContainer.authService
-
-    authService.userTokenRepository = {
-      fullyQualifiedId: (id: string) => `UserToken|${id}`,
-      getById: () => Promise.resolve({})
-    }
-    authService.userStatusRepository = { getById: () => Promise.resolve(null) }
-
-    return expect(
-      authService.refreshSyncSessions(validJWTToken)
-    ).rejects.toThrowError()
-  })
-
-  test('should fail if user status in not in the DB', () => {
-    const authService: any = DIContainer.sharedContainer.authService
-
-    authService.userRepository = {
-      getById: () => Promise.resolve(defaultSystemUser)
-    }
-    authService.userEventRepository = {
-      create: async () => Promise.resolve(null)
-    }
-
-    authService.userTokenRepository = {
-      fullyQualifiedId: (id: string) => `UserToken|${id}`,
-      getById: () => Promise.resolve(validUserToken),
-      remove: jest.fn(() => {
-        return Promise.resolve(null)
-      })
-    }
-
-    authService.userStatusRepository = {
-      statusForUserId: () => Promise.resolve(null),
-      fullyQualifiedId: (id: string) => `UserStatus|${id}`
-    }
-
-    return expect(
-      authService.refreshSyncSessions(validJWTToken)
-    ).rejects.toThrowError()
-  })
-})
 
 describe('AuthService - logout', () => {
   test('should fail if the token is invalid', () => {
@@ -669,34 +578,6 @@ describe('AuthService - logout', () => {
     )
   })
 
-  test('should call removeGatewaySessions on logout', async () => {
-    const authService: any = DIContainer.sharedContainer.authService
-
-    authService.userRepository = {
-      getById: () => Promise.resolve(defaultSystemUser)
-    }
-    authService.userEventRepository = {
-      create: async () => Promise.resolve(null)
-    }
-
-    authService.userTokenRepository = {
-      fullyQualifiedId: (id: string) => `UserToken|${id}`,
-      getById: () => Promise.resolve(validUserToken),
-      remove: jest.fn(() => {
-        return Promise.resolve(null)
-      })
-    }
-
-    authService.userStatusRepository = {
-      statusForUserId: () => Promise.resolve({}),
-      fullyQualifiedId: (id: string) => `UserStatus|${id}`
-    }
-
-    await authService.logout(validJWTToken)
-    expect(authService.userTokenRepository.remove).toBeCalled()
-    const syncService = DIContainer.sharedContainer.syncService
-    expect(syncService.removeGatewaySessions).toBeCalled()
-  })
 
   test('should fail if there is no token in DB', () => {
     const authService: any = DIContainer.sharedContainer.authService
@@ -983,11 +864,6 @@ describe('AuthService - sendPasswordResetInstructions', () => {
 })
 
 describe('AuthService - resetPassword', () => {
-  beforeEach(() => {
-    const syncService = DIContainer.sharedContainer.syncService
-    const removeGatewaySessions: any = syncService.removeGatewaySessions
-    removeGatewaySessions.mockClear()
-  })
   test('should fail if reset password credentials is null', () => {
     const authService = DIContainer.sharedContainer.authService
 
@@ -1089,66 +965,12 @@ describe('AuthService - resetPassword', () => {
 
     return authService.resetPassword(resetPasswordCredentials).then(() => {
       const syncService = DIContainer.sharedContainer.syncService
-      expect(syncService.removeAllGatewaySessions).toHaveBeenCalled()
       expect(authService.singleUseTokenRepository.remove).toBeCalled()
       expect(authService.userTokenRepository.remove).toBeCalled()
       expect(
         authService.userStatusRepository.patchStatusWithUserId
       ).toBeCalled()
     })
-  })
-
-  test('should call removeAllGatewaySessions when resetting password', async () => {
-    const authService: any = DIContainer.sharedContainer.authService
-
-    const token = {
-      _id: 'foo',
-      userId: 'User|bar',
-      tokenType: SingleUseTokenType.ResetPasswordToken,
-      createdAt: new Date(1900, 1, 1).getTime(),
-      updatedAt: new Date().getTime()
-    }
-
-    const resetPasswordCredentials: any = {
-      token: token._id,
-      newPassword: '54321',
-      deviceId: '9f338224-b0d5-45aa-b02c-21c7e0c3c07b'
-    }
-    authService.singleUseTokenRepository = {
-      getById: () => Promise.resolve(token),
-      remove: () => Promise.resolve({})
-    }
-
-    authService.userRepository = {
-      getById: () => Promise.resolve(defaultSystemUser)
-    }
-
-    authService.userProfileRepository = {
-      getById: async () => Promise.resolve({})
-    }
-
-    authService.userStatusRepository = {
-      patchStatusWithUserId: jest.fn(() => Promise.resolve(defaultSystemUser)),
-      fullyQualifiedId: jest.fn((id: string) => `UserStatus|${id}`)
-    }
-
-    const tokens = [1, 2, 3]
-
-    authService.userTokenRepository = {
-      getAll: jest.fn(() => tokens),
-      remove: jest.fn(),
-      getOne: () => Promise.resolve(defaultSystemUser)
-    }
-
-    authService.emailService = {
-      sendPasswordResetInstructions: jest.fn(() => Promise.resolve())
-    }
-
-    expect.assertions(1)
-    await authService.resetPassword(resetPasswordCredentials)
-
-    const syncService = DIContainer.sharedContainer.syncService
-    expect(syncService.removeAllGatewaySessions).toHaveBeenCalled()
   })
 })
 
@@ -1281,7 +1103,6 @@ describe('AuthService - changePassword', () => {
     })
     expect(authService.userTokenRepository.remove).toBeCalled()
     const syncService = DIContainer.sharedContainer.syncService
-    expect(syncService.removeGatewaySessions).toBeCalled()
   })
 })
 
@@ -1676,33 +1497,6 @@ describe('AuthService - backchannelLogout', () => {
     return expect(
       authService.backchannelLogout(validLogoutToken)
     ).rejects.toThrowError(InvalidBackchannelLogoutError)
-  })
-
-  test('should call removeGatewaySessions', async () => {
-    const authService: any = DIContainer.sharedContainer.authService
-
-    authService.userTokenRepository = {
-      getOne: async () => Promise.resolve(validUserToken),
-      remove: async () => jest.fn()
-    }
-
-    authService.userStatusRepository = {
-      statusForUserId: async () => Promise.resolve(validUserStatus)
-    }
-
-    authService.syncService = {
-      removeGatewaySessions: jest.fn()
-    }
-
-    authService.activityTrackingService = {
-      createEvent: async () => jest.fn()
-    }
-
-    await authService.backchannelLogout(validLogoutToken)
-
-    return expect(
-      authService.syncService.removeGatewaySessions
-    ).toBeCalled()
   })
 })
 

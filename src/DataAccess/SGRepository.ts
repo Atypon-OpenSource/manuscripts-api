@@ -14,20 +14,10 @@
  * limitations under the License.
  */
 
-import request from 'request-promise-native'
-import * as HttpStatus from 'http-status-codes'
 import * as _ from 'lodash'
 import { N1qlQuery /*, CouchbaseError*/ } from 'couchbase'
-import { appDataAdminGatewayURI } from '../Config/ConfigAccessors'
-import {
-  ValidationError,
-  SyncError,
-  DatabaseError,
-  NoBucketError,
-  GatewayInaccessibleError,
-} from '../Errors'
+import { ValidationError, DatabaseError, NoBucketError } from '../Errors'
 import { KeyValueRepository, GatewayOptions } from './Interfaces/KeyValueRepository'
-import { username as sgUsername } from '../DomainServices/Sync/SyncService'
 import { BucketKey } from '../Config/ConfigurationTypes'
 import { SQLDatabase } from './SQLDatabase'
 // import { databaseErrorMessage } from './DatabaseResponseFunctions'
@@ -65,7 +55,7 @@ export abstract class SGRepository<TEntity, TNewEntity, TUpdateEntity, TPatchEnt
     return (this.database.bucket as any)._name
   }
 
-  static async doRequest(options: any) {
+  /*static async doRequest(options: any) {
     let response: any
     try {
       response = await request(options)
@@ -86,7 +76,7 @@ export abstract class SGRepository<TEntity, TNewEntity, TUpdateEntity, TPatchEnt
     }
 
     throw new SyncError('SyncGateway object creation failed.', response.body)
-  }
+  }*/
 
   public buildPrismaModel(data: any): any {
     const doc = Object.assign({}, data)
@@ -138,10 +128,11 @@ export abstract class SGRepository<TEntity, TNewEntity, TUpdateEntity, TPatchEnt
         ...(newDocument as any),
       },
     } as unknown as TEntity
-    // console.log(999,  prismaDoc)
+
     const createPromise = new Promise<TEntity>((resolve, reject) => {
       this.database.bucket
         .insert(this.buildPrismaModel(prismaDoc))
+        .then(() => resolve(this.buildModel(prismaDoc)))
         .catch((error: Prisma.PrismaClientKnownRequestError) =>
           reject(
             DatabaseError.fromPrismaError(
@@ -151,7 +142,6 @@ export abstract class SGRepository<TEntity, TNewEntity, TUpdateEntity, TPatchEnt
             )
           )
         )
-        .then(() => resolve(this.buildModel(prismaDoc)))
     })
 
     return createPromise
@@ -175,6 +165,14 @@ export abstract class SGRepository<TEntity, TNewEntity, TUpdateEntity, TPatchEnt
 
       this.database.bucket
         .findUnique(query)
+        .then((doc: any) => {
+          //console.log(11333, doc)
+          if (doc) {
+            resolve(this.buildModel(doc))
+          } else {
+            resolve(null)
+          }
+        })
         .catch((error: Prisma.PrismaClientKnownRequestError) =>
           reject(
             DatabaseError.fromPrismaError(
@@ -184,14 +182,6 @@ export abstract class SGRepository<TEntity, TNewEntity, TUpdateEntity, TPatchEnt
             )
           )
         )
-        .then((doc: any) => {
-          // console.log(11333, this.objectType, id, this.documentId(id), query, doc)
-          if (doc) {
-            resolve(this.buildModel(doc))
-          } else {
-            resolve(null)
-          }
-        })
     })
     /*const uri = `${appDataAdminGatewayURI(this.bucketKey)}/${this.documentId(
       id
@@ -218,6 +208,7 @@ export abstract class SGRepository<TEntity, TNewEntity, TUpdateEntity, TPatchEnt
 
       this.database.bucket
         .remove(query)
+        .then(() => resolve())
         .catch((error: Prisma.PrismaClientKnownRequestError) =>
           reject(
             DatabaseError.fromPrismaError(
@@ -227,7 +218,6 @@ export abstract class SGRepository<TEntity, TNewEntity, TUpdateEntity, TPatchEnt
             )
           )
         )
-        .then(() => resolve())
     })
 
     /*const document = await this.getById(id)
@@ -292,6 +282,7 @@ export abstract class SGRepository<TEntity, TNewEntity, TUpdateEntity, TPatchEnt
     return new Promise<TEntity>((resolve, reject) => {
       this.database.bucket
         .replace(docId, prismaDoc)
+        .then(() => resolve(this.buildModel(documentToUpdate)))
         .catch((error: Prisma.PrismaClientKnownRequestError) =>
           reject(
             DatabaseError.fromPrismaError(
@@ -301,7 +292,6 @@ export abstract class SGRepository<TEntity, TNewEntity, TUpdateEntity, TPatchEnt
             )
           )
         )
-        .then(() => resolve(this.buildModel(documentToUpdate)))
     })
     /*const preparedDocument = {
       ...(updatedDocument as any),
@@ -434,8 +424,8 @@ export abstract class SGRepository<TEntity, TNewEntity, TUpdateEntity, TPatchEnt
   /**
    * Purge invitations and container invitations which are send by the user or to the user.
    */
-  public async removeByUserIdAndEmail(userID: string, email: string) {
-    let uri = `${appDataAdminGatewayURI(
+  public async removeByUserIdAndEmail(_userID: string, _email: string) {
+    /*let uri = `${appDataAdminGatewayURI(
       this.bucketKey
     )}/_changes?filter=sync_gateway/bychannel&channels=${sgUsername(userID)}`
 
@@ -456,7 +446,7 @@ export abstract class SGRepository<TEntity, TNewEntity, TUpdateEntity, TPatchEnt
           await this.purge(doc.id)
         }
       }
-    }
+    }*/
   }
 
   private async removeAll(): Promise<void> {
@@ -493,15 +483,19 @@ export abstract class SGRepository<TEntity, TNewEntity, TUpdateEntity, TPatchEnt
     return id.includes(':') ? id : `${this.objectType}:${id}`
   }
 
-  public async getAttachmentBody(documentID: string, attachmentID: string): Promise<Buffer | null> {
-    const uri = `${appDataAdminGatewayURI(this.bucketKey)}/${documentID}/${attachmentID}`
+  public async getAttachmentBody(
+    _documentID: string,
+    _attachmentID: string
+  ): Promise<Buffer | null> {
+    /*const uri = `${appDataAdminGatewayURI(this.bucketKey)}/${documentID}/${attachmentID}`
 
     return SGRepository.doRequest({
       method: 'GET',
       uri: uri,
       resolveWithFullResponse: true,
       encoding: null,
-    })
+    })*/
+    return null
   }
 
   public async purge(id: string): Promise<void> {
@@ -526,18 +520,23 @@ export abstract class SGRepository<TEntity, TNewEntity, TUpdateEntity, TPatchEnt
   /**
    * Direct access to bulkDocs for adding pre-formed SG objects
    */
-  public async bulkDocs(docs: any): Promise<void> {
+  public async bulkDocs(docs: any): Promise<any[]> {
+    const updated = []
     for (const doc of docs) {
       const docId = this.documentId(doc._id)
       const dataToPatch = _.omit(doc, ['_id', 'id', 'data'])
       // console.log(docId, dataToPatch)
-      await this.patch(docId, dataToPatch, {}).catch(async (err) => {
+      const updatedDoc = await this.patch(docId, dataToPatch, {}).catch((err) => {
         if (err.statusCode === 400) {
           // must upsert
-          await this.database.bucket.upsert(docId, { data: dataToPatch })
+          return this.database.bucket.upsert(docId, { data: dataToPatch })
         }
       })
+
+      updated.push(updatedDoc)
     }
+
+    return updated
 
     /*const uri = `${appDataAdminGatewayURI(this.bucketKey)}/_bulk_docs`
 

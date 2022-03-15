@@ -13,11 +13,10 @@ module.exports = {
         "json",
         "node"
     ],
-    "coverageReporters": ["text-summary"],
     "coverageDirectory": "coverage/int",
     "coverageThreshold": {
         "global": {
-            "branches": 67,
+            "branches": 66,
             "functions": 88,
             "lines": 78
         }

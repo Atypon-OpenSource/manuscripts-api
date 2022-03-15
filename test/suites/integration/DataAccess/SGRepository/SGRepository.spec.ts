@@ -167,7 +167,7 @@ describe('SGRepository patch', () => {
   })
 })
 
-xdescribe('SGRepository touch', () => {
+describe('SGRepository touch', () => {
   beforeEach(async () => {
     await drop()
     await dropBucket(BucketKey.Data)

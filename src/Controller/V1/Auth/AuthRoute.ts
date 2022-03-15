@@ -319,19 +319,6 @@ export class AuthRoute extends BaseRoute {
     )
 
     router.post(
-      `${this.basePath}/refreshSyncSessions`,
-      AuthStrategy.JWTAuth,
-      (_req: Request, res: Response, next: NextFunction) => {
-        return this.runWithErrorHandling(async () => {
-          // const sessions = await this.authController.refreshSyncSessions(req)
-          // const referer = req.get('referer')
-          // this.setSyncCookies(sessions, res, referer)
-          res.status(HttpStatus.NO_CONTENT).send()
-        }, next)
-      }
-    )
-
-    router.post(
       `${this.basePath}/changePassword`,
       expressJoiMiddleware(changePasswordSchema, {}),
       AuthStrategy.JWTAuth,
