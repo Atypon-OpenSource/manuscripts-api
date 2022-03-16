@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { IndexedRepository, PatchOptions } from './IndexedRepository'
+import { IndexedRepository } from './IndexedRepository'
 import { UserStatus, UpdateUserStatus } from '../../Models/UserModels'
 import { QueryCriteria } from './QueryCriteria'
 
@@ -34,9 +34,5 @@ export interface IUserStatusRepository
   /**
    * Patches existing user status by a specific user id.
    */
-  patchStatusWithUserId(
-    userId: string,
-    dataToPatch: Partial<UpdateUserStatus>,
-    options: PatchOptions
-  ): Promise<UserStatus>
+  patchStatusWithUserId(userId: string, dataToPatch: Partial<UpdateUserStatus>): Promise<UserStatus>
 }

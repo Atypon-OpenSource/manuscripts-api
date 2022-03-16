@@ -3894,7 +3894,7 @@ cosmiconfig@^7.0.1:
     path-type "^4.0.0"
     yaml "^1.10.0"
 
-couchbase@2.6.12, couchbase@^2.6.3:
+couchbase@^2.6.3:
   version "2.6.12"
   resolved "https://registry.yarnpkg.com/couchbase/-/couchbase-2.6.12.tgz#81beafc4e4a12aba4f84570a078ab26eb3e98206"
   integrity sha512-507FWxN2M5k8Qor1+v4dnNIeudZ116K508u1ZDRbiF4H+xXlmQtflVNEcpzZKNRGrVZqn/K8qeAt8xtjwC2NrQ==
@@ -12342,7 +12342,7 @@ typedarray@^0.0.6:
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
 
-typescript@4.4.0:
+typescript@4.4.4:
   version "4.4.4"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.4.4.tgz#2cd01a1a1f160704d3101fd5a58ff0f9fcb8030c"
   integrity sha512-DqGhF5IKoBl8WNf8C1gu8q0xZSInh9j1kJJMqT3a94w1JzVaBU4EXOSMrz9yDqMT0xt3selp83fuFMQ0uzv6qA==

@@ -117,14 +117,14 @@ export class SingleUseTokenRepository
   public async ensureTokenExists(
     user: User,
     tokenType: SingleUseTokenType,
-    expiry: number | undefined
+    _expiry: number | undefined
   ): Promise<string> {
     let tokenId
     const token = await this.getOne({ userId: user._id, tokenType: tokenType })
 
     if (token !== null) {
       tokenId = token._id
-      await this.patch(token._id, { updatedAt: new Date().getTime() }, { expiry: expiry })
+      await this.patch(token._id, { updatedAt: new Date().getTime() })
     } else {
       tokenId = uuid_v4()
       const token = {
@@ -134,7 +134,7 @@ export class SingleUseTokenRepository
         createdAt: new Date().getTime(),
       }
 
-      const newToken = await this.create(token, { expiry: 0 })
+      const newToken = await this.create(token)
       tokenId = newToken._id
     }
     return tokenId

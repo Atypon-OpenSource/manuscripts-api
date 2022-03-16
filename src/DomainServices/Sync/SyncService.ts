@@ -95,7 +95,7 @@ export class SyncService implements ISyncService {
       deviceSessions: {},
     }
 
-    await this.userStatusRepository.create(userStatus, {})
+    await this.userStatusRepository.create(userStatus)
 
     return id
   }

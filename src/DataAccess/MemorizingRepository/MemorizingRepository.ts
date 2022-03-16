@@ -53,7 +53,7 @@ export class MemorizingRepository<
 
   /* istanbul ignore next */
   public async create(newDocument: TNewEntity): Promise<TEntity> {
-    return this.repository.create(newDocument, {})
+    return this.repository.create(newDocument)
   }
 
   /* istanbul ignore next */
@@ -63,12 +63,12 @@ export class MemorizingRepository<
 
   /* istanbul ignore next */
   public async update(updatedDocument: TUpdateEntity): Promise<TEntity> {
-    return this.repository.update(updatedDocument, {})
+    return this.repository.update(updatedDocument)
   }
 
   /* istanbul ignore next */
   public async patch(id: string, dataToPatch: TUpdateEntity): Promise<TEntity> {
-    return this.repository.patch(id, dataToPatch, {})
+    return this.repository.patch(id, dataToPatch)
   }
 
   /* istanbul ignore next */

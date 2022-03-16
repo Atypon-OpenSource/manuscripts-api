@@ -49,9 +49,9 @@ describe('UserRepository getUsersToDelete', () => {
       name: chance.name()
     }
 
-    const user = await repository.create(newDocument, {})
+    const user = await repository.create(newDocument)
 
-    await repository.patch(user._id, { deleteAt: new Date() }, {})
+    await repository.patch(user._id, { deleteAt: new Date() })
 
     expect(await repository.getUsersToDelete()).toHaveLength(1)
   })

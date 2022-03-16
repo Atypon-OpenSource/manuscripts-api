@@ -14,39 +14,23 @@
  * limitations under the License.
  */
 
-import { N1qlQuery, N1qlStringQuery /*, CouchbaseError*/ } from 'couchbase'
 import * as _ from 'lodash'
 import { v4 as uuid_v4 } from 'uuid'
 
 import { IdentifiableEntity } from './Interfaces/IdentifiableEntity'
-import {
-  IndexedRepository,
-  ensureTypeBound,
-  ensureValidDocumentType,
-  CreateOptions,
-  UpdateOptions,
-  PatchOptions,
-} from './Interfaces/IndexedRepository'
-import { QueryFragment } from './Interfaces/QueryFragment'
+import { IndexedRepository, ensureValidDocumentType } from './Interfaces/IndexedRepository'
 import { QueryCriteria } from './Interfaces/QueryCriteria'
-import {
-  DatabaseError,
-  NoBucketError,
-  NoDocumentMapperError,
-  /*RecordNotFoundError, NumericalError,*/ ValidationError,
-  SecondaryIndexMissingError,
-} from '../Errors'
+import { DatabaseError, NoBucketError, NoDocumentMapperError, ValidationError } from '../Errors'
 import { QueryOptions } from './Interfaces/QueryOptions'
-import { /*isNumber,*/ isString } from '../util'
+import { isString } from '../util'
 import { SQLDatabase } from './SQLDatabase'
 import {
   SchemaDefinition as OttomanSchemaDefinition,
   ModelInstance as OttomanModelInstance,
   ModelInstanceCtor as OttomanModelInstanceCtor,
-  ModelOptions as OttomanModelOptions /*, ModelInstance*/,
+  ModelOptions as OttomanModelOptions,
 } from 'ottoman'
-// import { databaseErrorMessage } from './DatabaseResponseFunctions'
-import { Environment, BucketKey } from '../Config/ConfigurationTypes'
+import { BucketKey } from '../Config/ConfigurationTypes'
 
 const registeredSchemas = new Map<string, OttomanModelInstanceCtor>()
 
@@ -76,15 +60,9 @@ export abstract class SQLRepository<
   TQueryCriteria extends QueryCriteria
 > implements IndexedRepository<TEntity, TNewEntity, TUpdateEntity, TQueryCriteria>
 {
-  readonly consistency: N1qlQuery.Consistency
-
   readonly modelConstructor: OttomanModelInstanceCtor
 
-  constructor(
-    readonly database: SQLDatabase,
-    consistency: N1qlQuery.Consistency = N1qlQuery.Consistency.REQUEST_PLUS
-  ) {
-    this.consistency = consistency
+  constructor(readonly database: SQLDatabase) {
     const registeredSchema = registeredSchemas.get(this._documentType)
     // Ignoring the following from tests because testing it is likely to break all the time depending on previously executed tests: requires never having initialized a certain kind of repository before.
     /* istanbul ignore if */
@@ -140,49 +118,6 @@ export abstract class SQLRepository<
 
   get designDocumentName(): string {
     return this.documentType
-  }
-
-  /**
-   * Build a query fragment suitable as a suffix immediately after "WHERE " in a N1QL query.
-   * Includes a fixed criterion: _type = ${this.documentType}.
-   */
-  public whereClause(criteria: QueryCriteria | null): QueryFragment {
-    if (!criteria) {
-      return { N1QL: '_type = $1', params: [this.documentType] }
-    }
-
-    const sortedKeys = Object.keys(criteria).sort()
-
-    // include criteria key-value pairs as is (k = v).
-    let frags = sortedKeys.map((key, i) => {
-      if (process.env.NODE_ENV !== Environment.Production) {
-        // id gets turned below to _id below, hence checking for both here.
-        const isPrimaryKey = key === '_id'
-        const indices = !isPrimaryKey ? this.buildModelOptions().index : undefined
-        if (!isPrimaryKey && indices) {
-          const isFieldIndexed =
-            Object.keys(indices).filter((index: any) => indices[index].by === key).length > 0
-          if (!isFieldIndexed) {
-            throw new SecondaryIndexMissingError(this.documentType, key)
-          }
-        } else if (!isPrimaryKey) {
-          throw new SecondaryIndexMissingError(this.documentType, key)
-        }
-      }
-
-      return `${key} = $${i + 1}`
-    })
-
-    // add fixed parameterization: _type = `this.documentType`
-    frags.push(`_type = $${frags.length + 1}`)
-
-    let params = sortedKeys.map((k) => criteria[k])
-    params.push(this.documentType)
-
-    return {
-      N1QL: frags.join(' AND '),
-      params: params,
-    }
   }
 
   /**
@@ -260,7 +195,7 @@ export abstract class SQLRepository<
   /**
    * Creates new document.
    */
-  public async create(newDocument: TNewEntity, _options?: CreateOptions): Promise<TEntity> {
+  public async create(newDocument: TNewEntity): Promise<TEntity> {
     if (!this.database.documentMapper) {
       return Promise.reject(new NoDocumentMapperError())
     }
@@ -328,7 +263,7 @@ export abstract class SQLRepository<
   /**
    * Replaces existing document.
    */
-  public async update(documentToUpdate: TUpdateEntity, _options: UpdateOptions): Promise<TEntity> {
+  public async update(documentToUpdate: TUpdateEntity): Promise<TEntity> {
     if (!this.database.documentMapper) {
       return Promise.reject(new NoDocumentMapperError())
     }
@@ -362,11 +297,7 @@ export abstract class SQLRepository<
   /**
    * Replaces values for the specified keys.
    */
-  public async patch(
-    id: string,
-    dataToPatch: Partial<TUpdateEntity>,
-    options: PatchOptions
-  ): Promise<TEntity> {
+  public async patch(id: string, dataToPatch: Partial<TUpdateEntity>): Promise<TEntity> {
     if (!this.database.documentMapper) {
       return Promise.reject(new NoDocumentMapperError())
     }
@@ -377,7 +308,7 @@ export abstract class SQLRepository<
     }
 
     dataToPatch._id = id
-    return this.update(dataToPatch as TUpdateEntity, options)
+    return this.update(dataToPatch as TUpdateEntity)
   }
 
   /**
@@ -387,7 +318,7 @@ export abstract class SQLRepository<
     if (!this.database.bucket) {
       return Promise.reject(new NoBucketError())
     }
-    await this.patch(key, { expiry } as any, {})
+    await this.patch(key, { expiry } as any)
   }
 
   /**
@@ -554,40 +485,6 @@ export abstract class SQLRepository<
     return id.replace(`${this.documentType}|`, '')
   }
 
-  public getAllQuery(
-    whereClause: QueryFragment | null,
-    options: QueryOptions | null
-  ): N1qlStringQuery {
-    const where = whereClause ? whereClause.N1QL : `_type = '${this.documentType}`
-
-    const offsetStr = options && options.skip ? `OFFSET ${options.skip}` : ''
-    const limitStr = options && options.limit && options.limit > 0 ? `LIMIT ${options.limit}` : ''
-
-    const orderByStr = (() => {
-      if (!options) {
-        return ''
-      }
-      if (options.ascOrderBy.length > 0 && options.descOrderBy.length > 0) {
-        return `ORDER BY ${options.ascOrderBy.join()} ASC, ${options.descOrderBy.join()} DESC`
-      }
-      if (options.ascOrderBy.length > 0) {
-        return `ORDER BY ${options.ascOrderBy.join()} ASC`
-      }
-      if (options.descOrderBy.length > 0) {
-        return `ORDER BY ${options.descOrderBy.join()} DESC`
-      }
-      return ''
-    })()
-
-    const n1ql =
-      `SELECT * FROM \`${this.bucketName}\` WHERE ${where} ${offsetStr} ${limitStr} ${orderByStr}`.trimRight()
-    const statement = ensureTypeBound(
-      N1qlQuery.fromString(n1ql).adhoc(false).consistency(this.consistency)
-    )
-
-    return statement
-  }
-
   private validateModel(document: Partial<TUpdateEntity> | TNewEntity): Promise<void> {
     // return Promise.resolve()
     if (document.expiry) {
@@ -599,7 +496,7 @@ export abstract class SQLRepository<
         if (error) {
           // console.log(error.code, error.message, JSON.stringify(document), this.model.fromData(document))
           return reject(
-            new DatabaseError(error.code, error.message, JSON.stringify(document), error)
+            new DatabaseError(error.code as any, error.message, JSON.stringify(document), error)
           )
         } else {
           return resolve()

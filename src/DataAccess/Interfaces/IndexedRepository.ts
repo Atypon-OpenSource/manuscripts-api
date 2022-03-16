@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { N1qlStringQuery, InsertOptions, ReplaceOptions, UpsertOptions } from 'couchbase'
 import { SchemaDefinition, ModelOptions } from 'ottoman'
 
 import { QueryOptions } from './QueryOptions'
@@ -42,7 +41,7 @@ export interface IndexedRepository<
    * Creates new document.
    * @param newDocument The new document wants to be added.
    */
-  create(newDocument: TNewEntity, options: CreateOptions): Promise<TEntity>
+  create(newDocument: TNewEntity): Promise<TEntity>
 
   upsert(id: string, newDocument: TNewEntity): Promise<TEntity>
 
@@ -51,14 +50,14 @@ export interface IndexedRepository<
    * @param id document id's wants to be replaced.
    * @param newDocument The new object that will be replaced.
    */
-  update(updatedDocument: TUpdateEntity, options: UpdateOptions): Promise<TEntity>
+  update(updatedDocument: TUpdateEntity): Promise<TEntity>
 
   /**
    * Replaces values for the keys specified. Leaves any other keys unmodified on the document.
    * @param id document id's wants to be patched.
    * @param dataToPatch document properties want to be patched.
    */
-  patch(id: string, dataToPatch: TUpdateEntity, options: UpdateOptions): Promise<TEntity>
+  patch(id: string, dataToPatch: TUpdateEntity): Promise<TEntity>
 
   /**
    * Update document ttl.
@@ -101,23 +100,6 @@ export interface IndexedRepository<
   buildSchemaDefinition(): SchemaDefinition
 
   buildModelOptions(): ModelOptions
-}
-
-export type CreateOptions = InsertOptions
-
-export type UpdateOptions = ReplaceOptions
-
-export type PatchOptions = UpsertOptions
-
-export function ensureTypeBound(query: N1qlStringQuery): N1qlStringQuery {
-  const queryStr = (query as any).options.statement
-  if (queryStr.indexOf(`_type = `) < 0) {
-    throw new ValidationError(
-      'N1QL query should contain "_type" as part of its WHERE clause',
-      queryStr
-    )
-  }
-  return query
 }
 
 /** Sets the document's _type property if it were null before. Throws an exception if an unexpected non-null value is set. */

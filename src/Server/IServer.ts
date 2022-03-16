@@ -24,10 +24,6 @@ import * as express from 'express'
 export interface IServer {
   app: express.Application
   /**
-   * Checks if all prerequisites of the app are up and healthy
-   */
-  checkPrerequisites(): void
-  /**
    * Bootstrap the application.
    *
    * @class Server

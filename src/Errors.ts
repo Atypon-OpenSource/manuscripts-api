@@ -16,9 +16,8 @@
 
 import * as HttpStatus from 'http-status-codes'
 import { User, UserStatus } from './Models/UserModels'
-import { isString, isNumber } from './util'
+import { isString } from './util'
 import { InternalErrorCode } from './InternalErrorCodes'
-import { CouchbaseError, errors } from 'couchbase'
 import { BucketKey } from './Config/ConfigurationTypes'
 import { Prisma } from '@prisma/client'
 
@@ -84,7 +83,7 @@ export class DatabaseError extends Error implements StatusCoded {
   readonly statusCode = HttpStatus.INTERNAL_SERVER_ERROR
 
   constructor(
-    readonly underlyingCode: errors | string | undefined,
+    readonly underlyingCode: string | undefined,
     message: string,
     readonly value: any,
     readonly underlyingError: Error
@@ -93,27 +92,6 @@ export class DatabaseError extends Error implements StatusCoded {
       `SQLDatabase error with code ${underlyingCode}: ${message}\nUnderlying error: ${underlyingError}`
     )
     this.name = 'DatabaseError'
-  }
-
-  static fromPotentiallyNumericalError(
-    underlyingError: number | CouchbaseError,
-    message: string,
-    value: any
-  ) {
-    if (isNumber(underlyingError)) {
-      return new DatabaseError(
-        underlyingError,
-        `Couchbase error with code ${underlyingError} occurred: ${message}`,
-        value,
-        new NumericalError(underlyingError)
-      )
-    }
-    return new DatabaseError(
-      underlyingError ? underlyingError.code : undefined,
-      underlyingError.message,
-      value,
-      underlyingError
-    )
   }
 
   static fromPrismaError(

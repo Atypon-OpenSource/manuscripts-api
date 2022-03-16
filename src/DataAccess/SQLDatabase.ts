@@ -15,22 +15,13 @@
  */
 
 import * as HttpStatus from 'http-status-codes'
-import { /*Cluster, CouchbaseError, N1qlQuery,*/ Bucket } from 'couchbase'
 import { parse } from 'url'
 import request from 'request-promise-native'
 import { Ottoman, CbStoreAdapter } from 'ottoman'
 import { log } from '../Utilities/Logger'
 import { config } from '../Config/Config'
 import { DatabaseConfiguration, BucketKey } from '../Config/ConfigurationTypes'
-import {
-  NoBucketError,
-  // NoDocumentMapperError,
-  // DatabaseError,
-  InvalidBucketError,
-  // DatabaseDesignDocumentInaccessibleError,
-  BucketExistenceCheckError,
-} from '../Errors'
-// import { databaseErrorMessage } from './DatabaseResponseFunctions'
+import { NoBucketError, InvalidBucketError, BucketExistenceCheckError } from '../Errors'
 import { Index, indices as getIndices } from './DatabaseIndices'
 
 import { Prisma } from '@prisma/client'
@@ -41,7 +32,7 @@ interface SQLBucket {
 
   disconnect(): Promise<void>
 
-  append(key: string | Buffer, fragment: any, callback: Bucket.OpCallback): void
+  append(key: string | Buffer, fragment: any): void
 
   insert(doc: any): Prisma.PromiseReturnType<any>
 
@@ -55,9 +46,8 @@ interface SQLBucket {
 
   findMany(query: any): Prisma.PromiseReturnType<any>
 
-  replace(key: string | Buffer, value: any, callback: Bucket.OpCallback): void
+  replace(key: string | Buffer, value: any): void
 
-  // touch(key: string | Buffer, expiry: number, options: TouchOptions, callback: Bucket.OpCallback): void,
   remove(query: any): Prisma.PromiseReturnType<any>
 
   updateMany(query: any, data: any): Prisma.PromiseReturnType<any>
@@ -79,7 +69,7 @@ class PrismaBucket implements SQLBucket {
     // console.log(999, this.name, this.prismaClient)
   }
   _name: string
-  append(_key: string | Buffer, _fragment: any, _callback: Bucket.OpCallback): Promise<void> {
+  append(_key: string | Buffer, _fragment: any): Promise<void> {
     return Promise.resolve()
   }
   query(query: any): Prisma.PromiseReturnType<any> {
@@ -242,30 +232,6 @@ export class SQLDatabase {
 
   public ensureAlive(): Promise<void> {
     return Promise.resolve()
-    /*return new Promise<void>((resolve, reject) => {
-      const n1ql = `SELECT _id FROM ${this.bucketName} USE KEYS ["_id"] LIMIT 0`
-
-      if (!this.bucket) {
-        return reject(new NoBucketError())
-      }
-
-      this.bucket.query(
-        N1qlQuery.fromString(n1ql)
-          .adhoc(false)
-          .consistency(N1qlQuery.Consistency.REQUEST_PLUS),
-        (error: CouchbaseError | null) => {
-          if (error) {
-            log.error(
-              `An error occurred while connecting to couchbase db ${config.DB.uri}`,
-              error
-            )
-            reject(error)
-          }
-
-          resolve()
-        }
-      )
-    })*/
   }
 
   public createIndex(_indexCreateStatement: string): Promise<boolean> {

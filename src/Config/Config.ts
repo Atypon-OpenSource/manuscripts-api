@@ -17,7 +17,6 @@
 import * as path from 'path'
 import { load } from 'dotenv-safe'
 import { isString, isNumber } from '../util'
-import { CreateBucketOptions } from 'couchbase'
 import {
   clientApplicationsFromSplitString,
   scopeConfigurationsFromSplitString,
@@ -88,32 +87,6 @@ function getOptionalArray(envVar: string | undefined, key: string, separator: st
   return arrayParts
 }
 
-// undefined intentionally here,
-// in order to avoid creating an object with null values
-// (which the relevant 3rd party code may not interpret similarly).
-function getStringOptional(value: any): string | undefined {
-  if (!isString(value) || value.length === 0) {
-    return undefined
-  }
-  return value
-}
-
-/**
- * Configuration number validator:
- * passes input parameter through as return value
- * if it is a number, return null otherwise.
- *
- * The use of undefined (instead of null) is intentional, in order to avoid
- * passing objects with null values to 3rd party code (which may not interpret them correctly).
- */
-function getNumberOptional(value: any): number | undefined {
-  const numberVal = Number(value)
-  if (!isNumber(numberVal) || isNaN(numberVal) || !isFinite(numberVal)) {
-    return undefined
-  }
-  return numberVal
-}
-
 function getNumber(value: any, key: string, allowMissing?: boolean): number {
   const numberVal = Number(value)
   if (!allowMissing && (!isNumber(numberVal) || isNaN(numberVal) || !isFinite(numberVal))) {
@@ -140,8 +113,6 @@ export class Configuration implements ConfigurationContainer {
   readonly template: TemplateConfiguration
 
   constructor(env: EnvironmentLike) {
-    const bucketOptions = this.createBucketOptions(env)
-
     this.API = {
       port: Number(env.APP_PORT),
       oauthStateEncryptionKey: getString(
@@ -184,7 +155,6 @@ export class Configuration implements ConfigurationContainer {
       (typeof env.INITIALIZE_DATABASE === 'undefined' && env.NODE_ENV === Environment.Test)
 
     this.DB = {
-      bucketOptions,
       buckets,
       initializeContents: initialize,
       uri: normalizeURL(getString(env.APP_DB_URI, 'APP_DB_URI')),
@@ -336,29 +306,6 @@ export class Configuration implements ConfigurationContainer {
     }
 
     return process.env // load() call above loads .env file into process.env
-  }
-
-  public createBucketOptions(env: NodeJS.ProcessEnv): CreateBucketOptions {
-    const authType = getStringOptional(env.APP_DB_AUTH_TYPE)
-    const bucketType = getStringOptional(env.APP_DB_BUCKET_TYPE)
-    const ramQuotaMB = getNumberOptional(env.APP_DB_RAM_QUOTA_MB)
-    const replicaNumber = getNumberOptional(env.APP_DB_REPLICA_NUMBER)
-
-    const bucketOptions: CreateBucketOptions = {}
-    if (authType) {
-      bucketOptions.authType = authType
-    }
-    if (bucketType) {
-      bucketOptions.bucketType = bucketType
-    }
-    if (ramQuotaMB) {
-      bucketOptions.ramQuotaMB = ramQuotaMB
-    }
-    if (replicaNumber) {
-      bucketOptions.replicaNumber = replicaNumber
-    }
-
-    return bucketOptions
   }
 }
 

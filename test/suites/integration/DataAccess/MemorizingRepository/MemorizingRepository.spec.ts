@@ -61,7 +61,7 @@ describe('MemorizingRepository getById', () => {
 
   test('should return data from cache if key is exist in the cache', async () => {
     const clientRepo = new ClientApplicationRepository(db)
-    const newApplication = await clientRepo.create({ details: 'foo', name: 'bar', secret: '12345', _type: 'Application' }, {})
+    const newApplication = await clientRepo.create({ details: 'foo', name: 'bar', secret: '12345', _type: 'Application' })
     clientRepo.getById = jest.fn(async () => newApplication)
     const memorizingRepo: any = new MemorizingRepository<ClientApplication, ClientApplication, ClientApplication, ClientApplicationQueryCriteria>(clientRepo, 1)
 

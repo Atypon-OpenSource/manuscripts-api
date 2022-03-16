@@ -169,7 +169,7 @@ export class UserService implements IUserService {
 
     const deleteAt = getExpirationTime(30 * 24)
 
-    await this.userRepository.patch(userId, { deleteAt: deleteAt }, {})
+    await this.userRepository.patch(userId, { deleteAt: deleteAt })
 
     if (!config.auth.skipVerification) {
       await this.emailService.sendAccountDeletionNotification(user)
@@ -188,7 +188,7 @@ export class UserService implements IUserService {
     }
 
     const deleteAt = undefined
-    await this.userRepository.patch(userId, { deleteAt: deleteAt }, {})
+    await this.userRepository.patch(userId, { deleteAt: deleteAt })
   }
 
   public static profileID(userID: string) {

@@ -353,12 +353,12 @@ export class AuthService implements IAuthService {
     if (!user) {
       const userEmailID = this.userEmailID(email)
       try {
-        await this.userEmailRepository.create({ _id: userEmailID }, {})
+        await this.userEmailRepository.create({ _id: userEmailID })
       } catch (error) {
         throw new DuplicateEmailError(email)
       }
 
-      const u = await this.userRepository.create({ name, email }, {})
+      const u = await this.userRepository.create({ name, email })
 
       user = u
 
@@ -367,17 +367,14 @@ export class AuthService implements IAuthService {
       )
       await this.syncService.createGatewayContributor(u, BucketKey.Data)
 
-      userStatus = await this.userStatusRepository.create(
-        {
-          _id: u._id,
-          blockUntil: null,
-          isVerified: true,
-          createdAt: new Date(),
-          deviceSessions: {},
-          password: '',
-        },
-        {}
-      )
+      userStatus = await this.userStatusRepository.create({
+        _id: u._id,
+        blockUntil: null,
+        isVerified: true,
+        createdAt: new Date(),
+        deviceSessions: {},
+        password: '',
+      })
 
       // tslint:disable-next-line: no-floating-promises
       this.activityTrackingService.createEvent(
@@ -501,17 +498,14 @@ export class AuthService implements IAuthService {
       log.debug(`Get found userStatus: ${foundUserStatus}`)
 
       if (!foundUserStatus) {
-        userStatus = await this.userStatusRepository.create(
-          {
-            _id: user._id,
-            blockUntil: null,
-            isVerified: true,
-            createdAt: new Date(),
-            deviceSessions: {},
-            password: '',
-          },
-          {}
-        )
+        userStatus = await this.userStatusRepository.create({
+          _id: user._id,
+          blockUntil: null,
+          isVerified: true,
+          createdAt: new Date(),
+          deviceSessions: {},
+          password: '',
+        })
       } else {
         userStatus = foundUserStatus
       }
@@ -547,7 +541,7 @@ export class AuthService implements IAuthService {
         throw new InvalidCredentialsError('User with this email has a mismatching Connect ID')
       }
 
-      await this.userRepository.patch(user._id, { connectUserID }, {})
+      await this.userRepository.patch(user._id, { connectUserID })
       user.connectUserID = connectUserID
     }
   }
@@ -610,14 +604,10 @@ export class AuthService implements IAuthService {
       throw new MissingUserRecordError(resetToken.userId)
     }
 
-    const userStatus = await this.userStatusRepository.patchStatusWithUserId(
-      user._id,
-      {
-        deviceSessions: {},
-        password: await AuthService.createPassword(newPassword),
-      },
-      {}
-    )
+    const userStatus = await this.userStatusRepository.patchStatusWithUserId(user._id, {
+      deviceSessions: {},
+      password: await AuthService.createPassword(newPassword),
+    })
 
     // Token is valid unless update succeeds.
     await this.singleUseTokenRepository.remove({ _id: tokenId })
@@ -732,13 +722,9 @@ export class AuthService implements IAuthService {
       throw new InvalidPasswordError(user)
     }
 
-    await this.userStatusRepository.patchStatusWithUserId(
-      user._id,
-      {
-        password: await AuthService.createPassword(credentials.newPassword),
-      },
-      {}
-    )
+    await this.userStatusRepository.patchStatusWithUserId(user._id, {
+      password: await AuthService.createPassword(credentials.newPassword),
+    })
 
     const deviceIds = Object.keys(userStatus.deviceSessions).filter(
       (x) => x !== credentials.deviceId
@@ -758,17 +744,14 @@ export class AuthService implements IAuthService {
     let userStatus = await this.userStatusRepository.statusForUserId(user._id)
 
     if (!userStatus && verifyUser) {
-      userStatus = await this.userStatusRepository.create(
-        {
-          _id: user._id,
-          blockUntil: null,
-          isVerified: true,
-          createdAt: new Date(),
-          deviceSessions: {},
-          password: '',
-        },
-        {}
-      )
+      userStatus = await this.userStatusRepository.create({
+        _id: user._id,
+        blockUntil: null,
+        isVerified: true,
+        createdAt: new Date(),
+        deviceSessions: {},
+        password: '',
+      })
     }
 
     if (!userStatus) {
@@ -785,7 +768,7 @@ export class AuthService implements IAuthService {
     if (isBlocked(userStatus, new Date())) {
       throw new UserBlockedError(user, userStatus)
     } else if (userStatus.blockUntil !== null) {
-      await this.userStatusRepository.patch(userStatus._id, { blockUntil: null }, {})
+      await this.userStatusRepository.patch(userStatus._id, { blockUntil: null })
     }
 
     if (!isAdmin && !userStatus.isVerified) {
@@ -882,7 +865,7 @@ export class AuthService implements IAuthService {
         credentials,
       }
 
-      await this.userTokenRepository.create(userToken, {})
+      await this.userTokenRepository.create(userToken)
     }
 
     if (userToken.hasExpiry) {
@@ -909,7 +892,7 @@ export class AuthService implements IAuthService {
 
     try {
       const userEmailID = this.userEmailID(email)
-      await this.userEmailRepository.create({ _id: userEmailID }, {})
+      await this.userEmailRepository.create({ _id: userEmailID })
     } catch (error) {
       throw new DuplicateEmailError(email)
     }
@@ -917,15 +900,12 @@ export class AuthService implements IAuthService {
     let user: User
     try {
       // create a new user when user is not found in DB
-      user = await this.userRepository.create(
-        {
-          _id: checksum(connectUserID, { algorithm: 'sha1' }),
-          name: name || '',
-          email,
-          connectUserID,
-        },
-        {}
-      )
+      user = await this.userRepository.create({
+        _id: checksum(connectUserID, { algorithm: 'sha1' }),
+        name: name || '',
+        email,
+        connectUserID,
+      })
       log.debug(`User created: ${user}`)
     } catch (error) {
       const userEmailID = this.userEmailID(email)
@@ -946,17 +926,14 @@ export class AuthService implements IAuthService {
 
     let userStatus: UserStatus
     try {
-      userStatus = await this.userStatusRepository.create(
-        {
-          _id: userID,
-          blockUntil: null,
-          isVerified: true,
-          createdAt: new Date(),
-          deviceSessions: {},
-          password: '',
-        },
-        {}
-      )
+      userStatus = await this.userStatusRepository.create({
+        _id: userID,
+        blockUntil: null,
+        isVerified: true,
+        createdAt: new Date(),
+        deviceSessions: {},
+        password: '',
+      })
       log.debug(`User status created: ${userStatus}`)
     } catch (error) {
       log.error('An error occurred while creating user status', error)

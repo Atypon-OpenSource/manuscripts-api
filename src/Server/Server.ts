@@ -43,17 +43,6 @@ export class Server implements IServer {
 
   constructor(public database: SQLDatabase) {}
 
-  /**
-   * Validates that essential components necessary for the application are up and healthy
-   */
-  public async checkPrerequisites() {
-    return Promise.all([
-      // DIContainer.sharedContainer.userBucket.isViewServiceAlive(),
-      // SyncService.isAlive(),
-      //SQLDatabase.ensureDBExtensions(),
-    ])
-  }
-
   public bootstrap(): void {
     this.app = express()
     this.config()

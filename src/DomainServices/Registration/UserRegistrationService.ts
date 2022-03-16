@@ -71,12 +71,12 @@ export class UserRegistrationService implements IUserRegistrationService {
 
     try {
       const userEmailID = this.userEmailID(email)
-      await this.userEmailRepository.create({ _id: userEmailID }, {})
+      await this.userEmailRepository.create({ _id: userEmailID })
     } catch (error) {
       throw new DuplicateEmailError(email)
     }
 
-    const newUser = await this.userRepository.create({ email, name, connectUserID }, {})
+    const newUser = await this.userRepository.create({ email, name, connectUserID })
 
     await this.createUserDetails(newUser, true)
 
@@ -115,12 +115,12 @@ export class UserRegistrationService implements IUserRegistrationService {
 
     try {
       const userEmailID = this.userEmailID(email)
-      await this.userEmailRepository.create({ _id: userEmailID }, {})
+      await this.userEmailRepository.create({ _id: userEmailID })
     } catch (error) {
       throw new DuplicateEmailError(email)
     }
 
-    const newUser = await this.userRepository.create({ email, name }, {})
+    const newUser = await this.userRepository.create({ email, name })
 
     await this.createUserDetails(newUser, skipVerification, password)
 
@@ -144,17 +144,14 @@ export class UserRegistrationService implements IUserRegistrationService {
   private async createUserDetails(user: User, skipVerification: boolean, password?: string) {
     await this.syncService.createGatewayContributor(user, BucketKey.Data)
 
-    await this.userStatusRepository.create(
-      {
-        _id: user._id,
-        blockUntil: null,
-        isVerified: skipVerification,
-        password: password ? await AuthService.createPassword(password) : '',
-        createdAt: new Date(),
-        deviceSessions: {},
-      },
-      {}
-    )
+    await this.userStatusRepository.create({
+      _id: user._id,
+      blockUntil: null,
+      isVerified: skipVerification,
+      password: password ? await AuthService.createPassword(password) : '',
+      createdAt: new Date(),
+      deviceSessions: {},
+    })
   }
 
   private async handleUserExistence(user: User) {
@@ -203,7 +200,7 @@ export class UserRegistrationService implements IUserRegistrationService {
       throw new InvalidCredentialsError('User not found')
     }
 
-    await this.userStatusRepository.patchStatusWithUserId(user._id, { isVerified: true }, {})
+    await this.userStatusRepository.patchStatusWithUserId(user._id, { isVerified: true })
 
     // tslint:disable-next-line: no-floating-promises
     this.activityTrackingService.createEvent(

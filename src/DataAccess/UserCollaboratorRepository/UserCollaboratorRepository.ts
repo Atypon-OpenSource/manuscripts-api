@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-// import { N1qlQuery, CouchbaseError } from 'couchbase'
-
 import { SGRepository } from '../SGRepository'
 import { GatewayOptions } from '../Interfaces/KeyValueRepository'
 import { MethodNotAllowedError /*, DatabaseError*/ } from '../../Errors'

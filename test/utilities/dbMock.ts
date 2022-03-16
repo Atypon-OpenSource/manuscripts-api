@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-import { TouchOptions, Bucket } from 'couchbase'
-
 
 jest.mock('../../src/DataAccess/SQLDatabase', () => {
   return {
@@ -37,14 +35,14 @@ jest.mock('../../src/DataAccess/SQLDatabase', () => {
         }
       },
       bucket: {
-        insert: jest.fn((doc: any) => Promise.resolve(null)),
+        insert: jest.fn((_doc: any) => Promise.resolve(null)),
         query: jest.fn((_query: any) => Promise.resolve([])),
         findMany: jest.fn((_query: any) => Promise.resolve([])),
         remove: jest.fn((_query: any) => Promise.resolve([])),
         count: jest.fn((_query: any) => Promise.resolve(0)),
         findFirst: jest.fn((_query: any) => Promise.resolve(null)),
         findUnique: jest.fn((_query: any) => Promise.resolve(null)),
-        touch: jest.fn((_key: any | Buffer, _expiry: number, _options: TouchOptions, callback: Bucket.OpCallback) => callback(null, null)),
+        touch: jest.fn((_key: any | Buffer, _expiry: number, _options: any, callback: any) => callback(null, null)),
         replace: jest.fn((_id: String, _document: any) => Promise.resolve(null)),
         upsert: jest.fn((_id: String, _document: any) => Promise.resolve(null)),
         _name: 'BUCKET_NAME'
@@ -52,3 +50,5 @@ jest.mock('../../src/DataAccess/SQLDatabase', () => {
     }))
   }
 })
+
+export {}

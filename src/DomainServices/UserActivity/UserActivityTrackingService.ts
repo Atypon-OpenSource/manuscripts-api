@@ -63,9 +63,7 @@ export class UserActivityTrackingService {
 
       this.creationCount++
 
-      const eventCreationPromise = this.userEventRepository.create(event, {
-        expiry: this.eventLifetime,
-      })
+      const eventCreationPromise = this.userEventRepository.create(event)
       eventCreationPromise
         .then((event: UserActivityEvent) => {
           /* istanbul ignore if */

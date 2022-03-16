@@ -24,7 +24,6 @@ import { IUserStatusRepository } from '../Interfaces/IUserStatusRepository'
 import { QueryCriteria } from '../Interfaces/QueryCriteria'
 import { UserStatus, UpdateUserStatus } from '../../Models/UserModels'
 import { date, objectValuedObject } from '../validators'
-import { PatchOptions } from '../Interfaces/IndexedRepository'
 
 import { Chance } from 'chance'
 
@@ -122,10 +121,9 @@ export class UserStatusRepository
    */
   public async patchStatusWithUserId(
     userId: string,
-    dataToPatch: Partial<UpdateUserStatus>,
-    options: PatchOptions
+    dataToPatch: Partial<UpdateUserStatus>
   ): Promise<UserStatus> {
-    return this.patch(this.userStatusId(userId), dataToPatch, options)
+    return this.patch(this.userStatusId(userId), dataToPatch)
   }
 
   /**

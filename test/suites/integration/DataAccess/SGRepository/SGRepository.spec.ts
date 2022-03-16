@@ -29,7 +29,7 @@ import {
   validProjectNotInDB,
   validProject2
 } from '../../../../data/fixtures/projects'
-import { ValidationError, SyncError, DatabaseError } from '../../../../../src/Errors'
+import { ValidationError, DatabaseError } from '../../../../../src/Errors'
 import { drop, seed, dropBucket, testDatabase } from '../../../../utilities/db'
 import { InvitationRepository } from '../../../../../src/DataAccess/InvitationRepository/InvitationRepository'
 import { ContainerInvitationRepository } from '../../../../../src/DataAccess/ContainerInvitationRepository/ContainerInvitationRepository'
@@ -40,7 +40,6 @@ import {
 import {
   validUserProfile2
 } from '../../../../data/fixtures/UserRepository'
-import { Bucket } from 'couchbase'
 
 jest.setTimeout(TEST_TIMEOUT)
 

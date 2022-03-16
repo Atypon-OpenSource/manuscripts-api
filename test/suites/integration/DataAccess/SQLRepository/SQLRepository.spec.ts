@@ -15,17 +15,13 @@
  */
 
 import { Chance } from 'chance'
-import { N1qlQuery } from 'couchbase'
 
 import { UserRepository } from '../../../../../src/DataAccess/UserRepository/UserRepository'
-import { UserTokenRepository } from '../../../../../src/DataAccess/UserTokenRepository/UserTokenRepository'
-import { UserEventRepository } from '../../../../../src/DataAccess/UserEventRepository/UserEventRepository'
 import { drop, seed, testDatabase, dropBucket } from '../../../../utilities/db'
 import { validUser1, validUser2, validNewUser, NewUserNoId, validNewUser2 } from '../../../../data/fixtures/UserRepository'
-import { NoDocumentMapperError, ValidationError, DatabaseError, NoBucketError, RecordNotFoundError, SecondaryIndexMissingError } from '../../../../../src/Errors'
+import { NoDocumentMapperError, ValidationError, DatabaseError, NoBucketError } from '../../../../../src/Errors'
 import { TEST_TIMEOUT } from '../../../../utilities/testSetup'
 import { log } from '../../../../../src/Utilities/Logger'
-import { ensureTypeBound } from '../../../../../src/DataAccess/Interfaces/IndexedRepository'
 import { setTimeout } from 'timers'
 import { BucketKey } from '../../../../../src/Config/ConfigurationTypes'
 
@@ -36,53 +32,15 @@ beforeAll(async () => db = await testDatabase())
 afterAll(() => db.bucket.disconnect())
 
 const chance = new Chance()
-xdescribe('CBRepository', () => {
+describe('SQLRepository', () => {
   test('documentType should match expectation', () => {
     log.info('Testing documentType…')
     const repository = new UserRepository(db)
     expect(repository.documentType).toBe('User')
   })
-
-  test('should throw error if N1QL doesn\'t contain _type as part of the where clause', () => {
-    expect(() => ensureTypeBound(N1qlQuery.fromString('SELECT * FROM BUCKET WHERE age = 30'))).toThrowError(ValidationError)
-  })
-
-  test('should not throw if querying by primary key', () => {
-    const repository2 = new UserEventRepository(db)
-    expect(() => repository2.whereClause({ _id: validUser1._id })).toBeDefined()
-  })
-
-  test('should throw if querying by an un-indexed key due to the key being missing', () => {
-    const repository = new UserTokenRepository(db)
-    expect(() => { repository.whereClause({ derpderp: null }) }).toThrowError(SecondaryIndexMissingError)
-  })
-
-  test('should throw if querying by an un-indexed key due to buildModelOptions() returning no index', () => {
-    const repository = new UserTokenRepository(db)
-    const func = repository.buildModelOptions
-    repository.buildModelOptions = (() => {
-      const opts = func()
-      delete opts.index
-      return opts
-    }).bind(repository)
-    expect(() => { repository.whereClause({ derpderp: null }) }).toThrowError(SecondaryIndexMissingError)
-  })
 })
 
-xdescribe('SQLRepository Consistency', () => {
-  // TODO: test NOT_BOUND after fixing typing issue
-  test('should be REQUEST_PLUS', () => {
-    const repository = new UserRepository(db, N1qlQuery.Consistency.REQUEST_PLUS)
-    expect(repository.consistency).toBe(N1qlQuery.Consistency.REQUEST_PLUS)
-  })
-
-  test('should be REQUEST_PLUS', () => {
-    const repository = new UserRepository(db, N1qlQuery.Consistency.REQUEST_PLUS)
-    expect(repository.consistency).toBe(N1qlQuery.Consistency.REQUEST_PLUS)
-  })
-})
-
-xdescribe('SQLRepository Create', () => {
+describe('SQLRepository Create', () => {
   beforeEach(async () => {
     await drop()
     await dropBucket(BucketKey.Data)
@@ -91,7 +49,7 @@ xdescribe('SQLRepository Create', () => {
 
   test('should create user successfully', async () => {
     const repository = new UserRepository(db)
-    const user = await repository.create(validNewUser, {})
+    const user = await repository.create(validNewUser)
 
     expect(user).toEqual(user)
   })
@@ -110,12 +68,12 @@ xdescribe('SQLRepository Create', () => {
       email: chance.email(),
       name: chance.name()
     }
-    return expect(repository.create(newUser, {})).rejects.toThrowError(DatabaseError)
+    return expect(repository.create(newUser)).rejects.toThrowError(DatabaseError)
   })
 
-  test('should delete the created user after the expiry time pass', async () => {
+  xtest('should delete the created user after the expiry time pass', async () => {
     const repository = new UserRepository(db)
-    const user: any = await repository.create(validNewUser2, { expiry: 1 })
+    const user: any = await repository.create(validNewUser2)
 
     expect(user).toEqual({
       _id: validNewUser2._id,
@@ -136,7 +94,7 @@ xdescribe('SQLRepository Create', () => {
   })
 })
 
-xdescribe('SQLRepository update', () => {
+describe('SQLRepository update', () => {
   beforeEach(async () => {
     await drop()
     await dropBucket(BucketKey.Data)
@@ -152,13 +110,13 @@ xdescribe('SQLRepository update', () => {
 
   test('should fail if the id is not specified', () => {
     const repository = new UserRepository(db)
-    return expect(repository.update(NewUserNoId as any, {})).rejects.toThrowError(ValidationError)
+    return expect(repository.update(NewUserNoId as any)).rejects.toThrowError(ValidationError)
   })
 
   test('should fail if id does not exists in the database', () => {
     const repository = new UserRepository(db)
 
-    return expect(repository.update(validNewUser, {})).rejects.toThrowError(DatabaseError)
+    return expect(repository.update(validNewUser)).rejects.toThrowError(DatabaseError)
   })
 
   test('should fail if email is in a wrong format', () => {
@@ -169,7 +127,7 @@ xdescribe('SQLRepository update', () => {
       email: 'new-email'
     }
 
-    return expect(repository.update(userUpdatedData, {})).rejects.toThrowError(DatabaseError)
+    return expect(repository.update(userUpdatedData)).rejects.toThrowError(DatabaseError)
   })
 
   test('should fail if name is in longer than 100 character', () => {
@@ -180,7 +138,7 @@ xdescribe('SQLRepository update', () => {
       email: 'new-email@manuscriptsapp.com'
     }
 
-    return expect(repository.update(userUpdatedData, {})).rejects.toThrowError(DatabaseError)
+    return expect(repository.update(userUpdatedData)).rejects.toThrowError(DatabaseError)
   })
 
   test('should fail if the document _type defined are not matched to the repository type', () => {
@@ -192,7 +150,7 @@ xdescribe('SQLRepository update', () => {
       email: 'new-email@manuscriptsapp.com'
     }
 
-    return expect(repository.update(userUpdatedData, {})).rejects.toThrowError(ValidationError)
+    return expect(repository.update(userUpdatedData)).rejects.toThrowError(ValidationError)
   })
 
   test('should update user successfully if the document _type is defined', async () => {
@@ -209,7 +167,7 @@ xdescribe('SQLRepository update', () => {
       email: 'new-email@manuscriptsapp.com'
     }
 
-    const afterUpdate: any = await repository.update(userUpdatedData, {})
+    const afterUpdate: any = await repository.update(userUpdatedData)
 
     expect(afterUpdate.email).toBe('new-email@manuscriptsapp.com')
     expect(afterUpdate.name).toBe('New Username')
@@ -228,13 +186,13 @@ xdescribe('SQLRepository update', () => {
       email: 'new-email@manuscriptsapp.com'
     }
 
-    const afterUpdate: any = await repository.update(userUpdatedData, {})
+    const afterUpdate: any = await repository.update(userUpdatedData)
 
     expect(afterUpdate.email).toBe('new-email@manuscriptsapp.com')
     expect(afterUpdate.name).toBe('New Username')
   })
 
-  test('should delete the updated user after the expiry time pass', async () => {
+  xtest('should delete the updated user after the expiry time pass', async () => {
     const repository = new UserRepository(db)
 
     const userUpdatedData = {
@@ -243,7 +201,7 @@ xdescribe('SQLRepository update', () => {
       email: 'new-email@manuscriptsapp.com'
     }
 
-    const user = await repository.update(userUpdatedData, { expiry: 1 })
+    const user = await repository.update(userUpdatedData)
     expect(user).toEqual({
       _id: userUpdatedData._id,
       email: userUpdatedData.email,
@@ -263,7 +221,7 @@ xdescribe('SQLRepository update', () => {
   })
 })
 
-xdescribe('SQLRepository patch', () => {
+describe('SQLRepository patch', () => {
   beforeEach(async () => {
     await drop()
     await dropBucket(BucketKey.Data)
@@ -282,14 +240,14 @@ xdescribe('SQLRepository patch', () => {
     const repository = new UserRepository(db)
     const chance = new Chance()
     const id = chance.hash()
-    return expect(repository.patch(id, { _id: chance.string(), name: chance.name() }, {})).rejects.toThrowError(ValidationError)
+    return expect(repository.patch(id, { _id: chance.string(), name: chance.name() })).rejects.toThrowError(ValidationError)
   })
 
   test('should fail if key does not exist', () => {
     const repository = new UserRepository(db)
     const chance = new Chance()
     const id = chance.hash()
-    return expect(repository.patch(id, { name: chance.name() }, {})).rejects.toThrowError(RecordNotFoundError)
+    return expect(repository.patch(id, { name: chance.name() })).rejects.toThrowError(DatabaseError)
   })
 
   test('should fail if error occurred', () => {
@@ -298,7 +256,7 @@ xdescribe('SQLRepository patch', () => {
       name: 'long name used in test to generates error if name length is more than 100 char -  we need to fine new way to throw error from db internally- this just a tmp solution'
     }
 
-    return expect(repository.patch(validUser2._id, document, {})).rejects.toThrowError(DatabaseError)
+    return expect(repository.patch(validUser2._id, document)).rejects.toThrowError(DatabaseError)
   })
 
   test('should patch user data successfully', async () => {
@@ -306,13 +264,13 @@ xdescribe('SQLRepository patch', () => {
 
     let user: any = await repository.patch('User|valid-user@manuscriptsapp.com', {
       name: 'Cody Rodriquez'
-    }, {})
+    })
     user = await repository.getById('User|valid-user@manuscriptsapp.com')
 
     expect(user.name).toBe('Cody Rodriquez')
   })
 
-  test('should delete the patched user after the expiry time pass', async () => {
+  xtest('should delete the patched user after the expiry time pass', async () => {
     const repository = new UserRepository(db)
 
     const userUpdatedData = {
@@ -320,7 +278,7 @@ xdescribe('SQLRepository patch', () => {
       email: 'new-email@manuscriptsapp.com'
     }
 
-    const user = await repository.patch(userUpdatedData._id, { email: userUpdatedData.email }, { expiry: 1 })
+    const user = await repository.patch(userUpdatedData._id, { email: userUpdatedData.email })
     expect(user.email).toEqual(userUpdatedData.email)
     await new Promise((resolve, reject) => {
       setTimeout(() => {
@@ -335,7 +293,7 @@ xdescribe('SQLRepository patch', () => {
   })
 })
 
-xdescribe('SQLRepository touch', () => {
+describe('SQLRepository touch', () => {
   beforeEach(async () => {
     await drop()
     await dropBucket(BucketKey.Data)
@@ -362,7 +320,7 @@ xdescribe('SQLRepository touch', () => {
   })
 })
 
-xdescribe('SQLRepository getById', () => {
+describe('SQLRepository getById', () => {
   beforeEach(async () => {
     await drop()
     await dropBucket(BucketKey.Data)
@@ -395,7 +353,7 @@ xdescribe('SQLRepository getById', () => {
   })
 })
 
-xdescribe('SQLRepository getOne', () => {
+describe('SQLRepository getOne', () => {
   beforeEach(async () => {
     await drop()
     await dropBucket(BucketKey.Data)
@@ -425,7 +383,7 @@ xdescribe('SQLRepository getOne', () => {
   })
 })
 
-xdescribe('SQLRepository count', () => {
+describe('SQLRepository count', () => {
   beforeEach(async () => {
     await drop()
     await dropBucket(BucketKey.Data)
@@ -447,7 +405,7 @@ xdescribe('SQLRepository count', () => {
   })
 })
 
-xdescribe('SQLRepository getAll', () => {
+describe('SQLRepository getAll', () => {
   beforeEach(async () => {
     await drop()
     await dropBucket(BucketKey.Data)
@@ -477,7 +435,7 @@ xdescribe('SQLRepository getAll', () => {
   })
 })
 
-xdescribe('SQLRepository remove', () => {
+describe('SQLRepository remove', () => {
   test('should remove key', async () => {
     const repository = new UserRepository(db)
     const query = {
@@ -496,17 +454,7 @@ xdescribe('SQLRepository remove', () => {
   })
 })
 
-xdescribe('SQLRepository whereClause', () => {
-  test('should remove key', () => {
-    const repository = new UserRepository(db)
-    const query = repository.whereClause(null)
-
-    expect(query.N1QL).toBe('_type = $1')
-    expect(query.params).toEqual([repository.documentType])
-  })
-})
-
-xdescribe('SQLRepository buildModel', () => {
+describe('SQLRepository buildModel', () => {
   test('should remove any property equal to undefined', () => {
     const repository = new UserRepository(db)
     const mappedModel = repository.buildModel({

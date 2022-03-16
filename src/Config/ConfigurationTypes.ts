@@ -15,7 +15,6 @@
  */
 
 import { ClientApplication } from '../Models/ClientApplicationModels'
-import { CreateBucketOptions } from 'couchbase'
 import { RSA_JWK } from 'pem-jwk'
 
 export enum Environment {
@@ -51,7 +50,6 @@ export type DatabaseConfiguration = {
   readonly bucketAdminPassword: string
   readonly uri: string
   readonly buckets: { [name in BucketKey]: string }
-  readonly bucketOptions: CreateBucketOptions
 }
 
 export type ScopedAccessTokenConfiguration = {
@@ -174,6 +172,4 @@ export interface ConfigurationContainer {
   readonly shackles: ShacklesConfiguration
   readonly literatum: LiteratumConfiguration
   readonly template: TemplateConfiguration
-
-  createBucketOptions(env: NodeJS.ProcessEnv): CreateBucketOptions
 }

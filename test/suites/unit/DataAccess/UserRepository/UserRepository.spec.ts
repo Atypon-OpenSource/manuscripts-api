@@ -42,62 +42,6 @@ describe('UserRepository', () => {
     expect(schema).toBe('User|e5a6e6eb0bb3be70641c6714fad6b726610d2e3c')
   })
 
-  test('should return empty N1QL if query is empty', () => {
-    const repository = new UserRepository(testDatabase())
-
-    const n1ql = repository.whereClause(null)
-    expect(n1ql.N1QL).toBe('_type = $1')
-    expect(n1ql.params).toEqual(['User'])
-  })
-
-  test('should add ID to query', () => {
-    const repository = new UserRepository(testDatabase())
-    const query: UserQueryCriteria = {
-      _id: 'e5a6e6eb0bb3be70641c6714fad6b726610d2e3c'
-    }
-
-    const n1ql = repository.whereClause(query)
-    expect(n1ql.N1QL).toBe('_id = $1 AND _type = $2')
-    expect(n1ql.params).toEqual([
-      'e5a6e6eb0bb3be70641c6714fad6b726610d2e3c',
-      'User'
-    ])
-  })
-
-  test('should add email to query', () => {
-    const repository = new UserRepository(testDatabase())
-    const query: UserQueryCriteria = {
-      _id: 'e5a6e6eb0bb3be70641c6714fad6b726610d2e3c',
-      email: 'mebwisal@eja.az'
-    }
-
-    const n1ql = repository.whereClause(query)
-    expect(n1ql.N1QL).toBe('_id = $1 AND email = $2 AND _type = $3')
-    expect(n1ql.params).toEqual([
-      'e5a6e6eb0bb3be70641c6714fad6b726610d2e3c',
-      'mebwisal@eja.az',
-      'User'
-    ])
-  })
-
-  test('should add name to query', () => {
-    const repository = new UserRepository(testDatabase())
-    const query: UserQueryCriteria = {
-      _id: 'e5a6e6eb0bb3be70641c6714fad6b726610d2e3c',
-      email: 'mebwisal@eja.az',
-      name: 'Ruby Dennis'
-    }
-
-    const n1ql = repository.whereClause(query)
-    expect(n1ql.N1QL).toBe('_id = $1 AND email = $2 AND name = $3 AND _type = $4')
-    expect(n1ql.params).toEqual([
-      'e5a6e6eb0bb3be70641c6714fad6b726610d2e3c',
-      'mebwisal@eja.az',
-      'Ruby Dennis',
-      'User'
-    ])
-  })
-
   test('should build user model from row object', () => {
     const repository = new UserRepository(testDatabase())
     const user = repository.buildModel(validUser1)

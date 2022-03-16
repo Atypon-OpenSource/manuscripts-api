@@ -37,25 +37,6 @@ describe('UserTokenRepository', () => {
     expect(repository.documentType).toBe('UserToken')
   })
 
-  test('should return empty N1QL if query is empty', () => {
-    const repository = new UserTokenRepository(testDatabase())
-
-    const n1ql = repository.whereClause(null)
-    expect(n1ql.N1QL).toBe('_type = $1')
-    expect(n1ql.params).toEqual(['UserToken'])
-  })
-
-  test('should add userId to query', () => {
-    const repository = new UserTokenRepository(testDatabase())
-    const query: UserTokenQueryCriteria = {
-      userId: 'e5a6e6eb0bb3be70641c6714fad6b726610d2e3c'
-    }
-
-    const n1ql = repository.whereClause(query)
-    expect(n1ql.N1QL).toBe('userId = $1 AND _type = $2')
-    expect(n1ql.params).toEqual(['e5a6e6eb0bb3be70641c6714fad6b726610d2e3c', 'UserToken'])
-  })
-
   test('should build user model from row object', () => {
     const repository = new UserTokenRepository(testDatabase())
     const user = repository.buildModel(validUserToken)

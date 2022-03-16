@@ -42,7 +42,6 @@
     "checksum": "^0.1.1",
     "cookie": "^0.3.1",
     "cors": "^2.8.4",
-    "couchbase": "2.6.12",
     "crypto-js": "^3.1.9-1",
     "crypto-random-string": "^1.0.0",
     "decompress": "^4.2.1",

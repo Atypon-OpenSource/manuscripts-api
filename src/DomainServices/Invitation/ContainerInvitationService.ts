@@ -386,7 +386,7 @@ export class ContainerInvitationService implements IContainerInvitationService {
     )
 
     if (!invitationToken) {
-      const expiryTime: number = ContainerInvitationService.invitationTokenTimeout()
+      //const expiry: number = ContainerInvitationService.invitationTokenTimeout()
       const tokenId = `${containerID}+${permittedRole}`
 
       const token = cryptoRandomString(40)
@@ -397,9 +397,7 @@ export class ContainerInvitationService implements IContainerInvitationService {
         containerID,
         permittedRole,
       }
-      return this.invitationTokenRepository.create(invitationToken, {
-        expiry: expiryTime,
-      })
+      return this.invitationTokenRepository.create(invitationToken)
     } else {
       await this.invitationTokenRepository.touch(
         invitationToken._id,

@@ -17,16 +17,10 @@
 import '../../../utilities/dbMock'
 
 import { Chance } from 'chance'
-import { N1qlQuery } from 'couchbase'
 import { UserRepository } from '../../../../src/DataAccess/UserRepository/UserRepository'
-import { UserQueryCriteria } from '../../../../src/DataAccess/Interfaces/QueryCriteria'
 import { validUser1, validNewUser, NewUserNoId } from '../../../data/fixtures/UserRepository'
-import { ensureTypeBound } from '../../../../src/DataAccess/Interfaces/IndexedRepository'
 import { DatabaseError, ValidationError, NoBucketError, RecordNotFoundError, NoDocumentMapperError } from '../../../../src/Errors'
 import { UserStatusRepository } from '../../../../src/DataAccess/UserStatusRepository/UserStatusRepository'
-import { DatabaseDesignDocument, DatabaseView } from '../../../../src/DataAccess/DatabaseView'
-import { UserStatusViewFunctionDocument } from '../../../../src/Models/UserModels'
-import { ViewMapFunctionMeta, ViewReducer } from '../../../../src/Models/DatabaseViewModels'
 
 import { SQLDatabase } from '../../../../src/DataAccess/SQLDatabase'
 import { config } from '../../../../src/Config/Config'
@@ -44,86 +38,6 @@ describe('SQLRepository', () => {
   test('documentType', () => {
     const repository = new UserRepository(testDatabase())
     expect(repository.documentType).toBe('User')
-  })
-
-  test('should throw error if N1QL doesn\'t contain _type as part of the where clause', () => {
-    expect(() => {
-      ensureTypeBound(N1qlQuery.fromString('SELECT * FROM BUCKET WHERE age = 30'))
-    }).toThrowError(ValidationError)
-  })
-
-  test('should return empty N1QL if query is empty', () => {
-    const repository = new UserRepository(testDatabase())
-    const n1ql = repository.whereClause(null)
-    expect(n1ql.N1QL).toBe('_type = $1')
-    expect(n1ql.params).toEqual(['User'])
-  })
-
-  test('should add ID to query', () => {
-    const repository = new UserRepository(testDatabase())
-    const query: UserQueryCriteria = {
-      _id: 'e5a6e6eb0bb3be70641c6714fad6b726610d2e3c'
-    }
-
-    const n1ql = repository.whereClause(query)
-    expect(n1ql.N1QL).toBe('_id = $1 AND _type = $2')
-    expect(n1ql.params).toEqual(['e5a6e6eb0bb3be70641c6714fad6b726610d2e3c', 'User'])
-  })
-
-  test('should add email to query', () => {
-    const repository = new UserRepository(testDatabase())
-    const query: UserQueryCriteria = {
-      _id: 'e5a6e6eb0bb3be70641c6714fad6b726610d2e3c',
-      email: 'mebwisal@eja.az'
-    }
-
-    const n1ql = repository.whereClause(query)
-    expect(n1ql.N1QL).toBe('_id = $1 AND email = $2 AND _type = $3')
-    expect(n1ql.params).toEqual([
-      'e5a6e6eb0bb3be70641c6714fad6b726610d2e3c',
-      'mebwisal@eja.az',
-      'User'
-    ])
-  })
-
-  test('should add name to query', () => {
-    const repository = new UserRepository(testDatabase())
-    const query: UserQueryCriteria = {
-      _id: 'e5a6e6eb0bb3be70641c6714fad6b726610d2e3c',
-      email: 'mebwisal@eja.az',
-      name: 'Ruby Dennis'
-    }
-
-    const n1ql = repository.whereClause(query)
-    expect(n1ql.N1QL).toBe('_id = $1 AND email = $2 AND name = $3 AND _type = $4')
-    expect(n1ql.params).toEqual([
-      'e5a6e6eb0bb3be70641c6714fad6b726610d2e3c',
-      'mebwisal@eja.az',
-      'Ruby Dennis',
-      'User'
-    ])
-  })
-
-  test('should build user model from row object', () => {
-    const repository = new UserRepository(testDatabase())
-    const user = repository.buildModel(validUser1)
-
-    expect(user).toMatchSnapshot()
-  })
-})
-
-describe('SQLRepository Consistency', () => {
-  // TODO: test NOT_BOUND after fixing typing issue
-  test('should be REQUEST_PLUS', async () => {
-    const repository = new UserRepository(testDatabase(), N1qlQuery.Consistency.REQUEST_PLUS)
-
-    expect(repository.consistency).toBe(N1qlQuery.Consistency.REQUEST_PLUS)
-  })
-
-  test('should be REQUEST_PLUS', async () => {
-    const repository = new UserRepository(testDatabase(), N1qlQuery.Consistency.REQUEST_PLUS)
-
-    expect(repository.consistency).toBe(N1qlQuery.Consistency.REQUEST_PLUS)
   })
 })
 
@@ -249,7 +163,7 @@ describe('SQLRepository patch', () => {
       repository.patch(validUser1._id, {
         _id: chance.string(),
         name: chance.name()
-      }, {})
+      })
     ).rejects.toThrowError(ValidationError)
   })
 
