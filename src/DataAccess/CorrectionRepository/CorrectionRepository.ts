@@ -16,8 +16,6 @@
 
 import { SGRepository } from '../SGRepository'
 import { DatabaseError, NoBucketError } from '../../Errors'
-// import { CouchbaseError ,N1qlQuery } from 'couchbase'
-// import { databaseErrorMessage } from '../DatabaseResponseFunctions'
 import { CorrectionLike } from '../Interfaces/Models'
 import { Correction } from '@manuscripts/manuscripts-json-schema/dist/types'
 import { Prisma } from '@prisma/client'
@@ -41,41 +39,6 @@ class CorrectionRepository extends SGRepository<
   }
 
   public async getCorrectionStatus(containerID: string) {
-    /*let n1ql = `SELECT projects.status.label, META().id FROM ${
-      this.bucketName
-    } WHERE containerID =$1 AND objectType = '${this.objectType}' AND _deleted IS MISSING`
-    const statement = N1qlQuery.fromString(n1ql)
-      .adhoc(false)
-      .consistency(N1qlQuery.Consistency.REQUEST_PLUS)
-
-    return new Promise((resolve, reject) => {
-      this.database.bucket.query(
-        statement,
-        [containerID],
-        (error: CouchbaseError | null, results: any) => {
-          if (error) {
-            const errorMsg: string = databaseErrorMessage(
-              error.code,
-              error.message
-            )
-            return reject(
-              new DatabaseError(error.code, errorMsg, {},error)
-            )
-          }
-          const groupByStatus = results.reduce((objectsByKeyValue: any, obj: any) => {
-            const value = obj['label']
-            objectsByKeyValue[value] = (objectsByKeyValue[value] || []).concat(obj)
-            return objectsByKeyValue
-          }, {})
-          let status: any = {}
-          for (const [key, value] of Object.entries(groupByStatus)) {
-            const items = value as []
-            status[key] = items.length
-          }
-          return resolve(status)
-        })
-    })*/
-
     const Q = {
       AND: [
         {

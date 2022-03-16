@@ -63,7 +63,7 @@ import {
   ManuscriptNote,
   ExternalFile,
   ObjectTypes,
-  Snapshot /*, Manuscript*/,
+  Snapshot,
 } from '@manuscripts/manuscripts-json-schema'
 import { ExternalFileRepository } from '../../DataAccess/ExternalFileRepository/ExternalFileRepository'
 import { CorrectionRepository } from '../../DataAccess/CorrectionRepository/CorrectionRepository'

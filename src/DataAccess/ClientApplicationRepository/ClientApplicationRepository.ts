@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-import {
-  SchemaDefinition as OttomanSchemaDefinition /*, ModelInstance as OttomanModelInstance*/,
-} from 'ottoman'
+import { SchemaDefinition as OttomanSchemaDefinition } from 'ottoman'
 
 import { SQLRepository } from '../SQLRepository'
 import { IClientApplicationRepository } from '../Interfaces/IClientApplicationRepository'
@@ -26,7 +24,6 @@ import {
 } from '../../Models/ClientApplicationModels'
 
 import { required, maxLength } from '../validators'
-// import { CouchbaseError } from 'couchbase'
 import { DatabaseError, ValidationError } from '../../Errors'
 import { ensureValidDocumentType } from '../Interfaces/IndexedRepository'
 import { isString } from 'lodash'

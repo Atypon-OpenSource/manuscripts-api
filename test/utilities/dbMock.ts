@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import { TouchOptions, Bucket, ViewQuery, N1qlQuery } from 'couchbase'
+import { TouchOptions, Bucket } from 'couchbase'
+
 
 jest.mock('../../src/DataAccess/SQLDatabase', () => {
   return {
@@ -22,39 +23,6 @@ jest.mock('../../src/DataAccess/SQLDatabase', () => {
       loadDatabaseModels: jest.fn(),
       createDesignDocument: jest.fn(),
       getDesignDocument: jest.fn(),
-      ensureSecondaryIndicesExist: jest.fn(),
-      documentMapper: {
-        ensureIndices: jest.fn((_DeferBuild: boolean, callback: Function) => {
-          callback(null)
-        }),
-        model: jest.fn(),
-        models: {
-          User: {
-            create: jest.fn(),
-            getById: jest.fn(),
-            fromData: jest.fn()
-          }
-        }
-      },
-      bucket: {
-        insert: jest.fn((_key: any | Buffer, _value: any, callback: Bucket.OpCallback) => callback(null, null)),
-        query: jest.fn((_query: ViewQuery | N1qlQuery, _params: Object | Array<any>, callback: Bucket.QueryCallback) => callback(null as any, [], { total_rows: 0 })),
-        touch: jest.fn((_key: any | Buffer, _expiry: number, _options: TouchOptions, callback: Bucket.OpCallback) => callback(null, null)),
-        replace: jest.fn((_id: String, _document: any, callback: Function) => callback(null)),
-        upsert: jest.fn((_id: String, _document: any, callback: Function) => callback(null)),
-        _name: 'BUCKET_NAME'
-      }
-    }))
-  }
-})
-
-jest.mock('../../src/DataAccess/SQLDatabase', () => {
-  return {
-    SQLDatabase: jest.fn(() => ({
-      loadDatabaseModels: jest.fn(),
-      createDesignDocument: jest.fn(),
-      getDesignDocument: jest.fn(),
-      ensureSecondaryIndicesExist: jest.fn(),
       documentMapper: {
         ensureIndices: jest.fn((_DeferBuild: boolean, callback: Function) => {
           callback(null)

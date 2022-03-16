@@ -18,8 +18,6 @@ import { Library } from '@manuscripts/manuscripts-json-schema'
 
 import { LibraryLike } from '../Interfaces/Models'
 import { PatchLibrary } from '../../Models/LibraryModels'
-// import { GatewayOptions } from '../Interfaces/KeyValueRepository'
-// import { MethodNotAllowedError } from '../../Errors'
 import { ILibraryRepository } from '../Interfaces/ILibraryRepository'
 import { ContainerRepository } from '../ContainerRepository/ContainerRepository'
 

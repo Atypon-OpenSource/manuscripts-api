@@ -17,7 +17,6 @@
 import { Invitation } from '@manuscripts/manuscripts-json-schema'
 import { PatchInvitation } from 'src/Models/InvitationModels'
 
-// import { selectN1QLQuery } from '../DatabaseResponseFunctions'
 import { InvitationLike } from '../Interfaces/Models'
 import { SGRepository } from '../SGRepository'
 
@@ -35,18 +34,6 @@ export class InvitationRepository extends SGRepository<
   }
 
   public async getAllByEmail(email: string) {
-    /*const n1ql = `SELECT META().id, * FROM ${this.bucketName} WHERE objectType = \'${this.objectType}\' AND invitedUserEmail = $1 AND _deleted IS MISSING`
-
-    const callbackFn = (results: any) => results.map((result: any) => {
-      const obj = {
-        ...result[this.bucketName],
-        _id: result.id
-      }
-      return obj
-    })
-
-    return selectN1QLQuery<Invitation[]>(this.database.bucket, n1ql, [email], callbackFn)*/
-
     const Q = {
       AND: [
         {

@@ -18,7 +18,6 @@ import { ContainerInvitation } from '@manuscripts/manuscripts-json-schema'
 
 import { SGRepository } from '../SGRepository'
 import { ContainerInvitationLike } from '../Interfaces/Models'
-// import { selectN1QLQuery } from '../DatabaseResponseFunctions'
 import { PatchContainerInvitation } from '../../Models/ContainerModels'
 import { User } from '../../Models/UserModels'
 
@@ -39,18 +38,6 @@ export class ContainerInvitationRepository extends SGRepository<
     containerID: string,
     userEmail: string
   ): Promise<ContainerInvitation[]> {
-    /*const n1ql = `SELECT META().id, META().xattrs._sync, * FROM ${this.bucketName} WHERE objectType = \"${this.objectType}\" AND invitedUserEmail = $1 AND containerID = $2`
-
-    const callbackFn = (results: any) => results.map((result: any) => {
-      delete result[this.bucketName]._sync
-      return {
-        ...result[this.bucketName],
-        _id: result.id
-      } as ContainerInvitation
-    })
-
-    return selectN1QLQuery<ContainerInvitation[]>(this.database.bucket, n1ql, [userEmail, containerID], callbackFn)*/
-
     const Q = {
       AND: [
         {
@@ -91,18 +78,6 @@ export class ContainerInvitationRepository extends SGRepository<
   }
 
   public async getAllByEmail(email: string) {
-    /*const n1ql = `SELECT META().id, * FROM ${this.bucketName} WHERE objectType = \'${this.objectType}\' AND invitedUserEmail = $1 AND _deleted IS MISSING`
-
-    const callbackFn = (results: any) => results.map((result: any) => {
-      const obj = {
-        ...result[this.bucketName],
-        _id: result.id
-      }
-      return obj
-    })
-
-    return selectN1QLQuery<ContainerInvitation[]>(this.database.bucket, n1ql, [email], callbackFn)*/
-
     const Q = {
       AND: [
         {

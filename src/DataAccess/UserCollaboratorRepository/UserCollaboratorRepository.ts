@@ -19,8 +19,6 @@
 import { SGRepository } from '../SGRepository'
 import { GatewayOptions } from '../Interfaces/KeyValueRepository'
 import { MethodNotAllowedError /*, DatabaseError*/ } from '../../Errors'
-// import { username as sgUsername } from '../../DomainServices/Sync/SyncService'
-// import { databaseErrorMessage } from '../DatabaseResponseFunctions'
 import { UserCollaborator } from '@manuscripts/manuscripts-json-schema'
 
 export class UserCollaboratorRepository extends SGRepository<
@@ -81,49 +79,5 @@ export class UserCollaboratorRepository extends SGRepository<
     }
 
     return this.database.bucket.query(Q).then((res: any) => res.map((i: any) => this.buildModel(i)))
-    /*const syncUserId = sgUsername(userId)
-
-    const n1ql = `SELECT *, META().id FROM ${this.bucketName}
-                  WHERE objectType = \'${this.objectType}\'
-                  AND (userID = $1 OR collaboratorProfile.userID = $1)`
-
-    const statement = N1qlQuery.fromString(n1ql)
-      .adhoc(false)
-      .consistency(this.n1qlConsistency)
-
-    return new Promise<UserCollaborator []>((resolve, reject) => {
-      this.database.bucket.query(
-        statement,
-        [syncUserId],
-        (error: CouchbaseError | null, results: any) => {
-          if (error) {
-            const errorMsg: string = databaseErrorMessage(
-              error.code,
-              error.message
-            )
-
-            return reject(
-              new DatabaseError(error.code, errorMsg, userId, error)
-            )
-          }
-
-          if (results.length) {
-            let userCollaborators: UserCollaborator[] = []
-
-            for (const userCollaborator of results) {
-              const doc: UserCollaborator = {
-                ...userCollaborator[this.bucketName],
-                _id: userCollaborator.id
-              }
-              userCollaborators.push(doc)
-            }
-
-            return resolve(userCollaborators)
-          }
-
-          return resolve([])
-        }
-      )
-    })*/
   }
 }

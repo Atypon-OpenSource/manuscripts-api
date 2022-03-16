@@ -392,23 +392,6 @@ export class DIContainer {
 
     // log.debug('_sharedContainer is set successfully.')
 
-    /* istanbul ignore else */
-    if (config.DB.initializeContents) {
-      // log.debug(`Initializing contents`)
-
-      await userBucket.ensureSecondaryIndicesExist()
-      // log.debug(`User bucket secondary indices ensured.`)
-      await dataBucket.ensureSecondaryIndicesExist()
-      // log.debug(`Data bucket secondary indices ensured.`)
-
-      const initActions: any[] = [
-        // DIContainer._sharedContainer.pushDesignDocuments(),
-        // DIContainer._sharedContainer.applicationRepository.ensureApplicationsExist(config.apps && config.apps.knownClientApplications || []),
-        // DIContainer._sharedContainer.createBucketAdministrators()
-      ]
-
-      await Promise.all(initActions)
-    }
     return DIContainer._sharedContainer
   }
 

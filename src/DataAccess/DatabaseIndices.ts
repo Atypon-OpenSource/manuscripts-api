@@ -17,7 +17,6 @@
 import { ObjectTypes } from '@manuscripts/manuscripts-json-schema'
 
 import { BucketKey } from '../Config/ConfigurationTypes'
-// import { config } from '../Config/Config'
 
 export interface Index {
   /**
@@ -89,11 +88,6 @@ function buildIndex(
   const indexName = `${objectType}__${fields.join('_')}`
   return {
     name: indexName,
-    /*script: `CREATE INDEX \`${indexName}\` ON \`${bucketName}\`(${fields
-      .map(field => `\`${field}\``)
-      .join(',')}) WHERE (\`objectType\` = "${objectType}")${
-      gin ? ' USING GIN' : ''
-    };`*/
     script: `CREATE INDEX IF NOT EXISTS "${indexName}" ON "${bucketName}" USING HASH ((data ->> ${fields
       .map((field) => `'${field}'`)
       .join(',')})) WHERE ((data ->> 'objectType')) = '${objectType}'`,
@@ -104,9 +98,6 @@ function buildBucketIndex(bucketName: string, fields: string[], _gin: boolean): 
   const indexName = `${bucketName}__${fields.join('_')}`
   return {
     name: indexName,
-    /*script: `CREATE INDEX \`${indexName}\` ON \`${bucketName}\`(${fields
-      .map(field => `\`${field}\``)
-      .join(',')})${gin ? ' USING GIN' : ''};`*/
     script: `CREATE INDEX IF NOT EXISTS "${indexName}" ON "${bucketName}" USING HASH ((data ->> ${fields
       .map((field) => `'${field}'`)
       .join(',')}))`,
@@ -122,9 +113,6 @@ function buildArrayIndex(
   const indexName = `${objectType}__${field}`
   return {
     name: indexName,
-    /*script: `CREATE INDEX \`${indexName}\` ON ${bucketName} (DISTINCT ARRAY userID FOR userID IN \`${field}\` END) WHERE objectType = '${objectType}' AND _deleted IS MISSING${
-      gin ? ' USING GIN' : ''
-    };`,*/
     script: `CREATE INDEX IF NOT EXISTS "${indexName}" ON "${bucketName}" USING GIN ((data ->> '${field}')) WHERE ((data ->> 'objectType')) = '${objectType}'`,
   }
 }
@@ -138,7 +126,7 @@ export function indices(bucketKey: BucketKey): Index[] {
     return []
   }
 
-  const bucketName = capitalizeFirstLetter(bucketKey) // config.DB.buckets[bucketKey]
+  const bucketName = capitalizeFirstLetter(bucketKey)
   const indicesArray: Index[] = []
 
   for (const objectType of Object.keys(indexesObj[bucketKey])) {

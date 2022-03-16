@@ -75,27 +75,6 @@ export class SyncService implements ISyncService {
     }
 
     return false
-    /*const options = {
-      method: 'GET',
-      uri: `${appDataAdminGatewayURI(bucketKey)}/_user/${username(userId)}`,
-      json: true,
-      resolveWithFullResponse: true,
-      simple: false
-    }
-
-    let response: any
-    try {
-      response = await request(options)
-    } catch (error) {
-      throw new GatewayInaccessibleError(options.uri)
-    }
-    if (response.statusCode === HttpStatus.OK) {
-      return true
-    } else if (response.statusCode === HttpStatus.NOT_FOUND) {
-      return false
-    } else {
-      throw new SyncError(`Determining SyncGateway existence failed (${response.statusCode})`, response)
-    }*/
   }
 
   // Creates a sync_gateway account
@@ -119,35 +98,6 @@ export class SyncService implements ISyncService {
     await this.userStatusRepository.create(userStatus, {})
 
     return id
-    /*const sgUsername = username(userId)
-    const options = {
-      method: 'PUT',
-      uri: `${appDataAdminGatewayURI(bucketKey)}/_user/${sgUsername}`,
-      body: {
-        password: await randomPassword(),
-        admin_channels: [
-          sgUsername,
-          `${sgUsername}-readwrite`
-        ],
-        admin_roles: []
-      },
-      json: true,
-      resolveWithFullResponse: true
-    }
-
-    let response: any
-    try {
-      response = await request(options)
-    } catch (error) {
-      throw new GatewayInaccessibleError(options.uri)
-    }
-    if (response.statusCode === HttpStatus.CREATED) {
-      return sgUsername
-    } else if (response.statusCode === HttpStatus.OK) {
-      return sgUsername
-    } else {
-      throw new SyncError(`SyncGateway account upsert failed (${response.statusCode})`, response)
-    }*/
   }
 
   /**
@@ -159,33 +109,6 @@ export class SyncService implements ISyncService {
       throw new Error(`Failed to delete SyncGateway user ${userId}`)
     }
     await this.userStatusRepository.remove({ _id: userId })
-    /*const removeAccounts: request.RequestPromise[] = GATEWAY_BUCKETS.map((bucketKey) => {
-      const uri = `${appDataAdminGatewayURI(bucketKey)}/_user/${username(userId)}`
-      const options = {
-        method: 'DELETE',
-        uri: uri,
-        json: true,
-        resolveWithFullResponse: true,
-        simple: false,
-      }
-      let response: any
-      try {
-        response = request(options)
-      } catch (error) {
-        throw new GatewayInaccessibleError(options.uri)
-      }
-      return response
-    })
-
-    const responses = await Promise.all(removeAccounts)
-    responses.forEach((response) => {
-      if ([HttpStatus.OK, HttpStatus.NOT_FOUND].indexOf(response.statusCode) < 0) {
-        throw new SyncError(
-          `Failed to delete SyncGateway user (${response.url}: ${response.statusCode})`,
-          response
-        )
-      }
-    })*/
   }
 
   public async createGatewayContributor(user: User, _bucketKey: BucketKey) {
@@ -212,55 +135,5 @@ export class SyncService implements ISyncService {
     }
 
     return this.userProfileRepository.create(userProfile, {})
-    /*const uri = `${appDataAdminGatewayURI(bucketKey)}/`
-
-    const [firstName] = user.name.split(' ', 1)
-    const lastName = user.name.substring(firstName.length + 1)
-
-    const userProfileId = UserService.profileID(user._id)
-
-    const date = timestamp()
-
-    const userProfile: UserProfile = {
-      _id: userProfileId,
-      objectType: ObjectTypes.UserProfile,
-      userID: username(user._id),
-      bibliographicName: {
-        _id: `${ObjectTypes.BibliographicName}:${uuid_v4()}`,
-        objectType: ObjectTypes.BibliographicName,
-        given: firstName,
-        family: lastName
-      },
-      email: user.email,
-      createdAt: date,
-      updatedAt: date
-    }
-
-    const options = {
-      method: 'POST',
-      uri,
-      body: userProfile,
-      json: true,
-      resolveWithFullResponse: true,
-      simple: false
-    }
-
-    let response: any
-    try {
-      response = await request(options)
-    } catch (error) {
-      throw new GatewayInaccessibleError(options.uri)
-    }
-    if (
-      response.statusCode === HttpStatus.OK ||
-      response.statusCode === HttpStatus.CREATED
-    ) {
-      return
-    } else {
-      throw new SyncError(
-      `SyncGateway contributor creation failed`,
-      response.body
-    )
-    }*/
   }
 }

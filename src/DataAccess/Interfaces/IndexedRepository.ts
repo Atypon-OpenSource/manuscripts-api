@@ -19,7 +19,6 @@ import { SchemaDefinition, ModelOptions } from 'ottoman'
 
 import { QueryOptions } from './QueryOptions'
 import { ValidationError } from '../../Errors'
-import { IDatabaseViewManager } from './IDatabaseViewManager'
 import { IdentifiableEntity, TypedEntity } from './IdentifiableEntity'
 import { QueryCriteria } from './QueryCriteria'
 import { Repository } from './Repository'
@@ -33,8 +32,7 @@ export interface IndexedRepository<
   TNewEntity extends Partial<IdentifiableEntity>,
   TUpdateEntity extends Partial<IdentifiableEntity>,
   TQueryCriteria extends QueryCriteria
-> extends IDatabaseViewManager,
-    Repository<TEntity> {
+> extends Repository<TEntity> {
   /**
    * Returns document type
    */

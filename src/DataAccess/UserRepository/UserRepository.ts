@@ -24,10 +24,7 @@ import { IUserRepository } from '../Interfaces/IUserRepository'
 import { UserQueryCriteria } from '../Interfaces/QueryCriteria'
 import { User, INewUser, IUpdateUser, UserRow, userForRow } from '../../Models/UserModels'
 import { required, maxLength, validEmail } from '../validators'
-// import { N1qlQuery } from 'couchbase'
-// import { databaseErrorMessage } from '../DatabaseResponseFunctions'
 import { DatabaseError } from '../../Errors'
-// import { timestamp } from '../../Utilities/JWT/LoginTokenPayload'
 import { Prisma } from '@prisma/client'
 import { Chance } from 'chance'
 
@@ -116,11 +113,6 @@ export class UserRepository
    * Returns users based on the value of property `deleteAt`.
    */
   public getUsersToDelete(): Promise<User[] | null> {
-    // const currentTime = Math.floor(timestamp())
-
-    // const rawQ = `SELECT * FROM ${this.bucketName} WHERE _type = 'User' AND deleteAt IS VALUED AND deleteAt <= ${currentTime}`
-    // const rawQ = Prisma.sql`SELECT * FROM "User" WHERE deleteAt <= ${currentTime}`
-
     const Q = {
       data: {
         path: ['deleteAt'],
@@ -150,26 +142,5 @@ export class UserRepository
           }
         })
     })
-
-    /*const n1ql = `SELECT * FROM ${this.bucketName} WHERE _type = 'User' AND deleteAt IS VALUED AND deleteAt <= ${currentTime}`
-
-    return new Promise((resolve, reject) => {
-      this.database.bucket.query(N1qlQuery.fromString(n1ql)
-      , (error, results) => {
-        if (error) {
-          const errorMsg = databaseErrorMessage(error.code, error.message)
-          return reject(new DatabaseError(error.code, errorMsg, '', error))
-        }
-
-        if (results && results.length) {
-          const users = results.map((user) => {
-            return this.buildModel(user[this.bucketName])
-          })
-          resolve(users)
-        } else {
-          resolve(null)
-        }
-      })
-    })*/
   }
 }

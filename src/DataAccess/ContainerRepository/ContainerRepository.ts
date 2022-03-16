@@ -14,11 +14,7 @@
  * limitations under the License.
  */
 
-import {
-  Model,
-  // ManuscriptTemplate,
-  LibraryCollection,
-} from '@manuscripts/manuscripts-json-schema'
+import { Model, LibraryCollection } from '@manuscripts/manuscripts-json-schema'
 import { selectActiveResources } from '@manuscripts/manuscripts-json-schema-utils'
 import request from 'request-promise-native'
 import * as HttpStatus from 'http-status-codes'
@@ -26,7 +22,6 @@ import * as HttpStatus from 'http-status-codes'
 import { SGRepository } from '../SGRepository'
 import { GatewayInaccessibleError, SyncError } from '../../Errors'
 import { SYNC_GATEWAY_COOKIE_NAME } from '../../DomainServices/Sync/SyncService'
-// import { selectN1QLQuery } from '../DatabaseResponseFunctions'
 import { appDataPublicGatewayURI, appDataAdminGatewayURI } from '../../Config/ConfigAccessors'
 import {
   DocumentIdentifyingMetadata,
@@ -38,17 +33,6 @@ export abstract class ContainerRepository<Container, ContainerLike, PatchContain
   implements IContainerRepository<Container, ContainerLike, PatchContainer>
 {
   public async getUserContainers(userID: string) {
-    /*const existIn = (arrayName: string) =>
-      `ANY id IN ${arrayName} SATISFIES id = $1 END`
-
-    const n1ql = `SELECT *, META().id, META().xattrs._sync FROM ${
-      this.bucketName
-    } WHERE objectType = \'${this.objectType}\' AND (${existIn(
-      'owners'
-    )} OR ${existIn('writers')} OR ${existIn(
-      'viewers'
-    )}) AND _deleted IS MISSING`*/
-
     const Q = {
       AND: [
         {
@@ -94,19 +78,6 @@ export abstract class ContainerRepository<Container, ContainerLike, PatchContain
       })
 
     return this.database.bucket.query(Q).then((res: any) => callbackFn(res))
-
-    /*const callbackFn = (results: any) =>
-      results.map((result: any) => {
-        delete result[this.bucketName]._sync
-        return { ...result[this.bucketName], _id: result.id } as Container
-      })
-
-    return selectN1QLQuery<Container[]>(
-      this.database.bucket,
-      n1ql,
-      [userID],
-      callbackFn
-    )*/
   }
 
   public async getContainerResources(
@@ -186,33 +157,6 @@ export abstract class ContainerRepository<Container, ContainerLike, PatchContain
     }
 
     return this.database.bucket.query(Q).then((res: any) => callbackFn(res))
-
-    // Index selection for a query solely depends on the filter on the where statement, and
-    // since containerID is a partial index we are adding objectTypes explicitly
-    /*let n1ql = `SELECT *, META().id FROM ${this.bucketName} WHERE containerID = $1 OR (projectID = $1 and objectType in ['MPUserProject','MPProjectInvitation'])`
-
-    if (manuscriptID) {
-      n1ql +=
-        ' and (manuscriptID = $2  or Meta().id = $2 or manuscriptID is missing)'
-    }
-
-    const callbackFn = (results: any) => {
-      const otherDocs = results.map(
-        (result: any) =>
-          ({ ...result[this.bucketName], _id: result.id } as Model)
-      )
-
-      return containerId.startsWith(`${this.objectType}:`) && !allowOrphanedDocs
-        ? selectActiveResources([container, ...otherDocs])
-        : [container, ...otherDocs]
-    }
-
-    return selectN1QLQuery<Model[]>(
-      this.database.bucket,
-      n1ql,
-      [containerId, manuscriptID],
-      callbackFn
-    )*/
   }
 
   public async getContainerResourcesIDs(containerId: string) {
@@ -220,27 +164,6 @@ export abstract class ContainerRepository<Container, ContainerLike, PatchContain
     if (!container) {
       return null
     }
-
-    // Index selection for a query solely depends on the filter on the where statement, and
-    // since containerID is a partial index we are adding objectTypes explicitly
-    /*const n1ql = `SELECT META().id FROM ${this.bucketName} WHERE containerID = $1 OR (projectID = $1 and objectType in ['MPUserProject','MPProjectInvitation'])`
-
-    const callbackFn = (results: any) => {
-      const otherDocs = results.map(
-        (result: any) => ({ _id: result.id } as Model)
-      )
-
-      return containerId.startsWith(`${this.objectType}:`)
-        ? selectActiveResources([container, ...otherDocs])
-        : [container, ...otherDocs]
-    }
-
-    return selectN1QLQuery<Model[]>(
-      this.database.bucket,
-      n1ql,
-      [containerId],
-      callbackFn
-    )*/
 
     const callbackFn = (results: any) => {
       const otherDocs = results.map((result: any) => ({ _id: result.id } as Model))
@@ -306,7 +229,6 @@ export abstract class ContainerRepository<Container, ContainerLike, PatchContain
   private getContainerResourcesMetadata(
     containerId: string
   ): Promise<DocumentIdentifyingMetadata[]> {
-    // const n1ql = `SELECT META().id, META().xattrs._sync.rev FROM ${this.bucketName} WHERE projectID = $1 OR containerID = $1`
     const Q = {
       OR: [
         {
@@ -325,15 +247,6 @@ export abstract class ContainerRepository<Container, ContainerLike, PatchContain
     }
 
     return this.database.bucket.findMany(Q)
-
-    /*const callbackFn = (results: any) => results
-
-    return selectN1QLQuery<DocumentIdentifyingMetadata[]>(
-      this.database.bucket,
-      n1ql,
-      [containerId],
-      callbackFn
-    )*/
   }
 
   // TODO:: should cover in the tests
@@ -432,41 +345,9 @@ export abstract class ContainerRepository<Container, ContainerLike, PatchContain
     }
 
     return this.database.bucket.query(Q).then((res: any) => callbackFn(res))
-
-    /*let n1ql = `SELECT META().xattrs._sync.attachments, META().id FROM ${this.bucketName} WHERE containerID = $1 AND _sync.attachments is not missing`
-
-    if (manuscriptID) {
-      n1ql += ` AND (manuscriptID = $2 or manuscriptID is missing)`
-    }
-
-    const callbackFn = (results: any) => {
-      const attachments: Map<string, any> = new Map()
-
-      for (let index = 0; index < results.length; index++) {
-        attachments.set(results[index].id, results[index].attachments)
-      }
-      return attachments
-    }
-
-    return selectN1QLQuery<any>(
-      this.database.bucket,
-      n1ql,
-      [containerID, manuscriptID],
-      callbackFn
-    )*/
   }
 
   public async findTemplatesInContainer(containerId: string) {
-    /*const n1ql = `SELECT *, META().id FROM \`${this.bucketName}\` WHERE objectType = 'MPManuscriptTemplate' AND containerID = $1 AND _deleted IS MISSING`
-
-    const callbackFn = (results: any) => results.map(this.buildItem)
-
-    return selectN1QLQuery<ManuscriptTemplate[]>(
-      this.database.bucket,
-      n1ql,
-      [containerId],
-      callbackFn
-    )*/
     const Q = {
       AND: [
         {
@@ -500,17 +381,6 @@ export abstract class ContainerRepository<Container, ContainerLike, PatchContain
   }
 
   public async findModelsInTemplate(containerId: string, templateId: string) {
-    /*const n1ql = `SELECT *, META().id FROM \`${this.bucketName}\` WHERE containerID = $1 AND templateID = $2 AND _deleted IS MISSING`
-
-    const callbackFn = (results: any) => results.map(this.buildItem)
-
-    return selectN1QLQuery<Model[]>(
-      this.database.bucket,
-      n1ql,
-      [containerId, templateId],
-      callbackFn
-    )*/
-
     const Q = {
       AND: [
         {
@@ -549,22 +419,6 @@ export abstract class ContainerRepository<Container, ContainerLike, PatchContain
   }
 
   public getContainedLibraryCollections(containerId: string): Promise<LibraryCollection[]> {
-    /*const n1ql = `SELECT *, META().id, META().xattrs._sync.rev FROM \`${this.bucketName}\` WHERE objectType = 'MPLibraryCollection' AND containerID = $1 AND _deleted IS MISSING`
-
-    const callbackFn = (results: any) => {
-      return results.map((row: any) => ({
-        ...this.buildItem(row),
-        _rev: row.rev
-      }))
-    }
-
-    return selectN1QLQuery<LibraryCollection[]>(
-      this.database.bucket,
-      n1ql,
-      [containerId],
-      callbackFn
-    )*/
-
     const Q = {
       AND: [
         {

@@ -16,9 +16,6 @@
 
 import { SGRepository } from '../SGRepository'
 import { DatabaseError, NoBucketError } from '../../Errors'
-// import { CouchbaseError, N1qlQuery } from 'couchbase'
-// import { ManuscriptNote } from '@manuscripts/manuscripts-json-schema'
-// import { databaseErrorMessage } from '../DatabaseResponseFunctions'
 import { Prisma } from '@prisma/client'
 
 class ManuscriptNoteRepository extends SGRepository<any, any, any, any> {
@@ -35,34 +32,6 @@ class ManuscriptNoteRepository extends SGRepository<any, any, any, any> {
   }
 
   public async getProductionNotes(containerID: string, manuscriptID: string) {
-    /*let n1ql = `SELECT *, META().id FROM ${
-      this.bucketName
-    } WHERE containerID = $1 and manuscriptID = $2 and objectType = 'MPManuscriptNote' AND _deleted IS MISSING`
-
-    const statement = N1qlQuery.fromString(n1ql)
-      .adhoc(false)
-      .consistency(N1qlQuery.Consistency.REQUEST_PLUS)
-    return new Promise<ManuscriptNote[]>((resolve, reject) => {
-      this.database.bucket.query(
-        statement,
-        [containerID, manuscriptID],
-        (error: CouchbaseError | null, results: any) => {
-          if (error) {
-            const errorMsg: string = databaseErrorMessage(
-              error.code,
-              error.message
-            )
-            return reject(
-              new DatabaseError(error.code, errorMsg, [containerID, manuscriptID], error)
-            )
-          }
-
-          return resolve(results)
-        }
-
-      )
-    })*/
-
     const Q = {
       AND: [
         {

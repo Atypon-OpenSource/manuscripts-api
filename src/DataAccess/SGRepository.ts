@@ -450,7 +450,13 @@ export abstract class SGRepository<TEntity, TNewEntity, TUpdateEntity, TPatchEnt
   }
 
   private async removeAll(): Promise<void> {
-    await this.database.bucket.remove({})
+    const q = {
+      data: {
+        path: ['objectType'],
+        equals: this.objectType,
+      },
+    }
+    await this.database.bucket.remove(q)
     /*const docs = await this.getAllIDs()
 
     for (let doc of docs) {

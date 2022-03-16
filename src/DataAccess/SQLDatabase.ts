@@ -24,14 +24,12 @@ import { config } from '../Config/Config'
 import { DatabaseConfiguration, BucketKey } from '../Config/ConfigurationTypes'
 import {
   NoBucketError,
-  DatabaseDesignDocumentError,
   // NoDocumentMapperError,
   // DatabaseError,
   InvalidBucketError,
   // DatabaseDesignDocumentInaccessibleError,
   BucketExistenceCheckError,
 } from '../Errors'
-import { DesignDocumentName, DatabaseDesignDocument } from './DatabaseView'
 // import { databaseErrorMessage } from './DatabaseResponseFunctions'
 import { Index, indices as getIndices } from './DatabaseIndices'
 
@@ -285,83 +283,6 @@ export class SQLDatabase {
   public async buildIndices(indexingArray: Index[]): Promise<void> {
     for (const index of indexingArray) {
       await this.createIndex(index.script)
-    }
-  }
-
-  public ensureSecondaryIndicesExist(): Promise<void> {
-    /*return new Promise<void>((resolve, reject) => {
-      if (!this.documentMapper) {
-        return reject(new NoDocumentMapperError())
-      }
-
-      this.documentMapper.ensureIndices(true, (error: CouchbaseError | null) => {
-        if (error) {
-          // a non-critical error condition.
-          if (error.code === 5000 && error.message.match(/Index build will retry in background./)) {
-            log.error(`Non-critical error when attempting to set / update secondary indices: ${error}`)
-            return resolve()
-          }
-
-          const errorMsg: string = databaseErrorMessage(error.code, error.message)
-          return reject(new DatabaseError(error.code, errorMsg, '', error))
-        } else {
-          return resolve()
-        }
-      })
-    })*/
-    return Promise.resolve()
-  }
-
-  public async getDesignDocument(
-    designDocument: DesignDocumentName
-  ): Promise<DatabaseDesignDocument | null> {
-    const options = {
-      url: this.httpDesignBaseURL,
-      auth: {
-        user: config.DB.username,
-        pass: config.DB.password,
-      },
-      json: true,
-      resolveWithFullResponse: true,
-      simple: false,
-    }
-
-    const response = await request(options)
-
-    if (response.statusCode === HttpStatus.NOT_FOUND) {
-      return null
-    } else if (response.statusCode !== HttpStatus.OK) {
-      throw new DatabaseDesignDocumentError(
-        `An error occurred while reading ${designDocument} views of bucket ${config.DB.buckets.user}. Status code = ${response.statusCode}`
-      )
-    } else {
-      return response.body
-    }
-  }
-
-  public async createDesignDocument(designDocument: DatabaseDesignDocument): Promise<void> {
-    const options = {
-      method: 'PUT',
-      url: `${this.httpDesignBaseURL}/${designDocument.name}`,
-      auth: {
-        user: config.DB.username,
-        pass: config.DB.password,
-      },
-      body: designDocument,
-      json: true,
-      resolveWithFullResponse: true,
-      simple: false,
-    }
-
-    const response = await request(options)
-
-    if (response.statusCode !== HttpStatus.CREATED) {
-      throw new DatabaseDesignDocumentError(
-        `An error occurred while creating view ddoc ${designDocument.name}. Status code = ${response.statusCode}`
-      )
-    } else {
-      log.info(`Design document ${designDocument.name} created.`)
-      return
     }
   }
 

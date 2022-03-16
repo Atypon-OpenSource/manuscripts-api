@@ -45,7 +45,6 @@ import {
   ModelInstanceCtor as OttomanModelInstanceCtor,
   ModelOptions as OttomanModelOptions /*, ModelInstance*/,
 } from 'ottoman'
-import { DatabaseView } from './DatabaseView'
 // import { databaseErrorMessage } from './DatabaseResponseFunctions'
 import { Environment, BucketKey } from '../Config/ConfigurationTypes'
 
@@ -117,10 +116,6 @@ export abstract class SQLRepository<
 
   public buildModelOptions(): OttomanModelOptions {
     return {}
-  }
-
-  public buildViews(): ReadonlyArray<DatabaseView> {
-    return []
   }
 
   /**

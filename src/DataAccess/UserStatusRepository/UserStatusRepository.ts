@@ -18,17 +18,12 @@ import {
   SchemaDefinition as OttomanSchemaDefinition,
   ModelOptions as OttomanModelOptions,
 } from 'ottoman'
-// import { CouchbaseError, ViewQuery } from 'couchbase'
-// import { isNumber } from '../../util'
 
 import { SQLRepository } from '../SQLRepository'
 import { IUserStatusRepository } from '../Interfaces/IUserStatusRepository'
 import { QueryCriteria } from '../Interfaces/QueryCriteria'
 import { UserStatus, UpdateUserStatus } from '../../Models/UserModels'
-// import { DatabaseError, UnexpectedViewStateError } from '../../Errors'
 import { date, objectValuedObject } from '../validators'
-import { DatabaseView } from '../DatabaseView'
-// import { databaseErrorMessage } from '../DatabaseResponseFunctions'
 import { PatchOptions } from '../Interfaces/IndexedRepository'
 
 import { Chance } from 'chance'
@@ -109,10 +104,6 @@ export class UserStatusRepository
         type: 'boolean',
       },
     }
-  }
-
-  public buildViews(): ReadonlyArray<DatabaseView> {
-    return []
   }
 
   public buildSemiFake(data: any): UserStatus {

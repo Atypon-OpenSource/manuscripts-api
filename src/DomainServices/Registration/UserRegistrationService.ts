@@ -32,7 +32,6 @@ import {
 } from '../../Errors'
 import { IUserRegistrationService } from './IUserRegistrationService'
 import { ISyncService } from '../Sync/ISyncService'
-// import { GATEWAY_BUCKETS } from '../Sync/SyncService'
 import { ISingleUseTokenRepository } from '../../DataAccess/Interfaces/ISingleUseTokenRepository'
 import { IUserRepository } from '../../DataAccess/Interfaces/IUserRepository'
 import { IUserStatusRepository } from '../../DataAccess/Interfaces/IUserStatusRepository'
@@ -143,11 +142,6 @@ export class UserRegistrationService implements IUserRegistrationService {
   }
 
   private async createUserDetails(user: User, skipVerification: boolean, password?: string) {
-    /*await Promise.all(
-      GATEWAY_BUCKETS.map(key =>
-        this.syncService.createGatewayAccount(user._id, key)
-      )
-    )*/
     await this.syncService.createGatewayContributor(user, BucketKey.Data)
 
     await this.userStatusRepository.create(

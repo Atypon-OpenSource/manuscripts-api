@@ -22,7 +22,6 @@ import { IndexedRepository } from '../Interfaces/IndexedRepository'
 import { IdentifiableEntity } from '../Interfaces/IdentifiableEntity'
 import { QueryCriteria } from '../Interfaces/QueryCriteria'
 import { QueryOptions } from '../Interfaces/QueryOptions'
-import { DatabaseView } from '../DatabaseView'
 import mem from 'mem'
 
 /**
@@ -50,11 +49,6 @@ export class MemorizingRepository<
   /* istanbul ignore next */
   public get documentType(): string {
     return this.repository.documentType
-  }
-
-  /* istanbul ignore next */
-  public buildViews(): ReadonlyArray<DatabaseView> {
-    return this.repository.buildViews()
   }
 
   /* istanbul ignore next */
