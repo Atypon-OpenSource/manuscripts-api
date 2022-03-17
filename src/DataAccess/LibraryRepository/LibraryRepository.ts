@@ -32,7 +32,6 @@ export class LibraryRepository
   /*public async update (
     _id: string,
     _updatedDocument: LibraryLike,
-    _updateOptions: GatewayOptions
   ): Promise<Library> {
     throw new MethodNotAllowedError('LibraryRepository', 'update')
   }*/

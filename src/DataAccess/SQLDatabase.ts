@@ -64,9 +64,7 @@ class PrismaBucket implements SQLBucket {
   prismaClient: Prisma.UserDelegate<Prisma.RejectOnNotFound | Prisma.RejectPerOperation | undefined>
   constructor(name: BucketKey) {
     this.name = name !== BucketKey.Data ? name : BucketKey.Project
-    // this.name = name
     this.prismaClient = prisma[this.name] as any
-    // console.log(999, this.name, this.prismaClient)
   }
   _name: string
   append(_key: string | Buffer, _fragment: any): Promise<void> {
@@ -191,37 +189,17 @@ export class SQLDatabase {
     return bucketName
   }
 
-  public indices(): Index[] {
-    // const bucketName = config.DB.buckets[this.bucketKey]
-    const indices = [
-      /*{
-        name: 'IX_PRIMARY_DEFAULT',
-        script: `CREATE PRIMARY INDEX \`IX_PRIMARY_DEFAULT\` ON \`${
-          bucketName
-        }\` USING GSI;`
-      }*/
-    ]
-
-    indices.push(...getIndices(this.bucketKey))
-
-    return indices
-  }
-
   public async loadDatabaseModels(): Promise<void> {
     if (this.isLoaded) {
       return
     }
 
-    /*const cluster = new Cluster(config.DB.uri)
-
-    cluster.authenticate(config.DB.username, config.DB.password)
-
-    await this.openBucket(cluster)*/
-    await this.buildIndices(this.indices())
+    await this.buildIndices(getIndices(this.bucketKey))
 
     this.isLoaded = true
     const options = { bucket: this._bucket, store: new CbStoreAdapter(this._bucket as any) }
     this._documentMapper = new Ottoman(options as any)
+
     await prisma.$connect().catch(function (err: any) {
       log.error(`An error occurred while connecting to db`, err)
     })
@@ -286,28 +264,6 @@ export class SQLDatabase {
       throw error
     }
   }
-
-  /*private async openBucket (cluster: Cluster): Promise<void> {
-    /*return new Promise<void>((resolve, reject) => {
-      this._bucket = cluster.openBucket(
-        config.DB.buckets[this.bucketKey],
-        (error: CouchbaseError | null) => {
-          if (error) {
-            log.error(`An error occurred while connecting to couchbase db ${config.DB.uri}`, error)
-            reject(error)
-          }
-          if (process.env.NODE_ENV !== 'test') {
-            log.debug(`Connection established to ${this.bucketKey} bucket.`)
-          }
-          resolve()
-        }
-      )
-
-      const options = { bucket: this._bucket, store: new CbStoreAdapter(this._bucket) }
-      this._documentMapper = new Ottoman(options)
-    })
-    return Promise.resolve()
-  }*/
 
   static ensureDBExtensions(): Promise<boolean> {
     return prisma

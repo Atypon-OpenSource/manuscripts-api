@@ -27,7 +27,7 @@ export interface KeyValueRepository<TEntity, TNewEntity, TUpdateEntity, TPatchEn
    * Creates new document.
    * @param newDocument The new document wants to be added.
    */
-  create(newDocument: TNewEntity, createOptions: GatewayOptions): Promise<TEntity>
+  create(newDocument: TNewEntity): Promise<TEntity>
 
   /**
    * Removes existing document.
@@ -40,13 +40,9 @@ export interface KeyValueRepository<TEntity, TNewEntity, TUpdateEntity, TPatchEn
    * @param id document id's wants to be replaced.
    * @param updateDocument The new object that will be replaced.
    */
-  update(id: string, updateDocument: TUpdateEntity, updateOptions: GatewayOptions): Promise<TEntity>
+  update(id: string, updateDocument: TUpdateEntity): Promise<TEntity>
 
-  patch(id: string, dataToPatch: TPatchEntity, patchOptions: GatewayOptions): Promise<TEntity>
+  patch(id: string, dataToPatch: TPatchEntity): Promise<TEntity>
 
   purge(id: string): Promise<void>
-}
-
-export interface GatewayOptions {
-  expiry?: number
 }

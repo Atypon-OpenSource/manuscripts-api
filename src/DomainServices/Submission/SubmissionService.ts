@@ -38,6 +38,6 @@ export class SubmissionService implements ISubmissionService {
       log.info(`Submission ${submission._id} failed with status: ${status}`)
     }
 
-    await this.submissionRepository.patch(submission._id, { status }, {})
+    await this.submissionRepository.patch(submission._id, { status })
   }
 }

@@ -186,10 +186,9 @@ export class ProjectController extends BaseController implements IProjectControl
     manuscriptId
       ? await DIContainer.sharedContainer.manuscriptRepository.update(
           manuscriptObject._id,
-          manuscriptObject,
-          {}
+          manuscriptObject
         )
-      : await DIContainer.sharedContainer.manuscriptRepository.create(manuscriptObject, {})
+      : await DIContainer.sharedContainer.manuscriptRepository.create(manuscriptObject)
 
     await DIContainer.sharedContainer.containerService[ContainerType.project].addManuscript(docs)
 

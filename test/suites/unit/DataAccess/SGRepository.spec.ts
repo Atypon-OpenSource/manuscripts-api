@@ -20,9 +20,7 @@ import '../../../utilities/dbMock'
 import { DIContainer } from '../../../../src/DIContainer/DIContainer'
 import { config } from '../../../../src/Config/Config'
 import {
-  SyncError,
-  ValidationError,
-  GatewayInaccessibleError
+  ValidationError
 } from '../../../../src/Errors'
 import { TEST_TIMEOUT } from '../../../utilities/testSetup'
 import { ContainerInvitationLike } from 'src/DataAccess/Interfaces/Models'
@@ -346,54 +344,5 @@ describe('SGRepository - bulkDocs', () => {
   xtest('should throw response with error messages when they are available', () => {
     const projectRepository: any = DIContainer.sharedContainer.projectRepository
     return expect(projectRepository.bulkDocs([ docUpdate ])).rejects.toThrow(/forbidden/)
-  })
-})
-
-xdescribe('SGRepository - removeByUserIdAndEmail', () => {
-
-  const invitation: ContainerInvitationLike = {
-    _id: 'foo',
-    invitedUserEmail: 'foo@bar.com',
-    invitingUserProfile: {
-      _id: 'MPUserProfile:foo@bar.com',
-      userID: 'User_foo@bar.com',
-      objectType: 'MPUserProfile',
-      bibliographicName: {
-        _id: 'MPBibliographicName:valid-bibliographic-name',
-        objectType: 'MPBibliographicName',
-        given: 'Kavin'
-      },
-      createdAt: 123,
-      updatedAt: 123
-    },
-    containerID: 'MPProject:projectId',
-    role: 'Viewer',
-    invitingUserID: 'User_id',
-    objectType: 'MPContainerInvitation'
-  }
-
-  test('should purge user invitations', async () => {
-    const containerInvitationRepository: any =
-      DIContainer.sharedContainer.containerInvitationRepository
-
-    containerInvitationRepository.getById = async (_id: string) =>
-      Promise.resolve({ ...invitation })
-
-    containerInvitationRepository.purge = jest.fn()
-    await containerInvitationRepository.removeByUserIdAndEmail(
-      'User|id',
-      'foo@bar.baz'
-    )
-    const payload = request.mock.calls[0][0]
-
-    expect(payload).toEqual({
-      json: true,
-      method: 'GET',
-      resolveWithFullResponse: true,
-      uri: `http://${config.gateway.hostname}:${
-        config.gateway.ports.admin
-      }/bkt/_changes?filter=sync_gateway/bychannel&channels=User_id`,
-      simple: false
-    })
   })
 })

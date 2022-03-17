@@ -78,9 +78,9 @@ export class ContainerRequestService implements IContainerRequestService {
         userProfile,
       }
 
-      await this.containerRequestRepository.create(request, {})
+      await this.containerRequestRepository.create(request)
     } else {
-      await this.containerRequestRepository.patch(requestID, { role, userProfile }, {})
+      await this.containerRequestRepository.patch(requestID, { role, userProfile })
     }
 
     for (const ownerID of container.owners) {

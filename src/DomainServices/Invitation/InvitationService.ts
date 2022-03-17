@@ -102,20 +102,15 @@ export class InvitationService implements IInvitationService {
           InvitationService.invitationExpiryInDays()
         )
       } else {
-        invitation = await this.invitationRepository.create(
-          {
-            _id: invitationTupleHash,
-            invitingUserID: sgUsername(invitingUser._id),
-            invitingUserProfile,
-            invitedUserEmail: invitedEmail,
-            invitedUserID,
-            message,
-            objectType: ObjectTypes.Invitation,
-          },
-          {
-            expiry: InvitationService.invitationExpiryInDays(),
-          }
-        )
+        invitation = await this.invitationRepository.create({
+          _id: invitationTupleHash,
+          invitingUserID: sgUsername(invitingUser._id),
+          invitingUserProfile,
+          invitedUserEmail: invitedEmail,
+          invitedUserID,
+          message,
+          objectType: ObjectTypes.Invitation,
+        })
       }
 
       await this.emailService.sendInvitation({ email: invitedEmail }, invitingUser, invitationID)
@@ -168,15 +163,12 @@ export class InvitationService implements IInvitationService {
     }
 
     await this.invitationRepository.remove(invitationID)
-    await this.collaborationsRepository.create(
-      {
-        _id: uuid_v4(),
-        invitingUserID: invitation.invitingUserID,
-        invitedUserID: sgUsername(invitedUser._id),
-        objectType: ObjectTypes.Collaboration,
-      },
-      {}
-    )
+    await this.collaborationsRepository.create({
+      _id: uuid_v4(),
+      invitingUserID: invitation.invitingUserID,
+      invitedUserID: sgUsername(invitedUser._id),
+      objectType: ObjectTypes.Collaboration,
+    })
     return {
       containerID: null,
       message: 'Invitation accepted',
@@ -196,7 +188,7 @@ export class InvitationService implements IInvitationService {
   public async updateInvitedUserID(userID: string, userEmail: string) {
     const invitations = await this.invitationRepository.getAllByEmail(userEmail)
     for (let invitation of invitations) {
-      await this.invitationRepository.patch(invitation._id, { invitedUserID: userID }, {})
+      await this.invitationRepository.patch(invitation._id, { invitedUserID: userID })
     }
   }
 }

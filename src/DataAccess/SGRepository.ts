@@ -16,7 +16,7 @@
 
 import * as _ from 'lodash'
 import { ValidationError, DatabaseError, NoBucketError } from '../Errors'
-import { KeyValueRepository, GatewayOptions } from './Interfaces/KeyValueRepository'
+import { KeyValueRepository } from './Interfaces/KeyValueRepository'
 import { BucketKey } from '../Config/ConfigurationTypes'
 import { SQLDatabase } from './SQLDatabase'
 import { timestamp } from '../Utilities/JWT/LoginTokenPayload'
@@ -68,9 +68,8 @@ export abstract class SGRepository<TEntity, TNewEntity, TUpdateEntity, TPatchEnt
   /**
    * Creates new document.
    */
-  public async create(newDocument: TNewEntity, _createOptions: GatewayOptions): Promise<TEntity> {
+  public async create(newDocument: TNewEntity): Promise<TEntity> {
     const docId = this.documentId((newDocument as any)._id)
-    // const expiry = createOptions.expiry
     const createdAt = timestamp()
 
     const prismaDoc = {
@@ -111,7 +110,6 @@ export abstract class SGRepository<TEntity, TNewEntity, TUpdateEntity, TPatchEnt
       this.database.bucket
         .findUnique(query)
         .then((doc: any) => {
-          //console.log(11333, doc)
           if (doc) {
             resolve(this.buildModel(doc))
           } else {
@@ -128,16 +126,6 @@ export abstract class SGRepository<TEntity, TNewEntity, TUpdateEntity, TPatchEnt
           )
         )
     })
-    /*const uri = `${appDataAdminGatewayURI(this.bucketKey)}/${this.documentId(
-      id
-    )}`
-    return SGRepository.doRequest({
-      method: 'GET',
-      uri: uri,
-      json: true,
-      resolveWithFullResponse: true,
-      simple: false
-    })*/
   }
 
   /**
@@ -169,11 +157,7 @@ export abstract class SGRepository<TEntity, TNewEntity, TUpdateEntity, TPatchEnt
   /**
    * Replaces existing document.
    */
-  public async update(
-    id: string,
-    updatedDocument: TUpdateEntity,
-    _updateOptions: GatewayOptions
-  ): Promise<TEntity> {
+  public async update(id: string, updatedDocument: TUpdateEntity): Promise<TEntity> {
     const docId = this.documentId(id)
     const document = await this.getById(docId)
 
@@ -184,7 +168,6 @@ export abstract class SGRepository<TEntity, TNewEntity, TUpdateEntity, TPatchEnt
     if ((document as any).objectType !== this.objectType) {
       throw new ValidationError(`Object type mismatched`, (updatedDocument as any).objectType)
     }
-    // const expiry = updateOptions.expiry
 
     const documentToUpdate = {
       _id: docId,
@@ -214,15 +197,10 @@ export abstract class SGRepository<TEntity, TNewEntity, TUpdateEntity, TPatchEnt
   }
 
   public async touch(id: string, expiry: number): Promise<TEntity> {
-    return this.patch(id, { expiry } as any, {})
+    return this.patch(id, { expiry } as any)
   }
 
-  public async patch(
-    id: string,
-    dataToPatch: TPatchEntity,
-    patchOptions: GatewayOptions
-  ): Promise<TEntity> {
-    // const expiry = patchOptions.expiry
+  public async patch(id: string, dataToPatch: TPatchEntity): Promise<TEntity> {
     const docId = this.documentId(id)
     const document = await this.getById(docId)
 
@@ -236,35 +214,40 @@ export abstract class SGRepository<TEntity, TNewEntity, TUpdateEntity, TPatchEnt
       (_documentValue: any, patchValue: any) => patchValue
     ) as any
 
-    return this.update(docId, patchedDocument, patchOptions)
+    return this.update(docId, patchedDocument)
   }
 
   /**
    * Purge invitations and container invitations which are send by the user or to the user.
    */
-  public async removeByUserIdAndEmail(_userID: string, _email: string) {
-    /*let uri = `${appDataAdminGatewayURI(
-      this.bucketKey
-    )}/_changes?filter=sync_gateway/bychannel&channels=${sgUsername(userID)}`
-
-    const docs: any = await SGRepository.doRequest({
-      method: 'GET',
-      uri: uri,
-      json: true,
-      resolveWithFullResponse: true,
-      simple: false,
-    })
-
-    const userId = userID.replace('|', '_')
-    for (let doc of docs.results) {
-      const document = await this.getById(doc.id)
-      if (document && (document as any).objectType === this.objectType) {
-        const invitingUserID = (document as any).invitingUserID
-        if (invitingUserID === userId || (document as any).invitedUserEmail === email) {
-          await this.purge(doc.id)
-        }
-      }
-    }*/
+  public async removeByUserIdAndEmail(userID: string, email: string) {
+    const q = {
+      AND: [
+        {
+          data: {
+            path: ['objectType'],
+            equals: this.objectType,
+          },
+        },
+        {
+          OR: [
+            {
+              data: {
+                path: ['invitedUserEmail'],
+                equals: email,
+              },
+            },
+            {
+              data: {
+                path: ['invitingUserID'],
+                equals: userID /*userID.replace('|', '_')*/,
+              },
+            },
+          ],
+        },
+      ],
+    }
+    await this.database.bucket.remove(q)
   }
 
   private async removeAll(): Promise<void> {
@@ -308,7 +291,7 @@ export abstract class SGRepository<TEntity, TNewEntity, TUpdateEntity, TPatchEnt
     for (const doc of docs) {
       const docId = this.documentId(doc._id)
       const dataToPatch = _.omit(doc, ['_id', 'id', 'data'])
-      const updatedDoc = await this.patch(docId, dataToPatch, {}).catch((err) => {
+      const updatedDoc = await this.patch(docId, dataToPatch).catch((err) => {
         if (err.statusCode === 400) {
           // must upsert
           return this.database.bucket.upsert(docId, { data: dataToPatch })

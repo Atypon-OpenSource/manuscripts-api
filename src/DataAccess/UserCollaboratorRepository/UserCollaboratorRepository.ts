@@ -15,7 +15,6 @@
  */
 
 import { SGRepository } from '../SGRepository'
-import { GatewayOptions } from '../Interfaces/KeyValueRepository'
 import { MethodNotAllowedError /*, DatabaseError*/ } from '../../Errors'
 import { UserCollaborator } from '@manuscripts/manuscripts-json-schema'
 
@@ -29,11 +28,7 @@ export class UserCollaboratorRepository extends SGRepository<
     return 'MPUserCollaborator'
   }
 
-  public async update(
-    _id: string,
-    _updatedDocument: any,
-    _updateOptions: GatewayOptions
-  ): Promise<any> {
+  public async update(_id: string, _updatedDocument: any): Promise<any> {
     throw new MethodNotAllowedError('UserCollaboratorRepository', 'update')
   }
 

@@ -209,19 +209,15 @@ export class ContainerService implements IContainerService {
         inherited = [syncUserId]
       }
 
-      await this.libraryCollectionRepository.patch(
-        lc._id,
-        {
-          _id: containerId,
-          owners: owners && owners.map((u) => ContainerService.userIdForSync(u)),
-          writers: writers && writers.map((u) => ContainerService.userIdForSync(u)),
-          viewers: viewers && viewers.map((u) => ContainerService.userIdForSync(u)),
-          editors: editors && editors.map((u) => ContainerService.userIdForSync(u)),
-          annotators: annotators && annotators.map((u) => ContainerService.userIdForSync(u)),
-          inherited,
-        },
-        {}
-      )
+      await this.libraryCollectionRepository.patch(lc._id, {
+        _id: containerId,
+        owners: owners && owners.map((u) => ContainerService.userIdForSync(u)),
+        writers: writers && writers.map((u) => ContainerService.userIdForSync(u)),
+        viewers: viewers && viewers.map((u) => ContainerService.userIdForSync(u)),
+        editors: editors && editors.map((u) => ContainerService.userIdForSync(u)),
+        annotators: annotators && annotators.map((u) => ContainerService.userIdForSync(u)),
+        inherited,
+      })
     }
   }
 
@@ -429,19 +425,15 @@ export class ContainerService implements IContainerService {
     editors?: string[] | undefined,
     annotators?: string[] | undefined
   ): Promise<void> {
-    await this.containerRepository.patch(
-      containerId,
-      {
-        _id: containerId,
-        title,
-        owners: owners && owners.map((u) => ContainerService.userIdForSync(u)),
-        writers: writers && writers.map((u) => ContainerService.userIdForSync(u)),
-        viewers: viewers && viewers.map((u) => ContainerService.userIdForSync(u)),
-        editors: editors && editors.map((u) => ContainerService.userIdForSync(u)),
-        annotators: annotators && annotators.map((u) => ContainerService.userIdForSync(u)),
-      },
-      {}
-    )
+    await this.containerRepository.patch(containerId, {
+      _id: containerId,
+      title,
+      owners: owners && owners.map((u) => ContainerService.userIdForSync(u)),
+      writers: writers && writers.map((u) => ContainerService.userIdForSync(u)),
+      viewers: viewers && viewers.map((u) => ContainerService.userIdForSync(u)),
+      editors: editors && editors.map((u) => ContainerService.userIdForSync(u)),
+      annotators: annotators && annotators.map((u) => ContainerService.userIdForSync(u)),
+    })
   }
 
   public static isContainerUser(container: Container, userId: string): boolean {
@@ -805,7 +797,7 @@ export class ContainerService implements IContainerService {
       objectType: this.containerObjectType(),
     }
 
-    return this.containerRepository.create(newContainer, {})
+    return this.containerRepository.create(newContainer)
   }
 
   async addManuscript(docs: any): Promise<any> {
@@ -885,15 +877,12 @@ export class ContainerService implements IContainerService {
     }
 
     return this.manuscriptRepository
-      .create(
-        {
-          _id: newManuscriptID,
-          containerID,
-          objectType: ObjectTypes.Manuscript,
-          prototype: templateId,
-        },
-        {}
-      )
+      .create({
+        _id: newManuscriptID,
+        containerID,
+        objectType: ObjectTypes.Manuscript,
+        prototype: templateId,
+      })
       .then((res) => {
         return { id: res._id } as any
       })
@@ -927,29 +916,26 @@ export class ContainerService implements IContainerService {
     }
     try {
       return this.manuscriptNoteRepository
-        .create(
-          {
-            _id: `${this.manuscriptNoteRepository.objectType}:${uuid_v4()}`,
-            createdAt: stamp,
-            updatedAt: stamp,
-            sessionID: uuid_v4(),
-            objectType: this.manuscriptNoteRepository.objectType,
-            containerID: containerID,
-            manuscriptID: manuscriptID,
-            contents: contents,
-            target: target ? target : manuscriptID,
-            source: source,
-            contributions: [
-              {
-                _id: `MPContribution:${uuid_v4()}`,
-                objectType: 'MPContribution',
-                profileID: userProfileID,
-                timestamp: stamp,
-              },
-            ],
-          },
-          {}
-        )
+        .create({
+          _id: `${this.manuscriptNoteRepository.objectType}:${uuid_v4()}`,
+          createdAt: stamp,
+          updatedAt: stamp,
+          sessionID: uuid_v4(),
+          objectType: this.manuscriptNoteRepository.objectType,
+          containerID: containerID,
+          manuscriptID: manuscriptID,
+          contents: contents,
+          target: target ? target : manuscriptID,
+          source: source,
+          contributions: [
+            {
+              _id: `MPContribution:${uuid_v4()}`,
+              objectType: 'MPContribution',
+              profileID: userProfileID,
+              timestamp: stamp,
+            },
+          ],
+        })
         .then((res) => {
           return { id: res._id, ok: true }
         })
@@ -982,7 +968,7 @@ export class ContainerService implements IContainerService {
       )
       if (existingDoc) {
         _.extend(existingDoc, { ...incomingDoc, updatedAt: stamp })
-        const result = await this.externalFileRepository.update(existingDoc._id, existingDoc, {})
+        const result = await this.externalFileRepository.update(existingDoc._id, existingDoc)
         output.push(result)
       } else {
         externalFiles.push({
@@ -1008,7 +994,7 @@ export class ContainerService implements IContainerService {
 
   public async updateDocumentSessionId(docId: string) {
     const sessionID = uuid_v4()
-    await DIContainer.sharedContainer.projectRepository.patch(docId, { _id: docId, sessionID }, {})
+    await DIContainer.sharedContainer.projectRepository.patch(docId, { _id: docId, sessionID })
   }
 
   public async saveSnapshot(key: string, containerID: string, creator: string, name?: string) {
@@ -1025,7 +1011,7 @@ export class ContainerService implements IContainerService {
     if (name) {
       doc['name'] = name
     }
-    return this.snapshotRepository.create(doc, {})
+    return this.snapshotRepository.create(doc)
   }
 
   public async getCorrectionStatus(containerID: string, userId: string) {

@@ -141,12 +141,10 @@ export abstract class SQLRepository<
     doc.id = doc._id
 
     for (const key of Object.keys(doc)) {
-      if (doc[key] === undefined /* || key.startsWith('_')*/) {
+      if (doc[key] === undefined) {
         delete doc[key]
       }
     }
-
-    //doc._id = doc.id
 
     return {
       id: doc.id,
@@ -180,7 +178,7 @@ export abstract class SQLRepository<
         query.AND.push({ data: { path, equals: deepValue(criteria, path.join('.')) } })
       }
     }
-    // console.log(999, query)
+
     return query
   }
 
@@ -207,7 +205,7 @@ export abstract class SQLRepository<
     newDocument._id = id
 
     const prismaDoc = this.buildPrismaModel(newDocument)
-    // console.log(prismaDoc)
+
     const createPromise = new Promise<TEntity>((resolve, reject) => {
       this.database.bucket
         .insert(prismaDoc)
@@ -446,7 +444,6 @@ export abstract class SQLRepository<
    * Removes existing document.
    */
   public remove(criteria: TQueryCriteria | null): Promise<boolean> {
-    //console.log(999, this._documentType)
     return new Promise((resolve, reject) => {
       if (!this.database.bucket) {
         throw new NoBucketError()
@@ -486,7 +483,6 @@ export abstract class SQLRepository<
   }
 
   private validateModel(document: Partial<TUpdateEntity> | TNewEntity): Promise<void> {
-    // return Promise.resolve()
     if (document.expiry) {
       // todo validate expiry here
       delete document.expiry
@@ -494,7 +490,6 @@ export abstract class SQLRepository<
     return new Promise<void>((resolve, reject) => {
       this.modelConstructor.schema.validate(this.model.fromData(document), (error) => {
         if (error) {
-          // console.log(error.code, error.message, JSON.stringify(document), this.model.fromData(document))
           return reject(
             new DatabaseError(error.code as any, error.message, JSON.stringify(document), error)
           )

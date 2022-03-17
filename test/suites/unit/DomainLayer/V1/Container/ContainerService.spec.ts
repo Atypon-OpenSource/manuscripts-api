@@ -1090,8 +1090,7 @@ describe('containerService - updateContainerUser', () => {
         owners: newOwners,
         writers: newWriters,
         viewers: newViewers
-      },
-      {}
+      }
     )
   })
 
@@ -1125,8 +1124,7 @@ describe('containerService - updateContainerUser', () => {
         owners: newOwners,
         writers: newWriters,
         viewers: newViewers
-      },
-      {}
+      }
     )
   })
 
@@ -1160,8 +1158,7 @@ describe('containerService - updateContainerUser', () => {
         owners: newOwners,
         writers: newWriters,
         viewers: newViewers
-      },
-      {}
+      }
     )
   })
 
@@ -1195,8 +1192,7 @@ describe('containerService - updateContainerUser', () => {
         owners: newOwners,
         writers: newWriters,
         viewers: newViewers
-      },
-      {}
+      }
     )
   })
 
@@ -1229,8 +1225,7 @@ describe('containerService - updateContainerUser', () => {
         owners: newOwners,
         writers: newWriters,
         viewers: newViewers
-      },
-      {}
+      }
     )
   })
 
@@ -1264,8 +1259,7 @@ describe('containerService - updateContainerUser', () => {
         owners: newOwners,
         writers: newWriters,
         viewers: newViewers
-      },
-      {}
+      }
     )
   })
 
@@ -1300,8 +1294,7 @@ describe('containerService - updateContainerUser', () => {
         writers: newWriters,
         viewers: newViewers,
         annotators: ['User_test']
-      },
-      {}
+      }
     )
   })
 
@@ -1336,8 +1329,7 @@ describe('containerService - updateContainerUser', () => {
         viewers: [],
         annotators: [],
         title: undefined
-      },
-      {}
+      }
     )
   })
 
@@ -1372,8 +1364,7 @@ describe('containerService - updateContainerUser', () => {
         viewers: [],
         annotators: ['User_test2', 'User_foo@bar.com'],
         title: undefined
-      },
-      {}
+      }
     )
   })
 
@@ -1412,8 +1403,7 @@ describe('containerService - updateContainerUser', () => {
         owners: newOwners,
         writers: newWriters,
         viewers: newViewers
-      },
-      {}
+      }
     )
   })
 

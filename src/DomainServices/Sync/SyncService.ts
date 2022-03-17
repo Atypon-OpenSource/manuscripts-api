@@ -134,6 +134,6 @@ export class SyncService implements ISyncService {
       updatedAt: date,
     }
 
-    return this.userProfileRepository.create(userProfile, {})
+    return this.userProfileRepository.create(userProfile)
   }
 }

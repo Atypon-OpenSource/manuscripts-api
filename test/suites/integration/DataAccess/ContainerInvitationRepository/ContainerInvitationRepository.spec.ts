@@ -63,3 +63,27 @@ describe('InvitationRepository getAllByEmail', () => {
     expect(invitations[0]).toBeDefined()
   })
 })
+
+
+describe('InvitationRepository removeByUserIdAndEmail', () => {
+  beforeEach(async () => {
+    await drop()
+    await dropBucket(BucketKey.Data)
+    await seed({ projectInvitations: true })
+  })
+
+  test('should remove all invitations by email', async () => {
+    const repository = new ContainerInvitationRepository(BucketKey.Data, db)
+
+    await repository.removeByUserIdAndEmail(
+      validProjectInvitationObject.invitingUserID,
+      'valid-google@manuscriptsapp.com'
+    )
+
+    const invitations: any = await repository.getAllByEmail(
+      'valid-google@manuscriptsapp.com'
+    )
+
+    expect(invitations.length).toEqual(0)
+  })
+})

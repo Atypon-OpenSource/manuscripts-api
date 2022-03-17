@@ -17,6 +17,7 @@
     "migrate-prisma": "npx prisma migrate dev --name init",
     "watch": "tsc-watch --onSuccess \"npm run run\"",
     "lint": "eslint src --ext .js,.ts --max-warnings 0",
+    "lint-fix": "eslint src --ext .js,.ts --max-warnings 0 --fix",
     "typecheck": "tsc --noEmit",
     "test": "run-s test:unit test:int",
     "test:unit": "INITIALIZE_DATABASE=false jest --ci --config=./jest.config.unit.test.js --no-cache --detectOpenHandles --forceExit --coverage --runInBand --reporters=default --reporters=jest-junit",

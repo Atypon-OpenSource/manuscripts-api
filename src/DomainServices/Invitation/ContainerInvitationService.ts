@@ -129,11 +129,7 @@ export class ContainerInvitationService implements IContainerInvitationService {
       let invitation = await this.containerInvitationRepository.getById(invitationId)
 
       if (invitation) {
-        await this.containerInvitationRepository.patch(
-          invitationId,
-          { role, message },
-          { expiry: ContainerInvitationService.invitationExpiryInDays() }
-        )
+        await this.containerInvitationRepository.patch(invitationId, { role, message })
       } else {
         const newInvitation: ContainerInvitationLike = {
           _id: invitationTupleHash,
@@ -149,9 +145,7 @@ export class ContainerInvitationService implements IContainerInvitationService {
           message,
         }
 
-        await this.containerInvitationRepository.create(newInvitation, {
-          expiry: ContainerInvitationService.invitationExpiryInDays(),
-        })
+        await this.containerInvitationRepository.create(newInvitation)
       }
 
       if (!skipEmail) {
@@ -323,11 +317,7 @@ export class ContainerInvitationService implements IContainerInvitationService {
   }
 
   public async markInvitationAsAccepted(invitationId: string) {
-    await this.containerInvitationRepository.patch(
-      invitationId,
-      { acceptedAt: timestamp() },
-      { expiry: ContainerInvitationService.invitationExpiryInDays() }
-    )
+    await this.containerInvitationRepository.patch(invitationId, { acceptedAt: timestamp() })
   }
 
   public async uninvite(userId: string, invitationId: string): Promise<void> {
@@ -462,7 +452,7 @@ export class ContainerInvitationService implements IContainerInvitationService {
   public async updateInvitedUserID(userID: string, userEmail: string) {
     const invitations = await this.containerInvitationRepository.getAllByEmail(userEmail)
     for (let invitation of invitations) {
-      await this.containerInvitationRepository.patch(invitation._id, { invitedUserID: userID }, {})
+      await this.containerInvitationRepository.patch(invitation._id, { invitedUserID: userID })
     }
   }
 

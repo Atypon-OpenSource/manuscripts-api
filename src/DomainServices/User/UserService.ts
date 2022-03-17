@@ -271,11 +271,12 @@ export class UserService implements IUserService {
         await this.projectRepository.removeWithAllResources(project._id)
       } else {
         if (!project._deleted) {
-          await this.projectRepository.patch(
-            project._id,
-            { _id: project._id, owners, writers, viewers },
-            {}
-          )
+          await this.projectRepository.patch(project._id, {
+            _id: project._id,
+            owners,
+            writers,
+            viewers,
+          })
         }
       }
     }
