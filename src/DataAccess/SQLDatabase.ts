@@ -14,14 +14,10 @@
  * limitations under the License.
  */
 
-import * as HttpStatus from 'http-status-codes'
-import { parse } from 'url'
-import request from 'request-promise-native'
 import { Ottoman, CbStoreAdapter } from 'ottoman'
 import { log } from '../Utilities/Logger'
-import { config } from '../Config/Config'
 import { DatabaseConfiguration, BucketKey } from '../Config/ConfigurationTypes'
-import { NoBucketError, InvalidBucketError, BucketExistenceCheckError } from '../Errors'
+import { NoBucketError, InvalidBucketError } from '../Errors'
 import { Index, indices as getIndices } from './DatabaseIndices'
 
 import { Prisma } from '@prisma/client'
@@ -163,16 +159,6 @@ export class SQLDatabase {
     return Promise.resolve()
   }
 
-  public get httpBaseURL(): string {
-    const urlParts = parse(this.configuration.uri)
-    return `http://${urlParts.host}:8091`
-  }
-
-  public get httpDesignBaseURL(): string {
-    const urlParts = parse(this.configuration.uri)
-    return `http://${urlParts.host}:8092/${this.bucketName}/_design`
-  }
-
   public get bucket(): PrismaBucket {
     return this._bucket
   }
@@ -227,41 +213,6 @@ export class SQLDatabase {
   public async buildIndices(indexingArray: Index[]): Promise<void> {
     for (const index of indexingArray) {
       await this.createIndex(index.script)
-    }
-  }
-
-  public async bucketExists(): Promise<boolean> {
-    const options = {
-      url: `${this.httpBaseURL}/pools/default/buckets/${config.DB.buckets[this.bucketKey]}`,
-      auth: {
-        user: config.DB.username,
-        pass: config.DB.password,
-      },
-      json: true,
-      resolveWithFullResponse: true,
-      simple: false,
-    }
-
-    try {
-      const response = await request(options)
-      if (response.statusCode === HttpStatus.NOT_FOUND) {
-        return false
-      } else if (response.statusCode !== HttpStatus.OK) {
-        throw new BucketExistenceCheckError(
-          `Unknown error occurred while checking for bucket existence.`,
-          response.statusCode
-        )
-      } else {
-        return true
-      }
-    } catch (error) {
-      log.error(
-        `An error occurred while checking for bucket existence ${
-          config.DB.buckets[this.bucketKey]
-        }`,
-        error
-      )
-      throw error
     }
   }
 

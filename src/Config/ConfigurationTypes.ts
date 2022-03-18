@@ -45,10 +45,6 @@ export enum BucketKey {
 
 export type DatabaseConfiguration = {
   readonly initializeContents: boolean
-  readonly username: string
-  readonly password: string
-  readonly bucketAdminPassword: string
-  readonly uri: string
   readonly buckets: { [name in BucketKey]: string }
 }
 
@@ -122,11 +118,6 @@ export type ClientApplicationsConfiguration = {
  */
 export type GatewayConfiguration = {
   readonly cookieDomain: string
-  readonly hostname: string
-  readonly ports: {
-    admin: string
-    public: string
-  }
 }
 
 export type ServerConfiguration = {

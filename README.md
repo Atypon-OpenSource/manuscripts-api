@@ -99,10 +99,6 @@ Two configuration variables control the initialization time behaviour:
 
 Editing this variables is not commonly necessary for local development purposes because the scripts under `bin` take care of setting the above variables to appropriate values. You will need to adjust them for production purposes.
 
-## Resyncing SQLDatabase
-
-To resync the database there is a script inside `./bin` folder `resync-db.js`, and a shell script (`resync-db.sh`) that calls the earlier and provides the required environment veriables, running this shell script will do the job.
-
 ## Data Migration
 
 For this purpose there is a folder inside bin `./bin/data-migration` which contains the data migration js scripts: 
@@ -125,12 +121,6 @@ The service is configured using environment variables and/or a [.env](https://gi
 placed at the root of the repository.
 
 <dl>
-  <dt>APP_COUCHBASE_ADMIN_USER</dt>
-  <dd>SQLDatabase server admin username, used internally by the service when making database calls.</dd>
-
-  <dt>APP_COUCHBASE_ADMIN_PASS</dt>
-  <dd>SQLDatabase server admin password, used internally by the service when making database calls.</dd>
-
   <dt>APP_BASE_URL</dt>
   <dd>The *client* app base URL (the manuscripts-frontend instance) corresponding to this service.</dd>
 
@@ -143,23 +133,8 @@ placed at the root of the repository.
   <dt>APP_AWS_SECRET_ACCESS_KEY</dt>
   <dd>The AWS secret access key (used by system when accessing Amazon SES to send emails).</dd>
 
-  <dt>APP_COUCHBASE_HOSTNAME</dt>
-  <dd>The Couchbase server hostname (used by manuscripts-api and Sync Gateway when constructing connection URLs).</dd>
-
-  <dt>APP_DB_URI</dt>
-  <dd>The database connection base URI (e.g. "couchbase://couchbase/"). <b>NOTE!</b> Needs to be kept consistent with <pre>$APP_COUCHBASE_HOSTNAME</pe> with which it is partially redundant with.</dd>
-
-  <dt>APP_GATEWAY_HOSTNAME</dt>
-  <dd>The Sync Gateway hostname, used by manuscripts-api in constructing connection URLs to Sync Gateway.</dd>
-
   <dt>APP_FROM_EMAIL</dt>
   <dd>The email address from which emails sent by the service are sent.</dd>
-
-  <dt>APP_GATEWAY_ADMIN_PORT</dt>
-  <dd>The port for the Sync Gateway <a href="https://developer.couchbase.com/documentation/mobile/current/references/sync-gateway/admin-rest-api/index.html?v=2.0">admin interface</a> (by default 4985).</dd>
-
-  <dt>APP_GATEWAY_PUBLIC_PORT</dt>
-  <dd>The port to the Sync Gateway <a href="https://developer.couchbase.com/documentation/mobile/current/references/sync-gateway/rest-api/index.html?v=2.0">public interface</a> (by default 4984).</dd>
 
   <dt>APP_GOOGLE_AUTH_CALLBACK</dt>
   <dd>The Google OAuth2 API callback (e.g. <b>"https://api.manuscripts.io/api/v1/auth/google/callback"</b>).</dd>
@@ -178,9 +153,6 @@ placed at the root of the repository.
 
   <dt>APP_PORT</dt>
   <dd>The port to which the service should bind to serve from.</dd>
-
-  <dt>APP_COUCHBASE_RBAC_PASSWORD</dt>
-  <dd>A password for a special bucket administrator user that the service uses through Sync Gateway for administrative purposes.</dd>
 
   <dt>APP_CLIENT_APPLICATIONS</dt>
   <dd>A semi-colon separated list of acceptable client details, with each field comma separated including an optional secret. It corresponds to Application Id, Application Secret, Application Name. (e.g. <b>"com.manuscripts.Manuscripts,foobar,Manuscripts;io.manuscripts,,Manuscripts.io"</b>).</dd>
@@ -206,12 +178,6 @@ placed at the root of the repository.
   <dt>APP_ALLOWED_CORS_ORIGINS</dt>
   <dd>Allowed CORS origins for manuscripts-api and the Sync Gateway.</dd>
 
-  <dt>APP_GATEWAY_COOKIE_DOMAIN</dt>
-  <dd>The domain to which this manuscripts-api instance sets its Sync Gateway cookie domain for. for local development will set this to `localhost`</dd>
-
-  <dt>APP_PROJECTS_GATEWAY_COOKIE_DOMAIN</dt>
-  <dd>The domain at which Sync Gateway serves projects data at.</dd>
-
   <dt>APP_SKIP_ACCOUNT_VERIFICATION</dt>
   <dd>If set to '1', skip the account verification step at account creation.</dd>
 
@@ -229,9 +195,6 @@ placed at the root of the repository.
 
   <dt>APP_CONTAINER_TOKEN_SCOPES</dt>
   <dd>An array of semicolon separated records to describe scopes for which the server can issue access tokens in JWT form: fields are comma separated, denoting for each record: scope name,UTF8 encoded secret or base64 encoded PEM formatted private key,empty string (if symmetric secret is used) or a base64 encoded PEM formatted public key,expiry in minutes</dd>
-
-  <dt>APP_COUCHBASE_CLUSTER_ANTIAFFINITY</dt>
-  <dd>When running Couchbase on Kubernetes using the autonomous Operator, this setting determines "whether or not two or more pods are allowed to be run on the same Kubernetes node". Quoting <a href="http://docs.couchbase.com/prerelease/couchbase-operator/beta/couchbaseClusterConfig.html#antiaffinity">Couchbase documentation on <b>antiAffinity</b></a> further: "In a production setting this parameter should always be set to true in order to reduce the chance of data loss in case a Kubernetes node crashes."</dd>
 
 </dl>
 

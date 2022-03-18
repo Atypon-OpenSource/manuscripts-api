@@ -157,13 +157,6 @@ export class Configuration implements ConfigurationContainer {
     this.DB = {
       buckets,
       initializeContents: initialize,
-      uri: normalizeURL(getString(env.APP_DB_URI, 'APP_DB_URI')),
-      username: getString(env.APP_COUCHBASE_ADMIN_USER, 'APP_COUCHBASE_ADMIN_USER'),
-      password: getString(env.APP_COUCHBASE_ADMIN_PASS, 'APP_COUCHBASE_ADMIN_PASS'),
-      bucketAdminPassword: getString(
-        env.APP_COUCHBASE_RBAC_PASSWORD,
-        'APP_COUCHBASE_RBAC_PASSWORD'
-      ),
     }
 
     this.AWS = {
@@ -214,11 +207,6 @@ export class Configuration implements ConfigurationContainer {
 
     this.gateway = {
       cookieDomain: getString(env.APP_GATEWAY_COOKIE_DOMAIN, 'APP_GATEWAY_COOKIE_DOMAIN'),
-      hostname: getString(env.APP_GATEWAY_HOSTNAME, 'APP_GATEWAY_HOSTNAME'),
-      ports: {
-        admin: getString(env.APP_GATEWAY_ADMIN_PORT, 'APP_GATEWAY_ADMIN_PORT'),
-        public: getString(env.APP_GATEWAY_PUBLIC_PORT, 'APP_GATEWAY_PUBLIC_PORT'),
-      },
     }
 
     const host = this.email.fromBaseURL.replace(/https{0,1}\:\/\//, '')
@@ -277,16 +265,8 @@ export class Configuration implements ConfigurationContainer {
     }
 
     this.template = {
-      allowedOwners: getOptionalArray(
-        env.APP_COUCHBASE_ALLOWED_OWNERS,
-        'APP_COUCHBASE_ALLOWED_OWNERS',
-        ';'
-      ),
-      allowedProjects: getOptionalArray(
-        env.APP_COUCHBASE_ALLOWED_PROJECTS,
-        'APP_COUCHBASE_ALLOWED_PROJECTS',
-        ';'
-      ),
+      allowedOwners: getOptionalArray(env.APP_ALLOWED_OWNERS, 'APP_ALLOWED_OWNERS', ';'),
+      allowedProjects: getOptionalArray(env.APP_ALLOWED_PROJECTS, 'APP_ALLOWED_PROJECTS', ';'),
     }
   }
 

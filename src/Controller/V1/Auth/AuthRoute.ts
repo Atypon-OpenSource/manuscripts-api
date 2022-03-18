@@ -21,7 +21,6 @@ import { stringify } from 'querystring'
 import { removeEmptyValuesFromObj } from '../../../util'
 
 import { BaseRoute } from '../../BaseRoute'
-// import { BucketSessions } from '../../../Models/UserModels'
 import {
   credentialsSchema,
   googleRedirectSchema,
@@ -38,12 +37,8 @@ import {
 } from './AuthSchema'
 import { AuthController } from './AuthController'
 import { AuthStrategy } from '../../../Auth/Passport/AuthStrategy'
-import {
-  // SYNC_GATEWAY_COOKIE_NAME,
-  SYNC_GATEWAY_COOKIE_EXPIRY_IN_MS,
-} from '../../../DomainServices/Sync/SyncService'
+import { SYNC_GATEWAY_COOKIE_EXPIRY_IN_MS } from '../../../DomainServices/Sync/SyncService'
 import { config } from '../../../Config/Config'
-// import { BucketKey } from '../../../Config/ConfigurationTypes'
 import { DIContainer } from '../../../DIContainer/DIContainer'
 import { URL } from 'url'
 

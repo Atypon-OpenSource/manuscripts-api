@@ -17,7 +17,7 @@
 import { Model } from '@manuscripts/manuscripts-json-schema'
 export interface ITemplatesController {
   /**
-   * Fetch published templates for a predefined list of users (APP_COUCHBASE_ALLOWED_OWNERS)
+   * Fetch published templates for a predefined list of users (APP_ALLOWED_OWNERS)
    */
   fetchPublishedTemplates(): Promise<Model[]>
 }

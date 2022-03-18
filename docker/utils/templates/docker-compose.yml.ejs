@@ -26,18 +26,10 @@ services:
       dockerfile: docker/app/Dockerfile
     environment:
       NODE_ENV: <%- node_env %>
-      APP_COUCHBASE_ADMIN_USER: <%- app_couchbase_admin_user %>
-      APP_COUCHBASE_ADMIN_PASS: <%- app_couchbase_admin_pass %>
       APP_BASE_URL: "<%- app_base_url %>"
-      APP_DB_URI: "couchbase://<%- app_couchbase_hostname %>/"
-      APP_COUCHBASE_HOSTNAME: <%- app_couchbase_hostname %>
-      APP_COUCHBASE_RBAC_PASSWORD: <%- app_couchbase_rbac_password %>
       APP_ENABLE_NON_CONNECT_AUTH: "<%- app_enable_non_connect_auth -%>"
       APP_FROM_EMAIL: "<%- app_from_email %>"
       APP_GATEWAY_COOKIE_DOMAIN: "<%- app_gateway_cookie_domain %>"
-      APP_GATEWAY_HOSTNAME: "<%- app_gateway_hostname %>"
-      APP_GATEWAY_ADMIN_PORT: "<%- app_gateway_admin_port %>"
-      APP_GATEWAY_PUBLIC_PORT: "<%- app_gateway_public_port %>"
       APP_GOOGLE_AUTH_CALLBACK: "<%- app_google_auth_callback %>"
       APP_GOOGLE_CLIENT_ID: <%- app_google_client_id %>
       APP_GOOGLE_CLIENT_SECRET: <%- app_google_client_secret %>
@@ -77,18 +69,9 @@ services:
       dockerfile: docker/test_runner/Dockerfile
     environment:
       NODE_ENV: <%- node_env %>
-      APP_COUCHBASE_ADMIN_USER: <%- app_couchbase_admin_user %>
-      APP_COUCHBASE_ADMIN_PASS: <%- app_couchbase_admin_pass %>
       APP_BASE_URL: "<%- app_base_url %>"
-      APP_DB_URI: "couchbase://<%- app_couchbase_hostname %>/"
-      APP_COUCHBASE_HOSTNAME: <%- app_couchbase_hostname %>
-      APP_COUCHBASE_RBAC_PASSWORD: <%- app_couchbase_rbac_password %>
       APP_FROM_EMAIL: "<%- app_from_email %>"
-      APP_GATEWAY_HOSTNAME: "<%- app_gateway_hostname %>"
       APP_GATEWAY_COOKIE_DOMAIN: "<%- app_gateway_cookie_domain %>"
-      APP_PROJECTS_GATEWAY_COOKIE_DOMAIN: "<%- app_gateway_cookie_domain %>"
-      APP_GATEWAY_ADMIN_PORT: "<%- app_gateway_admin_port %>"
-      APP_GATEWAY_PUBLIC_PORT: "<%- app_gateway_public_port %>"
       APP_GOOGLE_AUTH_CALLBACK: "<%- app_google_auth_callback %>"
       APP_GOOGLE_CLIENT_ID: <%- app_google_client_id %>
       APP_GOOGLE_CLIENT_SECRET: <%- app_google_client_secret %>
