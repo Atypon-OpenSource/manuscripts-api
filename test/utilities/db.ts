@@ -15,10 +15,8 @@
  */
 
 import * as _ from 'lodash'
-import request from 'request-promise-native'
 import checksum from 'checksum'
 
-import { appDataAdminGatewayURI } from '../../src/Config/ConfigAccessors'
 import { BucketKey } from '../../src/Config/ConfigurationTypes'
 import { singleUseTokens, userList } from '../data/dump/user'
 import { userStatusList } from '../data/dump/userStatus'
@@ -34,7 +32,7 @@ import { userProfileList } from '../data/dump/userProfile'
 import { userTokensList } from '../data/dump/userToken'
 import { containerRequestList } from '../data/dump/containerRequest'
 import { submissionsList } from '../data/dump/submissions'
-import { validManuscript, validManuscript1 } from '../data/fixtures/manuscripts'
+//import { validManuscript, validManuscript1 } from '../data/fixtures/manuscripts'
 import { manuscriptList } from '../data/dump/manuscriptList'
 import { manuscriptNoteList } from '../data/dump/manuscriptNotes'
 import { externalFileList } from '../data/dump/externalFilesList'
@@ -48,10 +46,9 @@ import { snapshotList } from '../data/dump/SnapshotList'
 async function createUsers (): Promise<void> {
   const { userRepository, userEmailRepository } = DIContainer.sharedContainer
   for (const user of userList) {
-    await userRepository.create(_.clone(user), {})
+    await userRepository.create(_.clone(user))
     await userEmailRepository.create(
-      { _id: checksum(user.email, { algorithm: 'sha1' }) },
-      {}
+      { _id: checksum(user.email, { algorithm: 'sha1' }) }
     )
   }
 }
@@ -59,8 +56,7 @@ async function createUsers (): Promise<void> {
 async function createUserStatus (): Promise<void> {
   for (const status of userStatusList) {
     await DIContainer.sharedContainer.userStatusRepository.create(
-      _.clone(status),
-      {}
+      _.clone(status)
     )
   }
 }
@@ -68,8 +64,7 @@ async function createUserStatus (): Promise<void> {
 async function createApplications (): Promise<void> {
   for (const application of applicationList) {
     await DIContainer.sharedContainer.applicationRepository.create(
-      _.clone(application),
-      {}
+      _.clone(application)
     )
   }
 }
@@ -78,15 +73,14 @@ async function createSingleUseTokens (): Promise<void> {
   const singleUseTokenRepository =
     DIContainer.sharedContainer.singleUseTokenRepository
   for (const token of singleUseTokens) {
-    await singleUseTokenRepository.create(_.clone(token), {})
+    await singleUseTokenRepository.create(_.clone(token))
   }
 }
 
 async function createInvitationTokens (): Promise<void> {
   for (const token of invitationTokenList) {
     await DIContainer.sharedContainer.invitationTokenRepository.create(
-      _.clone(token),
-      {}
+      _.clone(token)
     )
   }
 }
@@ -94,8 +88,7 @@ async function createInvitationTokens (): Promise<void> {
 async function createInvitations (): Promise<void> {
   for (const invitation of invitationsList) {
     await DIContainer.sharedContainer.invitationRepository.create(
-      _.clone(invitation),
-      {}
+      _.clone(invitation)
     )
   }
 }
@@ -103,8 +96,7 @@ async function createInvitations (): Promise<void> {
 async function createProjectInvitations (): Promise<void> {
   for (const invitation of projectInvitationsList) {
     await DIContainer.sharedContainer.containerInvitationRepository.create(
-      _.clone(invitation),
-      {}
+      _.clone(invitation)
     )
   }
 }
@@ -112,8 +104,7 @@ async function createProjectInvitations (): Promise<void> {
 async function createLibraryInvitations (): Promise<void> {
   for (const invitation of libraryInvitationsList) {
     await DIContainer.sharedContainer.containerInvitationRepository.create(
-      _.clone(invitation),
-      {}
+      _.clone(invitation)
     )
   }
 }
@@ -121,8 +112,7 @@ async function createLibraryInvitations (): Promise<void> {
 async function createUserProfiles (): Promise<void> {
   for (const userProfile of userProfileList) {
     await DIContainer.sharedContainer.userProfileRepository.create(
-      _.clone(userProfile),
-      {}
+      _.clone(userProfile)
     )
   }
 }
@@ -130,8 +120,7 @@ async function createUserProfiles (): Promise<void> {
 async function createUserTokens (): Promise<void> {
   for (const userToken of userTokensList) {
     await DIContainer.sharedContainer.userTokenRepository.create(
-      _.clone(userToken),
-      {}
+      _.clone(userToken)
     )
   }
 }
@@ -139,8 +128,7 @@ async function createUserTokens (): Promise<void> {
 async function createProjects (): Promise<void> {
   for (const project of projectsList) {
     await DIContainer.sharedContainer.projectRepository.create(
-      _.clone(project),
-      {}
+      _.clone(project)
     )
   }
 }
@@ -148,8 +136,7 @@ async function createProjects (): Promise<void> {
 async function createLibraries (): Promise<void> {
   for (const library of librariesList) {
     await DIContainer.sharedContainer.libraryRepository.create(
-      _.clone(library),
-      {}
+      _.clone(library)
     )
   }
 }
@@ -157,8 +144,7 @@ async function createLibraries (): Promise<void> {
 async function createLibraryCollections (): Promise<void> {
   for (const libraryCollection of libraryCollectionsList) {
     await DIContainer.sharedContainer.libraryCollectionRepository.create(
-      _.clone(libraryCollection),
-      {}
+      _.clone(libraryCollection)
     )
   }
 }
@@ -166,8 +152,7 @@ async function createLibraryCollections (): Promise<void> {
 async function createContainerRequests (): Promise<void> {
   for (const request of containerRequestList) {
     await DIContainer.sharedContainer.containerRequestRepository.create(
-    _.clone(request),
-    {}
+    _.clone(request)
     )
   }
 }
@@ -175,8 +160,7 @@ async function createContainerRequests (): Promise<void> {
 async function createSubmission (): Promise<void> {
   for (const submission of submissionsList) {
     await DIContainer.sharedContainer.submissionRepository.create(
-      _.clone(submission),
-      {}
+      _.clone(submission)
     )
   }
 }
@@ -188,8 +172,7 @@ async function createManuscript (): Promise<void> {
 async function createManuscriptNotes (): Promise<void> {
   for (const note of manuscriptNoteList) {
     await DIContainer.sharedContainer.manuscriptNotesRepository.create(
-      _.clone(note),
-      {}
+      _.clone(note)
     )
   }
 }
@@ -197,8 +180,7 @@ async function createManuscriptNotes (): Promise<void> {
 async function createExternalFile (): Promise<void> {
   for (const externalFile of externalFileList) {
     await DIContainer.sharedContainer.externalFileRepository.create(
-      _.clone(externalFile),
-      {}
+      _.clone(externalFile)
     )
   }
 }
@@ -206,8 +188,7 @@ async function createExternalFile (): Promise<void> {
 async function createCorrections (): Promise<void> {
   for (const externalFile of correctionList) {
     await DIContainer.sharedContainer.correctionRepository.create(
-      _.clone(externalFile),
-      {}
+      _.clone(externalFile)
     )
   }
 }
@@ -215,8 +196,7 @@ async function createCorrections (): Promise<void> {
 async function createTemplates (): Promise<void> {
   for (const template of templates) {
     await DIContainer.sharedContainer.templateRepository.create(
-      _.clone(template),
-      {}
+      _.clone(template)
     )
   }
 }
@@ -224,8 +204,7 @@ async function createTemplates (): Promise<void> {
 async function createSnapshot (): Promise<void> {
   for (const template of snapshotList) {
     await DIContainer.sharedContainer.snapshotRepository.create(
-      _.clone(template),
-      {}
+      _.clone(template)
     )
   }
 }
@@ -357,119 +336,17 @@ export async function seed (options: SeedOptions): Promise<void> {
   await Promise.all(storagePromises)
 }
 
-const syncGatewayRepositories = new Set<string>([
-  'MPProject',
-  'MPCollaboration',
-  'MPUserProfile',
-  'MPContainerInvitation',
-  'MPInvitation',
-  'MPContainerRequest',
-  'MPSubmission',
-  'MPManuscriptNote',
-  'MPCorrection',
-  'MPLibrary',
-  'MPLibraryCollection',
-  'MPSnapshot'
-])
 
-const derivedBucketRepositories = new Set<string>([
-  'MPUserCollaborator'
-])
-
-export async function dropBucket (bucketKey: BucketKey): Promise<void> {
+export async function dropBucket (_bucketKey: BucketKey): Promise<void> {
   return
-  /*let payload = projectsList.reduce((acc: any, doc: any) => {
-    acc['MPProject:' + doc._id] = ['*']
-    return acc
-  }, {})
-  payload[validManuscript._id] = ['*']
-  payload[validManuscript1._id] = ['*']
-  await purge(bucketKey, payload)
-
-  payload = manuscriptNoteList.reduce((acc: any, doc: any) => {
-    acc[doc._id] = ['*']
-    return acc
-  }, {})
-  await purge(bucketKey, payload)
-
-  payload = externalFileList.reduce((acc: any, doc: any) => {
-    acc[doc._id] = ['*']
-    return acc
-  }, {})
-  await purge(bucketKey, payload)
-
-  payload = correctionList.reduce((acc: any, doc: any) => {
-    acc[doc._id] = ['*']
-    return acc
-  }, {})
-  await purge(bucketKey, payload)
-
-  payload = templates.reduce((acc: any, doc: any) => {
-    acc[doc._id] = ['*']
-    return acc
-  }, {})
-  await purge(bucketKey, payload)
-
-  payload = snapshotList.reduce((acc: any, doc: any) => {
-    acc[doc._id] = ['*']
-    return acc
-  }, {})
-  await purge(bucketKey, payload)
-
-  payload = libraryCollectionsList.reduce((acc: any, doc: any) => {
-    acc['MPLibraryCollection:' + doc._id] = ['*']
-    return acc
-  }, {})
-  await purge(bucketKey, payload)
-
-  payload = projectInvitationsList.reduce((acc: any, doc: any) => {
-    acc['MPContainerInvitation:' + doc._id] = ['*']
-    return acc
-  }, {})
-  await purge(bucketKey, payload)
-
-  payload = containerRequestList.reduce((acc: any, doc: any) => {
-    acc['MPContainerRequest:' + doc._id] = ['*']
-    return acc
-  }, {})
-  await purge(bucketKey, payload)
-
-  payload = librariesList.reduce((acc: any, doc: any) => {
-    acc['MPLibrary:' + doc._id] = ['*']
-    return acc
-  }, {})
-  await purge(bucketKey, payload)
-
-  payload = invitationsList.reduce((acc: any, doc: any) => {
-    acc['MPInvitation:' + doc._id] = ['*']
-    return acc
-  }, {})
-  await purge(bucketKey, payload)*/
 }
 
-async function purge (bucketKey: BucketKey, payload: any) {
-  await request({
-    method: 'POST',
-    uri: `${appDataAdminGatewayURI(bucketKey)}/_purge`,
-    json: true,
-    body: payload,
-    resolveWithFullResponse: true,
-    simple: false
-  })
-}
 
 export async function drop (): Promise<void> {
   await testDatabase()
-  const repositories = DIContainer.sharedContainer.repositories/*.filter(
-    (x: any) =>
-      !syncGatewayRepositories.has(x.objectType) &&
-      !derivedBucketRepositories.has(x.objectType)
-  )*/
+  const repositories = DIContainer.sharedContainer.repositories
 
-  const gatewayRepositories = DIContainer.sharedContainer.gatewayRepositories/*.filter(
-    (x: any) =>
-      syncGatewayRepositories.has(x.objectType)
-  )*/
+  const gatewayRepositories = DIContainer.sharedContainer.gatewayRepositories
 
   await Promise.all([
     ...repositories.map(x => x.remove(null)) as any,

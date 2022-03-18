@@ -14,15 +14,11 @@
  * limitations under the License.
  */
 
-import { Chance } from 'chance'
 
 import { drop, seed, testDatabase, dropBucket } from '../../../../../utilities/db'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
 import { BucketKey } from '../../../../../../src/Config/ConfigurationTypes'
-import { GATEWAY_BUCKETS, SyncService } from '../../../../../../src/DomainServices/Sync/SyncService'
-import { appDataPublicGatewayURI, appDataAdminGatewayURI } from '../../../../../../src/Config/ConfigAccessors'
-import { RecordNotFoundError } from '../../../../../../src/Errors'
-import { Section, Project } from '@manuscripts/manuscripts-json-schema'
+import { SyncService } from '../../../../../../src/DomainServices/Sync/SyncService'
 import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
 import { SeedOptions } from '../../../../../../src/DataAccess/Interfaces/SeedOptions'
 
