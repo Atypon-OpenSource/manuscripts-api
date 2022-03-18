@@ -16,13 +16,8 @@
 
 import { Model, LibraryCollection } from '@manuscripts/manuscripts-json-schema'
 import { selectActiveResources } from '@manuscripts/manuscripts-json-schema-utils'
-import request from 'request-promise-native'
-import * as HttpStatus from 'http-status-codes'
 
 import { SGRepository } from '../SGRepository'
-import { GatewayInaccessibleError, SyncError } from '../../Errors'
-import { SYNC_GATEWAY_COOKIE_NAME } from '../../DomainServices/Sync/SyncService'
-import { appDataPublicGatewayURI, appDataAdminGatewayURI } from '../../Config/ConfigAccessors'
 import {
   DocumentIdentifyingMetadata,
   IContainerRepository,
@@ -247,57 +242,6 @@ export abstract class ContainerRepository<Container, ContainerLike, PatchContain
     }
 
     return this.database.bucket.findMany(Q)
-  }
-
-  // TODO:: should cover in the tests
-  /* istanbul ignore next */
-  public async removeContainerResources(containerId: string, syncSession: string) {
-    const containerResources = await this.getContainerResourcesMetadata(containerId)
-
-    for (const resource of containerResources) {
-      let uri
-      let headers
-      let response: any
-
-      if (
-        !resource.id.startsWith('MPContainerInvitation:') &&
-        !resource.id.startsWith('MPContainerRequest:')
-      ) {
-        try {
-          if (resource.id.startsWith('MPUserProject:')) {
-            uri = `${appDataAdminGatewayURI(this.bucketKey)}/${resource.id}?rev=${resource.rev}`
-          } else {
-            uri = `${appDataPublicGatewayURI(this.bucketKey)}/${resource.id}?rev=${resource.rev}`
-
-            headers = {
-              cookie: `${SYNC_GATEWAY_COOKIE_NAME}=${syncSession}`,
-            }
-          }
-
-          const options = {
-            method: 'DELETE',
-            uri,
-            headers,
-            json: true,
-            resolveWithFullResponse: true,
-            simple: false,
-          }
-
-          response = await request(options)
-        } catch (error) {
-          throw new GatewayInaccessibleError(uri)
-        }
-
-        if (response.statusCode !== HttpStatus.OK && response.statusCode !== HttpStatus.NOT_FOUND) {
-          throw new SyncError(
-            `Failed to delete SyncGateway document (${uri}: ${response.statusCode})`,
-            response
-          )
-        }
-      } else {
-        await this.remove(resource.id)
-      }
-    }
   }
 
   /**
