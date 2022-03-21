@@ -19,51 +19,50 @@ import { ConfigurationContainer } from '../../src/Config/ConfigurationTypes'
 jest.mock('../../src/Config/Config', () => {
   const config: ConfigurationContainer = {
     shackles: {
-      baseUrl: 'someUrl'
+      baseUrl: 'someUrl',
     },
     DB: {
       buckets: {
         user: 'manuscripts_user',
         data: 'bkt',
         state: 'state',
-        derivedData: 'derived_data'
+        derivedData: 'derived_data',
       },
-      initializeContents: false,
       username: 'Administrator',
       password: '123456',
       bucketAdminPassword: 'zuippadui',
       uri: 'couchbase://couchbase/',
-      bucketOptions: {}
+      bucketOptions: {},
     },
     gateway: {
       hostname: 'sync_gateway',
       ports: {
         admin: '4985',
-        public: '4984'
+        public: '4984',
       },
-      cookieDomain: '127.0.0.1'
+      cookieDomain: '127.0.0.1',
     },
     AWS: {
       accessKeyId: 'made-up-access-key-id',
       secretAccessKey: 'made-up-secret-access-key',
-      region: 'made-up-region'
+      region: 'made-up-region',
     },
     API: {
       port: 3000,
       oauthStateEncryptionKey: 'key-12345',
-      hostname: 'https://api-server.atypon.com'
+      hostname: 'https://api-server.atypon.com',
     },
     auth: {
       jwtSecret: '123456',
       skipVerification: false,
       hashSaltRounds: 3,
       serverSecret: '123456789',
-      enableNonConnectAuth: true
+      enableNonConnectAuth: true,
     },
     google: {
       clientID: 'herp',
       clientSecret: 'derp',
-      authCallback: 'the-google-callback'
+      authCallback: 'the-google-callback',
     },
     IAM: {
       clientID: 'test',
@@ -71,18 +70,18 @@ jest.mock('../../src/Config/Config', () => {
       authCallbackPath: 'https://iam-test.atypon.com/callback',
       libraryURL: 'https://iam-test.atypon.com/library',
       apiServerURL: ['https://iam-test.atypon.com/api-server'],
-      authServerPermittedURLs: ['https://iam-test.atypon.com']
+      authServerPermittedURLs: ['https://iam-test.atypon.com'],
     },
     email: {
       fromAddress: 'no-reply@manuscriptsapp.com',
-      fromBaseURL: 'http://localhost:3000'
+      fromBaseURL: 'http://localhost:3000',
     },
     server: {
       storeOnlySSLTransmittedCookies: true,
-      allowedCORSOrigins: ['http://localhost:8080']
+      allowedCORSOrigins: ['http://localhost:8080'],
     },
     literatum: {
-      allowedIPAddresses: ['localhost']
+      allowedIPAddresses: ['localhost'],
     },
     apps: {
       knownClientApplications: [
@@ -90,9 +89,9 @@ jest.mock('../../src/Config/Config', () => {
           _id: 'ClientApplication|com.manuscripts.Manuscripts',
           _type: 'ClientApplication',
           secret: 'foobar',
-          name: 'Manuscripts'
-        }
-      ]
+          name: 'Manuscripts',
+        },
+      ],
     },
     scopes: [
       {
@@ -101,7 +100,7 @@ jest.mock('../../src/Config/Config', () => {
         publicKeyPEM: null,
         publicKeyJWK: null,
         expiry: 15,
-        identifier: 'derp'
+        identifier: 'derp',
       },
       {
         name: 'file-picker',
@@ -109,7 +108,7 @@ jest.mock('../../src/Config/Config', () => {
         publicKeyPEM: null,
         publicKeyJWK: null,
         expiry: 15,
-        identifier: 'iden'
+        identifier: 'iden',
       },
       {
         name: 'shackles',
@@ -117,25 +116,25 @@ jest.mock('../../src/Config/Config', () => {
         publicKeyPEM: null,
         publicKeyJWK: null,
         expiry: 15,
-        identifier: 'iden'
-      }
+        identifier: 'iden',
+      },
     ],
 
     pressroom: {
       baseurl: 'https://pressroom-js-dev.manuscripts.io',
-      apiKey: 'something-random'
+      apiKey: 'something-random',
     },
 
     template: {
       allowedOwners: ['User_valid-user@manuscriptsapp.com'],
-      allowedProjects: ['MPProject:valid-project-id-2', 'MPProject:valid-project-id-invalid']
-    }
+      allowedProjects: ['MPProject:valid-project-id-2', 'MPProject:valid-project-id-invalid'],
+    },
   }
 
   const Environment = {
     Test: 'test',
     Development: 'development',
-    Production: 'production'
+    Production: 'production',
   }
 
   return {
@@ -143,7 +142,7 @@ jest.mock('../../src/Config/Config', () => {
     Environment,
     BucketKey: {
       User: 'user',
-      Data: 'data'
-    }
+      Data: 'data',
+    },
   }
 })

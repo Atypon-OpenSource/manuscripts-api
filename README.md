@@ -80,33 +80,6 @@ a) In `.env.example` file
 
 b) In `docker/utils/templates/docker-compose.yml.ejs`file. Make sure to add it under respective service as well as under `test_runner` configuration
 
-## Initializing required database state
-
-For correct behaviour, manuscripts-api requires an initialization step. At that time of writing, the resources initialized include [GSI database indices](https://docs.couchbase.com/server/6.0/learn/services-and-indexes/indexes/global-secondary-indexes.html), [map-reduce views](https://docs.couchbase.com/server/4.1/developer-guide/views-intro.html) and [eventing functions](https://docs.couchbase.com/server/current/eventing/eventing-overview.html).
-
-Two configuration variables control the initialization time behaviour:
-
-- `APP_INITIALIZE`: when set to value `1`, initialization is done before either quitting or starting up listening to the specified HTTP port (specified with `APP_PORT`). When set to `0`, no initialization is done.
-- `APP_RUN_AFTER_INITIALIZE`: determines whether to quit after an initialization was done.
-
-Editing this variables is not commonly necessary for local development purposes because the scripts under `bin` take care of setting the above variables to appropriate values. You will need to adjust them for production purposes.
-
-## Data Migration
-
-For this purpose there is a folder inside bin `./bin/data-migration` which contains the data migration js scripts:
--  `patch-connectUserID.js` which will update all the connectUserIDs, add --onlyMissing flag to patch only the missing once.
-
-## Eventing Function Re-Deployment
-
-To redeploy an eventing function you need to:
-
-1. Access Couchbase Admin UI portal.
-2. On the sidebar open eventing.
-3. You will see all the eventing functions, click undeploy on the function you want to redeploy.
-4. After the undeployment finishes, you will be allowed to change the function and then click deploy.
-5. You will be shown 2 choices, `Everything` and `From now`, `Everything` will run through all the already existing objects and will run them through the function, while `From now` will just deploy the function.
-6. Wait until bootstrapping ends.
-
 ## Configuration
 
 The service is configured using environment variables and/or a [.env](https://github.com/motdotla/dotenv) file
@@ -173,12 +146,6 @@ placed at the root of the repository.
   <dt>APP_SKIP_ACCOUNT_VERIFICATION</dt>
   <dd>If set to '1', skip the account verification step at account creation.</dd>
 
-  <dt>APP_INITIALIZE</dt>
-  <dd>If set to '1' when executing with the manuscripts-api provided Docker container for the service  (which executes manuscripts-api through the docker/app/entry_point.sh script, the service will be brought up to initialise database state. Depending on value of <pre>$APP_RUN_AFTER_INITIALIZE</pre>, the contained application will exit after initialisation, or start serving at the <pre>$APP_PORT</pre>.</dd>
-
-  <dt>APP_RUN_AFTER_INITIALIZE</dt>
-  <dd>If set to '1' along with <pre>$APP_INITIALIZE</pre> being set to 1 with manuscripts-api executed through the provided Docker container, start serving at <pre>$APP_PORT</pre> after initialising database state. If <pre>$APP_INITIALIZE</pre> is set  to `1` and <pre>$APP_RUN_AFTER_INITIALIZE</pre> not, will exit after initialization. Has no effect if <pre>$APP_INITIALIZE</pre> is not set  to '1'.</dd>
-
   <dt>APP_ALLOW_ANONYMOUS_USERS</dt>
   <dd>If set to '1', enables endpoint for returning connection credentials (including a Sync Gateway session cookie) for an anonymous user.</dd>
 
@@ -189,7 +156,3 @@ placed at the root of the repository.
   <dd>An array of semicolon separated records to describe scopes for which the server can issue access tokens in JWT form: fields are comma separated, denoting for each record: scope name,UTF8 encoded secret or base64 encoded PEM formatted private key,empty string (if symmetric secret is used) or a base64 encoded PEM formatted public key,expiry in minutes</dd>
 
 </dl>
-
-
-
-ADD TRIGGER FOR EXPIRE

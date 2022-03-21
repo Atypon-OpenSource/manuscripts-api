@@ -147,16 +147,8 @@ export class Configuration implements ConfigurationContainer {
       derivedData: getString(env.APP_DERIVED_DATA_BUCKET, 'APP_DERIVED_DATA_BUCKET'),
     }
 
-    // database initialization should not be happening without INITIALIZE_DATABASE='true',
-    // except for when running tests when it should occur also when INITIALIZE_DATABASE was omitted.
-    /* istanbul ignore next */
-    const initialize =
-      env.INITIALIZE_DATABASE === 'true' ||
-      (typeof env.INITIALIZE_DATABASE === 'undefined' && env.NODE_ENV === Environment.Test)
-
     this.DB = {
       buckets,
-      initializeContents: initialize,
     }
 
     this.AWS = {

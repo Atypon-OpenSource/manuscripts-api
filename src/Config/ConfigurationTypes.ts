@@ -44,7 +44,6 @@ export enum BucketKey {
 }
 
 export type DatabaseConfiguration = {
-  readonly initializeContents: boolean
   readonly buckets: { [name in BucketKey]: string }
 }
 

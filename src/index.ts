@@ -40,27 +40,17 @@ function main() {
     })
     .then(async () => {
       const container = DIContainer.sharedContainer
-      /* istanbul ignore next */
-      if (config.DB.initializeContents) {
-        return Promise.resolve()
-      }
       container.server.bootstrap()
       return container.server.start(config.API.port)
     })
     .then(() => {
-      if (config.DB.initializeContents) {
-        log.info(`Manuscripts.io ${ServerStatus.version} state initialized 👷`)
-      } else {
-        log.info(`Manuscripts.io ${ServerStatus.version} started 🚀`)
-      }
+      log.info(`Manuscripts.io ${ServerStatus.version} started 🚀`)
     })
     .then(() => {
-      if (!config.DB.initializeContents) {
-        cron.schedule('0 1 * * *', async () => {
-          log.debug('running a task every day')
-          await DIContainer.sharedContainer.userService.clearUsersData()
-        })
-      }
+      cron.schedule('0 1 * * *', async () => {
+        log.debug('running a task every day')
+        await DIContainer.sharedContainer.userService.clearUsersData()
+      })
     })
     .catch((error) => {
       log.error('An error occurred while bootstrapping app:', error)

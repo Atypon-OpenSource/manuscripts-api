@@ -54,11 +54,12 @@ jobs:
           npm ci
           ./bin/build-env.js .env.example > .env
           export env $(grep -v '^#' ".env" | xargs)
-          APP_INITIALIZE=1 NODE_ENV=production npx gulp -f docker/utils/Gulpfile.js
+          NODE_ENV=production npx gulp -f docker/utils/Gulpfile.js
           cd docker
           cp ../.env .env
           docker-compose build --pull
           docker-compose up --abort-on-container-exit
+          docker-compose down
 
   unit_tests:
     timeout-minutes: 15
