@@ -42,11 +42,6 @@ function main() {
       const container = DIContainer.sharedContainer
       /* istanbul ignore next */
       if (config.DB.initializeContents) {
-        log.debug(`Disconnecting from database backend…`)
-        await container.userBucket.bucket.disconnect()
-        await container.dataBucket.bucket.disconnect()
-        await container.appStateBucket.bucket.disconnect()
-        await container.derivedDataBucket.bucket.disconnect()
         return Promise.resolve()
       }
       container.server.bootstrap()

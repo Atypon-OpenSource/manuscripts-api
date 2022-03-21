@@ -44,7 +44,6 @@ ENV APP_TEST_ACTION="${APP_TEST_ACTION}"
 ENV APP_PRESSROOM_BASE_URL="${APP_PRESSROOM_BASE_URL}"
 ENV APP_PRESSROOM_APIKEY="${APP_PRESSROOM_APIKEY}"
 ENV APP_DATABASE_URL="${APP_DATABASE_URL}"
-ENV WAIT_FOR_SYNC_GATEWAY="true"
 
 WORKDIR /usr/src/app
 
@@ -61,8 +60,6 @@ COPY ./.env.example ./.env.example
 COPY ./test ./test
 
 COPY tsconfig.json tsconfig.build.json ./
-COPY docker/wait_for_couchbase.sh /opt
-COPY docker/wait_for_n1ql_service.js /opt
 
 COPY babel.config.js ./
 COPY jest.config.*.test.js ./

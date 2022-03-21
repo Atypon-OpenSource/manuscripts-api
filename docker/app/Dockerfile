@@ -22,8 +22,6 @@ COPY ./.env.example ./.env.example
 COPY ./docker/app/entry_point.sh ./entry_point.sh
 
 COPY tsconfig.json tsconfig.build.json ./
-COPY docker/wait_for_n1ql_service.js /opt
-COPY docker/wait_for_couchbase.sh /opt
 
 RUN ./bin/build-env.js .env.example > .env
 

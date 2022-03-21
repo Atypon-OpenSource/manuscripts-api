@@ -17,56 +17,50 @@ Configuration variables should be set in `.env`
 
 ## Run the app
 
-Run Couchbase, Sync Gateway and API server in Docker:
+Run Postgres and API server in Docker:
 
 ```
 ./bin/run-dockerized-app.sh
 ```
 
-Once the database is ready, the API will be available at <http://127.0.0.1:3000/>
-
-**NOTE!** If running the above command on macOS or Windows, check that your Docker installation is granted more than 2GB of a RAM quota (Preferences > Advanced > Memory).
-Otherwise you may see cryptic error messages from manuscripts-api attempting to connect to the database stating "Operation not supported".
-
-Minimum requirements: Node v8.0 or later (for production use v8 is recommended, but 9 and 10 also work).
+The API will be available at <http://127.0.0.1:3000/>
 
 ## Test the app
 
-Run Couchbase, Sync Gateway and the test runner in Docker:
+Run Postgres and the test runner in Docker:
 
 ```
 ./bin/run-dockerized-tests.sh
 ```
 
-Run Couchbase and Sync Gateway in Docker, and run the tests locally:
+Run Postgres in Docker, and run the tests locally:
 
 ```
-./bin/run-dockerized-db+sg.sh
+./bin/run-dockerized-db.sh
 npm run test
 ```
 
 You may need to edit your hosts file:
 
 ```
-127.0.0.1 couchbase
-127.0.0.1 sync_gateway
+127.0.0.1 postgres
 ```
 
 ## Development
 
-Run Couchbase and Sync Gateway in Docker, and run the API server locally:
+Run Postgres in Docker, and run the API server locally:
 
 ```
-./bin/run-dockerized-db+sg.sh
+./bin/run-dockerized-db.sh
 npm run dev
 ```
 
 ## Debugging with VS Code
 
-Run Couchbase and Sync Gateway in Docker, and run the tests locally:
+Run Postgres in Docker, and run the tests locally:
 
 ```
-./bin/run-dockerized-db+sg.sh
+./bin/run-dockerized-db.sh
 ```
 
 You will now be able to use of the three launch configurations for VS Code:
@@ -86,8 +80,6 @@ a) In `.env.example` file
 
 b) In `docker/utils/templates/docker-compose.yml.ejs`file. Make sure to add it under respective service as well as under `test_runner` configuration
 
-c) In CI Pipeline setting's -> "Environment variables" section, add a new environment variable with appropriate value
-
 ## Initializing required database state
 
 For correct behaviour, manuscripts-api requires an initialization step. At that time of writing, the resources initialized include [GSI database indices](https://docs.couchbase.com/server/6.0/learn/services-and-indexes/indexes/global-secondary-indexes.html), [map-reduce views](https://docs.couchbase.com/server/4.1/developer-guide/views-intro.html) and [eventing functions](https://docs.couchbase.com/server/current/eventing/eventing-overview.html).
@@ -101,7 +93,7 @@ Editing this variables is not commonly necessary for local development purposes 
 
 ## Data Migration
 
-For this purpose there is a folder inside bin `./bin/data-migration` which contains the data migration js scripts: 
+For this purpose there is a folder inside bin `./bin/data-migration` which contains the data migration js scripts:
 -  `patch-connectUserID.js` which will update all the connectUserIDs, add --onlyMissing flag to patch only the missing once.
 
 ## Eventing Function Re-Deployment
