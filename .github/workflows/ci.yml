@@ -58,13 +58,20 @@ jobs:
           cd docker
           cp ../.env .env
           docker-compose build --pull
-          docker-compose up --abort-on-container-exit
-          docker-compose down
+          docker-compose up -d
+          sleep 20
+          if [[  -z `lsof -i:3000` ]]; then
+              echo "server is running"
+              exit 0
+          else
+              echo "server is NOT running"
+              exit 1
+          fi
 
   unit_tests:
     timeout-minutes: 15
     runs-on: ubuntu-latest
-    needs: run_app
+    needs: build_lint
     steps:
       - name: checkout code repository
         uses: actions/checkout@v2
@@ -92,7 +99,7 @@ jobs:
   integration_tests:
     timeout-minutes: 15
     runs-on: ubuntu-latest
-    needs: run_app
+    needs: build_lint
     steps:
       - name: checkout code repository
         uses: actions/checkout@v2
