@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-import { SchemaDefinition, ModelOptions } from 'ottoman'
-
 import { QueryOptions } from './QueryOptions'
 import { ValidationError } from '../../Errors'
 import { IdentifiableEntity, TypedEntity } from './IdentifiableEntity'
@@ -97,9 +95,7 @@ export interface IndexedRepository<
    */
   fullyQualifiedId(id: string): string
 
-  buildSchemaDefinition(): SchemaDefinition
-
-  buildModelOptions(): ModelOptions
+  buildSchemaDefinition(): any
 }
 
 /** Sets the document's _type property if it were null before. Throws an exception if an unexpected non-null value is set. */

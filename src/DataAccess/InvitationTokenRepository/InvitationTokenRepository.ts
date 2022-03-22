@@ -14,11 +14,6 @@
  * limitations under the License.
  */
 
-import {
-  SchemaDefinition as OttomanSchemaDefinition,
-  ModelOptions as OttomanModelOptions,
-} from 'ottoman'
-
 import { SQLRepository } from '../SQLRepository'
 import { IInvitationTokenRepository } from '../Interfaces/IInvitationTokenRepository'
 import { InvitationToken, UpdateInvitationToken } from '../../Models/UserModels'
@@ -51,18 +46,7 @@ export class InvitationTokenRepository
     return 'InvitationToken'
   }
 
-  public buildModelOptions(): OttomanModelOptions {
-    return {
-      index: {
-        findByToken: {
-          type: 'n1ql',
-          by: 'token',
-        },
-      },
-    }
-  }
-
-  public buildSchemaDefinition(): OttomanSchemaDefinition {
+  public buildSchemaDefinition(): any {
     return {
       _id: {
         type: 'string',

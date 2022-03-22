@@ -14,11 +14,6 @@
  * limitations under the License.
  */
 
-import {
-  SchemaDefinition as OttomanSchemaDefinition,
-  ModelOptions as OttomanModelOptions,
-} from 'ottoman'
-
 import { SQLRepository } from '../SQLRepository'
 import { IUserEventRepository } from '../Interfaces/IUserEventRepository'
 import { QueryCriteria } from '../Interfaces/QueryCriteria'
@@ -39,18 +34,7 @@ export class UserEventRepository
     return 'UserEvent'
   }
 
-  public buildModelOptions(): OttomanModelOptions {
-    return {
-      index: {
-        findByUserId: {
-          type: 'n1ql',
-          by: 'userId',
-        },
-      },
-    }
-  }
-
-  public buildSchemaDefinition(): OttomanSchemaDefinition {
+  public buildSchemaDefinition(): any {
     return {
       _id: {
         type: 'string',

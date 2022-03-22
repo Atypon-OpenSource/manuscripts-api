@@ -14,10 +14,6 @@
  * limitations under the License.
  */
 
-import {
-  SchemaDefinition as OttomanSchemaDefinition,
-  ModelOptions as OttomanModelOptions,
-} from 'ottoman'
 import { v4 as uuid_v4 } from 'uuid'
 
 import { SQLRepository } from '../SQLRepository'
@@ -58,22 +54,7 @@ export class SingleUseTokenRepository
     return 'SingleUseToken'
   }
 
-  public buildModelOptions(): OttomanModelOptions {
-    return {
-      index: {
-        findByUserId: {
-          type: 'n1ql',
-          by: 'userId',
-        },
-        findByTokenType: {
-          type: 'n1ql',
-          by: 'tokenType',
-        },
-      },
-    }
-  }
-
-  public buildSchemaDefinition(): OttomanSchemaDefinition {
+  public buildSchemaDefinition(): any {
     return {
       _id: {
         type: 'string',

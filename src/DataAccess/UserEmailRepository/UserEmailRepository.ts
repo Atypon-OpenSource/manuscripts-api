@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-import { SchemaDefinition as OttomanSchemaDefinition } from 'ottoman'
-
 import { SQLRepository } from '../SQLRepository'
 import { IUserEmailRepository } from '../Interfaces/IUserEmailRepository'
 import { UserEmail } from '../../Models/UserModels'
@@ -31,7 +29,7 @@ class UserEmailRepository
     return 'UserEmail'
   }
 
-  public buildSchemaDefinition(): OttomanSchemaDefinition {
+  public buildSchemaDefinition(): any {
     return {
       _id: {
         type: 'string',

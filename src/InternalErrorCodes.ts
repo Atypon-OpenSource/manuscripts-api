@@ -22,7 +22,6 @@ export enum InternalErrorCode {
   InvalidBucketError = 'CB_INVALID_BUCKET',
   DatabaseDesignDocumentInaccessibleError = 'DB_DESIGN_DOC_INACCESSIBLE',
   GatewayInaccessibleError = 'SG_INACCESSIBLE',
-  NoDocumentMapperError = 'NO_DOCUMENT_MAPPER',
   MissingQueryParameterError = 'QUERY_PARAM_NOT_FOUND',
   MissingContainerError = 'CONTAINER_NOT_FOUND',
   MissingProductionNoteError = 'PN_NOTES_NOT_FOUND',

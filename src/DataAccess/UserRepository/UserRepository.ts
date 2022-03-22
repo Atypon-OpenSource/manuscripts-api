@@ -14,11 +14,6 @@
  * limitations under the License.
  */
 
-import {
-  SchemaDefinition as OttomanSchemaDefinition,
-  ModelOptions as OttomanModelOptions,
-} from 'ottoman'
-
 import { SQLRepository } from '../SQLRepository'
 import { IUserRepository } from '../Interfaces/IUserRepository'
 import { UserQueryCriteria } from '../Interfaces/QueryCriteria'
@@ -49,25 +44,7 @@ export class UserRepository
     return 'User'
   }
 
-  public buildModelOptions(): OttomanModelOptions {
-    return {
-      index: {
-        findByEmail: {
-          type: 'n1ql',
-          by: 'email',
-        },
-        findByName: {
-          type: 'n1ql',
-          by: 'name',
-        },
-        findByConnectUserID: {
-          type: 'n1ql',
-          by: 'connectUserID',
-        },
-      },
-    }
-  }
-  public buildSchemaDefinition(): OttomanSchemaDefinition {
+  public buildSchemaDefinition(): any {
     return {
       _id: {
         type: 'string',

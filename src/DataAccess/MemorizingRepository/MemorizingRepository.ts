@@ -14,10 +14,6 @@
  * limitations under the License.
  */
 
-import {
-  SchemaDefinition as OttomanSchemaDefinition,
-  ModelOptions as OttomanModelOptions,
-} from 'ottoman'
 import { IndexedRepository } from '../Interfaces/IndexedRepository'
 import { IdentifiableEntity } from '../Interfaces/IdentifiableEntity'
 import { QueryCriteria } from '../Interfaces/QueryCriteria'
@@ -102,13 +98,8 @@ export class MemorizingRepository<
   }
 
   /* istanbul ignore next */
-  public buildSchemaDefinition(): OttomanSchemaDefinition {
+  public buildSchemaDefinition(): any {
     return this.repository.buildSchemaDefinition()
-  }
-
-  /* istanbul ignore next */
-  public buildModelOptions(): OttomanModelOptions {
-    return this.repository.buildModelOptions()
   }
 
   public async getById(id: string): Promise<TEntity | null> {

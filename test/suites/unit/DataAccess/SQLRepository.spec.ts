@@ -19,7 +19,12 @@ import '../../../utilities/dbMock'
 import { Chance } from 'chance'
 import { UserRepository } from '../../../../src/DataAccess/UserRepository/UserRepository'
 import { validUser1, validNewUser, NewUserNoId } from '../../../data/fixtures/UserRepository'
-import { DatabaseError, ValidationError, NoBucketError, RecordNotFoundError, NoDocumentMapperError } from '../../../../src/Errors'
+import {
+  DatabaseError,
+  ValidationError,
+  NoBucketError,
+  RecordNotFoundError,
+} from '../../../../src/Errors'
 import { UserStatusRepository } from '../../../../src/DataAccess/UserStatusRepository/UserStatusRepository'
 
 import { SQLDatabase } from '../../../../src/DataAccess/SQLDatabase'
@@ -29,7 +34,7 @@ import { TEST_TIMEOUT } from '../../../utilities/testSetup'
 
 jest.setTimeout(TEST_TIMEOUT)
 
-function testDatabase (): any {
+function testDatabase(): any {
   return new SQLDatabase(config.DB, BucketKey.User)
 }
 
@@ -54,8 +59,8 @@ describe('SQLRepository Create', () => {
 
     repository.modelConstructor = {
       schema: {
-        validate: (_a: any, cb: Function) => cb(null)
-      }
+        validate: (_a: any, cb: Function) => cb(null),
+      },
     }
 
     const chance = new Chance()
@@ -63,7 +68,7 @@ describe('SQLRepository Create', () => {
     return expect(
       repository.create({
         email: chance.email(),
-        name: chance.name()
+        name: chance.name(),
       })
     ).rejects.toThrowError(DatabaseError)
   })
@@ -79,62 +84,49 @@ describe('SQLRepository Create', () => {
 
     repository.modelConstructor = {
       schema: {
-        validate: (_a: any, cb: Function) => cb(null)
-      }
+        validate: (_a: any, cb: Function) => cb(null),
+      },
     }
 
     const user = await repository.create({
       _id: 'valid-user2@manuscriptsapp.com',
       email: 'valid-user2@manuscriptsapp.com',
-      name: 'Valid System User'
+      name: 'Valid System User',
     })
 
     expect(user).toMatchSnapshot()
   })
-
-  test('should fail if database.documentMapper not set', () => {
-    const db = testDatabase()
-    const repository: any = new UserRepository(db)
-    repository.database = {}
-    return expect(repository.create(validUser1)).rejects.toThrowError(NoDocumentMapperError)
-  })
 })
 
 describe('SQLRepository patch', () => {
-  test('should fail if database.documentMapper not set', () => {
-    const db = testDatabase()
-    const repository: any = new UserRepository(db)
-    repository.database = {}
-    const id = chance.hash()
-    return expect(repository.patch(id, { name: chance.name() })).rejects.toThrowError()
-  })
-
   test('should fail key not exists', () => {
     const db = testDatabase()
     const chance = new Chance()
 
     const errorObj = {
-      message: 'An error occurred'
+      message: 'An error occurred',
     }
 
-    db.bucket.replace.mockImplementationOnce((_key: any, _document: any) => Promise.reject(errorObj))
+    db.bucket.replace.mockImplementationOnce((_key: any, _document: any) =>
+      Promise.reject(errorObj)
+    )
 
     const repository: any = new UserRepository(db)
 
     repository.modelConstructor = {
       schema: {
-        validate: (_a: any, cb: Function) => cb(null)
-      }
+        validate: (_a: any, cb: Function) => cb(null),
+      },
     }
 
     return expect(
       repository.patch(validUser1._id, {
-        name: chance.name()
+        name: chance.name(),
       })
     ).rejects.toThrowError(DatabaseError)
   })
 
-  xtest('should fail if id not exists', () => {
+  test.skip('should fail if id not exists', () => {
     const db = testDatabase()
     const chance = new Chance()
 
@@ -143,13 +135,13 @@ describe('SQLRepository patch', () => {
     const repository: any = new UserRepository(db)
     repository.modelConstructor = {
       schema: {
-        validate: (_a: any, cb: Function) => cb(null)
-      }
+        validate: (_a: any, cb: Function) => cb(null),
+      },
     }
 
     return expect(
       repository.patch(validUser1._id, {
-        name: chance.name()
+        name: chance.name(),
       })
     ).rejects.toThrowError(RecordNotFoundError)
   })
@@ -162,7 +154,7 @@ describe('SQLRepository patch', () => {
     return expect(
       repository.patch(validUser1._id, {
         _id: chance.string(),
-        name: chance.name()
+        name: chance.name(),
       })
     ).rejects.toThrowError(ValidationError)
   })
@@ -171,23 +163,27 @@ describe('SQLRepository patch', () => {
     const db = testDatabase()
 
     const errorObj = {
-      message: 'An error occurred'
+      message: 'An error occurred',
     }
 
-    db.bucket.query.mockImplementationOnce((_statement: any) => Promise.resolve([{ [db.bucket._name]: validUser1 }]))
+    db.bucket.query.mockImplementationOnce((_statement: any) =>
+      Promise.resolve([{ [db.bucket._name]: validUser1 }])
+    )
 
-    db.bucket.replace.mockImplementationOnce((_key: any, _document: any) => Promise.reject(errorObj))
+    db.bucket.replace.mockImplementationOnce((_key: any, _document: any) =>
+      Promise.reject(errorObj)
+    )
 
     const repository: any = new UserRepository(db)
     repository.modelConstructor = {
       schema: {
-        validate: (_a: any, cb: Function) => cb(null)
-      }
+        validate: (_a: any, cb: Function) => cb(null),
+      },
     }
 
     return expect(
       repository.patch(validUser1._id, {
-        name: 'Cody Rodriquez'
+        name: 'Cody Rodriquez',
       })
     ).rejects.toThrowError(DatabaseError)
   })
@@ -197,18 +193,22 @@ describe('SQLRepository patch', () => {
 
     const validUser = { data: Object.assign(validUser1, { name: 'Cody Rodriquez' }) }
 
-    db.bucket.replace.mockImplementationOnce((_key: any, _document: any) => Promise.resolve(validUser))
+    db.bucket.replace.mockImplementationOnce((_key: any, _document: any) =>
+      Promise.resolve(validUser)
+    )
 
     db.bucket.upsert.mockImplementationOnce((_key: any, _document: any) => Promise.resolve())
 
     const repository: any = new UserRepository(db)
     repository.modelConstructor = {
       schema: {
-        validate: (_a: any, cb: Function) => cb(null)
-      }
+        validate: (_a: any, cb: Function) => cb(null),
+      },
     }
 
-    return expect(repository.patch(validUser1._id, { name: 'Cody Rodriquez' })).resolves.toMatchSnapshot()
+    return expect(
+      repository.patch(validUser1._id, { name: 'Cody Rodriquez' })
+    ).resolves.toMatchSnapshot()
   })
 })
 
@@ -217,7 +217,7 @@ describe('SQLRepository update', () => {
     const db = testDatabase()
 
     const errorObj = {
-      message: 'An error occurred'
+      message: 'An error occurred',
     }
 
     db.bucket.replace.mockImplementationOnce((_id: any, _doc: any, _opts: any, cb: Function) => {
@@ -240,8 +240,8 @@ describe('SQLRepository update', () => {
     db.documentMapper.models.User.fromData.mockImplementationOnce((_a: any) => validNewUser)
     repository.modelConstructor = {
       schema: {
-        validate: (_a: any, cb: Function) => cb('error')
-      }
+        validate: (_a: any, cb: Function) => cb('error'),
+      },
     }
 
     return expect(repository.update(validNewUser)).rejects.toThrowError(DatabaseError)
@@ -251,7 +251,7 @@ describe('SQLRepository update', () => {
     const db = testDatabase()
 
     const errorObj = {
-      message: 'An error occurred'
+      message: 'An error occurred',
     }
 
     db.bucket.replace.mockImplementationOnce((_id: any, _document: any) => Promise.reject(errorObj))
@@ -260,8 +260,8 @@ describe('SQLRepository update', () => {
     db.documentMapper.models.User.fromData.mockImplementationOnce((_a: any) => validNewUser)
     repository.modelConstructor = {
       schema: {
-        validate: (_a: any, cb: Function) => cb(null)
-      }
+        validate: (_a: any, cb: Function) => cb(null),
+      },
     }
 
     return expect(repository.update(validNewUser)).rejects.toThrowError(DatabaseError)
@@ -273,7 +273,7 @@ describe('SQLRepository update', () => {
     const repository: any = new UserRepository(db)
     const userToUpdate = {
       ...validNewUser,
-      _type: 'Not User'
+      _type: 'Not User',
     }
 
     return expect(repository.update(userToUpdate)).rejects.toThrowError(ValidationError)
@@ -286,8 +286,8 @@ describe('SQLRepository update', () => {
     db.documentMapper.models.User.fromData.mockImplementationOnce((_a: any) => validNewUser)
     repository.modelConstructor = {
       schema: {
-        validate: (_a: any, cb: Function) => cb(null)
-      }
+        validate: (_a: any, cb: Function) => cb(null),
+      },
     }
 
     const userUpdatedData = {
@@ -297,10 +297,12 @@ describe('SQLRepository update', () => {
       email: 'lm10@manuscriptsapp.com',
       password: '$2a$05$LpEIAuWg7aF4leM9aZaKDO3.7r.6IkkcS4qrj5qMhHZEWzFoZHrv.',
       isVerified: true,
-      creationTimestamp: 1518357671676
+      creationTimestamp: 1518357671676,
     }
 
-    db.bucket.replace.mockImplementationOnce((_id: any, _document: any) => Promise.resolve({ data: userUpdatedData }))
+    db.bucket.replace.mockImplementationOnce((_id: any, _document: any) =>
+      Promise.resolve({ data: userUpdatedData })
+    )
 
     const user = await repository.update(userUpdatedData)
 
@@ -314,8 +316,8 @@ describe('SQLRepository update', () => {
     db.documentMapper.models.User.fromData.mockImplementationOnce((_a: any) => validNewUser)
     repository.modelConstructor = {
       schema: {
-        validate: (_a: any, cb: Function) => cb(null)
-      }
+        validate: (_a: any, cb: Function) => cb(null),
+      },
     }
 
     const userUpdatedData = {
@@ -324,22 +326,16 @@ describe('SQLRepository update', () => {
       email: 'lm10@manuscriptsapp.com',
       password: '$2a$05$LpEIAuWg7aF4leM9aZaKDO3.7r.6IkkcS4qrj5qMhHZEWzFoZHrv.',
       isVerified: true,
-      creationTimestamp: 1518357671676
+      creationTimestamp: 1518357671676,
     }
 
-    db.bucket.replace.mockImplementationOnce((_id: any, _document: any) => Promise.resolve({ data: userUpdatedData }))
+    db.bucket.replace.mockImplementationOnce((_id: any, _document: any) =>
+      Promise.resolve({ data: userUpdatedData })
+    )
 
     const user = await repository.update(userUpdatedData)
 
     expect(user).toMatchSnapshot()
-  })
-
-  test('should fail if database.documentMapper not set', () => {
-    const db = testDatabase()
-    const repository: any = new UserRepository(db)
-    repository.database = {}
-    const id = chance.hash()
-    return expect(repository.update(id, { name: chance.name() })).rejects.toThrowError(NoDocumentMapperError)
   })
 })
 
@@ -355,22 +351,22 @@ describe('SQLRepository touch', () => {
     const db = testDatabase()
 
     const errorObj = {
-      message: 'An error occurred'
+      message: 'An error occurred',
     }
 
-    db.bucket.replace.mockImplementationOnce((_k: any, _ex: any, _opt: any) => Promise.reject(errorObj))
+    db.bucket.replace.mockImplementationOnce((_k: any, _ex: any, _opt: any) =>
+      Promise.reject(errorObj)
+    )
 
     const repository: any = new UserRepository(db)
 
     repository.modelConstructor = {
       schema: {
-        validate: (_a: any, cb: Function) => cb(null)
-      }
+        validate: (_a: any, cb: Function) => cb(null),
+      },
     }
 
-    return expect(
-      repository.touch(validNewUser._id, 100)
-    ).rejects.toThrowError(DatabaseError)
+    return expect(repository.touch(validNewUser._id, 100)).rejects.toThrowError(DatabaseError)
   })
 
   test('should fail if an error ocurred', () => {
@@ -378,14 +374,16 @@ describe('SQLRepository touch', () => {
 
     const errorObj = 10
 
-    db.bucket.replace.mockImplementationOnce((_k: any, _ex: any, _opt: any) => Promise.reject(errorObj))
+    db.bucket.replace.mockImplementationOnce((_k: any, _ex: any, _opt: any) =>
+      Promise.reject(errorObj)
+    )
 
     const repository: any = new UserRepository(db)
 
     repository.modelConstructor = {
       schema: {
-        validate: (_a: any, cb: Function) => cb(null)
-      }
+        validate: (_a: any, cb: Function) => cb(null),
+      },
     }
 
     return expect(repository.touch(validUser1._id, 100)).rejects.toThrowError(DatabaseError)
@@ -394,14 +392,16 @@ describe('SQLRepository touch', () => {
   test('should touch user successfully', async () => {
     const db = testDatabase()
 
-    db.bucket.replace.mockImplementationOnce((_k: any, _ex: any, _opt: any) => Promise.resolve({ data: {} }))
+    db.bucket.replace.mockImplementationOnce((_k: any, _ex: any, _opt: any) =>
+      Promise.resolve({ data: {} })
+    )
 
     const repository: any = new UserRepository(db)
 
     repository.modelConstructor = {
       schema: {
-        validate: (_a: any, cb: Function) => cb(null)
-      }
+        validate: (_a: any, cb: Function) => cb(null),
+      },
     }
 
     return expect(repository.touch(validUser1._id, 100)).resolves.toEqual(undefined)
@@ -425,9 +425,7 @@ describe('SQLRepository getById', () => {
 
     const repository = new UserRepository(db)
 
-    return expect(
-      repository.getById(validUser1._id)
-    ).rejects.toThrowError(DatabaseError)
+    return expect(repository.getById(validUser1._id)).rejects.toThrowError(DatabaseError)
   })
 
   test('should return null if key does not exist', async () => {
@@ -444,7 +442,9 @@ describe('SQLRepository getById', () => {
   test('should get user by id successfully', async () => {
     const db = testDatabase()
 
-    db.bucket.findUnique.mockImplementationOnce((_q: any, _p: any[]) => Promise.resolve({ data: validUser1 }))
+    db.bucket.findUnique.mockImplementationOnce((_q: any, _p: any[]) =>
+      Promise.resolve({ data: validUser1 })
+    )
 
     const repository = new UserRepository(db)
 
@@ -471,23 +471,23 @@ describe('SQLRepository getOne', () => {
     const db = testDatabase()
     db.bucket = null
     const repository = new UserRepository(db)
-    return expect(repository.getOne({ email: validUser1.email })).rejects.toThrowError(NoBucketError)
+    return expect(repository.getOne({ email: validUser1.email })).rejects.toThrowError(
+      NoBucketError
+    )
   })
 
   test('should fail if error occurred', () => {
     const db = testDatabase()
 
     const errorObj = {
-      message: 'An error occurred'
+      message: 'An error occurred',
     }
 
     db.bucket.findFirst.mockImplementationOnce((_q: any, _p: any[]) => Promise.reject(errorObj))
 
     const repository = new UserRepository(db)
 
-    return expect(
-      repository.getOne({})
-    ).rejects.toThrowError(DatabaseError)
+    return expect(repository.getOne({})).rejects.toThrowError(DatabaseError)
   })
 
   test('should fail return null if no data exists', async () => {
@@ -518,7 +518,7 @@ describe('SQLRepository getOne', () => {
     const db = testDatabase()
     const repository: any = new UserRepository(db)
     repository.database = {}
-    const id = (new Chance()).hash()
+    const id = new Chance().hash()
 
     return expect(repository.getOne({ id })).rejects.toThrowError(NoBucketError)
   })
@@ -534,7 +534,7 @@ describe('SQLRepository count', () => {
 
   test('should fail if error occurred', () => {
     const errorObj = {
-      message: 'An error occurred'
+      message: 'An error occurred',
     }
 
     const db = testDatabase()
@@ -543,9 +543,7 @@ describe('SQLRepository count', () => {
 
     const repository = new UserRepository(db)
 
-    return expect(
-      repository.count({})
-    ).rejects.toThrowError(DatabaseError)
+    return expect(repository.count({})).rejects.toThrowError(DatabaseError)
   })
 
   test('should fail return count as number there is keys', async () => {
@@ -585,9 +583,7 @@ describe('SQLRepository getAll', () => {
 
     const repository = new UserRepository(db)
 
-    return expect(
-      repository.getAll({}, null)
-    ).rejects.toThrowError(DatabaseError)
+    return expect(repository.getAll({}, null)).rejects.toThrowError(DatabaseError)
   })
 
   test('should fail return empty set if no data exists', async () => {
@@ -627,16 +623,14 @@ describe('SQLRepository remove', () => {
     const db = testDatabase()
 
     const errorObj = {
-      message: 'An error occurred'
+      message: 'An error occurred',
     }
 
     db.bucket.remove.mockImplementationOnce((_q: any, _p: any[]) => Promise.reject(errorObj))
 
     const repository = new UserRepository(db)
 
-    return expect(
-      repository.remove({})
-    ).rejects.toThrowError(DatabaseError)
+    return expect(repository.remove({})).rejects.toThrowError(DatabaseError)
   })
 
   test('should remove key', async () => {
@@ -650,7 +644,7 @@ describe('SQLRepository remove', () => {
   })
 })
 
-xdescribe('SQLRepository pushDesignDocument', () => {
+describe.skip('SQLRepository pushDesignDocument', () => {
   test('should create new design document if it does not exists', async () => {
     const db = testDatabase()
     db.getDesignDocument = () => null
@@ -664,8 +658,7 @@ xdescribe('SQLRepository pushDesignDocument', () => {
   test('should create new design document if databaseDesignDocument.viewsStatus does not exists', async () => {
     const db = testDatabase()
     db.getDesignDocument = () => {
-      return {
-      }
+      return {}
     }
     const repository = new UserStatusRepository(db)
 
@@ -680,8 +673,8 @@ xdescribe('SQLRepository pushDesignDocument', () => {
     db.getDesignDocument = () => {
       return {
         viewsStatus: {
-          'failedLoginCount': '123'
-        }
+          failedLoginCount: '123',
+        },
       }
     }
 
@@ -697,8 +690,8 @@ xdescribe('SQLRepository pushDesignDocument', () => {
     db.getDesignDocument = () => {
       return {
         viewsStatus: {
-          'failedLoginCount': '17a6b47113b80d6d8b775f33d9fc60ff2fc8a2e1'
-        }
+          failedLoginCount: '17a6b47113b80d6d8b775f33d9fc60ff2fc8a2e1',
+        },
       }
     }
 
@@ -708,7 +701,7 @@ xdescribe('SQLRepository pushDesignDocument', () => {
   })
 })
 
-xdescribe('SQLRepository buildDesignDocument', () => {
+describe.skip('SQLRepository buildDesignDocument', () => {
   test('should return design document view with reduce function', async () => {
     const db = testDatabase()
     const repository: any = new UserStatusRepository(db)

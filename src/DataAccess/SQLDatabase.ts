@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { Ottoman, CbStoreAdapter } from 'ottoman'
 import { log } from '../Utilities/Logger'
 import { DatabaseConfiguration, BucketKey } from '../Config/ConfigurationTypes'
 import { NoBucketError, InvalidBucketError } from '../Errors'
@@ -145,7 +144,6 @@ class PrismaBucket implements SQLBucket {
  */
 export class SQLDatabase {
   private _bucket: PrismaBucket
-  private _documentMapper: Ottoman | null
 
   private isLoaded: boolean = false
 
@@ -161,10 +159,6 @@ export class SQLDatabase {
 
   public get bucket(): PrismaBucket {
     return this._bucket
-  }
-
-  public get documentMapper(): Ottoman | null {
-    return this._documentMapper
   }
 
   public get bucketName(): string {
@@ -183,8 +177,6 @@ export class SQLDatabase {
     await this.buildIndices(getIndices(this.bucketKey))
 
     this.isLoaded = true
-    const options = { bucket: this._bucket, store: new CbStoreAdapter(this._bucket as any) }
-    this._documentMapper = new Ottoman(options as any)
 
     await prisma.$connect().catch(function (err: any) {
       log.error(`An error occurred while connecting to db`, err)

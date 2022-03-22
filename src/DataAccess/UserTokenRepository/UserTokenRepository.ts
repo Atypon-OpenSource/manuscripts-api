@@ -14,11 +14,6 @@
  * limitations under the License.
  */
 
-import {
-  SchemaDefinition as OttomanSchemaDefinition,
-  ModelOptions as OttomanModelOptions,
-} from 'ottoman'
-
 import { SQLRepository } from '../SQLRepository'
 import { IUserTokenRepository } from '../Interfaces/IUserTokenRepository'
 import { UserToken } from '../../Models/UserModels'
@@ -36,30 +31,7 @@ export class UserTokenRepository
     return 'UserToken'
   }
 
-  public buildModelOptions(): OttomanModelOptions {
-    return {
-      index: {
-        findByUserId: {
-          type: 'n1ql',
-          by: 'userId',
-        },
-        findByDeviceId: {
-          type: 'n1ql',
-          by: 'deviceId',
-        },
-        findByAppId: {
-          type: 'n1ql',
-          by: 'appId',
-        },
-        findByIamSessionID: {
-          type: 'n1ql',
-          by: 'iamSessionID',
-        },
-      },
-    }
-  }
-
-  public buildSchemaDefinition(): OttomanSchemaDefinition {
+  public buildSchemaDefinition(): any {
     return {
       _id: {
         type: 'string',

@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-import { SchemaDefinition as OttomanSchemaDefinition } from 'ottoman'
-
 import { SQLRepository } from '../SQLRepository'
 import { IClientApplicationRepository } from '../Interfaces/IClientApplicationRepository'
 import {
@@ -60,7 +58,7 @@ export class ClientApplicationRepository
     }
   }
 
-  public buildSchemaDefinition(): OttomanSchemaDefinition {
+  public buildSchemaDefinition(): any {
     return {
       _id: {
         type: 'string',

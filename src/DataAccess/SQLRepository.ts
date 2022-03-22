@@ -20,19 +20,11 @@ import { v4 as uuid_v4 } from 'uuid'
 import { IdentifiableEntity } from './Interfaces/IdentifiableEntity'
 import { IndexedRepository, ensureValidDocumentType } from './Interfaces/IndexedRepository'
 import { QueryCriteria } from './Interfaces/QueryCriteria'
-import { DatabaseError, NoBucketError, NoDocumentMapperError, ValidationError } from '../Errors'
+import { DatabaseError, NoBucketError, ValidationError } from '../Errors'
 import { QueryOptions } from './Interfaces/QueryOptions'
 import { isString } from '../util'
 import { SQLDatabase } from './SQLDatabase'
-import {
-  SchemaDefinition as OttomanSchemaDefinition,
-  ModelInstance as OttomanModelInstance,
-  ModelInstanceCtor as OttomanModelInstanceCtor,
-  ModelOptions as OttomanModelOptions,
-} from 'ottoman'
 import { BucketKey } from '../Config/ConfigurationTypes'
-
-const registeredSchemas = new Map<string, OttomanModelInstanceCtor>()
 
 import { Prisma } from '@prisma/client'
 
@@ -60,40 +52,20 @@ export abstract class SQLRepository<
   TQueryCriteria extends QueryCriteria
 > implements IndexedRepository<TEntity, TNewEntity, TUpdateEntity, TQueryCriteria>
 {
-  readonly modelConstructor: OttomanModelInstanceCtor
+  readonly schemaDefinition: any
 
   constructor(readonly database: SQLDatabase) {
-    const registeredSchema = registeredSchemas.get(this._documentType)
-    // Ignoring the following from tests because testing it is likely to break all the time depending on previously executed tests: requires never having initialized a certain kind of repository before.
-    /* istanbul ignore if */
-    if (!registeredSchema) {
-      if (!this.database.documentMapper) {
-        throw new NoDocumentMapperError()
-      }
-
-      this.modelConstructor = this.database.documentMapper.model(
-        this._documentType,
-        this.buildSchemaDefinition(),
-        this.buildModelOptions()
-      )
-      registeredSchemas.set(this._documentType, this.modelConstructor)
-    } else {
-      this.modelConstructor = registeredSchema
-    }
+    this.schemaDefinition = this.buildSchemaDefinition()
   }
 
   public get bucketKey(): BucketKey {
     return this.database.bucketKey
   }
 
-  public abstract buildSchemaDefinition(): OttomanSchemaDefinition
+  public abstract buildSchemaDefinition(): any
 
   public buildSemiFake(data: any): TEntity {
     return data
-  }
-
-  public buildModelOptions(): OttomanModelOptions {
-    return {}
   }
 
   /**
@@ -106,16 +78,6 @@ export abstract class SQLRepository<
     return this.documentType
   }
 
-  get model(): OttomanModelInstance<TEntity> {
-    if (!this.database) {
-      throw new NoBucketError()
-    }
-    if (!this.database.documentMapper) {
-      throw new NoDocumentMapperError()
-    }
-    return this.database.documentMapper.models[this.documentType]
-  }
-
   get designDocumentName(): string {
     return this.documentType
   }
@@ -125,7 +87,7 @@ export abstract class SQLRepository<
    */
   public buildModel(data: any): TEntity {
     delete data.id
-    const mappedModel: any = this.model.fromData(data)
+    const mappedModel: any = data
 
     // make sure mapped model doesn't have property value equals to undefined
     for (const key of Object.keys(mappedModel)) {
@@ -194,10 +156,6 @@ export abstract class SQLRepository<
    * Creates new document.
    */
   public async create(newDocument: TNewEntity): Promise<TEntity> {
-    if (!this.database.documentMapper) {
-      return Promise.reject(new NoDocumentMapperError())
-    }
-
     await this.validateModel(newDocument)
     ensureValidDocumentType(newDocument, this.documentType)
 
@@ -228,10 +186,6 @@ export abstract class SQLRepository<
    * Creates new document.
    */
   public async upsert(id: string, newDocument: TNewEntity): Promise<TEntity> {
-    if (!this.database.documentMapper) {
-      return Promise.reject(new NoDocumentMapperError())
-    }
-
     await this.validateModel(newDocument)
     ensureValidDocumentType(newDocument, this.documentType)
 
@@ -262,10 +216,6 @@ export abstract class SQLRepository<
    * Replaces existing document.
    */
   public async update(documentToUpdate: TUpdateEntity): Promise<TEntity> {
-    if (!this.database.documentMapper) {
-      return Promise.reject(new NoDocumentMapperError())
-    }
-
     const id = documentToUpdate._id
     if (!id) {
       return Promise.reject(new ValidationError('Document has no _id', documentToUpdate))
@@ -296,9 +246,6 @@ export abstract class SQLRepository<
    * Replaces values for the specified keys.
    */
   public async patch(id: string, dataToPatch: Partial<TUpdateEntity>): Promise<TEntity> {
-    if (!this.database.documentMapper) {
-      return Promise.reject(new NoDocumentMapperError())
-    }
     if ('_id' in dataToPatch || '_type' in dataToPatch) {
       return Promise.reject(
         new ValidationError('Document _id and _type can not be patched', dataToPatch)
@@ -482,21 +429,38 @@ export abstract class SQLRepository<
     return id.replace(`${this.documentType}|`, '')
   }
 
-  private validateModel(document: Partial<TUpdateEntity> | TNewEntity): Promise<void> {
+  private validateModel(document: any): Promise<void> {
     if (document.expiry) {
       // todo validate expiry here
       delete document.expiry
     }
-    return new Promise<void>((resolve, reject) => {
-      this.modelConstructor.schema.validate(this.model.fromData(document), (error) => {
-        if (error) {
-          return reject(
-            new DatabaseError(error.code as any, error.message, JSON.stringify(document), error)
-          )
-        } else {
-          return resolve()
+
+    let valid = true
+    let reason = ''
+    for (const field in document) {
+      const value = document[field]
+      const fieldDefinition = this.schemaDefinition[field]
+      if (!fieldDefinition) {
+        continue
+      }
+
+      if (fieldDefinition.validator) {
+        try {
+          fieldDefinition.validator(value)
+        } catch (e) {
+          reason = e
+          valid = false
+          break
         }
-      })
+      }
+    }
+
+    return new Promise<void>((resolve, reject) => {
+      if (!valid) {
+        return reject(new DatabaseError('400', reason, JSON.stringify(document), new Error(reason)))
+      } else {
+        return resolve()
+      }
     })
   }
 }

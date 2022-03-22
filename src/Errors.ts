@@ -165,17 +165,6 @@ export class GatewayInaccessibleError extends Error implements StatusCoded {
   }
 }
 
-export class NoDocumentMapperError extends Error implements StatusCoded {
-  readonly internalErrorCode = InternalErrorCode.NoDocumentMapperError
-  readonly statusCode = HttpStatus.INTERNAL_SERVER_ERROR
-
-  constructor() {
-    super(`Ottoman document mapper instance has not yet been created`)
-    this.name = 'NoDocumentMapperError'
-    Object.setPrototypeOf(this, new.target.prototype)
-  }
-}
-
 export class ProductionNotesUpdateError extends Error implements StatusCoded {
   readonly internalErrorCode = InternalErrorCode.ProductionNotesUpdateError
   readonly statusCode = HttpStatus.INTERNAL_SERVER_ERROR

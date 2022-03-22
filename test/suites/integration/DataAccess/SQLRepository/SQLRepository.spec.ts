@@ -18,8 +18,14 @@ import { Chance } from 'chance'
 
 import { UserRepository } from '../../../../../src/DataAccess/UserRepository/UserRepository'
 import { drop, seed, testDatabase, dropBucket } from '../../../../utilities/db'
-import { validUser1, validUser2, validNewUser, NewUserNoId, validNewUser2 } from '../../../../data/fixtures/UserRepository'
-import { NoDocumentMapperError, ValidationError, DatabaseError, NoBucketError } from '../../../../../src/Errors'
+import {
+  validUser1,
+  validUser2,
+  validNewUser,
+  NewUserNoId,
+  validNewUser2,
+} from '../../../../data/fixtures/UserRepository'
+import { ValidationError, DatabaseError, NoBucketError } from '../../../../../src/Errors'
 import { TEST_TIMEOUT } from '../../../../utilities/testSetup'
 import { log } from '../../../../../src/Utilities/Logger'
 import { setTimeout } from 'timers'
@@ -28,7 +34,7 @@ import { BucketKey } from '../../../../../src/Config/ConfigurationTypes'
 jest.setTimeout(TEST_TIMEOUT)
 
 let db: any = null
-beforeAll(async () => db = await testDatabase())
+beforeAll(async () => (db = await testDatabase()))
 afterAll(() => db.bucket.disconnect())
 
 const chance = new Chance()
@@ -54,41 +60,36 @@ describe('SQLRepository Create', () => {
     expect(user).toEqual(user)
   })
 
-  test('should fail if database.documentMapper not set', () => {
-    const repository: any = new UserRepository(db)
-    repository.database = {}
-    return expect(repository.create(validUser1)).rejects.toThrowError(NoDocumentMapperError)
-  })
-
   test('should fail if error occurred - same key exists', () => {
     const chance = new Chance()
     const repository = new UserRepository(db)
     const newUser = {
       _id: 'valid-user@manuscriptsapp.com',
       email: chance.email(),
-      name: chance.name()
+      name: chance.name(),
     }
     return expect(repository.create(newUser)).rejects.toThrowError(DatabaseError)
   })
 
-  xtest('should delete the created user after the expiry time pass', async () => {
+  test.skip('should delete the created user after the expiry time pass', async () => {
     const repository = new UserRepository(db)
     const user: any = await repository.create(validNewUser2)
 
     expect(user).toEqual({
       _id: validNewUser2._id,
       email: validNewUser2.email,
-      name: validNewUser2.name
+      name: validNewUser2.name,
     })
 
-    await new Promise(
-      (resolve, reject) => setTimeout(() => {
-        repository.getById(validNewUser2._id)
-        .then(result => {
-          expect(result).toBeNull()
-          resolve()
-        })
-        .catch(error => reject(error))
+    await new Promise((resolve, reject) =>
+      setTimeout(() => {
+        repository
+          .getById(validNewUser2._id)
+          .then((result) => {
+            expect(result).toBeNull()
+            resolve()
+          })
+          .catch((error) => reject(error))
       }, 2000)
     )
   })
@@ -99,13 +100,6 @@ describe('SQLRepository update', () => {
     await drop()
     await dropBucket(BucketKey.Data)
     await seed({ users: true })
-  })
-
-  test('should fail if database.documentMapper not set', () => {
-    const repository: any = new UserRepository(db)
-    repository.database = {}
-
-    return expect(repository.update(validUser1)).rejects.toThrowError(NoDocumentMapperError)
   })
 
   test('should fail if the id is not specified', () => {
@@ -124,7 +118,7 @@ describe('SQLRepository update', () => {
     const userUpdatedData = {
       _id: validUser1._id,
       name: 'New Username',
-      email: 'new-email'
+      email: 'new-email',
     }
 
     return expect(repository.update(userUpdatedData)).rejects.toThrowError(DatabaseError)
@@ -135,7 +129,7 @@ describe('SQLRepository update', () => {
     const userUpdatedData = {
       _id: validUser1.email,
       name: 'New Username that is too looooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong, more than 100 character, ',
-      email: 'new-email@manuscriptsapp.com'
+      email: 'new-email@manuscriptsapp.com',
     }
 
     return expect(repository.update(userUpdatedData)).rejects.toThrowError(DatabaseError)
@@ -147,7 +141,7 @@ describe('SQLRepository update', () => {
       _type: 'Not User',
       _id: validUser1._id,
       name: 'New Username',
-      email: 'new-email@manuscriptsapp.com'
+      email: 'new-email@manuscriptsapp.com',
     }
 
     return expect(repository.update(userUpdatedData)).rejects.toThrowError(ValidationError)
@@ -164,7 +158,7 @@ describe('SQLRepository update', () => {
       _type: 'User',
       _id: 'User|valid-user@manuscriptsapp.com',
       name: 'New Username',
-      email: 'new-email@manuscriptsapp.com'
+      email: 'new-email@manuscriptsapp.com',
     }
 
     const afterUpdate: any = await repository.update(userUpdatedData)
@@ -183,7 +177,7 @@ describe('SQLRepository update', () => {
     const userUpdatedData = {
       _id: 'User|valid-user@manuscriptsapp.com',
       name: 'New Username',
-      email: 'new-email@manuscriptsapp.com'
+      email: 'new-email@manuscriptsapp.com',
     }
 
     const afterUpdate: any = await repository.update(userUpdatedData)
@@ -192,30 +186,31 @@ describe('SQLRepository update', () => {
     expect(afterUpdate.name).toBe('New Username')
   })
 
-  xtest('should delete the updated user after the expiry time pass', async () => {
+  test.skip('should delete the updated user after the expiry time pass', async () => {
     const repository = new UserRepository(db)
 
     const userUpdatedData = {
       _id: 'User|valid-user-2@manuscriptsapp.com',
       name: 'New Username',
-      email: 'new-email@manuscriptsapp.com'
+      email: 'new-email@manuscriptsapp.com',
     }
 
     const user = await repository.update(userUpdatedData)
     expect(user).toEqual({
       _id: userUpdatedData._id,
       email: userUpdatedData.email,
-      name: userUpdatedData.name
+      name: userUpdatedData.name,
     })
 
     await new Promise((resolve, reject) => {
       setTimeout(() => {
-        repository.getById(userUpdatedData._id)
-        .then(result => {
-          expect(result).toBeNull()
-          resolve()
-        })
-        .catch(error => reject(error))
+        repository
+          .getById(userUpdatedData._id)
+          .then((result) => {
+            expect(result).toBeNull()
+            resolve()
+          })
+          .catch((error) => reject(error))
       }, 2000)
     })
   })
@@ -228,19 +223,13 @@ describe('SQLRepository patch', () => {
     await seed({ users: true })
   })
 
-  test('should fail if database.documentMapper not set', () => {
-    const repository: any = new UserRepository(db)
-    repository.database = {}
-    const id = chance.hash()
-
-    return expect(repository.patch(id, { name: chance.name() })).rejects.toThrowError(NoDocumentMapperError)
-  })
-
   test('should fail if document _id does not match the id', () => {
     const repository = new UserRepository(db)
     const chance = new Chance()
     const id = chance.hash()
-    return expect(repository.patch(id, { _id: chance.string(), name: chance.name() })).rejects.toThrowError(ValidationError)
+    return expect(
+      repository.patch(id, { _id: chance.string(), name: chance.name() })
+    ).rejects.toThrowError(ValidationError)
   })
 
   test('should fail if key does not exist', () => {
@@ -253,7 +242,7 @@ describe('SQLRepository patch', () => {
   test('should fail if error occurred', () => {
     const repository = new UserRepository(db)
     const document = {
-      name: 'long name used in test to generates error if name length is more than 100 char -  we need to fine new way to throw error from db internally- this just a tmp solution'
+      name: 'long name used in test to generates error if name length is more than 100 char -  we need to fine new way to throw error from db internally- this just a tmp solution',
     }
 
     return expect(repository.patch(validUser2._id, document)).rejects.toThrowError(DatabaseError)
@@ -263,31 +252,32 @@ describe('SQLRepository patch', () => {
     const repository = new UserRepository(db)
 
     let user: any = await repository.patch('User|valid-user@manuscriptsapp.com', {
-      name: 'Cody Rodriquez'
+      name: 'Cody Rodriquez',
     })
     user = await repository.getById('User|valid-user@manuscriptsapp.com')
 
     expect(user.name).toBe('Cody Rodriquez')
   })
 
-  xtest('should delete the patched user after the expiry time pass', async () => {
+  test.skip('should delete the patched user after the expiry time pass', async () => {
     const repository = new UserRepository(db)
 
     const userUpdatedData = {
       _id: 'User|valid-user-2@manuscriptsapp.com',
-      email: 'new-email@manuscriptsapp.com'
+      email: 'new-email@manuscriptsapp.com',
     }
 
     const user = await repository.patch(userUpdatedData._id, { email: userUpdatedData.email })
     expect(user.email).toEqual(userUpdatedData.email)
     await new Promise((resolve, reject) => {
       setTimeout(() => {
-        repository.getById(userUpdatedData._id)
-        .then(result => {
-          expect(result).toBeNull()
-          resolve()
-        })
-        .catch(error => reject(error))
+        repository
+          .getById(userUpdatedData._id)
+          .then((result) => {
+            expect(result).toBeNull()
+            resolve()
+          })
+          .catch((error) => reject(error))
       }, 2000)
     })
   })
@@ -298,13 +288,6 @@ describe('SQLRepository touch', () => {
     await drop()
     await dropBucket(BucketKey.Data)
     await seed({ users: true })
-  })
-
-  test('should fail if database.documentMapper not set', () => {
-    const repository: any = new UserRepository(db)
-    repository.database = {}
-    const id = chance.hash()
-    return expect(repository.touch(id, 100)).rejects.toThrowError(NoBucketError)
   })
 
   test('should fail if error occurred - key does not exist', () => {
@@ -418,7 +401,7 @@ describe('SQLRepository getAll', () => {
     const query = {
       email: chance.email(),
       name: chance.email(),
-      _id: chance.hash()
+      _id: chance.hash(),
     }
     return expect(repository.getAll(query, null)).resolves.toEqual([])
   })
@@ -431,7 +414,9 @@ describe('SQLRepository getAll', () => {
   test('should fail if database.bucket not set', () => {
     const repository: any = new UserRepository(db)
     repository.database = {}
-    return expect(repository.getAll({ _id: validUser2._id }, null)).rejects.toThrowError(NoBucketError)
+    return expect(repository.getAll({ _id: validUser2._id }, null)).rejects.toThrowError(
+      NoBucketError
+    )
   })
 })
 
@@ -439,7 +424,7 @@ describe('SQLRepository remove', () => {
   test('should remove key', async () => {
     const repository = new UserRepository(db)
     const query = {
-      _id: validUser2._id
+      _id: validUser2._id,
     }
     await repository.remove(query)
     const user = await repository.getOne(query)
@@ -459,7 +444,7 @@ describe('SQLRepository buildModel', () => {
     const repository = new UserRepository(db)
     const mappedModel = repository.buildModel({
       email: undefined,
-      name: 'foo'
+      name: 'foo',
     } as any)
 
     expect(mappedModel.email).toBeUndefined()

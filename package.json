@@ -85,7 +85,6 @@
     "node-cron": "^2.0.3",
     "node-fetch": "^2.6.1",
     "nodemailer": "^4.6.8",
-    "ottoman": "github:mpapp/node-ottoman#a8532d199b49d31ced359876cde8ada1bf1294d4",
     "p-retry": "^4.1.0",
     "passport": "^0.4.0",
     "passport-google-oauth": "^1.0.0",
@@ -104,7 +103,8 @@
     "uuid": "^3.2.1",
     "validator": "^9.1.1",
     "winston": "^2.4.0",
-    "yaml": "^1.0.0-rc.8"
+    "yaml": "^1.0.0-rc.8",
+    "yarn": "^1.22.17"
   },
   "devDependencies": {
     "@babel/core": "^7.12.3",
