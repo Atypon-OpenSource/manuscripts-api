@@ -19,7 +19,6 @@ certs
 ###### FILES ######
 src/.baseDir.ts
 npm-debug.log
-yarn-error.log
 docker/docker-compose.yml
 docker/values.yml
 postgres-data/

@@ -3,7 +3,6 @@
 ## Requirements
 
 * [Node.js](https://nodejs.org/)
-* [Yarn](https://yarnpkg.com/)
 * [Docker](https://www.docker.com/)
 
 
