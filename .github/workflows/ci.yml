@@ -60,7 +60,7 @@ jobs:
           docker-compose build --pull
           docker-compose up -d
           sleep 20
-          if [[  -z `lsof -i:3000` ]]; then
+          if [[  -z `nc -z localhost 3000` ]]; then
               echo "server is running"
               exit 0
           else
