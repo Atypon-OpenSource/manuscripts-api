@@ -22,8 +22,6 @@ npm-debug.log
 yarn-error.log
 docker/docker-compose.yml
 docker/values.yml
-docker/couchbase-values.yml
-docker/syncgw-values.yml
 postgres-data/
 Vagrantfile
 

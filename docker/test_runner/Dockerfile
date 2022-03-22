@@ -1,5 +1,5 @@
 # This is pretty much a copy of the app Dockerfile
-FROM node:12
+FROM node:16
 
 ARG APP_BASE_URL
 ARG APP_DATA_BUCKET
