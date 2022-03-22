@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-const mocRes = require('jest-mock-express')
+import { getMockRes } from '@jest-mock/express'
+
 import { AuthenticateOptions } from 'passport'
 import { Chance } from 'chance'
 
@@ -29,14 +30,14 @@ jest.mock('passport', () => {
     ...originalModule,
     authenticate: (_name: string, _options: AuthenticateOptions, callback: Function) => {
       const user = {
-        _id: 'd5108332658149c4c2b276e1b16a1f8dca7fd6af'
+        _id: 'd5108332658149c4c2b276e1b16a1f8dca7fd6af',
       }
       callback(null, user)
 
       return (_req: any, _res: any, next: any) => {
         next()
       }
-    }
+    },
   }
 })
 
@@ -44,36 +45,33 @@ describe('Google', () => {
   test('Google scope should be [profile, email]', () => {
     expect(AuthStrategy.googleScope).toEqual([
       'https://www.googleapis.com/auth/userinfo.profile',
-      'https://www.googleapis.com/auth/userinfo.email'
+      'https://www.googleapis.com/auth/userinfo.email',
     ])
   })
 
   test('should pass JWT authenticate middleware', () => {
     const req: any = {}
-    const res: any = mocRes.response()
-    const next = jest.fn()
+    const { res, next } = getMockRes()
     AuthStrategy.JWTAuth(req, res, next)
     expect(next).toBeCalled()
     expect(req.user).toEqual({
-      _id: 'd5108332658149c4c2b276e1b16a1f8dca7fd6af'
+      _id: 'd5108332658149c4c2b276e1b16a1f8dca7fd6af',
     })
   })
 
   test('should pass google authenticate middleware', () => {
     const req: any = validGoogleRequestWithHeader
-    const res: any = mocRes.response()
-    const next = jest.fn()
+    const { res, next } = getMockRes()
     AuthStrategy.googleRedirect(req, res, next)
     expect(next).toBeCalled()
     expect(req.user).toEqual({
-      _id: 'd5108332658149c4c2b276e1b16a1f8dca7fd6af'
+      _id: 'd5108332658149c4c2b276e1b16a1f8dca7fd6af',
     })
   })
 
   test('should redirect if error is set', () => {
     const req: any = {}
-    const res: any = mocRes.response()
-    const next = jest.fn()
+    const { res, next } = getMockRes()
     const error = new Error()
     AuthStrategy.googleUserValidationCallback(error, null, req, res, next)
 
@@ -82,8 +80,7 @@ describe('Google', () => {
 
   test('should redirect if there if user not set', () => {
     const req: any = {}
-    const res: any = mocRes.response()
-    const next = jest.fn()
+    const { res, next } = getMockRes()
     AuthStrategy.googleUserValidationCallback(null, null, req, res, next)
 
     expect(res.redirect).toBeCalled()
@@ -92,11 +89,10 @@ describe('Google', () => {
   test('should set user in req object and call next function', () => {
     const chance = new Chance()
     const req: any = {}
-    const res: any = mocRes.response()
-    const next = jest.fn()
+    const { res, next } = getMockRes()
     const user: any = {
       _id: chance.hash(),
-      name: chance.name()
+      name: chance.name(),
     }
     AuthStrategy.userValidationCallback(null, user, req, res, next)
 

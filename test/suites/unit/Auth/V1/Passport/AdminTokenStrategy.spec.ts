@@ -20,7 +20,7 @@ import { Chance } from 'chance'
 import { AuthStrategy } from '../../../../../../src/Auth/Passport/AuthStrategy'
 import { InvalidServerCredentialsError } from '../../../../../../src/Errors'
 import { config } from '../../../../../../src/Config/Config'
-const mocRes = require('jest-mock-express')
+import { getMockRes } from '@jest-mock/express'
 
 const chance = new Chance()
 
@@ -31,12 +31,11 @@ describe('AdminTokenStrategy', () => {
         authorization: `Bearer ${jsonwebtoken.sign(
           { email: chance.email() },
           config.auth.serverSecret
-        )}`
-      }
+        )}`,
+      },
     }
 
-    const res: any = mocRes.response()
-    const next = jest.fn()
+    const { res, next } = getMockRes()
 
     AuthStrategy.verifyAdminToken(req, res, next)
     expect(next).toHaveBeenCalledTimes(1)
@@ -45,10 +44,9 @@ describe('AdminTokenStrategy', () => {
 
   test('verifyAdminToken with missing authorization header should throw error', () => {
     const req: any = {
-      headers: {}
+      headers: {},
     }
-    const res: any = mocRes.response()
-    const next = jest.fn()
+    const { res, next } = getMockRes()
 
     AuthStrategy.verifyAdminToken(req, res, next)
     expect(next).toHaveBeenCalledTimes(1)
@@ -58,14 +56,10 @@ describe('AdminTokenStrategy', () => {
   test('verifyAdminToken with a token that was signed with wrong secret should throw error', () => {
     const req: any = {
       headers: {
-        authorization: `Bearer ${jsonwebtoken.sign(
-          { email: chance.email() },
-          chance.hash()
-        )}`
-      }
+        authorization: `Bearer ${jsonwebtoken.sign({ email: chance.email() }, chance.hash())}`,
+      },
     }
-    const res: any = mocRes.response()
-    const next = jest.fn()
+    const { res, next } = getMockRes()
 
     AuthStrategy.verifyAdminToken(req, res, next)
     expect(next).toHaveBeenCalledTimes(1)
