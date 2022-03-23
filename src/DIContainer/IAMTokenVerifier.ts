@@ -15,7 +15,7 @@
  */
 
 import * as jsonwebtoken from 'jsonwebtoken'
-import * as request from 'request-promise-native'
+import fetch from 'node-fetch'
 
 import { config } from '../Config/Config'
 import { IAMIssuerError, InvalidCredentialsError } from '../Errors'
@@ -69,8 +69,8 @@ export class IAMTokenVerifier implements IIAMTokenVerifier {
 
   public async setIssuer() {
     if (process.env.NODE_ENV !== 'test') {
-      const body = await request.get(`${config.IAM.authServerURL}/.well-known/openid-configuration`)
-      this.issuer = JSON.parse(body).issuer
+      const body = await fetch(`${config.IAM.authServerURL}/.well-known/openid-configuration`)
+      this.issuer = JSON.parse(await body.json()).issuer
     } else {
       this.issuer = config.IAM.apiServerURL[0]
     }

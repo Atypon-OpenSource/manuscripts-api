@@ -22,7 +22,7 @@ import { Chance } from 'chance'
 import {
   AuthController,
   APP_ID_HEADER_KEY,
-  APP_SECRET_HEADER_KEY
+  APP_SECRET_HEADER_KEY,
 } from '../../../../../../src/Controller/V1/Auth/AuthController'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
 import {
@@ -32,12 +32,12 @@ import {
   InvalidCredentialsError,
   InvalidServerCredentialsError,
   InvalidBackchannelLogoutError,
-  InvalidScopeNameError
+  InvalidScopeNameError,
 } from '../../../../../../src/Errors'
 import { log } from '../../../../../../src/Utilities/Logger'
 import {
   authorizationHeader,
-  ValidHeaderWithApplicationKey
+  ValidHeaderWithApplicationKey,
 } from '../../../../../data/fixtures/headers'
 import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
 import { AuthService } from '../../../../../../src/DomainServices/Auth/AuthService'
@@ -47,13 +47,8 @@ import { ContainerService } from '../../../../../../src/DomainServices/Container
 
 jest.setTimeout(TEST_TIMEOUT)
 
-jest.mock('request-promise-native')
-const request = require('request-promise-native')
-
 beforeEach(() => {
-  request.mockClear()
-  request.mockImplementation(() => ({ statusCode: 200 }));
-  (DIContainer as any)._sharedContainer = null
+  ;(DIContainer as any)._sharedContainer = null
   return DIContainer.init()
 })
 
@@ -68,19 +63,19 @@ describe('AuthController - login', () => {
       body: {
         email: chance.email(),
         password: chance.string(),
-        deviceId: chance.string()
+        deviceId: chance.string(),
       },
       headers: {
         [APP_ID_HEADER_KEY]: chance.string(),
-        [APP_SECRET_HEADER_KEY]: chance.string()
-      }
+        [APP_SECRET_HEADER_KEY]: chance.string(),
+      },
     }
 
     const authController = new AuthController()
     const authUser = await authController.login(req)
     expect(authService.login).toBeCalledWith({
       ...req.body,
-      appId: req.headers[APP_ID_HEADER_KEY]
+      appId: req.headers[APP_ID_HEADER_KEY],
     })
     expect(authUser).toBeTruthy()
   })
@@ -91,17 +86,15 @@ describe('AuthController - login', () => {
       body: {
         email: chance.email(),
         password: chance.string(),
-        deviceId: chance.string()
+        deviceId: chance.string(),
       },
       headers: {
         [APP_ID_HEADER_KEY]: chance.integer(),
-        [APP_SECRET_HEADER_KEY]: chance.string()
-      }
+        [APP_SECRET_HEADER_KEY]: chance.string(),
+      },
     }
     const authController = new AuthController()
-    return expect(authController.login(req)).rejects.toThrowError(
-      InvalidClientApplicationError
-    )
+    return expect(authController.login(req)).rejects.toThrowError(InvalidClientApplicationError)
   })
 
   test('should not call login function', () => {
@@ -112,17 +105,15 @@ describe('AuthController - login', () => {
     const req: any = {
       body: {
         email: 123,
-        password: 456
+        password: 456,
       },
       headers: {
-        'manuscripts-app-id': 'manuscripts-client-1'
-      }
+        'manuscripts-app-id': 'manuscripts-client-1',
+      },
     }
 
     const authController = new AuthController()
-    return expect(authController.login(req)).rejects.toThrowError(
-      ValidationError
-    )
+    return expect(authController.login(req)).rejects.toThrowError(ValidationError)
   })
 
   test('should not call login function if the email is not string', () => {
@@ -133,17 +124,15 @@ describe('AuthController - login', () => {
     const req: any = {
       body: {
         email: 123,
-        password: 456
+        password: 456,
       },
       headers: {
-        'manuscripts-app-id': 'manuscripts-client-1'
-      }
+        'manuscripts-app-id': 'manuscripts-client-1',
+      },
     }
 
     const authController = new AuthController()
-    return expect(authController.login(req)).rejects.toThrowError(
-      ValidationError
-    )
+    return expect(authController.login(req)).rejects.toThrowError(ValidationError)
   })
 })
 
@@ -159,11 +148,8 @@ describe('AuthController - serverToServerAuth', () => {
       body: { deviceId: chance.guid() },
       headers: {
         [APP_ID_HEADER_KEY]: chance.string(),
-        authorization: `Bearer ${jsonwebtoken.sign(
-          { email },
-          config.auth.serverSecret
-        )}`
-      }
+        authorization: `Bearer ${jsonwebtoken.sign({ email }, config.auth.serverSecret)}`,
+      },
     }
 
     const authController = new AuthController()
@@ -171,7 +157,7 @@ describe('AuthController - serverToServerAuth', () => {
     expect(authService.serverToServerAuth).toBeCalledWith({
       deviceId: req.body.deviceId,
       appId: req.headers[APP_ID_HEADER_KEY],
-      email
+      email,
     })
     expect(authUser).toBeTruthy()
   })
@@ -187,11 +173,8 @@ describe('AuthController - serverToServerAuth', () => {
       body: { deviceId: chance.guid() },
       headers: {
         [APP_ID_HEADER_KEY]: chance.string(),
-        authorization: `Bearer ${jsonwebtoken.sign(
-          { connectUserID },
-          config.auth.serverSecret
-        )}`
-      }
+        authorization: `Bearer ${jsonwebtoken.sign({ connectUserID }, config.auth.serverSecret)}`,
+      },
     }
 
     const authController = new AuthController()
@@ -199,7 +182,7 @@ describe('AuthController - serverToServerAuth', () => {
     expect(authService.serverToServerAuth).toBeCalledWith({
       deviceId: req.body.deviceId,
       appId: req.headers[APP_ID_HEADER_KEY],
-      connectUserID
+      connectUserID,
     })
     expect(authUser).toBeTruthy()
   })
@@ -208,35 +191,30 @@ describe('AuthController - serverToServerAuth', () => {
     const chance = new Chance()
     const req: any = {
       body: {
-        deviceId: chance.guid()
+        deviceId: chance.guid(),
       },
       headers: {
         [APP_ID_HEADER_KEY]: chance.string(),
-        authorization: jsonwebtoken.sign(
-          { email: chance.email() },
-          config.auth.serverSecret
-        )
-      }
+        authorization: jsonwebtoken.sign({ email: chance.email() }, config.auth.serverSecret),
+      },
     }
     const authController = new AuthController()
-    return expect(authController.serverToServerAuth(req)).rejects.toThrowError(
-      ValidationError
-    )
+    return expect(authController.serverToServerAuth(req)).rejects.toThrowError(ValidationError)
   })
 
   test('should fail if appId is not a string', () => {
     const chance = new Chance()
     const req: any = {
       body: {
-        deviceId: chance.guid()
+        deviceId: chance.guid(),
       },
       headers: {
         [APP_ID_HEADER_KEY]: chance.integer(),
         authorization: `Bearer ${jsonwebtoken.sign(
           { connectUserID: chance.guid() },
           config.auth.serverSecret
-        )}`
-      }
+        )}`,
+      },
     }
     const authController = new AuthController()
     return expect(authController.serverToServerAuth(req)).rejects.toThrowError(
@@ -248,15 +226,15 @@ describe('AuthController - serverToServerAuth', () => {
     const chance = new Chance()
     const req: any = {
       body: {
-        deviceId: chance.integer()
+        deviceId: chance.integer(),
       },
       headers: {
         [APP_ID_HEADER_KEY]: chance.string(),
         authorization: `Bearer ${jsonwebtoken.sign(
           { connectUserID: chance.guid() },
           config.auth.serverSecret
-        )}`
-      }
+        )}`,
+      },
     }
     const authController = new AuthController()
     return expect(authController.serverToServerAuth(req)).rejects.toThrowError(
@@ -268,15 +246,12 @@ describe('AuthController - serverToServerAuth', () => {
     const chance = new Chance()
     const req: any = {
       body: {
-        deviceId: chance.string()
+        deviceId: chance.string(),
       },
       headers: {
         [APP_ID_HEADER_KEY]: chance.string(),
-        authorization: `Bearer ${jsonwebtoken.sign(
-          {},
-          config.auth.serverSecret
-        )}`
-      }
+        authorization: `Bearer ${jsonwebtoken.sign({}, config.auth.serverSecret)}`,
+      },
     }
     const authController = new AuthController()
     return expect(authController.serverToServerAuth(req)).rejects.toThrowError(
@@ -294,8 +269,8 @@ describe('AuthController - logout', () => {
     const chance = new Chance()
     const req: any = {
       headers: {
-        authorization: 'Bearer ' + chance
-      }
+        authorization: 'Bearer ' + chance,
+      },
     }
 
     const authController = new AuthController()
@@ -306,37 +281,31 @@ describe('AuthController - logout', () => {
   test('should fail to log out if the authorization header does not contain a bearer token', () => {
     const req: any = {
       headers: {
-        authorization: 'valid token with no bearer prefix'
-      }
+        authorization: 'valid token with no bearer prefix',
+      },
     }
     const authController: AuthController = new AuthController()
-    return expect(authController.logout(req)).rejects.toThrowError(
-      ValidationError
-    )
+    return expect(authController.logout(req)).rejects.toThrowError(ValidationError)
   })
 
   test('should fail to log out if the authorization header is undefined', () => {
     const req: any = {
       headers: {
-        authorization: undefined
-      }
+        authorization: undefined,
+      },
     }
     const authController: AuthController = new AuthController()
-    return expect(authController.logout(req)).rejects.toThrowError(
-      ValidationError
-    )
+    return expect(authController.logout(req)).rejects.toThrowError(ValidationError)
   })
 
   test('should fail to log out if the authorization header is an array', () => {
     const req: any = {
       headers: {
-        authorization: ['a string', 'another string']
-      }
+        authorization: ['a string', 'another string'],
+      },
     }
     const authController: AuthController = new AuthController()
-    return expect(authController.logout(req)).rejects.toThrowError(
-      ValidationError
-    )
+    return expect(authController.logout(req)).rejects.toThrowError(ValidationError)
   })
 })
 
@@ -344,45 +313,37 @@ describe('AuthController - sendPasswordResetInstructions', () => {
   test('should call sendPasswordResetInstructions function', async () => {
     const authService: any = DIContainer.sharedContainer.authService
 
-    authService.sendPasswordResetInstructions = jest.fn(() =>
-      Promise.resolve({})
-    )
+    authService.sendPasswordResetInstructions = jest.fn(() => Promise.resolve({}))
 
     const chance = new Chance()
     const req: any = {
       body: {
-        email: chance.email()
-      }
+        email: chance.email(),
+      },
     }
 
     const authController = new AuthController()
     await authController.sendPasswordResetInstructions(req)
-    expect(authService.sendPasswordResetInstructions).toBeCalledWith(
-      req.body.email
-    )
+    expect(authService.sendPasswordResetInstructions).toBeCalledWith(req.body.email)
   })
 
   test('should not call sendPasswordResetInstructions function', () => {
     const authService: any = DIContainer.sharedContainer.authService
 
-    authService.sendPasswordResetInstructions = jest.fn(() =>
-      Promise.resolve({})
-    )
+    authService.sendPasswordResetInstructions = jest.fn(() => Promise.resolve({}))
 
     const req: any = {
       body: {
-        email: 123
-      }
+        email: 123,
+      },
     }
 
-    authService.sendPasswordResetInstructions = jest.fn(() =>
-      Promise.resolve({})
-    )
+    authService.sendPasswordResetInstructions = jest.fn(() => Promise.resolve({}))
 
     const authController = new AuthController()
-    return expect(
-      authController.sendPasswordResetInstructions(req)
-    ).rejects.toThrowError(ValidationError)
+    return expect(authController.sendPasswordResetInstructions(req)).rejects.toThrowError(
+      ValidationError
+    )
   })
 })
 
@@ -397,12 +358,12 @@ describe('AuthController - resetPassword', () => {
       body: {
         password: chance.string(),
         token: chance.string(),
-        deviceId: chance.string()
+        deviceId: chance.string(),
       },
       headers: {
         [APP_ID_HEADER_KEY]: 'bar',
-        [APP_SECRET_HEADER_KEY]: 'foo'
-      }
+        [APP_SECRET_HEADER_KEY]: 'foo',
+      },
     }
 
     const authController = new AuthController()
@@ -418,14 +379,12 @@ describe('AuthController - resetPassword', () => {
     const req: any = {
       body: {
         password: 123,
-        token: 456
-      }
+        token: 456,
+      },
     }
 
     const authController = new AuthController()
-    return expect(authController.resetPassword(req)).rejects.toThrowError(
-      ValidationError
-    )
+    return expect(authController.resetPassword(req)).rejects.toThrowError(ValidationError)
   })
 
   test('should not call resetPassword function with non string headers', () => {
@@ -438,12 +397,12 @@ describe('AuthController - resetPassword', () => {
       body: {
         password: chance.string(),
         token: chance.string(),
-        deviceId: chance.string()
+        deviceId: chance.string(),
       },
       headers: {
         [APP_ID_HEADER_KEY]: 123,
-        [APP_SECRET_HEADER_KEY]: 456
-      }
+        [APP_SECRET_HEADER_KEY]: 456,
+      },
     }
     const authController: AuthController = new AuthController()
     return expect(authController.resetPassword(req)).rejects.toThrowError(
@@ -452,7 +411,6 @@ describe('AuthController - resetPassword', () => {
   })
 })
 
-
 describe('AuthController - changePassword', () => {
   test('should call changePassword function', async () => {
     const authService: any = DIContainer.sharedContainer.authService
@@ -460,20 +418,18 @@ describe('AuthController - changePassword', () => {
     const chance = new Chance()
     const req: any = {
       user: {
-        _id: 'foo'
+        _id: 'foo',
       },
       body: {
         currentPassword: chance.string(),
         newPassword: chance.string(),
-        deviceId: chance.string()
-      }
+        deviceId: chance.string(),
+      },
     }
 
     authService.changePassword = jest.fn()
 
-    AuthService.ensureValidAuthorizationBearer = jest.fn(
-      (_param: string) => 'string' as any
-    )
+    AuthService.ensureValidAuthorizationBearer = jest.fn((_param: string) => 'string' as any)
     const authController = new AuthController()
     await authController.changePassword(req)
     expect(authService.changePassword).toBeCalled()
@@ -487,19 +443,15 @@ describe('AuthController - changePassword', () => {
       body: {
         currentPassword: chance.string(),
         newPassword: chance.string(),
-        deviceId: chance.string()
-      }
+        deviceId: chance.string(),
+      },
     }
 
     authService.changePassword = jest.fn()
 
-    AuthService.ensureValidAuthorizationBearer = jest.fn(
-      (_param: string) => 'string' as any
-    )
+    AuthService.ensureValidAuthorizationBearer = jest.fn((_param: string) => 'string' as any)
     const authController = new AuthController()
-    return expect(authController.changePassword(req)).rejects.toThrow(
-      ValidationError
-    )
+    return expect(authController.changePassword(req)).rejects.toThrow(ValidationError)
   })
 
   test('should fail if password is not a string', async () => {
@@ -508,24 +460,20 @@ describe('AuthController - changePassword', () => {
     const chance = new Chance()
     const req: any = {
       user: {
-        _id: 'foo'
+        _id: 'foo',
       },
       body: {
         currentPassword: chance.integer(),
         newPassword: chance.string(),
-        deviceId: chance.string()
-      }
+        deviceId: chance.string(),
+      },
     }
 
     authService.changePassword = jest.fn()
 
-    AuthService.ensureValidAuthorizationBearer = jest.fn(
-      (_param: string) => 'string' as any
-    )
+    AuthService.ensureValidAuthorizationBearer = jest.fn((_param: string) => 'string' as any)
     const authController = new AuthController()
-    return expect(authController.changePassword(req)).rejects.toThrow(
-      ValidationError
-    )
+    return expect(authController.changePassword(req)).rejects.toThrow(ValidationError)
   })
 })
 
@@ -533,8 +481,8 @@ describe('AuthController - iamOAuthCallback', () => {
   test('should fail if the id token is not a string', () => {
     const req: any = {
       query: {
-        id_token: 123
-      }
+        id_token: 123,
+      },
     }
 
     const authController = new AuthController()
@@ -543,7 +491,7 @@ describe('AuthController - iamOAuthCallback', () => {
         deviceId: '',
         redirectUri: '',
         theme: '',
-        redirectBaseUri: ''
+        redirectBaseUri: '',
       })
     ).rejects.toThrow(MissingQueryParameterError)
   })
@@ -551,21 +499,21 @@ describe('AuthController - iamOAuthCallback', () => {
   test('should fail if state is missing', () => {
     const req: any = {
       query: {
-        id_token: '123'
-      }
+        id_token: '123',
+      },
     }
 
     const authController = new AuthController()
-    return expect(
-      authController.iamOAuthCallback(req, null as any)
-    ).rejects.toThrow(MissingQueryParameterError)
+    return expect(authController.iamOAuthCallback(req, null as any)).rejects.toThrow(
+      MissingQueryParameterError
+    )
   })
 
   test('should fail if deviceId is a number', () => {
     const req: any = {
       query: {
-        id_token: '123'
-      }
+        id_token: '123',
+      },
     }
 
     const authController = new AuthController()
@@ -574,7 +522,7 @@ describe('AuthController - iamOAuthCallback', () => {
         deviceId: 123 as any,
         redirectUri: '',
         theme: '',
-        redirectBaseUri: ''
+        redirectBaseUri: '',
       })
     ).rejects.toThrow(MissingQueryParameterError)
   })
@@ -582,8 +530,8 @@ describe('AuthController - iamOAuthCallback', () => {
   test('should fail if redirectUri is a number', () => {
     const req: any = {
       query: {
-        id_token: '123'
-      }
+        id_token: '123',
+      },
     }
 
     const authController = new AuthController()
@@ -592,7 +540,7 @@ describe('AuthController - iamOAuthCallback', () => {
         redirectUri: 123 as any,
         deviceId: '',
         theme: '',
-        redirectBaseUri: ''
+        redirectBaseUri: '',
       })
     ).rejects.toThrow(MissingQueryParameterError)
   })
@@ -600,8 +548,8 @@ describe('AuthController - iamOAuthCallback', () => {
   test('should fail if theme is a number', () => {
     const req: any = {
       query: {
-        id_token: '123'
-      }
+        id_token: '123',
+      },
     }
 
     const authController = new AuthController()
@@ -610,7 +558,7 @@ describe('AuthController - iamOAuthCallback', () => {
         theme: 123 as any,
         deviceId: '',
         redirectUri: '',
-        redirectBaseUri: ''
+        redirectBaseUri: '',
       })
     ).rejects.toThrow(MissingQueryParameterError)
   })
@@ -618,8 +566,8 @@ describe('AuthController - iamOAuthCallback', () => {
   test('should fail if token payload is invalid', () => {
     const req: any = {
       query: {
-        id_token: '123'
-      }
+        id_token: '123',
+      },
     }
 
     const authController = new AuthController()
@@ -628,7 +576,7 @@ describe('AuthController - iamOAuthCallback', () => {
         theme: '',
         deviceId: '',
         redirectUri: '',
-        redirectBaseUri: ''
+        redirectBaseUri: '',
       })
     ).rejects.toThrow(InvalidCredentialsError)
   })
@@ -636,11 +584,11 @@ describe('AuthController - iamOAuthCallback', () => {
   test('should generate a valid authorization token for the provided scope', async () => {
     const req: any = {
       user: {
-        _id: 'User_foo'
+        _id: 'User_foo',
       },
       params: {
-        scope: 'jupyterhub'
-      }
+        scope: 'jupyterhub',
+      },
     }
 
     const authController = new AuthController()
@@ -654,16 +602,18 @@ describe('AuthController - iamOAuthCallback', () => {
   test('should fail for invalid scopes', async () => {
     const req: any = {
       user: {
-        _id: 'User_foo'
+        _id: 'User_foo',
       },
       params: {
-        scope: null
-      }
+        scope: null,
+      },
     }
 
     const authController = new AuthController()
     await expect(authController.createAuthorizationToken(req)).rejects.toThrow(ValidationError)
-    await expect(authController.createAuthorizationToken({ ...req,params: { scope: 'foo' } })).rejects.toThrow(InvalidScopeNameError)
+    await expect(
+      authController.createAuthorizationToken({ ...req, params: { scope: 'foo' } })
+    ).rejects.toThrow(InvalidScopeNameError)
   })
 })
 
@@ -672,7 +622,7 @@ describe('AuthController - backchannelLogout', () => {
     const authController = new AuthController()
     return expect(
       authController.backchannelLogout({
-        query: { logout_token: 123 }
+        query: { logout_token: 123 },
       } as any)
     ).rejects.toThrowError(InvalidBackchannelLogoutError)
   })
@@ -681,7 +631,7 @@ describe('AuthController - backchannelLogout', () => {
     const authController = new AuthController()
     return expect(
       authController.backchannelLogout({
-        query: { logout_token: '123' }
+        query: { logout_token: '123' },
       } as any)
     ).rejects.toThrowError(InvalidBackchannelLogoutError)
   })
@@ -692,7 +642,7 @@ describe('AuthController - backchannelLogout', () => {
 
     authService.backchannelLogout = jest.fn()
     await authController.backchannelLogout({
-      query: { logout_token: validLogoutToken }
+      query: { logout_token: validLogoutToken },
     } as any)
 
     return expect(authService.backchannelLogout).toBeCalled()
@@ -704,42 +654,48 @@ describe('AuthController - serverToServerTokenAuth', () => {
     const req: any = {
       headers: { ...ValidHeaderWithApplicationKey, 'manuscripts-app-id': 123 },
       body: {
-        deviceId: 'valid-deviceId'
+        deviceId: 'valid-deviceId',
       },
       params: {
-        connectUserID: 'valid-connectId'
-      }
+        connectUserID: 'valid-connectId',
+      },
     }
     const authController = new AuthController()
-    await expect(authController.serverToServerTokenAuth(req)).rejects.toThrow(InvalidClientApplicationError)
+    await expect(authController.serverToServerTokenAuth(req)).rejects.toThrow(
+      InvalidClientApplicationError
+    )
   })
 
   test('should fail if the deviceId is not a string', async () => {
     const req: any = {
       headers: { ...ValidHeaderWithApplicationKey },
       body: {
-        deviceId: 123456
+        deviceId: 123456,
       },
       params: {
-        connectUserID: 'valid-connectId'
-      }
+        connectUserID: 'valid-connectId',
+      },
     }
     const authController = new AuthController()
-    await expect(authController.serverToServerTokenAuth(req)).rejects.toThrow(InvalidCredentialsError)
+    await expect(authController.serverToServerTokenAuth(req)).rejects.toThrow(
+      InvalidCredentialsError
+    )
   })
 
   test('should fail if the connectUserID is not a string', async () => {
     const req: any = {
       headers: { ...ValidHeaderWithApplicationKey },
       body: {
-        deviceId: 'valid-deviceId'
+        deviceId: 'valid-deviceId',
       },
       params: {
-        connectUserID: 123456
-      }
+        connectUserID: 123456,
+      },
     }
     const authController = new AuthController()
-    await expect(authController.serverToServerTokenAuth(req)).rejects.toThrow(InvalidCredentialsError)
+    await expect(authController.serverToServerTokenAuth(req)).rejects.toThrow(
+      InvalidCredentialsError
+    )
   })
 
   test('should call serverToServerAuth', async () => {
@@ -747,11 +703,11 @@ describe('AuthController - serverToServerTokenAuth', () => {
     const req: any = {
       headers: { ...ValidHeaderWithApplicationKey },
       body: {
-        deviceId: 'valid-deviceId'
+        deviceId: 'valid-deviceId',
       },
       params: {
-        connectUserID: 'valid-connectId'
-      }
+        connectUserID: 'valid-connectId',
+      },
     }
     const authController = new AuthController()
     await authController.serverToServerTokenAuth(req)
