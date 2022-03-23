@@ -35,7 +35,7 @@ import { remove } from 'fs-extra'
 import jsonwebtoken from 'jsonwebtoken'
 import { ContainerService } from '../../../DomainServices/Container/ContainerService'
 import { isLoginTokenPayload } from '../../../Utilities/JWT/LoginTokenPayload'
-import uuid from 'uuid'
+import { v4 as uuidv4 } from 'uuid'
 import tempy from 'tempy'
 
 export class ProjectController extends BaseController implements IProjectController {
@@ -133,7 +133,7 @@ export class ProjectController extends BaseController implements IProjectControl
       manuscriptObject._id = manuscriptId
     }
 
-    const sessionID = uuid.v4()
+    const sessionID = uuidv4()
     const createdAt = Math.round(Date.now() / 1000)
     const docs = json.data
       .filter((model: Model) => model.objectType !== 'MPManuscript')
