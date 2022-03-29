@@ -15,9 +15,7 @@
  */
 
 import { v4 as uuid_v4 } from 'uuid'
-import {
-  ContainerInvitation
-} from '@manuscripts/manuscripts-json-schema'
+import { ContainerInvitation } from '@manuscripts/manuscripts-json-schema'
 import { PatchProject } from '../../../../../src/Models/ProjectModels'
 
 import { ProjectRepository } from '../../../../../src/DataAccess/ProjectRepository/ProjectRepository'
@@ -27,7 +25,7 @@ import { log } from '../../../../../src/Utilities/Logger'
 import {
   validProject,
   validProjectNotInDB,
-  validProject2
+  validProject2,
 } from '../../../../data/fixtures/projects'
 import { ValidationError, DatabaseError } from '../../../../../src/Errors'
 import { drop, seed, dropBucket, testDatabase } from '../../../../utilities/db'
@@ -35,11 +33,9 @@ import { InvitationRepository } from '../../../../../src/DataAccess/InvitationRe
 import { ContainerInvitationRepository } from '../../../../../src/DataAccess/ContainerInvitationRepository/ContainerInvitationRepository'
 import {
   validProjectInvitation,
-  validProjectInvitationObject
+  validProjectInvitationObject,
 } from '../../../../data/fixtures/invitation'
-import {
-  validUserProfile2
-} from '../../../../data/fixtures/UserRepository'
+import { validUserProfile2 } from '../../../../data/fixtures/UserRepository'
 
 jest.setTimeout(TEST_TIMEOUT)
 
@@ -72,9 +68,7 @@ describe('SGRepository Create', () => {
 
   test('should fail to create project if the project already exists', () => {
     const repository = new ProjectRepository(BucketKey.Data, db)
-    return expect(repository.create(validProject, {})).rejects.toThrowError(
-      DatabaseError
-    )
+    return expect(repository.create(validProject, {})).rejects.toThrowError(DatabaseError)
   })
 })
 
@@ -93,44 +87,40 @@ describe('SGRepository update', () => {
     invitingUserProfile: {
       ...validUserProfile2,
       createdAt: new Date().getMilliseconds() - 1000,
-      updatedAt: new Date().getMilliseconds()
+      updatedAt: new Date().getMilliseconds(),
     },
     invitedUserEmail: validProjectInvitation.invitedUsers[0].email,
     invitedUserName: validProjectInvitation.invitedUsers[0].name,
     invitingUserID: 'User_foo',
     role: validProjectInvitation.role,
     createdAt: new Date().getMilliseconds() - 1000,
-    updatedAt: new Date().getMilliseconds()
+    updatedAt: new Date().getMilliseconds(),
   }
 
   test('should fail if id does not exists in the database', () => {
     const repository = new ContainerInvitationRepository(BucketKey.Data, db)
 
-    return expect(
-      repository.update('not-in-db', invitation, {})
-    ).rejects.toThrowError(ValidationError)
+    return expect(repository.update('not-in-db', invitation, {})).rejects.toThrowError(
+      ValidationError
+    )
   })
 
   test('should update user role successfully', async () => {
     const repository = new ContainerInvitationRepository(BucketKey.Data, db)
-    const beforeUpdate: any = await repository.getById(
-      validProjectInvitationObject._id
-    )
+    const beforeUpdate: any = await repository.getById(validProjectInvitationObject._id)
     expect(beforeUpdate.role).toBe('Viewer')
 
     const projectInvitationUpdatedData = {
       ...validProjectInvitationObject,
-      role: 'Writer'
+      role: 'Writer',
+      _rev: beforeUpdate._rev,
     }
 
     await repository.update(
       validProjectInvitationObject._id,
-      projectInvitationUpdatedData as ContainerInvitation,
-      {}
+      projectInvitationUpdatedData as ContainerInvitation
     )
-    const afterUpdate: any = await repository.getById(
-      validProjectInvitationObject._id
-    )
+    const afterUpdate: any = await repository.getById(validProjectInvitationObject._id)
     expect(afterUpdate.role).toBe('Writer')
   })
 })
@@ -145,9 +135,9 @@ describe('SGRepository patch', () => {
   test('should fail if id does not exists in the database', () => {
     const repository = new ProjectRepository(BucketKey.Data, db)
 
-    return expect(
-      repository.patch('not-in-db', validProject, {})
-    ).rejects.toThrowError(ValidationError)
+    return expect(repository.patch('not-in-db', validProject, {})).rejects.toThrowError(
+      ValidationError
+    )
   })
 
   test('should patch user successfully', async () => {
@@ -156,7 +146,7 @@ describe('SGRepository patch', () => {
     expect(beforeUpdate.owners[0]).toBe('User_test')
     const projectUpdatedData: PatchProject = {
       _id: validProject2._id,
-      writers: ['User_test2']
+      writers: ['User_test2'],
     }
 
     await repository.patch(validProject2._id, projectUpdatedData, {})
@@ -175,9 +165,7 @@ describe('SGRepository touch', () => {
 
   test('should fail if id does not exists in the database', () => {
     const repository = new InvitationRepository(BucketKey.Data, db)
-    return expect(repository.touch('not-in-db', 1)).rejects.toThrowError(
-      ValidationError
-    )
+    return expect(repository.touch('not-in-db', 1)).rejects.toThrowError(ValidationError)
   })
 })
 

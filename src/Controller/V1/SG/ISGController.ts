@@ -14,15 +14,11 @@
  * limitations under the License.
  */
 
-export interface TypedEntity {
-  _type: string
-}
+import { Request } from 'express'
 
-export interface IdentifiableEntity {
-  _id: string
-  _type: string
-  expiry: number
-  _rev: string
-  _depth: number
-  _revisions: any
+export interface ISGController {
+  get(req: Request): Promise<any>
+  create(req: Request): Promise<any>
+  update(req: Request): Promise<any>
+  remove(req: Request): Promise<void>
 }

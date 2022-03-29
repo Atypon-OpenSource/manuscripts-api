@@ -395,7 +395,7 @@ export class DIContainer {
     return DIContainer._sharedContainer
   }
 
-  public bucketForKey(bucketKey: BucketKey): SQLDatabase | null {
+  public bucketForKey(bucketKey: BucketKey): SQLDatabase {
     switch (bucketKey) {
       case BucketKey.User:
         return this.userBucket
@@ -408,7 +408,7 @@ export class DIContainer {
       case BucketKey.DerivedData:
         return this.derivedDataBucket
       default:
-        return null
+        return this.dataBucket
     }
   }
 

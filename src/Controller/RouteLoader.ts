@@ -27,6 +27,7 @@ import { ProjectRoute } from './V1/Project/ProjectRoute'
 import { ContainerRequestRoute } from './V1/ContainerRequest/ContainerRequestRoute'
 import { SubmissionRoute } from './V1/Submission/SubmissionRoute'
 import { TemplatesRoute } from './V1/Templates/TemplatesRoute'
+import { SGRoute } from './V1/SG/SGRoute'
 
 /**
  * Creates routes.
@@ -40,6 +41,7 @@ export function loadRoutes(router: Router) {
     new UserRoute(),
     new InvitationRoute(),
     new ServerStatusRoute(),
+    new SGRoute(),
     new ContainerRoute(),
     new ProjectRoute(),
     new ContainerRequestRoute(),

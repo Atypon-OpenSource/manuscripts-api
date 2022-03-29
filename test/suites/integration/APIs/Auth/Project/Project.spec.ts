@@ -16,8 +16,6 @@
 
 import { SeedOptions } from '../../../../../../src/DataAccess/Interfaces/SeedOptions'
 import { drop, dropBucket, seed, testDatabase } from '../../../../../utilities/db'
-import { GATEWAY_BUCKETS } from '../../../../../../src/DomainServices/Sync/SyncService'
-import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
 import { validBody } from '../../../../../data/fixtures/credentialsRequestPayload'
 import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
 import { BucketKey } from '../../../../../../src/Config/ConfigurationTypes'
@@ -26,24 +24,31 @@ import { basicLogin, importManuscript } from '../../../../../api'
 import {
   authorizationHeader,
   ValidContentTypeAcceptJsonHeader,
-  ValidHeaderWithApplicationKey
+  ValidHeaderWithApplicationKey,
 } from '../../../../../data/fixtures/headers'
 import * as HttpStatus from 'http-status-codes'
 import { validManuscript } from '../../../../../data/fixtures/manuscripts'
 
 let db: any = null
-const seedOptions: SeedOptions = { users: true, userProfiles: true, applications: true, projects: true, manuscript: true, templates: true }
+const seedOptions: SeedOptions = {
+  users: true,
+  userProfiles: true,
+  applications: true,
+  projects: true,
+  manuscript: true,
+  templates: true,
+}
 
 beforeAll(async () => {
   db = await testDatabase()
-  await Promise.all(
-    GATEWAY_BUCKETS.map(key => {
+  /*await Promise.all(
+    GATEWAY_BUCKETS.map((key) => {
       return DIContainer.sharedContainer.syncService.createGatewayAccount(
         'User|' + validBody.email,
         key
       )
     })
-  )
+  )*/
 })
 
 afterAll(() => {
@@ -71,10 +76,10 @@ describe('ContainerService - createProject', () => {
     const sendFileResponse = await importManuscript(
       {
         ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
+        ...authHeader,
       },
       {
-        containerID: 'MPProject:valid-project-id-2'
+        containerID: 'MPProject:valid-project-id-2',
       },
       'test/data/fixtures/jats-arc.zip'
     )
@@ -94,10 +99,10 @@ describe('ContainerService - createProject', () => {
     const sendFileResponse = await importManuscript(
       {
         ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
+        ...authHeader,
       },
       {
-        containerID: 'MPProject:valid-project-id-2'
+        containerID: 'MPProject:valid-project-id-2',
       },
       'test/data/fixtures/jats-arc.zip',
       validManuscript._id
@@ -118,10 +123,10 @@ describe('ContainerService - createProject', () => {
     const sendFileResponse = await importManuscript(
       {
         ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
+        ...authHeader,
       },
       {
-        containerID: 'MPProject:valid-project-id-2'
+        containerID: 'MPProject:valid-project-id-2',
       },
       'test/data/fixtures/jats-arc.zip',
       validManuscript._id,
@@ -130,7 +135,7 @@ describe('ContainerService - createProject', () => {
     expect(sendFileResponse.status).toBe(HttpStatus.OK)
   })
 
-  test('should import jats and update manuscript with templateId', async () => {
+  test('should import jats and update manuscript with templateId 2', async () => {
     const loginResponse: supertest.Response = await basicLogin(
       validBody,
       ValidHeaderWithApplicationKey
@@ -143,10 +148,10 @@ describe('ContainerService - createProject', () => {
     const sendFileResponse = await importManuscript(
       {
         ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
+        ...authHeader,
       },
       {
-        containerID: 'MPProject:valid-project-id-2'
+        containerID: 'MPProject:valid-project-id-2',
       },
       'test/data/fixtures/jats-arc.zip',
       validManuscript._id,

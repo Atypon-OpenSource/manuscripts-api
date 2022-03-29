@@ -15,16 +15,24 @@
  */
 
 import * as _ from 'lodash'
-import { ValidationError, DatabaseError, NoBucketError } from '../Errors'
+import * as HttpStatus from 'http-status-codes'
+
+import { ValidationError, DatabaseError, NoBucketError, SyncError } from '../Errors'
+import { IdentifiableEntity } from './Interfaces/IdentifiableEntity'
 import { KeyValueRepository } from './Interfaces/KeyValueRepository'
 import { BucketKey } from '../Config/ConfigurationTypes'
 import { SQLDatabase } from './SQLDatabase'
 import { timestamp } from '../Utilities/JWT/LoginTokenPayload'
 
 import { Prisma } from '@prisma/client'
+import { v4 as uuid_v4 } from 'uuid'
 
-export abstract class SGRepository<TEntity, TNewEntity, TUpdateEntity, TPatchEntity>
-  implements KeyValueRepository<TEntity, TNewEntity, TUpdateEntity, TPatchEntity>
+export abstract class SGRepository<
+  TEntity extends Partial<IdentifiableEntity>,
+  TNewEntity,
+  TUpdateEntity extends Partial<IdentifiableEntity>,
+  TPatchEntity
+> implements KeyValueRepository<TEntity, TNewEntity, TUpdateEntity, TPatchEntity>
 {
   abstract get objectType(): string
 
@@ -71,6 +79,8 @@ export abstract class SGRepository<TEntity, TNewEntity, TUpdateEntity, TPatchEnt
   public async create(newDocument: TNewEntity): Promise<TEntity> {
     const docId = this.documentId((newDocument as any)._id)
     const createdAt = timestamp()
+    const revision = uuid_v4()
+    const depth = 0
 
     const prismaDoc = {
       _id: docId,
@@ -78,6 +88,12 @@ export abstract class SGRepository<TEntity, TNewEntity, TUpdateEntity, TPatchEnt
         objectType: this.objectType,
         updatedAt: createdAt,
         createdAt,
+        _revisions: {
+          ids: [revision],
+        },
+        _rev: `${depth}-${revision}`,
+        _parent_rev: null,
+        _depth: depth,
         ...(newDocument as any),
       },
     } as unknown as TEntity
@@ -169,12 +185,29 @@ export abstract class SGRepository<TEntity, TNewEntity, TUpdateEntity, TPatchEnt
       throw new ValidationError(`Object type mismatched`, (updatedDocument as any).objectType)
     }
 
+    if (updatedDocument._rev !== document._rev) {
+      throw new SyncError(`Rev mismatched ${updatedDocument._rev} with ${document._rev}`, {})
+    }
+
+    const revision = uuid_v4()
+    const depth = (document._depth || 0) + 1
+    const revisions = document._revisions || { ids: [] }
+    revisions.ids.unshift(revision)
+
+    const revisedUpdatedDocument = {
+      ...updatedDocument,
+      _revisions: revisions,
+      _rev: `${depth}-${revision}`,
+      _parent_rev: `${depth - 1}-${revisions.ids[1]}`,
+      _depth: depth,
+    }
+
     const documentToUpdate = {
       _id: docId,
       data: {
         objectType: this.objectType,
         updatedAt: timestamp(),
-        ...(updatedDocument as any),
+        ...(revisedUpdatedDocument as any),
       },
     } as unknown as TEntity
 
@@ -292,7 +325,7 @@ export abstract class SGRepository<TEntity, TNewEntity, TUpdateEntity, TPatchEnt
       const docId = this.documentId(doc._id)
       const dataToPatch = _.omit(doc, ['_id', 'id', 'data'])
       const updatedDoc = await this.patch(docId, dataToPatch).catch((err) => {
-        if (err.statusCode === 400) {
+        if (err.statusCode === HttpStatus.BAD_REQUEST) {
           // must upsert
           return this.database.bucket.upsert(docId, { data: dataToPatch })
         }
