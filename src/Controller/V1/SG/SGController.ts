@@ -15,116 +15,70 @@
  */
 
 import { Request } from 'express'
-import * as HttpStatus from 'http-status-codes'
 
 import { BaseController, authorizationBearerToken } from '../../BaseController'
 import { DatabaseConfiguration, BucketKey } from '../../../Config/ConfigurationTypes'
 import { config } from '../../../Config/Config'
 import { ISGController } from './ISGController'
 import { DIContainer } from '../../../DIContainer/DIContainer'
-import { InvalidCredentialsError, InvalidBucketError } from '../../../Errors'
-import jsonwebtoken from 'jsonwebtoken'
-import { isLoginTokenPayload } from '../../../Utilities/JWT/LoginTokenPayload'
+import { InvalidBucketError } from '../../../Errors'
 
 export class SGController extends BaseController implements ISGController {
   readonly repoMap: any
 
   public constructor(readonly configuration: DatabaseConfiguration = config.DB) {
     super()
-    this.repoMap = {}
-    for (const repo of DIContainer.sharedContainer.gatewayRepositories) {
-      this.repoMap[repo.objectType] = repo
-    }
   }
 
   async get(req: Request): Promise<any> {
     const db = req.params.db as BucketKey
-
     if (!this.configuration.buckets[db] as any) {
       throw new InvalidBucketError(db)
     }
 
     const id = req.params.id
-
     const token = authorizationBearerToken(req)
-    const payload = jsonwebtoken.decode(token)
 
-    if (!isLoginTokenPayload(payload)) {
-      throw new InvalidCredentialsError('Unexpected token payload.')
-    }
-
-    const objectType = id.split(':')[0]
-    return this.repoMap[objectType].getById(id)
+    return DIContainer.sharedContainer.sgService.get(token, id)
   }
 
   async create(req: Request): Promise<any> {
     const db = req.params.db as BucketKey
-
     if (!this.configuration.buckets[db] as any) {
       throw new InvalidBucketError(db)
     }
+
     const doc = req.body
-
     const token = authorizationBearerToken(req)
-    const payload = jsonwebtoken.decode(token)
 
-    if (!isLoginTokenPayload(payload)) {
-      throw new InvalidCredentialsError('Unexpected token payload.')
-    }
-
-    const objectType = doc._id.split(':')[0]
-    return this.repoMap[objectType].create(doc)
+    return DIContainer.sharedContainer.sgService.create(token, doc)
   }
 
   async update(req: Request): Promise<any> {
     const db = req.params.db as BucketKey
-
     if (!this.configuration.buckets[db] as any) {
       throw new InvalidBucketError(db)
     }
 
     const id = req.params.id
-
     const rev = req.query.rev
     const body = req.body
     body._rev = rev
 
     const token = authorizationBearerToken(req)
-    const payload = jsonwebtoken.decode(token)
-
-    if (!isLoginTokenPayload(payload)) {
-      throw new InvalidCredentialsError('Unexpected token payload.')
-    }
-
-    const objectType = id.split(':')[0]
-    return this.repoMap[objectType].patch(id, body).catch((err: any) => {
-      if (err.statusCode === HttpStatus.BAD_REQUEST) {
-        body._id = id
-        return this.repoMap[objectType].create(body)
-      }
-      return Promise.reject(err)
-    })
+    return DIContainer.sharedContainer.sgService.update(token, id, body)
   }
 
   async remove(req: Request): Promise<any> {
     const db = req.params.db as BucketKey
-
     if (!this.configuration.buckets[db] as any) {
       throw new InvalidBucketError(db)
     }
 
     const id = req.params.id
-
     //const rev = req.query.rev
-
     const token = authorizationBearerToken(req)
-    const payload = jsonwebtoken.decode(token)
 
-    if (!isLoginTokenPayload(payload)) {
-      throw new InvalidCredentialsError('Unexpected token payload.')
-    }
-
-    const objectType = id.split(':')[0]
-    return this.repoMap[objectType].remove(id)
+    return DIContainer.sharedContainer.sgService.remove(token, id)
   }
 }

@@ -51,17 +51,14 @@ describe('SGController', () => {
       const req: any = {
         params: {
           db: 'project',
-          id: 'id',
+          id: 'MPProject:1',
         },
         headers: headers,
       }
 
       const sgController: any = new SGController()
-      sgController.repoMap = {
-        id: {
-          getById: jest.fn(() => Promise.resolve()),
-        },
-      }
+      const sgService: any = DIContainer.sharedContainer.sgService
+      sgService.get = jest.fn(() => Promise.resolve())
       sgController.configuration = {
         buckets: {
           project: req.params.db,
@@ -70,14 +67,14 @@ describe('SGController', () => {
 
       await sgController.get(req)
 
-      expect(sgController.repoMap.id.getById).toBeCalled()
+      expect(sgService.get).toBeCalled()
     })
 
     test('should fail if db not found', async () => {
       const req: any = {
         params: {
           db: 'no',
-          id: 'id',
+          id: 'MPProject:1',
         },
         headers: headers,
       }
@@ -96,7 +93,7 @@ describe('SGController', () => {
       const req: any = {
         params: {
           db: 'project',
-          id: 'id',
+          id: 'MPProject:1',
         },
         headers: authorizationHeader('derp'),
       }
@@ -119,17 +116,14 @@ describe('SGController', () => {
           db: 'project',
         },
         body: {
-          _id: 'id',
+          _id: 'MPProject:1',
         },
         headers: headers,
       }
 
       const sgController: any = new SGController()
-      sgController.repoMap = {
-        id: {
-          create: jest.fn(() => Promise.resolve()),
-        },
-      }
+      const sgService: any = DIContainer.sharedContainer.sgService
+      sgService.create = jest.fn(() => Promise.resolve())
       sgController.configuration = {
         buckets: {
           project: req.params.db,
@@ -138,7 +132,7 @@ describe('SGController', () => {
 
       await sgController.create(req)
 
-      expect(sgController.repoMap.id.create).toBeCalled()
+      expect(sgService.create).toBeCalled()
     })
 
     test('should fail if db not found', async () => {
@@ -147,7 +141,7 @@ describe('SGController', () => {
           db: 'no',
         },
         body: {
-          _id: 'id',
+          _id: 'MPProject:1',
         },
         headers: headers,
       }
@@ -168,7 +162,7 @@ describe('SGController', () => {
           db: 'project',
         },
         body: {
-          _id: 'id',
+          _id: 'MPProject:1',
         },
         headers: authorizationHeader('derp'),
       }
@@ -189,10 +183,10 @@ describe('SGController', () => {
       const req: any = {
         params: {
           db: 'project',
-          id: 'id',
+          id: 'MPProject:1',
         },
         body: {
-          _id: 'id',
+          _id: 'MPProject:1',
         },
         query: {
           rev: 'rev',
@@ -201,11 +195,8 @@ describe('SGController', () => {
       }
 
       const sgController: any = new SGController()
-      sgController.repoMap = {
-        id: {
-          patch: jest.fn(() => Promise.resolve()),
-        },
-      }
+      const projectRepository: any = DIContainer.sharedContainer.projectRepository
+      projectRepository.patch = jest.fn(() => Promise.resolve())
       sgController.configuration = {
         buckets: {
           project: req.params.db,
@@ -214,17 +205,17 @@ describe('SGController', () => {
 
       await sgController.update(req)
 
-      expect(sgController.repoMap.id.patch).toBeCalled()
+      expect(projectRepository.patch).toBeCalled()
     })
 
     test('should call create in update', async () => {
       const req: any = {
         params: {
           db: 'project',
-          id: 'id',
+          id: 'MPProject:1',
         },
         body: {
-          _id: 'id',
+          _id: 'MPProject:1',
         },
         query: {
           rev: 'rev',
@@ -233,12 +224,9 @@ describe('SGController', () => {
       }
 
       const sgController: any = new SGController()
-      sgController.repoMap = {
-        id: {
-          patch: jest.fn(() => Promise.reject(new ValidationError('derp', 'derp'))),
-          create: jest.fn(() => Promise.resolve()),
-        },
-      }
+      const projectRepository: any = DIContainer.sharedContainer.projectRepository
+      projectRepository.patch = jest.fn(() => Promise.reject(new ValidationError('derp', 'derp')))
+      projectRepository.create = jest.fn(() => Promise.resolve())
       sgController.configuration = {
         buckets: {
           project: req.params.db,
@@ -247,17 +235,17 @@ describe('SGController', () => {
 
       await sgController.update(req)
 
-      expect(sgController.repoMap.id.create).toBeCalled()
+      expect(projectRepository.create).toBeCalled()
     })
 
     test('should fail on update internal server error', async () => {
       const req: any = {
         params: {
           db: 'project',
-          id: 'id',
+          id: 'MPProject:1',
         },
         body: {
-          _id: 'id',
+          _id: 'MPProject:1',
         },
         query: {
           rev: 'rev',
@@ -266,11 +254,8 @@ describe('SGController', () => {
       }
 
       const sgController: any = new SGController()
-      sgController.repoMap = {
-        id: {
-          patch: jest.fn(() => Promise.reject(new InvalidBucketError('project' as BucketKey))),
-        },
-      }
+      const projectRepository: any = DIContainer.sharedContainer.projectRepository
+      projectRepository.patch = jest.fn(() =>Promise.reject(new InvalidBucketError('project' as BucketKey)))
       sgController.configuration = {
         buckets: {
           project: req.params.db,
@@ -284,10 +269,10 @@ describe('SGController', () => {
       const req: any = {
         params: {
           db: 'no',
-          id: 'id',
+          id: 'MPProject:1',
         },
         body: {
-          _id: 'id',
+          _id: 'MPProject:1',
         },
         query: {
           rev: 'rev',
@@ -309,10 +294,10 @@ describe('SGController', () => {
       const req: any = {
         params: {
           db: 'project',
-          id: 'id',
+          id: 'MPProject:1',
         },
         body: {
-          _id: 'id',
+          _id: 'MPProject:1',
         },
         query: {
           rev: 'rev',
@@ -336,10 +321,10 @@ describe('SGController', () => {
       const req: any = {
         params: {
           db: 'project',
-          id: 'id',
+          id: 'MPProject:1',
         },
         body: {
-          _id: 'id',
+          _id: 'MPProject:1',
         },
         query: {
           rev: 'rev',
@@ -348,11 +333,8 @@ describe('SGController', () => {
       }
 
       const sgController: any = new SGController()
-      sgController.repoMap = {
-        id: {
-          remove: jest.fn(() => Promise.resolve()),
-        },
-      }
+      const sgService: any = DIContainer.sharedContainer.sgService
+      sgService.remove = jest.fn(() => Promise.resolve())
       sgController.configuration = {
         buckets: {
           project: req.params.db,
@@ -361,17 +343,17 @@ describe('SGController', () => {
 
       await sgController.remove(req)
 
-      expect(sgController.repoMap.id.remove).toBeCalled()
+      expect(sgService.remove).toBeCalled()
     })
 
     test('should fail if db not found', async () => {
       const req: any = {
         params: {
           db: 'no',
-          id: 'id',
+          id: 'MPProject:1',
         },
         body: {
-          _id: 'id',
+          _id: 'MPProject:1',
         },
         query: {
           rev: 'rev',
@@ -393,10 +375,10 @@ describe('SGController', () => {
       const req: any = {
         params: {
           db: 'project',
-          id: 'id',
+          id: 'MPProject:1',
         },
         body: {
-          _id: 'id',
+          _id: 'MPProject:1',
         },
         query: {
           rev: 'rev',

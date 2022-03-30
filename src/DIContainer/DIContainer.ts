@@ -64,6 +64,8 @@ import { IAuthService } from '../DomainServices/Auth/IAuthService'
 import { EmailService } from '../DomainServices/Email/EmailService'
 import { SyncService } from '../DomainServices/Sync/SyncService'
 import { ISyncService } from '../DomainServices/Sync/ISyncService'
+import { SGService } from '../DomainServices/SG/SGService'
+import { ISGService } from '../DomainServices/SG/ISGService'
 import { IUserRegistrationService } from '../DomainServices/Registration/IUserRegistrationService'
 import { UserRegistrationService } from '../DomainServices/Registration/UserRegistrationService'
 import { UserService } from '../DomainServices/User/UserService'
@@ -125,6 +127,7 @@ export class DIContainer {
   readonly collaborationsRepository: ICollaborationsRepository
   readonly emailService: EmailService
   readonly syncService: ISyncService
+  readonly sgService: ISGService
   readonly authService: IAuthService
   readonly userRegistrationService: IUserRegistrationService
   readonly activityTrackingService: UserActivityTrackingService
@@ -196,6 +199,7 @@ export class DIContainer {
     this.userStatusRepository = new UserStatusRepository(this.userBucket)
     this.userProfileRepository = new UserProfileRepository(BucketKey.Project, this.dataBucket)
     this.syncService = new SyncService(this.userStatusRepository, this.userProfileRepository)
+    this.sgService = new SGService(config.DB)
     this.userRegistrationService = new UserRegistrationService(
       this.userRepository,
       this.userEmailRepository,
