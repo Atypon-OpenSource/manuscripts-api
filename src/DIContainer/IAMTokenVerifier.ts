@@ -70,7 +70,8 @@ export class IAMTokenVerifier implements IIAMTokenVerifier {
   public async setIssuer() {
     if (process.env.NODE_ENV !== 'test') {
       const body = await fetch(`${config.IAM.authServerURL}/.well-known/openid-configuration`)
-      this.issuer = JSON.parse(await body.json()).issuer
+      const json = await body.json()
+      this.issuer = json.issuer
     } else {
       this.issuer = config.IAM.apiServerURL[0]
     }
