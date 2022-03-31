@@ -121,6 +121,9 @@ placed at the root of the repository.
   <dt>APP_CLIENT_APPLICATIONS</dt>
   <dd>A semi-colon separated list of acceptable client details, with each field comma separated including an optional secret. It corresponds to Application Id, Application Secret, Application Name. (e.g. <b>"com.manuscripts.Manuscripts,foobar,Manuscripts;io.manuscripts,,Manuscripts.io"</b>).</dd>
 
+  <dt>APP_DATABASE_URL</dt>
+  <dd>The postgres database connection url</dd>
+
   <dt>APP_STATE_BUCKET</dt>
   <dd>The name for a database bucket for internal service state.</dd>
 
