@@ -394,7 +394,7 @@ export class DIContainer {
       enableActivityTracking
     )
 
-    DIContainer._sharedContainer.applicationRepository.ensureApplicationsExist(
+    await DIContainer._sharedContainer.applicationRepository.ensureApplicationsExist(
       (config.apps && config.apps.knownClientApplications) || []
     )
 

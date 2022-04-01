@@ -87,7 +87,7 @@ jest.mock('../../src/Config/Config', () => {
       knownClientApplications: [
         {
           _id: 'ClientApplication|com.manuscripts.Manuscripts',
-          _type: 'ClientApplication',
+          _type: 'Application',
           secret: 'foobar',
           name: 'Manuscripts',
         },

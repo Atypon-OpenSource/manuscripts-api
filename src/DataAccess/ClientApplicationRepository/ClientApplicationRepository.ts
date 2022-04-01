@@ -25,7 +25,7 @@ import { required, maxLength } from '../validators'
 import { DatabaseError, ValidationError } from '../../Errors'
 import { ensureValidDocumentType } from '../Interfaces/IndexedRepository'
 import { isString } from 'lodash'
-import { log } from '../../Utilities/Logger'
+//import { log } from '../../Utilities/Logger'
 import { Prisma } from '@prisma/client'
 
 /**
@@ -114,7 +114,7 @@ export class ClientApplicationRepository
         })
       })
     )
-    log.debug('Applications existence ensured.')
+    //log.debug('Applications existence ensured.')
     return Promise.resolve()
   }
 }
