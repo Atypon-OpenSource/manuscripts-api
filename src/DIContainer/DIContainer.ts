@@ -394,7 +394,9 @@ export class DIContainer {
       enableActivityTracking
     )
 
-    // log.debug('_sharedContainer is set successfully.')
+    DIContainer._sharedContainer.applicationRepository.ensureApplicationsExist(
+      (config.apps && config.apps.knownClientApplications) || []
+    )
 
     return DIContainer._sharedContainer
   }
