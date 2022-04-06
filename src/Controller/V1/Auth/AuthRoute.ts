@@ -167,7 +167,7 @@ export class AuthRoute extends BaseRoute {
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           const { redirectUri, deviceId, theme, action } = req.query
-          const redirectBaseUri = req.get('referer') ?? null
+          const redirectBaseUri = req.get('referer') || null
           // Redirect user to IAM OAuth start endpoint
           const { url, nonce } = await DIContainer.sharedContainer.authService.iamOAuthStartData(
             {

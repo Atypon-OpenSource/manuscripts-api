@@ -69,6 +69,19 @@ export class ContainerRoute extends BaseRoute {
     )
 
     router.get(
+      [`/:containerID/load`, `/:containerID/:manuscriptID/load`],
+      expressJoiMiddleware(getArchiveSchema, {}),
+      AuthStrategy.JWTAuth,
+      (req: Request, res: Response, next: NextFunction) => {
+        return this.runWithErrorHandling(async () => {
+          const archive = await this.containersController.loadProject(req)
+          res.set('Content-Type', 'application/json')
+          res.status(HttpStatus.OK).send(archive)
+        }, next)
+      }
+    )
+
+    router.get(
       [`/:containerID/archive`, `/:containerID/:manuscriptID/archive`],
       expressJoiMiddleware(getArchiveSchema, {}),
       AuthStrategy.JWTAuth,

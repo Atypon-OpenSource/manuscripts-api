@@ -488,6 +488,33 @@ describe('ContainersController - getArchive', () => {
   })
 })
 
+describe('ContainerController - loadProject', () => {
+  test('should call getArchive()', async () => {
+    const containerService: any = DIContainer.sharedContainer.containerService[ContainerType.project]
+    const chance = new Chance()
+    const req: any = {
+      params: {
+        containerID: 'MPProject:foo'
+      },
+      headers: {
+        accept: chance.string(),
+        authorization: 'Bearer ' + chance.string()
+      },
+      user: {
+        _id: chance.integer()
+      },
+      query: {}
+    }
+
+    containerService.getArchive = jest.fn(() => Promise.resolve())
+
+    const containersController: ContainersController = new ContainersController()
+    await containersController.loadProject(req)
+
+    return expect(containerService.getArchive).toBeCalled()
+  })
+})
+
 describe('ContainerController - accessToken', () => {
   test('should fail if containerID is not string', async () => {
     const req: any = {

@@ -18,32 +18,38 @@ import { Chance } from 'chance'
 import '../../../../../utilities/dbMock'
 import '../../../../../utilities/configMock'
 
-import { MissingTemplateError, ValidationError } from '../../../../../../src/Errors'
+import {
+  MissingTemplateError,
+  RoleDoesNotPermitOperationError,
+  ValidationError,
+} from '../../../../../../src/Errors'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
 import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
 import { ProjectController } from '../../../../../../src/Controller/V1/Project/ProjectController'
 import { authorizationHeader } from '../../../../../data/fixtures/headers'
 import { ContainerType } from '../../../../../../src/Models/ContainerModels'
-import archiver from 'archiver'
 import { generateLoginToken } from '../../../../../../src/Utilities/JWT/LoginTokenPayload'
 import tempy from 'tempy'
 import { ContainerService } from '../../../../../../src/DomainServices/Container/ContainerService'
+import * as fs from 'fs'
 
 jest.setTimeout(TEST_TIMEOUT)
 
 const testProjectId = 'testProjectId'
 
 beforeEach(async () => {
-  (DIContainer as any)._sharedContainer = null
+  ;(DIContainer as any)._sharedContainer = null
   await DIContainer.init()
 
   DIContainer.sharedContainer.userService.profile = async (): Promise<any> => ({ userID: 'foo' })
-  DIContainer.sharedContainer.pressroomService.importJATS = jest.fn(async (): Promise<any> => {})
+  DIContainer.sharedContainer.pressroomService.importJATS = jest.fn(
+    async (): Promise<any> => Promise.resolve()
+  )
 
   const containerService: any = DIContainer.sharedContainer.containerService[ContainerType.project]
   containerService.createContainer = jest.fn(async (): Promise<any> => ({ id: testProjectId }))
-  containerService.updateContainer = jest.fn(async (): Promise<any> => {})
-  containerService.getContainer = jest.fn(async (): Promise<any> => {})
+  containerService.updateContainer = jest.fn(async (): Promise<any> => Promise.resolve())
+  containerService.getContainer = jest.fn(async (): Promise<any> => Promise.resolve())
 })
 
 const chance = new Chance()
@@ -51,25 +57,31 @@ const chance = new Chance()
 describe('ProjectController', () => {
   describe('create', () => {
     const validProjectCreateReq = {
-      headers: authorizationHeader(generateLoginToken({
-        tokenId: 'foo',
-        userId: 'bar',
-        appId: 'foobar',
-        email: 'foo@bar.com',
-        userProfileId: 'foo'
-      },null)),
+      headers: authorizationHeader(
+        generateLoginToken(
+          {
+            tokenId: 'foo',
+            userId: 'bar',
+            appId: 'foobar',
+            email: 'foo@bar.com',
+            userProfileId: 'foo',
+          },
+          null
+        )
+      ),
 
       // going through the encode & decode hoops as encoding adds the 'iat' property.
       body: {
         title: 'foo',
-        writers: [ 'User_test@example.com' ],
-        owners: [ 'User_test@example.com' ],
-        viewers: [ 'User_test@example.com' ]
-      }
+        writers: ['User_test@example.com'],
+        owners: ['User_test@example.com'],
+        viewers: ['User_test@example.com'],
+      },
     }
 
     test('should call the service successfully', async () => {
-      const containerService: any = DIContainer.sharedContainer.containerService[ContainerType.project]
+      const containerService: any =
+        DIContainer.sharedContainer.containerService[ContainerType.project]
 
       const controller: any = new ProjectController()
 
@@ -86,7 +98,8 @@ describe('ProjectController', () => {
 
     test('should work without parameters', async () => {
       const controller: any = new ProjectController()
-      const containerService: any = DIContainer.sharedContainer.containerService[ContainerType.project]
+      const containerService: any =
+        DIContainer.sharedContainer.containerService[ContainerType.project]
       containerService.createContainer = jest.fn(async () => ({ id: testProjectId }))
       containerService.updateContainerTitleAndCollaborators = jest.fn()
       containerService.getContainer = jest.fn()
@@ -95,16 +108,58 @@ describe('ProjectController', () => {
 
     test('should fail with a validation error with no token', async () => {
       const controller: any = new ProjectController()
-      await expect(controller.create({ ...validProjectCreateReq, headers: {} })).rejects.toThrow(ValidationError)
+      await expect(controller.create({ ...validProjectCreateReq, headers: {} })).rejects.toThrow(
+        ValidationError
+      )
     })
   })
 
   describe('add', () => {
-    test('should call service functions',() => {
-      return tempy.write.task('', async tempPath => {
+    test('should fail not owner', () => {
+      return tempy.write.task('{key: value}', async (tempPath) => {
         const controller: any = new ProjectController()
+        controller.extractFiles = jest.fn(async () =>
+          Promise.resolve({ 'index.manuscript-json': { data: '{}' } })
+        )
+        controller.upsertManuscriptToProject = jest.fn(async () => Promise.resolve())
+        ContainerService.isOwner = jest.fn(() => false)
 
-        controller.upsertManuscriptToProject = jest.fn(async () => {})
+        await expect(
+          controller.add({
+            headers: authorizationHeader(chance.string()),
+            params: { projectId: 'MPProject:abc' },
+            file: { path: tempPath },
+            user: { _id: 'validUserId' },
+            body: {},
+          })
+        ).rejects.toThrow(RoleDoesNotPermitOperationError)
+      })
+    })
+    test('should fail file not found', () => {
+      return tempy.write.task('{key: value}', async (tempPath) => {
+        const controller: any = new ProjectController()
+        controller.extractFiles = jest.fn(async () => Promise.resolve())
+        controller.upsertManuscriptToProject = jest.fn(async () => Promise.resolve())
+        ContainerService.isOwner = jest.fn(() => true)
+
+        await expect(
+          controller.add({
+            headers: authorizationHeader(chance.string()),
+            params: { projectId: 'MPProject:abc' },
+            file: { path: tempPath },
+            user: { _id: 'validUserId' },
+            body: {},
+          })
+        ).rejects.toThrow(ValidationError)
+      })
+    })
+    test('should call service functions', () => {
+      return tempy.write.task('{key: value}', async (tempPath) => {
+        const controller: any = new ProjectController()
+        controller.extractFiles = jest.fn(async () =>
+          Promise.resolve({ 'index.manuscript-json': { data: '{}' } })
+        )
+        controller.upsertManuscriptToProject = jest.fn(async () => Promise.resolve())
         ContainerService.isOwner = jest.fn(() => true)
 
         await controller.add({
@@ -112,7 +167,7 @@ describe('ProjectController', () => {
           params: { projectId: 'MPProject:abc' },
           file: { path: tempPath },
           user: { _id: 'validUserId' },
-          body: {}
+          body: {},
         })
 
         expect(DIContainer.sharedContainer.pressroomService.importJATS).toBeCalled()
@@ -120,11 +175,13 @@ describe('ProjectController', () => {
       })
     })
 
-    test('should call service functions with manuscriptID specified',() => {
-      return tempy.write.task('', async tempPath => {
+    test('should call service functions with manuscriptID specified', () => {
+      return tempy.write.task('{key: value}', async (tempPath) => {
         const controller: any = new ProjectController()
-
-        controller.upsertManuscriptToProject = jest.fn(async () => {})
+        controller.extractFiles = jest.fn(async () =>
+          Promise.resolve({ 'index.manuscript-json': { data: '{}' } })
+        )
+        controller.upsertManuscriptToProject = jest.fn(async () => Promise.resolve())
         ContainerService.isOwner = jest.fn(() => true)
 
         await controller.add({
@@ -132,7 +189,7 @@ describe('ProjectController', () => {
           params: { projectId: 'MPProject:abc' },
           file: { path: tempPath },
           user: { _id: 'validUserId' },
-          body: { manuscriptId: 'MPManuscript:foobarbaz' }
+          body: { manuscriptId: 'MPManuscript:foobarbaz' },
         })
 
         expect(DIContainer.sharedContainer.pressroomService.importJATS).toBeCalled()
@@ -147,39 +204,44 @@ describe('ProjectController', () => {
           params: { projectId: 'MPProject:abc' },
           file: { path: tempPath },
           user: { _id: 'validUserId' },
-          body: {}
+          body: {},
         }
 
         const controller: any = new ProjectController()
-        await expect(controller.add({ ...validProjectAddReq,params: { projectId: null } })).rejects.toThrow(ValidationError)
+        await expect(
+          controller.add({ ...validProjectAddReq, params: { projectId: null } })
+        ).rejects.toThrow(ValidationError)
       })
     })
 
     test('should fail with validation error without a file', () => {
-      return tempy.write.task('', async tempPath => {
+      return tempy.write.task('', async (tempPath) => {
         const validProjectAddReq = {
           headers: authorizationHeader(chance.string()),
           params: { projectId: 'MPProject:abc' },
           file: { path: tempPath },
           user: { _id: 'validUserId' },
-          body: {}
+          body: {},
         }
 
         const controller: any = new ProjectController()
-        await expect(controller.add({ ...validProjectAddReq, file: {} })).rejects.toThrow(ValidationError)
-        await expect(controller.add({ ...validProjectAddReq, file: null })).rejects.toThrow(ValidationError)
-
+        await expect(controller.add({ ...validProjectAddReq, file: {} })).rejects.toThrow(
+          ValidationError
+        )
+        await expect(controller.add({ ...validProjectAddReq, file: null })).rejects.toThrow(
+          ValidationError
+        )
       })
     })
 
     test('should fail with validation error if userService returns falsy profile', () => {
-      return tempy.write.task('', async tempPath => {
+      return tempy.write.task('', async (tempPath) => {
         const validProjectAddReq = {
           headers: authorizationHeader(chance.string()),
           params: { projectId: 'MPProject:abc' },
           file: { path: tempPath },
           user: { _id: 'validUserId' },
-          body: {}
+          body: {},
         }
 
         const controller: any = new ProjectController()
@@ -191,93 +253,188 @@ describe('ProjectController', () => {
     })
   })
 
+  describe('saveProject', () => {
+    test('should call upsertManuscriptToProject', async () => {
+      const controller: any = new ProjectController()
+      controller.upsertManuscriptToProject = jest.fn(async () => Promise.resolve())
+      ContainerService.isOwner = jest.fn(() => true)
+      fs.copyFileSync(
+        'test/data/fixtures/sample/index.manuscript-json',
+        'test/data/fixtures/sample/index.manuscript-json-dup'
+      )
+      await controller.saveProject({
+        headers: authorizationHeader(chance.string()),
+        params: { projectId: 'MPProject:abc' },
+        file: { path: 'test/data/fixtures/sample/index.manuscript-json-dup' },
+        user: { _id: 'validUserId' },
+        body: {},
+      })
+
+      expect(controller.upsertManuscriptToProject).toBeCalled()
+    })
+
+    test('should fail file not found', async () => {
+      const controller: any = new ProjectController()
+      controller.upsertManuscriptToProject = jest.fn(async () => Promise.resolve())
+      ContainerService.isOwner = jest.fn(() => true)
+      fs.copyFileSync(
+        'test/data/fixtures/sample/index.manuscript-json',
+        'test/data/fixtures/sample/index.manuscript-json-dup'
+      )
+      await expect(
+        controller.saveProject({
+          headers: authorizationHeader(chance.string()),
+          params: { projectId: 'MPProject:abc' },
+          file: null,
+          user: { _id: 'validUserId' },
+          body: {},
+        })
+      ).rejects.toThrow(ValidationError)
+    })
+
+    test('should fail projectId must be provided', async () => {
+      const controller: any = new ProjectController()
+      controller.upsertManuscriptToProject = jest.fn(async () => Promise.resolve())
+      ContainerService.isOwner = jest.fn(() => true)
+      fs.copyFileSync(
+        'test/data/fixtures/sample/index.manuscript-json',
+        'test/data/fixtures/sample/index.manuscript-json-dup'
+      )
+
+      await expect(
+        controller.saveProject({
+          headers: authorizationHeader(chance.string()),
+          params: {},
+          file: { path: 'test/data/fixtures/sample/index.manuscript-json-dup' },
+          user: { _id: 'validUserId' },
+          body: {},
+        })
+      ).rejects.toThrow(ValidationError)
+    })
+  })
+
   describe('upsertManuscriptToProject', () => {
     test('should fail if template not found', async () => {
       const controller: any = new ProjectController()
 
-      DIContainer.sharedContainer.containerService[ContainerType.project].addManuscript = jest.fn(async () => {})
+      DIContainer.sharedContainer.containerService[ContainerType.project].addManuscript = jest.fn(
+        async () => {
+          return { _id: 'someValue' }
+        }
+      )
       DIContainer.sharedContainer.manuscriptRepository.create = jest.fn()
       DIContainer.sharedContainer.templateRepository.getById = jest.fn(() => Promise.resolve(null))
-      DIContainer.sharedContainer.pressroomService.validateTemplateId = jest.fn(() => Promise.resolve(false))
-      const archive = archiver('zip')
-      archive.append(JSON.stringify({
+      DIContainer.sharedContainer.pressroomService.validateTemplateId = jest.fn(() =>
+        Promise.resolve(false)
+      )
+      const json = {
         data: [
           { _id: 'MPManuscript:abc', objectType: 'MPManuscript' },
           { _id: 'MPCitation:abc', objectType: 'MPCitation' },
-          { _id: 'MPMPAuxiliaryObjectReference:abc', objectType: 'MPAuxiliaryObjectReference' }
-        ]
-      }), { name: 'index.manuscript-json' })
-      await archive.finalize()
+          { _id: 'MPMPAuxiliaryObjectReference:abc', objectType: 'MPAuxiliaryObjectReference' },
+        ],
+      }
 
-      await expect(controller.upsertManuscriptToProject({ _id: 'MPProject:abc' }, archive, 'User|foo', null, 'templateId'))
-        .rejects.toThrow(MissingTemplateError)
+      await expect(
+        controller.upsertManuscriptToProject(
+          { _id: 'MPProject:abc' },
+          json,
+          null,
+          'User|foo',
+          null,
+          'templateId'
+        )
+      ).rejects.toThrow(MissingTemplateError)
     })
 
     test('should not fail if template is found in pressroom', async () => {
       const controller: any = new ProjectController()
 
-      DIContainer.sharedContainer.containerService[ContainerType.project].addManuscript = jest.fn(async () => {})
+      DIContainer.sharedContainer.containerService[ContainerType.project].addManuscript = jest.fn(
+        async () => Promise.resolve()
+      )
       DIContainer.sharedContainer.manuscriptRepository.create = jest.fn()
       DIContainer.sharedContainer.templateRepository.getById = jest.fn(() => Promise.resolve(null))
-      DIContainer.sharedContainer.pressroomService.validateTemplateId = jest.fn(() => Promise.resolve(true))
-      const archive = archiver('zip')
-      archive.append(JSON.stringify({
+      DIContainer.sharedContainer.pressroomService.validateTemplateId = jest.fn(() =>
+        Promise.resolve(true)
+      )
+      const json = {
         data: [
           { _id: 'MPManuscript:abc', objectType: 'MPManuscript' },
           { _id: 'MPCitation:abc', objectType: 'MPCitation' },
-          { _id: 'MPMPAuxiliaryObjectReference:abc', objectType: 'MPAuxiliaryObjectReference' }
-        ]
-      }), { name: 'index.manuscript-json' })
-      await archive.finalize()
-      await controller.upsertManuscriptToProject({ _id: 'MPProject:abc' }, archive, 'User|foo', null, 'templateId')
+          { _id: 'MPMPAuxiliaryObjectReference:abc', objectType: 'MPAuxiliaryObjectReference' },
+        ],
+      }
+      await controller.upsertManuscriptToProject(
+        { _id: 'MPProject:abc' },
+        json,
+        null,
+        'User|foo',
+        null,
+        'templateId'
+      )
 
       expect(DIContainer.sharedContainer.manuscriptRepository.create).toBeCalled()
-      expect(DIContainer.sharedContainer.containerService[ContainerType.project].addManuscript).toBeCalled()
+      expect(
+        DIContainer.sharedContainer.containerService[ContainerType.project].addManuscript
+      ).toBeCalled()
     })
 
     test('successfully create a mansucript and all contained resources', async () => {
       const controller: any = new ProjectController()
 
-      DIContainer.sharedContainer.containerService[ContainerType.project].addManuscript = jest.fn(async () => {})
+      DIContainer.sharedContainer.containerService[ContainerType.project].addManuscript = jest.fn(
+        async () => Promise.resolve()
+      )
       DIContainer.sharedContainer.manuscriptRepository.create = jest.fn()
-      DIContainer.sharedContainer.pressroomService.validateTemplateId = jest.fn(() => Promise.resolve(false))
+      DIContainer.sharedContainer.pressroomService.validateTemplateId = jest.fn(() =>
+        Promise.resolve(false)
+      )
 
-      const archive = archiver('zip')
-      archive.append(JSON.stringify({
+      const json = {
         data: [
           { _id: 'MPManuscript:abc', objectType: 'MPManuscript' },
           { _id: 'MPCitation:abc', objectType: 'MPCitation' },
-          { _id: 'MPMPAuxiliaryObjectReference:abc', objectType: 'MPAuxiliaryObjectReference' }
-        ]
-      }), { name: 'index.manuscript-json' })
-      await archive.finalize()
+          { _id: 'MPMPAuxiliaryObjectReference:abc', objectType: 'MPAuxiliaryObjectReference' },
+        ],
+      }
 
-      await controller.upsertManuscriptToProject({ _id: 'MPProject:abc' }, archive, 'User|foo')
+      await controller.upsertManuscriptToProject({ _id: 'MPProject:abc' }, json, null, 'User|foo')
 
       expect(DIContainer.sharedContainer.manuscriptRepository.create).toBeCalled()
-      expect(DIContainer.sharedContainer.containerService[ContainerType.project].addManuscript).toBeCalled()
+      expect(
+        DIContainer.sharedContainer.containerService[ContainerType.project].addManuscript
+      ).toBeCalled()
     })
 
     test('successfully update the manuscript when the manuscriptId is provided and create all contained resources', async () => {
       const controller: any = new ProjectController()
 
-      DIContainer.sharedContainer.containerService[ContainerType.project].addManuscript = jest.fn(async () => {})
+      DIContainer.sharedContainer.containerService[ContainerType.project].addManuscript = jest.fn(
+        async () => Promise.resolve()
+      )
       DIContainer.sharedContainer.manuscriptRepository.update = jest.fn()
 
-      const archive = archiver('zip')
-      archive.append(JSON.stringify({
+      const json = {
         data: [
           { _id: 'MPManuscript:abc', objectType: 'MPManuscript' },
           { _id: 'MPCitation:abc', objectType: 'MPCitation' },
-          { _id: 'MPMPAuxiliaryObjectReference:abc', objectType: 'MPAuxiliaryObjectReference' }
-        ]
-      }), { name: 'index.manuscript-json' })
-      await archive.finalize()
+          { _id: 'MPMPAuxiliaryObjectReference:abc', objectType: 'MPAuxiliaryObjectReference' },
+        ],
+      }
 
-      await controller.upsertManuscriptToProject({ _id: 'MPProject:abc' }, archive, 'User|foo', 'MPManuscript:foo-bar-baz')
+      await controller.upsertManuscriptToProject(
+        { _id: 'MPProject:abc' },
+        json,
+        null,
+        'User|foo',
+        'MPManuscript:foo-bar-baz'
+      )
 
       expect(DIContainer.sharedContainer.manuscriptRepository.update).toBeCalled()
-      expect(DIContainer.sharedContainer.containerService[ContainerType.project].addManuscript).toBeCalled()
+      expect(
+        DIContainer.sharedContainer.containerService[ContainerType.project].addManuscript
+      ).toBeCalled()
     })
   })
 })

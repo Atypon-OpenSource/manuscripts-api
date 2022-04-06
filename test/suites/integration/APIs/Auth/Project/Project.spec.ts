@@ -20,7 +20,7 @@ import { validBody } from '../../../../../data/fixtures/credentialsRequestPayloa
 import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
 import { BucketKey } from '../../../../../../src/Config/ConfigurationTypes'
 import * as supertest from 'supertest'
-import { basicLogin, importManuscript } from '../../../../../api'
+import { basicLogin, importManuscript, saveProject } from '../../../../../api'
 import {
   authorizationHeader,
   ValidContentTypeAcceptJsonHeader,
@@ -162,6 +162,35 @@ describe('ContainerService - createProject', () => {
       'test/data/fixtures/jats-arc.zip',
       validManuscript._id,
       'MPManuscriptTemplate:www-zotero-org-styles-nature-genetics-Nature-Genetics-Journal-Publication-Article'
+    )
+    expect(sendFileResponse.status).toBe(HttpStatus.OK)
+  })
+})
+
+describe('ContainerService - save/load Project', () => {
+  beforeEach(async () => {
+    await drop()
+    await dropBucket(BucketKey.Data)
+    await seed(seedOptions)
+  })
+  test('should save project JSON', async () => {
+    const loginResponse: supertest.Response = await basicLogin(
+      validBody,
+      ValidHeaderWithApplicationKey
+    )
+
+    expect(loginResponse.status).toBe(HttpStatus.OK)
+
+    const authHeader = authorizationHeader(loginResponse.body.token)
+    const sendFileResponse = await saveProject(
+      {
+        ...ValidContentTypeAcceptJsonHeader,
+        ...authHeader,
+      },
+      {
+        containerID: 'MPProject:valid-project-id-2',
+      },
+      'test/data/fixtures/sample/index.manuscript-json'
     )
     expect(sendFileResponse.status).toBe(HttpStatus.OK)
   })

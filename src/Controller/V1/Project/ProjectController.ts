@@ -98,9 +98,20 @@ export class ProjectController extends BaseController implements IProjectControl
       )
     }
 
+    const unzipRoot = tempy.directory()
+    const byPath = await this.extractFiles(manuscript, unzipRoot)
+
+    // @ts-ignore
+    if (!byPath || !byPath['index.manuscript-json']) {
+      throw new ValidationError('JSON file not found', file.filename)
+    }
+    // @ts-ignore
+    const json = JSON.parse(byPath['index.manuscript-json'].data)
+
     const container = await this.upsertManuscriptToProject(
       project,
-      manuscript,
+      json,
+      unzipRoot,
       req.user._id,
       manuscriptId,
       templateId
@@ -111,6 +122,12 @@ export class ProjectController extends BaseController implements IProjectControl
     return container
   }
 
+  async extractFiles(manuscript: Readable, unzipRoot: string) {
+    const buffer = await getStream.buffer(manuscript)
+    const files = await decompress(buffer, unzipRoot)
+    return files.reduce((acc, v) => ({ ...acc, [v.path]: v }), {})
+  }
+
   /**
    * Create/update the imported manuscript and it's resources.
    * @returns the created/updated manuscript
@@ -118,19 +135,13 @@ export class ProjectController extends BaseController implements IProjectControl
   // tslint:disable-next-line:cyclomatic-complexity
   async upsertManuscriptToProject(
     project: Container,
-    manuscript: Readable,
+    json: any,
+    unzipRoot: string | null,
     userId: string,
     manuscriptId?: string,
     templateId?: string
   ): Promise<Container> {
     const userID = ContainerService.userIdForSync(userId)
-    const buffer = await getStream.buffer(manuscript)
-
-    const unzipRoot = tempy.directory()
-    const files = await decompress(buffer, unzipRoot)
-    const byPath: any = files.reduce((acc, v) => ({ ...acc, [v.path]: v }), {})
-
-    const json = JSON.parse(byPath['index.manuscript-json'].data)
     let manuscriptObject = json.data.find((model: Model) => model.objectType === 'MPManuscript')
     if (manuscriptId) {
       manuscriptObject._id = manuscriptId
@@ -156,8 +167,9 @@ export class ProjectController extends BaseController implements IProjectControl
         return doc
       })
 
-    await remove(unzipRoot)
-
+    if (unzipRoot) {
+      await remove(unzipRoot)
+    }
     const template = templateId
       ? await DIContainer.sharedContainer.templateRepository.getById(templateId)
       : null
@@ -205,5 +217,42 @@ export class ProjectController extends BaseController implements IProjectControl
     )
 
     return manuscriptObject
+  }
+
+  async saveProject(req: Request): Promise<Container> {
+    const file = req.file
+    const { projectId, manuscriptId } = req.params
+
+    if (!projectId) {
+      throw new ValidationError('projectId parameter must be specified', projectId)
+    }
+    if (!file || !file.path) {
+      throw new ValidationError('Please upload project JSON file to import', projectId)
+    }
+
+    const token = authorizationBearerToken(req)
+    const profile = await DIContainer.sharedContainer.userService.profile(token)
+    if (!profile) {
+      throw new ValidationError('Profile not found for token', profile)
+    }
+
+    const buffer = fs.readFileSync(file.path)
+    const json = JSON.parse(buffer.toString())
+    const project = await DIContainer.sharedContainer.containerService[
+      ContainerType.project
+    ].getContainer(projectId)
+
+    if (!ContainerService.isOwner(project, req.user._id)) {
+      throw new RoleDoesNotPermitOperationError(
+        'User must be an owner to add manuscripts.',
+        req.user._id
+      )
+    }
+
+    const container = await this.upsertManuscriptToProject(project, json, null, manuscriptId)
+
+    await remove(file.path)
+
+    return container
   }
 }

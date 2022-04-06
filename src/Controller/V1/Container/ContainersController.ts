@@ -128,6 +128,40 @@ export class ContainersController extends ContainedBaseController implements ICo
     )
   }
 
+  async loadProject(req: Request) {
+    const { containerID, manuscriptId } = req.params
+
+    if (!isString(containerID)) {
+      throw new ValidationError('containerId should be string', containerID)
+    }
+
+    if (manuscriptId && !isString(manuscriptId)) {
+      throw new ValidationError('manuscriptId should be string', manuscriptId)
+    }
+
+    let token = authorizationBearerToken(req)
+
+    const containerType = getContainerType(containerID)
+
+    const userID = req.user._id
+    try {
+      return DIContainer.sharedContainer.containerService[containerType].getArchive(
+        userID,
+        containerID,
+        manuscriptId,
+        token,
+        {
+          getAttachments: false,
+          onlyIDs: false,
+          allowOrphanedDocs: false,
+          includeExt: false,
+        } as any
+      )
+    } catch (e) {
+      throw new ManuscriptContentParsingError('Failed to make an archive.', e)
+    }
+  }
+
   /**
    * Get container archive.
    * @param req Request express request.

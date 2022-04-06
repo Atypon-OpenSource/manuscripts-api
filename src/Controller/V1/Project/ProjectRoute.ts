@@ -22,7 +22,7 @@ import multer from 'multer'
 import { BaseRoute } from '../../BaseRoute'
 import { ProjectController } from './ProjectController'
 import { AuthStrategy } from '../../../Auth/Passport/AuthStrategy'
-import { addSchema, createSchema } from './ProjectSchema'
+import { addSchema, createSchema, saveProjectSchema } from './ProjectSchema'
 
 export class ProjectRoute extends BaseRoute {
   private projectController = new ProjectController()
@@ -60,6 +60,21 @@ export class ProjectRoute extends BaseRoute {
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           const manuscript = await this.projectController.add(req)
+
+          res.status(HttpStatus.OK).send(manuscript)
+        }, next)
+      }
+    )
+
+    router.post(
+      `${this.basePath}/:projectId/save`,
+      expressJoiMiddleware(saveProjectSchema),
+      AuthStrategy.JsonHeadersValidation,
+      AuthStrategy.JWTAuth,
+      multer({ dest: `/tmp` }).single('file'),
+      (req: Request, res: Response, next: NextFunction) => {
+        return this.runWithErrorHandling(async () => {
+          const manuscript = await this.projectController.saveProject(req)
 
           res.status(HttpStatus.OK).send(manuscript)
         }, next)
