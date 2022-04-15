@@ -22,8 +22,7 @@ import { Chance } from 'chance'
 
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
 import {
-  SYNC_GATEWAY_COOKIE_NAME,
-  GATEWAY_BUCKETS
+  SYNC_GATEWAY_COOKIE_NAME
 } from '../../../../../../src/DomainServices/Sync/SyncService'
 import {
   drop,
@@ -56,20 +55,11 @@ const existingConfig: any = _.cloneDeep(config)
 
 beforeAll(async () => {
   db = await testDatabase()
-  /*await Promise.all(
-    GATEWAY_BUCKETS.map(key => {
-      return DIContainer.sharedContainer.syncService.createGatewayAccount(
-        'User|' + validBody.email,
-        key
-      )
-    })
-  )*/
 })
 
 async function seedAccounts () {
   await DIContainer.sharedContainer.syncService.createGatewayAccount(
-      'User|' + validBody.email,
-      null
+      'User|' + validBody.email
     )
 }
 

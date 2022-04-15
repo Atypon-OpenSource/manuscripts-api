@@ -50,7 +50,7 @@ export class ContainerRequestService implements IContainerRequestService {
     containerService.ensureValidRole(role)
 
     const userProfileID = UserService.profileID(userID)
-    const userProfile = await this.userProfileRepository.getById(userProfileID)
+    const userProfile = await this.userProfileRepository.getById(userProfileID, userID)
 
     if (!userProfile) {
       throw new ValidationError("Inviting user's profile could not be retrieved", userProfileID)
@@ -66,7 +66,7 @@ export class ContainerRequestService implements IContainerRequestService {
     }
     const requestID = `${ObjectTypes.ContainerRequest}:${checksum(`${userID}-${containerID}`)}`
 
-    const userRequest = await this.containerRequestRepository.getById(requestID)
+    const userRequest = await this.containerRequestRepository.getById(requestID, userID)
 
     if (!userRequest) {
       const request: ContainerRequestLike = {
@@ -78,9 +78,9 @@ export class ContainerRequestService implements IContainerRequestService {
         userProfile,
       }
 
-      await this.containerRequestRepository.create(request)
+      await this.containerRequestRepository.create(request, userID)
     } else {
-      await this.containerRequestRepository.patch(requestID, { role, userProfile })
+      await this.containerRequestRepository.patch(requestID, { role, userProfile }, userID)
     }
 
     for (const ownerID of container.owners) {
@@ -94,7 +94,8 @@ export class ContainerRequestService implements IContainerRequestService {
   }
 
   public async response(requestID: string, acceptingUser: User, accept: boolean) {
-    const request = await this.containerRequestRepository.getById(requestID)
+    const acceptingUserID = acceptingUser._id.replace('|', '_')
+    const request = await this.containerRequestRepository.getById(requestID, acceptingUserID)
 
     if (!request) {
       throw new ValidationError(`Request with id ${requestID} does not exist`, requestID)
@@ -110,7 +111,7 @@ export class ContainerRequestService implements IContainerRequestService {
 
     const containerService = this.containerService(request.containerID)
 
-    const container = await containerService.getContainer(request.containerID)
+    const container = await containerService.getContainer(request.containerID, acceptingUserID)
 
     if (!ContainerService.isOwner(container, acceptingUser._id)) {
       throw new RoleDoesNotPermitOperationError(

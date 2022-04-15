@@ -61,14 +61,14 @@ describe('SGRepository Create', () => {
   test('should create project successfully', async () => {
     const repository = new ProjectRepository(BucketKey.Data, db)
 
-    await repository.create(validProjectNotInDB, {})
+    await repository.create(validProjectNotInDB)
     const project: any = await repository.getById(validProjectNotInDB._id)
     expect(project._id).toBe(`MPProject:${validProjectNotInDB._id}`)
   })
 
   test('should fail to create project if the project already exists', () => {
     const repository = new ProjectRepository(BucketKey.Data, db)
-    return expect(repository.create(validProject, {})).rejects.toThrowError(DatabaseError)
+    return expect(repository.create(validProject)).rejects.toThrowError(DatabaseError)
   })
 })
 
@@ -100,7 +100,7 @@ describe('SGRepository update', () => {
   test('should fail if id does not exists in the database', () => {
     const repository = new ContainerInvitationRepository(BucketKey.Data, db)
 
-    return expect(repository.update('not-in-db', invitation, {})).rejects.toThrowError(
+    return expect(repository.update('not-in-db', invitation)).rejects.toThrowError(
       ValidationError
     )
   })
@@ -135,7 +135,7 @@ describe('SGRepository patch', () => {
   test('should fail if id does not exists in the database', () => {
     const repository = new ProjectRepository(BucketKey.Data, db)
 
-    return expect(repository.patch('not-in-db', validProject, {})).rejects.toThrowError(
+    return expect(repository.patch('not-in-db', validProject)).rejects.toThrowError(
       ValidationError
     )
   })
@@ -149,7 +149,7 @@ describe('SGRepository patch', () => {
       writers: ['User_test2'],
     }
 
-    await repository.patch(validProject2._id, projectUpdatedData, {})
+    await repository.patch(validProject2._id, projectUpdatedData)
     const afterUpdate: any = await repository.getById(validProject2._id)
     expect(afterUpdate.owners[0]).toBe('User_test')
     expect(afterUpdate.writers[0]).toBe('User_test2')

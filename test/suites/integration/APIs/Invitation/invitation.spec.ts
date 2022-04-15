@@ -50,29 +50,19 @@ import {
   validProjectInvitationWithoutEmail
 } from '../../../../data/fixtures/invitation'
 import { BucketKey } from '../../../../../src/Config/ConfigurationTypes'
-import { GATEWAY_BUCKETS } from '../../../../../src/DomainServices/Sync/SyncService'
 import { SeedOptions } from '../../../../../src/DataAccess/Interfaces/SeedOptions'
-import { createProjectInvitation, purgeContainerInvitation } from '../../../../data/fixtures/misc'
+import { createProjectInvitation, purgeContainerInvitation, createProject } from '../../../../data/fixtures/misc'
 import checksum from 'checksum'
 
 let db: any = null
 const seedOptions: SeedOptions = {
   users: true,
   invitations: true,
-  applications: true,
-  userProfiles: true
+  applications: true
 }
 
 beforeAll(async () => {
   db = await testDatabase()
-  await Promise.all(
-    GATEWAY_BUCKETS.map(key => {
-      return DIContainer.sharedContainer.syncService.createGatewayAccount(
-        'User|' + validBody.email,
-        key
-      )
-    })
-  )
 })
 
 afterEach(() => {
@@ -90,6 +80,13 @@ describe('InvitationService - invite', () => {
     await drop()
     await dropBucket(BucketKey.Data)
     await seed(seedOptions)
+    await DIContainer.sharedContainer.syncService.createGatewayContributor(
+      {
+        _id: `User|${validBody.email}`,
+        name: 'foobar',
+        email: validBody.email
+      }
+    )
   })
 
   test('should send invitation email', async () => {
@@ -155,10 +152,15 @@ describe('InvitationService - inviteToContainer', () => {
     ))
     await seed({
       users: true,
-      projects: true,
-      userProfiles: true,
       applications: true
     })
+    await DIContainer.sharedContainer.syncService.createGatewayContributor(
+      {
+        _id: `User|${validBody.email}`,
+        name: 'foobar',
+        email: validBody.email
+      }
+    )
   })
 
   test('should send invitation email', async () => {
@@ -177,6 +179,7 @@ describe('InvitationService - inviteToContainer', () => {
     )
 
     const header = authorizationHeader(loginResponse.body.token)
+    await createProject('MPProject:valid-project-id-2')
     const response: supertest.Response = await inviteToContainer(
       validProjectInvitation2,
       {
@@ -205,7 +208,7 @@ describe('InvitationService - inviteToContainer', () => {
     )
 
     expect(loginResponse.status).toBe(HttpStatus.OK)
-    await createProjectInvitation(checksum(
+    await createProjectInvitation('MPContainerInvitation:' + checksum(
       'valid-user@manuscriptsapp.com-valid-google2@manuscriptsapp.com-valid-project-id-2',
       { algorithm: 'sha1' }
     ))
@@ -217,6 +220,7 @@ describe('InvitationService - inviteToContainer', () => {
     )
 
     const header = authorizationHeader(loginResponse.body.token)
+    await createProject('MPProject:valid-project-id-2')
     const response: supertest.Response = await inviteToContainer(
       validProjectInvitationWithoutEmail,
       {
@@ -243,7 +247,7 @@ describe('InvitationService - inviteToContainer', () => {
       validBody,
       ValidHeaderWithApplicationKey
     )
-    await createProjectInvitation(checksum(
+    await createProjectInvitation('MPContainerInvitation:' + checksum(
       'valid-user@manuscriptsapp.com-valid-google@manuscriptsapp.com-valid-project-id-2',
       { algorithm: 'sha1' }
     ))
@@ -256,6 +260,7 @@ describe('InvitationService - inviteToContainer', () => {
     )
 
     const header = authorizationHeader(loginResponse.body.token)
+    await createProject('MPProject:valid-project-id-2')
     const response: supertest.Response = await inviteToContainer(
       validProjectInvitation,
       {

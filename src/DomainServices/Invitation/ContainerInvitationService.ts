@@ -94,7 +94,11 @@ export class ContainerInvitationService implements IContainerInvitationService {
     )
 
     const invitingUserProfileID = UserService.profileID(invitingUser._id)
-    const invitingUserProfile = await this.userProfileRepository.getById(invitingUserProfileID)
+    const userID = sgUsername(invitingUser._id)
+    const invitingUserProfile = await this.userProfileRepository.getById(
+      invitingUserProfileID,
+      userID
+    )
 
     if (!invitingUserProfile) {
       throw new ValidationError(
@@ -126,10 +130,10 @@ export class ContainerInvitationService implements IContainerInvitationService {
       )
 
       const invitationId = `${ObjectTypes.ContainerInvitation}:${invitationTupleHash}`
-      let invitation = await this.containerInvitationRepository.getById(invitationId)
+      let invitation = await this.containerInvitationRepository.getById(invitationId, userID)
 
       if (invitation) {
-        await this.containerInvitationRepository.patch(invitationId, { role, message })
+        await this.containerInvitationRepository.patch(invitationId, { role, message }, userID)
       } else {
         const newInvitation: ContainerInvitationLike = {
           _id: invitationTupleHash,
@@ -145,7 +149,7 @@ export class ContainerInvitationService implements IContainerInvitationService {
           message,
         }
 
-        await this.containerInvitationRepository.create(newInvitation)
+        await this.containerInvitationRepository.create(newInvitation, userID)
       }
 
       if (!skipEmail) {
@@ -211,10 +215,11 @@ export class ContainerInvitationService implements IContainerInvitationService {
       throw new ValidationError(`'${role}' is an invalid role`, role)
     }
 
-    const container = await this.containerService(containerID).getContainer(containerID)
+    const userID = sgUsername(invitingUser._id)
+    const container = await this.containerService(containerID).getContainer(containerID, userID)
 
     const owners = container.owners
-    if (owners.indexOf(sgUsername(invitingUser._id)) < 0) {
+    if (owners.indexOf(userID) < 0) {
       throw new ValidationError(
         `User ${invitingUser.email} are not allowed to invite, because he does not own the container.`,
         invitingUser.email
@@ -247,7 +252,8 @@ export class ContainerInvitationService implements IContainerInvitationService {
     user: User,
     skipEmail?: boolean
   ): Promise<ContainerInvitationResponse> {
-    const invitation = await this.containerInvitationRepository.getById(invitationId)
+    const userID = sgUsername(user._id)
+    const invitation = await this.containerInvitationRepository.getById(invitationId, userID)
 
     if (!invitation) {
       throw new RecordGoneError('The invitation does not exist.')
@@ -259,6 +265,7 @@ export class ContainerInvitationService implements IContainerInvitationService {
     try {
       container = await this.containerService(invitation.containerID).getContainer(
         invitation.containerID
+        /*userID*/
       )
     } catch (e) {
       await this.containerInvitationRepository.remove(invitationId)
@@ -327,19 +334,21 @@ export class ContainerInvitationService implements IContainerInvitationService {
       throw new InvalidCredentialsError(`User not found`)
     }
 
-    const invitation = await this.containerInvitationRepository.getById(invitationId)
+    const userID = sgUsername(user._id)
+    const invitation = await this.containerInvitationRepository.getById(invitationId, userID)
 
     if (!invitation) {
       throw new ValidationError(`Invitation with id ${invitationId} does not exist`, invitationId)
     }
 
     const container = await this.containerService(invitation.containerID).getContainer(
-      invitation.containerID
+      invitation.containerID,
+      userID
     )
 
     const owners = container.owners
 
-    if (owners.indexOf(sgUsername(user._id)) < 0) {
+    if (owners.indexOf(userID) < 0) {
       throw new RoleDoesNotPermitOperationError('Only owners can uninvite other users.', user.email)
     }
 
@@ -357,7 +366,8 @@ export class ContainerInvitationService implements IContainerInvitationService {
       throw new ValidationError(`role '${role}' is not valid`, role)
     }
 
-    const container = await this.containerService(containerID).getContainer(containerID)
+    const userID = sgUsername(user._id)
+    const container = await this.containerService(containerID).getContainer(containerID, userID)
 
     if (!ContainerService.isOwner(container, user._id)) {
       throw new UserRoleError(`Only owners can invite other users.`, user._id)
@@ -439,14 +449,12 @@ export class ContainerInvitationService implements IContainerInvitationService {
     }
 
     const { containerID, permittedRole } = invitationToken
-
     const container = await this.containerService(containerID).getContainer(containerID)
-
     if (permittedRole !== ContainerRole.Viewer && permittedRole !== ContainerRole.Writer) {
       throw new ValidationError('Invalid role', permittedRole)
     }
 
-    return this.addUserToContainer(container, invitedUser, permittedRole, skipEmail)
+    return this.addUserToContainer(container as any, invitedUser, permittedRole, skipEmail)
   }
 
   public async updateInvitedUserID(userID: string, userEmail: string) {
@@ -487,7 +495,9 @@ export class ContainerInvitationService implements IContainerInvitationService {
         invitationToAccept.containerID,
         roleToAssign,
         userID,
-        null,
+        {
+          _id: container.owners[0],
+        } as any,
         skipEmail
       )
       await this.markInvitationAsAccepted(invitationToAccept._id)
@@ -505,7 +515,9 @@ export class ContainerInvitationService implements IContainerInvitationService {
         container._id,
         permittedRole,
         userID,
-        null,
+        {
+          _id: container.owners[0],
+        } as any,
         skipEmail
       )
       const containerTitle = ContainerService.containerTitle(container)

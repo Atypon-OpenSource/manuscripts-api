@@ -15,16 +15,15 @@
  */
 
 import { User } from '../../Models/UserModels'
-import { BucketKey } from '../../Config/ConfigurationTypes'
 
 export interface ISyncService {
   /** Gets a Sync Gateway user in the specified bucket using the SG Admin API. */
-  gatewayAccountExists(userId: string, bucketKey: BucketKey): Promise<boolean>
+  gatewayAccountExists(userId: string): Promise<boolean>
 
   /** Creates a Sync Gateway user using the SG Admin API. If password passed is null, a random password is given. */
-  createGatewayAccount(userId: string, bucketKey: BucketKey): Promise<string>
+  createGatewayAccount(userId: string): Promise<string>
 
   removeGatewayAccount(userId: string): Promise<void>
 
-  createGatewayContributor(user: User, bucketKey: BucketKey): Promise<any>
+  createGatewayContributor(user: User): Promise<any>
 }

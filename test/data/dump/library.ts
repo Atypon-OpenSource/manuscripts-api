@@ -19,9 +19,9 @@ import { LibraryLike } from '../../../src/DataAccess/Interfaces/Models'
 export const librariesList: LibraryLike[] = []
 
 librariesList.push({
-  _id: 'valid-library-id',
+  _id: 'MPLibrary:valid-library-id',
   objectType: 'MPLibrary',
-  owners: ['User_test'],
+  owners: ['User_valid-user-2@manuscriptsapp.com', 'User_test'],
   writers: [],
   viewers: []
 })

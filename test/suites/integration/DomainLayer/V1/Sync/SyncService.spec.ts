@@ -41,7 +41,7 @@ describe('SyncService', () => {
 
   test('should create a gateway account', async () => {
     const syncService = DIContainer.sharedContainer.syncService
-    const sgUsername = await syncService.createGatewayAccount(userId, BucketKey.Project)
+    const sgUsername = await syncService.createGatewayAccount(userId)
     
     expect(sgUsername).toEqual('UserStatus|User|valid-user@manuscriptsapp.com')
 
@@ -99,7 +99,7 @@ describe('SyncService', () => {
       _id: 'User|1',
       name:  'Foo Bar',
       email: 'sads@example.com'
-    } as any, BucketKey.Project)).resolves.not.toBeUndefined()
+    } as any)).resolves.not.toBeUndefined()
   })
 
   test('should successfully create a UserProfile with no name', () => {
@@ -108,7 +108,7 @@ describe('SyncService', () => {
       _id: 'User|1',
       name:  '',
       email: 'sads'
-    } as any, BucketKey.Data)).resolves.not.toBeUndefined()
+    } as any)).resolves.not.toBeUndefined()
   })
 
 

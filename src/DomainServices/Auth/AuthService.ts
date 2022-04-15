@@ -23,7 +23,6 @@ import querystring from 'querystring'
 
 import { IAuthService } from './IAuthService'
 import { ISyncService } from '../Sync/ISyncService'
-import { GATEWAY_BUCKETS } from '../Sync/SyncService'
 import {
   User,
   Credentials,
@@ -65,7 +64,6 @@ import { UserActivityEventType } from '../../Models/UserEventModels'
 import { IUserStatusRepository } from '../../DataAccess/Interfaces/IUserStatusRepository'
 import { UserActivityTrackingService } from '../UserActivity/UserActivityTrackingService'
 import { config } from '../../Config/Config'
-import { BucketKey } from '../../Config/ConfigurationTypes'
 import { UserService } from '../User/UserService'
 import { EmailService } from '../Email/EmailService'
 import { IAMAuthTokenPayload } from '../../Utilities/JWT/IAMAuthTokenPayload'
@@ -254,9 +252,9 @@ export class AuthService implements IAuthService {
   // let's polyfill in the user account creation for the derived data bucket
   // (user accounts in the derived data bucket were added after  some user data already existed –
   // this accomplishes lazily migrating pre-existing user data).
-  public async ensureGatewayAccountExists(userId: string, bucketName: BucketKey): Promise<void> {
-    if (!(await this.syncService.gatewayAccountExists(userId, bucketName))) {
-      await this.syncService.createGatewayAccount(userId, bucketName)
+  public async ensureGatewayAccountExists(userId: string): Promise<void> {
+    if (!(await this.syncService.gatewayAccountExists(userId))) {
+      await this.syncService.createGatewayAccount(userId)
     }
   }
 
@@ -362,10 +360,9 @@ export class AuthService implements IAuthService {
 
       user = u
 
-      await Promise.all(
-        GATEWAY_BUCKETS.map((key) => this.syncService.createGatewayAccount(u._id, key))
-      )
-      await this.syncService.createGatewayContributor(u, BucketKey.Data)
+      await this.syncService.createGatewayAccount(u._id)
+
+      await this.syncService.createGatewayContributor(u)
 
       userStatus = await this.userStatusRepository.create({
         _id: u._id,
@@ -799,8 +796,8 @@ export class AuthService implements IAuthService {
       iamCredentials.iamSessionID
     )
 
-    await this.ensureGatewayAccountExists(userToken.userId, BucketKey.Data)
-    await this.ensureGatewayAccountExists(userToken.userId, BucketKey.DerivedData)
+    await this.ensureGatewayAccountExists(userToken.userId)
+    await this.ensureGatewayAccountExists(userToken.userId)
 
     // tslint:disable-next-line: no-floating-promises
     this.activityTrackingService.createEvent(
@@ -876,10 +873,11 @@ export class AuthService implements IAuthService {
   }
 
   private async ensureUserProfileExists(user: User) {
+    // call it without userId intentionally
     const userProfile = await this.userProfileRepository.getById(UserService.profileID(user._id))
 
     if (!userProfile) {
-      await this.syncService.createGatewayContributor(user, BucketKey.Data)
+      await this.syncService.createGatewayContributor(user)
     }
   }
 
@@ -916,12 +914,10 @@ export class AuthService implements IAuthService {
 
     const userID = user._id
 
-    await Promise.all(
-      GATEWAY_BUCKETS.map((key) => this.syncService.createGatewayAccount(userID, key))
-    )
+    await this.syncService.createGatewayAccount(userID)
 
     log.debug('Gateway account created.')
-    await this.syncService.createGatewayContributor(user, BucketKey.Data)
+    await this.syncService.createGatewayContributor(user)
     log.debug('Gateway contributor created.')
 
     let userStatus: UserStatus

@@ -36,16 +36,22 @@ jest.mock('../../../../../../src/DIContainer/IAMTokenVerifier.ts', () => ({
   })),
 }))
 
+jest.mock('../../../../../../src/DataAccess/AccessControlRepository', () => ({
+  AccessControlRepository: {
+      channel: jest.fn(),
+      access: jest.fn()
+  }
+}))
+
 import '../../../../../utilities/dbMock'
 
-import { config } from '../../../../../../src/Config/Config'
 import { BucketKey } from '../../../../../../src/Config/ConfigurationTypes'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
-import { ValidationError, SyncError, GatewayInaccessibleError } from '../../../../../../src/Errors'
 import {
-  SYNC_GATEWAY_PASSWORD_BYTE_COUNT,
   SyncService,
 } from '../../../../../../src/DomainServices/Sync/SyncService'
+import * as syncAccessControl from '../../../../../../src/DataAccess/syncAccessControl'
+
 import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
 
 jest.setTimeout(TEST_TIMEOUT)
@@ -78,7 +84,7 @@ describe('SyncService - createGatewayAccount', () => {
     syncService.userStatusRepository.getById = async (_id: string) => Promise.resolve(null)
     syncService.userStatusRepository.create = async (_doc: any) => Promise.resolve(userToken)
 
-    const userId = await syncService.createGatewayAccount(userToken.userId, BucketKey.Data)
+    const userId = await syncService.createGatewayAccount(userToken.userId)
     expect(userId).toEqual('UserStatus|User|bar')
   })
 
@@ -118,7 +124,7 @@ describe('SyncService - createGatewayAccount', () => {
       throw new Error()
     }
     return expect(
-      syncService.createGatewayAccount(userToken.userId, BucketKey.Data)
+      syncService.createGatewayAccount(userToken.userId)
     ).rejects.toThrowError(Error)
   })
 })
@@ -131,8 +137,14 @@ describe('SyncService - createGatewayContributor', () => {
       email: 'foo@bar.com',
       isVerified: true,
     }
-    const syncService = DIContainer.sharedContainer.syncService
-    const contrib = await syncService.createGatewayContributor(user, BucketKey.Data)
+    const syncService: any = DIContainer.sharedContainer.syncService
+    syncService.userProfileRepository.database.bucket.insert = async (_id: string) => {
+      Promise.resolve()
+    }
+    const mock = jest.spyOn(syncAccessControl, 'syncAccessControl');
+    mock.mockResolvedValue()
+    
+    const contrib = await syncService.createGatewayContributor(user)
 
     expect(contrib._id).toContain('MPUserProfile:')
     expect(contrib.bibliographicName._id).toContain('MPBibliographicName:')
@@ -151,7 +163,7 @@ describe('SyncService - createGatewayContributor', () => {
     syncService.userProfileRepository.create = async (_id: string) => {
       throw new Error()
     }
-    return expect(syncService.createGatewayContributor(user, BucketKey.Data)).rejects.toThrowError(
+    return expect(syncService.createGatewayContributor(user)).rejects.toThrowError(
       Error
     )
   })

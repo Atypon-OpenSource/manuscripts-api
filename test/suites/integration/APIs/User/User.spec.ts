@@ -34,7 +34,6 @@ import { validBody } from '../../../../data/fixtures/credentialsRequestPayload'
 import { markUserForDeletion, unmarkUserForDeletion, basicLogin, getProfile, userContainers } from '../../../../api'
 import { TEST_TIMEOUT } from '../../../../utilities/testSetup'
 import { drop, seed, testDatabase, dropBucket } from '../../../../utilities/db'
-import { GATEWAY_BUCKETS } from '../../../../../src/DomainServices/Sync/SyncService'
 import { DIContainer } from '../../../../../src/DIContainer/DIContainer'
 import {
   ValidContentTypeAcceptJsonHeader,
@@ -47,14 +46,9 @@ import { BucketKey } from '../../../../../src/Config/ConfigurationTypes'
 let db: any = null
 beforeAll(async () => {
   db = await testDatabase()
-  await Promise.all(
-    GATEWAY_BUCKETS.map(key => {
-      return DIContainer.sharedContainer.syncService.createGatewayAccount(
-        'User|' + validBody.email,
-        key
-      )
-    })
-  )
+  await DIContainer.sharedContainer.syncService.createGatewayAccount(
+      'User|' + validBody.email,
+    )
 })
 
 afterAll(async () => db && db.bucket.disconnect())
@@ -168,8 +162,7 @@ describe('ContainerService - userContainers', () => {
         _id: `User|${validBody.email}`,
         name: 'foobar',
         email: validBody.email
-      },
-      BucketKey.Data
+      }
     )
   })
 

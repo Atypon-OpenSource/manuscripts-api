@@ -27,6 +27,7 @@ import { ISyncService } from './ISyncService'
 import { timestamp } from '../../Utilities/JWT/LoginTokenPayload'
 import { UserService } from '../User/UserService'
 import { IUserProfileRepository } from 'src/DataAccess/Interfaces/IUserProfileRepository'
+import { AccessControlRepository } from '../../DataAccess/AccessControlRepository'
 
 const randomBytesPromisified = promisify(randomBytes)
 
@@ -66,7 +67,7 @@ export class SyncService implements ISyncService {
     return Promise.resolve(true)
   }
 
-  public async gatewayAccountExists(userId: string, _bucketKey: BucketKey): Promise<boolean> {
+  public async gatewayAccountExists(userId: string): Promise<boolean> {
     const id = this.userStatusRepository.fullyQualifiedId(userId)
 
     const exists = await this.userStatusRepository.getById(id)
@@ -78,7 +79,7 @@ export class SyncService implements ISyncService {
   }
 
   // Creates a sync_gateway account
-  public async createGatewayAccount(userId: string, _bucketKey: BucketKey) {
+  public async createGatewayAccount(userId: string) {
     const id = this.userStatusRepository.fullyQualifiedId(userId)
 
     const exists = await this.userStatusRepository.getById(id)
@@ -111,7 +112,7 @@ export class SyncService implements ISyncService {
     await this.userStatusRepository.remove({ _id: userId })
   }
 
-  public async createGatewayContributor(user: User, _bucketKey: BucketKey) {
+  public async createGatewayContributor(user: User) {
     const [firstName] = user.name.split(' ', 1)
     const lastName = user.name.substring(firstName.length + 1)
 
@@ -134,6 +135,15 @@ export class SyncService implements ISyncService {
       updatedAt: date,
     }
 
-    return this.userProfileRepository.create(userProfile)
+    await AccessControlRepository.channel(
+      [userProfileId + '-readwrite', userProfile.userID + '-readwrite'],
+      userProfile.userID
+    )
+    await AccessControlRepository.access(
+      [userProfile.userID],
+      [userProfileId + '-readwrite', userProfile.userID + '-readwrite']
+    )
+
+    return this.userProfileRepository.create(userProfile, userProfile.userID)
   }
 }

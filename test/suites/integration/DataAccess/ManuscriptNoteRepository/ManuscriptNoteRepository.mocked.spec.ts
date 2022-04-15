@@ -42,7 +42,7 @@ describe('ManuscriptNoteRepository getProductionNotes', () => {
     await expect(repository.getProductionNotes('invalidContainerID', 'invalidManuscriptID')).rejects.toThrow(DatabaseError)
   })
 
-  xtest('should fail if database.documentMapper not set', () => {
+  test('should fail if database.documentMapper not set', () => {
     const repository: any = new UserRepository(db)
     repository.database = {}
     const chance = new Chance()

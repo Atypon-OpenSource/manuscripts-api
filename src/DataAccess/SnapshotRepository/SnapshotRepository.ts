@@ -15,19 +15,10 @@
  */
 
 import { SGRepository } from '../SGRepository'
-import { NoBucketError } from '../../Errors'
 
 class SnapshotRepository extends SGRepository<any, any, any, any> {
   public get objectType(): string {
     return 'MPSnapshot'
-  }
-
-  public get bucketName(): string {
-    if (!this.database.bucket) {
-      throw new NoBucketError()
-    }
-
-    return (this.database.bucket as any)._name
   }
 }
 

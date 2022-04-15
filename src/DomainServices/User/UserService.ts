@@ -208,7 +208,7 @@ export class UserService implements IUserService {
     }
 
     const userProfileID = UserService.profileID(payload.userId)
-    return this.userProfileRepository.getById(userProfileID)
+    return this.userProfileRepository.getById(userProfileID, sgUsername(payload.userId))
 
     // TODO: Get the invitations
   }

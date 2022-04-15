@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-import { config } from '../../Config/Config'
-import { DatabaseConfiguration } from '../../Config/ConfigurationTypes'
 import { DIContainer } from '../../DIContainer/DIContainer'
 import { ISGService } from './ISGService'
 import jsonwebtoken from 'jsonwebtoken'
@@ -27,7 +25,7 @@ import * as HttpStatus from 'http-status-codes'
 export class SGService implements ISGService {
   readonly repoMap: any
 
-  constructor(readonly configuration: DatabaseConfiguration = config.DB) {
+  constructor() {
     this.repoMap = {
       MPProject: 'projectRepository',
       MPCollaboration: 'collaborationsRepository',
@@ -37,8 +35,10 @@ export class SGService implements ISGService {
       MPContainerRequest: 'containerRequestRepository',
       MPSubmission: 'submissionRepository',
       MPManuscriptNote: 'manuscriptNoteRepository',
+      MPManuscript: 'manuscriptRepository',
       MPCorrection: 'correctionRepository',
       MPSnapshot: 'snapshotRepository',
+      MPManuscriptTemplate: 'templateRepository',
     }
   }
 
@@ -57,7 +57,7 @@ export class SGService implements ISGService {
       any,
       any
     >
-    return repo.getById(id)
+    return repo.getById(id, payload.userId)
   }
 
   public async create(token: string, doc: any): Promise<any> {
@@ -75,7 +75,7 @@ export class SGService implements ISGService {
       any,
       any
     >
-    return repo.create(doc)
+    return repo.create(doc, payload.userId)
   }
 
   public async update(token: string, id: string, doc: any): Promise<any> {
@@ -93,10 +93,10 @@ export class SGService implements ISGService {
       any,
       any
     >
-    return repo.patch(id, doc).catch((err: any) => {
+    return repo.patch(id, doc, payload.userId).catch((err: any) => {
       if (err.statusCode === HttpStatus.BAD_REQUEST) {
         doc._id = id
-        return repo.create(doc)
+        return this.create(token, doc)
       }
       return Promise.reject(err)
     })
@@ -117,6 +117,6 @@ export class SGService implements ISGService {
       any,
       any
     >
-    return repo.remove(id)
+    return repo.remove(id, payload.userId)
   }
 }

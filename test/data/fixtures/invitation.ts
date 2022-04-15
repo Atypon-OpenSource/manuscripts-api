@@ -52,7 +52,7 @@ export const validProjectInvitationWithoutEmail = {
 }
 
 export const validProjectInvitationObject: ContainerInvitation = {
-  _id: checksum(
+  _id: 'MPContainerInvitation:' + checksum(
     'valid-user@manuscriptsapp.com-valid-user-4@manuscriptsapp.com-valid-project-id-2',
     { algorithm: 'sha1' }
   ),

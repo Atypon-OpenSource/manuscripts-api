@@ -39,12 +39,13 @@ import { accept, basicLogin } from '../../../../api'
 import { SeedOptions } from '../../../../../src/DataAccess/Interfaces/SeedOptions'
 import { validBody2 } from '../../../../../test/data/fixtures/credentialsRequestPayload'
 import { DIContainer } from '../../../../../src/DIContainer/DIContainer'
+import { createProject } from '../../../../data/fixtures/misc'
+
 
 let db: any = null
 const seedOptions: SeedOptions = {
   users: true,
   invitations: true,
-  projects: true,
   projectInvitations: true
 }
 
@@ -100,7 +101,7 @@ describe('InvitationService - acceptProjectInvite', () => {
   beforeEach(async () => {
     await drop()
     await dropBucket(BucketKey.Data)
-    await seed({ projects: true, projectInvitations: true, users: true, applications: true })
+    await seed({ projectInvitations: true, users: true, applications: true })
   })
 
   test('should accept the invitation and update user role in case the user have a more limiting role', async () => {
@@ -112,6 +113,7 @@ describe('InvitationService - acceptProjectInvite', () => {
     expect(loginResponse.status).toBe(HttpStatus.OK)
 
     const header = authorizationHeader(loginResponse.body.token)
+    await createProject('MPProject:valid-project-id-7')
     const response: supertest.Response = await accept(
       {
         invitationId: `MPContainerInvitation:${checksum(
@@ -143,6 +145,7 @@ describe('InvitationService - acceptProjectInvite', () => {
     )
 
     const header = authorizationHeader(loginResponse.body.token)
+    await createProject('MPProject:valid-project-id-6')
     const response: supertest.Response = await accept(
       {
         invitationId: `MPContainerInvitation:${checksum(
@@ -178,6 +181,7 @@ describe('InvitationService - acceptProjectInvite', () => {
     )
 
     const header = authorizationHeader(loginResponse.body.token)
+    await createProject('MPProject:valid-project-id-6')
     const response: supertest.Response = await accept(
       {
         invitationId: `MPContainerInvitation:${checksum(

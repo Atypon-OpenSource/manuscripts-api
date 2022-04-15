@@ -158,3 +158,9 @@ placed at the root of the repository.
   <dd>An array of semicolon separated records to describe scopes for which the server can issue access tokens in JWT form: fields are comma separated, denoting for each record: scope name,UTF8 encoded secret or base64 encoded PEM formatted private key,empty string (if symmetric secret is used) or a base64 encoded PEM formatted public key,expiry in minutes</dd>
 
 </dl>
+
+## Access Control
+
+In the past, when Couchbase was the backbone of this app, all access control happened via a sync function through the SyncGateway API, with specific [semantics](https://docs.couchbase.com/sync-gateway/current/sync-function-api.html). Now that we've migrated to Postgres, those semantics have been translated into db queries, and the main body of the sync function remains (mostly) the [same](src/DataAccess/syncAccessControl.ts). Whenever a repository (that extends SGRepository) function is called with a `userId` parameter, sync access control function logic executes.
+
+`requireAdmin` has been removed because there is no SG Admin API anymore

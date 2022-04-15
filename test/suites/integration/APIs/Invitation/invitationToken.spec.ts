@@ -33,11 +33,12 @@ import {
 } from '../../../../data/fixtures/headers'
 
 import { SeedOptions } from '../../../../../src/DataAccess/Interfaces/SeedOptions'
+import { createProject } from '../../../../data/fixtures/misc'
+
 
 let db: any = null
 const seedOptions: SeedOptions = {
   users: true,
-  projects: true,
   invitationTokens: true,
   applications: true
 }
@@ -68,6 +69,7 @@ describe('InvitationService - requestInvitationToken', () => {
     expect(loginResponse.status).toBe(HttpStatus.OK)
 
     const header = authorizationHeader(loginResponse.body.token)
+    await createProject('MPProject:valid-project-id-2')
     const response: supertest.Response = await requestInvitationToken(header, {
       containerID: 'MPProject:valid-project-id-2',
       role: 'Writer'
@@ -84,6 +86,7 @@ describe('InvitationService - requestInvitationToken', () => {
     expect(loginResponse.status).toBe(HttpStatus.OK)
 
     const header = authorizationHeader(loginResponse.body.token)
+    await createProject('MPProject:valid-project-id-5')
     const response: supertest.Response = await requestInvitationToken(header, {
       containerID: 'MPProject:valid-project-id-5',
       role: 'Viewer'
@@ -108,6 +111,7 @@ describe('InvitationService - refreshProjectInvitationToken', () => {
     expect(loginResponse.status).toBe(HttpStatus.OK)
 
     const header = authorizationHeader(loginResponse.body.token)
+    await createProject('MPProject:valid-project-id-5')
     const response: supertest.Response = await refreshInvitationToken(
       {
         ...ValidContentTypeAcceptJsonHeader,

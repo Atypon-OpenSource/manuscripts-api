@@ -19,7 +19,7 @@ import * as supertest from 'supertest'
 import * as _ from 'lodash'
 
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
-import { SYNC_GATEWAY_COOKIE_NAME, GATEWAY_BUCKETS } from '../../../../../../src/DomainServices/Sync/SyncService'
+import { SYNC_GATEWAY_COOKIE_NAME } from '../../../../../../src/DomainServices/Sync/SyncService'
 import { drop, seed, testDatabase, dropBucket } from '../../../../../utilities/db'
 import { basicLogin } from '../../../../../api'
 import {
@@ -51,20 +51,11 @@ const existingConfig: any = _.cloneDeep(config)
 
 beforeAll(async () => {
   db = await testDatabase()
-  /*await Promise.all(
-    GATEWAY_BUCKETS.map(key => {
-      return DIContainer.sharedContainer.syncService.createGatewayAccount(
-        'User|' + validBody.email,
-        key
-      )
-    })
-  )*/
 })
 
 async function seedAccounts () {
   await DIContainer.sharedContainer.syncService.createGatewayAccount(
-      'User|' + validBody.email,
-      null
+      'User|' + validBody.email
     )
 }
 

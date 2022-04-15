@@ -22,5 +22,5 @@ export interface Repository<TEntity> {
    * Returns single document based on unique id.
    * @param id the document's unique id.
    */
-  getById(id: string): Promise<TEntity | null>
+  getById(id: string, userId?: string): Promise<TEntity | null>
 }
