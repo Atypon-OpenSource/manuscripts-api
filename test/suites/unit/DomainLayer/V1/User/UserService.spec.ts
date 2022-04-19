@@ -233,7 +233,7 @@ describe('User - deleteUser', () => {
     }
 
     userService.syncService = {
-      removeGatewayAccount: jest.fn()
+      removeUserStatus: jest.fn()
     }
 
     userService.projectRepository = {
@@ -301,7 +301,7 @@ describe('User - deleteUser', () => {
     }
 
     userService.syncService = {
-      removeGatewayAccount: jest.fn()
+      removeUserStatus: jest.fn()
     }
 
     userService.projectRepository = {
@@ -360,7 +360,7 @@ describe('User - deleteUser', () => {
     }
 
     userService.syncService = {
-      removeGatewayAccount: jest.fn()
+      removeUserStatus: jest.fn()
     }
 
     userService.projectRepository = {
@@ -369,7 +369,7 @@ describe('User - deleteUser', () => {
 
     const deleted = await userService.deleteUser('userId')
     expect(deleted).toBeTruthy()
-    expect(userService.syncService.removeGatewayAccount).toBeCalled()
+    expect(userService.syncService.removeUserStatus).toBeCalled()
     expect(userService.singleUseTokenRepository.remove).toBeCalled()
     expect(userService.userTokenRepository.remove).toBeCalled()
     expect(userService.userStatusRepository.remove).toBeCalled()

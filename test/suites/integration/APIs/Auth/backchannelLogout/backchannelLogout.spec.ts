@@ -27,7 +27,6 @@ import {
 import { validBody } from '../../../../../data/fixtures/credentialsRequestPayload'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
 import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
-import { GATEWAY_BUCKETS } from '../../../../../../src/DomainServices/Sync/SyncService'
 import { SeedOptions } from '../../../../../../src/DataAccess/Interfaces/SeedOptions'
 import { BucketKey } from '../../../../../../src/Config/ConfigurationTypes'
 import { backchannelLogout } from '../../../../../api'
@@ -45,20 +44,11 @@ const seedOptions: SeedOptions = { users: true, userTokens: true }
 
 beforeAll(async () => {
   db = await testDatabase()
-  /*await Promise.all(
-    GATEWAY_BUCKETS.map(key => {
-      return DIContainer.sharedContainer.syncService.createGatewayAccount(
-        'User|' + validBody.email,
-        key
-      )
-    })
-  )*/
 })
 
 async function seedAccounts () {
-  await DIContainer.sharedContainer.syncService.createGatewayAccount(
-      'User|' + validBody.email,
-      null
+  await DIContainer.sharedContainer.syncService.getOrCreateUserStatus(
+      'User|' + validBody.email
     )
 }
 

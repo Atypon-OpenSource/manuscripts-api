@@ -17,10 +17,17 @@
 import '../../../utilities/dbMock'
 
 import { DIContainer } from '../../../../src/DIContainer/DIContainer'
-import { config } from '../../../../src/Config/Config'
-import { ValidationError } from '../../../../src/Errors'
+import { ValidationError, SyncError } from '../../../../src/Errors'
 import { TEST_TIMEOUT } from '../../../utilities/testSetup'
 import { ContainerInvitationLike } from 'src/DataAccess/Interfaces/Models'
+import * as syncAccessControl from '../../../../src/DataAccess/syncAccessControl'
+
+jest.mock('../../../../src/DataAccess/AccessControlRepository', () => ({
+  AccessControlRepository: {
+      remove: jest.fn(),
+      getChannels: jest.fn()
+  }
+}))
 
 jest.setTimeout(TEST_TIMEOUT)
 
@@ -28,6 +35,7 @@ beforeEach(() => {
   ;(DIContainer as any)._sharedContainer = null
   return DIContainer.init()
 })
+
 
 describe('SGRepository - create', () => {
   const project = {
@@ -40,7 +48,18 @@ describe('SGRepository - create', () => {
     projectRepository.database.bucket.insert.mockImplementationOnce((_document: any) =>
       Promise.resolve(project)
     )
-    const created = await projectRepository.create(project, {})
+    const created = await projectRepository.create(project)
+    expect(created._id).toEqual('MPProject:foo')
+  })
+
+  test('should create a document with access control', async () => {
+    const projectRepository: any = DIContainer.sharedContainer.projectRepository
+    projectRepository.database.bucket.insert.mockImplementationOnce((_document: any) =>
+      Promise.resolve(project)
+    )
+    const mock = jest.spyOn(syncAccessControl, 'syncAccessControl');
+    mock.mockResolvedValue()
+    const created = await projectRepository.create(project, 'User_foo')
     expect(created._id).toEqual('MPProject:foo')
   })
 
@@ -50,7 +69,15 @@ describe('SGRepository - create', () => {
     projectRepository.database.bucket.insert.mockImplementationOnce((_document: any) =>
       Promise.reject(errorObj)
     )
-    return expect(projectRepository.create(project, {})).rejects.toThrowError(Error)
+    return expect(projectRepository.create(project)).rejects.toThrowError(Error)
+  })
+
+  test('should fail to create a document with access control', () => {
+    const projectRepository: any = DIContainer.sharedContainer.projectRepository
+    const errorObj = { forbidden: 'x' }
+    const mock = jest.spyOn(syncAccessControl, 'syncAccessControl');
+    mock.mockImplementation(() => { throw errorObj })
+    return expect(projectRepository.create(project, 'User_foo')).rejects.toThrowError(Error)
   })
 })
 
@@ -67,6 +94,18 @@ describe('SGRepository - getById', () => {
     )
 
     const created = await projectRepository.getById(project._id)
+    expect(created._id).toEqual('MPProject:foo')
+  })
+
+  test('should get the document by Id with access control', async () => {
+    const projectRepository: any = DIContainer.sharedContainer.projectRepository
+    projectRepository.database.bucket.findUnique.mockImplementationOnce((_document: any) =>
+      Promise.resolve({ data: project, _id: project._id })
+    )
+    const mock = jest.spyOn(syncAccessControl, 'syncAccessControl');
+    mock.mockResolvedValue()
+
+    const created = await projectRepository.getById(project._id, 'User_foo')
     expect(created._id).toEqual('MPProject:foo')
   })
 
@@ -89,6 +128,20 @@ describe('SGRepository - getById', () => {
     )
 
     return expect(projectRepository.getById(project._id)).rejects.toThrowError(Error)
+  })
+
+  test('failing to get a document with access control', () => {
+    const projectRepository: any = DIContainer.sharedContainer.projectRepository
+
+    projectRepository.database.bucket.findUnique.mockImplementationOnce((_document: any) =>
+      Promise.resolve({ data: project, _id: project._id })
+    )
+
+    const errorObj = { forbidden: 'x' }
+    const mock = jest.spyOn(syncAccessControl, 'syncAccessControl');
+    mock.mockImplementation(() => { throw errorObj })
+
+    return expect(projectRepository.getById(project._id, 'User_foo')).rejects.toThrowError(Error)
   })
 })
 
@@ -127,7 +180,22 @@ describe('SGRepository - update', () => {
       Promise.resolve()
     )
 
-    const updated = await containerInvitationRepository.update(invitation._id, invitation, {})
+    const updated = await containerInvitationRepository.update(invitation._id, invitation)
+    expect(updated._id).toEqual('MPContainerInvitation:foo')
+  })
+
+  test('should update the document with access control', async () => {
+    const containerInvitationRepository: any =
+      DIContainer.sharedContainer.containerInvitationRepository
+    containerInvitationRepository.getById = async (_id: string) =>
+      Promise.resolve({ ...invitation, _rev: 'rev1' })
+    containerInvitationRepository.database.bucket.replace.mockImplementationOnce((_document: any) =>
+      Promise.resolve()
+    )
+    const mock = jest.spyOn(syncAccessControl, 'syncAccessControl');
+    mock.mockResolvedValue()
+
+    const updated = await containerInvitationRepository.update(invitation._id, invitation, 'User_foo')
     expect(updated._id).toEqual('MPContainerInvitation:foo')
   })
 
@@ -142,7 +210,32 @@ describe('SGRepository - update', () => {
     )
 
     return expect(
-      containerInvitationRepository.update(invitation._id, invitation, {})
+      containerInvitationRepository.update(invitation._id, invitation)
+    ).rejects.toThrowError(Error)
+  })
+
+  test('failing to update a document with access control', () => {
+    const containerInvitationRepository: any =
+      DIContainer.sharedContainer.containerInvitationRepository
+    containerInvitationRepository.getById = async (_id: string) =>
+      Promise.resolve({ ...invitation, _rev: 'rev1' })
+    const errorObj = { forbidden: 'x' }
+    const mock = jest.spyOn(syncAccessControl, 'syncAccessControl');
+    mock.mockImplementation(() => { throw errorObj })
+
+    return expect(
+      containerInvitationRepository.update(invitation._id, invitation, 'User_foo')
+    ).rejects.toThrowError(Error)
+  })
+
+  test('failing to update a document with access control', () => {
+    const containerInvitationRepository: any =
+      DIContainer.sharedContainer.containerInvitationRepository
+    const errorObj = new Error('derp')
+    containerInvitationRepository.getById = async (_id: string, _userId: string) => Promise.reject(errorObj)
+
+    return expect(
+      containerInvitationRepository.update(invitation._id, invitation, 'User_foo')
     ).rejects.toThrowError(Error)
   })
 
@@ -152,7 +245,7 @@ describe('SGRepository - update', () => {
     containerInvitationRepository.getById = async (_id: string) => Promise.resolve(null)
 
     return expect(
-      containerInvitationRepository.update(invitation._id, invitation, {})
+      containerInvitationRepository.update(invitation._id, invitation)
     ).rejects.toThrowError(ValidationError)
   })
 
@@ -167,8 +260,22 @@ describe('SGRepository - update', () => {
       })
 
     return expect(
-      containerInvitationRepository.update(invitation._id, invitation, {})
+      containerInvitationRepository.update(invitation._id, invitation)
     ).rejects.toThrowError(ValidationError)
+  })
+
+  test('failing to update a document because revision mismatched', () => {
+    const containerInvitationRepository: any =
+      DIContainer.sharedContainer.containerInvitationRepository
+    containerInvitationRepository.getById = async (_id: string) =>
+      Promise.resolve({
+        ...invitation,
+        _rev: 'rev2',
+      })
+
+    return expect(
+      containerInvitationRepository.update(invitation._id, invitation)
+    ).rejects.toThrowError(SyncError)
   })
 })
 
@@ -195,14 +302,27 @@ describe('SGRepository - patch', () => {
       Promise.resolve()
     )
 
-    const patched = await projectRepository.patch(project._id, projectToPatch, {})
+    const patched = await projectRepository.patch(project._id, projectToPatch)
+    expect(patched.owners[0]).toEqual(projectToPatch.owners[0])
+  })
+
+  test('should patch the document with access control', async () => {
+    const projectRepository: any = DIContainer.sharedContainer.projectRepository
+    projectRepository.getById = async (_id: string) => Promise.resolve({ ...project, _rev: 'rev1' })
+    projectRepository.database.bucket.replace.mockImplementationOnce((_document: any) =>
+      Promise.resolve()
+    )
+    const mock = jest.spyOn(syncAccessControl, 'syncAccessControl');
+    mock.mockResolvedValue()
+
+    const patched = await projectRepository.patch(project._id, projectToPatch, 'User_foo')
     expect(patched.owners[0]).toEqual(projectToPatch.owners[0])
   })
 
   test('failing to patch a document because it is not in the db', () => {
     const projectRepository: any = DIContainer.sharedContainer.projectRepository
     projectRepository.getById = async (_id: string) => Promise.resolve(null)
-    return expect(projectRepository.patch(project._id, projectToPatch, {})).rejects.toThrowError(
+    return expect(projectRepository.patch(project._id, projectToPatch)).rejects.toThrowError(
       ValidationError
     )
   })
@@ -214,7 +334,27 @@ describe('SGRepository - patch', () => {
     projectRepository.database.bucket.replace.mockImplementationOnce((_document: any) =>
       Promise.reject(errorObj)
     )
-    return expect(projectRepository.patch(project._id, projectToPatch, {})).rejects.toThrowError(
+    return expect(projectRepository.patch(project._id, projectToPatch)).rejects.toThrowError(
+      Error
+    )
+  })
+
+  test('failing to patch a document with access control', () => {
+    const projectRepository: any = DIContainer.sharedContainer.projectRepository
+    projectRepository.getById = async (_id: string) => Promise.resolve({ ...project, _rev: 'rev1' })
+    const errorObj = { forbidden: 'x' }
+    const mock = jest.spyOn(syncAccessControl, 'syncAccessControl');
+    mock.mockImplementation(() => { throw errorObj })
+    return expect(projectRepository.patch(project._id, projectToPatch, 'User_foo')).rejects.toThrowError(
+      Error
+    )
+  })
+
+  test('failing to patch a document with access control', () => {
+    const projectRepository: any = DIContainer.sharedContainer.projectRepository
+    const errorObj = {name: 'SyncError'}
+    projectRepository.getById = async (_id: string, _userId: string) => { throw errorObj }
+    return expect(projectRepository.patch(project._id, projectToPatch, 'User_foo')).rejects.toThrowError(
       Error
     )
   })
@@ -246,6 +386,20 @@ describe('SGRepository - touch', () => {
     expect(touched.expiry).toEqual(1)
   })
 
+  test('should touch the document with access control', async () => {
+    const invitationRepository: any = DIContainer.sharedContainer.invitationRepository
+    invitationRepository.getById = async (_id: string) =>
+      Promise.resolve({ ...invitation, _rev: 'rev1' })
+    invitationRepository.database.bucket.replace.mockImplementationOnce((_document: any) =>
+      Promise.resolve()
+    )
+    const mock = jest.spyOn(syncAccessControl, 'syncAccessControl');
+    mock.mockResolvedValue()
+
+    const touched = await invitationRepository.touch(invitation._id, 1, 'User_foo')
+    expect(touched.expiry).toEqual(1)
+  })
+
   test('failing to touch a document because it is not in the db', () => {
     const invitationRepository: any = DIContainer.sharedContainer.invitationRepository
     invitationRepository.getById = async (_id: string) => Promise.resolve(null)
@@ -266,6 +420,16 @@ describe('SGRepository - touch', () => {
       Promise.reject(errorObj)
     )
     return expect(invitationRepository.touch(invitation._id, 1)).rejects.toThrowError(Error)
+  })
+
+  test('failing to touch a document with access control', () => {
+    const invitationRepository: any = DIContainer.sharedContainer.invitationRepository
+    invitationRepository.getById = async (_id: string) =>
+      Promise.resolve({ ...invitation, _rev: 'rev1' })
+    const errorObj = { forbidden: 'x' }
+    const mock = jest.spyOn(syncAccessControl, 'syncAccessControl');
+    mock.mockImplementation(() => { throw errorObj })
+    return expect(invitationRepository.touch(invitation._id, 1, 'User_foo')).rejects.toThrowError(Error)
   })
 })
 
@@ -291,6 +455,17 @@ describe('SGRepository - remove', () => {
     objectType: 'MPContainerInvitation',
   }
 
+  test('should mark all documents as deleted', async () => {
+    const containerInvitationRepository: any =
+      DIContainer.sharedContainer.containerInvitationRepository
+    containerInvitationRepository.database.bucket.remove.mockImplementationOnce((_document: any) =>
+      Promise.resolve()
+    )
+
+    const removed = await containerInvitationRepository.remove(null)
+    expect(removed).toEqual(undefined)
+  })
+
   test('should mark the document as deleted', async () => {
     const containerInvitationRepository: any =
       DIContainer.sharedContainer.containerInvitationRepository
@@ -299,6 +474,27 @@ describe('SGRepository - remove', () => {
 
     const removed = await containerInvitationRepository.remove(invitation._id)
     expect(removed).toEqual(undefined)
+  })
+
+  test('should mark the document as deleted with access control', async () => {
+    const containerInvitationRepository: any =
+      DIContainer.sharedContainer.containerInvitationRepository
+    containerInvitationRepository.getById = async (_id: string) =>
+      Promise.resolve({ ...invitation })
+    const mock = jest.spyOn(syncAccessControl, 'syncAccessControl');
+    mock.mockResolvedValue()
+
+    const removed = await containerInvitationRepository.remove(invitation._id, 'User_foo')
+    expect(removed).toEqual(undefined)
+  })
+
+  test('should fail to mark the document as deleted with access control', async () => {
+    const containerInvitationRepository: any =
+      DIContainer.sharedContainer.containerInvitationRepository
+    
+    const errorObj = new Error('derp')
+    containerInvitationRepository.getById = async (_id: string, _userId: string) => Promise.reject(errorObj)
+    return expect(containerInvitationRepository.remove(invitation._id, 'User_foo')).rejects.toThrowError(Error)
   })
 })
 
@@ -340,17 +536,23 @@ describe('SGRepository - bulkDocs', () => {
     expect(updated.length).toBeGreaterThan(0)
   })
 
+  test('should POST _bulk_docs with access control', async () => {
+    const projectRepository: any = DIContainer.sharedContainer.projectRepository
+    projectRepository.database.bucket.upsert.mockImplementationOnce((_document: any) =>
+      Promise.resolve(docUpdate)
+    )
+    const mock = jest.spyOn(syncAccessControl, 'syncAccessControl');
+    mock.mockResolvedValue()
+    const updated = await projectRepository.bulkDocs([docUpdate], 'User_foo')
+    expect(updated.length).toBeGreaterThan(0)
+  })
+
   test('should throw sync error when fail to bulkDocs', () => {
     const projectRepository: any = DIContainer.sharedContainer.projectRepository
     const errorObj = new Error('database derp')
-    projectRepository.database.bucket.upsert.mockImplementationOnce((_document: any) =>
+    projectRepository.database.bucket.insert.mockImplementationOnce((_document: any) =>
       Promise.reject(errorObj)
     )
     return expect(projectRepository.bulkDocs([docUpdate])).rejects.toThrowError(Error)
-  })
-
-  test.skip('should throw response with error messages when they are available', () => {
-    const projectRepository: any = DIContainer.sharedContainer.projectRepository
-    return expect(projectRepository.bulkDocs([docUpdate])).rejects.toThrow(/forbidden/)
   })
 })

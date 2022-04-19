@@ -21,7 +21,6 @@ import checksum from 'checksum'
 import { uninvite, basicLogin } from '../../../../api'
 import { TEST_TIMEOUT } from '../../../../utilities/testSetup'
 import { DIContainer } from '../../../../../src/DIContainer/DIContainer'
-import { GATEWAY_BUCKETS } from '../../../../../src/DomainServices/Sync/SyncService'
 import { BucketKey } from '../../../../../src/Config/ConfigurationTypes'
 import { drop, dropBucket, seed, testDatabase } from '../../../../utilities/db'
 import { validBody } from '../../../../data/fixtures/credentialsRequestPayload'
@@ -31,31 +30,21 @@ import {
   authorizationHeader
 } from '../../../../data/fixtures/headers'
 import { SeedOptions } from '../../../../../src/DataAccess/Interfaces/SeedOptions'
-import { createProjectInvitation } from '../../../../data/fixtures/misc'
+import { createProjectInvitation, createProject } from '../../../../data/fixtures/misc'
 
 let db: any = null
 const seedOptions: SeedOptions = {
   users: true,
   applications: true,
-  projects: true
 }
 
 beforeAll(async () => {
   db = await testDatabase()
-  /*await Promise.all(
-    GATEWAY_BUCKETS.map(key => {
-      return DIContainer.sharedContainer.syncService.createGatewayAccount(
-        'User|' + validBody.email,
-        key
-      )
-    })
-  )*/
 })
 
 async function seedAccounts () {
-  await DIContainer.sharedContainer.syncService.createGatewayAccount(
-      'User|' + validBody.email,
-      null
+  await DIContainer.sharedContainer.syncService.getOrCreateUserStatus(
+      'User|' + validBody.email
     )
 }
 
@@ -83,13 +72,14 @@ describe('InvitationService - uninvite', () => {
 
     const header = authorizationHeader(loginResponse.body.token)
 
-    const invitationTupleHash = checksum(
+    const invitationTupleHash = 'MPContainerInvitation:' + checksum(
       'valid-user@manuscriptsapp.com-valid-google@manuscriptsapp.com-valid-project-id-2',
       { algorithm: 'sha1' }
     )
+    await createProject('MPProject:valid-project-id-2')
     await createProjectInvitation(invitationTupleHash)
     const response: supertest.Response = await uninvite(
-      { invitationId: `MPContainerInvitation:${invitationTupleHash}` },
+      { invitationId: invitationTupleHash },
       {
         ...ValidContentTypeAcceptJsonHeader,
         ...header

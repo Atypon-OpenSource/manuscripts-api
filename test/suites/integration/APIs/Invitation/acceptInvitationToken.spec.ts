@@ -48,36 +48,27 @@ import {
   validInvitationToken5
 } from '../../../../data/fixtures/invitationTokens'
 import { validBody } from '../../../../data/fixtures/credentialsRequestPayload'
-import { GATEWAY_BUCKETS } from '../../../../../src/DomainServices/Sync/SyncService'
 import { BucketKey } from '../../../../../src/Config/ConfigurationTypes'
 import { DIContainer } from '../../../../../src/DIContainer/DIContainer'
 import { ContainerType } from '../../../../../src/Models/ContainerModels'
+import { createProject } from '../../../../data/fixtures/misc'
+
 
 let db: any = null
 const seedOptions: SeedOptions = {
   users: true,
   applications: true,
   invitationTokens: true,
-  projects: true,
   projectInvitations: true
 }
 
 beforeAll(async () => {
   db = await testDatabase()
-  /*await Promise.all(
-    GATEWAY_BUCKETS.map(key => {
-      return DIContainer.sharedContainer.syncService.createGatewayAccount(
-        'User|' + validBody.email,
-        key
-      )
-    })
-  )*/
 })
 
 async function seedAccounts () {
-  await DIContainer.sharedContainer.syncService.createGatewayAccount(
-      'User|' + validBody.email,
-      null
+  await DIContainer.sharedContainer.syncService.getOrCreateUserStatus(
+      'User|' + validBody.email
     )
 }
 
@@ -104,6 +95,7 @@ describe('InvitationService - acceptInvitationToken', () => {
     expect(loginResponse.status).toBe(HttpStatus.OK)
 
     const authHeader = authorizationHeader(loginResponse.body.token)
+    await createProject('MPProject:valid-project-id-9')
     const response: supertest.Response = await acceptInvitationToken(
       {
         token: validInvitationToken5.token
@@ -129,6 +121,7 @@ describe('InvitationService - acceptInvitationToken', () => {
     expect(loginResponse.status).toBe(HttpStatus.OK)
 
     const authHeader = authorizationHeader(loginResponse.body.token)
+    await createProject('MPProject:valid-project-id-8')
     const response: supertest.Response = await acceptInvitationToken(
       {
         token: validInvitationToken2.token
@@ -154,6 +147,7 @@ describe('InvitationService - acceptInvitationToken', () => {
     expect(loginResponse.status).toBe(HttpStatus.OK)
 
     const authHeader = authorizationHeader(loginResponse.body.token)
+    await createProject('MPProject:valid-project-id-8')
     const response: supertest.Response = await acceptInvitationToken(
       {
         token: validInvitationToken3.token
@@ -179,6 +173,7 @@ describe('InvitationService - acceptInvitationToken', () => {
     expect(loginResponse.status).toBe(HttpStatus.OK)
 
     const authHeader = authorizationHeader(loginResponse.body.token)
+    await createProject('MPProject:valid-project-id-7')
     const response: supertest.Response = await acceptInvitationToken(
       {
         token: validInvitationToken4.token
@@ -204,6 +199,7 @@ describe('InvitationService - acceptInvitationToken', () => {
     expect(loginResponse.status).toBe(HttpStatus.OK)
 
     const authHeader = authorizationHeader(loginResponse.body.token)
+    await createProject('MPProject:valid-project-id-2')
     const response: supertest.Response = await acceptInvitationToken(
       {
         token: validTokenButInvitationExist.token
@@ -229,6 +225,7 @@ describe('InvitationService - acceptInvitationToken', () => {
     expect(loginResponse.status).toBe(HttpStatus.OK)
 
     const authHeader = authorizationHeader(loginResponse.body.token)
+    await createProject('MPProject:valid-project-id')
     const response: supertest.Response = await acceptInvitationToken(
       {
         token: validTokenButInvitationExistBetterRole.token

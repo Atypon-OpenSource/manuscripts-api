@@ -15,20 +15,12 @@
  */
 
 import { SGRepository } from '../SGRepository'
-import { DatabaseError, NoBucketError } from '../../Errors'
+import { DatabaseError } from '../../Errors'
 import { Prisma } from '@prisma/client'
 
 class ManuscriptNoteRepository extends SGRepository<any, any, any, any> {
   public get objectType(): string {
     return 'MPManuscriptNote'
-  }
-
-  public get bucketName(): string {
-    if (!this.database.bucket) {
-      throw new NoBucketError()
-    }
-
-    return (this.database.bucket as any)._name
   }
 
   public async getProductionNotes(containerID: string, manuscriptID: string) {

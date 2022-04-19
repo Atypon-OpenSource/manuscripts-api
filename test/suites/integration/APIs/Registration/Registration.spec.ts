@@ -42,7 +42,7 @@ import { DIContainer } from '../../../../../src/DIContainer/DIContainer'
 import { SeedOptions } from '../../../../../src/DataAccess/Interfaces/SeedOptions'
 import { BucketKey } from '../../../../../src/Config/ConfigurationTypes'
 import { validBody } from '../../../../data/fixtures/credentialsRequestPayload'
-import { GATEWAY_BUCKETS } from '../../../../../src/DomainServices/Sync/SyncService'
+
 
 let db: any = null
 const seedOptions: SeedOptions = { users: true, singleUseTokens: true, applications: true }
@@ -104,14 +104,10 @@ describe('ConnectSignup - signup', () => {
     await drop()
     await dropBucket(BucketKey.Data)
     await seed(seedOptions)
-    return Promise.all(
-        GATEWAY_BUCKETS.map(key => {
-          return DIContainer.sharedContainer.syncService.createGatewayAccount(
-              'User|' + validBody.email,
-              key
-          )
-        })
+    await DIContainer.sharedContainer.syncService.getOrCreateUserStatus(
+        'User|' + validBody.email
     )
+    
   })
   test('should create new user', async () => {
     const response: supertest.Response = await connectSignup(

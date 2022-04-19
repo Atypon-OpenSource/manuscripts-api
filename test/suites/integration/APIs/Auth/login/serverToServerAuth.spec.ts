@@ -22,10 +22,6 @@ import { Chance } from 'chance'
 
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
 import {
-  SYNC_GATEWAY_COOKIE_NAME,
-  GATEWAY_BUCKETS
-} from '../../../../../../src/DomainServices/Sync/SyncService'
-import {
   drop,
   seed,
   testDatabase,
@@ -56,20 +52,11 @@ const existingConfig: any = _.cloneDeep(config)
 
 beforeAll(async () => {
   db = await testDatabase()
-  /*await Promise.all(
-    GATEWAY_BUCKETS.map(key => {
-      return DIContainer.sharedContainer.syncService.createGatewayAccount(
-        'User|' + validBody.email,
-        key
-      )
-    })
-  )*/
 })
 
 async function seedAccounts () {
-  await DIContainer.sharedContainer.syncService.createGatewayAccount(
-      'User|' + validBody.email,
-      null
+  await DIContainer.sharedContainer.syncService.getOrCreateUserStatus(
+      'User|' + validBody.email
     )
 }
 
@@ -151,25 +138,6 @@ describe('Server to Server Auth - POST api/v1/auth/admin', () => {
 
     expect(response.body).toEqual({})
   })
-
-  xtest('should set sync cookie', async () => {
-    const response: supertest.Response = await serverToServerAuth(
-      { deviceId: chance.guid() },
-      {
-        ...ValidHeaderWithApplicationKey,
-        authorization: `Bearer ${jsonwebtoken.sign(
-          { email: validBody.email },
-          config.auth.serverSecret
-        )}`
-      }
-    )
-
-    expect(response.status).toBe(HttpStatus.OK)
-    const setCookieHeaders = response.header['set-cookie']
-    expect(setCookieHeaders).toBeDefined()
-    const [syncSessionCookie] = setCookieHeaders
-    expect(syncSessionCookie.startsWith(SYNC_GATEWAY_COOKIE_NAME)).toBeTruthy()
-  })
 })
 
 describe('Server to Server token Auth - POST api/v1/auth/token', () => {
@@ -180,7 +148,7 @@ describe('Server to Server token Auth - POST api/v1/auth/token', () => {
     await seedAccounts()
   })
   test('should return token', async () => {
-    const createUserStatus = jest.spyOn(DIContainer.sharedContainer.userStatusRepository, 'create')
+    const getOrCreateUserStatus = jest.spyOn(DIContainer.sharedContainer.userStatusRepository, 'create')
     const response: supertest.Response = await serverToServerTokenAuth(
       {
         deviceId: chance.guid()
@@ -196,7 +164,7 @@ describe('Server to Server token Auth - POST api/v1/auth/token', () => {
       }
     )
     // userStatus will be created if not found
-    expect(createUserStatus).toHaveBeenCalled()
+    expect(getOrCreateUserStatus).toHaveBeenCalled()
     return expect(response.status).toBe(HttpStatus.OK)
   })
 })

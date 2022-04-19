@@ -45,7 +45,7 @@ describe('ProjectRepository removeWithAllResources', () => {
     )
     const validId = `MPProject:valid-project-id-6`
     const projectBefore = await repository.getById(validId)
-    const invId = checksum(
+    const invId = 'MPContainerInvitation:' + checksum(
       'valid-user@manuscriptsapp.com-valid-user-6@manuscriptsapp.com-valid-project-id-6',
       { algorithm: 'sha1' }
     )
@@ -59,7 +59,7 @@ describe('ProjectRepository removeWithAllResources', () => {
 
     const projectAfter = await repository.getById(validId)
     const invitationAfter = await projectInvitationRepository.getById(
-      checksum(
+      'MPContainerInvitation:' + checksum(
         'valid-user@manuscriptsapp.com-valid-user-6@manuscriptsapp.com-valid-project-id-6',
         { algorithm: 'sha1' }
       )
@@ -84,7 +84,7 @@ describe('ProjectRepository getUserContainers', () => {
 
     expect(
       projects.find(
-        (project) => project._id === validProject._id
+        (project: { _id: string }) => project._id === validProject._id
       )._id
     ).toBe(validProject._id)
   })
@@ -102,7 +102,7 @@ describe('ProjectRepository getContainerResourcesIDs', () => {
     const validId = `MPProject:valid-project-id-6`
     const resources = await repository.getContainerResourcesIDs(validId)
 
-    expect(resources.find((resource) => resource._id === validId)._id).toBe(
+    expect(resources.find((resource: { _id: string }) => resource._id === validId)._id).toBe(
       validId
     )
   })

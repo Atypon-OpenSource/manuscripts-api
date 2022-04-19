@@ -15,7 +15,7 @@
  */
 
 import { SGRepository } from '../SGRepository'
-import { DatabaseError, NoBucketError } from '../../Errors'
+import { DatabaseError } from '../../Errors'
 import { CorrectionLike } from '../Interfaces/Models'
 import { Correction } from '@manuscripts/manuscripts-json-schema/dist/types'
 import { Prisma } from '@prisma/client'
@@ -28,14 +28,6 @@ class CorrectionRepository extends SGRepository<
 > {
   public get objectType(): string {
     return 'MPCorrection'
-  }
-
-  public get bucketName(): string {
-    if (!this.database.bucket) {
-      throw new NoBucketError()
-    }
-
-    return (this.database.bucket as any)._name
   }
 
   public async getCorrectionStatus(containerID: string) {

@@ -22,7 +22,7 @@ libraryCollectionsList.push({
   _id: 'valid-libraryCollection-id',
   containerID: 'MPLibrary:valid-library-id',
   objectType: 'MPLibraryCollection',
-  owners: ['User_test'],
+  owners: ['User_valid-user-2@manuscriptsapp.com', 'User_test'],
   writers: [],
   viewers: [],
   inherited: ['User_test'],

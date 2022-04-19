@@ -169,7 +169,7 @@ describe('Invitation - acceptContainerInvite', () => {
     }
 
     return expect(
-      containerInvitationService.acceptContainerInvite('foo')
+      containerInvitationService.acceptContainerInvite('foo', {_id: "User|id"})
     ).rejects.toThrowError(RecordGoneError)
   })
 

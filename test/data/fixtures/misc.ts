@@ -24,6 +24,7 @@ import { containerRequestList } from '../dump/containerRequest'
 import { submissionsList } from '../dump/submissions'
 import { libraryInvitationsList } from '../dump/libraryInvitation'
 import { invitationsList } from '../dump/invitation'
+import { manuscriptList } from '../dump/manuscriptList'
 
 export const GOOGLE_AUTH_URI = 'https://accounts.google.com/o/oauth2/v2/auth'
 
@@ -31,7 +32,7 @@ export async function createProject (id: string) {
   const project: any = _.clone(projectsList.find((project) => project._id === id))
   await DIContainer.sharedContainer.projectRepository.create(
     project,
-    {}
+    project.owners[0]
   )
 }
 
@@ -39,7 +40,7 @@ export async function createLibrary (id: string) {
   const library: any = _.clone(librariesList.find((library) => library._id === id))
   await DIContainer.sharedContainer.libraryRepository.create(
     _.clone(library),
-    {}
+    library.owners[0]
   )
 }
 
@@ -47,7 +48,7 @@ export async function createLibraryCollection () {
   const libraryCollection: any = _.clone(libraryCollectionsList[0])
   await DIContainer.sharedContainer.libraryCollectionRepository.create(
     _.clone(libraryCollection),
-    {}
+    libraryCollection.owners[0]
   )
 }
 
@@ -64,7 +65,6 @@ export async function createContainerReq (id: string) {
   const invitation: any = _.clone(containerRequestList.find((invitation) => invitation._id === id))
   await DIContainer.sharedContainer.containerRequestRepository.create(
     _.clone(invitation),
-    {}
   )
 }
 
@@ -73,7 +73,6 @@ export async function createSubmission (id: string) {
   const sub: any = _.clone(submissionsList.find((sub) => sub._id === id))
   await DIContainer.sharedContainer.submissionRepository.create(
     _.clone(sub),
-    {}
   )
 }
 
@@ -83,7 +82,6 @@ export async function createProjectInvitation (id: string) {
   }))
   await DIContainer.sharedContainer.containerInvitationRepository.create(
     _.clone(projectInvitation),
-    {}
   )
 }
 
@@ -91,7 +89,6 @@ export async function createLibraryInvitation (id: string) {
   const invitation: any = _.clone(libraryInvitationsList.find((invitation) => invitation._id === id))
   await DIContainer.sharedContainer.containerInvitationRepository.create(
     _.clone(invitation),
-    {}
   )
 }
 
@@ -99,6 +96,13 @@ export async function createInvitation (id: string) {
   const invitation: any = _.clone(invitationsList.find((invitation) => invitation._id === id))
   await DIContainer.sharedContainer.invitationRepository.create(
     _.clone(invitation),
-    {}
+  )
+}
+
+export async function createManuscript (id: string, userId: string) {
+  const manuscript: any = _.clone(manuscriptList.find((manuscript) => manuscript._id === id))
+  await DIContainer.sharedContainer.manuscriptRepository.create(
+    _.clone(manuscript),
+    userId
   )
 }

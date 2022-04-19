@@ -250,7 +250,7 @@ describe('containerService - deleteContainer', () => {
     }
 
     return expect(
-      containerService.deleteContainer(chance.guid(), { _id: chance.guid() })
+      containerService.deleteContainer(chance.guid(), { _id: `User|${chance.guid()}` })
     ).rejects.toThrowError(MissingContainerError)
   })
 
@@ -297,7 +297,7 @@ describe('containerService - addContainerUser', () => {
         chance.string(),
         ContainerRole.Writer,
         'User|userId',
-        {}
+        {_id: 'User|userId2'}
       )
     ).rejects.toThrowError(MissingContainerError)
   })
@@ -319,7 +319,7 @@ describe('containerService - addContainerUser', () => {
         chance.string(),
         ContainerRole.Viewer,
         'User|userId',
-        {}
+        {_id: 'User|userId2'}
       )
     ).rejects.toThrowError(ValidationError)
   })
@@ -341,7 +341,7 @@ describe('containerService - addContainerUser', () => {
         chance.string(),
         'striker',
         'User|userId',
-        {}
+        {_id: 'User|userId2'}
       )
     ).rejects.toThrowError(ValidationError)
   })
@@ -374,7 +374,8 @@ describe('containerService - addContainerUser', () => {
     await containerService.addContainerUser(
       'project',
       ContainerRole.Owner,
-      'User|userId'
+      'User|userId',
+      {_id: 'User|userId2'}
     )
     return expect(containerService.containerRepository.patch).toBeCalled()
   })
@@ -407,7 +408,8 @@ describe('containerService - addContainerUser', () => {
     await containerService.addContainerUser(
       'project',
       ContainerRole.Writer,
-      'User|userId'
+      'User|userId',
+      {_id: 'User|userId2'}
     )
     return expect(containerService.containerRepository.patch).toBeCalled()
   })
@@ -440,7 +442,8 @@ describe('containerService - addContainerUser', () => {
     await containerService.addContainerUser(
       'project',
       ContainerRole.Viewer,
-      'User|userId'
+      'User|userId',
+      {_id: 'User|userId2'}
     )
     return expect(containerService.containerRepository.patch).toBeCalled()
   })
@@ -486,7 +489,8 @@ describe('containerService - addContainerUser', () => {
     await containerService.addContainerUser(
       'MPLibrary:some-random-id',
       ContainerRole.Viewer,
-      'User|userId'
+      'User|userId',
+      {_id: 'User|userId2'}
     )
 
     expect(containerService.containerRepository.patch).toBeCalled()
@@ -519,7 +523,8 @@ describe('containerService - addContainerUser', () => {
       containerService.addContainerUser(
         'project',
         ContainerRole.Viewer,
-        'userId'
+        'userId',
+        {_id: 'User|userId2'}
       )
     ).rejects.toThrowError(ValidationError)
   })
@@ -552,7 +557,8 @@ describe('containerService - addContainerUser', () => {
       await containerService.addContainerUser(
         'project',
         ContainerRole.Viewer,
-        'User|userId'
+        'User|userId',
+        {_id: 'User|userId2'}
       )
     ).toBeFalsy()
   })
@@ -1518,7 +1524,7 @@ describe('containerService - getArchive', () => {
     }
 
     return expect(
-      containerService.getArchive(validProject4._id)
+      containerService.getArchive('User_test', validProject4._id)
     ).rejects.toThrow(MissingContainerError)
   })
 

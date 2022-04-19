@@ -51,7 +51,7 @@ describe('InvitationService - reject', () => {
       'valid-user@manuscriptsapp.com-valid-google@manuscriptsapp.com',
       { algorithm: 'sha1' }
     )
-    await createInvitation(hash)
+    await createInvitation(`MPInvitation:${hash}`)
     const rejectResponse: supertest.Response = await reject(
       { invitationId: `MPInvitation:${hash}` },
       {
@@ -80,8 +80,8 @@ describe('InvitationService - rejectProjectInvite', () => {
       'valid-user@manuscriptsapp.com-valid-user-4@manuscriptsapp.com-valid-project-id-2',
       { algorithm: 'sha1' }
     )
-    await purgeContainerInvitation(invitationTupleHash)
-    await createProjectInvitation(invitationTupleHash)
+    await purgeContainerInvitation(`MPContainerInvitation:${invitationTupleHash}`)
+    await createProjectInvitation(`MPContainerInvitation:${invitationTupleHash}`)
     const rejectResponse: supertest.Response = await reject(
       { invitationId: `MPContainerInvitation:${invitationTupleHash}` },
       {

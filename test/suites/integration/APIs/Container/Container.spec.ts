@@ -56,7 +56,6 @@ import {
   validUser1,
   validUser2
 } from '../../../../data/fixtures/UserRepository'
-import { GATEWAY_BUCKETS } from '../../../../../src/DomainServices/Sync/SyncService'
 import { SeedOptions } from '../../../../../src/DataAccess/Interfaces/SeedOptions'
 import { validManuscript, validManuscript1 } from '../../../../data/fixtures/manuscripts'
 import { validNote1 } from '../../../../data/fixtures/ManuscriptNote'
@@ -84,20 +83,11 @@ const seedOptions: SeedOptions = { users: true, applications: true }
 
 beforeAll(async () => {
   db = await testDatabase()
-  /*await Promise.all(
-    GATEWAY_BUCKETS.map(key => {
-      return DIContainer.sharedContainer.syncService.createGatewayAccount(
-        'User|' + validBody.email,
-        key
-      )
-    })
-  )*/
 })
 
 async function seedAccounts () {
-  await DIContainer.sharedContainer.syncService.createGatewayAccount(
-      'User|' + validBody.email,
-      null
+  await DIContainer.sharedContainer.syncService.getOrCreateUserStatus(
+      'User|' + validBody.email
     )
 }
 
@@ -178,8 +168,8 @@ describe('ContainerService - delete', () => {
     const authHeader = authorizationHeader(loginResponse.body.token)
 
     const validContainerId = `MPProject:valid-project-id-6`
-    await createProject('valid-project-id-6')
-    const validInvitationId = checksum(
+    await createProject('MPProject:valid-project-id-6')
+    const validInvitationId = 'MPContainerInvitation:' + checksum(
       'valid-user@manuscriptsapp.com-valid-user-6@manuscriptsapp.com-valid-project-id-6',
       { algorithm: 'sha1' }
     )
@@ -222,7 +212,7 @@ describe('ContainerService - delete', () => {
     )
 
     expect(loginResponse.status).toBe(HttpStatus.OK)
-    await createProject('valid-project-id-9')
+    await createProject('MPProject:valid-project-id-9')
     const authHeader = authorizationHeader(loginResponse.body.token)
     const response: supertest.Response = await deleteContainer(
       {
@@ -250,7 +240,7 @@ describe('containerService - addContainerUser', () => {
     const containerService =
       DIContainer.sharedContainer.containerService[ContainerType.project]
 
-    await createProject('valid-project-id')
+    await createProject('MPProject:valid-project-id')
     const didAdd = await containerService.addContainerUser(
       validProject._id,
       ContainerRole.Owner,
@@ -264,7 +254,7 @@ describe('containerService - addContainerUser', () => {
   test('should add a writer to a project and return true', async () => {
     const containerService =
       DIContainer.sharedContainer.containerService[ContainerType.project]
-    await createProject('valid-project-id')
+    await createProject('MPProject:valid-project-id')
     const didAdd = await containerService.addContainerUser(
       validProject._id,
       ContainerRole.Writer,
@@ -278,7 +268,7 @@ describe('containerService - addContainerUser', () => {
   test('should add a viewer to a project and return true', async () => {
     const containerService =
       DIContainer.sharedContainer.containerService[ContainerType.project]
-    await createProject('valid-project-id')
+    await createProject('MPProject:valid-project-id')
     const didAdd = await containerService.addContainerUser(
       validProject._id,
       ContainerRole.Viewer,
@@ -296,7 +286,7 @@ describe('containerService - addContainerUser', () => {
     )
 
     expect(loginResponse.status).toBe(HttpStatus.OK)
-    await createProject('valid-project-id-4')
+    await createProject('MPProject:valid-project-id-4')
     const authHeader = authorizationHeader(loginResponse.body.token)
     const response: supertest.Response = await addUser(
       {
@@ -322,7 +312,7 @@ describe('containerService - addContainerUser', () => {
     )
 
     expect(loginResponse.status).toBe(HttpStatus.OK)
-    await createProject('valid-project-id-4')
+    await createProject('MPProject:valid-project-id-4')
     const authHeader = authorizationHeader(loginResponse.body.token)
     const response: supertest.Response = await addUser(
       {
@@ -348,7 +338,7 @@ describe('containerService - addContainerUser', () => {
     )
 
     expect(loginResponse.status).toBe(HttpStatus.OK)
-    await createProject('valid-project-id-2')
+    await createProject('MPProject:valid-project-id-2')
     const authHeader = authorizationHeader(loginResponse.body.token)
     const response: supertest.Response = await addUser(
       {
@@ -380,8 +370,8 @@ describe('containerService - addContainerUser (for libraries)', () => {
     const containerService =
       DIContainer.sharedContainer.containerService[ContainerType.library]
 
+    await createLibrary('MPLibrary:valid-library-id')
     await createLibraryCollection()
-    await createLibrary('valid-library-id')
     const didAdd = await containerService.addContainerUser(
       validLibrary._id,
       ContainerRole.Owner,
@@ -401,8 +391,8 @@ describe('containerService - addContainerUser (for libraries)', () => {
   test('should add a writer to a library and cascade the role to library collections', async () => {
     const containerService =
       DIContainer.sharedContainer.containerService[ContainerType.library]
+    await createLibrary('MPLibrary:valid-library-id')
     await createLibraryCollection()
-    await createLibrary('valid-library-id')
     const didAdd = await containerService.addContainerUser(
       validLibrary._id,
       ContainerRole.Writer,
@@ -422,8 +412,8 @@ describe('containerService - addContainerUser (for libraries)', () => {
   test('should add a viewer to a library and cascade the role to library collections', async () => {
     const containerService =
       DIContainer.sharedContainer.containerService[ContainerType.library]
+    await createLibrary('MPLibrary:valid-library-id')
     await createLibraryCollection()
-    await createLibrary('valid-library-id')
     const didAdd = await containerService.addContainerUser(
       validLibrary._id,
       ContainerRole.Viewer,
@@ -445,15 +435,14 @@ describe('containerService - manageUserRole', () => {
   beforeEach(async () => {
     await drop()
     await dropBucket(BucketKey.Data)
-    await seed({ users: true, applications: true, projects: true })
+    await seed({ users: true, applications: true})
     await seedAccounts()
-    await DIContainer.sharedContainer.syncService.createGatewayContributor(
+    await DIContainer.sharedContainer.syncService.createUserProfile(
       {
         _id: `User|${validBody.email}`,
         name: 'foobar',
         email: validBody.email
-      },
-      BucketKey.Data
+      }
     )
   })
 
@@ -466,6 +455,7 @@ describe('containerService - manageUserRole', () => {
     expect(loginResponse.status).toBe(HttpStatus.OK)
 
     const authHeader = authorizationHeader(loginResponse.body.token)
+    await createProject('MPProject:valid-project-id-4')
     const response: supertest.Response = await manageUserRole(
       {
         ...ValidContentTypeAcceptJsonHeader,
@@ -493,6 +483,7 @@ describe('containerService - manageUserRole', () => {
     expect(loginResponse.status).toBe(HttpStatus.OK)
 
     const authHeader = authorizationHeader(loginResponse.body.token)
+    await createProject('MPProject:valid-project-id-5')
     const response: supertest.Response = await manageUserRole(
       {
         ...ValidContentTypeAcceptJsonHeader,
@@ -519,6 +510,7 @@ describe('containerService - manageUserRole', () => {
     expect(loginResponse.status).toBe(HttpStatus.OK)
 
     const authHeader = authorizationHeader(loginResponse.body.token)
+    await createProject('MPProject:valid-project-id-4')
     const response: supertest.Response = await manageUserRole(
       {
         ...ValidContentTypeAcceptJsonHeader,
@@ -545,6 +537,7 @@ describe('containerService - manageUserRole', () => {
     expect(loginResponse.status).toBe(HttpStatus.OK)
 
     const authHeader = authorizationHeader(loginResponse.body.token)
+    await createProject('MPProject:valid-project-id-4')
     const response: supertest.Response = await manageUserRole(
       {
         ...ValidContentTypeAcceptJsonHeader,
@@ -571,6 +564,7 @@ describe('containerService - manageUserRole', () => {
     expect(loginResponse.status).toBe(HttpStatus.OK)
 
     const authHeader = authorizationHeader(loginResponse.body.token)
+    await createProject('MPProject:valid-project-id-4')
     const response: supertest.Response = await manageUserRole(
       {
         ...ValidContentTypeAcceptJsonHeader,
@@ -597,6 +591,7 @@ describe('containerService - manageUserRole', () => {
     expect(loginResponse.status).toBe(HttpStatus.OK)
 
     const authHeader = authorizationHeader(loginResponse.body.token)
+    await createProject('MPProject:valid-project-id-4')
     const response: supertest.Response = await manageUserRole(
       {
         ...ValidContentTypeAcceptJsonHeader,
@@ -644,8 +639,7 @@ describe('containerService - manageUserRole', () => {
         objectType: 'MPContainerInvitation',
         containerID: 'MPProject:valid-project-id-4',
         role: ContainerRole.Writer
-      },
-      {}
+      }
     )
 
     const beforeInvitation = await DIContainer.sharedContainer.containerInvitationRepository.getById(
@@ -655,6 +649,7 @@ describe('containerService - manageUserRole', () => {
     expect(beforeInvitation).not.toBeNull()
 
     const authHeader = authorizationHeader(loginResponse.body.token)
+    await createProject('MPProject:valid-project-id-4')
     const response: supertest.Response = await manageUserRole(
       {
         ...ValidContentTypeAcceptJsonHeader,
@@ -683,15 +678,14 @@ describe('ContainerService - getArchive', () => {
   beforeEach(async () => {
     await drop()
     await dropBucket(BucketKey.Data)
-    await seed({ users: true, applications: true, projects: true })
+    await seed({ users: true, applications: true})
     await seedAccounts()
-    await DIContainer.sharedContainer.syncService.createGatewayContributor(
+    await DIContainer.sharedContainer.syncService.createUserProfile(
       {
         _id: `User|${validBody.email}`,
         name: 'foobar',
         email: validBody.email
-      },
-      BucketKey.Data
+      }
     )
   })
 
@@ -704,6 +698,7 @@ describe('ContainerService - getArchive', () => {
     expect(loginResponse.status).toBe(HttpStatus.OK)
 
     const authHeader = authorizationHeader(loginResponse.body.token)
+    await createProject('MPProject:valid-project-id-2')
     const response: supertest.Response = await getArchive(
       {
         ...ValidContentTypeAcceptJsonHeader,
@@ -726,6 +721,7 @@ describe('ContainerService - getArchive', () => {
     expect(loginResponse.status).toBe(HttpStatus.OK)
 
     const authHeader = authorizationHeader(loginResponse.body.token)
+    await createProject('MPProject:valid-project-id-2')
     const response: supertest.Response = await getArchive(
       {
         ...ValidContentTypeAcceptJsonHeader,
@@ -745,15 +741,14 @@ describe('ContainerService - accessToken', () => {
   beforeEach(async () => {
     await drop()
     await dropBucket(BucketKey.Data)
-    await seed({ users: true, applications: true, projects: true })
+    await seed({ users: true, applications: true })
     await seedAccounts()
-    await DIContainer.sharedContainer.syncService.createGatewayContributor(
+    await DIContainer.sharedContainer.syncService.createUserProfile(
       {
         _id: `User|${validBody.email}`,
         name: 'foobar',
         email: validBody.email
-      },
-      BucketKey.Data
+      }
     )
   })
 
@@ -766,6 +761,7 @@ describe('ContainerService - accessToken', () => {
     expect(loginResponse.status).toBe(HttpStatus.OK)
 
     const authHeader = authorizationHeader(loginResponse.body.token)
+    await createProject('MPProject:valid-project-id-2')
     const response: supertest.Response = await accessToken(
       {
         ...ValidContentTypeAcceptJsonHeader,
@@ -784,19 +780,18 @@ describe('ContainerService - pickerBundle', () => {
   beforeEach(async () => {
     await drop()
     await dropBucket(BucketKey.Data)
-    await seed({ users: true, applications: true, projects: true, manuscript: true })
+    await seed({ users: true, applications: true, manuscript: true })
     await seedAccounts()
-    await DIContainer.sharedContainer.syncService.createGatewayContributor(
+    await DIContainer.sharedContainer.syncService.createUserProfile(
       {
         _id: `User|${validBody.email}`,
         name: 'foobar',
         email: validBody.email
-      },
-      BucketKey.Data
+      }
     )
   })
 
-  test('should return html bundle', async () => {
+  xtest('should return html bundle', async () => {
     const loginResponse: supertest.Response = await basicLogin(
       validBody,
       ValidHeaderWithApplicationKey
@@ -804,6 +799,7 @@ describe('ContainerService - pickerBundle', () => {
     expect(loginResponse.status).toBe(HttpStatus.OK)
 
     const authHeader = authorizationHeader(loginResponse.body.token)
+    await createProject('MPProject:valid-project-id-2')
     const accessTokenResponse: supertest.Response = await accessToken(
       {
         ...ValidContentTypeAcceptJsonHeader,
@@ -837,14 +833,13 @@ describe('ContainerService - addProductionNote', () => {
   beforeEach(async () => {
     await drop()
     await dropBucket(BucketKey.Data)
-    await seed({ users: true, applications: true, projects: true, manuscript: true, manuscriptNotes: true })
-    await DIContainer.sharedContainer.syncService.createGatewayContributor(
+    await seed({ users: true, applications: true, manuscript: true, manuscriptNotes: true })
+    await DIContainer.sharedContainer.syncService.createUserProfile(
       {
         _id: `User|${validBody2.email}`,
         name: 'foobar',
         email: validBody2.email
-      },
-      BucketKey.Data
+      }
     )
   })
 
@@ -856,6 +851,7 @@ describe('ContainerService - addProductionNote', () => {
     expect(loginResponse.status).toBe(HttpStatus.OK)
 
     const authHeader = authorizationHeader(loginResponse.body.token)
+    await createProject('MPProject:valid-project-id-11')
     const addProductionNoteResponse: supertest.Response = await addProductionNote(
       {
         ...ValidContentTypeAcceptJsonHeader,
@@ -883,6 +879,7 @@ describe('ContainerService - addProductionNote', () => {
     expect(loginResponse.status).toBe(HttpStatus.OK)
 
     const authHeader = authorizationHeader(loginResponse.body.token)
+    await createProject('MPProject:valid-project-id-11')
     const addProductionNoteResponse: supertest.Response = await addProductionNote(
       {
         ...ValidContentTypeAcceptJsonHeader,
@@ -909,15 +906,14 @@ describe('ContainerService - createManuscript', () => {
   beforeEach(async () => {
     await drop()
     await dropBucket(BucketKey.Data)
-    await seed({ users: true, applications: true, projects: true, manuscript: true, manuscriptNotes: true, templates: true })
+    await seed({ users: true, applications: true, manuscript: true, manuscriptNotes: true, templates: true })
     await seedAccounts()
-    await DIContainer.sharedContainer.syncService.createGatewayContributor(
+    await DIContainer.sharedContainer.syncService.createUserProfile(
       {
         _id: `User|${validBody2.email}`,
         name: 'foobar',
         email: validBody2.email
-      },
-      BucketKey.Data
+      }
     )
   })
 
@@ -929,6 +925,7 @@ describe('ContainerService - createManuscript', () => {
     expect(loginResponse.status).toBe(HttpStatus.OK)
 
     const authHeader = authorizationHeader(loginResponse.body.token)
+    await createProject('MPProject:valid-project-id-11')
     const response: supertest.Response = await createManuscript(
       {
         ...ValidContentTypeAcceptJsonHeader,
@@ -952,6 +949,7 @@ describe('ContainerService - createManuscript', () => {
     expect(loginResponse.status).toBe(HttpStatus.OK)
 
     const authHeader = authorizationHeader(loginResponse.body.token)
+    await createProject('MPProject:valid-project-id-11')
     const response: supertest.Response = await createManuscript(
       {
         ...ValidContentTypeAcceptJsonHeader,
@@ -978,6 +976,7 @@ describe('ContainerService - createManuscript', () => {
     expect(loginResponse.status).toBe(HttpStatus.OK)
 
     const authHeader = authorizationHeader(loginResponse.body.token)
+    await createProject('MPProject:valid-project-id-11')
     const response: supertest.Response = await createManuscript(
       {
         ...ValidContentTypeAcceptJsonHeader,
@@ -1002,13 +1001,12 @@ describe('ContainerService - getProductionNotes', () => {
     await drop()
     await dropBucket(BucketKey.Data)
     await seed({ users: true, applications: true, projects: true, manuscript: true, manuscriptNotes: true })
-    await DIContainer.sharedContainer.syncService.createGatewayContributor(
+    await DIContainer.sharedContainer.syncService.createUserProfile(
       {
         _id: `User|${validBody2.email}`,
         name: 'foobar',
         email: validBody2.email
-      },
-      BucketKey.Data
+      }
     )
   })
 
@@ -1040,13 +1038,12 @@ describe('ContainerService - addExternalFiles', () => {
     await drop()
     await dropBucket(BucketKey.Data)
     await seed({ users: true, applications: true, projects: true, externalFile: true })
-    await DIContainer.sharedContainer.syncService.createGatewayContributor(
+    await DIContainer.sharedContainer.syncService.createUserProfile(
       {
         _id: `User|${validBody2.email}`,
         name: 'foobar',
         email: validBody2.email
-      },
-      BucketKey.Data
+      }
     )
   })
   test('should add external files', async () => {
@@ -1099,7 +1096,7 @@ describe('ContainerService - getCorrectionStatus', () => {
   beforeEach(async () => {
     await drop()
     await dropBucket(BucketKey.Data)
-    await seed({ users: true, applications: true, corrections: true, projects: true })
+    await seed({ users: true, applications: true, corrections: true })
     await seedAccounts()
   })
   test('should get correction status', async () => {
@@ -1109,6 +1106,7 @@ describe('ContainerService - getCorrectionStatus', () => {
     )
     expect(loginResponse.status).toBe(HttpStatus.OK)
     const authHeader = authorizationHeader(loginResponse.body.token)
+    await createProject('MPProject:valid-project-id-2')
     const response: supertest.Response = await getCorrectionStatus(
       {
         ...ValidContentTypeAcceptJsonHeader,
@@ -1132,6 +1130,7 @@ describe('ContainerService - getCorrectionStatus', () => {
     )
     expect(loginResponse.status).toBe(HttpStatus.OK)
     const authHeader = authorizationHeader(loginResponse.body.token)
+    await createProject('MPProject:valid-project-id-4')
     const response: supertest.Response = await getCorrectionStatus(
       {
         ...ValidContentTypeAcceptJsonHeader,
@@ -1150,7 +1149,7 @@ describe('ContainerService - saveSnapshot', () => {
   beforeEach(async () => {
     await drop()
     await dropBucket(BucketKey.Data)
-    await seed({ users: true, applications: true, projects: true })
+    await seed({ users: true, applications: true })
     await seedAccounts()
   })
   test('should save snapshot', async () => {
@@ -1166,6 +1165,7 @@ describe('ContainerService - saveSnapshot', () => {
         key: 'testKey'
       }
     })
+    await createProject('MPProject:valid-project-id-4')
     const saveSnapshotResponse: supertest.Response = await createSnapshot(
       {
         ...ValidContentTypeAcceptJsonHeader,

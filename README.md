@@ -158,3 +158,21 @@ placed at the root of the repository.
   <dd>An array of semicolon separated records to describe scopes for which the server can issue access tokens in JWT form: fields are comma separated, denoting for each record: scope name,UTF8 encoded secret or base64 encoded PEM formatted private key,empty string (if symmetric secret is used) or a base64 encoded PEM formatted public key,expiry in minutes</dd>
 
 </dl>
+
+
+## Access Control
+
+In the past, access control happened via a sync function through the SyncGateway API, with specific [semantics](https://docs.couchbase.com/sync-gateway/current/sync-function-api.html). Those semantics have been translated into db queries, and the main body of the sync function remains (mostly) the [same](src/DataAccess/syncAccessControl.ts). Whenever a repository (that extends SGRepository) function is called with a `userId` parameter, sync access control function logic executes.
+
+`requireAdmin` has been removed because there is no SG Admin API anymore
+
+## CRUD Route
+
+This Route is exposing direct CRUD operations with access control like in [SyncGateway public REST API Document schema](https://docs.couchbase.com/sync-gateway/current/rest-api.html#/Document).
+
+Available at <http://127.0.0.1:3000/sg>
+
+```
+GET ../sg/user/userId // will fetch user with userId from user bucket 
+POST ../sg/project // create a doc (req.body) in the project bucket
+```

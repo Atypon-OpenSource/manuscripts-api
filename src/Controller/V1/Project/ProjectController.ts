@@ -101,6 +101,7 @@ export class ProjectController extends BaseController implements IProjectControl
     const container = await this.upsertManuscriptToProject(
       project,
       manuscript,
+      req.user._id,
       manuscriptId,
       templateId
     )
@@ -118,9 +119,11 @@ export class ProjectController extends BaseController implements IProjectControl
   async upsertManuscriptToProject(
     project: Container,
     manuscript: Readable,
+    userId: string,
     manuscriptId?: string,
     templateId?: string
   ): Promise<Container> {
+    const userID = ContainerService.userIdForSync(userId)
     const buffer = await getStream.buffer(manuscript)
 
     const unzipRoot = tempy.directory()
@@ -184,13 +187,22 @@ export class ProjectController extends BaseController implements IProjectControl
     }
 
     manuscriptId
-      ? await DIContainer.sharedContainer.manuscriptRepository.update(
-          manuscriptObject._id,
-          manuscriptObject
-        )
-      : await DIContainer.sharedContainer.manuscriptRepository.create(manuscriptObject)
+      ? await DIContainer.sharedContainer.manuscriptRepository
+          .getById(manuscriptId, userID)
+          .then((doc) => {
+            manuscriptObject._rev = doc?._rev
+            return DIContainer.sharedContainer.manuscriptRepository.update(
+              manuscriptObject._id,
+              manuscriptObject,
+              userID
+            )
+          })
+      : await DIContainer.sharedContainer.manuscriptRepository.create(manuscriptObject, userID)
 
-    await DIContainer.sharedContainer.containerService[ContainerType.project].addManuscript(docs)
+    await DIContainer.sharedContainer.containerService[ContainerType.project].addManuscript(
+      docs,
+      userID
+    )
 
     return manuscriptObject
   }

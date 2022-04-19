@@ -59,6 +59,10 @@ describe('Invitation - acceptInvitationToken', () => {
       getById: async () => Promise.resolve(validUser1)
     }
 
+    containerInvitationService.containerInvitationRepository = {
+      getById: async () => Promise.resolve(validProject)
+    }
+
     containerInvitationService.projectService = {
       getContainer: async () => Promise.resolve(validProject)
     }
@@ -114,7 +118,8 @@ describe('Invitation - acceptInvitationToken', () => {
     }
 
     containerInvitationService.containerInvitationRepository = {
-      getInvitationsForUser: async () => []
+      getInvitationsForUser: async () => [],
+      getById: async () => Promise.resolve(validProject)
     }
 
     await containerInvitationService.acceptInvitationToken(
@@ -144,7 +149,8 @@ describe('Invitation - acceptInvitationToken', () => {
     }
 
     containerInvitationService.containerInvitationRepository = {
-      getInvitationsForUser: async () => []
+      getInvitationsForUser: async () => [],
+      getById: async () => Promise.resolve(validProject)
     }
 
     await containerInvitationService.acceptInvitationToken(
@@ -175,7 +181,8 @@ describe('Invitation - acceptInvitationToken', () => {
     }
 
     containerInvitationService.containerInvitationRepository = {
-      getInvitationsForUser: async () => []
+      getInvitationsForUser: async () => [],
+      getById: async () => Promise.resolve(validProject)
     }
 
     const response = await containerInvitationService.acceptInvitationToken(
@@ -204,7 +211,8 @@ describe('Invitation - acceptInvitationToken', () => {
     }
 
     containerInvitationService.containerInvitationRepository = {
-      getInvitationsForUser: async () => []
+      getInvitationsForUser: async () => [],
+      getById: async () => Promise.resolve(validProject)
     }
 
     const response = await containerInvitationService.acceptInvitationToken(
@@ -238,7 +246,8 @@ describe('Invitation - acceptInvitationToken', () => {
 
     containerInvitationService.containerInvitationRepository = {
       getInvitationsForUser: async () => Promise.resolve([{ role: 'Owner', containerID: 'MPProject:valid-project-id' }]),
-      patch: async () => Promise.resolve()
+      patch: async () => Promise.resolve(),
+      getById: async () => Promise.resolve(validProject)
     }
 
     const response = await containerInvitationService.acceptInvitationToken(

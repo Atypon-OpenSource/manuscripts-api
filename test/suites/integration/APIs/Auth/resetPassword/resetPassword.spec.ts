@@ -54,20 +54,11 @@ const existingConfig: any = _.cloneDeep(config)
 
 beforeAll(async () => {
   db = await testDatabase()
-  /*await Promise.all(
-    GATEWAY_BUCKETS.map(key => {
-      return DIContainer.sharedContainer.syncService.createGatewayAccount(
-        'User|' + validBody.email,
-        key
-      )
-    })
-  )*/
 })
 
 async function seedAccounts () {
-  await DIContainer.sharedContainer.syncService.createGatewayAccount(
-      'User|valid-user@manuscriptsapp.com',
-      null
+  await DIContainer.sharedContainer.syncService.getOrCreateUserStatus(
+      'User|valid-user@manuscriptsapp.com'
     )
 }
 

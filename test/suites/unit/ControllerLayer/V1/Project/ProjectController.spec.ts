@@ -209,7 +209,7 @@ describe('ProjectController', () => {
       }), { name: 'index.manuscript-json' })
       await archive.finalize()
 
-      await expect(controller.upsertManuscriptToProject({ _id: 'MPProject:abc' }, archive, null, 'templateId'))
+      await expect(controller.upsertManuscriptToProject({ _id: 'MPProject:abc' }, archive, 'User|foo', null, 'templateId'))
         .rejects.toThrow(MissingTemplateError)
     })
 
@@ -229,7 +229,7 @@ describe('ProjectController', () => {
         ]
       }), { name: 'index.manuscript-json' })
       await archive.finalize()
-      await controller.upsertManuscriptToProject({ _id: 'MPProject:abc' }, archive, null, 'templateId')
+      await controller.upsertManuscriptToProject({ _id: 'MPProject:abc' }, archive, 'User|foo', null, 'templateId')
 
       expect(DIContainer.sharedContainer.manuscriptRepository.create).toBeCalled()
       expect(DIContainer.sharedContainer.containerService[ContainerType.project].addManuscript).toBeCalled()
@@ -252,7 +252,7 @@ describe('ProjectController', () => {
       }), { name: 'index.manuscript-json' })
       await archive.finalize()
 
-      await controller.upsertManuscriptToProject({ _id: 'MPProject:abc' }, archive)
+      await controller.upsertManuscriptToProject({ _id: 'MPProject:abc' }, archive, 'User|foo')
 
       expect(DIContainer.sharedContainer.manuscriptRepository.create).toBeCalled()
       expect(DIContainer.sharedContainer.containerService[ContainerType.project].addManuscript).toBeCalled()
@@ -274,7 +274,7 @@ describe('ProjectController', () => {
       }), { name: 'index.manuscript-json' })
       await archive.finalize()
 
-      await controller.upsertManuscriptToProject({ _id: 'MPProject:abc' }, archive, 'MPManuscript:foo-bar-baz')
+      await controller.upsertManuscriptToProject({ _id: 'MPProject:abc' }, archive, 'User|foo', 'MPManuscript:foo-bar-baz')
 
       expect(DIContainer.sharedContainer.manuscriptRepository.update).toBeCalled()
       expect(DIContainer.sharedContainer.containerService[ContainerType.project].addManuscript).toBeCalled()

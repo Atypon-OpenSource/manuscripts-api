@@ -17,12 +17,14 @@
 import * as _ from 'lodash'
 import * as HttpStatus from 'http-status-codes'
 
-import { ValidationError, DatabaseError, NoBucketError, SyncError } from '../Errors'
+import { ValidationError, DatabaseError, SyncError } from '../Errors'
 import { IdentifiableEntity } from './Interfaces/IdentifiableEntity'
 import { KeyValueRepository } from './Interfaces/KeyValueRepository'
 import { BucketKey } from '../Config/ConfigurationTypes'
 import { SQLDatabase } from './SQLDatabase'
 import { timestamp } from '../Utilities/JWT/LoginTokenPayload'
+import { syncAccessControl } from './syncAccessControl'
+import { AccessControlRepository } from './AccessControlRepository'
 
 import { Prisma } from '@prisma/client'
 import { v4 as uuid_v4 } from 'uuid'
@@ -43,14 +45,6 @@ export abstract class SGRepository<
    */
   public get documentType(): void {
     return
-  }
-
-  public get bucketName(): string {
-    if (!this.database.bucket) {
-      throw new NoBucketError()
-    }
-
-    return (this.database.bucket as any)._name
   }
 
   public buildPrismaModel(data: any): any {
@@ -76,7 +70,7 @@ export abstract class SGRepository<
   /**
    * Creates new document.
    */
-  public async create(newDocument: TNewEntity): Promise<TEntity> {
+  public async create(newDocument: TNewEntity, userId?: string): Promise<TEntity> {
     const docId = this.documentId((newDocument as any)._id)
     const createdAt = timestamp()
     const revision = uuid_v4()
@@ -95,8 +89,17 @@ export abstract class SGRepository<
         _parent_rev: null,
         _depth: depth,
         ...(newDocument as any),
+        _id: docId,
       },
-    } as unknown as TEntity
+    } as any
+
+    if (userId) {
+      try {
+        await this.validate(prismaDoc.data, null, userId)
+      } catch (e) {
+        throw new SyncError(e.forbidden, {})
+      }
+    }
 
     const createPromise = new Promise<TEntity>((resolve, reject) => {
       this.database.bucket
@@ -119,20 +122,30 @@ export abstract class SGRepository<
   /**
    * Returns single document based on unique id.
    */
-  public async getById(id: string): Promise<TEntity | null> {
+  public async getById(id: string, userId?: string): Promise<TEntity | null> {
     return new Promise((resolve, reject) => {
       const query = { id: this.documentId(id) }
 
       this.database.bucket
         .findUnique(query)
-        .then((doc: any) => {
-          if (doc) {
-            resolve(this.buildModel(doc))
-          } else {
-            resolve(null)
+        .then(async (res: any) => {
+          if (res) {
+            const doc = this.buildModel(res)
+            if (userId) {
+              try {
+                await this.validate(doc, doc, userId)
+              } catch (e) {
+                return Promise.reject(e)
+              }
+            }
+            return resolve(doc)
           }
+          resolve(null)
         })
-        .catch((error: Prisma.PrismaClientKnownRequestError) =>
+        .catch((error: any) => {
+          if (error.forbidden) {
+            return reject(new SyncError(error.forbidden, {}))
+          }
           reject(
             DatabaseError.fromPrismaError(
               error,
@@ -140,23 +153,29 @@ export abstract class SGRepository<
               id
             )
           )
-        )
+        })
     })
   }
 
   /**
    * Removes existing document.
    */
-  public async remove(id: string | null): Promise<void> {
+  public async remove(id: string | null, userId?: string): Promise<void> {
     if (id === null) {
       return this.removeAll()
     }
 
-    return new Promise((resolve, reject) => {
-      const query = { id: this.documentId(id) }
+    const query = { id: this.documentId(id) }
+    if (userId) {
+      await this.getById(query.id, userId)
+    }
 
+    return new Promise((resolve, reject) => {
       this.database.bucket
         .remove(query)
+        .then(() => {
+          return AccessControlRepository.remove(query.id)
+        })
         .then(() => resolve())
         .catch((error: Prisma.PrismaClientKnownRequestError) =>
           reject(
@@ -173,9 +192,13 @@ export abstract class SGRepository<
   /**
    * Replaces existing document.
    */
-  public async update(id: string, updatedDocument: TUpdateEntity): Promise<TEntity> {
+  public async update(
+    id: string,
+    updatedDocument: TUpdateEntity,
+    userId?: string
+  ): Promise<TEntity> {
     const docId = this.documentId(id)
-    const document = await this.getById(docId)
+    const document = await this.getById(docId, userId)
 
     if (!document) {
       throw new ValidationError(`Document with id ${id} does not exist`, id)
@@ -209,7 +232,17 @@ export abstract class SGRepository<
         updatedAt: timestamp(),
         ...(revisedUpdatedDocument as any),
       },
-    } as unknown as TEntity
+    } as any
+
+    if (userId) {
+      try {
+        await this.validate(documentToUpdate.data, document, userId)
+      } catch (e) {
+        if (e.forbidden) {
+          throw new SyncError(e.forbidden, {})
+        }
+      }
+    }
 
     const prismaDoc = this.buildPrismaModel(documentToUpdate)
 
@@ -229,13 +262,20 @@ export abstract class SGRepository<
     })
   }
 
-  public async touch(id: string, expiry: number): Promise<TEntity> {
-    return this.patch(id, { expiry } as any)
+  public async touch(id: string, expiry: number, userId?: string): Promise<TEntity> {
+    return this.patch(id, { expiry } as any, userId)
   }
 
-  public async patch(id: string, dataToPatch: TPatchEntity): Promise<TEntity> {
+  public async patch(id: string, dataToPatch: TPatchEntity, userId?: string): Promise<TEntity> {
     const docId = this.documentId(id)
-    const document = await this.getById(docId)
+    let document
+    try {
+      document = await this.getById(docId, userId)
+    } catch (e) {
+      if (e.name === 'SyncError') {
+        throw new SyncError(e.forbidden, {})
+      }
+    }
 
     if (!document) {
       throw new ValidationError(`Document with id ${id} does not exist`, id)
@@ -247,7 +287,7 @@ export abstract class SGRepository<
       (_documentValue: any, patchValue: any) => patchValue
     ) as any
 
-    return this.update(docId, patchedDocument)
+    return this.update(docId, patchedDocument, userId)
   }
 
   /**
@@ -297,6 +337,7 @@ export abstract class SGRepository<
     return id.includes(':') ? id : `${this.objectType}:${id}`
   }
 
+  /* istanbul ignore next */
   public async getAttachmentBody(
     _documentID: string,
     _attachmentID: string
@@ -313,27 +354,30 @@ export abstract class SGRepository<
   }
 
   public async purge(id: string): Promise<void> {
-    await this.database.bucket.remove({ id })
+    await this.remove(id)
   }
 
   /**
    * Direct access to bulkDocs for adding pre-formed SG objects
    */
-  public async bulkDocs(docs: any): Promise<any[]> {
-    const updated = []
+  public async bulkDocs(docs: any, userId?: string): Promise<any[]> {
+    const promises = []
     for (const doc of docs) {
       const docId = this.documentId(doc._id)
       const dataToPatch = _.omit(doc, ['_id', 'id', 'data'])
-      const updatedDoc = await this.patch(docId, dataToPatch).catch((err) => {
-        if (err.statusCode === HttpStatus.BAD_REQUEST) {
-          // must upsert
-          return this.database.bucket.upsert(docId, { data: dataToPatch })
-        }
-      })
-
-      updated.push(updatedDoc)
+      promises.push(
+        this.patch(docId, dataToPatch, userId).catch((err) => {
+          if (err.statusCode === HttpStatus.BAD_REQUEST || err.forbidden) {
+            return this.create(doc, userId)
+          }
+        })
+      )
     }
 
-    return updated
+    return Promise.all(promises)
+  }
+
+  private validate(doc: any, oldDoc: any, userId?: string): Promise<void> {
+    return syncAccessControl(doc, oldDoc, userId)
   }
 }

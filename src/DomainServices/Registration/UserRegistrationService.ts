@@ -39,7 +39,6 @@ import { UserActivityEventType } from '../../Models/UserEventModels'
 import { UserActivityTrackingService } from '../UserActivity/UserActivityTrackingService'
 import { AuthService } from '../Auth/AuthService'
 import { config } from '../../Config/Config'
-import { BucketKey } from '../../Config/ConfigurationTypes'
 import { getExpirationTime } from '../../Utilities/JWT/LoginTokenPayload'
 import { EmailService } from '../Email/EmailService'
 import { IUserEmailRepository } from '../../DataAccess/Interfaces/IUserEmailRepository'
@@ -142,7 +141,7 @@ export class UserRegistrationService implements IUserRegistrationService {
   }
 
   private async createUserDetails(user: User, skipVerification: boolean, password?: string) {
-    await this.syncService.createGatewayContributor(user, BucketKey.Data)
+    await this.syncService.createUserProfile(user)
 
     await this.userStatusRepository.create({
       _id: user._id,

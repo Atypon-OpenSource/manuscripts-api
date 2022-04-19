@@ -23,7 +23,6 @@ import querystring from 'querystring'
 
 import { IAuthService } from './IAuthService'
 import { ISyncService } from '../Sync/ISyncService'
-import { GATEWAY_BUCKETS } from '../Sync/SyncService'
 import {
   User,
   Credentials,
@@ -65,7 +64,6 @@ import { UserActivityEventType } from '../../Models/UserEventModels'
 import { IUserStatusRepository } from '../../DataAccess/Interfaces/IUserStatusRepository'
 import { UserActivityTrackingService } from '../UserActivity/UserActivityTrackingService'
 import { config } from '../../Config/Config'
-import { BucketKey } from '../../Config/ConfigurationTypes'
 import { UserService } from '../User/UserService'
 import { EmailService } from '../Email/EmailService'
 import { IAMAuthTokenPayload } from '../../Utilities/JWT/IAMAuthTokenPayload'
@@ -177,15 +175,7 @@ export class AuthService implements IAuthService {
       ...(user.deleteAt && { deleteAt: user.deleteAt }),
     }
 
-    const { userToken } = await this.createUserSessions(
-      userModel,
-      userStatus,
-      appId,
-      deviceId,
-      {},
-      {},
-      false
-    )
+    const { userToken } = await this.createUserSessions(userModel, appId, deviceId, {}, {}, false)
 
     return { token: userToken.token, user: userModel }
   }
@@ -230,7 +220,7 @@ export class AuthService implements IAuthService {
     isAdmin: boolean,
     verifyUser?: boolean | false
   ) {
-    const userStatus = await this.ensureValidUserStatus(user, appId, deviceId, isAdmin, verifyUser)
+    await this.ensureValidUserStatus(user, appId, deviceId, isAdmin, verifyUser)
 
     const userModel: User = {
       _id: user._id,
@@ -238,26 +228,13 @@ export class AuthService implements IAuthService {
       email: user.email,
     }
 
-    const { userToken } = await this.createUserSessions(
-      userModel,
-      userStatus,
-      appId,
-      deviceId,
-      {},
-      {},
-      false
-    )
+    const { userToken } = await this.createUserSessions(userModel, appId, deviceId, {}, {}, false)
 
     return { user: userModel, token: userToken.token }
   }
 
-  // let's polyfill in the user account creation for the derived data bucket
-  // (user accounts in the derived data bucket were added after  some user data already existed –
-  // this accomplishes lazily migrating pre-existing user data).
-  public async ensureGatewayAccountExists(userId: string, bucketName: BucketKey): Promise<void> {
-    if (!(await this.syncService.gatewayAccountExists(userId, bucketName))) {
-      await this.syncService.createGatewayAccount(userId, bucketName)
-    }
+  public async ensureUserStatusExists(userId: string): Promise<void> {
+    await this.syncService.getOrCreateUserStatus(userId)
   }
 
   public async iamOAuthStartData(state: IAMState, action?: string): Promise<IAMStartData> {
@@ -362,19 +339,9 @@ export class AuthService implements IAuthService {
 
       user = u
 
-      await Promise.all(
-        GATEWAY_BUCKETS.map((key) => this.syncService.createGatewayAccount(u._id, key))
-      )
-      await this.syncService.createGatewayContributor(u, BucketKey.Data)
+      userStatus = await this.syncService.getOrCreateUserStatus(u._id)
 
-      userStatus = await this.userStatusRepository.create({
-        _id: u._id,
-        blockUntil: null,
-        isVerified: true,
-        createdAt: new Date(),
-        deviceSessions: {},
-        password: '',
-      })
+      await this.syncService.createUserProfile(u)
 
       // tslint:disable-next-line: no-floating-promises
       this.activityTrackingService.createEvent(
@@ -408,7 +375,6 @@ export class AuthService implements IAuthService {
 
     const { userToken } = await this.createUserSessions(
       user,
-      userStatus,
       googleAccess.appId,
       googleAccess.deviceId,
       {},
@@ -498,14 +464,7 @@ export class AuthService implements IAuthService {
       log.debug(`Get found userStatus: ${foundUserStatus}`)
 
       if (!foundUserStatus) {
-        userStatus = await this.userStatusRepository.create({
-          _id: user._id,
-          blockUntil: null,
-          isVerified: true,
-          createdAt: new Date(),
-          deviceSessions: {},
-          password: '',
-        })
+        userStatus = await this.syncService.getOrCreateUserStatus(user._id)
       } else {
         userStatus = foundUserStatus
       }
@@ -524,7 +483,6 @@ export class AuthService implements IAuthService {
 
     const { userToken } = await this.createUserSessions(
       user,
-      userStatus,
       appID,
       deviceId,
       { iamSessionID },
@@ -604,7 +562,7 @@ export class AuthService implements IAuthService {
       throw new MissingUserRecordError(resetToken.userId)
     }
 
-    const userStatus = await this.userStatusRepository.patchStatusWithUserId(user._id, {
+    await this.userStatusRepository.patchStatusWithUserId(user._id, {
       deviceSessions: {},
       password: await AuthService.createPassword(newPassword),
     })
@@ -628,15 +586,7 @@ export class AuthService implements IAuthService {
       email: user.email,
     }
 
-    const { userToken } = await this.createUserSessions(
-      userModel,
-      userStatus,
-      appId,
-      deviceId,
-      {},
-      {},
-      false
-    )
+    const { userToken } = await this.createUserSessions(userModel, appId, deviceId, {}, {}, false)
 
     return { token: userToken.token, user: userModel }
   }
@@ -780,7 +730,6 @@ export class AuthService implements IAuthService {
 
   private async createUserSessions(
     user: User,
-    _userStatus: UserStatus,
     appId: string,
     deviceId: string,
     iamCredentials: { iamSessionID?: string },
@@ -799,8 +748,7 @@ export class AuthService implements IAuthService {
       iamCredentials.iamSessionID
     )
 
-    await this.ensureGatewayAccountExists(userToken.userId, BucketKey.Data)
-    await this.ensureGatewayAccountExists(userToken.userId, BucketKey.DerivedData)
+    await this.ensureUserStatusExists(userToken.userId)
 
     // tslint:disable-next-line: no-floating-promises
     this.activityTrackingService.createEvent(
@@ -876,10 +824,11 @@ export class AuthService implements IAuthService {
   }
 
   private async ensureUserProfileExists(user: User) {
+    // call it without userId intentionally
     const userProfile = await this.userProfileRepository.getById(UserService.profileID(user._id))
 
     if (!userProfile) {
-      await this.syncService.createGatewayContributor(user, BucketKey.Data)
+      await this.syncService.createUserProfile(user)
     }
   }
 
@@ -916,29 +865,10 @@ export class AuthService implements IAuthService {
 
     const userID = user._id
 
-    await Promise.all(
-      GATEWAY_BUCKETS.map((key) => this.syncService.createGatewayAccount(userID, key))
-    )
-
+    const userStatus: UserStatus = await this.syncService.getOrCreateUserStatus(userID)
     log.debug('Gateway account created.')
-    await this.syncService.createGatewayContributor(user, BucketKey.Data)
+    await this.syncService.createUserProfile(user)
     log.debug('Gateway contributor created.')
-
-    let userStatus: UserStatus
-    try {
-      userStatus = await this.userStatusRepository.create({
-        _id: userID,
-        blockUntil: null,
-        isVerified: true,
-        createdAt: new Date(),
-        deviceSessions: {},
-        password: '',
-      })
-      log.debug(`User status created: ${userStatus}`)
-    } catch (error) {
-      log.error('An error occurred while creating user status', error)
-      throw error
-    }
 
     // TODO: review if "aud" is the correct value that should be passed.
     // tslint:disable-next-line: no-floating-promises

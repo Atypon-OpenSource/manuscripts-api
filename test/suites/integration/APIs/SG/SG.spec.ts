@@ -19,8 +19,9 @@ import * as supertest from 'supertest'
 
 import { basicLogin, SGCreate, SGGet, SGUpdate, SGDelete } from '../../../../api'
 import { drop, dropBucket, seed, testDatabase } from '../../../../utilities/db'
-import { validBody } from '../../../../data/fixtures/credentialsRequestPayload'
+import { validBody, validBody2 } from '../../../../data/fixtures/credentialsRequestPayload'
 import { DIContainer } from '../../../../../src/DIContainer/DIContainer'
+import { AccessControlRepository } from '../../../../../src/DataAccess/AccessControlRepository'
 import {
   ValidContentTypeAcceptJsonHeader,
   authorizationHeader,
@@ -43,9 +44,8 @@ beforeAll(async () => {
 })
 
 async function seedAccounts() {
-  await DIContainer.sharedContainer.syncService.createGatewayAccount(
-    'User|' + validBody.email,
-    null
+  await DIContainer.sharedContainer.syncService.getOrCreateUserStatus(
+    'User|' + validBody.email
   )
 }
 
@@ -54,6 +54,9 @@ afterAll(() => {
 })
 
 jest.setTimeout(180000)
+
+const userId = 'User|' + validBody.email
+const project = {...validProject, ...{ owners: [userId]}}
 
 describe('SG - CRUD', () => {
   let currentRev: any
@@ -70,7 +73,7 @@ describe('SG - CRUD', () => {
         ...ValidContentTypeAcceptJsonHeader,
         ...authHeader,
       },
-      validProject,
+      project,
       {
         db: 'project',
       }
@@ -79,9 +82,15 @@ describe('SG - CRUD', () => {
     expect(response.status).toBe(HttpStatus.OK)
     const doc = response.body
     currentRev = doc._rev
-    expect(doc).toEqual(expect.objectContaining(validProject))
+    expect(doc).toEqual(expect.objectContaining(project))
     expect(doc._rev).toEqual(`${doc._depth}-${doc._revisions.ids[0]}`)
     expect(doc._parent_rev).toBeNull()
+
+    const channels = await AccessControlRepository.getChannels(project._id)
+    expect(channels.length).toEqual(8)
+
+    const access = await AccessControlRepository.getAccess(userId)
+    expect(access.length).toEqual(6)
   })
 
   test('should patch the project by id', async () => {
@@ -103,17 +112,44 @@ describe('SG - CRUD', () => {
       body,
       {
         db: 'project',
-        id: validProject._id,
+        id: project._id,
       }
     )
 
     expect(response.status).toBe(HttpStatus.OK)
 
     const doc = response.body
+    currentRev = doc._rev
     expect(doc.viewers).toEqual(body.viewers)
-    expect(doc).toEqual(expect.objectContaining({ ...validProject, ...body }))
+    expect(doc).toEqual(expect.objectContaining({ ...project, ...body }))
     expect(doc._rev).toEqual(`${doc._depth}-${doc._revisions.ids[0]}`)
     expect(doc._parent_rev).toEqual(`${doc._depth - 1}-${doc._revisions.ids[1]}`)
+  })
+
+  test('should fail patch if not the owner', async () => {
+    const loginResponse: supertest.Response = await basicLogin(
+      validBody2,
+      ValidHeaderWithApplicationKey
+    )
+    expect(loginResponse.status).toBe(HttpStatus.OK)
+
+    const authHeader = authorizationHeader(loginResponse.body.token)
+    const body = { viewers: ['random'] }
+
+    const response: supertest.Response = await SGUpdate(
+      {
+        ...ValidContentTypeAcceptJsonHeader,
+        ...authHeader,
+      },
+      { rev: currentRev },
+      body,
+      {
+        db: 'project',
+        id: project._id,
+      }
+    )
+
+    expect(response.status).toBe(HttpStatus.INTERNAL_SERVER_ERROR)
   })
 
   test('should fail to patch with a bad revision', async () => {
@@ -135,7 +171,7 @@ describe('SG - CRUD', () => {
       body,
       {
         db: 'project',
-        id: validProject._id,
+        id: project._id,
       }
     )
 
@@ -158,14 +194,158 @@ describe('SG - CRUD', () => {
       {},
       {
         db: 'project',
-        id: validProject._id,
+        id: project._id,
       }
     )
     expect(response.status).toBe(HttpStatus.OK)
 
     const doc = response.body
     const body = { viewers: ['random'] }
-    expect(doc).toEqual(expect.objectContaining({ ...validProject, ...body }))
+    expect(doc).toEqual(expect.objectContaining({ ...project, ...body }))
+  })
+
+  test('should not get the project by id without permission', async () => {
+    const loginResponse: supertest.Response = await basicLogin(
+      validBody2,
+      ValidHeaderWithApplicationKey
+    )
+    expect(loginResponse.status).toBe(HttpStatus.OK)
+
+    const authHeader = authorizationHeader(loginResponse.body.token)
+    const response: supertest.Response = await SGGet(
+      {
+        ...ValidContentTypeAcceptJsonHeader,
+        ...authHeader,
+      },
+      {},
+      {
+        db: 'project',
+        id: project._id,
+      }
+    )
+
+    expect(response.status).toBe(HttpStatus.INTERNAL_SERVER_ERROR)
+  })
+
+  test('should not delete the project by id if not the owner', async () => {
+    const loginResponse: supertest.Response = await basicLogin(
+      validBody2,
+      ValidHeaderWithApplicationKey
+    )
+    expect(loginResponse.status).toBe(HttpStatus.OK)
+
+    const authHeader = authorizationHeader(loginResponse.body.token)
+    const response: supertest.Response = await SGDelete(
+      {
+        ...ValidContentTypeAcceptJsonHeader,
+        ...authHeader,
+      },
+      {
+        rev: 'random',
+      },
+      {
+        db: 'project',
+        id: project._id,
+      }
+    )
+
+    expect(response.status).toBe(HttpStatus.INTERNAL_SERVER_ERROR)
+  })
+
+  test('should patch the project by id and add a writer', async () => {
+    const loginResponse: supertest.Response = await basicLogin(
+      validBody,
+      ValidHeaderWithApplicationKey
+    )
+    expect(loginResponse.status).toBe(HttpStatus.OK)
+
+    const authHeader = authorizationHeader(loginResponse.body.token)
+    const body = { writers: ['User|' + validBody2.email] }
+
+    const response: supertest.Response = await SGUpdate(
+      {
+        ...ValidContentTypeAcceptJsonHeader,
+        ...authHeader,
+      },
+      { rev: currentRev },
+      body,
+      {
+        db: 'project',
+        id: project._id,
+      }
+    )
+
+    expect(response.status).toBe(HttpStatus.OK)
+
+    const doc = response.body
+    currentRev = doc._rev
+    expect(doc.writers).toEqual(body.writers)
+
+    const channels = await AccessControlRepository.getChannels(project._id)
+    expect(channels.length).toEqual(10)
+
+    const access = await AccessControlRepository.getAccess(body.writers[0])
+    expect(access.length).toEqual(5)
+  })
+
+  test('should get the project by id as writer', async () => {
+    const loginResponse: supertest.Response = await basicLogin(
+      validBody2,
+      ValidHeaderWithApplicationKey
+    )
+    expect(loginResponse.status).toBe(HttpStatus.OK)
+
+    const authHeader = authorizationHeader(loginResponse.body.token)
+    const response: supertest.Response = await SGGet(
+      {
+        ...ValidContentTypeAcceptJsonHeader,
+        ...authHeader,
+      },
+      {},
+      {
+        db: 'project',
+        id: project._id,
+      }
+    )
+    expect(response.status).toBe(HttpStatus.OK)
+
+    const doc = response.body
+    expect(doc).toBeDefined()
+  })
+
+  test('should patch the project by id and remove the writer', async () => {
+    const loginResponse: supertest.Response = await basicLogin(
+      validBody,
+      ValidHeaderWithApplicationKey
+    )
+    expect(loginResponse.status).toBe(HttpStatus.OK)
+
+    const authHeader = authorizationHeader(loginResponse.body.token)
+    const body = { writers: [] }
+
+    const response: supertest.Response = await SGUpdate(
+      {
+        ...ValidContentTypeAcceptJsonHeader,
+        ...authHeader,
+      },
+      { rev: currentRev },
+      body,
+      {
+        db: 'project',
+        id: project._id,
+      }
+    )
+
+    expect(response.status).toBe(HttpStatus.OK)
+
+    const doc = response.body
+    expect(doc.writers).toEqual(body.writers)
+
+    const channels = await AccessControlRepository.getChannels(project._id)
+    expect(channels.length).toEqual(9)
+
+    const access = await AccessControlRepository.getAccess('User|' + validBody2.email)
+    expect(access.length).toEqual(0)
   })
 
   test('should delete the project by id', async () => {
@@ -186,11 +366,17 @@ describe('SG - CRUD', () => {
       },
       {
         db: 'project',
-        id: validProject._id,
+        id: project._id,
       }
     )
 
     expect(response.status).toBe(HttpStatus.OK)
+
+    const channels = await AccessControlRepository.getChannels(project._id)
+    expect(channels.length).toEqual(0)
+
+    const access = await AccessControlRepository.getAccess(userId)
+    expect(access.length).toEqual(0)
   })
 
   test('should not get the project by id after removal', async () => {
@@ -209,7 +395,7 @@ describe('SG - CRUD', () => {
       {},
       {
         db: 'project',
-        id: validProject._id,
+        id: project._id,
       }
     )
 
@@ -225,7 +411,7 @@ describe('SG - CRUD', () => {
     expect(loginResponse.status).toBe(HttpStatus.OK)
 
     const authHeader = authorizationHeader(loginResponse.body.token)
-    const body = validProject
+    const body = project
 
     const response: supertest.Response = await SGUpdate(
       {
@@ -236,13 +422,13 @@ describe('SG - CRUD', () => {
       body,
       {
         db: 'project',
-        id: validProject._id,
+        id: project._id,
       }
     )
 
     expect(response.status).toBe(HttpStatus.OK)
 
     const doc = response.body
-    expect(doc).toEqual(expect.objectContaining(validProject))
+    expect(doc).toEqual(expect.objectContaining(project))
   })
 })

@@ -74,7 +74,7 @@ export interface IContainerService {
   /**
    * Gets the container.
    */
-  getContainer(containerId: string): Promise<Container>
+  getContainer(containerId: string, userId?: string): Promise<Container>
 
   /**
    * Gets an archive (ZIP file) of the container
@@ -102,12 +102,12 @@ export interface IContainerService {
 
   /**
    * Creates a Manuscript
-   * @param userID the ID of the user
+   * @param userId the ID of the user
    * @param containerId the ID of the container
    * @param manuscriptID the ID of the manuscript
    */
   createManuscript(
-    userID: string,
+    userId: string,
     containerID: string,
     manuscriptID?: string,
     templateId?: string

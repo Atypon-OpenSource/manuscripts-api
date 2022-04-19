@@ -45,7 +45,7 @@ const invitingUserProfile2: UserProfile = {
 }
 
 projectInvitationsList.push({
-  _id: checksum(
+  _id: 'MPContainerInvitation:' + checksum(
     'valid-user@manuscriptsapp.com-valid-google@manuscriptsapp.com-valid-project-id-2',
     { algorithm: 'sha1' }
   ),
@@ -61,7 +61,7 @@ projectInvitationsList.push({
 })
 
 projectInvitationsList.push({
-  _id: checksum(
+  _id: 'MPContainerInvitation:' + checksum(
     'valid-user@manuscriptsapp.com-valid-google2@manuscriptsapp.com-valid-project-id-2',
     { algorithm: 'sha1' }
   ),
@@ -77,7 +77,7 @@ projectInvitationsList.push({
 })
 
 projectInvitationsList.push({
-  _id: checksum(
+  _id: 'MPContainerInvitation:' + checksum(
     'valid-user@manuscriptsapp.com-valid-google@manuscriptsapp.com-MPProject:valid-project-id-2',
     { algorithm: 'sha1' }
   ),
@@ -93,7 +93,7 @@ projectInvitationsList.push({
 })
 
 projectInvitationsList.push({
-  _id: checksum(
+  _id: 'MPContainerInvitation:' + checksum(
     'valid-user@manuscriptsapp.com-valid-user-2@manuscriptsapp.com-valid-project-id-2',
     { algorithm: 'sha1' }
   ),
@@ -109,7 +109,7 @@ projectInvitationsList.push({
 })
 
 projectInvitationsList.push({
-  _id: checksum(
+  _id: 'MPContainerInvitation:' + checksum(
     'valid-user@manuscriptsapp.com-valid-user-4@manuscriptsapp.com-valid-project-id-2',
     { algorithm: 'sha1' }
   ),
@@ -125,7 +125,7 @@ projectInvitationsList.push({
 })
 
 projectInvitationsList.push({
-  _id: checksum(
+  _id: 'MPContainerInvitation:' + checksum(
     'valid-user@manuscriptsapp.com-valid-user-4@manuscriptsapp.com-not-valid-project-id',
     { algorithm: 'sha1' }
   ),
@@ -141,7 +141,7 @@ projectInvitationsList.push({
 })
 
 projectInvitationsList.push({
-  _id: checksum(
+  _id: 'MPContainerInvitation:' + checksum(
     'valid-user@manuscriptsapp.com-valid-google@manuscriptsapp.com-valid-project-id',
     { algorithm: 'sha1' }
   ),
@@ -157,7 +157,7 @@ projectInvitationsList.push({
 })
 
 projectInvitationsList.push({
-  _id: checksum(
+  _id: 'MPContainerInvitation:' + checksum(
     'valid-google@manuscriptsapp.com-valid-user@manuscriptsapp.com-valid-project-id-2',
     { algorithm: 'sha1' }
   ),
@@ -173,7 +173,7 @@ projectInvitationsList.push({
 })
 
 projectInvitationsList.push({
-  _id: checksum(
+  _id: 'MPContainerInvitation:' + checksum(
     'valid-user-4@manuscriptsapp.com-valid-user@manuscriptsapp.com-valid-project-id',
     { algorithm: 'sha1' }
   ),
@@ -189,7 +189,7 @@ projectInvitationsList.push({
 })
 
 projectInvitationsList.push({
-  _id: checksum(
+  _id: 'MPContainerInvitation:' + checksum(
     'valid-user-9@manuscriptsapp.com-valid-user@manuscriptsapp.com-valid-project-id-4',
     { algorithm: 'sha1' }
   ),
@@ -205,7 +205,7 @@ projectInvitationsList.push({
 })
 
 projectInvitationsList.push({
-  _id: checksum(
+  _id: 'MPContainerInvitation:' + checksum(
     'valid-user@manuscriptsapp.com-valid-user-6@manuscriptsapp.com-valid-project-id-7',
     { algorithm: 'sha1' }
   ),
@@ -221,7 +221,7 @@ projectInvitationsList.push({
 })
 
 projectInvitationsList.push({
-  _id: checksum(
+  _id: 'MPContainerInvitation:' + checksum(
     'valid-user-4@manuscriptsapp.com-valid-user@manuscriptsapp.com-not-valid-project-id',
     { algorithm: 'sha1' }
   ),
@@ -237,7 +237,7 @@ projectInvitationsList.push({
 })
 
 projectInvitationsList.push({
-  _id: checksum(
+  _id: 'MPContainerInvitation:' + checksum(
     'valid-user@manuscriptsapp.com-valid-user-6@manuscriptsapp.com-valid-project-id-6',
     { algorithm: 'sha1' }
   ),

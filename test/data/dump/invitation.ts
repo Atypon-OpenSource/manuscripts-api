@@ -32,7 +32,7 @@ const invitingUserProfile: UserProfile = {
 }
 
 invitationsList.push({
-  _id: checksum('valid-user@manuscriptsapp.com-valid-google@manuscriptsapp.com', { algorithm: 'sha1' }),
+  _id: 'MPInvitation:' + checksum('valid-user@manuscriptsapp.com-valid-google@manuscriptsapp.com', { algorithm: 'sha1' }),
   invitingUserID: 'User_valid-user@manuscriptsapp.com',
   invitedUserEmail: 'valid-google@manuscriptsapp.com',
   invitingUserProfile,
@@ -43,7 +43,7 @@ invitationsList.push({
 })
 
 invitationsList.push({
-  _id: checksum('valid-user@manuscriptsapp.com-valid-google3@manuscriptsapp.com', { algorithm: 'sha1' }),
+  _id: 'MPInvitation:' + checksum('valid-user@manuscriptsapp.com-valid-google3@manuscriptsapp.com', { algorithm: 'sha1' }),
   invitingUserID: 'User_valid-user@manuscriptsapp.com',
   invitedUserEmail: 'valid-google3@manuscriptsapp.com',
   invitingUserProfile,
@@ -54,7 +54,7 @@ invitationsList.push({
 })
 
 invitationsList.push({
-  _id: checksum('valid-user@manuscriptsapp.com-valid-user-4@manuscriptsapp.com', { algorithm: 'sha1' }),
+  _id: 'MPInvitation:' + checksum('valid-user@manuscriptsapp.com-valid-user-4@manuscriptsapp.com', { algorithm: 'sha1' }),
   invitingUserID: 'User_valid-user@manuscriptsapp.com',
   invitedUserEmail: 'valid-user-4@manuscriptsapp.com',
   message: 'Message',

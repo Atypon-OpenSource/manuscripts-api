@@ -112,7 +112,7 @@ export class UserService implements IUserService {
     await this.removeUserFromProjects(user._id)
     await this.userCollaboratorRepository.clearUserCollaborators(user._id)
     await this.userProfileRepository.purge(userProfileId)
-    await this.syncService.removeGatewayAccount(user._id)
+    await this.syncService.removeUserStatus(user._id)
     await this.singleUseTokenRepository.remove({ userId: user._id })
     await this.userTokenRepository.remove({ userId: user._id })
 
@@ -208,7 +208,7 @@ export class UserService implements IUserService {
     }
 
     const userProfileID = UserService.profileID(payload.userId)
-    return this.userProfileRepository.getById(userProfileID)
+    return this.userProfileRepository.getById(userProfileID, sgUsername(payload.userId))
 
     // TODO: Get the invitations
   }

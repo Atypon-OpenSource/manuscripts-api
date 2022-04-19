@@ -70,8 +70,10 @@ export class InvitationService implements IInvitationService {
       throw new ValidationError('Inviting user can not invite himself.', invitingUser.email)
     }
 
+    const userID = sgUsername(invitingUserId)
     const invitingUserProfile = await this.userProfileRepository.getById(
-      UserService.profileID(invitingUser._id)
+      UserService.profileID(invitingUser._id),
+      userID
     )
 
     if (!invitingUserProfile) {
@@ -95,22 +97,26 @@ export class InvitationService implements IInvitationService {
 
       const invitationID = `${ObjectTypes.Invitation}:${invitationTupleHash}`
 
-      let invitation = await this.invitationRepository.getById(invitationID)
+      let invitation = await this.invitationRepository.getById(invitationID, userID)
       if (invitation) {
         await this.invitationRepository.touch(
           invitationID,
-          InvitationService.invitationExpiryInDays()
+          InvitationService.invitationExpiryInDays(),
+          userID
         )
       } else {
-        invitation = await this.invitationRepository.create({
-          _id: invitationTupleHash,
-          invitingUserID: sgUsername(invitingUser._id),
-          invitingUserProfile,
-          invitedUserEmail: invitedEmail,
-          invitedUserID,
-          message,
-          objectType: ObjectTypes.Invitation,
-        })
+        invitation = await this.invitationRepository.create(
+          {
+            _id: invitationTupleHash,
+            invitingUserID: userID,
+            invitingUserProfile,
+            invitedUserEmail: invitedEmail,
+            invitedUserID,
+            message,
+            objectType: ObjectTypes.Invitation,
+          },
+          userID
+        )
       }
 
       await this.emailService.sendInvitation({ email: invitedEmail }, invitingUser, invitationID)

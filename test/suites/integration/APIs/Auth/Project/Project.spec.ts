@@ -28,27 +28,19 @@ import {
 } from '../../../../../data/fixtures/headers'
 import * as HttpStatus from 'http-status-codes'
 import { validManuscript } from '../../../../../data/fixtures/manuscripts'
+import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
+import { createProject, createManuscript } from '../../../../../data/fixtures/misc'
+
 
 let db: any = null
 const seedOptions: SeedOptions = {
   users: true,
-  userProfiles: true,
   applications: true,
-  projects: true,
-  manuscript: true,
   templates: true,
 }
 
 beforeAll(async () => {
   db = await testDatabase()
-  /*await Promise.all(
-    GATEWAY_BUCKETS.map((key) => {
-      return DIContainer.sharedContainer.syncService.createGatewayAccount(
-        'User|' + validBody.email,
-        key
-      )
-    })
-  )*/
 })
 
 afterAll(() => {
@@ -62,6 +54,13 @@ describe('ContainerService - createProject', () => {
     await drop()
     await dropBucket(BucketKey.Data)
     await seed(seedOptions)
+    await DIContainer.sharedContainer.syncService.createUserProfile(
+      {
+        _id: `User|${validBody.email}`,
+        name: 'foobar',
+        email: validBody.email
+      }
+    )
   })
   test('should import jats into new manuscript', async () => {
     const loginResponse: supertest.Response = await basicLogin(
@@ -72,6 +71,7 @@ describe('ContainerService - createProject', () => {
     expect(loginResponse.status).toBe(HttpStatus.OK)
 
     const authHeader = authorizationHeader(loginResponse.body.token)
+    await createProject('MPProject:valid-project-id-2')
 
     const sendFileResponse = await importManuscript(
       {
@@ -95,6 +95,8 @@ describe('ContainerService - createProject', () => {
     expect(loginResponse.status).toBe(HttpStatus.OK)
 
     const authHeader = authorizationHeader(loginResponse.body.token)
+    await createProject('MPProject:valid-project-id-2')
+    await createManuscript('MPManuscript:valid-manuscript-id-1', 'User_valid-user@manuscriptsapp.com')
 
     const sendFileResponse = await importManuscript(
       {
@@ -119,6 +121,8 @@ describe('ContainerService - createProject', () => {
     expect(loginResponse.status).toBe(HttpStatus.OK)
 
     const authHeader = authorizationHeader(loginResponse.body.token)
+    await createProject('MPProject:valid-project-id-2')
+    await createManuscript('MPManuscript:valid-manuscript-id-1', 'User_valid-user@manuscriptsapp.com')
 
     const sendFileResponse = await importManuscript(
       {
@@ -144,6 +148,8 @@ describe('ContainerService - createProject', () => {
     expect(loginResponse.status).toBe(HttpStatus.OK)
 
     const authHeader = authorizationHeader(loginResponse.body.token)
+    await createProject('MPProject:valid-project-id-2')
+    await createManuscript('MPManuscript:valid-manuscript-id-1', 'User_valid-user@manuscriptsapp.com')
 
     const sendFileResponse = await importManuscript(
       {

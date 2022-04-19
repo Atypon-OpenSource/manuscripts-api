@@ -19,15 +19,15 @@ import { ProjectLike } from '../../../src/DataAccess/Interfaces/Models'
 export const projectsList: ProjectLike[] = []
 
 projectsList.push({
-  _id: 'valid-project-id',
+  _id: 'MPProject:valid-project-id',
   objectType: 'MPProject',
-  owners: ['User_test'],
+  owners: ['User_valid-user-2@manuscriptsapp.com', 'User_test'],
   writers: [],
   viewers: []
 })
 
 projectsList.push({
-  _id: 'valid-project-id-2',
+  _id: 'MPProject:valid-project-id-2',
   objectType: 'MPProject',
   owners: [
     'User_test',
@@ -39,7 +39,7 @@ projectsList.push({
 })
 
 projectsList.push({
-  _id: 'valid-project-id-4',
+  _id: 'MPProject:valid-project-id-4',
   objectType: 'MPProject',
   owners: ['User_valid-user@manuscriptsapp.com'],
   writers: ['User_test', 'User_valid-user-3@manuscriptsapp.com'],
@@ -47,7 +47,7 @@ projectsList.push({
 })
 
 projectsList.push({
-  _id: 'valid-project-id-5',
+  _id: 'MPProject:valid-project-id-5',
   objectType: 'MPProject',
   owners: ['User_valid-user@manuscriptsapp.com'],
   writers: [],
@@ -55,7 +55,7 @@ projectsList.push({
 })
 
 projectsList.push({
-  _id: 'valid-project-id-6',
+  _id: 'MPProject:valid-project-id-6',
   objectType: 'MPProject',
   owners: ['User_valid-user@manuscriptsapp.com'],
   writers: [],
@@ -63,7 +63,7 @@ projectsList.push({
 })
 
 projectsList.push({
-  _id: 'valid-project-id-7',
+  _id: 'MPProject:valid-project-id-7',
   objectType: 'MPProject',
   owners: ['User_valid-user@manuscriptsapp.com'],
   writers: ['User_valid-user-2@manuscriptsapp.com'],
@@ -71,7 +71,7 @@ projectsList.push({
 })
 
 projectsList.push({
-  _id: 'valid-project-id-8',
+  _id: 'MPProject:valid-project-id-8',
   objectType: 'MPProject',
   owners: ['User_valid-user-2@manuscriptsapp.com'],
   writers: [],
@@ -79,7 +79,7 @@ projectsList.push({
 })
 
 projectsList.push({
-  _id: 'valid-project-id-9',
+  _id: 'MPProject:valid-project-id-9',
   objectType: 'MPProject',
   owners: ['User_valid-user-2@manuscriptsapp.com'],
   writers: [],
@@ -87,7 +87,7 @@ projectsList.push({
 })
 
 projectsList.push({
-  _id: 'valid-project-id-10',
+  _id: 'MPProject:valid-project-id-10',
   objectType: 'MPProject',
   owners: ['User_valid-user-2@manuscriptsapp.com'],
   writers: ['User_valid-user@manuscriptsapp.com'],
@@ -95,7 +95,7 @@ projectsList.push({
 })
 
 projectsList.push({
-  _id: 'valid-project-id-request',
+  _id: 'MPProject:valid-project-id-request',
   objectType: 'MPProject',
   owners: ['User_valid-user@manuscriptsapp.com'],
   writers: [],
@@ -103,7 +103,7 @@ projectsList.push({
 })
 
 projectsList.push({
-  _id: 'valid-project-id-request-2',
+  _id: 'MPProject:valid-project-id-request-2',
   objectType: 'MPProject',
   owners: ['User_valid-user@manuscriptsapp.com'],
   writers: [],
@@ -111,7 +111,7 @@ projectsList.push({
 })
 
 projectsList.push({
-  _id: 'valid-project-id-request-3',
+  _id: 'MPProject:valid-project-id-request-3',
   objectType: 'MPProject',
   owners: ['User_valid-user@manuscriptsapp.com'],
   writers: ['User_valid-user-3@manuscriptsapp.com'],
@@ -119,7 +119,7 @@ projectsList.push({
 })
 
 projectsList.push({
-  _id: 'valid-project-id-request-4',
+  _id: 'MPProject:valid-project-id-request-4',
   objectType: 'MPProject',
   owners: ['User_valid-user-3@manuscriptsapp.com'],
   writers: ['User_valid-user@manuscriptsapp.com'],
@@ -127,7 +127,7 @@ projectsList.push({
 })
 
 projectsList.push({
-  _id: 'valid-project-id-11',
+  _id: 'MPProject:valid-project-id-11',
   objectType: 'MPProject',
   owners: ['User_valid-user-6@manuscriptsapp.com'],
   writers: [],

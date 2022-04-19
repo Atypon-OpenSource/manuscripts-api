@@ -26,23 +26,26 @@ export interface KeyValueRepository<TEntity, TNewEntity, TUpdateEntity, TPatchEn
   /**
    * Creates new document.
    * @param newDocument The new document wants to be added.
+   * @param userId The userId that creates the document
    */
-  create(newDocument: TNewEntity): Promise<TEntity>
+  create(newDocument: TNewEntity, userId?: string): Promise<TEntity>
 
   /**
    * Removes existing document.
    * @param id the document's unique id.
+   * @param userId The userId that removes the document
    */
-  remove(id: string | null): Promise<void>
+  remove(id: string | null, userId?: string): Promise<void>
 
   /**
    * Replaces existing document.
    * @param id document id's wants to be replaced.
    * @param updateDocument The new object that will be replaced.
+   * @param userId The userId that updates the document
    */
-  update(id: string, updateDocument: TUpdateEntity): Promise<TEntity>
+  update(id: string, updateDocument: TUpdateEntity, userId?: string): Promise<TEntity>
 
-  patch(id: string, dataToPatch: TPatchEntity): Promise<TEntity>
+  patch(id: string, dataToPatch: TPatchEntity, userId?: string): Promise<TEntity>
 
   purge(id: string): Promise<void>
 }

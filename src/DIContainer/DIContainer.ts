@@ -199,7 +199,7 @@ export class DIContainer {
     this.userStatusRepository = new UserStatusRepository(this.userBucket)
     this.userProfileRepository = new UserProfileRepository(BucketKey.Project, this.dataBucket)
     this.syncService = new SyncService(this.userStatusRepository, this.userProfileRepository)
-    this.sgService = new SGService(config.DB)
+    this.sgService = new SGService()
     this.userRegistrationService = new UserRegistrationService(
       this.userRepository,
       this.userEmailRepository,

@@ -105,7 +105,7 @@ describe('Invitation - invite', () => {
       getOne: async () => Promise.resolve(null),
       getById: async () =>
         Promise.resolve({
-          _id: 'User_foo@bar.com',
+          _id: 'User|foo@bar.com',
           email: 'foo@bar.com'
         })
     }
@@ -120,7 +120,7 @@ describe('Invitation - invite', () => {
     }
 
     invitationService.emailService.sendInvitation = jest.fn()
-    await invitationService.invite('foo', ['baz@bar.com'], null)
+    await invitationService.invite('User|foo@bar.com', ['baz@bar.com'], null)
     expect(invitationService.invitationRepository.touch).toBeCalled()
     expect(invitationService.emailService.sendInvitation).toBeCalled()
   })
@@ -152,7 +152,7 @@ describe('Invitation - invite', () => {
 
     invitationService.emailService.sendInvitation = jest.fn()
 
-    await invitationService.invite('foo', ['baz@bar.com'], null)
+    await invitationService.invite('User|foo@bar.com', ['baz@bar.com'], null)
     expect(invitationService.emailService.sendInvitation).toBeCalled()
   })
 })

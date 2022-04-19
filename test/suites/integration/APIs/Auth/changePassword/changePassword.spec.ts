@@ -28,7 +28,6 @@ import {
   ValidContentTypeAcceptJsonHeader
 } from '../../../../../data/fixtures/headers'
 
-import { GATEWAY_BUCKETS } from '../../../../../../src/DomainServices/Sync/SyncService'
 import { SeedOptions } from '../../../../../../src/DataAccess/Interfaces/SeedOptions'
 import { BucketKey } from '../../../../../../src/Config/ConfigurationTypes'
 
@@ -37,9 +36,8 @@ const seedOptions: SeedOptions = { users: true, applications: true }
 
 beforeAll(async () => {
   db = await testDatabase()
-  await Promise.all(GATEWAY_BUCKETS.map(key => {
-    return DIContainer.sharedContainer.syncService.createGatewayAccount('User|' + validBody.email, key)
-  }))
+  await DIContainer.sharedContainer.syncService.getOrCreateUserStatus('User|' + validBody.email)
+
 })
 
 afterAll(() => {

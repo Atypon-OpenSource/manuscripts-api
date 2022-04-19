@@ -27,27 +27,25 @@ import { ISyncService } from './ISyncService'
 import { timestamp } from '../../Utilities/JWT/LoginTokenPayload'
 import { UserService } from '../User/UserService'
 import { IUserProfileRepository } from 'src/DataAccess/Interfaces/IUserProfileRepository'
+import { AccessControlRepository } from '../../DataAccess/AccessControlRepository'
 
 const randomBytesPromisified = promisify(randomBytes)
 
 /**
- * Number of bytes for the randomly generated sync_gateway user account passwords
+ * Number of bytes for the randomly generated user account passwords
  */
-export const SYNC_GATEWAY_PASSWORD_BYTE_COUNT = 40
+export const PASSWORD_BYTE_COUNT = 40
+
 /**
- * Name of the cookie sync_gateway is expecting
- */
-export const SYNC_GATEWAY_COOKIE_NAME = 'SyncGatewaySession'
-/**
- * Default expiry of the sync_gateway cookie, so we send it to the client with
+ * Default expiry of the cookie, so we send it to the client with
  * the same expiry
  */
-export const SYNC_GATEWAY_COOKIE_EXPIRY_IN_MS = 24 * 60 * 60 * 1000
+export const COOKIE_EXPIRY_IN_MS = 24 * 60 * 60 * 1000
 
 export const GATEWAY_BUCKETS: Array<BucketKey> = [BucketKey.Data, BucketKey.DerivedData]
 
 const randomPassword = () =>
-  randomBytesPromisified(SYNC_GATEWAY_PASSWORD_BYTE_COUNT).then((buf) => buf.toString('hex'))
+  randomBytesPromisified(PASSWORD_BYTE_COUNT).then((buf) => buf.toString('hex'))
 
 export const username = (userId: string) => {
   if (!userId.startsWith('User|')) {
@@ -66,27 +64,15 @@ export class SyncService implements ISyncService {
     return Promise.resolve(true)
   }
 
-  public async gatewayAccountExists(userId: string, _bucketKey: BucketKey): Promise<boolean> {
+  public async getOrCreateUserStatus(userId: string) {
     const id = this.userStatusRepository.fullyQualifiedId(userId)
 
-    const exists = await this.userStatusRepository.getById(id)
-    if (exists) {
-      return true
+    const userStatus = await this.userStatusRepository.getById(id)
+    if (userStatus) {
+      return userStatus
     }
 
-    return false
-  }
-
-  // Creates a sync_gateway account
-  public async createGatewayAccount(userId: string, _bucketKey: BucketKey) {
-    const id = this.userStatusRepository.fullyQualifiedId(userId)
-
-    const exists = await this.userStatusRepository.getById(id)
-    if (exists) {
-      return id
-    }
-
-    const userStatus = {
+    const newUserStatus = {
       _id: id,
       password: await randomPassword(),
       isVerified: true,
@@ -95,15 +81,12 @@ export class SyncService implements ISyncService {
       deviceSessions: {},
     }
 
-    await this.userStatusRepository.create(userStatus)
+    await this.userStatusRepository.create(newUserStatus)
 
-    return id
+    return newUserStatus
   }
 
-  /**
-   * removes a sync_gateway account.
-   */
-  public async removeGatewayAccount(userId: string) {
+  public async removeUserStatus(userId: string) {
     const userStatus = await this.userStatusRepository.getById(userId)
     if (!userStatus) {
       throw new Error(`Failed to delete SyncGateway user ${userId}`)
@@ -111,7 +94,7 @@ export class SyncService implements ISyncService {
     await this.userStatusRepository.remove({ _id: userId })
   }
 
-  public async createGatewayContributor(user: User, _bucketKey: BucketKey) {
+  public async createUserProfile(user: User) {
     const [firstName] = user.name.split(' ', 1)
     const lastName = user.name.substring(firstName.length + 1)
 
@@ -134,6 +117,11 @@ export class SyncService implements ISyncService {
       updatedAt: date,
     }
 
-    return this.userProfileRepository.create(userProfile)
+    const channels = [userProfileId + '-readwrite', userProfile.userID + '-readwrite']
+
+    await AccessControlRepository.channel(channels, userProfile.userID)
+    await AccessControlRepository.access([userProfile.userID], channels)
+
+    return this.userProfileRepository.create(userProfile, userProfile.userID)
   }
 }

@@ -40,9 +40,7 @@ describe('ContainerInvitationRepository getInvitationsForUser', () => {
       validProjectInvitationObject.containerID,
       validProjectInvitationObject.invitedUserEmail
     )
-    expect(invitations[0]._id).toBe(
-      `MPContainerInvitation:${validProjectInvitationObject._id}`
-    )
+    expect(invitations[0]._id).toBe(validProjectInvitationObject._id)
   })
 })
 

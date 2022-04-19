@@ -24,6 +24,7 @@ import { invitationsList } from '../data/dump/invitation'
 import { projectInvitationsList } from '../data/dump/projectInvitation'
 import { applicationList } from '../data/dump/applications'
 import { DIContainer } from '../../src/DIContainer/DIContainer'
+import { AccessControlRepository } from '../../src/DataAccess/AccessControlRepository'
 import { NoBucketError } from '../../src/Errors'
 import { SeedOptions } from '../../src/DataAccess/Interfaces/SeedOptions'
 import { projectsList } from '../data/dump/project'
@@ -348,8 +349,10 @@ export async function drop (): Promise<void> {
 
   const gatewayRepositories = DIContainer.sharedContainer.gatewayRepositories
 
+
   await Promise.all([
     ...repositories.map(x => x.remove(null)) as any,
-    ...gatewayRepositories.map(x => x.remove(null))
+    ...gatewayRepositories.map(x => x.remove(null)),
+    AccessControlRepository.removeAll()
   ])
 }

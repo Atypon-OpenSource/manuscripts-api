@@ -48,30 +48,15 @@ import {
 } from '../../../../data/fixtures/headers'
 import { ContainerRole } from '../../../../../src/Models/ContainerModels'
 import { BucketKey } from '../../../../../src/Config/ConfigurationTypes'
-import { GATEWAY_BUCKETS } from '../../../../../src/DomainServices/Sync/SyncService'
 import { validProject } from '../../../../data/fixtures/projects'
-import { createContainerReq, purgeContainerReq } from '../../../../data/fixtures/misc'
+import { createContainerReq, purgeContainerReq, createProject } from '../../../../data/fixtures/misc'
 
 let db: any = null
 
 beforeAll(async () => {
   db = await testDatabase()
-  /*await Promise.all(
-    GATEWAY_BUCKETS.map(key => {
-      return DIContainer.sharedContainer.syncService.createGatewayAccount(
-        'User|' + validBody.email,
-        key
-      )
-    })
-  )*/
 })
 
-async function seedAccounts () {
-  await DIContainer.sharedContainer.syncService.createGatewayAccount(
-      'User|' + validBody.email,
-      null
-    )
-}
 
 afterAll(() => {
   db.bucket.disconnect()
@@ -88,11 +73,16 @@ describe('ContainerRequestService - create', () => {
       applications: true,
       projects: true
     })
-    await seedAccounts()
+    await DIContainer.sharedContainer.syncService.createUserProfile(
+      {
+        _id: `User|${validBody.email}`,
+        name: 'foobar',
+        email: validBody.email
+      }
+    )
   })
 
   test('should create container request', async () => {
-    await seed({ userProfiles: true })
     const loginResponse: supertest.Response = await basicLogin(
       validBody,
       ValidHeaderWithApplicationKey
@@ -116,7 +106,7 @@ describe('ContainerRequestService - create', () => {
   })
 
   test('should update container request if another request exists', async () => {
-    await seed({ userProfiles: true })
+    //await seed({ userProfiles: true })
     const loginResponse: supertest.Response = await basicLogin(
       validBody,
       ValidHeaderWithApplicationKey
@@ -148,9 +138,7 @@ describe('ContainerRequestService - accept', () => {
     await seed({
       users: true,
       applications: true,
-      projects: true
     })
-    await seedAccounts()
   })
 
   test('should accept container request', async () => {
@@ -164,6 +152,7 @@ describe('ContainerRequestService - accept', () => {
       'User_valid-user-3@manuscriptsapp.com-MPProject:valid-project-id-request-2'
     )}`)
     const authHeader = authorizationHeader(loginResponse.body.token)
+    await createProject('MPProject:valid-project-id-request-2')
     const response: supertest.Response = await acceptContainerRequest(
       {
         ...ValidContentTypeAcceptJsonHeader,
@@ -191,6 +180,7 @@ describe('ContainerRequestService - accept', () => {
       'User_valid-user-3@manuscriptsapp.com-MPProject:valid-project-id-request'
     )}`)
     const authHeader = authorizationHeader(loginResponse.body.token)
+    await createProject('MPProject:valid-project-id-request')
     const response: supertest.Response = await acceptContainerRequest(
       {
         ...ValidContentTypeAcceptJsonHeader,
@@ -215,9 +205,7 @@ describe('ContainerRequestService - reject', () => {
     await seed({
       users: true,
       applications: true,
-      projects: true
     })
-    await seedAccounts()
   })
 
   test('should reject container request', async () => {
@@ -230,6 +218,8 @@ describe('ContainerRequestService - reject', () => {
     await createContainerReq(`MPContainerRequest:${checksum(
       'User_valid-user-3@manuscriptsapp.com-MPProject:valid-project-id-request-2'
     )}`)
+    await createProject('MPProject:valid-project-id-2')
+    await createProject('MPProject:valid-project-id-request-2')
     const authHeader = authorizationHeader(loginResponse.body.token)
     const response: supertest.Response = await rejectContainerRequest(
       {

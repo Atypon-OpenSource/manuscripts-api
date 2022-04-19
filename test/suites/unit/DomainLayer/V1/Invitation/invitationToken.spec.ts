@@ -69,7 +69,8 @@ describe('Invitation - requestInvitationToken', () => {
     containerInvitationService.userRepository = {
       getById: async () =>
         Promise.resolve({
-          email: 'foo@bar.com'
+          email: 'foo@bar.com',
+          _id: 'User|foo@bar.com'
         })
     }
 

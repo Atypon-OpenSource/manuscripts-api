@@ -35,11 +35,6 @@ jest.mock('../../src/Config/Config', () => {
       bucketOptions: {},
     },
     gateway: {
-      hostname: 'sync_gateway',
-      ports: {
-        admin: '4985',
-        public: '4984',
-      },
       cookieDomain: '127.0.0.1',
     },
     AWS: {
