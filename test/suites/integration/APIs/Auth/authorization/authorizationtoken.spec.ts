@@ -36,7 +36,7 @@ const seedOptions: SeedOptions = { users: true, applications: true }
 
 beforeAll(async () => {
   db = await testDatabase()
-  await DIContainer.sharedContainer.syncService.createGatewayAccount('User|' + validBody.email)
+  await DIContainer.sharedContainer.syncService.getOrCreateUserStatus('User|' + validBody.email)
 })
 
 afterAll(() => {

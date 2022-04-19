@@ -141,7 +141,7 @@ export class UserRegistrationService implements IUserRegistrationService {
   }
 
   private async createUserDetails(user: User, skipVerification: boolean, password?: string) {
-    await this.syncService.createGatewayContributor(user)
+    await this.syncService.createUserProfile(user)
 
     await this.userStatusRepository.create({
       _id: user._id,

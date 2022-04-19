@@ -49,14 +49,7 @@ export class SGService implements ISGService {
       throw new InvalidCredentialsError('Unexpected token payload.')
     }
 
-    const objectType = id.split(':')[0]
-    const repoName = this.repoMap[objectType]
-    const repo = DIContainer.sharedContainer[repoName as keyof DIContainer] as SGRepository<
-      any,
-      any,
-      any,
-      any
-    >
+    const repo = this.getRepoById(id)
     return repo.getById(id, payload.userId)
   }
 
@@ -67,14 +60,7 @@ export class SGService implements ISGService {
       throw new InvalidCredentialsError('Unexpected token payload.')
     }
 
-    const objectType = doc._id.split(':')[0]
-    const repoName = this.repoMap[objectType]
-    const repo = DIContainer.sharedContainer[repoName as keyof DIContainer] as SGRepository<
-      any,
-      any,
-      any,
-      any
-    >
+    const repo = this.getRepoById(doc._id)
     return repo.create(doc, payload.userId)
   }
 
@@ -85,14 +71,7 @@ export class SGService implements ISGService {
       throw new InvalidCredentialsError('Unexpected token payload.')
     }
 
-    const objectType = id.split(':')[0]
-    const repoName = this.repoMap[objectType]
-    const repo = DIContainer.sharedContainer[repoName as keyof DIContainer] as SGRepository<
-      any,
-      any,
-      any,
-      any
-    >
+    const repo = this.getRepoById(id)
     return repo.patch(id, doc, payload.userId).catch((err: any) => {
       if (err.statusCode === HttpStatus.BAD_REQUEST) {
         doc._id = id
@@ -109,14 +88,18 @@ export class SGService implements ISGService {
       throw new InvalidCredentialsError('Unexpected token payload.')
     }
 
+    const repo = this.getRepoById(id)
+    return repo.remove(id, payload.userId)
+  }
+
+  private getRepoById(id: string) {
     const objectType = id.split(':')[0]
     const repoName = this.repoMap[objectType]
-    const repo = DIContainer.sharedContainer[repoName as keyof DIContainer] as SGRepository<
+    return DIContainer.sharedContainer[repoName as keyof DIContainer] as SGRepository<
       any,
       any,
       any,
       any
     >
-    return repo.remove(id, payload.userId)
   }
 }

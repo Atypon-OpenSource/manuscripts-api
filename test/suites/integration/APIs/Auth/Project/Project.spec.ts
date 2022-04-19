@@ -54,7 +54,7 @@ describe('ContainerService - createProject', () => {
     await drop()
     await dropBucket(BucketKey.Data)
     await seed(seedOptions)
-    await DIContainer.sharedContainer.syncService.createGatewayContributor(
+    await DIContainer.sharedContainer.syncService.createUserProfile(
       {
         _id: `User|${validBody.email}`,
         name: 'foobar',

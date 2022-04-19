@@ -73,7 +73,7 @@ describe('ContainerRequestService - create', () => {
       applications: true,
       projects: true
     })
-    await DIContainer.sharedContainer.syncService.createGatewayContributor(
+    await DIContainer.sharedContainer.syncService.createUserProfile(
       {
         _id: `User|${validBody.email}`,
         name: 'foobar',

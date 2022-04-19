@@ -46,7 +46,7 @@ import { BucketKey } from '../../../../../src/Config/ConfigurationTypes'
 let db: any = null
 beforeAll(async () => {
   db = await testDatabase()
-  await DIContainer.sharedContainer.syncService.createGatewayAccount(
+  await DIContainer.sharedContainer.syncService.getOrCreateUserStatus(
       'User|' + validBody.email,
     )
 })
@@ -157,7 +157,7 @@ describe('ContainerService - userContainers', () => {
     await drop()
     await dropBucket(BucketKey.Data)
     await seed({ users: true, applications: true, projects: true })
-    await DIContainer.sharedContainer.syncService.createGatewayContributor(
+    await DIContainer.sharedContainer.syncService.createUserProfile(
       {
         _id: `User|${validBody.email}`,
         name: 'foobar',

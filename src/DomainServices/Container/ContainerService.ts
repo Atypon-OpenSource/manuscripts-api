@@ -320,7 +320,7 @@ export class ContainerService implements IContainerService {
     user: User
   ): Promise<void> {
     // call it without userId intentionally
-    const container = await this.containerRepository.getById(containerID)
+    const container = await this.getContainer(containerID)
 
     if (!container) {
       throw new MissingContainerError(containerID)
@@ -613,7 +613,7 @@ export class ContainerService implements IContainerService {
     }
 
     const containerID = doc.containerID || doc.projectID
-    const container = await this.containerRepository.getById(containerID)
+    const container = await this.getContainer(containerID)
 
     if (!container) {
       throw new MissingContainerError(containerID)

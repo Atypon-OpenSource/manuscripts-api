@@ -36,7 +36,7 @@ export class AccessControlRepository {
     await Promise.all(promises)
   }
 
-  public static getChannels(docId: string): Promise<any> {
+  public static getChannels(docId: string): Promise<any[]> {
     return prisma.channel.findMany({ where: { docId } })
   }
 
@@ -61,7 +61,7 @@ export class AccessControlRepository {
     await Promise.all(promises)
   }
 
-  public static getAccess(userId?: string, channelName?: string): Promise<any> {
+  public static getAccess(userId?: string, channelName?: string): Promise<any[]> {
     if (!userId && !channelName) {
       return Promise.resolve([])
     }

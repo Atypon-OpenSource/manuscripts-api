@@ -104,7 +104,7 @@ describe('ConnectSignup - signup', () => {
     await drop()
     await dropBucket(BucketKey.Data)
     await seed(seedOptions)
-    await DIContainer.sharedContainer.syncService.createGatewayAccount(
+    await DIContainer.sharedContainer.syncService.getOrCreateUserStatus(
         'User|' + validBody.email
     )
     

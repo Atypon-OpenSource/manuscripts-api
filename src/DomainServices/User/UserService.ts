@@ -112,7 +112,7 @@ export class UserService implements IUserService {
     await this.removeUserFromProjects(user._id)
     await this.userCollaboratorRepository.clearUserCollaborators(user._id)
     await this.userProfileRepository.purge(userProfileId)
-    await this.syncService.removeGatewayAccount(user._id)
+    await this.syncService.removeUserStatus(user._id)
     await this.singleUseTokenRepository.remove({ userId: user._id })
     await this.userTokenRepository.remove({ userId: user._id })
 

@@ -44,7 +44,7 @@ async function requireAccess(channels: string[], userId: string | undefined): Pr
   // succeed if user has access to at least one channel
   for (const channel of channels) {
     const access = await AccessControlRepository.getAccess(userId, channel)
-    if (access && access.length) {
+    if (access.length) {
       return
     }
   }
@@ -60,6 +60,8 @@ function requireUser(users: string[], userId: string | undefined): void {
 
 export async function syncAccessControl(doc: any, oldDoc: any, userId?: string): Promise<void> {
   //let errorMessage
+
+  // deferreds will be called in the end, otherwise all will fail
   let channelDeferreds = []
   let accessDeferreds = []
 

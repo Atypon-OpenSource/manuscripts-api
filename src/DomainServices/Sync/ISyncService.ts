@@ -17,13 +17,9 @@
 import { User } from '../../Models/UserModels'
 
 export interface ISyncService {
-  /** Gets a Sync Gateway user in the specified bucket using the SG Admin API. */
-  gatewayAccountExists(userId: string): Promise<boolean>
+  getOrCreateUserStatus(userId: string): Promise<any>
 
-  /** Creates a Sync Gateway user using the SG Admin API. If password passed is null, a random password is given. */
-  createGatewayAccount(userId: string): Promise<string>
+  removeUserStatus(userId: string): Promise<void>
 
-  removeGatewayAccount(userId: string): Promise<void>
-
-  createGatewayContributor(user: User): Promise<any>
+  createUserProfile(user: User): Promise<any>
 }

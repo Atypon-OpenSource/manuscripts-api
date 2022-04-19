@@ -138,10 +138,9 @@ export abstract class SGRepository<
                 return Promise.reject(e)
               }
             }
-            resolve(doc)
-          } else {
-            resolve(null)
+            return resolve(doc)
           }
+          resolve(null)
         })
         .catch((error: any) => {
           if (error.forbidden) {
@@ -378,7 +377,7 @@ export abstract class SGRepository<
     return Promise.all(promises)
   }
 
-  private validate(doc: any, oldDoc: any, userId: string): Promise<void> {
+  private validate(doc: any, oldDoc: any, userId?: string): Promise<void> {
     return syncAccessControl(doc, oldDoc, userId)
   }
 }

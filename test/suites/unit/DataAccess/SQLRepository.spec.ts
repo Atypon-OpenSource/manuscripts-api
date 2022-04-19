@@ -25,7 +25,6 @@ import {
   NoBucketError,
   RecordNotFoundError,
 } from '../../../../src/Errors'
-import { UserStatusRepository } from '../../../../src/DataAccess/UserStatusRepository/UserStatusRepository'
 
 import { SQLDatabase } from '../../../../src/DataAccess/SQLDatabase'
 import { config } from '../../../../src/Config/Config'
@@ -126,27 +125,7 @@ describe('SQLRepository patch', () => {
     ).rejects.toThrowError(DatabaseError)
   })
 
-  test.skip('should fail if id not exists', () => {
-    const db = testDatabase()
-    const chance = new Chance()
-
-    db.bucket.query.mockImplementationOnce((_statement: any) => Promise.resolve([]))
-
-    const repository: any = new UserRepository(db)
-    repository.modelConstructor = {
-      schema: {
-        validate: (_a: any, cb: Function) => cb(null),
-      },
-    }
-
-    return expect(
-      repository.patch(validUser1._id, {
-        name: chance.name(),
-      })
-    ).rejects.toThrowError(RecordNotFoundError)
-  })
-
-  test('should fail if document _id is diffident than the passed id', () => {
+  test('should fail if document _id is different than the passed id', () => {
     const db = testDatabase()
     const repository = new UserRepository(db)
     const chance = new Chance()
@@ -226,7 +205,7 @@ describe('SQLRepository update', () => {
 
     const repository = new UserRepository(db)
 
-    return expect(repository.update(NewUserNoId as any, {})).rejects.toThrowError(ValidationError)
+    return expect(repository.update(NewUserNoId as any)).rejects.toThrowError(ValidationError)
   })
 
   test('should fail if an error ocurred', () => {
@@ -641,90 +620,5 @@ describe('SQLRepository remove', () => {
     const repository = new UserRepository(db)
 
     await repository.remove({})
-  })
-})
-
-describe.skip('SQLRepository pushDesignDocument', () => {
-  test('should create new design document if it does not exists', async () => {
-    const db = testDatabase()
-    db.getDesignDocument = () => null
-    const repository = new UserStatusRepository(db)
-
-    await repository.pushDesignDocument()
-
-    expect(db.createDesignDocument).toBeCalled()
-  })
-
-  test('should create new design document if databaseDesignDocument.viewsStatus does not exists', async () => {
-    const db = testDatabase()
-    db.getDesignDocument = () => {
-      return {}
-    }
-    const repository = new UserStatusRepository(db)
-
-    await repository.pushDesignDocument()
-
-    expect(db.createDesignDocument).toBeCalled()
-  })
-
-  test('should create new design documents if checkSum is invalid', async () => {
-    const db = testDatabase()
-    const repository = new UserStatusRepository(db)
-    db.getDesignDocument = () => {
-      return {
-        viewsStatus: {
-          failedLoginCount: '123',
-        },
-      }
-    }
-
-    await repository.pushDesignDocument()
-
-    expect(db.createDesignDocument).toBeCalled()
-  })
-
-  test('should not create new design documents if checkSum match', async () => {
-    const db = testDatabase()
-    const repository: any = new UserStatusRepository(db)
-    repository.buildDesignDocument = mockbuildDesignDocument
-    db.getDesignDocument = () => {
-      return {
-        viewsStatus: {
-          failedLoginCount: '17a6b47113b80d6d8b775f33d9fc60ff2fc8a2e1',
-        },
-      }
-    }
-
-    await repository.pushDesignDocument()
-
-    expect(db.createDesignDocument).not.toBeCalled()
-  })
-})
-
-describe.skip('SQLRepository buildDesignDocument', () => {
-  test('should return design document view with reduce function', async () => {
-    const db = testDatabase()
-    const repository: any = new UserStatusRepository(db)
-    repository.buildViews = mockBuildViews
-
-    const databaseView = await repository.buildDesignDocument()
-
-    expect(databaseView.views.failedLoginCount.reduce).toBeDefined()
-  })
-
-  test('should return design document view without reduce function', async () => {
-    const db = testDatabase()
-    const repository: any = new UserStatusRepository(db)
-    repository.buildViews = () => {
-      const designDocument = mockBuildViews()
-      const failedLoginCount = designDocument[0]
-      failedLoginCount.reduce = null
-
-      return [failedLoginCount]
-    }
-
-    const databaseView = await repository.buildDesignDocument()
-
-    expect(databaseView.views.failedLoginCount.reduce).not.toBeDefined()
   })
 })

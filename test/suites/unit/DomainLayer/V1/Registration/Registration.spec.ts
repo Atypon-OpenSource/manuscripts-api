@@ -19,8 +19,8 @@ jest.mock('../../../../../../src/DomainServices/Sync/SyncService', () => {
   return {
     GATEWAY_BUCKETS: [ 'data', 'shared' ],
     SyncService: jest.fn(() => ({
-      createGatewayAccount: jest.fn(),
-      createGatewayContributor: jest.fn(),
+      getOrCreateUserStatus: jest.fn(),
+      createUserProfile: jest.fn(),
       createGatewayAdministrator: jest.fn()
     }))
   }
@@ -471,8 +471,8 @@ describe('Registration - connectSignup', () => {
     }
 
     userRegistrationService.syncService = {
-      createGatewayAccount: async () => {},
-      createGatewayContributor: async () => {}
+      getOrCreateUserStatus: async () => {},
+      createUserProfile: async () => {}
     }
 
     userRegistrationService.activityTrackingService = {

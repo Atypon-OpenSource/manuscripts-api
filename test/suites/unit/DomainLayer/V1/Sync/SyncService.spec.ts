@@ -45,7 +45,6 @@ jest.mock('../../../../../../src/DataAccess/AccessControlRepository', () => ({
 
 import '../../../../../utilities/dbMock'
 
-import { BucketKey } from '../../../../../../src/Config/ConfigurationTypes'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
 import {
   SyncService,
@@ -62,12 +61,12 @@ beforeEach(() => {
 })
 
 describe('SyncService - isAlive', () => {
-  test('should not throw if sync_gateway is running', () => {
+  test('should not throw if service is running', () => {
     return expect(SyncService.isAlive()).resolves.toBeTruthy()
   })
 })
 
-describe('SyncService - createGatewayAccount', () => {
+describe('SyncService - getOrCreateUserStatus', () => {
   const userToken = {
     _id: 'foo',
     userId: 'User|bar',
@@ -77,59 +76,30 @@ describe('SyncService - createGatewayAccount', () => {
     appId: 'blah',
   }
 
-  test('creates sync_gateway user', async () => {
+  test('creates user status', async () => {
     const syncService: any = DIContainer.sharedContainer.syncService
     syncService.userStatusRepository.fullyQualifiedId = (id: string) => `UserStatus|${id}`
 
     syncService.userStatusRepository.getById = async (_id: string) => Promise.resolve(null)
     syncService.userStatusRepository.create = async (_doc: any) => Promise.resolve(userToken)
 
-    const userId = await syncService.createGatewayAccount(userToken.userId)
-    expect(userId).toEqual('UserStatus|User|bar')
+    const userStatus = await syncService.getOrCreateUserStatus(userToken.userId)
+    expect(userStatus._id).toEqual('UserStatus|User|bar')
   })
 
-  test('gatewayAccountExists should resolve to true', () => {
-    const syncService: any = DIContainer.sharedContainer.syncService
-    syncService.userStatusRepository.fullyQualifiedId = (id: string) => `UserStatus|${id}`
-    syncService.userStatusRepository.getById = async (_id: string) => Promise.resolve(true)
-    return expect(
-      syncService.gatewayAccountExists(userToken.userId, BucketKey.DerivedData)
-    ).resolves.toEqual(true)
-  })
-
-  test('creating a sync_gateway user should resolve to false', () => {
-    const syncService: any = DIContainer.sharedContainer.syncService
-    syncService.userStatusRepository.fullyQualifiedId = (id: string) => `UserStatus|${id}`
-    syncService.userStatusRepository.getById = async (_id: string) => Promise.resolve(false)
-    return expect(
-      syncService.gatewayAccountExists(userToken.userId, BucketKey.DerivedData)
-    ).resolves.toEqual(false)
-  })
-
-  test('failing to create a sync_gateway user should reject', () => {
+  test('failing to create a user status should throw', () => {
     const syncService: any = DIContainer.sharedContainer.syncService
     syncService.userStatusRepository.fullyQualifiedId = (id: string) => `UserStatus|${id}`
     syncService.userStatusRepository.getById = async (_id: string) => {
       throw new Error()
     }
     return expect(
-      syncService.gatewayAccountExists(userToken.userId, BucketKey.DerivedData)
-    ).rejects.toThrowError()
-  })
-
-  test('failing to create a sync_gateway user should throw', () => {
-    const syncService: any = DIContainer.sharedContainer.syncService
-    syncService.userStatusRepository.fullyQualifiedId = (id: string) => `UserStatus|${id}`
-    syncService.userStatusRepository.getById = async (_id: string) => {
-      throw new Error()
-    }
-    return expect(
-      syncService.createGatewayAccount(userToken.userId)
+      syncService.getOrCreateUserStatus(userToken.userId)
     ).rejects.toThrowError(Error)
   })
 })
 
-describe('SyncService - createGatewayContributor', () => {
+describe('SyncService - createUserProfile', () => {
   test('creates a contributor', async () => {
     const user = {
       _id: 'User|foo',
@@ -144,7 +114,7 @@ describe('SyncService - createGatewayContributor', () => {
     const mock = jest.spyOn(syncAccessControl, 'syncAccessControl');
     mock.mockResolvedValue()
     
-    const contrib = await syncService.createGatewayContributor(user)
+    const contrib = await syncService.createUserProfile(user)
 
     expect(contrib._id).toContain('MPUserProfile:')
     expect(contrib.bibliographicName._id).toContain('MPBibliographicName:')
@@ -163,13 +133,13 @@ describe('SyncService - createGatewayContributor', () => {
     syncService.userProfileRepository.create = async (_id: string) => {
       throw new Error()
     }
-    return expect(syncService.createGatewayContributor(user)).rejects.toThrowError(
+    return expect(syncService.createUserProfile(user)).rejects.toThrowError(
       Error
     )
   })
 })
 
-describe('SyncService - removeGatewayAccount', () => {
+describe('SyncService - removeUserStatus', () => {
   const userToken = {
     _id: 'foo',
     userId: 'User|bar',
@@ -179,25 +149,20 @@ describe('SyncService - removeGatewayAccount', () => {
     appId: 'blah',
   }
 
-  test('remove sync_gateway user', async () => {
+  test('remove user status', async () => {
     const syncService: any = DIContainer.sharedContainer.syncService
     syncService.userStatusRepository.fullyQualifiedId = (id: string) => `UserStatus|${id}`
     syncService.userStatusRepository.remove = (_id: string) => Promise.resolve()
     syncService.userStatusRepository.getById = async (_id: string) => Promise.resolve({})
 
-    await syncService.removeGatewayAccount(userToken.userId)
-
-    syncService.userStatusRepository.getById = async (_id: string) => Promise.resolve(null)
-    const exists = await syncService.gatewayAccountExists(userToken.userId)
-
-    expect(exists).toEqual(false)
+    await syncService.removeUserStatus(userToken.userId)
   })
 
-  test('failing to remove a sync_gateway user should throw', () => {
+  test('failing to remove a user status should throw', () => {
     const syncService: any = DIContainer.sharedContainer.syncService
     syncService.userStatusRepository.remove = async (_id: string) => {
       throw new Error()
     }
-    return expect(syncService.removeGatewayAccount(userToken.userId)).rejects.toThrowError(Error)
+    return expect(syncService.removeUserStatus(userToken.userId)).rejects.toThrowError(Error)
   })
 })

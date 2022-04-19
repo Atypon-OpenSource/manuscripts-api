@@ -47,7 +47,7 @@ beforeAll(async () => {
 })
 
 async function seedAccounts () {
-  await DIContainer.sharedContainer.syncService.createGatewayAccount(
+  await DIContainer.sharedContainer.syncService.getOrCreateUserStatus(
       'User|' + validBody.email
     )
 }

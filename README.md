@@ -159,8 +159,20 @@ placed at the root of the repository.
 
 </dl>
 
+
 ## Access Control
 
-In the past, when Couchbase was the backbone of this app, all access control happened via a sync function through the SyncGateway API, with specific [semantics](https://docs.couchbase.com/sync-gateway/current/sync-function-api.html). Now that we've migrated to Postgres, those semantics have been translated into db queries, and the main body of the sync function remains (mostly) the [same](src/DataAccess/syncAccessControl.ts). Whenever a repository (that extends SGRepository) function is called with a `userId` parameter, sync access control function logic executes.
+In the past, access control happened via a sync function through the SyncGateway API, with specific [semantics](https://docs.couchbase.com/sync-gateway/current/sync-function-api.html). Those semantics have been translated into db queries, and the main body of the sync function remains (mostly) the [same](src/DataAccess/syncAccessControl.ts). Whenever a repository (that extends SGRepository) function is called with a `userId` parameter, sync access control function logic executes.
 
 `requireAdmin` has been removed because there is no SG Admin API anymore
+
+## CRUD Route
+
+This Route is exposing direct CRUD operations with access control like in [SyncGateway public REST API Document schema](https://docs.couchbase.com/sync-gateway/current/rest-api.html#/Document).
+
+Available at <http://127.0.0.1:3000/sg>
+
+```
+GET ../sg/user/userId // will fetch user with userId from user bucket 
+POST ../sg/project // create a doc (req.body) in the project bucket
+```

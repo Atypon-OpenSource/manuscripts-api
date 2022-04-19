@@ -19,7 +19,6 @@ import * as supertest from 'supertest'
 import * as _ from 'lodash'
 
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
-import { SYNC_GATEWAY_COOKIE_NAME } from '../../../../../../src/DomainServices/Sync/SyncService'
 import { drop, seed, testDatabase, dropBucket } from '../../../../../utilities/db'
 import { basicLogin } from '../../../../../api'
 import {
@@ -54,7 +53,7 @@ beforeAll(async () => {
 })
 
 async function seedAccounts () {
-  await DIContainer.sharedContainer.syncService.createGatewayAccount(
+  await DIContainer.sharedContainer.syncService.getOrCreateUserStatus(
       'User|' + validBody.email
     )
 }
@@ -91,19 +90,6 @@ describe('Basic Login - POST api/v1/auth/login', () => {
     expect(response.body).toEqual({})
   })
 
-  xtest('should set sync cookie', async () => {
-    const response: supertest.Response = await basicLogin(
-      validBody,
-      ValidHeaderWithApplicationKey
-    )
-
-    expect(response.status).toBe(HttpStatus.OK)
-    const setCookieHeaders = response.header['set-cookie']
-    expect(setCookieHeaders).toBeDefined()
-    const [syncSessionCookie] = setCookieHeaders
-    expect(syncSessionCookie.startsWith(SYNC_GATEWAY_COOKIE_NAME)).toBeTruthy()
-  })
-
   test('should fail if user status does not exists', async () => {
     await DIContainer.sharedContainer.userStatusRepository.remove(null)
     const response: supertest.Response = await basicLogin(
@@ -116,7 +102,7 @@ describe('Basic Login - POST api/v1/auth/login', () => {
 
   test('should fail user is blocked', async () => {
     await DIContainer.sharedContainer.userStatusRepository.remove(null)
-    await DIContainer.sharedContainer.userStatusRepository.create(blockedStatus, {})
+    await DIContainer.sharedContainer.userStatusRepository.create(blockedStatus)
 
     const response: supertest.Response = await basicLogin(
       validEmailBody,
@@ -128,7 +114,7 @@ describe('Basic Login - POST api/v1/auth/login', () => {
 
   test('should fail user is not verified', async () => {
     await DIContainer.sharedContainer.userStatusRepository.remove(null)
-    await DIContainer.sharedContainer.userStatusRepository.create(notVerifiedStatus, {})
+    await DIContainer.sharedContainer.userStatusRepository.create(notVerifiedStatus)
 
     const response: supertest.Response = await basicLogin(
       validEmailBody,
@@ -160,7 +146,7 @@ describe('Basic Login - POST api/v1/auth/login', () => {
 
     // waiting period of time to make sure the view (failedLoginCount) got indexed
     await new Promise(
-      (resolve, reject) => setTimeout(() => basicLogin(
+      (_resolve, reject) => setTimeout(() => basicLogin(
           validEmailBody,
           ValidHeaderWithApplicationKey
         ).then(response => {
@@ -168,7 +154,6 @@ describe('Basic Login - POST api/v1/auth/login', () => {
           return DIContainer.sharedContainer.userStatusRepository.getById(userStatusId)
         }).then((userStatus: any) => {
           expect(new Date(userStatus.blockUntil).getTime()).toBeGreaterThan(new Date().getTime())
-          resolve()
         }).catch(error => reject(error)), 15000)
     )
   })

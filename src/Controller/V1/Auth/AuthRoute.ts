@@ -37,7 +37,7 @@ import {
 } from './AuthSchema'
 import { AuthController } from './AuthController'
 import { AuthStrategy } from '../../../Auth/Passport/AuthStrategy'
-import { SYNC_GATEWAY_COOKIE_EXPIRY_IN_MS } from '../../../DomainServices/Sync/SyncService'
+import { COOKIE_EXPIRY_IN_MS } from '../../../DomainServices/Sync/SyncService'
 import { config } from '../../../Config/Config'
 import { DIContainer } from '../../../DIContainer/DIContainer'
 import { URL } from 'url'
@@ -347,7 +347,7 @@ export class AuthRoute extends BaseRoute {
   private cookieOptions = (domain: string, includeAge: boolean, path?: string) => ({
     path,
     domain,
-    maxAge: includeAge ? SYNC_GATEWAY_COOKIE_EXPIRY_IN_MS : 0,
+    maxAge: includeAge ? COOKIE_EXPIRY_IN_MS : 0,
     httpOnly: true,
     sameSite: (config.server.storeOnlySSLTransmittedCookies && 'None') || 'Strict',
     secure: config.server.storeOnlySSLTransmittedCookies,

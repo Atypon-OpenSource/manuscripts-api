@@ -21,13 +21,11 @@ jest.mock('../../../../../../src/DomainServices/Sync/SyncService', () => {
     GATEWAY_BUCKETS: ['data', 'shared'],
     SyncService: jest.fn(() => ({
       createGatewaySessions: jest.fn(() => ['valid-sync-session']),
-      createGatewayAccount: jest.fn(),
-      createGatewayContributor: jest.fn(),
+      getOrCreateUserStatus: jest.fn(),
+      createUserProfile: jest.fn(),
       createGatewayAdministrator: jest.fn(),
       removeGatewaySessions: jest.fn(),
       removeAllGatewaySessions: jest.fn(),
-      gatewayAccountExists: jest.fn(() => true)
-      // getGatewayContributor: jest.fn(() => Promise.resolve({ _id: 'foobar' }))
     }))
   }
 })
@@ -259,46 +257,6 @@ describe('AuthService - Login', () => {
     expect(user).toMatchSnapshot()
   })
 
-  xtest('should call createGatewaySessions when logging in successfully', async () => {
-    const authService: any = DIContainer.sharedContainer.authService
-
-    authService.userRepository = {
-      getOne: async () => Promise.resolve(userWithValidCredentials)
-    }
-
-    authService.userTokenRepository = {
-      getOne: async () => Promise.resolve(null),
-      create: async () => Promise.resolve(null),
-      touch: async () => Promise.resolve(null),
-      fullyQualifiedId: (id: string) => `User|${id}`
-    }
-
-    authService.userProfileRepository = {
-      getById: async () => Promise.resolve({})
-    }
-
-    authService.userStatusRepository = {
-      statusForUserId: async () =>
-        Promise.resolve({
-          blockUntil: null,
-          isVerified: true,
-          password:
-            '$2a$05$LpEIAuWg7aF4leM9aZaKDO3.7r.6IkkcS4qrj5qMhHZEWzFoZHrv.'
-        }),
-      fullyQualifiedId: (id: string) => `UserStatus|${id}`
-    }
-
-    authService.userEventRepository = {
-      create: async () => Promise.resolve(null)
-    }
-
-    await authService.login(validCredentials)
-
-    const syncService = DIContainer.sharedContainer.syncService
-
-    expect(syncService.createGatewaySessions).toBeCalled()
-  })
-
   test('should log user in and updates existing token', async () => {
     const authService: any = DIContainer.sharedContainer.authService
 
@@ -351,96 +309,6 @@ describe('AuthService - serverToServerAuth', () => {
         deviceId: chance.guid()
       })
     ).rejects.toThrowError(AccountNotFoundError)
-  })
-
-  xtest('should call createGatewaySessions if email provided', async () => {
-    const authService: any = DIContainer.sharedContainer.authService
-
-    authService.userRepository = {
-      getOne: async () => Promise.resolve(userWithValidCredentials)
-    }
-
-    authService.userTokenRepository = {
-      getOne: async () => Promise.resolve(null),
-      create: async () => Promise.resolve(null),
-      touch: async () => Promise.resolve(null),
-      fullyQualifiedId: (id: string) => `User|${id}`
-    }
-
-    authService.userProfileRepository = {
-      getById: async () => Promise.resolve({})
-    }
-
-    authService.userStatusRepository = {
-      statusForUserId: async () =>
-        Promise.resolve({
-          blockUntil: null,
-          isVerified: true,
-          password:
-            '$2a$05$LpEIAuWg7aF4leM9aZaKDO3.7r.6IkkcS4qrj5qMhHZEWzFoZHrv.'
-        }),
-      fullyQualifiedId: (id: string) => `UserStatus|${id}`,
-      patchStatusWithUserId: async () => Promise.resolve(null)
-    }
-
-    authService.userEventRepository = {
-      create: async () => Promise.resolve(null)
-    }
-
-    await authService.serverToServerAuth({
-      email: chance.email(),
-      appId: chance.guid(),
-      deviceId: chance.guid()
-    })
-
-    const syncService = DIContainer.sharedContainer.syncService
-
-    expect(syncService.createGatewaySessions).toBeCalled()
-  })
-
-  xtest('should call createGatewaySessions if connectUserID provided', async () => {
-    const authService: any = DIContainer.sharedContainer.authService
-
-    authService.userRepository = {
-      getOne: async () => Promise.resolve(userWithValidCredentials)
-    }
-
-    authService.userTokenRepository = {
-      getOne: async () => Promise.resolve(null),
-      create: async () => Promise.resolve(null),
-      touch: async () => Promise.resolve(null),
-      fullyQualifiedId: (id: string) => `User|${id}`
-    }
-
-    authService.userProfileRepository = {
-      getById: async () => Promise.resolve({})
-    }
-
-    authService.userStatusRepository = {
-      statusForUserId: async () =>
-        Promise.resolve({
-          blockUntil: null,
-          isVerified: true,
-          password:
-            '$2a$05$LpEIAuWg7aF4leM9aZaKDO3.7r.6IkkcS4qrj5qMhHZEWzFoZHrv.'
-        }),
-      fullyQualifiedId: (id: string) => `UserStatus|${id}`,
-      patchStatusWithUserId: async () => Promise.resolve(null)
-    }
-
-    authService.userEventRepository = {
-      create: async () => Promise.resolve(null)
-    }
-
-    await authService.serverToServerAuth({
-      connectUserID: chance.guid(),
-      appId: chance.guid(),
-      deviceId: chance.guid()
-    })
-
-    const syncService = DIContainer.sharedContainer.syncService
-
-    expect(syncService.createGatewaySessions).toBeCalled()
   })
 })
 
@@ -505,8 +373,10 @@ describe('AuthService - loginGoogle', () => {
     authService.userEventRepository = {
       create: async () => Promise.resolve(null)
     }
-    authService.userStatusRepository = {
-      create: async () => Promise.resolve({})
+
+    authService.syncService = {
+      getOrCreateUserStatus: async () => Promise.resolve({}),
+      createUserProfile: jest.fn()
     }
 
     authService.userProfileRepository = {
@@ -964,7 +834,6 @@ describe('AuthService - resetPassword', () => {
     }
 
     return authService.resetPassword(resetPasswordCredentials).then(() => {
-      const syncService = DIContainer.sharedContainer.syncService
       expect(authService.singleUseTokenRepository.remove).toBeCalled()
       expect(authService.userTokenRepository.remove).toBeCalled()
       expect(
@@ -1102,19 +971,17 @@ describe('AuthService - changePassword', () => {
       deviceId: 'bar'
     })
     expect(authService.userTokenRepository.remove).toBeCalled()
-    const syncService = DIContainer.sharedContainer.syncService
   })
 })
 
-describe('AuthService - ensureGatewayAccountExists', () => {
-  test('should call createGatewayAccount if gateway account does not exists', async () => {
+describe('AuthService - ensureUserStatusExists', () => {
+  test('should call getOrCreateUserStatus if gateway account does not exists', async () => {
     const authService: any = DIContainer.sharedContainer.authService
     authService.syncService = {
-      gatewayAccountExists: async () => Promise.resolve(false),
-      createGatewayAccount: jest.fn()
+      getOrCreateUserStatus: jest.fn()
     }
-    await authService.ensureGatewayAccountExists('userId')
-    expect(authService.syncService.createGatewayAccount).toBeCalled()
+    await authService.ensureUserStatusExists('userId')
+    expect(authService.syncService.getOrCreateUserStatus).toBeCalled()
   })
 })
 
@@ -1211,18 +1078,16 @@ describe('AuthService - iamOAuthCallback', () => {
     }
 
     authService.syncService = {
-      createGatewayAccount: jest.fn(),
-      createGatewayContributor: jest.fn(),
-      gatewayAccountExists: async () => Promise.resolve(true),
+      getOrCreateUserStatus: async () =>
+      Promise.resolve({
+        _id: 'User|foobarovic',
+        email: 'foo@bar.com'
+      }),
+      createUserProfile: jest.fn(),
       createGatewaySessions: async () => Promise.resolve('session')
     }
 
     authService.userStatusRepository = {
-      create: async () =>
-        Promise.resolve({
-          _id: 'User|foobarovic',
-          email: 'foo@bar.com'
-        }),
       statusForUserId: async () => Promise.resolve(null)
     }
 
@@ -1264,9 +1129,8 @@ describe('AuthService - iamOAuthCallback', () => {
     }
 
     authService.syncService = {
-      createGatewayAccount: jest.fn(),
-      createGatewayContributor: jest.fn(),
-      gatewayAccountExists: async () => Promise.resolve(true),
+      getOrCreateUserStatus: jest.fn(),
+      createUserProfile: jest.fn(),
       createGatewaySessions: async () => Promise.resolve('session')
     }
 
@@ -1313,9 +1177,8 @@ describe('AuthService - iamOAuthCallback', () => {
     }
 
     authService.syncService = {
-      createGatewayAccount: jest.fn(),
-      createGatewayContributor: jest.fn(),
-      gatewayAccountExists: async () => Promise.resolve(true),
+      getOrCreateUserStatus: jest.fn(),
+      createUserProfile: jest.fn(),
       createGatewaySessions: async () => Promise.resolve('session')
     }
 
@@ -1366,9 +1229,8 @@ describe('AuthService - iamOAuthCallback', () => {
     }
 
     authService.syncService = {
-      createGatewayAccount: jest.fn(),
-      createGatewayContributor: jest.fn(),
-      gatewayAccountExists: async () => Promise.resolve(true),
+      getOrCreateUserStatus: jest.fn(),
+      createUserProfile: jest.fn(),
       createGatewaySessions: async () => Promise.resolve('session')
     }
 
@@ -1432,18 +1294,12 @@ describe('AuthService - iamOAuthCallback', () => {
     }
 
     authService.syncService = {
-      createGatewayAccount: jest.fn(),
-      createGatewayContributor: jest.fn(),
-      gatewayAccountExists: async () => Promise.resolve(true),
+      getOrCreateUserStatus: async () => Promise.resolve({
+        _id: 'User|foobarovic',
+        email: 'foo@bar.com'
+      }),
+      createUserProfile: jest.fn(),
       createGatewaySessions: async () => Promise.resolve('session')
-    }
-
-    authService.userStatusRepository = {
-      create: async () =>
-        Promise.resolve({
-          _id: 'User|foobarovic',
-          email: 'foo@bar.com'
-        })
     }
 
     authService.activityTrackingService = {
