@@ -612,6 +612,23 @@ describe('ContainerController - jwksForAccessScope', () => {
       ValidationError
     )
   })
+
+  test('should fail if publicKeyJWK is null', () => {
+    const containersController = new ContainersController()
+    const containerService: any =
+      DIContainer.sharedContainer.containerService[ContainerType.project]
+    containerService.findScope = jest.fn(() => Promise.resolve({ publicKeyJWK: null }))
+    const req: any = {
+      params: {
+        containerType: 123,
+        scope: ''
+      }
+    }
+
+    expect(() => containersController.jwksForAccessScope(req)).toThrowError(
+        ValidationError
+    )
+  })
 })
 
 describe('ContainersController - getBundle', () => {
