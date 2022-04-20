@@ -249,7 +249,13 @@ export class ProjectController extends BaseController implements IProjectControl
       )
     }
 
-    const container = await this.upsertManuscriptToProject(project, json, null, manuscriptId)
+    const container = await this.upsertManuscriptToProject(
+      project,
+      json,
+      null,
+      req.user._id,
+      manuscriptId
+    )
 
     await remove(file.path)
 

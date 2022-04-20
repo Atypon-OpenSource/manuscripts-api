@@ -740,16 +740,13 @@ describe('ContainerService - loadProject', () => {
   beforeEach(async () => {
     await drop()
     await dropBucket(BucketKey.Data)
-    await seed({ users: true, applications: true, projects: true })
+    await seed({ users: true, applications: true})
     await seedAccounts()
-    await DIContainer.sharedContainer.syncService.createGatewayContributor(
-      {
-        _id: `User|${validBody.email}`,
-        name: 'foobar',
-        email: validBody.email,
-      },
-      BucketKey.Data
-    )
+    await DIContainer.sharedContainer.syncService.createUserProfile({
+      _id: `User|${validBody.email}`,
+      name: 'foobar',
+      email: validBody.email,
+    })
   })
 
   test('should successfully loadProject', async () => {
@@ -761,6 +758,7 @@ describe('ContainerService - loadProject', () => {
     expect(loginResponse.status).toBe(HttpStatus.OK)
 
     const authHeader = authorizationHeader(loginResponse.body.token)
+    await createProject('MPProject:valid-project-id-2')
     const response: supertest.Response = await loadProject(
       {
         ...ValidContentTypeAcceptJsonHeader,
@@ -783,6 +781,7 @@ describe('ContainerService - loadProject', () => {
     expect(loginResponse.status).toBe(HttpStatus.OK)
 
     const authHeader = authorizationHeader(loginResponse.body.token)
+    await createProject('MPProject:valid-project-id-2')
     const response: supertest.Response = await loadProject(
       {
         ...ValidContentTypeAcceptJsonHeader,

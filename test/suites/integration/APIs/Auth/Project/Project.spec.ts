@@ -30,6 +30,7 @@ import * as HttpStatus from 'http-status-codes'
 import { validManuscript } from '../../../../../data/fixtures/manuscripts'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
 import { createProject, createManuscript } from '../../../../../data/fixtures/misc'
+import { log } from '../../../../../../src/Utilities/Logger'
 
 
 let db: any = null
@@ -180,6 +181,7 @@ describe('ContainerService - save/load Project', () => {
     )
 
     expect(loginResponse.status).toBe(HttpStatus.OK)
+    await createProject('MPProject:valid-project-id-2')
 
     const authHeader = authorizationHeader(loginResponse.body.token)
     const sendFileResponse = await saveProject(
@@ -192,6 +194,7 @@ describe('ContainerService - save/load Project', () => {
       },
       'test/data/fixtures/sample/index.manuscript-json'
     )
+    log.error(JSON.stringify(sendFileResponse))
     expect(sendFileResponse.status).toBe(HttpStatus.OK)
   })
 })
