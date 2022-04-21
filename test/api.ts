@@ -291,6 +291,22 @@ export async function getArchive(
     .send(body)
 }
 
+export async function loadProject(
+  headers: object,
+  body: any,
+  params: any
+): Promise<supertest.Response> {
+  const server: IServer = await createServer()
+  return supertest(server.app)
+    .get(
+      params.manuscriptID
+        ? `/api/v1/${params.containerID}/${params.manuscriptID}/load`
+        : `/api/v1/${params.containerID}/load`
+    )
+    .set(headers)
+    .send(body)
+}
+
 export async function getAttachment(
   headers: object,
   body: any,
@@ -441,6 +457,19 @@ export async function getCorrectionStatus(headers: any, params: any): Promise<su
   return supertest(server.app)
     .get(`/api/v1/projects/${params.containerID}/suggestions/status`)
     .set(headers)
+}
+
+export async function saveProject(
+  headers: object,
+  params: any,
+  filePath: string
+): Promise<supertest.Response> {
+  const server: IServer = await createServer()
+  const req = supertest(server.app).post(`/api/v1/project/${params.containerID}/save`).set(headers)
+  if (params.manuscriptId) {
+    req.field('manuscriptId', params.manuscriptId)
+  }
+  return req.attach('file', filePath)
 }
 
 export async function importManuscript(

@@ -38,3 +38,16 @@ export const addSchema: Joi.SchemaMap = {
     templateId: Joi.string(),
   }),
 }
+
+export const saveProjectSchema: Joi.SchemaMap = {
+  headers: Joi.object({
+    accept: appJsonAndCharset,
+    'content-type': Joi.string().required(),
+  }).options({ allowUnknown: true }),
+  params: Joi.object({
+    projectId: Joi.string().required(),
+  }),
+  body: Joi.object({
+    manuscriptId: Joi.string().optional(),
+  }),
+}

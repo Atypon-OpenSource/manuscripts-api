@@ -339,7 +339,7 @@ export async function seed (options: SeedOptions): Promise<void> {
 
 
 export async function dropBucket (_bucketKey: BucketKey): Promise<void> {
-  return
+  return DIContainer.sharedContainer.bucketForKey(_bucketKey).bucket.remove({})
 }
 
 

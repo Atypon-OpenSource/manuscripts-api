@@ -488,6 +488,33 @@ describe('ContainersController - getArchive', () => {
   })
 })
 
+describe('ContainerController - loadProject', () => {
+  test('should call getArchive()', async () => {
+    const containerService: any = DIContainer.sharedContainer.containerService[ContainerType.project]
+    const chance = new Chance()
+    const req: any = {
+      params: {
+        containerID: 'MPProject:foo'
+      },
+      headers: {
+        accept: chance.string(),
+        authorization: 'Bearer ' + chance.string()
+      },
+      user: {
+        _id: chance.integer()
+      },
+      query: {}
+    }
+
+    containerService.getArchive = jest.fn(() => Promise.resolve())
+
+    const containersController: ContainersController = new ContainersController()
+    await containersController.loadProject(req)
+
+    return expect(containerService.getArchive).toBeCalled()
+  })
+})
+
 describe('ContainerController - accessToken', () => {
   test('should fail if containerID is not string', async () => {
     const req: any = {
@@ -583,6 +610,23 @@ describe('ContainerController - jwksForAccessScope', () => {
 
     expect(() => containersController.jwksForAccessScope(req)).toThrowError(
       ValidationError
+    )
+  })
+
+  test('should fail if publicKeyJWK is null', () => {
+    const containersController = new ContainersController()
+    const containerService: any =
+      DIContainer.sharedContainer.containerService[ContainerType.project]
+    containerService.findScope = jest.fn(() => Promise.resolve({ publicKeyJWK: null }))
+    const req: any = {
+      params: {
+        containerType: 123,
+        scope: ''
+      }
+    }
+
+    expect(() => containersController.jwksForAccessScope(req)).toThrowError(
+        ValidationError
     )
   })
 })

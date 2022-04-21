@@ -32,7 +32,7 @@ import {
   MissingContainerError,
   RoleDoesNotPermitOperationError,
   MissingTemplateError,
-  MissingProductionNoteError
+  MissingProductionNoteError, MissingUserRecordError
 } from '../../../../../../src/Errors'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
 import {
@@ -1492,11 +1492,11 @@ describe('containerService - getUserRole', () => {
     )
   })
 
-  test('should return annotator if the user is an annotator', () => {
+  test('should return true if user is editor', () => {
     expect(ContainerService.isEditor(validProject8 as any, 'User_foo@bar.com')).toBeTruthy()
   })
 
-  test('should return annotator if the user is an annotator', () => {
+  test('should return true if user is annotator', () => {
     expect(ContainerService.isAnnotator(validProject8 as any, 'User_test2')).toBeTruthy()
   })
 
@@ -1702,7 +1702,7 @@ describe('containerService - getAttachment', () => {
     return expect(containerService.getAttachment('MPFigure:12345')).rejects.toThrow(ValidationError)
   })
 
-  test('should fail if the project cannot be found', () => {
+  test('should throw MissingContainerError if the project cannot be found', () => {
     const containerService: any =
       DIContainer.sharedContainer.containerService[ContainerType.project]
 
@@ -1898,6 +1898,24 @@ describe('ContainerService - addProductionNote', () => {
     const source = 'DASHBOARD'
     await expect(containerService.createManuscriptNote(containerID, manuscriptID, content, userID, source, target)).rejects.toThrow(MissingProductionNoteError)
   })
+  test('should fail if user does not exists', async () => {
+    const containerService: any =
+        DIContainer.sharedContainer.containerService[ContainerType.project]
+    containerService.getContainer = jest.fn(() => Promise.resolve(validProject))
+    const userRebo: any = DIContainer.sharedContainer.userRepository
+    userRebo.getOne = jest.fn(() => {
+      return null
+    })
+    const repo: any = DIContainer.sharedContainer.manuscriptNotesRepository
+    repo.create = jest.fn(() => validNote1)
+    repo.getById = jest.fn(() => {})
+    const containerID = validNote1.containerID
+    const manuscriptID = validNote1.manuscriptID
+    const content = validNote1.contents
+    const userID = validUser1._id
+    const source = 'DASHBOARD'
+    await expect(containerService.createManuscriptNote(containerID, manuscriptID, content, userID, source)).rejects.toThrow(MissingUserRecordError)
+  })
 
   test('should fail if user not contributor', async () => {
     const containerService: any =
@@ -1915,7 +1933,9 @@ describe('ContainerService - addProductionNote', () => {
     const content = validNote1.contents
     const userID = validUser1._id
     const source = 'DASHBOARD'
-    await expect(containerService.createManuscriptNote(containerID, manuscriptID, content, userID, source)).rejects.toThrow(ValidationError)
+    await expect(
+      containerService.createManuscriptNote(containerID, manuscriptID, content, userID, source)
+    ).rejects.toThrow(ValidationError)
   })
 
   test('should add note', async () => {
@@ -2029,5 +2049,17 @@ describe('ContainerService - getCorrectionStatus', () => {
         'User_invalidId'
       )
     ).rejects.toThrow(ValidationError)
+  })
+})
+describe('containerService - saveSnapshot', () => {
+  test('saveSnapshot', async () => {
+    const snapRepo: any = DIContainer.sharedContainer.snapshotRepository
+    snapRepo.create = jest.fn(() => Promise.resolve())
+    const containerService: any =
+      DIContainer.sharedContainer.containerService[ContainerType.project]
+    ContainerService.userIdForSync = jest.fn(() => 'User_foo')
+
+    await containerService.saveSnapshot('someKey', 'MPProject:someProject', 'someUser', 'name')
+    expect(snapRepo.create).toBeCalled()
   })
 })

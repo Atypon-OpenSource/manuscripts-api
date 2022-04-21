@@ -33,7 +33,8 @@ import {
   submitExternalFiles,
   createManuscript,
   getCorrectionStatus,
-  createSnapshot
+  createSnapshot,
+  loadProject,
 } from '../../../../api'
 import { drop, dropBucket, seed, testDatabase } from '../../../../utilities/db'
 import { validBody, validBody2 } from '../../../../data/fixtures/credentialsRequestPayload'
@@ -41,40 +42,37 @@ import { DIContainer } from '../../../../../src/DIContainer/DIContainer'
 import {
   ValidContentTypeAcceptJsonHeader,
   authorizationHeader,
-  ValidHeaderWithApplicationKey
+  ValidHeaderWithApplicationKey,
 } from '../../../../data/fixtures/headers'
 import { validProject } from '../../../../data/fixtures/projects'
-import {
-  validLibrary
-} from '../../../../data/fixtures/libraries'
-import {
-  ContainerRole,
-  ContainerType
-} from '../../../../../src/Models/ContainerModels'
+import { validLibrary } from '../../../../data/fixtures/libraries'
+import { ContainerRole, ContainerType } from '../../../../../src/Models/ContainerModels'
 import { BucketKey } from '../../../../../src/Config/ConfigurationTypes'
-import {
-  validUser1,
-  validUser2
-} from '../../../../data/fixtures/UserRepository'
+import { validUser1, validUser2 } from '../../../../data/fixtures/UserRepository'
 import { SeedOptions } from '../../../../../src/DataAccess/Interfaces/SeedOptions'
 import { validManuscript, validManuscript1 } from '../../../../data/fixtures/manuscripts'
 import { validNote1 } from '../../../../data/fixtures/ManuscriptNote'
 import { config } from '../../../../../src/Config/Config'
 import { externalFile } from '../../../../data/fixtures/ExternalFiles'
 import _ from 'lodash'
-import { createProject, createLibraryCollection, createProjectInvitation, createLibrary } from '../../../../data/fixtures/misc'
+import {
+  createProject,
+  createLibraryCollection,
+  createProjectInvitation,
+  createLibrary,
+} from '../../../../data/fixtures/misc'
 
 jest.mock('email-templates', () =>
   jest.fn().mockImplementation(() => {
     return {
       send: jest.fn(() => Promise.resolve({})),
-      render: jest.fn(() => Promise.resolve({}))
+      render: jest.fn(() => Promise.resolve({})),
     }
   })
 )
 
 jest.mock('../../../../../src/DomainServices/External/AWS', () => ({
-  SES: { sendEmail: jest.fn((_foo, callback) => callback(null, { foo: 1 })) }
+  SES: { sendEmail: jest.fn((_foo, callback) => callback(null, { foo: 1 })) },
 }))
 
 const chance = new Chance()
@@ -116,11 +114,11 @@ describe('ContainerService - createProject', () => {
     const response: supertest.Response = await create(
       {
         ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
+        ...authHeader,
       },
       {},
       {
-        containerType: 'project'
+        containerType: 'project',
       }
     )
     expect(response.status).toBe(HttpStatus.OK)
@@ -138,11 +136,11 @@ describe('ContainerService - createProject', () => {
     const response: supertest.Response = await create(
       {
         ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
+        ...authHeader,
       },
       { _id: chance.guid() },
       {
-        containerType: 'project'
+        containerType: 'project',
       }
     )
     expect(response.status).toBe(HttpStatus.OK)
@@ -178,9 +176,8 @@ describe('ContainerService - delete', () => {
     const projectBefore = await DIContainer.sharedContainer.projectRepository.getById(
       validContainerId
     )
-    const invitationBefore = await DIContainer.sharedContainer.containerInvitationRepository.getById(
-      validInvitationId
-    )
+    const invitationBefore =
+      await DIContainer.sharedContainer.containerInvitationRepository.getById(validInvitationId)
 
     expect(projectBefore!._id).toBe(validContainerId)
     expect(invitationBefore).not.toBeNull()
@@ -188,7 +185,7 @@ describe('ContainerService - delete', () => {
     const response: supertest.Response = await deleteContainer(
       {
         ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
+        ...authHeader,
       },
       { containerID: validContainerId }
     )
@@ -217,10 +214,10 @@ describe('ContainerService - delete', () => {
     const response: supertest.Response = await deleteContainer(
       {
         ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
+        ...authHeader,
       },
       {
-        containerID: 'MPProject:valid-project-id-9'
+        containerID: 'MPProject:valid-project-id-9',
       }
     )
 
@@ -237,8 +234,7 @@ describe('containerService - addContainerUser', () => {
   })
 
   test('should add an owner to a project and return true', async () => {
-    const containerService =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+    const containerService = DIContainer.sharedContainer.containerService[ContainerType.project]
 
     await createProject('MPProject:valid-project-id')
     const didAdd = await containerService.addContainerUser(
@@ -291,14 +287,14 @@ describe('containerService - addContainerUser', () => {
     const response: supertest.Response = await addUser(
       {
         ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
+        ...authHeader,
       },
       {
         userId: validUser1._id,
-        role: ContainerRole.Viewer
+        role: ContainerRole.Viewer,
       },
       {
-        containerID: 'MPProject:valid-project-id-4'
+        containerID: 'MPProject:valid-project-id-4',
       }
     )
 
@@ -317,14 +313,14 @@ describe('containerService - addContainerUser', () => {
     const response: supertest.Response = await addUser(
       {
         ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
+        ...authHeader,
       },
       {
         userId: 'User|valid-google@manuscriptsapp.com',
-        role: ContainerRole.Viewer
+        role: ContainerRole.Viewer,
       },
       {
-        containerID: 'MPProject:valid-project-id-4'
+        containerID: 'MPProject:valid-project-id-4',
       }
     )
 
@@ -343,14 +339,14 @@ describe('containerService - addContainerUser', () => {
     const response: supertest.Response = await addUser(
       {
         ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
+        ...authHeader,
       },
       {
         userId: 'User|valid-google@manuscriptsapp.com',
-        role: ContainerRole.Viewer
+        role: ContainerRole.Viewer,
       },
       {
-        containerID: 'MPProject:valid-project-id-2'
+        containerID: 'MPProject:valid-project-id-2',
       }
     )
 
@@ -367,8 +363,7 @@ describe('containerService - addContainerUser (for libraries)', () => {
   })
 
   test('should add an owner to a library and cascade the role to library collections', async () => {
-    const containerService =
-      DIContainer.sharedContainer.containerService[ContainerType.library]
+    const containerService = DIContainer.sharedContainer.containerService[ContainerType.library]
 
     await createLibrary('MPLibrary:valid-library-id')
     await createLibraryCollection()
@@ -379,9 +374,10 @@ describe('containerService - addContainerUser (for libraries)', () => {
       validUser2
     )
 
-    const collections = await DIContainer.sharedContainer.libraryRepository.getContainedLibraryCollections(
-      validLibrary._id
-    )
+    const collections =
+      await DIContainer.sharedContainer.libraryRepository.getContainedLibraryCollections(
+        validLibrary._id
+      )
 
     expect(didAdd).toBeTruthy()
     expect(collections[0].owners.includes(validUser1._id.replace('|', '_'))).toBeTruthy()
@@ -400,9 +396,10 @@ describe('containerService - addContainerUser (for libraries)', () => {
       validUser2
     )
 
-    const collections = await DIContainer.sharedContainer.libraryRepository.getContainedLibraryCollections(
-      validLibrary._id
-    )
+    const collections =
+      await DIContainer.sharedContainer.libraryRepository.getContainedLibraryCollections(
+        validLibrary._id
+      )
 
     expect(didAdd).toBeTruthy()
     expect(collections[0].writers.includes(validUser1._id.replace('|', '_'))).toBeTruthy()
@@ -421,9 +418,10 @@ describe('containerService - addContainerUser (for libraries)', () => {
       validUser2
     )
 
-    const collections = await DIContainer.sharedContainer.libraryRepository.getContainedLibraryCollections(
-      validLibrary._id
-    )
+    const collections =
+      await DIContainer.sharedContainer.libraryRepository.getContainedLibraryCollections(
+        validLibrary._id
+      )
 
     expect(didAdd).toBeTruthy()
     expect(collections[0].viewers.includes(validUser1._id.replace('|', '_'))).toBeTruthy()
@@ -459,15 +457,15 @@ describe('containerService - manageUserRole', () => {
     const response: supertest.Response = await manageUserRole(
       {
         ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
+        ...authHeader,
       },
       {
         managedUserId: 'User|valid-user-6@manuscriptsapp.com',
         newRole: ContainerRole.Viewer,
-        secret: config.auth.serverSecret
+        secret: config.auth.serverSecret,
       },
       {
-        containerID: 'MPProject:valid-project-id-4'
+        containerID: 'MPProject:valid-project-id-4',
       }
     )
 
@@ -487,14 +485,14 @@ describe('containerService - manageUserRole', () => {
     const response: supertest.Response = await manageUserRole(
       {
         ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
+        ...authHeader,
       },
       {
         managedUserId: 'User|valid-user@manuscriptsapp.com',
-        newRole: chance.string()
+        newRole: chance.string(),
       },
       {
-        containerID: 'MPProject:valid-project-id-5'
+        containerID: 'MPProject:valid-project-id-5',
       }
     )
 
@@ -514,14 +512,14 @@ describe('containerService - manageUserRole', () => {
     const response: supertest.Response = await manageUserRole(
       {
         ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
+        ...authHeader,
       },
       {
         managedUserId: 'User|valid-user-3@manuscriptsapp.com',
-        newRole: ContainerRole.Viewer
+        newRole: ContainerRole.Viewer,
       },
       {
-        containerID: 'MPProject:valid-project-id-4'
+        containerID: 'MPProject:valid-project-id-4',
       }
     )
 
@@ -541,14 +539,14 @@ describe('containerService - manageUserRole', () => {
     const response: supertest.Response = await manageUserRole(
       {
         ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
+        ...authHeader,
       },
       {
         managedUserId: 'User|valid-user-2@manuscriptsapp.com',
-        newRole: ContainerRole.Owner
+        newRole: ContainerRole.Owner,
       },
       {
-        containerID: 'MPProject:valid-project-id-4'
+        containerID: 'MPProject:valid-project-id-4',
       }
     )
 
@@ -568,14 +566,14 @@ describe('containerService - manageUserRole', () => {
     const response: supertest.Response = await manageUserRole(
       {
         ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
+        ...authHeader,
       },
       {
         managedUserId: 'User|valid-user-2@manuscriptsapp.com',
-        newRole: ContainerRole.Writer
+        newRole: ContainerRole.Writer,
       },
       {
-        containerID: 'MPProject:valid-project-id-4'
+        containerID: 'MPProject:valid-project-id-4',
       }
     )
 
@@ -595,14 +593,14 @@ describe('containerService - manageUserRole', () => {
     const response: supertest.Response = await manageUserRole(
       {
         ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
+        ...authHeader,
       },
       {
         managedUserId: 'User|valid-user-2@manuscriptsapp.com',
-        newRole: null
+        newRole: null,
       },
       {
-        containerID: 'MPProject:valid-project-id-4'
+        containerID: 'MPProject:valid-project-id-4',
       }
     )
 
@@ -619,32 +617,31 @@ describe('containerService - manageUserRole', () => {
 
     const randomId = chance.integer()
 
-    await DIContainer.sharedContainer.containerInvitationRepository.create(
-      {
-        _id: `MPContainerInvitation:valid-project-id-${randomId}`,
-        invitedUserEmail: 'valid-user-2@manuscriptsapp.com',
-        invitingUserID: 'User_invitingUser',
-        invitingUserProfile: {
-          _id: 'MPUserProfile:invitingUser',
-          userID: 'User_invitingUser',
-          objectType: 'MPUserProfile',
-          bibliographicName: {
-            _id: 'MPBibliographicName:valid-bibliographic-name',
-            objectType: 'MPBibliographicName',
-            given: 'Kavin'
-          },
-          createdAt: 123,
-          updatedAt: 123
+    await DIContainer.sharedContainer.containerInvitationRepository.create({
+      _id: `MPContainerInvitation:valid-project-id-${randomId}`,
+      invitedUserEmail: 'valid-user-2@manuscriptsapp.com',
+      invitingUserID: 'User_invitingUser',
+      invitingUserProfile: {
+        _id: 'MPUserProfile:invitingUser',
+        userID: 'User_invitingUser',
+        objectType: 'MPUserProfile',
+        bibliographicName: {
+          _id: 'MPBibliographicName:valid-bibliographic-name',
+          objectType: 'MPBibliographicName',
+          given: 'Kavin',
         },
-        objectType: 'MPContainerInvitation',
-        containerID: 'MPProject:valid-project-id-4',
-        role: ContainerRole.Writer
-      }
-    )
+        createdAt: 123,
+        updatedAt: 123,
+      },
+      objectType: 'MPContainerInvitation',
+      containerID: 'MPProject:valid-project-id-4',
+      role: ContainerRole.Writer,
+    })
 
-    const beforeInvitation = await DIContainer.sharedContainer.containerInvitationRepository.getById(
-      `MPContainerInvitation:valid-project-id-${randomId}`
-    )
+    const beforeInvitation =
+      await DIContainer.sharedContainer.containerInvitationRepository.getById(
+        `MPContainerInvitation:valid-project-id-${randomId}`
+      )
 
     expect(beforeInvitation).not.toBeNull()
 
@@ -653,14 +650,14 @@ describe('containerService - manageUserRole', () => {
     const response: supertest.Response = await manageUserRole(
       {
         ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
+        ...authHeader,
       },
       {
         managedUserId: 'User|valid-user-2@manuscriptsapp.com',
-        newRole: null
+        newRole: null,
       },
       {
-        containerID: 'MPProject:valid-project-id-4'
+        containerID: 'MPProject:valid-project-id-4',
       }
     )
 
@@ -670,7 +667,9 @@ describe('containerService - manageUserRole', () => {
 
     expect(afterInvitation).toBeNull()
     expect(response.status).toBe(HttpStatus.OK)
-    await DIContainer.sharedContainer.containerInvitationRepository.purge(`MPContainerInvitation:valid-project-id-${randomId}`)
+    await DIContainer.sharedContainer.containerInvitationRepository.purge(
+      `MPContainerInvitation:valid-project-id-${randomId}`
+    )
   })
 })
 
@@ -702,11 +701,11 @@ describe('ContainerService - getArchive', () => {
     const response: supertest.Response = await getArchive(
       {
         ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
+        ...authHeader,
       },
       {},
       {
-        containerID: 'MPProject:valid-project-id-2'
+        containerID: 'MPProject:valid-project-id-2',
       }
     )
     expect(response.status).toBe(HttpStatus.OK)
@@ -725,12 +724,73 @@ describe('ContainerService - getArchive', () => {
     const response: supertest.Response = await getArchive(
       {
         ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
+        ...authHeader,
       },
       {},
       {
         containerID: 'MPProject:valid-project-id-2',
-        manuscriptID: 'MPManuscript:valid-manuscript-id-1'
+        manuscriptID: 'MPManuscript:valid-manuscript-id-1',
+      }
+    )
+    expect(response.status).toBe(HttpStatus.OK)
+  })
+})
+
+describe('ContainerService - loadProject', () => {
+  beforeEach(async () => {
+    await drop()
+    await dropBucket(BucketKey.Data)
+    await seed({ users: true, applications: true})
+    await seedAccounts()
+    await DIContainer.sharedContainer.syncService.createUserProfile({
+      _id: `User|${validBody.email}`,
+      name: 'foobar',
+      email: validBody.email,
+    })
+  })
+
+  test('should successfully loadProject', async () => {
+    const loginResponse: supertest.Response = await basicLogin(
+      validBody,
+      ValidHeaderWithApplicationKey
+    )
+
+    expect(loginResponse.status).toBe(HttpStatus.OK)
+
+    const authHeader = authorizationHeader(loginResponse.body.token)
+    await createProject('MPProject:valid-project-id-2')
+    const response: supertest.Response = await loadProject(
+      {
+        ...ValidContentTypeAcceptJsonHeader,
+        ...authHeader,
+      },
+      {},
+      {
+        containerID: 'MPProject:valid-project-id-2',
+      }
+    )
+    expect(response.status).toBe(HttpStatus.OK)
+  })
+
+  test('should successfully loadProject if manuscript provided', async () => {
+    const loginResponse: supertest.Response = await basicLogin(
+      validBody,
+      ValidHeaderWithApplicationKey
+    )
+
+    expect(loginResponse.status).toBe(HttpStatus.OK)
+
+    const authHeader = authorizationHeader(loginResponse.body.token)
+    await createProject('MPProject:valid-project-id-2')
+    const response: supertest.Response = await loadProject(
+      {
+        ...ValidContentTypeAcceptJsonHeader,
+        ...authHeader,
+      },
+      {},
+      {
+        containerID: 'MPProject:valid-project-id-2',
+        manuscriptID: 'MPManuscript:valid-manuscript-id-1',
       }
     )
     expect(response.status).toBe(HttpStatus.OK)
@@ -765,11 +825,11 @@ describe('ContainerService - accessToken', () => {
     const response: supertest.Response = await accessToken(
       {
         ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
+        ...authHeader,
       },
       {
         containerID: 'MPProject:valid-project-id-2',
-        scope: 'jupyterhub'
+        scope: 'jupyterhub',
       }
     )
     expect(response.status).toBe(HttpStatus.OK)
@@ -803,11 +863,11 @@ describe('ContainerService - pickerBundle', () => {
     const accessTokenResponse: supertest.Response = await accessToken(
       {
         ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
+        ...authHeader,
       },
       {
         containerID: `MPProject:valid-project-id-2`,
-        scope: 'file-picker'
+        scope: 'file-picker',
       }
     )
     expect(accessTokenResponse.status).toBe(HttpStatus.OK)
@@ -816,12 +876,12 @@ describe('ContainerService - pickerBundle', () => {
     const pickerBundleResponse: supertest.Response = await pickerBundle(
       {
         ...ValidContentTypeAcceptJsonHeader,
-        ...accessTokenHeader
+        ...accessTokenHeader,
       },
       {
         containerType: 'project',
         containerID: `MPProject:valid-project-id-2`,
-        manuscriptID: validManuscript._id
+        manuscriptID: validManuscript._id,
       }
     )
     expect(pickerBundleResponse.status).toBe(HttpStatus.OK)
@@ -855,15 +915,16 @@ describe('ContainerService - addProductionNote', () => {
     const addProductionNoteResponse: supertest.Response = await addProductionNote(
       {
         ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
+        ...authHeader,
       },
       {
         containerID: `MPProject:valid-project-id-11`,
-        manuscriptID: validManuscript1._id
-      },{
+        manuscriptID: validManuscript1._id,
+      },
+      {
         content: 'Test content',
         connectUserID: 'valid-connect-user-6-id',
-        source: 'DASHBOARD'
+        source: 'DASHBOARD',
       }
     )
     expect(addProductionNoteResponse.status).toBe(HttpStatus.OK)
@@ -883,16 +944,17 @@ describe('ContainerService - addProductionNote', () => {
     const addProductionNoteResponse: supertest.Response = await addProductionNote(
       {
         ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
+        ...authHeader,
       },
       {
         containerID: `MPProject:valid-project-id-11`,
-        manuscriptID: validManuscript1._id
-      },{
+        manuscriptID: validManuscript1._id,
+      },
+      {
         content: 'Test content (reply)',
         target: validNote1._id,
         connectUserID: 'valid-connect-user-6-id',
-        source: 'DASHBOARD'
+        source: 'DASHBOARD',
       }
     )
 
@@ -929,19 +991,17 @@ describe('ContainerService - createManuscript', () => {
     const response: supertest.Response = await createManuscript(
       {
         ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
+        ...authHeader,
       },
       {
-        containerID: `MPProject:valid-project-id-11`
+        containerID: `MPProject:valid-project-id-11`,
       }
     )
     expect(response.status).toBe(HttpStatus.OK)
-    expect(
-      JSON.parse(response.text).id.startsWith('MPManuscript')
-    ).toBeTruthy()
+    expect(JSON.parse(response.text).id.startsWith('MPManuscript')).toBeTruthy()
   })
 
-  test('should create a manuscript', async () => {
+  test('should create a manuscript 1', async () => {
     const loginResponse: supertest.Response = await basicLogin(
       validBody2,
       ValidHeaderWithApplicationKey
@@ -953,22 +1013,20 @@ describe('ContainerService - createManuscript', () => {
     const response: supertest.Response = await createManuscript(
       {
         ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
+        ...authHeader,
       },
       {
-        containerID: `MPProject:valid-project-id-11`
+        containerID: `MPProject:valid-project-id-11`,
       },
       {
-        templateId: 'MPManuscriptTemplate:valid-template-1'
+        templateId: 'MPManuscriptTemplate:valid-template-1',
       }
     )
     expect(response.status).toBe(HttpStatus.OK)
-    expect(
-      JSON.parse(response.text).id.startsWith('MPManuscript')
-    ).toBeTruthy()
+    expect(JSON.parse(response.text).id.startsWith('MPManuscript')).toBeTruthy()
   })
 
-  test('should create a manuscript', async () => {
+  test('should create a manuscript 2', async () => {
     const loginResponse: supertest.Response = await basicLogin(
       validBody2,
       ValidHeaderWithApplicationKey
@@ -980,19 +1038,18 @@ describe('ContainerService - createManuscript', () => {
     const response: supertest.Response = await createManuscript(
       {
         ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
+        ...authHeader,
       },
       {
-        containerID: `MPProject:valid-project-id-11`
+        containerID: `MPProject:valid-project-id-11`,
       },
       {
-        templateId: 'MPManuscriptTemplate:www-zotero-org-styles-nature-genetics-Nature-Genetics-Journal-Publication-Article'
+        templateId:
+          'MPManuscriptTemplate:www-zotero-org-styles-nature-genetics-Nature-Genetics-Journal-Publication-Article',
       }
     )
     expect(response.status).toBe(HttpStatus.OK)
-    expect(
-      JSON.parse(response.text).id.startsWith('MPManuscript')
-    ).toBeTruthy()
+    expect(JSON.parse(response.text).id.startsWith('MPManuscript')).toBeTruthy()
   })
 })
 
@@ -1021,11 +1078,11 @@ describe('ContainerService - getProductionNotes', () => {
     const getProductionNoteResponse: supertest.Response = await getProductionNotes(
       {
         ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
+        ...authHeader,
       },
       {
         containerID: `MPProject:valid-project-id-11`,
-        manuscriptID: validManuscript._id
+        manuscriptID: validManuscript._id,
       }
     )
     expect(getProductionNoteResponse.status).toBe(HttpStatus.OK)
@@ -1058,13 +1115,15 @@ describe('ContainerService - addExternalFiles', () => {
     const externalFilesResponse: supertest.Response = await submitExternalFiles(
       {
         ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
+        ...authHeader,
       },
       {
-        content: [{
-          ...noId,
-          publicUrl: 'http://exampleUrl.com/path3'
-        }]
+        content: [
+          {
+            ...noId,
+            publicUrl: 'https://exampleUrl.com/path3',
+          },
+        ],
       }
     )
     expect(externalFilesResponse.status).toBe(HttpStatus.OK)
@@ -1082,10 +1141,10 @@ describe('ContainerService - addExternalFiles', () => {
     const externalFilesResponse: supertest.Response = await submitExternalFiles(
       {
         ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
+        ...authHeader,
       },
       {
-        content: [noId]
+        content: [noId],
       }
     )
     expect(externalFilesResponse.status).toBe(HttpStatus.OK)
@@ -1110,10 +1169,10 @@ describe('ContainerService - getCorrectionStatus', () => {
     const response: supertest.Response = await getCorrectionStatus(
       {
         ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
+        ...authHeader,
       },
       {
-        containerID: 'MPProject:valid-project-id-2'
+        containerID: 'MPProject:valid-project-id-2',
       }
     )
     const status = response.body
@@ -1134,15 +1193,14 @@ describe('ContainerService - getCorrectionStatus', () => {
     const response: supertest.Response = await getCorrectionStatus(
       {
         ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
+        ...authHeader,
       },
       {
-        containerID: 'MPProject:valid-project-id-4'
+        containerID: 'MPProject:valid-project-id-4',
       }
     )
     expect(response.status).toBe(HttpStatus.NO_CONTENT)
   })
-
 })
 
 describe('ContainerService - saveSnapshot', () => {
@@ -1162,18 +1220,20 @@ describe('ContainerService - saveSnapshot', () => {
     const shacklesService: any = DIContainer.sharedContainer.shacklesService
     shacklesService.createSnapshot = jest.fn(() => {
       return {
-        key: 'testKey'
+        key: 'testKey',
       }
     })
     await createProject('MPProject:valid-project-id-4')
     const saveSnapshotResponse: supertest.Response = await createSnapshot(
       {
         ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
-      },{
-        containerID: 'MPProject:valid-project-id-4'
-      }, {
-        name: 'testSnap'
+        ...authHeader,
+      },
+      {
+        containerID: 'MPProject:valid-project-id-4',
+      },
+      {
+        name: 'testSnap',
       }
     )
     expect(saveSnapshotResponse.status).toBe(HttpStatus.OK)
