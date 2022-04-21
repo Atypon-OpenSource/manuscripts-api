@@ -30,7 +30,6 @@ import * as HttpStatus from 'http-status-codes'
 import { validManuscript } from '../../../../../data/fixtures/manuscripts'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
 import { createProject, createManuscript } from '../../../../../data/fixtures/misc'
-import { log } from '../../../../../../src/Utilities/Logger'
 
 
 let db: any = null
@@ -171,8 +170,15 @@ describe('ContainerService - createProject', () => {
 describe('ContainerService - save/load Project', () => {
   beforeEach(async () => {
     await drop()
-    await dropBucket(BucketKey.Data)
+    await dropBucket(BucketKey.Project)
     await seed(seedOptions)
+    await DIContainer.sharedContainer.syncService.createUserProfile(
+      {
+        _id: `User|${validBody.email}`,
+        name: 'foobar',
+        email: validBody.email
+      }
+    )
   })
   test('should save project JSON', async () => {
     const loginResponse: supertest.Response = await basicLogin(
@@ -194,7 +200,6 @@ describe('ContainerService - save/load Project', () => {
       },
       'test/data/fixtures/sample/index.manuscript-json'
     )
-    log.error(JSON.stringify(sendFileResponse))
     expect(sendFileResponse.status).toBe(HttpStatus.OK)
   })
 })
