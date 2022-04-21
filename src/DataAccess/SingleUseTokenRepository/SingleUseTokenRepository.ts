@@ -28,16 +28,6 @@ import { User } from '../../Models/UserModels'
 import { SingleUseTokenQueryCriteria } from '../Interfaces/QueryCriteria'
 import { required, date } from '../validators'
 
-import { Chance } from 'chance'
-
-const chance = new Chance()
-const fakeToken: NewSingleUseToken = {
-  _id: chance.string(),
-  userId: chance.string(),
-  tokenType: chance.string() as any,
-  createdAt: chance.timestamp(),
-}
-
 /**
  * Manages tokens persistent storage operations.
  */
@@ -88,10 +78,6 @@ export class SingleUseTokenRepository
         },
       },
     }
-  }
-
-  public buildSemiFake(data: any): SingleUseToken {
-    return Object.assign(fakeToken, data)
   }
 
   // The number | undefined is intentional: expiry value accepted by patch options is `number | undefined`.

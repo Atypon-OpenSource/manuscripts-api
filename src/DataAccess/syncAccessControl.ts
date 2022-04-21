@@ -14,20 +14,8 @@
  * limitations under the License.
  */
 
-import * as _ from 'lodash'
 import { AccessControlRepository } from './AccessControlRepository'
-
-/*function requireAdmin(): Promise<void> {
-    throw { forbidden: 'require admin' };
-}*/
-
-/*function validate(_doc: any): boolean {
-  return false
-}*/
-
-function equal(a: any, b: any): boolean {
-  return _.isEqual(a, b)
-}
+const { equal, validate } = require('./jsonSchemaValidator')
 
 function access(users: string[], channels: string[]): any {
   return () => AccessControlRepository.access(users, channels)
@@ -59,7 +47,7 @@ function requireUser(users: string[], userId: string | undefined): void {
 }
 
 export async function syncAccessControl(doc: any, oldDoc: any, userId?: string): Promise<void> {
-  //let errorMessage
+  let errorMessage
 
   // deferreds will be called in the end, otherwise all will fail
   let channelDeferreds = []
@@ -77,9 +65,9 @@ export async function syncAccessControl(doc: any, oldDoc: any, userId?: string):
     throw { forbidden: '_id must have objectType as prefix' }
   }
 
-  //let isAllowedToUndelete = !!doc.containerID
+  let isAllowedToUndelete = !!doc.containerID
 
-  /*if (oldDoc && oldDoc._deleted && !isAllowedToUndelete) {
+  if (oldDoc && oldDoc._deleted && !isAllowedToUndelete) {
     // Only allow admin port to undelete documents for which isAllowedToUndelete is falsy.
     //await requireAdmin();
 
@@ -107,7 +95,7 @@ export async function syncAccessControl(doc: any, oldDoc: any, userId?: string):
       // prettier-ignore
       throw({ forbidden: errorMessage });
     }
-  }*/
+  }
 
   /*if (doc.locked || (oldDoc && oldDoc.locked)) {
     // Only allow admin port to create, modify or delete locked objects
@@ -459,7 +447,7 @@ export async function syncAccessControl(doc: any, oldDoc: any, userId?: string):
       }
     }
     if (hasMutated('readBy')) {
-      if (doc.readBy.includes(userId) && rwChannelName) {
+      if (doc.readBy.includes(doc.contributions[0].profileID) && rwChannelName) {
         await requireAccess([rwChannelName], userId)
       } else {
         throw {

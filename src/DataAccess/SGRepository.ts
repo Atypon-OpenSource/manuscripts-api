@@ -73,8 +73,7 @@ export abstract class SGRepository<
   public async create(newDocument: TNewEntity, userId?: string): Promise<TEntity> {
     const docId = this.documentId((newDocument as any)._id)
     const createdAt = timestamp()
-    const revision = uuid_v4()
-    const depth = 0
+    const revision = `0-${uuid_v4()}`
 
     const prismaDoc = {
       _id: docId,
@@ -85,9 +84,7 @@ export abstract class SGRepository<
         _revisions: {
           ids: [revision],
         },
-        _rev: `${depth}-${revision}`,
-        _parent_rev: null,
-        _depth: depth,
+        _rev: revision,
         ...(newDocument as any),
         _id: docId,
       },
@@ -95,7 +92,7 @@ export abstract class SGRepository<
 
     if (userId) {
       try {
-        await this.validate(prismaDoc.data, null, userId)
+        await this.validate({ ...prismaDoc.data }, null, userId)
       } catch (e) {
         throw new SyncError(e.forbidden, {})
       }
@@ -133,7 +130,7 @@ export abstract class SGRepository<
             const doc = this.buildModel(res)
             if (userId) {
               try {
-                await this.validate(doc, doc, userId)
+                await this.validate({ ...doc }, { ...doc }, userId)
               } catch (e) {
                 return Promise.reject(e)
               }
@@ -212,17 +209,15 @@ export abstract class SGRepository<
       throw new SyncError(`Rev mismatched ${updatedDocument._rev} with ${document._rev}`, {})
     }
 
-    const revision = uuid_v4()
-    const depth = (document._depth || 0) + 1
+    const depth = document._rev ? parseInt(document._rev.split('-')[0]) + 1 : 1
+    const revision = `${depth}-${uuid_v4()}`
     const revisions = document._revisions || { ids: [] }
     revisions.ids.unshift(revision)
 
     const revisedUpdatedDocument = {
       ...updatedDocument,
       _revisions: revisions,
-      _rev: `${depth}-${revision}`,
-      _parent_rev: `${depth - 1}-${revisions.ids[1]}`,
-      _depth: depth,
+      _rev: revision,
     }
 
     const documentToUpdate = {
@@ -236,7 +231,7 @@ export abstract class SGRepository<
 
     if (userId) {
       try {
-        await this.validate(documentToUpdate.data, document, userId)
+        await this.validate({ ...documentToUpdate.data }, { ...document }, userId)
       } catch (e) {
         if (e.forbidden) {
           throw new SyncError(e.forbidden, {})
@@ -378,6 +373,12 @@ export abstract class SGRepository<
   }
 
   private validate(doc: any, oldDoc: any, userId?: string): Promise<void> {
+    if (doc.expiry) {
+      delete doc.expiry
+    }
+    if (oldDoc && oldDoc.expiry) {
+      delete oldDoc.expiry
+    }
     return syncAccessControl(doc, oldDoc, userId)
   }
 }

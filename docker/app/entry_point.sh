@@ -3,5 +3,5 @@ set -e
 
 
 sleep 2
-npm run migrate-prisma
+npm run migrate-prisma-deploy
 npm run run

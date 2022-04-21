@@ -21,14 +21,6 @@ import { User, INewUser, IUpdateUser, UserRow, userForRow } from '../../Models/U
 import { required, maxLength, validEmail } from '../validators'
 import { DatabaseError } from '../../Errors'
 import { Prisma } from '@prisma/client'
-import { Chance } from 'chance'
-
-const chance = new Chance()
-const fakeUser: User = {
-  _id: chance.string(),
-  name: chance.string(),
-  email: chance.email(),
-}
 
 /**
  * Manages user persistent storage operations.
@@ -80,10 +72,6 @@ export class UserRepository
    */
   public buildModel(user: UserRow): User {
     return userForRow(user)
-  }
-
-  public buildSemiFake(data: any): User {
-    return Object.assign(fakeUser, data)
   }
 
   /**

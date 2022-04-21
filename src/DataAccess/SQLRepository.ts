@@ -64,10 +64,6 @@ export abstract class SQLRepository<
 
   public abstract buildSchemaDefinition(): any
 
-  public buildSemiFake(data: any): TEntity {
-    return data
-  }
-
   /**
    * Returns document type.
    */
@@ -222,7 +218,7 @@ export abstract class SQLRepository<
     }
 
     ensureValidDocumentType(documentToUpdate, this.documentType)
-    await this.validateModel(this.buildSemiFake(documentToUpdate))
+    await this.validateModel(documentToUpdate)
 
     const prismaDoc = this.buildPrismaModel(documentToUpdate)
 

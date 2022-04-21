@@ -791,7 +791,7 @@ describe('ContainerService - pickerBundle', () => {
     )
   })
 
-  xtest('should return html bundle', async () => {
+  test('should return html bundle', async () => {
     const loginResponse: supertest.Response = await basicLogin(
       validBody,
       ValidHeaderWithApplicationKey

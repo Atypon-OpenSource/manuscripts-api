@@ -20,16 +20,6 @@ import { InvitationToken, UpdateInvitationToken } from '../../Models/UserModels'
 import { InvitationTokenQueryCriteria } from '../Interfaces/QueryCriteria'
 import { required } from '../validators'
 
-import { Chance } from 'chance'
-
-const chance = new Chance()
-const fakeToken: InvitationToken = {
-  _id: chance.string(),
-  containerID: chance.string(),
-  permittedRole: 'viewer' as any,
-  token: chance.string(),
-}
-
 /**
  * Manages invitation token persistent storage operations.
  */
@@ -79,9 +69,5 @@ export class InvitationTokenRepository
    */
   public buildModel(invitationToken: InvitationToken): InvitationToken {
     return { ...invitationToken }
-  }
-
-  public buildSemiFake(data: any): InvitationToken {
-    return Object.assign(fakeToken, data)
   }
 }

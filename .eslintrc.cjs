@@ -37,4 +37,5 @@ module.exports = {
         'no-useless-escape': 'off',
         'promise/catch-or-return': 'off'
     },
+    "ignorePatterns": ['**/*.js']
 }

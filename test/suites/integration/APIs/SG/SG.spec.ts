@@ -83,8 +83,7 @@ describe('SG - CRUD', () => {
     const doc = response.body
     currentRev = doc._rev
     expect(doc).toEqual(expect.objectContaining(project))
-    expect(doc._rev).toEqual(`${doc._depth}-${doc._revisions.ids[0]}`)
-    expect(doc._parent_rev).toBeNull()
+    expect(doc._rev).toEqual(`${doc._revisions.ids[0]}`)
 
     const channels = await AccessControlRepository.getChannels(project._id)
     expect(channels.length).toEqual(8)
@@ -122,8 +121,7 @@ describe('SG - CRUD', () => {
     currentRev = doc._rev
     expect(doc.viewers).toEqual(body.viewers)
     expect(doc).toEqual(expect.objectContaining({ ...project, ...body }))
-    expect(doc._rev).toEqual(`${doc._depth}-${doc._revisions.ids[0]}`)
-    expect(doc._parent_rev).toEqual(`${doc._depth - 1}-${doc._revisions.ids[1]}`)
+    expect(doc._rev).toEqual(`${doc._revisions.ids[0]}`)
   })
 
   test('should fail patch if not the owner', async () => {

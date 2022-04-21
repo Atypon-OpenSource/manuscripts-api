@@ -337,12 +337,12 @@ describe('sync access control', () => {
         Object.assign({}, validObject), 'User_bill@example.com')).resolves
 
         await expect(syncAccessControl(Object.assign({}, validObject, { 
-            readBy: []
+            readBy: ['MPUserProfile:foobarbaz2344']
         }),
         Object.assign({}, validObject), 'User_bill@example.com')).rejects.toEqual({ forbidden: 'User can set status "read" only for himself and cannot unset it' })
     
         await expect(syncAccessControl(Object.assign({}, validObject, { 
-            readBy: ['User_bill@example.com']
+            readBy: ['MPUserProfile:foobarbaz']
         }),
         Object.assign({}, validObject), 'User_bill@example.com')).resolves
     
