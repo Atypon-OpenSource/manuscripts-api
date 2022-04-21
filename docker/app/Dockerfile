@@ -26,6 +26,7 @@ EXPOSE 3000
 
 RUN npm run attach-prisma
 RUN npm run build-app
+RUN ./bin/build-validator-function.js
 
 ENTRYPOINT ["/bin/bash"]
 CMD ["/usr/src/app/entry_point.sh"]

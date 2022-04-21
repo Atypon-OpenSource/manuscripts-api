@@ -166,6 +166,8 @@ In the past, access control happened via a sync function through the SyncGateway
 
 `requireAdmin` has been removed because there is no SG Admin API anymore
 
+When manuscripts-json-schema changes, we must redeploy the API in order to build the correct json schema validator function
+
 ## CRUD Route
 
 This Route is exposing direct CRUD operations with access control like in [SyncGateway public REST API Document schema](https://docs.couchbase.com/sync-gateway/current/rest-api.html#/Document).

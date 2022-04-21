@@ -20,18 +20,6 @@ import { QueryCriteria } from '../Interfaces/QueryCriteria'
 import { UserStatus, UpdateUserStatus } from '../../Models/UserModels'
 import { date, objectValuedObject } from '../validators'
 
-import { Chance } from 'chance'
-
-const chance = new Chance()
-const fakeStatus: UserStatus = {
-  _id: chance.string(),
-  password: chance.string(),
-  isVerified: chance.bool(),
-  blockUntil: chance.date(),
-  createdAt: chance.date(),
-  deviceSessions: {},
-}
-
 /**
  * Manages user status persistent storage operations.
  */
@@ -87,10 +75,6 @@ export class UserStatusRepository
         type: 'boolean',
       },
     }
-  }
-
-  public buildSemiFake(data: any): UserStatus {
-    return Object.assign(fakeStatus, data)
   }
 
   /**
