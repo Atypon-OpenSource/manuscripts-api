@@ -412,7 +412,7 @@ describe('ProjectController', () => {
       DIContainer.sharedContainer.containerService[ContainerType.project].addManuscript = jest.fn(
         async () => Promise.resolve()
       )
-      DIContainer.sharedContainer.manuscriptRepository.update = jest.fn()
+      DIContainer.sharedContainer.manuscriptRepository.patch = jest.fn()
 
       const json = {
         data: [
@@ -430,7 +430,7 @@ describe('ProjectController', () => {
         'MPManuscript:foo-bar-baz'
       )
 
-      expect(DIContainer.sharedContainer.manuscriptRepository.update).toBeCalled()
+      expect(DIContainer.sharedContainer.manuscriptRepository.patch).toBeCalled()
       expect(
         DIContainer.sharedContainer.containerService[ContainerType.project].addManuscript
       ).toBeCalled()

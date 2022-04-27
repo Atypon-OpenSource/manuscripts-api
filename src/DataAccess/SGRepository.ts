@@ -189,55 +189,23 @@ export abstract class SGRepository<
   /**
    * Replaces existing document.
    */
-  public async update(
-    id: string,
-    updatedDocument: TUpdateEntity,
-    userId?: string
-  ): Promise<TEntity> {
-    const docId = this.documentId(id)
-    const document = await this.getById(docId, userId)
+  public async update(updatedDocument: TUpdateEntity): Promise<TEntity> {
+    const docId = this.documentId(updatedDocument._id as any)
 
-    if (!document) {
-      throw new ValidationError(`Document with id ${id} does not exist`, id)
-    }
-
-    if ((document as any).objectType !== this.objectType) {
-      throw new ValidationError(`Object type mismatched`, (updatedDocument as any).objectType)
-    }
-
-    if (updatedDocument._rev !== document._rev) {
-      throw new SyncError(`Rev mismatched ${updatedDocument._rev} with ${document._rev}`, {})
-    }
-
-    const depth = document._rev ? parseInt(document._rev.split('-')[0]) + 1 : 1
+    const depth = updatedDocument._rev ? parseInt(updatedDocument._rev.split('-')[0]) + 1 : 1
     const revision = `${depth}-${uuid_v4()}`
-    const revisions = document._revisions || { ids: [] }
+    const revisions = updatedDocument._revisions || { ids: [] }
     revisions.ids.unshift(revision)
-
-    const revisedUpdatedDocument = {
-      ...updatedDocument,
-      _revisions: revisions,
-      _rev: revision,
-    }
 
     const documentToUpdate = {
       _id: docId,
       data: {
-        objectType: this.objectType,
         updatedAt: timestamp(),
-        ...(revisedUpdatedDocument as any),
+        ...updatedDocument,
+        _revisions: revisions,
+        _rev: revision,
       },
     } as any
-
-    if (userId) {
-      try {
-        await this.validate({ ...documentToUpdate.data }, { ...document }, userId)
-      } catch (e) {
-        if (e.forbidden) {
-          throw new SyncError(e.forbidden, {})
-        }
-      }
-    }
 
     const prismaDoc = this.buildPrismaModel(documentToUpdate)
 
@@ -276,13 +244,32 @@ export abstract class SGRepository<
       throw new ValidationError(`Document with id ${id} does not exist`, id)
     }
 
+    const currentRev = document._rev
     const patchedDocument = _.mergeWith(
       document,
       dataToPatch,
       (_documentValue: any, patchValue: any) => patchValue
     ) as any
 
-    return this.update(docId, patchedDocument, userId)
+    if (patchedDocument.objectType !== this.objectType) {
+      throw new ValidationError(`Object type mismatched`, patchedDocument.objectType)
+    }
+
+    if (patchedDocument._rev !== currentRev) {
+      throw new SyncError(`Rev mismatched ${patchedDocument._rev} with ${currentRev}`, {})
+    }
+
+    if (userId) {
+      try {
+        await this.validate({ ...patchedDocument }, { ...document }, userId)
+      } catch (e) {
+        if (e.forbidden) {
+          throw new SyncError(e.forbidden, {})
+        }
+      }
+    }
+
+    return this.update(patchedDocument)
   }
 
   /**
@@ -361,7 +348,7 @@ export abstract class SGRepository<
       const docId = this.documentId(doc._id)
       const dataToPatch = _.omit(doc, ['_id', 'id', 'data'])
       promises.push(
-        this.patch(docId, dataToPatch, userId).catch((err) => {
+        this.patchSafe(docId, dataToPatch, userId).catch((err) => {
           if (err.statusCode === HttpStatus.BAD_REQUEST || err.forbidden) {
             return this.create(doc, userId)
           }
@@ -370,6 +357,49 @@ export abstract class SGRepository<
     }
 
     return Promise.all(promises)
+  }
+
+  /**
+   * same as patch/update but without objectType validation
+   * used by bulkDocs only
+   */
+  public async patchSafe(id: string, dataToPatch: TPatchEntity, userId?: string): Promise<TEntity> {
+    const docId = this.documentId(id)
+    let document
+    try {
+      document = await this.getById(docId, userId)
+    } catch (e) {
+      if (e.name === 'SyncError') {
+        throw new SyncError(e.forbidden, {})
+      }
+    }
+
+    if (!document) {
+      throw new ValidationError(`Document with id ${id} does not exist`, id)
+    }
+
+    const currentRev = document._rev
+    const patchedDocument = _.mergeWith(
+      document,
+      dataToPatch,
+      (_documentValue: any, patchValue: any) => patchValue
+    ) as any
+
+    if (patchedDocument._rev !== currentRev) {
+      throw new SyncError(`Rev mismatched ${patchedDocument._rev} with ${currentRev}`, {})
+    }
+
+    if (userId) {
+      try {
+        await this.validate({ ...patchedDocument }, { ...document }, userId)
+      } catch (e) {
+        if (e.forbidden) {
+          throw new SyncError(e.forbidden, {})
+        }
+      }
+    }
+
+    return this.update(patchedDocument)
   }
 
   private validate(doc: any, oldDoc: any, userId?: string): Promise<void> {

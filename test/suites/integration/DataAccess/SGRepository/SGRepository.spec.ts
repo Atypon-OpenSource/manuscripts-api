@@ -97,14 +97,6 @@ describe('SGRepository update', () => {
     updatedAt: new Date().getMilliseconds(),
   }
 
-  test('should fail if id does not exists in the database', () => {
-    const repository = new ContainerInvitationRepository(BucketKey.Data, db)
-
-    return expect(repository.update('not-in-db', invitation)).rejects.toThrowError(
-      ValidationError
-    )
-  })
-
   test('should update user role successfully', async () => {
     const repository = new ContainerInvitationRepository(BucketKey.Data, db)
     const beforeUpdate: any = await repository.getById(validProjectInvitationObject._id)
@@ -117,7 +109,6 @@ describe('SGRepository update', () => {
     }
 
     await repository.update(
-      validProjectInvitationObject._id,
       projectInvitationUpdatedData as ContainerInvitation
     )
     const afterUpdate: any = await repository.getById(validProjectInvitationObject._id)
@@ -135,9 +126,7 @@ describe('SGRepository patch', () => {
   test('should fail if id does not exists in the database', () => {
     const repository = new ProjectRepository(BucketKey.Data, db)
 
-    return expect(repository.patch('not-in-db', validProject)).rejects.toThrowError(
-      ValidationError
-    )
+    return expect(repository.patch('not-in-db', validProject)).rejects.toThrowError(ValidationError)
   })
 
   test('should patch user successfully', async () => {
@@ -208,6 +197,31 @@ describe('SGRepository bulkDocs', () => {
     await repository.bulkDocs([{ ...project, title: 'foo' }])
     const updatedProject: any = await repository.getById(validProject2._id)
     expect(updatedProject.title).toBe('foo')
+  })
+
+  test('random objects', async () => {
+    const repository = new ProjectRepository(BucketKey.Data, db)
+    const obj = {
+      _id: 'MPCitation:A99098E0-476D-4930-ABF0-FE248A8BBA22',
+      objectType: 'MPCitation',
+      containingObject: 'MPParagraphElement:E51EFD7D-52FF-4B72-BF9C-B47F2989436F',
+      embeddedCitationItems: [
+        {
+          _id: 'MPCitationItem:DB6896A8-C99B-41B2-B64A-30ECD96ED8AB',
+          objectType: 'MPCitationItem',
+          bibliographyItem: 'MPBibliographyItem:6C6AF046-1C45-4CC5-9F38-93BC736E5293',
+        },
+      ],
+      containerID: 'MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C',
+      manuscriptID: 'MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232',
+    }
+    await repository.bulkDocs([{ ...obj }])
+    const upsertedProject: any = await repository.getById(obj._id)
+    expect(upsertedProject.containingObject).toBe(obj.containingObject)
+
+    await repository.bulkDocs([{ ...obj, containingObject: 'foo' }])
+    const updatedProject: any = await repository.getById(obj._id)
+    expect(updatedProject.containingObject).toBe('foo')
   })
 })
 
