@@ -217,7 +217,7 @@ export class ContainerService implements IContainerService {
 
       // call it without userId intentionally
       await this.libraryCollectionRepository.patch(lc._id, {
-        _id: containerId,
+        _id: lc._id,
         owners: owners && owners.map((u) => ContainerService.userIdForSync(u)),
         writers: writers && writers.map((u) => ContainerService.userIdForSync(u)),
         viewers: viewers && viewers.map((u) => ContainerService.userIdForSync(u)),
@@ -998,7 +998,7 @@ export class ContainerService implements IContainerService {
       )
       if (existingDoc) {
         _.extend(existingDoc, { ...incomingDoc, updatedAt: stamp })
-        const result = await this.externalFileRepository.update(existingDoc._id, existingDoc)
+        const result = await this.externalFileRepository.update(existingDoc)
         output.push(result)
       } else {
         externalFiles.push({

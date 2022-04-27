@@ -28,7 +28,7 @@ export class UserCollaboratorRepository extends SGRepository<
     return 'MPUserCollaborator'
   }
 
-  public async update(_id: string, _updatedDocument: any): Promise<any> {
+  public async update(_updatedDocument: any): Promise<any> {
     throw new MethodNotAllowedError('UserCollaboratorRepository', 'update')
   }
 

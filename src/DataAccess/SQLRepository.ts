@@ -28,6 +28,7 @@ import { BucketKey } from '../Config/ConfigurationTypes'
 
 import { Prisma } from '@prisma/client'
 
+/* istanbul ignore next */
 const getPaths = (obj: any, arr: string[] = [], res: string[][] = []): string[][] => {
   Object.entries(obj).forEach(([key, value]) => {
     if (typeof value === 'object' && value) {
@@ -38,7 +39,7 @@ const getPaths = (obj: any, arr: string[] = [], res: string[][] = []): string[][
   })
   return res
 }
-
+/* istanbul ignore next */
 const deepValue = (o: any, p: string) =>
   p.split('.').reduce((a: { [x: string]: any }, v: string | number) => a[v], o)
 

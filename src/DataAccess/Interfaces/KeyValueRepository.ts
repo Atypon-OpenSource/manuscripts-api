@@ -39,11 +39,9 @@ export interface KeyValueRepository<TEntity, TNewEntity, TUpdateEntity, TPatchEn
 
   /**
    * Replaces existing document.
-   * @param id document id's wants to be replaced.
    * @param updateDocument The new object that will be replaced.
-   * @param userId The userId that updates the document
    */
-  update(id: string, updateDocument: TUpdateEntity, userId?: string): Promise<TEntity>
+  update(updateDocument: TUpdateEntity): Promise<TEntity>
 
   patch(id: string, dataToPatch: TPatchEntity, userId?: string): Promise<TEntity>
 
