@@ -58,7 +58,7 @@ class PrismaBucket implements SQLBucket {
   name: BucketKey
   prismaClient: Prisma.UserDelegate<Prisma.RejectOnNotFound | Prisma.RejectPerOperation | undefined>
   constructor(name: BucketKey) {
-    this.name = name !== BucketKey.Data ? name : BucketKey.Project
+    this.name = name
     this.prismaClient = prisma[this.name] as any
   }
   _name: string
@@ -148,7 +148,7 @@ export class SQLDatabase {
   private isLoaded: boolean = false
 
   public constructor(readonly configuration: DatabaseConfiguration, readonly bucketKey: BucketKey) {
-    if (!configuration.buckets[bucketKey] && bucketKey.toString() !== 'project') {
+    if (!configuration.buckets[bucketKey]) {
       throw new InvalidBucketError(bucketKey)
     }
   }

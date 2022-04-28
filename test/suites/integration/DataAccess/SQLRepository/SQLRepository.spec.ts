@@ -49,7 +49,7 @@ describe('SQLRepository', () => {
 describe('SQLRepository Create', () => {
   beforeEach(async () => {
     await drop()
-    await dropBucket(BucketKey.Data)
+    await dropBucket(BucketKey.Project)
     await seed({ users: true })
   })
 
@@ -98,7 +98,7 @@ describe('SQLRepository Create', () => {
 describe('SQLRepository update', () => {
   beforeEach(async () => {
     await drop()
-    await dropBucket(BucketKey.Data)
+    await dropBucket(BucketKey.Project)
     await seed({ users: true })
   })
 
@@ -219,7 +219,7 @@ describe('SQLRepository update', () => {
 describe('SQLRepository patch', () => {
   beforeEach(async () => {
     await drop()
-    await dropBucket(BucketKey.Data)
+    await dropBucket(BucketKey.Project)
     await seed({ users: true })
   })
 
@@ -286,7 +286,7 @@ describe('SQLRepository patch', () => {
 describe('SQLRepository touch', () => {
   beforeEach(async () => {
     await drop()
-    await dropBucket(BucketKey.Data)
+    await dropBucket(BucketKey.Project)
     await seed({ users: true })
   })
 
@@ -306,7 +306,7 @@ describe('SQLRepository touch', () => {
 describe('SQLRepository getById', () => {
   beforeEach(async () => {
     await drop()
-    await dropBucket(BucketKey.Data)
+    await dropBucket(BucketKey.Project)
     await seed({ users: true })
   })
 
@@ -339,7 +339,7 @@ describe('SQLRepository getById', () => {
 describe('SQLRepository getOne', () => {
   beforeEach(async () => {
     await drop()
-    await dropBucket(BucketKey.Data)
+    await dropBucket(BucketKey.Project)
     await seed({ users: true })
   })
 
@@ -369,7 +369,7 @@ describe('SQLRepository getOne', () => {
 describe('SQLRepository count', () => {
   beforeEach(async () => {
     await drop()
-    await dropBucket(BucketKey.Data)
+    await dropBucket(BucketKey.Project)
     await seed({ users: true })
   })
 
@@ -391,7 +391,7 @@ describe('SQLRepository count', () => {
 describe('SQLRepository getAll', () => {
   beforeEach(async () => {
     await drop()
-    await dropBucket(BucketKey.Data)
+    await dropBucket(BucketKey.Project)
     await seed({ users: true })
   })
 

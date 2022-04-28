@@ -27,20 +27,20 @@ import { createProjectInvitation } from '../../../../data/fixtures/misc'
 jest.setTimeout(TEST_TIMEOUT)
 
 let db: any = null
-beforeAll(async () => (db = await testDatabase(false, BucketKey.Data)))
+beforeAll(async () => (db = await testDatabase(false, BucketKey.Project)))
 afterAll(() => db.bucket.disconnect())
 
 describe('ProjectRepository removeWithAllResources', () => {
   beforeEach(async () => {
     await drop()
-    await dropBucket(BucketKey.Data)
+    await dropBucket(BucketKey.Project)
     await seed({ projects: true })
   })
 
   test('should remove project with all its resources', async () => {
-    const repository = new ProjectRepository(BucketKey.Data, db)
+    const repository = new ProjectRepository(BucketKey.Project, db)
     const projectInvitationRepository = new ContainerInvitationRepository(
-      BucketKey.Data,
+      BucketKey.Project,
       db
     )
     const validId = `MPProject:valid-project-id-6`
@@ -73,12 +73,12 @@ describe('ProjectRepository removeWithAllResources', () => {
 describe('ProjectRepository getUserContainers', () => {
   beforeEach(async () => {
     await drop()
-    await dropBucket(BucketKey.Data)
+    await dropBucket(BucketKey.Project)
     await seed({ projects: true })
   })
 
   test('should get project by user id', async () => {
-    const repository = new ProjectRepository(BucketKey.Data, db)
+    const repository = new ProjectRepository(BucketKey.Project, db)
     const validUserId = 'User_test'
     const projects = await repository.getUserContainers(validUserId)
 
@@ -93,12 +93,12 @@ describe('ProjectRepository getUserContainers', () => {
 describe('ProjectRepository getContainerResourcesIDs', () => {
   beforeEach(async () => {
     await drop()
-    await dropBucket(BucketKey.Data)
+    await dropBucket(BucketKey.Project)
     await seed({ projects: true, projectInvitations: true })
   })
 
   test('should get resources ids', async () => {
-    const repository = new ProjectRepository(BucketKey.Data, db)
+    const repository = new ProjectRepository(BucketKey.Project, db)
     const validId = `MPProject:valid-project-id-6`
     const resources = await repository.getContainerResourcesIDs(validId)
 

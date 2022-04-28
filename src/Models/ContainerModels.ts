@@ -14,16 +14,8 @@
  * limitations under the License.
  */
 
-import {
-  Library,
-  LibraryCollection,
-  ObjectTypes,
-  Project,
-  UserProfile,
-} from '@manuscripts/manuscripts-json-schema'
+import { ObjectTypes, Project, UserProfile } from '@manuscripts/manuscripts-json-schema'
 
-import { LibraryRepository } from '../DataAccess/LibraryRepository/LibraryRepository'
-import { LibraryCollectionRepository } from '../DataAccess/LibraryCollectionRepository/LibraryCollectionRepository'
 import { ProjectRepository } from '../DataAccess/ProjectRepository/ProjectRepository'
 import { ContainerService } from '../DomainServices/Container/ContainerService'
 
@@ -47,21 +39,13 @@ export interface ContainerInvitationResponse {
 
 export enum ContainerType {
   project = 'project',
-  library = 'library',
-  libraryCollection = 'libraryCollection',
 }
 
-export type Container = Project | Library | LibraryCollection
+export type Container = Project
 
-export type ContainerObjectType =
-  | ObjectTypes.Project
-  | ObjectTypes.Library
-  | ObjectTypes.LibraryCollection
+export type ContainerObjectType = ObjectTypes.Project
 
-export type ContainerRepository =
-  | ProjectRepository
-  | LibraryRepository
-  | LibraryCollectionRepository
+export type ContainerRepository = ProjectRepository
 
 export interface ContainerServiceMap {
   [k: string]: ContainerService

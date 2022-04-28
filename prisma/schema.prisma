@@ -18,19 +18,6 @@ model Project {
   data                Json?
 }
 
-
-model DerivedData {
-  id                  String   @id @default(uuid())
-  data                Json?
-}
-
-
-model State {
-  id                  String   @id @default(uuid())
-  data                Json?
-}
-
-
 model Channel {
   docId               String
   name                String

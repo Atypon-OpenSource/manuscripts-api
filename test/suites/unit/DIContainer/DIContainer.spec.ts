@@ -39,7 +39,7 @@ describe('DIContainer', () => {
 
   test('DIContainer static helper methods', () => {
     const db: any = { documentMapper: { model: () => ({}) } }
-    const sgRepo = new ProjectRepository(BucketKey.Data, db)
+    const sgRepo = new ProjectRepository(BucketKey.Project, db)
     const cbRepo = new UserRepository(db)
     DIContainer._sharedContainer = {
       bucketForKey: (key: BucketKey) => ({ bucketName: key })
@@ -52,7 +52,7 @@ describe('DIContainer', () => {
 
   test('DIContainer instance methods', () => {
     const db: any = { documentMapper: { model: () => ({}) } }
-    const container = new DIContainer(db, db, db, db, false, null)
+    const container = new DIContainer(db, db, false, null)
     DIContainer._sharedContainer = container
     expect(
       container.repositories.every(
@@ -70,23 +70,16 @@ describe('DIContainer', () => {
       documentMapper: { model: () => ({}) }
     }
     const dataDB: any = {
-      bucketKey: BucketKey.Data,
-      documentMapper: { model: () => ({}) }
-    }
-    const appStateDB: any = {
-      bucketKey: BucketKey.AppState,
+      bucketKey: BucketKey.Project,
       documentMapper: { model: () => ({}) }
     }
 
-    const container = new DIContainer(userDB, dataDB, appStateDB, false, null)
+    const container = new DIContainer(userDB, dataDB, false, null)
     expect(container.bucketForKey(BucketKey.User).bucketKey).toEqual(
       BucketKey.User
     )
-    expect(container.bucketForKey(BucketKey.Data).bucketKey).toEqual(
-      BucketKey.Data
-    )
-    expect(container.bucketForKey(BucketKey.AppState).bucketKey).toEqual(
-      BucketKey.AppState
+    expect(container.bucketForKey(BucketKey.Project).bucketKey).toEqual(
+      BucketKey.Project
     )
   })
 })

@@ -41,12 +41,12 @@ jest.setTimeout(TEST_TIMEOUT)
 describe('InvitationService - reject', () => {
   beforeEach(async () => {
     await drop()
-    await dropBucket(BucketKey.Data)
+    await dropBucket(BucketKey.Project)
     await seed({ })
   })
 
   test('should reject invitation successfully', async () => {
-    const invitationRepository = new InvitationRepository(BucketKey.Data, db)
+    const invitationRepository = new InvitationRepository(BucketKey.Project, db)
     const hash = checksum(
       'valid-user@manuscriptsapp.com-valid-google@manuscriptsapp.com',
       { algorithm: 'sha1' }
@@ -71,7 +71,7 @@ describe('InvitationService - reject', () => {
 describe('InvitationService - rejectProjectInvite', () => {
   beforeEach(async () => {
     await drop()
-    await dropBucket(BucketKey.Data)
+    await dropBucket(BucketKey.Project)
     await seed({ })
   })
 

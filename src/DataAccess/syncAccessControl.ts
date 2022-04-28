@@ -133,11 +133,7 @@ export async function syncAccessControl(doc: any, oldDoc: any, userId?: string):
 
   let docId = doc._id
 
-  if (
-    objectTypeMatches('MPProject') ||
-    objectTypeMatches('MPLibraryCollection') ||
-    objectTypeMatches('MPLibrary')
-  ) {
+  if (objectTypeMatches('MPProject')) {
     let owners, writers, viewers, annotators, editors
 
     /*if (doc._deleted) {
@@ -175,13 +171,6 @@ export async function syncAccessControl(doc: any, oldDoc: any, userId?: string):
         requireUser(owners, userId)
       }
 
-      if (
-        (objectTypeMatches('MPLibraryCollection') || objectTypeMatches('MPLibrary')) &&
-        hasMutated('category')
-      ) {
-        throw { forbidden: 'category cannot be mutated' }
-      }
-
       // only do this for non-deleted items for perf.
       let userIds: any = {}
       for (let i = 0; i < allUserIds.length; i++) {
@@ -208,14 +197,7 @@ export async function syncAccessControl(doc: any, oldDoc: any, userId?: string):
 
         accessDeferreds.push(access([allUserIds[j]], ids))
 
-        let containersChannelID
-        if (objectTypeMatches('MPProject')) {
-          containersChannelID = allUserIds[j] + '-projects'
-        } else if (objectTypeMatches('MPLibraryCollection')) {
-          containersChannelID = allUserIds[j] + '-library-collections'
-        } else if (objectTypeMatches('MPLibrary')) {
-          containersChannelID = allUserIds[j] + '-libraries'
-        }
+        let containersChannelID = allUserIds[j] + '-projects'
 
         if (containersChannelID) {
           channelDeferreds.push(channel([containersChannelID], docId))
@@ -237,33 +219,7 @@ export async function syncAccessControl(doc: any, oldDoc: any, userId?: string):
     if (oldDoc) {
       await requireAccess([rwChannelName], userId)
     } else {
-      // no oldDoc (it is a new document)
-      try {
-        //await requireAdmin();
-        requireUser(owners, userId)
-      } catch (e) {
-        // we are not the admin
-        if (objectTypeMatches('MPLibraryCollection')) {
-          requireUser([].concat(owners, writers), userId)
-        } /*else if (
-            owners.length === 1 &&
-            writers.length === 0 &&
-            viewers.length === 0 &&
-            annotators.length === 0 &&
-            editors.length === 0
-          ) {
-            // this will throw if the current user isn't the user in the zeroth
-            // element of the owners array.
-            requireUser(owners, userId);
-          } else {
-            // throw that we are not the admin
-            // prettier-ignore
-            requireUser(owners, userId);
-            //throw(e);
-          }*/ else {
-          requireUser(owners, userId)
-        }
-      }
+      requireUser(owners, userId)
     }
 
     channelDeferreds.push(

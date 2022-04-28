@@ -37,10 +37,7 @@ export type APIConfiguration = {
  */
 export enum BucketKey {
   User = 'user',
-  Data = 'data',
   Project = 'project',
-  AppState = 'state',
-  DerivedData = 'derivedData',
 }
 
 export type DatabaseConfiguration = {

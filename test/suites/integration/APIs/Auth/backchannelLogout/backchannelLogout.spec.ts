@@ -57,7 +57,7 @@ afterAll(() => db.bucket.disconnect())
 describe('backchannelLogout - POST api/v1/auth/backchannel_logout', () => {
   beforeEach(async () => {
     await drop()
-    await dropBucket(BucketKey.Data)
+    await dropBucket(BucketKey.Project)
     await seed(seedOptions)
     await seedAccounts()
 

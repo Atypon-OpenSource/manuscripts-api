@@ -73,7 +73,7 @@ afterEach(() => {
 describe('reset Password - POST api/v1/auth/resetPassword', () => {
   beforeEach(async () => {
     await drop()
-    await dropBucket(BucketKey.Data)
+    await dropBucket(BucketKey.Project)
     await seed(seedOptions)
     await seedAccounts()
   })

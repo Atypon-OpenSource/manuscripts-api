@@ -23,8 +23,6 @@ import {
   ContainerRequest,
   Submission,
   ManuscriptNote,
-  Library,
-  LibraryCollection,
   ExternalFile,
   Manuscript,
   Correction,
@@ -33,13 +31,6 @@ import {
 } from '@manuscripts/manuscripts-json-schema'
 
 export type ProjectLike = Pick<Project, Exclude<keyof Project, 'createdAt' | 'updatedAt'>>
-
-export type LibraryLike = Pick<Library, Exclude<keyof Library, 'createdAt' | 'updatedAt'>>
-
-export type LibraryCollectionLike = Pick<
-  LibraryCollection,
-  Exclude<keyof LibraryCollection, 'createdAt' | 'updatedAt'>
->
 
 export type InvitationLike = Pick<Invitation, Exclude<keyof Invitation, 'createdAt' | 'updatedAt'>>
 

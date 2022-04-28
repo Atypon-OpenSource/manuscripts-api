@@ -50,7 +50,7 @@ jest.setTimeout(TEST_TIMEOUT)
 describe('UserRegistrationService - requestVerificationEmail', () => {
   beforeEach(async () => {
     await drop()
-    await dropBucket(BucketKey.Data)
+    await dropBucket(BucketKey.Project)
     await seed(seedOptions)
   })
 

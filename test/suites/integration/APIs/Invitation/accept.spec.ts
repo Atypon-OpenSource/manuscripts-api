@@ -62,7 +62,7 @@ jest.setTimeout(TEST_TIMEOUT)
 describe('InvitationService - accept', () => {
   beforeEach(async () => {
     await drop()
-    await dropBucket(BucketKey.Data)
+    await dropBucket(BucketKey.Project)
     await seed(seedOptions)
   })
 
@@ -100,7 +100,7 @@ describe('InvitationService - accept', () => {
 describe('InvitationService - acceptProjectInvite', () => {
   beforeEach(async () => {
     await drop()
-    await dropBucket(BucketKey.Data)
+    await dropBucket(BucketKey.Project)
     await seed({ projectInvitations: true, users: true, applications: true })
   })
 

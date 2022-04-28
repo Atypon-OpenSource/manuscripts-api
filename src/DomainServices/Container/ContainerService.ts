@@ -58,7 +58,6 @@ import { ScopedAccessTokenConfiguration } from '../../Config/ConfigurationTypes'
 import { ManuscriptNoteRepository } from '../../DataAccess/ManuscriptNoteRepository/ManuscriptNoteRepository'
 import { UserService } from '../User/UserService'
 import { DIContainer } from '../../DIContainer/DIContainer'
-import { LibraryCollectionRepository } from '../../DataAccess/LibraryCollectionRepository/LibraryCollectionRepository'
 import {
   ManuscriptNote,
   ExternalFile,
@@ -83,7 +82,6 @@ export class ContainerService implements IContainerService {
     private containerRepository: ContainerRepository,
     private containerInvitationRepository: ContainerInvitationRepository,
     private emailService: EmailService,
-    private libraryCollectionRepository: LibraryCollectionRepository,
     private manuscriptRepository: IManuscriptRepository,
     private manuscriptNoteRepository: ManuscriptNoteRepository,
     private externalFileRepository: ExternalFileRepository,
@@ -195,39 +193,6 @@ export class ContainerService implements IContainerService {
     await this.updateContainerUser(containerId, newRole, managedUserObj)
   }
 
-  // tslint:disable-next-line: cyclomatic-complexity
-  private async setUsersRolesInContainedLibraryCollections(
-    containerId: string,
-    userId: string,
-    role: ContainerRole | null
-  ) {
-    const libraryCollections = await this.containerRepository.getContainedLibraryCollections(
-      containerId
-    )
-    const syncUserId = ContainerService.userIdForSync(userId)
-    for (let lc of libraryCollections) {
-      const { owners, writers, viewers, editors, annotators } = this.updatedRoles(lc, userId, role)
-      let inherited
-
-      if (lc.inherited) {
-        inherited = lc.inherited.includes(syncUserId) ? lc.inherited : [...lc.inherited, syncUserId]
-      } else {
-        inherited = [syncUserId]
-      }
-
-      // call it without userId intentionally
-      await this.libraryCollectionRepository.patch(lc._id, {
-        _id: lc._id,
-        owners: owners && owners.map((u) => ContainerService.userIdForSync(u)),
-        writers: writers && writers.map((u) => ContainerService.userIdForSync(u)),
-        viewers: viewers && viewers.map((u) => ContainerService.userIdForSync(u)),
-        editors: editors && editors.map((u) => ContainerService.userIdForSync(u)),
-        annotators: annotators && annotators.map((u) => ContainerService.userIdForSync(u)),
-        inherited,
-      })
-    }
-  }
-
   private validateSecret = (secret?: string) =>
     secret ? secret === config.auth.serverSecret : false
 
@@ -296,7 +261,6 @@ export class ContainerService implements IContainerService {
         editors,
         annotators
       )
-      await this.setUsersRolesInContainedLibraryCollections(containerID, userId, role)
 
       if (!skipEmail) {
         await this.notifyForAddingUser(container, role, addedUser, addingUser)
@@ -345,7 +309,6 @@ export class ContainerService implements IContainerService {
       editors,
       annotators
     )
-    await this.setUsersRolesInContainedLibraryCollections(containerID, user._id, role)
   }
 
   // tslint:disable-next-line: cyclomatic-complexity
@@ -853,10 +816,6 @@ export class ContainerService implements IContainerService {
     switch (this.containerType) {
       case ContainerType.project:
         return ObjectTypes.Project
-      case ContainerType.library:
-        return ObjectTypes.Library
-      case ContainerType.libraryCollection:
-        return ObjectTypes.LibraryCollection
     }
   }
 

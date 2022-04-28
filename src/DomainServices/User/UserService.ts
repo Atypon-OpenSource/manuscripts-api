@@ -44,7 +44,6 @@ import { UserProfileLike } from '../../DataAccess/Interfaces/Models'
 import { ProjectRepository } from '../../DataAccess/ProjectRepository/ProjectRepository'
 import { username as sgUsername } from '../../DomainServices/Sync/SyncService'
 import { ContainerRequestRepository } from '../../DataAccess/ContainerRequestRepository/ContainerRequestRepository'
-import { UserCollaboratorRepository } from '../../DataAccess/UserCollaboratorRepository/UserCollaboratorRepository'
 import { isScopedTokenPayload } from '../../Utilities/JWT/ScopedTokenPayload'
 
 export class UserService implements IUserService {
@@ -60,8 +59,7 @@ export class UserService implements IUserService {
     private emailService: EmailService,
     private syncService: ISyncService,
     private userProfileRepository: IUserProfileRepository,
-    private projectRepository: ProjectRepository,
-    private userCollaboratorRepository: UserCollaboratorRepository
+    private projectRepository: ProjectRepository
   ) {}
 
   /**
@@ -110,7 +108,6 @@ export class UserService implements IUserService {
     })}`
 
     await this.removeUserFromProjects(user._id)
-    await this.userCollaboratorRepository.clearUserCollaborators(user._id)
     await this.userProfileRepository.purge(userProfileId)
     await this.syncService.removeUserStatus(user._id)
     await this.singleUseTokenRepository.remove({ userId: user._id })

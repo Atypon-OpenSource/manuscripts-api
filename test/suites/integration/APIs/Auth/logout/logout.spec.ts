@@ -51,7 +51,7 @@ afterAll(() => db.bucket.disconnect())
 describe('Logout - POST api/v1/auth/logout', () => {
   beforeEach(async () => {
     await drop()
-    await dropBucket(BucketKey.Data)
+    await dropBucket(BucketKey.Project)
     await seed(seedOptions)
     await seedAccounts()
   })
@@ -66,9 +66,9 @@ describe('Logout - POST api/v1/auth/logout', () => {
 
     // const cookieHeader = logoutResponse.header['set-cookie'][0]
     // const parsedCookie = cookie.parse(cookieHeader)
-    // const dataBucketPath = `/${config.DB.buckets[BucketKey.Data]}`
+    // const dataBucketPath = `/${config.DB.buckets[BucketKey.Project]}`
 
-    // check that the /projects cookie (i.e. config.DB.buckets[BucketKey.Data]]) gets cleared.
+    // check that the /projects cookie (i.e. config.DB.buckets[BucketKey.Project]]) gets cleared.
     // expect(parsedCookie[dataBucketPath]).toEqual('')
     expect(logoutResponse.status).toBe(HttpStatus.TEMPORARY_REDIRECT)
   })

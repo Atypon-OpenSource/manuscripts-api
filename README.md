@@ -124,17 +124,11 @@ placed at the root of the repository.
   <dt>APP_DATABASE_URL</dt>
   <dd>The postgres database connection url</dd>
 
-  <dt>APP_STATE_BUCKET</dt>
-  <dd>The name for a database bucket for internal service state.</dd>
-
   <dt>APP_USER_BUCKET</dt>
   <dd>The name of a database bucket for user account credentials and other user auth state.</dd>
 
   <dt>APP_DATA_BUCKET</dt>
   <dd>The name of a database bucket for user owned project data.</dd>
-
-  <dt>APP_DERIVED_DATA_BUCKET</dt>
-  <dd>The name of a database bucket for secondary data derived from data in <pre>$APP_DATA_BUCKET</pre>.</dd>
 
   <dt>NODE_ENV</dt>
   <dd>Express.js specific environment variable whose acceptable values are enforced by manuscripts-api to be "development" and "production" (see <a href="https://expressjs.com/en/advanced/best-practice-performance.html#set-node_env-to-production">Express.js docs</a> re production specific behaviour).</dd>

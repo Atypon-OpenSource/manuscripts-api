@@ -71,7 +71,7 @@ afterEach(() => {
 describe('Server to Server Auth - POST api/v1/auth/admin', () => {
   beforeEach(async () => {
     await drop()
-    await dropBucket(BucketKey.Data)
+    await dropBucket(BucketKey.Project)
     await seed(seedOptions)
     await seedAccounts()
   })
@@ -143,7 +143,7 @@ describe('Server to Server Auth - POST api/v1/auth/admin', () => {
 describe('Server to Server token Auth - POST api/v1/auth/token', () => {
   beforeEach(async () => {
     await drop()
-    await dropBucket(BucketKey.Data)
+    await dropBucket(BucketKey.Project)
     await seed(seedOptions)
     await seedAccounts()
   })

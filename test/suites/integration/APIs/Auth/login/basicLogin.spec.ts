@@ -69,7 +69,7 @@ afterEach(() => {
 describe('Basic Login - POST api/v1/auth/login', () => {
   beforeEach(async () => {
     await drop()
-    await dropBucket(BucketKey.Data)
+    await dropBucket(BucketKey.Project)
     await seed(seedOptions)
     await seedAccounts()
   })

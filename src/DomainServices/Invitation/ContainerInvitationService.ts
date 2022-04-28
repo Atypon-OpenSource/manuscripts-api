@@ -71,8 +71,6 @@ export class ContainerInvitationService implements IContainerInvitationService {
     private userProfileRepository: IUserProfileRepository,
     private emailService: EmailService,
     private projectService: IContainerService,
-    private libraryService: IContainerService,
-    private libraryCollectionService: IContainerService,
     private containerInvitationRepository: ContainerInvitationRepository,
     private invitationTokenRepository: IInvitationTokenRepository,
     private activityTrackingService: UserActivityTrackingService
@@ -180,14 +178,6 @@ export class ContainerInvitationService implements IContainerInvitationService {
   private containerService(containerID: string) {
     if (containerID.startsWith('MPProject')) {
       return this.projectService
-    }
-
-    if (containerID.startsWith('MPLibrary')) {
-      return this.libraryService
-    }
-
-    if (containerID.startsWith('MPLibraryCollection')) {
-      return this.libraryCollectionService
     }
 
     throw new ValidationError('Invalid container id.', containerID)
