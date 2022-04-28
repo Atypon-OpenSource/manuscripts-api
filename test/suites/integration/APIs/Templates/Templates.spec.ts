@@ -39,7 +39,7 @@ jest.setTimeout(TEST_TIMEOUT)
 describe('TemplateService - Fetch published templates', () => {
   beforeEach(async () => {
     await drop()
-    await dropBucket(BucketKey.Data)
+    await dropBucket(BucketKey.Project)
     await seed(seedOptions)
   })
 

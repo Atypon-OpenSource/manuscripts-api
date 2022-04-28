@@ -78,7 +78,7 @@ jest.setTimeout(TEST_TIMEOUT)
 describe('InvitationService - invite', () => {
   beforeEach(async () => {
     await drop()
-    await dropBucket(BucketKey.Data)
+    await dropBucket(BucketKey.Project)
     await seed(seedOptions)
     await DIContainer.sharedContainer.syncService.createUserProfile(
       {
@@ -145,7 +145,7 @@ describe('InvitationService - invite', () => {
 describe('InvitationService - inviteToContainer', () => {
   beforeEach(async () => {
     await drop()
-    await dropBucket(BucketKey.Data)
+    await dropBucket(BucketKey.Project)
     await purgeContainerInvitation(checksum(
       'valid-user@manuscriptsapp.com-valid-google2@manuscriptsapp.com-MPProject:valid-project-id-2',
       { algorithm: 'sha1' }

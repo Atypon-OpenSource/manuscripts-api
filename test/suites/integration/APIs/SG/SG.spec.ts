@@ -38,7 +38,7 @@ const seedOptions: SeedOptions = { users: true, applications: true }
 beforeAll(async () => {
   db = await testDatabase()
   await drop()
-  await dropBucket(BucketKey.Data)
+  await dropBucket(BucketKey.Project)
   await seed(seedOptions)
   await seedAccounts()
 })

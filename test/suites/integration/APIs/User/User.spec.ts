@@ -60,7 +60,7 @@ describe('UserService - getProfile', () => {
     const seedOptions: SeedOptions = { users: true, applications: true }
 
     await drop()
-    await dropBucket(BucketKey.Data)
+    await dropBucket(BucketKey.Project)
     await seed(seedOptions)
   })
 
@@ -91,7 +91,7 @@ describe('UserService - markUserForDeletion', () => {
     }
 
     await drop()
-    await dropBucket(BucketKey.Data)
+    await dropBucket(BucketKey.Project)
     await seed(seedOptions)
   })
 
@@ -128,7 +128,7 @@ describe('UserService - unmarkUserForDeletion', () => {
     }
 
     await drop()
-    await dropBucket(BucketKey.Data)
+    await dropBucket(BucketKey.Project)
     await seed(seedOptions)
   })
 
@@ -155,7 +155,7 @@ describe('UserService - unmarkUserForDeletion', () => {
 describe('ContainerService - userContainers', () => {
   beforeEach(async () => {
     await drop()
-    await dropBucket(BucketKey.Data)
+    await dropBucket(BucketKey.Project)
     await seed({ users: true, applications: true, projects: true })
     await DIContainer.sharedContainer.syncService.createUserProfile(
       {

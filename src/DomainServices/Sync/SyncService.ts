@@ -42,7 +42,7 @@ export const PASSWORD_BYTE_COUNT = 40
  */
 export const COOKIE_EXPIRY_IN_MS = 24 * 60 * 60 * 1000
 
-export const GATEWAY_BUCKETS: Array<BucketKey> = [BucketKey.Data, BucketKey.DerivedData]
+export const GATEWAY_BUCKETS: Array<BucketKey> = [BucketKey.Project]
 
 const randomPassword = () =>
   randomBytesPromisified(PASSWORD_BYTE_COUNT).then((buf) => buf.toString('hex'))

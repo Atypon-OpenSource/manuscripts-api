@@ -22,13 +22,13 @@ import { DIContainer } from '../../../../../src/DIContainer/DIContainer'
 jest.setTimeout(TEST_TIMEOUT)
 
 let db: any = null
-beforeAll(async () => (db = await testDatabase(false, BucketKey.Data)))
+beforeAll(async () => (db = await testDatabase(false, BucketKey.Project)))
 afterAll(() => db.bucket.disconnect())
 
 describe('CorrectionRepository - getCorrectionStatus', () => {
   beforeEach(async () => {
     await drop()
-    await dropBucket(BucketKey.Data)
+    await dropBucket(BucketKey.Project)
     await seed({ corrections: true })
   })
   test('Should fetch correction status', async () => {

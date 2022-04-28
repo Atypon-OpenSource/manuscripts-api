@@ -56,7 +56,7 @@ jest.setTimeout(TEST_TIMEOUT)
 describe('InvitationService - requestInvitationToken', () => {
   beforeEach(async () => {
     await drop()
-    await dropBucket(BucketKey.Data)
+    await dropBucket(BucketKey.Project)
     await seed(seedOptions)
   })
 
@@ -98,7 +98,7 @@ describe('InvitationService - requestInvitationToken', () => {
 describe('InvitationService - refreshProjectInvitationToken', () => {
   beforeEach(async () => {
     await drop()
-    await dropBucket(BucketKey.Data)
+    await dropBucket(BucketKey.Project)
     await seed(seedOptions)
   })
 

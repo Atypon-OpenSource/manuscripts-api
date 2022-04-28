@@ -39,7 +39,7 @@ afterAll(() => db.bucket.disconnect())
 describe('Google Login - GET api/v1/auth/google', () => {
   beforeEach(async () => {
     await drop()
-    await dropBucket(BucketKey.Data)
+    await dropBucket(BucketKey.Project)
     await seed(seedOptions)
   })
 

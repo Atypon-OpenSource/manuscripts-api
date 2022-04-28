@@ -22,18 +22,18 @@ import { ManuscriptNoteRepository } from '../../../../../src/DataAccess/Manuscri
 jest.setTimeout(TEST_TIMEOUT)
 
 let db: any = null
-beforeAll(async () => (db = await testDatabase(false, BucketKey.Data)))
+beforeAll(async () => (db = await testDatabase(false, BucketKey.Project)))
 afterAll(() => db.bucket.disconnect())
 
 describe('ManuscriptNoteRepository getProductionNotes', () => {
   beforeEach(async () => {
     await drop()
-    await dropBucket(BucketKey.Data)
+    await dropBucket(BucketKey.Project)
     await seed({ projects: true, manuscript: true, manuscriptNotes: true })
   })
 
   test('should fetch list of notes', async () => {
-    const repository = new ManuscriptNoteRepository(BucketKey.Data, db)
+    const repository = new ManuscriptNoteRepository(BucketKey.Project, db)
     const data = await repository.getProductionNotes('MPProject:valid-project-id-11', 'MPManuscript:valid-manuscript-id-1')
     expect(data).toBeTruthy()
     expect(data.length).toBeGreaterThan(0)

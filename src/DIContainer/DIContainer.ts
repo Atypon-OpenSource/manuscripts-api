@@ -38,7 +38,6 @@ import { ICollaborationsRepository } from '../DataAccess/Interfaces/ICollaborati
 import { IInvitationTokenRepository } from '../DataAccess/Interfaces/IInvitationTokenRepository'
 import { IUserStatusRepository } from '../DataAccess/Interfaces/IUserStatusRepository'
 import { IUserEventRepository } from '../DataAccess/Interfaces/IUserEventRepository'
-import { UserCollaboratorRepository } from '../DataAccess/UserCollaboratorRepository/UserCollaboratorRepository'
 
 import { InvitationRepository } from '../DataAccess/InvitationRepository/InvitationRepository'
 import { UserRepository } from '../DataAccess/UserRepository/UserRepository'
@@ -82,8 +81,6 @@ import { SubmissionService } from '../DomainServices/Submission/SubmissionServic
 import { IPressroomService } from '../DomainServices/Pressroom/IPressroomService'
 import { PressroomService } from '../DomainServices/Pressroom/PressroomService'
 import { ManuscriptNoteRepository } from '../DataAccess/ManuscriptNoteRepository/ManuscriptNoteRepository'
-import { LibraryRepository } from '../DataAccess/LibraryRepository/LibraryRepository'
-import { LibraryCollectionRepository } from '../DataAccess/LibraryCollectionRepository/LibraryCollectionRepository'
 import { ExternalFileRepository } from '../DataAccess/ExternalFileRepository/ExternalFileRepository'
 import { IManuscriptRepository } from '../DataAccess/Interfaces/IManuscriptRepository'
 import { ManuscriptRepository } from '../DataAccess/ManuscriptRepository/ManuscriptRepository'
@@ -140,12 +137,9 @@ export class DIContainer {
   readonly containerInvitationService: IContainerInvitationService
   readonly invitationService: InvitationService
   readonly projectRepository: ProjectRepository
-  readonly libraryRepository: LibraryRepository
-  readonly libraryCollectionRepository: LibraryCollectionRepository
   readonly userProfileRepository: UserProfileRepository
   readonly containerService: ContainerServiceMap
   readonly containerRequestService: IContainerRequestService
-  readonly userCollaboratorRepository: UserCollaboratorRepository
   readonly containerRequestRepository: ContainerRequestRepository
   readonly submissionRepository: ISubmissionRepository
   readonly submissionService: ISubmissionService
@@ -171,14 +165,8 @@ export class DIContainer {
   constructor(
     readonly userBucket: SQLDatabase,
     readonly dataBucket: SQLDatabase,
-    readonly appStateBucket: SQLDatabase,
-    readonly derivedDataBucket: SQLDatabase,
     readonly enableActivityTracking: boolean
   ) {
-    this.userCollaboratorRepository = new UserCollaboratorRepository(
-      BucketKey.DerivedData,
-      this.derivedDataBucket
-    )
     this.applicationRepository = new MemorizingClientApplicationRepository(
       new ClientApplicationRepository(this.userBucket),
       60
@@ -210,11 +198,6 @@ export class DIContainer {
       this.syncService
     )
     this.projectRepository = new ProjectRepository(BucketKey.Project, this.dataBucket)
-    this.libraryRepository = new LibraryRepository(BucketKey.Project, this.dataBucket)
-    this.libraryCollectionRepository = new LibraryCollectionRepository(
-      BucketKey.Project,
-      this.dataBucket
-    )
     this.invitationRepository = new InvitationRepository(BucketKey.Project, this.dataBucket)
     this.containerInvitationRepository = new ContainerInvitationRepository(
       BucketKey.Project,
@@ -247,8 +230,7 @@ export class DIContainer {
       this.emailService,
       this.syncService,
       this.userProfileRepository,
-      this.projectRepository,
-      this.userCollaboratorRepository
+      this.projectRepository
     )
     this.containerService = {
       [ContainerType.project]: new ContainerService(
@@ -260,41 +242,6 @@ export class DIContainer {
         this.projectRepository,
         this.containerInvitationRepository,
         this.emailService,
-        this.libraryCollectionRepository,
-        this.manuscriptRepository,
-        this.manuscriptNotesRepository,
-        this.externalFileRepository,
-        this.correctionRepository,
-        this.snapshotRepository,
-        this.templateRepository
-      ),
-      [ContainerType.library]: new ContainerService(
-        ContainerType.library,
-        this.userRepository,
-        this.userService,
-        this.activityTrackingService,
-        this.userStatusRepository,
-        this.libraryRepository,
-        this.containerInvitationRepository,
-        this.emailService,
-        this.libraryCollectionRepository,
-        this.manuscriptRepository,
-        this.manuscriptNotesRepository,
-        this.externalFileRepository,
-        this.correctionRepository,
-        this.snapshotRepository,
-        this.templateRepository
-      ),
-      [ContainerType.libraryCollection]: new ContainerService(
-        ContainerType.libraryCollection,
-        this.userRepository,
-        this.userService,
-        this.activityTrackingService,
-        this.userStatusRepository,
-        this.libraryCollectionRepository,
-        this.containerInvitationRepository,
-        this.emailService,
-        this.libraryCollectionRepository,
         this.manuscriptRepository,
         this.manuscriptNotesRepository,
         this.externalFileRepository,
@@ -308,8 +255,6 @@ export class DIContainer {
       this.userProfileRepository,
       this.emailService,
       this.containerService[ContainerType.project],
-      this.containerService[ContainerType.library],
-      this.containerService[ContainerType.libraryCollection],
       this.containerInvitationRepository,
       this.invitationTokenRepository,
       this.activityTrackingService
@@ -328,8 +273,6 @@ export class DIContainer {
       this.userProfileRepository,
       this.userRepository,
       this.containerService[ContainerType.project],
-      this.containerService[ContainerType.library],
-      this.containerService[ContainerType.libraryCollection],
       this.emailService
     )
     this.authService = new AuthService(
@@ -377,22 +320,12 @@ export class DIContainer {
 
     // no loading of database models needed from this bucket (no Ottoman models are mapped there).
     const dataBucket = new SQLDatabase(config.DB, BucketKey.Project)
-    const appStateBucket = new SQLDatabase(config.DB, BucketKey.AppState)
-    const derivedDataBucket = new SQLDatabase(config.DB, BucketKey.DerivedData)
 
     // do NOT parallelise these. Deferred PRIMARY index creation appears buggy in CB.
     await userBucket.loadDatabaseModels()
     await dataBucket.loadDatabaseModels()
-    await appStateBucket.loadDatabaseModels()
-    await derivedDataBucket.loadDatabaseModels()
 
-    DIContainer._sharedContainer = new DIContainer(
-      userBucket,
-      dataBucket,
-      appStateBucket,
-      derivedDataBucket,
-      enableActivityTracking
-    )
+    DIContainer._sharedContainer = new DIContainer(userBucket, dataBucket, enableActivityTracking)
 
     await DIContainer._sharedContainer.applicationRepository.ensureApplicationsExist(
       (config.apps && config.apps.knownClientApplications) || []
@@ -405,14 +338,8 @@ export class DIContainer {
     switch (bucketKey) {
       case BucketKey.User:
         return this.userBucket
-      case BucketKey.Data:
-        return this.dataBucket
       case BucketKey.Project:
         return this.dataBucket
-      case BucketKey.AppState:
-        return this.appStateBucket
-      case BucketKey.DerivedData:
-        return this.derivedDataBucket
       default:
         return this.dataBucket
     }

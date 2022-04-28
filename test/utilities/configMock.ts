@@ -25,8 +25,7 @@ jest.mock('../../src/Config/Config', () => {
       buckets: {
         user: 'manuscripts_user',
         data: 'bkt',
-        state: 'state',
-        derivedData: 'derived_data',
+        project: 'pro',
       },
       username: 'Administrator',
       password: '123456',

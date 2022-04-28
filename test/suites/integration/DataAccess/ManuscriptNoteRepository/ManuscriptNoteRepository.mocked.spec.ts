@@ -31,7 +31,7 @@ beforeAll(async () => db = await testDatabase())
 afterAll(() => { if (db && db.bucket && db.bucket.disconnect) { db.bucket.disconnect() } })
 describe('ManuscriptNoteRepository getProductionNotes', () => {
   test('should fail if invalid data', async () => {
-    const repository = new ManuscriptNoteRepository(BucketKey.Data, db)
+    const repository = new ManuscriptNoteRepository(BucketKey.Project, db)
     const errorObject = {
       message: 'Internal database error occurred. Operation = fetchData',
       code: 400

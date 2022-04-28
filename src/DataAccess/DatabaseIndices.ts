@@ -55,14 +55,6 @@ const indexesObj = {
       { fields: ['publicUrl'], gin: true },
     ],
   } as any,
-  [BucketKey.DerivedData]: {
-    // The bucket level indicies
-    bucket: [{ fields: ['objectType'], gin: true }],
-    [ObjectTypes.UserCollaborator]: [
-      { fields: ['userID'], gin: true },
-      { fields: ['collaboratorID'], gin: true },
-    ],
-  } as any,
 }
 
 const arrayIndexesObj = {
@@ -73,9 +65,6 @@ const arrayIndexesObj = {
       { fields: ['viewers'], gin: true },
     ],
     [ObjectTypes.BibliographyItem]: [{ fields: ['keywordIDs'], gin: true }],
-  } as any,
-  [BucketKey.DerivedData]: {
-    [ObjectTypes.UserCollaborator]: [{ fields: ['projects'], gin: true }],
   } as any,
 }
 
@@ -122,7 +111,7 @@ function capitalizeFirstLetter(str: string) {
 }
 
 export function indices(bucketKey: BucketKey): Index[] {
-  if (bucketKey !== BucketKey.Project && bucketKey !== BucketKey.DerivedData) {
+  if (bucketKey !== BucketKey.Project) {
     return []
   }
 

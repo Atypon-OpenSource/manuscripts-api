@@ -57,7 +57,7 @@ afterAll(() => db.bucket.disconnect())
 describe('Forgot Password - POST api/v1/auth/sendForgottenPassword', () => {
   beforeEach(async () => {
     await drop()
-    await dropBucket(BucketKey.Data)
+    await dropBucket(BucketKey.Project)
     await seed(seedOptions)
   })
 

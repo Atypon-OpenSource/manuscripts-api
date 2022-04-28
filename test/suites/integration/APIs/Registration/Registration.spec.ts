@@ -55,7 +55,7 @@ jest.setTimeout(TEST_TIMEOUT)
 describe('UserRegistrationService - signup', () => {
   beforeEach(async () => {
     await drop()
-    await dropBucket(BucketKey.Data)
+    await dropBucket(BucketKey.Project)
     await seed(seedOptions)
   })
 
@@ -102,7 +102,7 @@ describe('UserRegistrationService - signup', () => {
 describe('ConnectSignup - signup', () => {
   beforeEach(async () => {
     await drop()
-    await dropBucket(BucketKey.Data)
+    await dropBucket(BucketKey.Project)
     await seed(seedOptions)
     await DIContainer.sharedContainer.syncService.getOrCreateUserStatus(
         'User|' + validBody.email

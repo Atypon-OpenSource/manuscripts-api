@@ -65,7 +65,7 @@ afterEach(() => {
 describe('IAM Login - GET api/v1/auth/iam', () => {
   beforeEach(async () => {
     await drop()
-    await dropBucket(BucketKey.Data)
+    await dropBucket(BucketKey.Project)
     await seed(seedOptions)
     await seedAccounts()
   })

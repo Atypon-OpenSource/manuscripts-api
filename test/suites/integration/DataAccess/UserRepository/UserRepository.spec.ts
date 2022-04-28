@@ -34,7 +34,7 @@ afterAll(() => db.bucket.disconnect())
 describe('UserRepository getUsersToDelete', () => {
   beforeEach(async () => {
     await drop()
-    await dropBucket(BucketKey.Data)
+    await dropBucket(BucketKey.Project)
     await seed({ users: true })
   })
 
@@ -60,7 +60,7 @@ describe('UserRepository getUsersToDelete', () => {
 describe('UserRepository create', () => {
   beforeEach(async () => {
     await drop()
-    await dropBucket(BucketKey.Data)
+    await dropBucket(BucketKey.Project)
     await seed({ users: true })
   })
 

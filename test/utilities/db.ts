@@ -39,9 +39,6 @@ import { manuscriptNoteList } from '../data/dump/manuscriptNotes'
 import { externalFileList } from '../data/dump/externalFilesList'
 import { correctionList } from '../data/dump/correctionList'
 import { templates } from '../data/dump/templates'
-import { librariesList } from '../data/dump/library'
-import { libraryCollectionsList } from '../data/dump/libraryCollection'
-import { libraryInvitationsList } from '../data/dump/libraryInvitation'
 import { snapshotList } from '../data/dump/SnapshotList'
 
 async function createUsers (): Promise<void> {
@@ -102,14 +99,6 @@ async function createProjectInvitations (): Promise<void> {
   }
 }
 
-async function createLibraryInvitations (): Promise<void> {
-  for (const invitation of libraryInvitationsList) {
-    await DIContainer.sharedContainer.containerInvitationRepository.create(
-      _.clone(invitation)
-    )
-  }
-}
-
 async function createUserProfiles (): Promise<void> {
   for (const userProfile of userProfileList) {
     await DIContainer.sharedContainer.userProfileRepository.create(
@@ -130,22 +119,6 @@ async function createProjects (): Promise<void> {
   for (const project of projectsList) {
     await DIContainer.sharedContainer.projectRepository.create(
       _.clone(project)
-    )
-  }
-}
-
-async function createLibraries (): Promise<void> {
-  for (const library of librariesList) {
-    await DIContainer.sharedContainer.libraryRepository.create(
-      _.clone(library)
-    )
-  }
-}
-
-async function createLibraryCollections (): Promise<void> {
-  for (const libraryCollection of libraryCollectionsList) {
-    await DIContainer.sharedContainer.libraryCollectionRepository.create(
-      _.clone(libraryCollection)
     )
   }
 }
@@ -222,9 +195,8 @@ export async function testDatabase (
     switch (bucketKey) {
       case BucketKey.User: _db = container.userBucket
         break
-      case BucketKey.Data: _db = container.dataBucket
+      case BucketKey.Project: _db = container.dataBucket
         break
-      case BucketKey.DerivedData: _db = container.derivedDataBucket
     }
 
     (container as any).jwksClient = {
@@ -274,20 +246,8 @@ export async function seed (options: SeedOptions): Promise<void> {
     storagePromises.push(createProjects())
   }
 
-  if (options.libraries) {
-    storagePromises.push(createLibraries())
-  }
-
-  if (options.libraryCollections) {
-    storagePromises.push(createLibraryCollections())
-  }
-
   if (options.projectInvitations) {
     storagePromises.push(createProjectInvitations())
-  }
-
-  if (options.libraryInvitations) {
-    storagePromises.push(createLibraryInvitations())
   }
 
   if (options.invitationTokens) {

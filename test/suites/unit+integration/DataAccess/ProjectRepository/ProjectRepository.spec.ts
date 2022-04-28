@@ -22,7 +22,7 @@ import { MethodNotAllowedError } from '../../../../../src/Errors'
 
 describe('ProjectRepository - update', () => {
   xtest('should not allow the user to use update', () => {
-    const repository = new ProjectRepository(BucketKey.Data, {} as any)
+    const repository = new ProjectRepository(BucketKey.Project, {} as any)
 
     return expect(
       repository.update('id', {} as Project, {})

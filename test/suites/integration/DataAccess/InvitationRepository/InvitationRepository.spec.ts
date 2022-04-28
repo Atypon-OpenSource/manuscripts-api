@@ -22,18 +22,18 @@ import { BucketKey } from '../../../../../src/Config/ConfigurationTypes'
 jest.setTimeout(TEST_TIMEOUT)
 
 let db: any = null
-beforeAll(async () => (db = await testDatabase(false, BucketKey.Data)))
+beforeAll(async () => (db = await testDatabase(false, BucketKey.Project)))
 afterAll(() => db.bucket.disconnect())
 
 describe('InvitationRepository getAllByEmail', () => {
   beforeEach(async () => {
     await drop()
-    await dropBucket(BucketKey.Data)
+    await dropBucket(BucketKey.Project)
     await seed({ invitations: true })
   })
 
   test('should get all invitations by email', async () => {
-    const repository = new InvitationRepository(BucketKey.Data, db)
+    const repository = new InvitationRepository(BucketKey.Project, db)
 
     const invitations: any = await repository.getAllByEmail(
       'valid-google@manuscriptsapp.com'

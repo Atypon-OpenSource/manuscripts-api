@@ -45,7 +45,6 @@ import {
   ValidHeaderWithApplicationKey,
 } from '../../../../data/fixtures/headers'
 import { validProject } from '../../../../data/fixtures/projects'
-import { validLibrary } from '../../../../data/fixtures/libraries'
 import { ContainerRole, ContainerType } from '../../../../../src/Models/ContainerModels'
 import { BucketKey } from '../../../../../src/Config/ConfigurationTypes'
 import { validUser1, validUser2 } from '../../../../data/fixtures/UserRepository'
@@ -57,9 +56,7 @@ import { externalFile } from '../../../../data/fixtures/ExternalFiles'
 import _ from 'lodash'
 import {
   createProject,
-  createLibraryCollection,
   createProjectInvitation,
-  createLibrary,
 } from '../../../../data/fixtures/misc'
 
 jest.mock('email-templates', () =>
@@ -98,7 +95,7 @@ jest.setTimeout(180000)
 describe('ContainerService - createProject', () => {
   beforeEach(async () => {
     await drop()
-    await dropBucket(BucketKey.Data)
+    await dropBucket(BucketKey.Project)
     await seed(seedOptions)
     await seedAccounts()
   })
@@ -150,7 +147,7 @@ describe('ContainerService - createProject', () => {
 describe('ContainerService - delete', () => {
   beforeEach(async () => {
     await drop()
-    await dropBucket(BucketKey.Data)
+    await dropBucket(BucketKey.Project)
     await seed({ ...seedOptions })
     await seedAccounts()
   })
@@ -228,7 +225,7 @@ describe('ContainerService - delete', () => {
 describe('containerService - addContainerUser', () => {
   beforeEach(async () => {
     await drop()
-    await dropBucket(BucketKey.Data)
+    await dropBucket(BucketKey.Project)
     await seed({ users: true, applications: true })
     await seedAccounts()
   })
@@ -354,85 +351,10 @@ describe('containerService - addContainerUser', () => {
   })
 })
 
-describe('containerService - addContainerUser (for libraries)', () => {
-  beforeEach(async () => {
-    await drop()
-    await dropBucket(BucketKey.Data)
-    await seed({ users: true, applications: true })
-    await seedAccounts()
-  })
-
-  test('should add an owner to a library and cascade the role to library collections', async () => {
-    const containerService = DIContainer.sharedContainer.containerService[ContainerType.library]
-
-    await createLibrary('MPLibrary:valid-library-id')
-    await createLibraryCollection()
-    const didAdd = await containerService.addContainerUser(
-      validLibrary._id,
-      ContainerRole.Owner,
-      validUser1._id,
-      validUser2
-    )
-
-    const collections =
-      await DIContainer.sharedContainer.libraryRepository.getContainedLibraryCollections(
-        validLibrary._id
-      )
-
-    expect(didAdd).toBeTruthy()
-    expect(collections[0].owners.includes(validUser1._id.replace('|', '_'))).toBeTruthy()
-    expect(collections[0].inherited!.includes(validUser1._id.replace('|', '_'))).toBeTruthy()
-  })
-
-  test('should add a writer to a library and cascade the role to library collections', async () => {
-    const containerService =
-      DIContainer.sharedContainer.containerService[ContainerType.library]
-    await createLibrary('MPLibrary:valid-library-id')
-    await createLibraryCollection()
-    const didAdd = await containerService.addContainerUser(
-      validLibrary._id,
-      ContainerRole.Writer,
-      validUser1._id,
-      validUser2
-    )
-
-    const collections =
-      await DIContainer.sharedContainer.libraryRepository.getContainedLibraryCollections(
-        validLibrary._id
-      )
-
-    expect(didAdd).toBeTruthy()
-    expect(collections[0].writers.includes(validUser1._id.replace('|', '_'))).toBeTruthy()
-    expect(collections[0].inherited!.includes(validUser1._id.replace('|', '_'))).toBeTruthy()
-  })
-
-  test('should add a viewer to a library and cascade the role to library collections', async () => {
-    const containerService =
-      DIContainer.sharedContainer.containerService[ContainerType.library]
-    await createLibrary('MPLibrary:valid-library-id')
-    await createLibraryCollection()
-    const didAdd = await containerService.addContainerUser(
-      validLibrary._id,
-      ContainerRole.Viewer,
-      validUser1._id,
-      validUser2
-    )
-
-    const collections =
-      await DIContainer.sharedContainer.libraryRepository.getContainedLibraryCollections(
-        validLibrary._id
-      )
-
-    expect(didAdd).toBeTruthy()
-    expect(collections[0].viewers.includes(validUser1._id.replace('|', '_'))).toBeTruthy()
-    expect(collections[0].inherited!.includes(validUser1._id.replace('|', '_'))).toBeTruthy()
-  })
-})
-
 describe('containerService - manageUserRole', () => {
   beforeEach(async () => {
     await drop()
-    await dropBucket(BucketKey.Data)
+    await dropBucket(BucketKey.Project)
     await seed({ users: true, applications: true})
     await seedAccounts()
     await DIContainer.sharedContainer.syncService.createUserProfile(
@@ -676,7 +598,7 @@ describe('containerService - manageUserRole', () => {
 describe('ContainerService - getArchive', () => {
   beforeEach(async () => {
     await drop()
-    await dropBucket(BucketKey.Data)
+    await dropBucket(BucketKey.Project)
     await seed({ users: true, applications: true})
     await seedAccounts()
     await DIContainer.sharedContainer.syncService.createUserProfile(
@@ -739,7 +661,7 @@ describe('ContainerService - getArchive', () => {
 describe('ContainerService - loadProject', () => {
   beforeEach(async () => {
     await drop()
-    await dropBucket(BucketKey.Data)
+    await dropBucket(BucketKey.Project)
     await seed({ users: true, applications: true})
     await seedAccounts()
     await DIContainer.sharedContainer.syncService.createUserProfile({
@@ -800,7 +722,7 @@ describe('ContainerService - loadProject', () => {
 describe('ContainerService - accessToken', () => {
   beforeEach(async () => {
     await drop()
-    await dropBucket(BucketKey.Data)
+    await dropBucket(BucketKey.Project)
     await seed({ users: true, applications: true })
     await seedAccounts()
     await DIContainer.sharedContainer.syncService.createUserProfile(
@@ -839,7 +761,7 @@ describe('ContainerService - accessToken', () => {
 describe('ContainerService - pickerBundle', () => {
   beforeEach(async () => {
     await drop()
-    await dropBucket(BucketKey.Data)
+    await dropBucket(BucketKey.Project)
     await seed({ users: true, applications: true, manuscript: true })
     await seedAccounts()
     await DIContainer.sharedContainer.syncService.createUserProfile(
@@ -892,7 +814,7 @@ describe('ContainerService - pickerBundle', () => {
 describe('ContainerService - addProductionNote', () => {
   beforeEach(async () => {
     await drop()
-    await dropBucket(BucketKey.Data)
+    await dropBucket(BucketKey.Project)
     await seed({ users: true, applications: true, manuscript: true, manuscriptNotes: true })
     await DIContainer.sharedContainer.syncService.createUserProfile(
       {
@@ -967,7 +889,7 @@ describe('ContainerService - addProductionNote', () => {
 describe('ContainerService - createManuscript', () => {
   beforeEach(async () => {
     await drop()
-    await dropBucket(BucketKey.Data)
+    await dropBucket(BucketKey.Project)
     await seed({ users: true, applications: true, manuscript: true, manuscriptNotes: true, templates: true })
     await seedAccounts()
     await DIContainer.sharedContainer.syncService.createUserProfile(
@@ -1056,7 +978,7 @@ describe('ContainerService - createManuscript', () => {
 describe('ContainerService - getProductionNotes', () => {
   beforeEach(async () => {
     await drop()
-    await dropBucket(BucketKey.Data)
+    await dropBucket(BucketKey.Project)
     await seed({ users: true, applications: true, projects: true, manuscript: true, manuscriptNotes: true })
     await DIContainer.sharedContainer.syncService.createUserProfile(
       {
@@ -1093,7 +1015,7 @@ describe('ContainerService - getProductionNotes', () => {
 describe('ContainerService - addExternalFiles', () => {
   beforeEach(async () => {
     await drop()
-    await dropBucket(BucketKey.Data)
+    await dropBucket(BucketKey.Project)
     await seed({ users: true, applications: true, projects: true, externalFile: true })
     await DIContainer.sharedContainer.syncService.createUserProfile(
       {
@@ -1154,7 +1076,7 @@ describe('ContainerService - addExternalFiles', () => {
 describe('ContainerService - getCorrectionStatus', () => {
   beforeEach(async () => {
     await drop()
-    await dropBucket(BucketKey.Data)
+    await dropBucket(BucketKey.Project)
     await seed({ users: true, applications: true, corrections: true })
     await seedAccounts()
   })
@@ -1206,7 +1128,7 @@ describe('ContainerService - getCorrectionStatus', () => {
 describe('ContainerService - saveSnapshot', () => {
   beforeEach(async () => {
     await drop()
-    await dropBucket(BucketKey.Data)
+    await dropBucket(BucketKey.Project)
     await seed({ users: true, applications: true })
     await seedAccounts()
   })

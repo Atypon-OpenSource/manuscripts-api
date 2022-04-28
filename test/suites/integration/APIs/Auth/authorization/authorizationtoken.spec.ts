@@ -48,7 +48,7 @@ jest.setTimeout(TEST_TIMEOUT)
 describe('authorization scope - GET api/v1/authorization/:scope', () => {
   beforeEach(async () => {
     await drop()
-    await dropBucket(BucketKey.Data)
+    await dropBucket(BucketKey.Project)
     await seed(seedOptions)
   })
 

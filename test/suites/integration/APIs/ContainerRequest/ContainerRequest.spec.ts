@@ -67,7 +67,7 @@ jest.setTimeout(TEST_TIMEOUT)
 describe('ContainerRequestService - create', () => {
   beforeEach(async () => {
     await drop()
-    await dropBucket(BucketKey.Data)
+    await dropBucket(BucketKey.Project)
     await seed({
       users: true,
       applications: true,
@@ -134,7 +134,7 @@ describe('ContainerRequestService - create', () => {
 describe('ContainerRequestService - accept', () => {
   beforeEach(async () => {
     await drop()
-    await dropBucket(BucketKey.Data)
+    await dropBucket(BucketKey.Project)
     await seed({
       users: true,
       applications: true,
@@ -201,7 +201,7 @@ describe('ContainerRequestService - accept', () => {
 describe('ContainerRequestService - reject', () => {
   beforeEach(async () => {
     await drop()
-    await dropBucket(BucketKey.Data)
+    await dropBucket(BucketKey.Project)
     await seed({
       users: true,
       applications: true,

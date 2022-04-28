@@ -49,7 +49,7 @@ jest.setTimeout(TEST_TIMEOUT)
 describe('change Password - POST api/v1/auth/changePassword', () => {
   beforeEach(async () => {
     await drop()
-    await dropBucket(BucketKey.Data)
+    await dropBucket(BucketKey.Project)
     await seed(seedOptions)
   })
 

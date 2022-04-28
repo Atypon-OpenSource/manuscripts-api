@@ -23,18 +23,18 @@ import { validProjectInvitationObject } from '../../../../data/fixtures/invitati
 jest.setTimeout(TEST_TIMEOUT)
 
 let db: any = null
-beforeAll(async () => (db = await testDatabase(false, BucketKey.Data)))
+beforeAll(async () => (db = await testDatabase(false, BucketKey.Project)))
 afterAll(() => db.bucket.disconnect())
 
 describe('ContainerInvitationRepository getInvitationsForUser', () => {
   beforeEach(async () => {
     await drop()
-    await dropBucket(BucketKey.Data)
+    await dropBucket(BucketKey.Project)
     await seed({ projectInvitations: true })
   })
 
   test('should get project invitation by id', async () => {
-    const repository = new ContainerInvitationRepository(BucketKey.Data, db)
+    const repository = new ContainerInvitationRepository(BucketKey.Project, db)
 
     const invitations: any = await repository.getInvitationsForUser(
       validProjectInvitationObject.containerID,
@@ -47,12 +47,12 @@ describe('ContainerInvitationRepository getInvitationsForUser', () => {
 describe('InvitationRepository getAllByEmail', () => {
   beforeEach(async () => {
     await drop()
-    await dropBucket(BucketKey.Data)
+    await dropBucket(BucketKey.Project)
     await seed({ projectInvitations: true })
   })
 
   test('should get all invitations by email', async () => {
-    const repository = new ContainerInvitationRepository(BucketKey.Data, db)
+    const repository = new ContainerInvitationRepository(BucketKey.Project, db)
 
     const invitations: any = await repository.getAllByEmail(
       'valid-google@manuscriptsapp.com'
@@ -66,12 +66,12 @@ describe('InvitationRepository getAllByEmail', () => {
 describe('InvitationRepository removeByUserIdAndEmail', () => {
   beforeEach(async () => {
     await drop()
-    await dropBucket(BucketKey.Data)
+    await dropBucket(BucketKey.Project)
     await seed({ projectInvitations: true })
   })
 
   test('should remove all invitations by email', async () => {
-    const repository = new ContainerInvitationRepository(BucketKey.Data, db)
+    const repository = new ContainerInvitationRepository(BucketKey.Project, db)
 
     await repository.removeByUserIdAndEmail(
       validProjectInvitationObject.invitingUserID,

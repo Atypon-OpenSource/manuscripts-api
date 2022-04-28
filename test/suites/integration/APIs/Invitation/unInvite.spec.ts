@@ -57,7 +57,7 @@ jest.setTimeout(TEST_TIMEOUT)
 describe('InvitationService - uninvite', () => {
   beforeEach(async () => {
     await drop()
-    await dropBucket(BucketKey.Data)
+    await dropBucket(BucketKey.Project)
     await seed(seedOptions)
     await seedAccounts()
   })

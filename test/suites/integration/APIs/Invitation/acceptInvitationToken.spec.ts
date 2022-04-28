@@ -81,7 +81,7 @@ jest.setTimeout(TEST_TIMEOUT)
 describe('InvitationService - acceptInvitationToken', () => {
   beforeEach(async () => {
     await drop()
-    await dropBucket(BucketKey.Data)
+    await dropBucket(BucketKey.Project)
     await seed(seedOptions)
     await seedAccounts()
   })
