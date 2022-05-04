@@ -56,7 +56,7 @@ export function loadRoutes(router: Router) {
     route.create(router)
   }
 
-  if (process.env.NODE_ENV === Environment.Production) {
+  if (process.env.NODE_ENV !== Environment.Production) {
     router.get(`/spec.json`, (_req, res) => {
       res.sendFile(path.join(__dirname + '/../../doc/spec.json'))
     })
