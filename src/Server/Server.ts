@@ -89,7 +89,7 @@ export class Server implements IServer {
     )
 
     this.app.use(express.json({ limit: '50mb' }))
-    this.app.use(express.urlencoded({ limit: '50mb' }))
+    this.app.use(express.urlencoded({ extended: true, limit: '50mb' }))
 
     this.app.use(methodOverride())
 
