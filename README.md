@@ -24,6 +24,14 @@ Run Postgres and API server in Docker:
 
 The API will be available at <http://127.0.0.1:3000/>
 
+## Seed the app
+
+```
+./bin/seed-app.sh
+```
+
+This will create 2 users, 2 projects with a manuscript
+
 ## Test the app
 
 Run Postgres and the test runner in Docker:
