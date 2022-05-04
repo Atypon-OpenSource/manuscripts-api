@@ -16,7 +16,6 @@
 
 // tslint:disable:member-ordering
 import methodOverride from 'method-override'
-import * as bodyParser from 'body-parser'
 import express from 'express'
 import cors from 'cors'
 import logger from 'morgan'
@@ -29,8 +28,6 @@ import { loadRoutes } from '../Controller/RouteLoader'
 import { SQLDatabase } from '../DataAccess/SQLDatabase'
 import { isStatusCoded, ForbiddenOriginError, IllegalStateError } from '../Errors'
 import { config } from '../Config/Config'
-// import { SyncService } from '../DomainServices/Sync/SyncService'
-// import { DIContainer } from '../DIContainer/DIContainer'
 import { Environment } from '../Config/ConfigurationTypes'
 
 /**
@@ -55,9 +52,6 @@ export class Server implements IServer {
     if (this.app.get('env') !== 'test') {
       this.app.use(logger('dev')) // short
     }
-
-    // use json form parser middleware
-    this.app.use(bodyParser.json())
 
     const allowedOrigins: string[] = []
 
@@ -94,12 +88,8 @@ export class Server implements IServer {
       })
     )
 
-    // use query string parser middleware
-    this.app.use(
-      bodyParser.urlencoded({
-        extended: true,
-      })
-    )
+    this.app.use(express.json({ limit: '50mb' }))
+    this.app.use(express.urlencoded({ limit: '50mb' }))
 
     this.app.use(methodOverride())
 
