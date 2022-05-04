@@ -180,3 +180,12 @@ Available at <http://127.0.0.1:3000/sg>
 GET ../sg/user/userId // will fetch user with userId from user bucket 
 POST ../sg/project // create a doc (req.body) in the project bucket
 ```
+
+## DOCS
+
+Available at <http://127.0.0.1:3000/api/v1/docs> only on non-production envs
+
+To regenerate the docs:
+```
+npm run docs
+```
