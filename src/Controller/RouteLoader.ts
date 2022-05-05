@@ -15,6 +15,7 @@
  */
 
 import { Router } from 'express'
+import * as path from 'path'
 
 import { BaseRoute } from './BaseRoute'
 import { AuthRoute } from './V1/Auth/AuthRoute'
@@ -28,6 +29,8 @@ import { ContainerRequestRoute } from './V1/ContainerRequest/ContainerRequestRou
 import { SubmissionRoute } from './V1/Submission/SubmissionRoute'
 import { TemplatesRoute } from './V1/Templates/TemplatesRoute'
 import { SGRoute } from './V1/SG/SGRoute'
+
+import { Environment } from '../Config/ConfigurationTypes'
 
 /**
  * Creates routes.
@@ -51,5 +54,15 @@ export function loadRoutes(router: Router) {
 
   for (const route of routes) {
     route.create(router)
+  }
+
+  if (process.env.NODE_ENV !== Environment.Production) {
+    router.get(`/spec.json`, (_req, res) => {
+      res.sendFile(path.join(__dirname + '/../../doc/spec.json'))
+    })
+
+    router.get(`/docs`, (_req, res) => {
+      res.sendFile(path.join(__dirname + '/../../doc/index.html'))
+    })
   }
 }

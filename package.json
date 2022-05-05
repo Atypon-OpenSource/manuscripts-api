@@ -27,7 +27,8 @@
     "test:int:dev": "jest --config=./jest.config.int.test.js --runInBand --watch",
     "debug-test:int": "NODE_OPTIONS=--max_old_space_size=4096 node --inspect-brk ./node_modules/.bin/jest --config=./jest.config.int.test.js --no-cache --runInBand",
     "build-lint": "run-s build lint",
-    "clean": "rm -rf dist/"
+    "clean": "rm -rf dist/",
+    "docs": "cd doc && npm ci && ./node_modules/swagger-to-static/index.js manuscripts-io-api-v1.yml ."
   },
   "pre-commit": [
     "lint"
