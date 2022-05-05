@@ -37,6 +37,16 @@ node {
     parallel([
         'run_app': {
             node {
+            VARS = checkout(scm:[$class: 'GitSCM', branches: [[name: "${sha1}"]],
+            doGenerateSubmoduleConfigurations: false,
+            submoduleCfg: [],
+            userRemoteConfigs: [
+                [credentialsId: '336d4fc3-f420-4a3e-b96c-0d0f36ad12be',
+                name: 'origin',
+                refspec: "${REFSPEC}",
+                url: 'git@github.com:Atypon-OpenSource/manuscripts-api.git']
+            ]]
+            )
             sh ("""./bin/build-env.js .env.example > .env""")
             env.NODE_ENV="production"
             withEnv(x = readFile('.env').split('\n') as List) {
@@ -63,7 +73,18 @@ fi
             }
         },
         'unit_tests': {
+            
             node {
+            
+            VARS = checkout(scm:[$class: 'GitSCM', branches: [[name: "${sha1}"]],
+            doGenerateSubmoduleConfigurations: false,
+            submoduleCfg: [],
+            userRemoteConfigs: [
+                [credentialsId: '336d4fc3-f420-4a3e-b96c-0d0f36ad12be',
+                name: 'origin',
+                refspec: "${REFSPEC}",
+                url: 'git@github.com:Atypon-OpenSource/manuscripts-api.git']
+            ]])
             sh (script: """
 ./bin/set-package-json-version.sh
             """)
