@@ -121,22 +121,25 @@ export abstract class SQLRepository<
       }
     }
 
-    const query: any = {}
+    const query: any = {
+      AND: [],
+    }
+
     if (criteria._id) {
-      query.id = criteria._id
+      query.AND.push({ id: query.id })
     }
 
     const paths = getPaths(criteria)
-    if (paths.length) {
-      query.AND = []
-      if (query.id) {
-        query.AND.push({ id: query.id })
-        delete query.id
-      }
-      for (const path of paths) {
-        query.AND.push({ data: { path, equals: deepValue(criteria, path.join('.')) } })
-      }
+    for (const path of paths) {
+      query.AND.push({ data: { path, equals: deepValue(criteria, path.join('.')) } })
     }
+
+    query.AND.push({
+      data: {
+        path: ['_type'],
+        equals: this._documentType,
+      },
+    })
 
     return query
   }
