@@ -42,7 +42,7 @@ node {
             withEnv(x = readFile('.env').split('\n') as List) {
                 sh "echo ${x.split("=")[0]} = ${x.split("=")[1]}"
                 nodejs(nodeJSInstallationName: 'node 12.22.1') {
-                    sh (script: "npx gulp -f docker/utils/Gulpfile.js"
+                    sh (script: "npx gulp -f docker/utils/Gulpfile.js")
                     dir('docker') {
                         sh (script: "cp ../.env .env")
                         sh (script: "docker-compose build --pull")
