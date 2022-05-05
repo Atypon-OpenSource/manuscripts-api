@@ -52,13 +52,14 @@ node {
             withEnv(readFile('.env').split('\n') as List) {
                 sh "env"
                 nodejs(nodeJSInstallationName: 'node 12.22.1') {
+
                     sh (script: "npx gulp -f docker/utils/Gulpfile.js")
                     dir('docker') {
                         sh (script: "cp ../.env .env")
                         sh (script: "docker-compose build --pull")
                         sh (script: """
-docker-compose up -d \
-sleep 20 \
+docker-compose up -d
+sleep 20 
 if [[  -z `nc -z localhost 3000` ]]; then \
   echo "server is running" \
   exit 0 \
