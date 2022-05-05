@@ -49,8 +49,8 @@ node {
             )
             sh ("""./bin/build-env.js .env.example > .env""")
             env.NODE_ENV="production"
-            withEnv(x = readFile('.env').split('\n') as List) {
-                sh "echo ${x.split("=")[0]} = ${x.split("=")[1]}"
+            withEnv(readFile('.env').split('\n') as List) {
+                sh "env"
                 nodejs(nodeJSInstallationName: 'node 12.22.1') {
                     sh (script: "npx gulp -f docker/utils/Gulpfile.js")
                     dir('docker') {
