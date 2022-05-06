@@ -58,8 +58,9 @@ node {
                         sh (script: "cp ../.env .env")
                         sh (script: "docker-compose build --pull")
                         sh (script: """
-docker-compose up -d
-sleep 20 
+#!/bin/bash
+docker-compose up -d 
+sleep 20
 if [[  -z `nc -z localhost 3000` ]]; then \
   echo "server is running" \
   exit 0 \
