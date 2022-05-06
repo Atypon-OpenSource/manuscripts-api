@@ -52,7 +52,7 @@ node {
             withEnv(readFile('.env').split('\n') as List) {
                 sh "env"
                 nodejs(nodeJSInstallationName: 'node 12.22.1') {
-
+                    sh (script: "npm ci")
                     sh (script: "npx gulp -f docker/utils/Gulpfile.js")
                     dir('docker') {
                         sh (script: "cp ../.env .env")
@@ -86,9 +86,7 @@ fi
                 refspec: "${REFSPEC}",
                 url: 'git@github.com:Atypon-OpenSource/manuscripts-api.git']
             ]])
-            sh (script: """
-./bin/set-package-json-version.sh
-            """)
+            //sh (script: """echo hi            """)
             }
         },
         'integration_tests': {
