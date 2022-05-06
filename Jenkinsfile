@@ -57,18 +57,16 @@ node {
                     dir('docker') {
                         sh (script: "cp ../.env .env")
                         sh (script: "docker-compose build --pull")
+                        sh (script: "docker-compose up -d ")
+                        sh (script: "sleep 20")
                         sh (script: """
-#!/bin/bash
-docker-compose up -d 
-sleep 20
-if [[  -z `nc -z localhost 3000` ]]; then \
+if [  -z `nc -z localhost 3000` ]; then \
   echo "server is running" \
   exit 0 \
 else \
   echo "server is NOT running" \
   exit 1 \
-fi
-""")
+fi""")
                     }
                 }
             }
