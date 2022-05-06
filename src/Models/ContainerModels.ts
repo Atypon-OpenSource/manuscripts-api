@@ -56,6 +56,7 @@ export interface PatchContainerInvitation {
   message?: string
   acceptedAt?: number
   invitedUserID?: string
+  expiry?: number
 }
 
 export interface PatchContainerRequest {

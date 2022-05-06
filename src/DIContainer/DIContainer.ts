@@ -61,6 +61,7 @@ import { SubmissionRepository } from '../DataAccess/SubmissionRepository/Submiss
 import { AuthService } from '../DomainServices/Auth/AuthService'
 import { IAuthService } from '../DomainServices/Auth/IAuthService'
 import { EmailService } from '../DomainServices/Email/EmailService'
+import { ExpirationService } from '../DomainServices/Expiration/ExpirationService'
 import { SyncService } from '../DomainServices/Sync/SyncService'
 import { ISyncService } from '../DomainServices/Sync/ISyncService'
 import { SGService } from '../DomainServices/SG/SGService'
@@ -123,6 +124,7 @@ export class DIContainer {
   readonly applicationRepository: IClientApplicationRepository
   readonly collaborationsRepository: ICollaborationsRepository
   readonly emailService: EmailService
+  readonly expirationService: ExpirationService
   readonly syncService: ISyncService
   readonly sgService: ISGService
   readonly authService: IAuthService
@@ -287,6 +289,13 @@ export class DIContainer {
       this.userStatusRepository,
       this.invitationService,
       this.containerInvitationService
+    )
+    this.expirationService = new ExpirationService(
+      this.userEventRepository,
+      this.userTokenRepository,
+      this.invitationRepository,
+      this.invitationTokenRepository,
+      this.containerInvitationRepository
     )
     this.jwksClient = jwksClientRSA({
       cache: true,

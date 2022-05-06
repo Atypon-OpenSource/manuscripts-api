@@ -27,6 +27,7 @@ import { SQLDatabase } from './SQLDatabase'
 import { BucketKey } from '../Config/ConfigurationTypes'
 
 import { Prisma } from '@prisma/client'
+import { timestamp } from '../Utilities/JWT/LoginTokenPayload'
 
 /* istanbul ignore next */
 const getPaths = (obj: any, arr: string[] = [], res: string[][] = []): string[][] => {
@@ -415,6 +416,47 @@ export abstract class SQLRepository<
             )
           )
         )
+    })
+  }
+
+  /**
+   * Get expired documents
+   */
+  public getExpired(): Promise<TEntity[]> {
+    const Q = {
+      AND: [
+        {
+          data: {
+            path: ['expiry'],
+            lte: timestamp(),
+          },
+        },
+        {
+          data: {
+            path: ['_type'],
+            equals: this._documentType,
+          },
+        },
+      ],
+    }
+    return new Promise((resolve, reject) => {
+      this.database.bucket
+        .query(Q)
+        .catch((error: Prisma.PrismaClientKnownRequestError) =>
+          reject(
+            DatabaseError.fromPrismaError(
+              error,
+              `Error getting expired documents ${this.documentType}`,
+              JSON.stringify(Q)
+            )
+          )
+        )
+        .then((docs: any) => {
+          const res = docs.map((doc: any) => {
+            return this.buildModel(doc.data)
+          })
+          resolve(res)
+        })
     })
   }
 

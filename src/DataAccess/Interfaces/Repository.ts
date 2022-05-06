@@ -24,4 +24,9 @@ export interface Repository<TEntity> {
    * @param userId The userId that requests the document
    */
   getById(id: string, userId?: string): Promise<TEntity | null>
+
+  /**
+   * Returns expired documents
+   */
+  getExpired(): Promise<TEntity[]>
 }

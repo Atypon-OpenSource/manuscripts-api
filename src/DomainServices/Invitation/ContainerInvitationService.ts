@@ -15,7 +15,7 @@
  */
 
 import checksum from 'checksum'
-import { ContainerInvitation, ObjectTypes } from '@manuscripts/manuscripts-json-schema'
+import { ObjectTypes } from '@manuscripts/manuscripts-json-schema'
 
 import { User, InvitationToken } from '../../Models/UserModels'
 import {
@@ -130,8 +130,13 @@ export class ContainerInvitationService implements IContainerInvitationService {
       const invitationId = `${ObjectTypes.ContainerInvitation}:${invitationTupleHash}`
       let invitation = await this.containerInvitationRepository.getById(invitationId, userID)
 
+      const expiry = ContainerInvitationService.invitationExpiryInDays()
       if (invitation) {
-        await this.containerInvitationRepository.patch(invitationId, { role, message }, userID)
+        await this.containerInvitationRepository.patch(
+          invitationId,
+          { role, message, expiry },
+          userID
+        )
       } else {
         const newInvitation: ContainerInvitationLike = {
           _id: invitationTupleHash,
@@ -145,6 +150,7 @@ export class ContainerInvitationService implements IContainerInvitationService {
           containerTitle: ContainerService.containerTitle(container),
           role,
           message,
+          expiry,
         }
 
         await this.containerInvitationRepository.create(newInvitation, userID)
@@ -314,7 +320,10 @@ export class ContainerInvitationService implements IContainerInvitationService {
   }
 
   public async markInvitationAsAccepted(invitationId: string) {
-    await this.containerInvitationRepository.patch(invitationId, { acceptedAt: timestamp() })
+    await this.containerInvitationRepository.patch(invitationId, {
+      acceptedAt: timestamp(),
+      expiry: ContainerInvitationService.invitationExpiryInDays(),
+    })
   }
 
   public async uninvite(userId: string, invitationId: string): Promise<void> {
@@ -375,8 +384,8 @@ export class ContainerInvitationService implements IContainerInvitationService {
       `InvitationToken|${containerID}+${permittedRole}`
     )
 
+    const expiry: number = ContainerInvitationService.invitationTokenTimeout()
     if (!invitationToken) {
-      //const expiry: number = ContainerInvitationService.invitationTokenTimeout()
       const tokenId = `${containerID}+${permittedRole}`
 
       const token = cryptoRandomString(40)
@@ -386,13 +395,11 @@ export class ContainerInvitationService implements IContainerInvitationService {
         token,
         containerID,
         permittedRole,
+        expiry,
       }
       return this.invitationTokenRepository.create(invitationToken)
     } else {
-      await this.invitationTokenRepository.touch(
-        invitationToken._id,
-        ContainerInvitationService.invitationTokenTimeout()
-      )
+      await this.invitationTokenRepository.touch(invitationToken._id, expiry)
       return invitationToken
     }
   }
@@ -467,7 +474,7 @@ export class ContainerInvitationService implements IContainerInvitationService {
     )
 
     let roleToAssign = permittedRole
-    let invitationToAccept: ContainerInvitation | null = null
+    let invitationToAccept: ContainerInvitationLike | null = null
 
     for (let invitation of invitations) {
       if (ContainerService.compareRoles(invitation.role as ContainerRole, roleToAssign) >= 0) {
