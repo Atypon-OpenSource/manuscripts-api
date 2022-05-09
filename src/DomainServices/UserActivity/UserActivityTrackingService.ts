@@ -59,6 +59,7 @@ export class UserActivityTrackingService {
         eventType,
         appId,
         deviceId,
+        expiry: this.eventLifetime,
       }
 
       this.creationCount++

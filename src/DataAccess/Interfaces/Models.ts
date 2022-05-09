@@ -42,7 +42,7 @@ export type UserProfileLike = Pick<
 export type ContainerInvitationLike = Pick<
   ContainerInvitation,
   Exclude<keyof ContainerInvitation, 'createdAt' | 'updatedAt'>
->
+> & { expiry: number }
 
 export type CollaborationLike = Pick<
   Collaboration,

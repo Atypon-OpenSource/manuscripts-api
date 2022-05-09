@@ -407,6 +407,7 @@ export interface InvitationToken {
    * Container related JWT token
    */
   token: string
+  expiry: number
 }
 
 export interface UpdateInvitationToken {

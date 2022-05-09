@@ -402,6 +402,47 @@ export abstract class SGRepository<
     return this.update(patchedDocument)
   }
 
+  /**
+   * Get expired documents
+   */
+  public getExpired(): Promise<TEntity[]> {
+    const Q = {
+      AND: [
+        {
+          data: {
+            path: ['expiry'],
+            lte: timestamp(),
+          },
+        },
+        {
+          data: {
+            path: ['objectType'],
+            equals: this.objectType,
+          },
+        },
+      ],
+    }
+    return new Promise((resolve, reject) => {
+      this.database.bucket
+        .query(Q)
+        .catch((error: Prisma.PrismaClientKnownRequestError) =>
+          reject(
+            DatabaseError.fromPrismaError(
+              error,
+              `Error getting expired documents ${this.objectType}`,
+              JSON.stringify(Q)
+            )
+          )
+        )
+        .then((docs: any) => {
+          const res = docs.map((doc: any) => {
+            return this.buildModel(doc)
+          })
+          resolve(res)
+        })
+    })
+  }
+
   private validate(doc: any, oldDoc: any, userId?: string): Promise<void> {
     if (doc.expiry) {
       delete doc.expiry

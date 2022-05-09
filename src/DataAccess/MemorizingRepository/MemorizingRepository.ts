@@ -93,6 +93,11 @@ export class MemorizingRepository<
   }
 
   /* istanbul ignore next */
+  public async getExpired(): Promise<TEntity[]> {
+    return this.repository.getExpired()
+  }
+
+  /* istanbul ignore next */
   public fullyQualifiedId(id: string): string {
     return this.repository.fullyQualifiedId(id)
   }

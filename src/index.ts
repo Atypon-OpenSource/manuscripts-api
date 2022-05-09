@@ -48,8 +48,12 @@ function main() {
     })
     .then(() => {
       cron.schedule('0 1 * * *', async () => {
-        log.debug('running a task every day')
+        log.debug('clearUsersData every day')
         await DIContainer.sharedContainer.userService.clearUsersData()
+      })
+      cron.schedule('0 1 * * *', async () => {
+        log.debug('clearExpiredDocuments every day')
+        await DIContainer.sharedContainer.expirationService.clearExpiredDocuments()
       })
     })
     .catch((error) => {

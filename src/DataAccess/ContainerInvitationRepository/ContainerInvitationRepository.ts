@@ -37,7 +37,7 @@ export class ContainerInvitationRepository extends SGRepository<
   public async getInvitationsForUser(
     containerID: string,
     userEmail: string
-  ): Promise<ContainerInvitation[]> {
+  ): Promise<ContainerInvitationLike[]> {
     const Q = {
       AND: [
         {
@@ -63,7 +63,7 @@ export class ContainerInvitationRepository extends SGRepository<
 
     const callbackFn = (results: any) =>
       results.map((result: any) => {
-        return { ...this.buildModel(result) } as ContainerInvitation
+        return { ...this.buildModel(result) }
       })
 
     return this.database.bucket.query(Q).then((res: any) => callbackFn(res))
