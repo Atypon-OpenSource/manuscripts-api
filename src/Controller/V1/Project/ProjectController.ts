@@ -215,45 +215,22 @@ export class ProjectController extends BaseController implements IProjectControl
   }
 
   async saveProject(req: Request): Promise<Container> {
-    const file = req.file
-    const { projectId, manuscriptId } = req.params
+    const { projectId } = req.params
+    const { manuscriptId, data } = req.body
 
     if (!projectId) {
       throw new ValidationError('projectId parameter must be specified', projectId)
     }
-    if (!file || !file.path) {
-      throw new ValidationError('Please upload project JSON file to import', projectId)
-    }
 
     const token = authorizationBearerToken(req)
-    const profile = await DIContainer.sharedContainer.userService.profile(token)
-    if (!profile) {
-      throw new ValidationError('Profile not found for token', profile)
+    const payload = jsonwebtoken.decode(token)
+    if (!isLoginTokenPayload(payload)) {
+      throw new InvalidCredentialsError('Unexpected token payload.')
     }
-
-    const buffer = fs.readFileSync(file.path)
-    const json = JSON.parse(buffer.toString())
+    const userId = ContainerService.userIdForSync(req.user._id)
     const project = await DIContainer.sharedContainer.containerService[
       ContainerType.project
-    ].getContainer(projectId)
-
-    if (!ContainerService.isOwner(project, req.user._id)) {
-      throw new RoleDoesNotPermitOperationError(
-        'User must be an owner to add manuscripts.',
-        req.user._id
-      )
-    }
-
-    const container = await this.upsertManuscriptToProject(
-      project,
-      json,
-      null,
-      req.user._id,
-      manuscriptId
-    )
-
-    await remove(file.path)
-
-    return container
+    ].getContainer(projectId, userId)
+    return await this.upsertManuscriptToProject(project, { data: data }, null, userId, manuscriptId)
   }
 }

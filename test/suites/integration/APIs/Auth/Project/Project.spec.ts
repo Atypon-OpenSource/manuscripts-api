@@ -30,7 +30,7 @@ import * as HttpStatus from 'http-status-codes'
 import { validManuscript } from '../../../../../data/fixtures/manuscripts'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
 import { createProject, createManuscript } from '../../../../../data/fixtures/misc'
-
+import fs from 'fs'
 
 let db: any = null
 const seedOptions: SeedOptions = {
@@ -190,6 +190,8 @@ describe('ContainerService - save/load Project', () => {
     await createProject('MPProject:valid-project-id-2')
 
     const authHeader = authorizationHeader(loginResponse.body.token)
+    const data = await fs.readFileSync('test/data/fixtures/sample/index.manuscript-json')
+    const json = JSON.parse(data.toString())
     const sendFileResponse = await saveProject(
       {
         ...ValidContentTypeAcceptJsonHeader,
@@ -198,7 +200,7 @@ describe('ContainerService - save/load Project', () => {
       {
         containerID: 'MPProject:valid-project-id-2',
       },
-      'test/data/fixtures/sample/index.manuscript-json'
+      json.data
     )
     expect(sendFileResponse.status).toBe(HttpStatus.OK)
   })
