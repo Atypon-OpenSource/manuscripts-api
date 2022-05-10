@@ -164,7 +164,7 @@ placed at the root of the repository.
 
 ## Access Control
 
-In the past, access control happened via a sync function through the SyncGateway API, with specific [semantics](https://docs.couchbase.com/sync-gateway/current/sync-function-api.html). Those semantics have been translated into db queries, and the main body of the sync function remains (mostly) the [same](src/DataAccess/syncAccessControl.ts). Whenever a repository (that extends SGRepository) function is called with a `userId` parameter, sync access control function logic executes.
+In the past, access control happened via a sync function through the SyncGateway API, with specific [semantics](https://docs.couchbase.com/sync-gateway/current/sync-function-api.html). Those semantics have been replaced with a `proceedWithAccess` call, and the main body of the sync function remains (mostly) the [same](src/DataAccess/syncAccessControl.ts). Whenever a repository (that extends SGRepository) function is called with a `userId` parameter, access control logic executes.
 
 `requireAdmin` has been removed because there is no SG Admin API anymore
 

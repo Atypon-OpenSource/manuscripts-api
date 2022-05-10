@@ -21,7 +21,6 @@ import { basicLogin, SGCreate, SGGet, SGUpdate, SGDelete } from '../../../../api
 import { drop, dropBucket, seed, testDatabase } from '../../../../utilities/db'
 import { validBody, validBody2 } from '../../../../data/fixtures/credentialsRequestPayload'
 import { DIContainer } from '../../../../../src/DIContainer/DIContainer'
-import { AccessControlRepository } from '../../../../../src/DataAccess/AccessControlRepository'
 import {
   ValidContentTypeAcceptJsonHeader,
   authorizationHeader,
@@ -84,12 +83,6 @@ describe('SG - CRUD', () => {
     currentRev = doc._rev
     expect(doc).toEqual(expect.objectContaining(project))
     expect(doc._rev).toEqual(`${doc._revisions.ids[0]}`)
-
-    const channels = await AccessControlRepository.getChannels(project._id)
-    expect(channels.length).toEqual(8)
-
-    const access = await AccessControlRepository.getAccess(userId)
-    expect(access.length).toEqual(6)
   })
 
   test('should patch the project by id', async () => {
@@ -278,12 +271,6 @@ describe('SG - CRUD', () => {
     const doc = response.body
     currentRev = doc._rev
     expect(doc.writers).toEqual(body.writers)
-
-    const channels = await AccessControlRepository.getChannels(project._id)
-    expect(channels.length).toEqual(10)
-
-    const access = await AccessControlRepository.getAccess(body.writers[0])
-    expect(access.length).toEqual(5)
   })
 
   test('should get the project by id as writer', async () => {
@@ -338,12 +325,6 @@ describe('SG - CRUD', () => {
 
     const doc = response.body
     expect(doc.writers).toEqual(body.writers)
-
-    const channels = await AccessControlRepository.getChannels(project._id)
-    expect(channels.length).toEqual(9)
-
-    const access = await AccessControlRepository.getAccess('User|' + validBody2.email)
-    expect(access.length).toEqual(0)
   })
 
   test('should delete the project by id', async () => {
@@ -369,12 +350,6 @@ describe('SG - CRUD', () => {
     )
 
     expect(response.status).toBe(HttpStatus.OK)
-
-    const channels = await AccessControlRepository.getChannels(project._id)
-    expect(channels.length).toEqual(0)
-
-    const access = await AccessControlRepository.getAccess(userId)
-    expect(access.length).toEqual(0)
   })
 
   test('should not get the project by id after removal', async () => {

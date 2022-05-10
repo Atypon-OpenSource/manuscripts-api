@@ -27,7 +27,6 @@ import { ISyncService } from './ISyncService'
 import { timestamp } from '../../Utilities/JWT/LoginTokenPayload'
 import { UserService } from '../User/UserService'
 import { IUserProfileRepository } from 'src/DataAccess/Interfaces/IUserProfileRepository'
-import { AccessControlRepository } from '../../DataAccess/AccessControlRepository'
 
 const randomBytesPromisified = promisify(randomBytes)
 
@@ -116,11 +115,6 @@ export class SyncService implements ISyncService {
       createdAt: date,
       updatedAt: date,
     }
-
-    const channels = [userProfileId + '-readwrite', userProfile.userID + '-readwrite']
-
-    await AccessControlRepository.channel(channels, userProfile.userID)
-    await AccessControlRepository.access([userProfile.userID], channels)
 
     return this.userProfileRepository.create(userProfile, userProfile.userID)
   }

@@ -17,25 +17,3 @@ model Project {
   id                  String   @id @default(uuid())
   data                Json?
 }
-
-model Channel {
-  docId               String
-  name                String
-  Access              Access[]
-
-  @@unique([docId, name], name: "Channel_docId_name_key")
-  @@index([docId], type: Hash)
-  @@id(name)
-}
-
-
-model Access {
-  id                  String   @id @default(uuid())
-  userId              String
-  channel             Channel  @relation(fields: [channelName], references: [name])
-  channelName         String
-
-  @@unique([userId, channelName], name: "Access_userId_channelName_key")
-  @@index([channelName], type: Hash)
-  @@index([userId], type: Hash)
-}

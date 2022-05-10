@@ -17,17 +17,10 @@
 import '../../../utilities/dbMock'
 
 import { DIContainer } from '../../../../src/DIContainer/DIContainer'
-import { ValidationError, SyncError } from '../../../../src/Errors'
+import { ValidationError } from '../../../../src/Errors'
 import { TEST_TIMEOUT } from '../../../utilities/testSetup'
 import { ContainerInvitationLike } from 'src/DataAccess/Interfaces/Models'
 import * as syncAccessControl from '../../../../src/DataAccess/syncAccessControl'
-
-jest.mock('../../../../src/DataAccess/AccessControlRepository', () => ({
-  AccessControlRepository: {
-    remove: jest.fn(),
-    getChannels: jest.fn(),
-  },
-}))
 
 jest.setTimeout(TEST_TIMEOUT)
 

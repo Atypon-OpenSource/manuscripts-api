@@ -15,14 +15,6 @@
  */
 
 import { syncAccessControl } from '../../../../src/DataAccess/syncAccessControl'
-import { AccessControlRepository } from '../../../../src/DataAccess/AccessControlRepository'
-
-beforeAll(async () => {
-    AccessControlRepository.access = jest.fn()
-    AccessControlRepository.channel = jest.fn()
-    AccessControlRepository.getAccess = jest.fn(() => Promise.resolve([1]))
-    AccessControlRepository.remove = jest.fn()
-})
 
 describe('sync access control', () => {
     test('random objects', async () => {
@@ -47,6 +39,7 @@ describe('sync access control', () => {
             const validObject2 = {
                 createdAt: 231230131,
                 updatedAt: 231230131,
+                owners: ['User_ben@example.com'],
                 writers: ['User_ban@example.com'],
                 viewers: [],
                 objectType: type,
@@ -54,35 +47,15 @@ describe('sync access control', () => {
             }
             
             await expect(syncAccessControl({ ...validObject }, null, validObject.owners[0])).resolves
-            await expect(syncAccessControl({ ...validObject }, null)).rejects.toEqual({ forbidden: 'require user' })
+            await expect(syncAccessControl({ ...validObject }, null)).rejects.toEqual({ forbidden: 'user does not have access' })
 
             await expect(syncAccessControl({ ...validObject, owners: [] }, null, validObject.owners[0])).rejects.toEqual({ forbidden: 'owners cannot be set/updated to be empty' })
             await expect(syncAccessControl({ ...validObject, writers: ['User_ben@example.com'] }, null, validObject.owners[0]))
             .rejects.toEqual({ forbidden: 'duplicate userId:User_ben@example.com' })
 
             await expect(syncAccessControl({ ...validObject }, { ...validObject2 }, validObject.owners[0])).resolves
-            await expect(syncAccessControl({ ...validObject }, { ...validObject2 })).rejects.toEqual({ forbidden: 'require user' })
+            await expect(syncAccessControl({ ...validObject }, { ...validObject2 })).rejects.toEqual({ forbidden: 'user does not have access' })
         }
-    })
-
-    test('MPUserProfile', async () => {
-        const validObject = {
-            createdAt: 231230131,
-            updatedAt: 231230131,
-            _id: 'MPUserProfile:foo',
-            objectType: 'MPUserProfile',
-            userID: 'User_mark@example.com',
-            bibliographicName: {
-              _id: 'MPBibliographicName:foo-bar',
-              objectType: 'MPBibliographicName',
-              given: 'Mark',
-              family: 'Zuckerberg',
-            },
-            email: 'mark@example.com',
-        }
-        
-        await expect(syncAccessControl({ ...validObject }, null, validObject.userID)).resolves
-        await expect(syncAccessControl({ ...validObject }, null)).rejects.toEqual({ forbidden: 'user does not have access' })
     })
 
     test('MPPreferences', async () => {
@@ -93,7 +66,7 @@ describe('sync access control', () => {
         }
         
         await expect(syncAccessControl({ ...validObject }, null, 'User_foo@bar.com')).resolves
-        await expect(syncAccessControl({ ...validObject }, null)).rejects.toEqual({ forbidden: 'require user' })
+        await expect(syncAccessControl({ ...validObject }, null)).rejects.toEqual({ forbidden: 'user does not have access' })
     })
 
     test('MPInvitation', async () => {
@@ -171,7 +144,7 @@ describe('sync access control', () => {
         }
         
         await expect(syncAccessControl({ ...validObject }, null, validObject.invitingUserID)).resolves
-        await expect(syncAccessControl({ ...validObject }, null)).rejects.toEqual({ forbidden: 'require user' })
+        await expect(syncAccessControl({ ...validObject }, null)).rejects.toEqual({ forbidden: 'user does not have access' })
         await expect(syncAccessControl({ ...validObject },
              { ...validObject, ...{createdAt: 11111} })).rejects.toEqual({ forbidden: 'MPCollaboration is immutable' })
     })
@@ -182,7 +155,10 @@ describe('sync access control', () => {
             objectType: 'MPBorderStyle',
             _rev: '1-cf3758c6a77c031dcd8f617087c7493d',
             _id: 'MPBorderStyle:15326C7B-836D-4D6C-81EB-7E6CA6153E9A',
-            containerID: 'MPProject:foo-bar-baz',
+            containerID: {
+                _id: 'MPProject:foo-bar-baz',
+                owners: ['User_bill@example.com']
+            },
             manuscriptID: 'MPManuscript:zorb',
             title: 'Dotted',
             pattern: [1, 1],
@@ -238,7 +214,7 @@ describe('sync access control', () => {
         }
         
         await expect(syncAccessControl({ ...validObject }, null, validObject.userID)).resolves
-        await expect(syncAccessControl({ ...validObject }, { ...validObject, isRead: true })).rejects.toEqual({ forbidden: 'require user' })
+        await expect(syncAccessControl({ ...validObject }, { ...validObject, isRead: true })).rejects.toEqual({ forbidden: 'user does not have access' })
         await expect(syncAccessControl({ ...validObject }, { ...validObject, isRead: true }, validObject.userID)).resolves
     })
 
@@ -255,13 +231,22 @@ describe('sync access control', () => {
         }
         
         await expect(syncAccessControl({ ...validObject }, null, validObject.userID)).resolves
-        await expect(syncAccessControl({ ...validObject }, null)).rejects.toEqual({ forbidden: 'require user' })
+        await expect(syncAccessControl({ ...validObject }, null)).rejects.toEqual({ forbidden: 'user does not have access' })
     })
 
     test('MPBibliographyItem', async () => {
-        const containerID = 'MPLibrary:1'
+        const containerID = {
+            _id: 'MPLibrary:1',
+            owners: ['User_bill@example.com']
+        }
 
-        const keywordIDs = ['MPLibraryCollection:a', 'MPLibraryCollection:b']
+        const keywordIDs = [{
+            _id: 'MPLibraryCollection:a',
+            owners: ['User_bill@example.com']
+        }, {
+            _id: 'MPLibraryCollection:b',
+            editors: ['User_bill@example.com']
+        }]
 
 
         const validObject = {
@@ -283,7 +268,10 @@ describe('sync access control', () => {
         const validObject = {
             _id: 'MPCommentAnnotation:foobar',
             objectType: 'MPCommentAnnotation',
-            containerID: 'MPProject:foobarbaz',
+            containerID: {
+                _id: 'MPProject:foobarbaz',
+                owners: ['User_bill@example.com']
+            },
             contents: '',
             target: '',
             manuscriptID: 'MPManuscript:foobarbaz',
@@ -347,7 +335,10 @@ describe('sync access control', () => {
         const validObject = {
             _id: 'MPManuscriptNote:foobar',
             objectType: 'MPManuscriptNote',
-            containerID: 'MPProject:foobarbaz',
+            containerID: {
+                _id: 'MPProject:foobarbaz',
+                owners: ['User_bill@example.com']
+            },
             contents: '',
             target: '',
             manuscriptID: 'MPManuscript:foobarbaz',
@@ -401,7 +392,10 @@ describe('sync access control', () => {
         const validObject = {
             _id: 'MPCorrection:foobar',
             objectType: 'MPCorrection',
-            containerID: 'MPProject:foobarbaz',
+            containerID: {
+                _id: 'MPProject:foobarbaz',
+                owners: ['User_bill@example.com']
+            },
             manuscriptID: 'MPManuscript:foobarbaz',
             contributions: [
             {
@@ -463,7 +457,10 @@ describe('sync access control', () => {
         const validObject = {
             _id: 'MPCommit:foobar',
             objectType: 'MPCommit',
-            containerID: 'MPProject:foobarbaz',
+            containerID: {
+                _id: 'MPProject:foobarbaz',
+                owners: ['User_bill@example.com']
+            },
             createdAt: 1515417692.477127,
             updatedAt: 1515494608.363229,
             blame: [
@@ -487,7 +484,10 @@ describe('sync access control', () => {
         const validObject = {
             _id: 'MPManuscript:foobar',
             objectType: 'MPManuscript',
-            containerID: 'MPProject:foobarbaz',
+            containerID: {
+                _id: 'MPProject:foobarbaz',
+                owners: ['User_bill@example.com']
+            },
             sessionID: '40dc16f1-adbd-4410-af1c-2eddd6bfa63e',
             createdAt: 1515417692.477127,
             updatedAt: 1515494608.363229,       
@@ -501,7 +501,10 @@ describe('sync access control', () => {
         const validObject = {
             _id: 'MPContributor:foobar',
             objectType: 'MPContributor',
-            containerID: 'MPProject:foobarbaz',
+            containerID: {
+                _id: 'MPProject:foobarbaz',
+                owners: ['User_bill@example.com']
+            },
             manuscriptID: 'MPManuscript:foobar',
             bibliographicName: {
               _id: 'MPBibliographicName:foobar',

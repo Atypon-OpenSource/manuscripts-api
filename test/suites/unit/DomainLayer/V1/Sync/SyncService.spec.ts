@@ -36,13 +36,6 @@ jest.mock('../../../../../../src/DIContainer/IAMTokenVerifier.ts', () => ({
   })),
 }))
 
-jest.mock('../../../../../../src/DataAccess/AccessControlRepository', () => ({
-  AccessControlRepository: {
-      channel: jest.fn(),
-      access: jest.fn()
-  }
-}))
-
 import '../../../../../utilities/dbMock'
 
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
