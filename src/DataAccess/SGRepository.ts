@@ -24,7 +24,6 @@ import { BucketKey } from '../Config/ConfigurationTypes'
 import { SQLDatabase } from './SQLDatabase'
 import { timestamp } from '../Utilities/JWT/LoginTokenPayload'
 import { syncAccessControl } from './syncAccessControl'
-import { AccessControlRepository } from './AccessControlRepository'
 
 import { Prisma } from '@prisma/client'
 import { v4 as uuid_v4 } from 'uuid'
@@ -170,9 +169,6 @@ export abstract class SGRepository<
     return new Promise((resolve, reject) => {
       this.database.bucket
         .remove(query)
-        .then(() => {
-          return AccessControlRepository.remove(query.id)
-        })
         .then(() => resolve())
         .catch((error: Prisma.PrismaClientKnownRequestError) =>
           reject(

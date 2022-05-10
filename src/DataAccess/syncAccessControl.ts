@@ -14,44 +14,109 @@
  * limitations under the License.
  */
 
-import { AccessControlRepository } from './AccessControlRepository'
+import prisma from './prismaClient'
+import { Container } from '../Models/ContainerModels'
+
 const { equal, validate } = require('./jsonSchemaValidator')
 
-function access(users: string[], channels: string[]): any {
-  return () => AccessControlRepository.access(users, channels)
+enum AccessType {
+  Read = 'read',
+  Write = 'write',
+  Reject = 'reject',
+  Resolve = 'resolve',
+  Contribute = 'contribute',
 }
 
-function channel(channels: string[], docId: string): any {
-  return () => AccessControlRepository.channel(channels, docId)
-}
+async function getContainer(id: string): Promise<Container | undefined> {
+  const q = {
+    where: {
+      id,
+    },
+  } as any
 
-async function requireAccess(channels: string[], userId: string | undefined): Promise<any> {
-  if (!userId) {
-    throw { forbidden: 'user does not have access' }
+  const container: any = await prisma.project.findUnique(q)
+  if (container) {
+    return container.data
   }
-  // succeed if user has access to at least one channel
-  for (const channel of channels) {
-    const access = await AccessControlRepository.getAccess(userId, channel)
-    if (access.length) {
-      return
-    }
-  }
-  throw { forbidden: 'user does not have access' }
 }
 
 function requireUser(users: string[], userId: string | undefined): void {
   let found = users.find((i) => i === userId)
   if (!found) {
-    throw { forbidden: 'require user' }
+    throw { forbidden: 'user does not have access' }
   }
+}
+
+async function proceedWithAccess(doc: any, userId: string | undefined, accessType: AccessType) {
+  if (!userId) {
+    throw { forbidden: 'user does not have access' }
+  }
+
+  const container = typeof doc === 'string' ? await getContainer(doc) : doc
+
+  if (!container) {
+    throw { forbidden: 'container does not exist' }
+  }
+
+  const owners = container.owners
+  const writers = container.writers
+  const viewers = container.viewers || []
+  const annotators = container.annotators || []
+  const editors = container.editors || []
+
+  switch (accessType) {
+    case AccessType.Read: {
+      const readUserIds = [].concat(owners, writers, viewers, annotators, editors)
+      requireUser(readUserIds, userId)
+      break
+    }
+    case AccessType.Write: {
+      const writeUserIds = [].concat(owners, writers)
+      requireUser(writeUserIds, userId)
+      break
+    }
+    case AccessType.Reject: {
+      const rejectUserIds = [].concat(owners, writers, editors)
+      requireUser(rejectUserIds, userId)
+      break
+    }
+    case AccessType.Resolve: {
+      const resolveUserIds = [].concat(owners, writers, editors)
+      requireUser(resolveUserIds, userId)
+      break
+    }
+    case AccessType.Contribute: {
+      const contributeUserIds = [].concat(owners, writers, editors, annotators)
+      requireUser(contributeUserIds, userId)
+      break
+    }
+    default:
+      throw { forbidden: 'user does not have access' }
+  }
+}
+
+export async function proceedWithReadAccess(doc: any, userId: string | undefined) {
+  return proceedWithAccess(doc, userId, AccessType.Read)
+}
+
+export async function proceedWithWriteAccess(doc: any, userId: string | undefined) {
+  return proceedWithAccess(doc, userId, AccessType.Write)
+}
+
+export async function proceedWithRejectAccess(doc: any, userId: string | undefined) {
+  return proceedWithAccess(doc, userId, AccessType.Reject)
+}
+
+export async function proceedWithResolveAccess(doc: any, userId: string | undefined) {
+  return proceedWithAccess(doc, userId, AccessType.Resolve)
+}
+
+export async function proceedWithContributeAccess(doc: any, userId: string | undefined) {
+  return proceedWithAccess(doc, userId, AccessType.Contribute)
 }
 
 export async function syncAccessControl(doc: any, oldDoc: any, userId?: string): Promise<void> {
   let errorMessage
-
-  // deferreds will be called in the end, otherwise all will fail
-  let channelDeferreds = []
-  let accessDeferreds = []
 
   if (oldDoc && oldDoc._deleted && doc._deleted) {
     throw { forbidden: 'deleted document cannot be mutated' }
@@ -68,9 +133,6 @@ export async function syncAccessControl(doc: any, oldDoc: any, userId?: string):
   let isAllowedToUndelete = !!doc.containerID
 
   if (oldDoc && oldDoc._deleted && !isAllowedToUndelete) {
-    // Only allow admin port to undelete documents for which isAllowedToUndelete is falsy.
-    //await requireAdmin();
-
     errorMessage = validate(doc)
 
     if (errorMessage) {
@@ -96,11 +158,6 @@ export async function syncAccessControl(doc: any, oldDoc: any, userId?: string):
       throw({ forbidden: errorMessage });
     }
   }
-
-  /*if (doc.locked || (oldDoc && oldDoc.locked)) {
-    // Only allow admin port to create, modify or delete locked objects
-    //await requireAdmin();
-  }*/
 
   function objectTypeMatches(arg: string) {
     return doc.objectType === arg || (oldDoc && oldDoc.objectType === arg)
@@ -131,35 +188,24 @@ export async function syncAccessControl(doc: any, oldDoc: any, userId?: string):
     return !equal(doc, oldDoc)
   }
 
-  let docId = doc._id
-
   if (objectTypeMatches('MPProject')) {
     let owners, writers, viewers, annotators, editors
 
-    /*if (doc._deleted) {
-      owners = oldDoc.owners
-      writers = oldDoc.writers
-      viewers = (oldDoc.viewers || []).filter(function (v: string) {
-        return v !== '*'
-      })
-      annotators = oldDoc.annotators || []
-      editors = oldDoc.editors || []
-    } else {*/
     if (doc.owners.length === 0) {
       // prettier-ignore
       throw({ forbidden: 'owners cannot be set/updated to be empty' });
     }
+
     owners = doc.owners
     writers = doc.writers
     viewers = doc.viewers || []
     annotators = doc.annotators || []
     editors = doc.editors || []
-    //}
 
     let allUserIds = [].concat(owners, writers, viewers, annotators, editors)
 
     if (!doc._deleted) {
-      // if there have been changes, we need to be ensure we are the admin
+      // if there have been changes, we need to be ensure we are the owner
       if (
         hasMutated('owners') ||
         hasMutated('writers') ||
@@ -167,7 +213,6 @@ export async function syncAccessControl(doc: any, oldDoc: any, userId?: string):
         hasMutated('annotators') ||
         hasMutated('editors')
       ) {
-        //await requireAdmin();
         requireUser(owners, userId)
       }
 
@@ -180,86 +225,13 @@ export async function syncAccessControl(doc: any, oldDoc: any, userId?: string):
         }
         userIds[allUserIds[i]] = true
       }
-
-      // if the doc was _deleted, and this was the only doc granting access to
-      // the channels then we don't want to grant access anymore.
-      // e.g. User_A should no longer have access to User_B-profile channel.
-      for (let j = 0; j < allUserIds.length; j++) {
-        let ids = []
-        for (let k = 0; k < allUserIds.length; k++) {
-          if (j === k) {
-            continue
-          }
-          // push() seems to be the best option for 'otto'.
-          // https://github.com/robertkrimen/otto/blob/master/builtin_array.go
-          ids.push(allUserIds[k] + '-read')
-        }
-
-        accessDeferreds.push(access([allUserIds[j]], ids))
-
-        let containersChannelID = allUserIds[j] + '-projects'
-
-        if (containersChannelID) {
-          channelDeferreds.push(channel([containersChannelID], docId))
-          accessDeferreds.push(access([allUserIds[j]], [containersChannelID]))
-        }
-      }
     }
 
-    let rChannelName = docId + '-read'
-    let rwChannelName = docId + '-readwrite'
-    /* The -bibitems channel is used to allow syncing only bibliography data associated with a container */
-    let bibReadChannelName = docId + '-bibitems'
-    let ownerChannelName = docId + '-owner'
-    let annotatorChannelName = docId + '-annotator'
-    let editorChannelName = docId + '-editor'
-    /* The -metadata channel is used to allow syncing only manuscript metadata associated with a container */
-    let metadataChannelName = docId + '-metadata'
-
     if (oldDoc) {
-      await requireAccess([rwChannelName], userId)
+      await proceedWithWriteAccess(oldDoc, userId)
     } else {
       requireUser(owners, userId)
     }
-
-    channelDeferreds.push(
-      channel(
-        [
-          rChannelName,
-          rwChannelName,
-          bibReadChannelName,
-          ownerChannelName,
-          annotatorChannelName,
-          editorChannelName,
-          metadataChannelName,
-        ],
-        docId
-      )
-    )
-    accessDeferreds.push(
-      access(owners, [
-        rChannelName,
-        rwChannelName,
-        ownerChannelName,
-        bibReadChannelName,
-        metadataChannelName,
-      ])
-    )
-    accessDeferreds.push(
-      access(writers, [rChannelName, rwChannelName, bibReadChannelName, metadataChannelName])
-    )
-    accessDeferreds.push(access(viewers, [rChannelName, bibReadChannelName, metadataChannelName]))
-    accessDeferreds.push(
-      access(annotators, [
-        rChannelName,
-        bibReadChannelName,
-        metadataChannelName,
-        annotatorChannelName,
-      ])
-    )
-    accessDeferreds.push(
-      access(editors, [rChannelName, bibReadChannelName, metadataChannelName, editorChannelName])
-    )
   } else if (
     objectTypeMatches('MPCollaboration') ||
     objectTypeMatches('MPInvitation') ||
@@ -274,93 +246,30 @@ export async function syncAccessControl(doc: any, oldDoc: any, userId?: string):
         throw({ forbidden: 'MPCollaboration is immutable' });
       }
       requireUser([invitingUserID], userId)
-    } else {
-      // Updates to MPInvitation/MPContainerInvitation should only be from admin
-      //await requireAdmin();
     }
-
-    channelDeferreds.push(channel([invitingUserID], docId))
-
-    if (doc.invitedUserID) {
-      channelDeferreds.push(channel([doc.invitedUserID], docId))
-      accessDeferreds.push(access([doc.invitedUserID], [invitingUserID + '-read']))
-    }
-
-    if (objectTypeMatches('MPContainerInvitation')) {
-      let rChannelName = doc.containerID + '-read'
-      channelDeferreds.push(channel([rChannelName], docId))
-    }
-  } else if (objectTypeMatches('MPContainerRequest')) {
-    //await requireAdmin();
-
-    let ownerChannelName = doc.containerID + '-owner'
-    channelDeferreds.push(channel([ownerChannelName], docId))
-  } else if (objectTypeMatches('MPUserProfile')) {
-    if (oldDoc === null || hasMutated('userID')) {
-      //await requireAdmin();
-    }
-    let rwChannelName = doc.userID + '-readwrite'
-    await requireAccess([rwChannelName], userId)
-    let profileChannelName = doc.userID + '-read'
-    channelDeferreds.push(channel([rwChannelName], docId))
-    channelDeferreds.push(channel([profileChannelName], docId))
-    // Grant access to MPUserProfile channel
-    channelDeferreds.push(channel([doc._id + '-readwrite'], docId))
-    accessDeferreds.push(access([doc.userID], [doc._id + '-readwrite']))
   } else if (objectTypeMatches('MPPreferences')) {
     let username = doc._id.replace(/^MPPreferences:/, '')
     requireUser([username], userId)
-    channelDeferreds.push(channel([username], docId))
   } else if (objectTypeMatches('MPMutedCitationAlert')) {
-    /*if (hasMutated('userID') || hasMutated('targetDOI')) {
-      // await requireAdmin();
-    }*/
-
     let userID = doc.userID
     requireUser([userID], userId)
-
-    let channelName = userID + '-citation-alerts'
-    channelDeferreds.push(channel([channelName], docId))
-    accessDeferreds.push(access([userID], [channelName]))
   } else if (objectTypeMatches('MPCitationAlert')) {
-    /*if (
-      oldDoc === null ||
-      hasMutated('userID') ||
-      hasMutated('sourceDOI') ||
-      hasMutated('targetDOI')
-    ) {
-      //await requireAdmin();
-    }*/
-
-    let userID = doc.userID
-
     if (hasMutated('isRead')) {
+      let userID = doc.userID
       requireUser([userID], userId)
     }
-
-    let channelName = userID + '-citation-alerts'
-    channelDeferreds.push(channel([channelName], docId))
-    accessDeferreds.push(access([userID], [channelName]))
   } else if (objectTypeMatches('MPBibliographyItem')) {
     if (doc.keywordIDs) {
       for (let i = 0; i < doc.keywordIDs.length; i++) {
         let keywordID = doc.keywordIDs[i]
-        let rChannel = keywordID + '-read'
-        let rwChannel = keywordID + '-readwrite'
-
-        await requireAccess([rwChannel], userId)
-        channelDeferreds.push(channel([rChannel, rwChannel], docId))
+        await proceedWithRejectAccess(keywordID, userId)
       }
     }
-
-    let channelName = doc.containerID + '-bibitems'
-    channelDeferreds.push(channel([channelName], docId))
   } else if (
     objectTypeMatches('MPCorrection') ||
     objectTypeMatches('MPCommentAnnotation') ||
     objectTypeMatches('MPManuscriptNote')
   ) {
-    let rwChannelName
     if (doc.contributions) {
       if (doc.contributions.length !== 1) {
         throw {
@@ -371,11 +280,6 @@ export async function syncAccessControl(doc: any, oldDoc: any, userId?: string):
       if (hasMutated('contributions')) {
         throw { forbidden: 'contributions cannot be mutated' }
       }
-
-      let annotatorChannelName = doc.containerID + '-annotator'
-      let editorChannelName = doc.containerID + '-editor'
-      rwChannelName = doc.containerID + '-readwrite'
-      let contributorChannelName = doc.contributions[0].profileID + '-readwrite'
 
       let isApprovingCorrections = !!(
         objectTypeMatches('MPCorrection') &&
@@ -392,37 +296,27 @@ export async function syncAccessControl(doc: any, oldDoc: any, userId?: string):
         (isResolvingComments && doc.resolved === false)
 
       if (isRejecting) {
-        await requireAccess([contributorChannelName, editorChannelName, rwChannelName], userId)
+        await proceedWithRejectAccess(doc.containerID, userId)
       } else if (isApprovingCorrections || isResolvingComments) {
-        await requireAccess([editorChannelName, rwChannelName], userId)
+        await proceedWithResolveAccess(doc.containerID, userId)
       } else {
-        //If the current user has access to the channel of the profile in the
-        //contributions field, then the user must be the owner of the object
-        await requireAccess([contributorChannelName], userId)
-        await requireAccess([annotatorChannelName, editorChannelName, rwChannelName], userId)
+        await proceedWithContributeAccess(doc.containerID, userId)
       }
     }
     if (hasMutated('readBy')) {
-      if (doc.readBy.includes(doc.contributions[0].profileID) && rwChannelName) {
-        await requireAccess([rwChannelName], userId)
+      if (doc.readBy.includes(doc.contributions[0].profileID)) {
+        await proceedWithWriteAccess(doc.containerID, userId)
       } else {
         throw {
           forbidden: 'User can set status "read" only for himself and cannot unset it',
         }
       }
     }
-  } else if (objectTypeMatches('MPManuscript') || objectTypeMatches('MPContributor')) {
-    let channelName = doc.containerID + '-metadata'
-    channelDeferreds.push(channel([channelName], docId))
   } else if (objectTypeMatches('MPCommit')) {
-    let annotatorChannelName = doc.containerID + '-annotator'
-    let editorChannelName = doc.containerID + '-editor'
-    let rwChannelName = doc.containerID + '-readwrite'
-
     if (!hasMutated(undefined)) {
-      await requireAccess([rwChannelName, annotatorChannelName, editorChannelName], userId)
+      await proceedWithContributeAccess(doc.containerID, userId)
     } else {
-      await requireAccess([rwChannelName], userId)
+      await proceedWithWriteAccess(doc.containerID, userId)
     }
   }
 
@@ -431,28 +325,12 @@ export async function syncAccessControl(doc: any, oldDoc: any, userId?: string):
   if (
     containerId &&
     !objectTypeMatches('MPContainerInvitation') &&
-    !objectTypeMatches('MPContainerRequest')
+    !objectTypeMatches('MPContainerRequest') &&
+    !objectTypeMatches('MPCorrection') &&
+    !objectTypeMatches('MPCommentAnnotation') &&
+    !objectTypeMatches('MPManuscriptNote') &&
+    !objectTypeMatches('MPCommit')
   ) {
-    let rChannelName = containerId + '-read'
-    let rwChannelName = containerId + '-readwrite'
-    if (
-      !objectTypeMatches('MPCorrection') &&
-      !objectTypeMatches('MPCommentAnnotation') &&
-      !objectTypeMatches('MPManuscriptNote') &&
-      !objectTypeMatches('MPCommit')
-    ) {
-      await requireAccess([rwChannelName], userId)
-    }
-    channelDeferreds.push(channel([rChannelName, rwChannelName], docId))
+    await proceedWithWriteAccess(doc.containerID, userId)
   }
-
-  // important, first clear all channels/accesses to this docId/userId
-  // in a normal SG world, channels/accesses exist per document revision
-  // for simplicity, in our NON-SG world, we drop & recreate them
-  await AccessControlRepository.remove(docId)
-
-  // first create channels to create accesses later
-  await Promise.all(channelDeferreds.map((i) => i()))
-
-  await Promise.all(accessDeferreds.map((i) => i()))
 }

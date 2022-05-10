@@ -24,7 +24,6 @@ import { invitationsList } from '../data/dump/invitation'
 import { projectInvitationsList } from '../data/dump/projectInvitation'
 import { applicationList } from '../data/dump/applications'
 import { DIContainer } from '../../src/DIContainer/DIContainer'
-import { AccessControlRepository } from '../../src/DataAccess/AccessControlRepository'
 import { NoBucketError } from '../../src/Errors'
 import { SeedOptions } from '../../src/DataAccess/Interfaces/SeedOptions'
 import { projectsList } from '../data/dump/project'
@@ -94,7 +93,7 @@ async function createInvitations (): Promise<void> {
 async function createProjectInvitations (): Promise<void> {
   for (const invitation of projectInvitationsList) {
     await DIContainer.sharedContainer.containerInvitationRepository.create(
-      _.clone(invitation)
+      _.clone(invitation as any)
     )
   }
 }
@@ -312,7 +311,6 @@ export async function drop (): Promise<void> {
 
   await Promise.all([
     ...repositories.map(x => x.remove(null)) as any,
-    ...gatewayRepositories.map(x => x.remove(null)),
-    AccessControlRepository.removeAll()
+    ...gatewayRepositories.map(x => x.remove(null))
   ])
 }
