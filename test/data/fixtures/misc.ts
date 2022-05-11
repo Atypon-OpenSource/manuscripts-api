@@ -73,7 +73,7 @@ export async function createInvitation (id: string) {
   )
 }
 
-export async function createManuscript (id: string, userId: string) {
+export async function createManuscript (id: string, userId?: string) {
   const manuscript: any = _.clone(manuscriptList.find((manuscript) => manuscript._id === id))
   await DIContainer.sharedContainer.manuscriptRepository.create(
     _.clone(manuscript),

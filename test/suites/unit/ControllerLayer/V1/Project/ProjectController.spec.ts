@@ -258,9 +258,6 @@ describe('ProjectController', () => {
     test('should call upsertManuscriptToProject', async () => {
       const controller: any = new ProjectController()
       controller.upsertManuscriptToProject = jest.fn(async () => Promise.resolve())
-      ContainerService.isOwner = jest.fn(() => true)
-      ContainerService.isEditor = jest.fn(() => true)
-      ContainerService.isWriter = jest.fn(() => true)
       ContainerService.userIdForSync = jest.fn((id) => id)
       fs.copyFileSync(
         'test/data/fixtures/sample/index.manuscript-json',
@@ -280,7 +277,6 @@ describe('ProjectController', () => {
     test('should fail projectId must be provided', async () => {
       const controller: any = new ProjectController()
       controller.upsertManuscriptToProject = jest.fn(async () => Promise.resolve())
-      ContainerService.isOwner = jest.fn(() => true)
       fs.copyFileSync(
         'test/data/fixtures/sample/index.manuscript-json',
         'test/data/fixtures/sample/index.manuscript-json-dup'
@@ -300,9 +296,6 @@ describe('ProjectController', () => {
     test('should fail invalid credentials', async () => {
       const controller: any = new ProjectController()
       controller.upsertManuscriptToProject = jest.fn(async () => Promise.resolve())
-      ContainerService.isOwner = jest.fn(() => true)
-      ContainerService.isEditor = jest.fn(() => true)
-      ContainerService.isWriter = jest.fn(() => true)
       ContainerService.userIdForSync = jest.fn((id) => id)
       fs.copyFileSync(
         'test/data/fixtures/sample/index.manuscript-json',

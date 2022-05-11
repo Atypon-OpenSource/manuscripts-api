@@ -462,14 +462,11 @@ export async function getCorrectionStatus(headers: any, params: any): Promise<su
 export async function saveProject(
   headers: object,
   params: any,
-  json: object
+  body: object
 ): Promise<supertest.Response> {
   const server: IServer = await createServer()
   const req = supertest(server.app).post(`/api/v1/project/${params.containerID}/save`).set(headers)
-  if (params.manuscriptId) {
-    req.field('manuscriptId', params.manuscriptId)
-  }
-  return req.send({ data: json })
+  return req.send(body)
 }
 
 export async function importManuscript(

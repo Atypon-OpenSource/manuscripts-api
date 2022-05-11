@@ -63,7 +63,6 @@ import {
   ExternalFile,
   ObjectTypes,
   Snapshot,
-  Project,
 } from '@manuscripts/manuscripts-json-schema'
 import { ExternalFileRepository } from '../../DataAccess/ExternalFileRepository/ExternalFileRepository'
 import { CorrectionRepository } from '../../DataAccess/CorrectionRepository/CorrectionRepository'
@@ -767,13 +766,6 @@ export class ContainerService implements IContainerService {
       return annotators.indexOf(ContainerService.userIdForSync(userId)) > -1
     }
     return false
-  }
-
-  public static haveWriteAccess(project: Project, userId: string) {
-    const isEditor = ContainerService.isEditor(project, userId)
-    const isWriter = ContainerService.isWriter(project, userId)
-    const isOwner = ContainerService.isOwner(project, userId)
-    return isEditor || isWriter || isOwner
   }
 
   public isPublic(container: Container): boolean {
