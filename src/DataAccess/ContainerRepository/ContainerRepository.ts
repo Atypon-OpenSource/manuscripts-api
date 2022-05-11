@@ -97,7 +97,8 @@ export abstract class ContainerRepository<Container, ContainerLike, PatchContain
           : [container, ...otherDocs]
 
       if (types && types.length > 0) {
-        return activeResources.filter((doc: Model) => types.indexOf(doc.objectType) > 0)
+        const typeSet = new Set(types)
+        return activeResources.filter((doc: Model) => typeSet.has(doc.objectType))
       }
       return activeResources
     }

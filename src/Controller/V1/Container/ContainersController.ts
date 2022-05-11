@@ -160,7 +160,7 @@ export class ContainersController extends ContainedBaseController implements ICo
     try {
       if (modifiedSince && project) {
         const modifiedSinceDate = new Date(modifiedSince)
-        if (modifiedSinceDate.getTime() >= project.updatedAt) {
+        if (modifiedSinceDate.getTime() / 1000 >= project.updatedAt) {
           return { data: null, status: HttpStatus.NOT_MODIFIED }
         }
       }
