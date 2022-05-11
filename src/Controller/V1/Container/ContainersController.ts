@@ -22,10 +22,15 @@ import {
 } from '@manuscripts/manuscripts-json-schema'
 import { Request } from 'express'
 import { isString } from '../../../util'
-
+import * as HttpStatus from 'http-status-codes'
 import { IContainersController } from './IContainersController'
 import { authorizationBearerToken } from '../../BaseController'
-import { IllegalStateError, ManuscriptContentParsingError, ValidationError } from '../../../Errors'
+import {
+  IllegalStateError,
+  ManuscriptContentParsingError,
+  MissingContainerError,
+  ValidationError,
+} from '../../../Errors'
 import { DIContainer } from '../../../DIContainer/DIContainer'
 import { ContainerType, Container } from '../../../Models/ContainerModels'
 import { ContainedBaseController, getContainerType } from '../../ContainedBaseController'
@@ -129,34 +134,49 @@ export class ContainersController extends ContainedBaseController implements ICo
   }
 
   async loadProject(req: Request) {
-    const { containerID, manuscriptId } = req.params
+    const { projectId, manuscriptId } = req.params
+    const { types } = req.body
+    const modifiedSince = req.headers['if-modified-since']
 
-    if (!isString(containerID)) {
-      throw new ValidationError('containerId should be string', containerID)
+    if (!isString(projectId)) {
+      throw new ValidationError('projectId should be string', projectId)
     }
 
     if (manuscriptId && !isString(manuscriptId)) {
       throw new ValidationError('manuscriptId should be string', manuscriptId)
     }
 
-    let token = authorizationBearerToken(req)
-
-    const containerType = getContainerType(containerID)
+    const containerType = getContainerType(projectId)
 
     const userID = req.user._id
+
+    const project = await DIContainer.sharedContainer.containerService[containerType].getContainer(
+      projectId,
+      userID
+    )
+    if (!project) {
+      throw new MissingContainerError(project)
+    }
     try {
-      return DIContainer.sharedContainer.containerService[containerType].getArchive(
-        userID,
-        containerID,
+      if (modifiedSince && project) {
+        const modifiedSinceDate = new Date(modifiedSince)
+        if (modifiedSinceDate.getTime() >= project.updatedAt) {
+          return { data: null, status: HttpStatus.NOT_MODIFIED }
+        }
+      }
+      const data = await DIContainer.sharedContainer.containerService[containerType].loadProject(
+        projectId,
         manuscriptId,
-        token,
         {
           getAttachments: false,
           onlyIDs: false,
           allowOrphanedDocs: false,
           includeExt: false,
+          types,
         } as any
       )
+
+      return { data, status: HttpStatus.OK }
     } catch (e) {
       throw new ManuscriptContentParsingError('Failed to make an archive.', e)
     }

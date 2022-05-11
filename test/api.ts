@@ -299,9 +299,9 @@ export async function loadProject(
   const server: IServer = await createServer()
   return supertest(server.app)
     .get(
-      params.manuscriptID
-        ? `/api/v1/${params.containerID}/${params.manuscriptID}/load`
-        : `/api/v1/${params.containerID}/load`
+      params.manuscriptId
+        ? `/api/v1/${params.projectId}/${params.manuscriptId}/load`
+        : `/api/v1/${params.projectId}/load`
     )
     .set(headers)
     .send(body)

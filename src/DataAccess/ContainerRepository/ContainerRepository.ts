@@ -78,7 +78,8 @@ export abstract class ContainerRepository<Container, ContainerLike, PatchContain
   public async getContainerResources(
     containerId: string,
     manuscriptID: string | null,
-    allowOrphanedDocs?: boolean
+    allowOrphanedDocs?: boolean,
+    types?: string[]
   ) {
     const container = await this.getById(containerId)
     if (!container) {
@@ -90,9 +91,15 @@ export abstract class ContainerRepository<Container, ContainerLike, PatchContain
         (result: any) => ({ ...this.buildModel(result), _id: result.id } as Model)
       )
 
-      return containerId.startsWith(`${this.objectType}:`) && !allowOrphanedDocs
-        ? selectActiveResources([container, ...otherDocs])
-        : [container, ...otherDocs]
+      const activeResources =
+        containerId.startsWith(`${this.objectType}:`) && !allowOrphanedDocs
+          ? selectActiveResources([container, ...otherDocs])
+          : [container, ...otherDocs]
+
+      if (types && types.length > 0) {
+        return activeResources.filter((doc: Model) => types.indexOf(doc.objectType) > 0)
+      }
+      return activeResources
     }
 
     const Q = {
@@ -154,7 +161,7 @@ export abstract class ContainerRepository<Container, ContainerLike, PatchContain
     return this.database.bucket.query(Q).then((res: any) => callbackFn(res))
   }
 
-  public async getContainerResourcesIDs(containerId: string) {
+  public async getContainerResourcesIDs(containerId: string, types?: string[]) {
     const container = await this.getById(containerId)
     if (!container) {
       return null
@@ -163,9 +170,14 @@ export abstract class ContainerRepository<Container, ContainerLike, PatchContain
     const callbackFn = (results: any) => {
       const otherDocs = results.map((result: any) => ({ _id: result.id } as Model))
 
-      return containerId.startsWith(`${this.objectType}:`)
+      const activeResources = containerId.startsWith(`${this.objectType}:`)
         ? selectActiveResources([container, ...otherDocs])
         : [container, ...otherDocs]
+
+      if (types && types.length > 0) {
+        return activeResources.filter((doc: Model) => types.indexOf(doc.objectType) > 0)
+      }
+      return activeResources
     }
 
     const Q = {

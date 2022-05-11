@@ -20,8 +20,17 @@ import {
   ExternalFile,
   Manuscript,
   ManuscriptNote,
+  Model,
   Snapshot,
 } from '@manuscripts/manuscripts-json-schema'
+
+export interface ArchiveOptions {
+  getAttachments?: boolean
+  onlyIDs?: boolean
+  allowOrphanedDocs?: boolean
+  includeExt: boolean | true
+  types?: string[]
+}
 
 export interface IContainerService {
   /**
@@ -87,6 +96,12 @@ export interface IContainerService {
     token: string | null,
     options: { getAttachments: boolean; onlyIDs: boolean; includeExt: boolean }
   ): Promise<Blob>
+
+  loadProject(
+    containerID: string,
+    manuscriptID: string | null,
+    options: ArchiveOptions
+  ): Promise<Model[]>
 
   checkUserContainerAccess(userID: string, containerID: string): Promise<boolean>
   /**
@@ -156,11 +171,4 @@ export interface IContainerService {
   updateDocumentSessionId(docId: string): void
 
   saveSnapshot(key: string, containerId: string, creator: string, name?: string): Promise<Snapshot>
-}
-
-export interface ArchiveOptions {
-  getAttachments?: boolean
-  onlyIDs?: boolean
-  allowOrphanedDocs?: boolean
-  includeExt: boolean | true
 }

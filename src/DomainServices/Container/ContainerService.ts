@@ -147,7 +147,8 @@ export class ContainerService implements IContainerService {
   public async getContainer(containerId: string, userId?: string): Promise<Container> {
     let container
     try {
-      container = await this.containerRepository.getById(containerId, userId)
+      const userForSync = userId ? ContainerService.userIdForSync(userId) : userId
+      container = await this.containerRepository.getById(containerId, userForSync)
     } catch (e) {
       if (e.name === 'SyncError') {
         throw new RoleDoesNotPermitOperationError(`permission denied`, userId)
@@ -440,6 +441,19 @@ export class ContainerService implements IContainerService {
     }
   }
 
+  public async loadProject(
+    containerID: string,
+    manuscriptID: string | null,
+    options: ArchiveOptions
+  ) {
+    return await this.containerRepository.getContainerResources(
+      containerID,
+      manuscriptID,
+      options.allowOrphanedDocs,
+      options.types
+    )
+  }
+
   public async getArchive(
     userID: string,
     containerID: string,
@@ -522,10 +536,14 @@ export class ContainerService implements IContainerService {
       projectResourcesData = await this.containerRepository.getContainerResources(
         containerID,
         manuscriptID,
-        options.allowOrphanedDocs
+        options.allowOrphanedDocs,
+        options.types
       )
     } else {
-      projectResourcesData = await this.containerRepository.getContainerResourcesIDs(containerID)
+      projectResourcesData = await this.containerRepository.getContainerResourcesIDs(
+        containerID,
+        options.types
+      )
     }
 
     const index = { version: '2.0', data: projectResourcesData }
