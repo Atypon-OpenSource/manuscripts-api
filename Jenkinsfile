@@ -122,18 +122,20 @@ fi""")
                 env.NODE_ENV="test"
                 env.APP_TEST_ACTION="test:int"
                 env.APP_PRESSROOM_BASE_URL="https://pressroom-js-dev.manuscripts.io"
-                env.APP_PRESSROOM_APIKEY="cndbvbvjosp0viowj"
-                withEnv(readFile('.env').split('\n') as List) {
-                    nodejs(nodeJSInstallationName: 'node 12.22.1') {
-                        sh (script: "npm ci")
-                        sh (script: "npx gulp -f docker/utils/Gulpfile.js")
-                        dir('docker') {
-                            sh (script: "cp ../.env .env")
-                            sh (script: "docker-compose build --pull")
-                            sh (script: "docker-compose up -d postgres")
-                            env.APP_DATABASE_URL="postgresql://postgres:admin@localhost:5432/test?schema=public"
-                            sh (script: "npm run migrate-prisma")
-                            sh (script: "docker-compose up --build --abort-on-container-exit test_runner")
+                withCredentials([string(credentialsId: 'PRESSROOM_APIKEY', variable: 'APP_PRESSROOM_APIKEY')]) {
+                    env.APP_PRESSROOM_APIKEY="${APP_PRESSROOM_APIKEY}"
+                    withEnv(readFile('.env').split('\n') as List) {
+                        nodejs(nodeJSInstallationName: 'node 12.22.1') {
+                            sh (script: "npm ci")
+                            sh (script: "npx gulp -f docker/utils/Gulpfile.js")
+                            dir('docker') {
+                                sh (script: "cp ../.env .env")
+                                sh (script: "docker-compose build --pull")
+                                sh (script: "docker-compose up -d postgres")
+                                env.APP_DATABASE_URL="postgresql://postgres:admin@localhost:5432/test?schema=public"
+                                sh (script: "npm run migrate-prisma")
+                                sh (script: "docker-compose up --build --abort-on-container-exit test_runner")
+                            }
                         }
                     }
                 }
