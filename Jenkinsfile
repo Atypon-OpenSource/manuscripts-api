@@ -1,5 +1,5 @@
 node {
-    REGISTRY="docker-reg.atypon.com"
+    REGISTRY="us-central1-docker.pkg.dev/atypon-artifact/docker-registry"
     REFSPEC="+refs/pull/*:refs/remotes/origin/pr/*"
     stage("checkout") {
         if (params != null && params.ghprbPullId == null) {
