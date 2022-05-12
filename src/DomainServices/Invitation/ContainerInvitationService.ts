@@ -365,8 +365,7 @@ export class ContainerInvitationService implements IContainerInvitationService {
       throw new ValidationError(`role '${role}' is not valid`, role)
     }
 
-    const userID = sgUsername(user._id)
-    const container = await this.containerService(containerID).getContainer(containerID, userID)
+    const container = await this.containerService(containerID).getContainer(containerID)
 
     if (!ContainerService.isOwner(container, user._id)) {
       throw new UserRoleError(`Only owners can invite other users.`, user._id)
