@@ -18,6 +18,12 @@ import * as Joi from 'joi'
 
 import { appJsonAndCharset, jsonHeadersSchema } from '../../BaseSchema'
 
+const allowUnknownObjectsSchema = Joi.defaults((schema) =>
+  schema.options({
+    allowUnknown: true,
+  })
+)
+
 export const createSchema: Joi.SchemaMap = {
   headers: jsonHeadersSchema.headers,
   body: Joi.object({
@@ -49,5 +55,11 @@ export const saveProjectSchema: Joi.SchemaMap = {
   }),
   body: Joi.object({
     manuscriptId: Joi.string().optional(),
+    data: Joi.array().items(
+      allowUnknownObjectsSchema.object({
+        _id: Joi.string().required(),
+        objectType: Joi.string().required(),
+      })
+    ),
   }),
 }

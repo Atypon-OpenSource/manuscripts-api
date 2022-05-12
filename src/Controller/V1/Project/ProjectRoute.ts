@@ -71,11 +71,9 @@ export class ProjectRoute extends BaseRoute {
       expressJoiMiddleware(saveProjectSchema),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
-      multer({ dest: `/tmp` }).single('file'),
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           const manuscript = await this.projectController.saveProject(req)
-
           res.status(HttpStatus.OK).send(manuscript)
         }, next)
       }
