@@ -489,12 +489,12 @@ describe('ContainersController - getArchive', () => {
 })
 
 describe('ContainerController - loadProject', () => {
-  test('should call getArchive()', async () => {
+  test('should call loadProject()', async () => {
     const containerService: any = DIContainer.sharedContainer.containerService[ContainerType.project]
     const chance = new Chance()
     const req: any = {
       params: {
-        containerID: 'MPProject:foo'
+        projectId: 'MPProject:foo'
       },
       headers: {
         accept: chance.string(),
@@ -503,15 +503,69 @@ describe('ContainerController - loadProject', () => {
       user: {
         _id: chance.integer()
       },
-      query: {}
+      body: {},
+      query: {},
     }
 
-    containerService.getArchive = jest.fn(() => Promise.resolve())
+    containerService.loadProject = jest.fn(() => Promise.resolve())
+    containerService.getContainer = jest.fn(() => Promise.resolve({_id: 'someId'}))
 
     const containersController: ContainersController = new ContainersController()
     await containersController.loadProject(req)
 
-    return expect(containerService.getArchive).toBeCalled()
+    return expect(containerService.loadProject).toBeCalled()
+  })
+
+  test('should fail to loadProject if projectId is not provided', async () => {
+    const containerService: any = DIContainer.sharedContainer.containerService[ContainerType.project]
+    const chance = new Chance()
+    const req: any = {
+      params: {
+        projectId: null
+      },
+      headers: {
+        accept: chance.string(),
+        authorization: 'Bearer ' + chance.string()
+      },
+      user: {
+        _id: chance.integer()
+      },
+      body: {},
+      query: {},
+    }
+
+    containerService.loadProject = jest.fn(() => Promise.resolve())
+    containerService.getContainer = jest.fn(() => Promise.resolve({ _id: 'someId' }))
+
+    const containersController: ContainersController = new ContainersController()
+    await expect(containersController.loadProject(req)).rejects.toThrow(ValidationError)
+  })
+  test('should return NOT_MODIFIED', async () => {
+    const containerService: any =
+      DIContainer.sharedContainer.containerService[ContainerType.project]
+    const chance = new Chance()
+    const req: any = {
+      params: {
+        projectId: 'MPProject:foo',
+      },
+      headers: {
+        accept: chance.string(),
+        authorization: 'Bearer ' + chance.string(),
+        'if-modified-since': new Date().toUTCString(),
+      },
+      user: {
+        _id: chance.integer()
+      },
+      body: {},
+      query: {}
+    }
+
+    containerService.loadProject = jest.fn(() => Promise.resolve())
+    containerService.getContainer = jest.fn(() => Promise.resolve({ updatedAt: 10 }))
+
+    const containersController: ContainersController = new ContainersController()
+    const res = await containersController.loadProject(req)
+    expect(res.status).toBe(304)
   })
 })
 

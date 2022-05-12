@@ -34,6 +34,7 @@ import {
   createManuscriptSchema,
   suggestionStatusSchema,
   createSnapshotSchema,
+  loadProjectSchema,
 } from './ContainerSchema'
 import { ContainersController } from './ContainersController'
 import { AuthStrategy } from '../../../Auth/Passport/AuthStrategy'
@@ -69,14 +70,18 @@ export class ContainerRoute extends BaseRoute {
     )
 
     router.get(
-      [`/:containerID/load`, `/:containerID/:manuscriptID/load`],
-      expressJoiMiddleware(getArchiveSchema, {}),
+      [`/:projectId/load`, `/:projectId/:manuscriptId/load`],
+      expressJoiMiddleware(loadProjectSchema, {}),
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
-          const archive = await this.containersController.loadProject(req)
-          res.set('Content-Type', 'application/json')
-          res.status(HttpStatus.OK).send(archive)
+          const { data, status } = await this.containersController.loadProject(req)
+          if (status === HttpStatus.OK) {
+            res.set('Content-Type', 'application/json')
+            res.status(status).send(data)
+          } else {
+            res.status(status).end()
+          }
         }, next)
       }
     )

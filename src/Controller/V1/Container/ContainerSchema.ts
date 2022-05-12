@@ -79,6 +79,20 @@ export const getArchiveSchema: Joi.SchemaMap = {
   }),
 }
 
+export const loadProjectSchema: Joi.SchemaMap = {
+  headers: Joi.object({
+    accept: appJsonAndCharset,
+    'if-modified-since': Joi.date(),
+  }).options({ allowUnknown: true }),
+  params: Joi.object({
+    projectId: Joi.string().required(),
+    manuscriptId: Joi.string(),
+  }),
+  body: Joi.object({
+    types: Joi.array().items(Joi.string()),
+  }),
+}
+
 export const getPickerBuilderSchema: Joi.SchemaMap = {
   headers: Joi.object({
     accept: appJsonAndCharset,

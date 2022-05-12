@@ -54,10 +54,7 @@ import { validNote1 } from '../../../../data/fixtures/ManuscriptNote'
 import { config } from '../../../../../src/Config/Config'
 import { externalFile } from '../../../../data/fixtures/ExternalFiles'
 import _ from 'lodash'
-import {
-  createProject,
-  createProjectInvitation,
-} from '../../../../data/fixtures/misc'
+import { createProject, createProjectInvitation } from '../../../../data/fixtures/misc'
 
 jest.mock('email-templates', () =>
   jest.fn().mockImplementation(() => {
@@ -688,10 +685,36 @@ describe('ContainerService - loadProject', () => {
       },
       {},
       {
-        containerID: 'MPProject:valid-project-id-2',
+        projectId: 'MPProject:valid-project-id-2',
       }
     )
     expect(response.status).toBe(HttpStatus.OK)
+  })
+
+  test('should return NOT_MODIFIED', async () => {
+    const loginResponse: supertest.Response = await basicLogin(
+      validBody,
+      ValidHeaderWithApplicationKey
+    )
+
+    expect(loginResponse.status).toBe(HttpStatus.OK)
+
+    const authHeader = authorizationHeader(loginResponse.body.token)
+    await createProject('MPProject:valid-project-id-2')
+    const date = new Date()
+    date.setTime(date.getTime() + 100000)
+    const response: supertest.Response = await loadProject(
+      {
+        ...ValidContentTypeAcceptJsonHeader,
+        ...authHeader,
+        'if-modified-since': date.toUTCString(),
+      },
+      {},
+      {
+        projectId: 'MPProject:valid-project-id-2',
+      }
+    )
+    expect(response.status).toBe(HttpStatus.NOT_MODIFIED)
   })
 
   test('should successfully loadProject if manuscript provided', async () => {
@@ -711,8 +734,8 @@ describe('ContainerService - loadProject', () => {
       },
       {},
       {
-        containerID: 'MPProject:valid-project-id-2',
-        manuscriptID: 'MPManuscript:valid-manuscript-id-1',
+        projectId: 'MPProject:valid-project-id-2',
+        manuscriptId: 'MPManuscript:valid-manuscript-id-1',
       }
     )
     expect(response.status).toBe(HttpStatus.OK)
