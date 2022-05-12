@@ -61,11 +61,11 @@ node {
                         sh (script: "sleep 20")
                         sh (script: """
 if [  -z `nc -z localhost 3000` ]; then \
-  echo "server is running" \
-  exit 0 \
+  echo "server is running"; \
+  exit 0; \
 else \
-  echo "server is NOT running" \
-  exit 1 \
+  echo "server is NOT running"; \
+  exit 1; \
 fi""")
                     }
                 }
@@ -76,20 +76,69 @@ fi""")
             
             node {
             
-            VARS = checkout(scm:[$class: 'GitSCM', branches: [[name: "${sha1}"]],
-            doGenerateSubmoduleConfigurations: false,
-            submoduleCfg: [],
-            userRemoteConfigs: [
-                [credentialsId: '336d4fc3-f420-4a3e-b96c-0d0f36ad12be',
-                name: 'origin',
-                refspec: "${REFSPEC}",
-                url: 'git@github.com:Atypon-OpenSource/manuscripts-api.git']
-            ]])
-            //sh (script: """echo hi            """)
+                VARS = checkout(scm:[$class: 'GitSCM', branches: [[name: "${sha1}"]],
+                doGenerateSubmoduleConfigurations: false,
+                submoduleCfg: [],
+                userRemoteConfigs: [
+                    [credentialsId: '336d4fc3-f420-4a3e-b96c-0d0f36ad12be',
+                    name: 'origin',
+                    refspec: "${REFSPEC}",
+                    url: 'git@github.com:Atypon-OpenSource/manuscripts-api.git']
+                ]])
+
+                sh (script: "npm ci")
+                sh (script: "./bin/set-package-json-version.sh")
+                sh (script: "./bin/build-env.js .env.example > .env")
+                env.NODE_ENV="test"
+                env.APP_TEST_ACTION="test:unit"
+                withEnv(readFile('.env').split('\n') as List) {
+                    nodejs(nodeJSInstallationName: 'node 12.22.1') {
+                        sh (script: "npm ci")
+                        sh (script: "npx gulp -f docker/utils/Gulpfile.js")
+                        dir('docker') {
+                            sh (script: "cp ../.env .env")
+                            sh (script: "docker-compose build --pull")
+                            sh (script: "docker-compose up --build --abort-on-container-exit test_runner")
+                        }
+                    }
+                }
             }
         },
         'integration_tests': {
-            echo 'integration_testsss'
+            node {
+                VARS = checkout(scm:[$class: 'GitSCM', branches: [[name: "${sha1}"]],
+                doGenerateSubmoduleConfigurations: false,
+                submoduleCfg: [],
+                userRemoteConfigs: [
+                    [credentialsId: '336d4fc3-f420-4a3e-b96c-0d0f36ad12be',
+                    name: 'origin',
+                    refspec: "${REFSPEC}",
+                    url: 'git@github.com:Atypon-OpenSource/manuscripts-api.git']
+                ]])
+
+                sh (script: "npm ci")
+                sh (script: "./bin/set-package-json-version.sh")
+                sh (script: "./bin/build-env.js .env.example > .env")
+                env.NODE_ENV="test"
+                env.APP_TEST_ACTION="test:int"
+                env.APP_PRESSROOM_BASE_URL="https://pressroom-js-dev.manuscripts.io"
+                env.APP_PRESSROOM_APIKEY="cndbvbvjosp0viowj"
+                withEnv(readFile('.env').split('\n') as List) {
+                    nodejs(nodeJSInstallationName: 'node 12.22.1') {
+                        sh (script: "npm ci")
+                        sh (script: "npx gulp -f docker/utils/Gulpfile.js")
+                        dir('docker') {
+                            sh (script: "cp ../.env .env")
+                            sh (script: "docker-compose build --pull")
+                            sh (script: "docker-compose up -d postgres")
+                            env.APP_DATABASE_URL="postgresql://postgres:admin@localhost:5432/test?schema=public"
+                            sh (script: "npm run migrate-prisma")
+                            sh (script: "docker-compose up --build --abort-on-container-exit test_runner")
+                        }
+                    }
+                }
+
+            }
         },
         failFast: false
     ])
