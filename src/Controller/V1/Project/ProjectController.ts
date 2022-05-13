@@ -206,10 +206,8 @@ export class ProjectController extends BaseController implements IProjectControl
         )
       : await DIContainer.sharedContainer.manuscriptRepository.create(manuscriptObject, userID)
 
-    await DIContainer.sharedContainer.containerService[ContainerType.project].addManuscript(
-      docs,
-      userID
-    )
+    // call it without userId because access control has already happened
+    await DIContainer.sharedContainer.containerService[ContainerType.project].addManuscript(docs)
 
     return manuscriptObject
   }

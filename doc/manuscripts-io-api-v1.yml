@@ -26,6 +26,8 @@ tags:
     description: "Submission manipulation endpoints"
   - name: "server"
     description: "Server information"
+  - name: "sg"
+    description: "CRUD on manuscript models"
 schemes:
   - "https"
 parameters:
@@ -1240,6 +1242,106 @@ paths:
           description: "Invalid status."
         404:
           description: "Submission is not found."
+  /sg/:bucket/:id:
+    get:
+      tags:
+        - "sg"
+      summary: "Get an object from bucket by id"
+      description: ""
+      operationId: "get-model"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - $ref: "#/parameters/JsonContentTypenHeadersSchema"
+        - $ref: "#/parameters/JsonAcceptHeadersSchema"
+        - $ref: "#/parameters/AuthorizationTokenHeaderSchema"
+      responses:
+        200:
+          description: "The object has been retrieved successfully"
+        401:
+          description: "Invalid authorization token"
+    put:
+      tags:
+        - "sg"
+      summary: "Update an object on bucket by id"
+      description: ""
+      operationId: "update-model"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - $ref: "#/parameters/JsonContentTypenHeadersSchema"
+        - $ref: "#/parameters/JsonAcceptHeadersSchema"
+        - $ref: "#/parameters/AuthorizationTokenHeaderSchema"
+        - in: "body"
+          name: "body"
+          description: "A manuscripts-json (sub)object"
+          required: true
+        - in: "query"
+          name: "rev"
+          description: "The latest revision of the object"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "Object added successfully"
+        401:
+          description: "Invalid authorization token"
+        404:
+          description: "Object not found"
+    delete:
+      tags:
+        - "sg"
+      summary: "Delete an object on bucket by id"
+      description: ""
+      operationId: "delete-model"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - $ref: "#/parameters/JsonContentTypenHeadersSchema"
+        - $ref: "#/parameters/JsonAcceptHeadersSchema"
+        - $ref: "#/parameters/AuthorizationTokenHeaderSchema"
+        - in: "query"
+          name: "rev"
+          description: "The latest revision of the object"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "Object removed successfully"
+        401:
+          description: "Invalid authorization token"
+        404:
+          description: "Object not found"
+  /sg/:bucket:
+    post:
+      tags:
+        - "sg"
+      summary: "Create an object on bucket"
+      description: ""
+      operationId: "create-model"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - $ref: "#/parameters/JsonContentTypenHeadersSchema"
+        - $ref: "#/parameters/JsonAcceptHeadersSchema"
+        - $ref: "#/parameters/AuthorizationTokenHeaderSchema"
+        - in: "body"
+          name: "body"
+          description: "A manuscripts-json object"
+          required: true
+      responses:
+        200:
+          description: "Object added successfully"
+        401:
+          description: "Invalid authorization token"
 definitions:
   AcceptInvitationSchema:
     type: "object"

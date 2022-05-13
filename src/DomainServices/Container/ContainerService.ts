@@ -135,7 +135,7 @@ export class ContainerService implements IContainerService {
 
   public async deleteContainer(containerId: string, user: User): Promise<void> {
     const userID = ContainerService.userIdForSync(user._id)
-    const container = await this.getContainer(containerId, userID)
+    const container = await this.getContainer(containerId)
 
     if (!ContainerService.isOwner(container, userID)) {
       throw new RoleDoesNotPermitOperationError(`User ${userID} is not an owner.`, userID)
@@ -169,8 +169,7 @@ export class ContainerService implements IContainerService {
     newRole: ContainerRole | null,
     secret?: string
   ): Promise<void> {
-    const userID = ContainerService.userIdForSync(user._id)
-    const container = await this.getContainer(containerId, userID)
+    const container = await this.getContainer(containerId)
 
     const managedUserObj = managedUser.userId
       ? await this.userRepository.getById(ContainerService.userIdForDatabase(managedUser.userId))
@@ -802,8 +801,8 @@ export class ContainerService implements IContainerService {
     return this.containerRepository.create(newContainer, ownerId)
   }
 
-  async addManuscript(docs: any, userId: string): Promise<any> {
-    return this.containerRepository.bulkDocs(docs, userId)
+  async addManuscript(docs: any): Promise<any> {
+    return this.containerRepository.bulkDocs(docs)
   }
 
   /**
@@ -845,9 +844,9 @@ export class ContainerService implements IContainerService {
     templateId?: string
   ) {
     const userID = ContainerService.userIdForSync(userId)
-    const container = await this.getContainer(containerID, userID)
+    const container = await this.getContainer(containerID)
     const canAccess =
-      ContainerService.isOwner(container, userID) || ContainerService.isWriter(container, userId)
+      ContainerService.isOwner(container, userId) || ContainerService.isWriter(container, userId)
     if (!canAccess) {
       throw new ValidationError('User must be a contributor in the container', containerID)
     }
