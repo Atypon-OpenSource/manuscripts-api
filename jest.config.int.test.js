@@ -37,7 +37,6 @@ module.exports = {
     '!src/Controller/BaseController.ts',
     '!src/Controller/BaseRoute.ts',
     '!src/Controller/**/*Schema.ts',
-    '!src/Auth/Passport/Google.ts',
     '!src/Auth/Passport/JWT.ts',
     '!src/Auth/Passport/Passport.ts',
     '!src/Auth/Passport/ScopedJWT.ts',

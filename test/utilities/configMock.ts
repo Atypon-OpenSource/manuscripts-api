@@ -53,11 +53,6 @@ jest.mock('../../src/Config/Config', () => {
       serverSecret: '123456789',
       enableNonConnectAuth: true,
     },
-    google: {
-      clientID: 'herp',
-      clientSecret: 'derp',
-      authCallback: 'the-google-callback',
-    },
     IAM: {
       clientID: 'test',
       authServerURL: 'https://iam-test.atypon.com/IAM',

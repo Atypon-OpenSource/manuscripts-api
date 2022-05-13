@@ -123,39 +123,6 @@ export interface ServerToServerAuthCredentials {
 }
 
 /**
- * Represents credentials for Google login access.
- */
-export interface GoogleAccessCredentials {
-  /**
-   * User's full name.
-   */
-  name: string
-  /**
-   * User's email.
-   */
-  email: string
-  /**
-   * Device's ID.
-   */
-  deviceId: string
-  /**
-   * Application's Id.
-   */
-  appId: string
-
-  /** An optional invitation to which the account creation is a response to. */
-  invitationId: string | null
-  /**
-   * Google Access Token.
-   */
-  accessToken: string
-  /**
-   * Google Refresh Token.
-   */
-  refreshToken: string
-}
-
-/**
  * Represents an user entity.
  */
 export interface User {
@@ -379,8 +346,6 @@ export interface UserToken {
    * IAM session id.
    */
   iamSessionID?: string
-
-  credentials?: { google: { accessToken: string; refreshToken: string } }
 }
 
 export interface UserEmail {

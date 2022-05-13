@@ -20,6 +20,5 @@ describe('Auth - AuthStrategyTypes', () => {
   test('keys should be valid and not change', () => {
     expect(AuthStrategyTypes.scopedJwt).toBe('scopedJwt')
     expect(AuthStrategyTypes.jwt).toBe('jwt')
-    expect(AuthStrategyTypes.google).toBe('google')
   })
 })

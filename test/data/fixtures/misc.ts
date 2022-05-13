@@ -23,7 +23,6 @@ import { submissionsList } from '../dump/submissions'
 import { invitationsList } from '../dump/invitation'
 import { manuscriptList } from '../dump/manuscriptList'
 
-export const GOOGLE_AUTH_URI = 'https://accounts.google.com/o/oauth2/v2/auth'
 
 export async function createProject (id: string) {
   const project: any = _.clone(projectsList.find((project) => project._id === id))

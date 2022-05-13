@@ -71,15 +71,6 @@ export type AWSConfiguration = {
 }
 
 /**
- * Represents Google authentication configuration.
- */
-export type GoogleConfiguration = {
-  readonly clientID: string
-  readonly clientSecret: string
-  readonly authCallback: string
-}
-
-/**
  * Represents configuration for IAM
  */
 export type IAMConfiguration = {
@@ -148,7 +139,6 @@ export interface ConfigurationContainer {
   readonly DB: DatabaseConfiguration
   readonly auth: AuthConfiguration
   readonly AWS: AWSConfiguration
-  readonly google: GoogleConfiguration
   readonly IAM: IAMConfiguration
   readonly email: EmailConfiguration
   readonly gateway: GatewayConfiguration

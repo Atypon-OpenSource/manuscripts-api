@@ -108,20 +108,8 @@ placed at the root of the repository.
   <dt>APP_FROM_EMAIL</dt>
   <dd>The email address from which emails sent by the service are sent.</dd>
 
-  <dt>APP_GOOGLE_AUTH_CALLBACK</dt>
-  <dd>The Google OAuth2 API callback (e.g. <b>"https://api.manuscripts.io/api/v1/auth/google/callback"</b>).</dd>
-
-  <dt>APP_GOOGLE_CLIENT_ID</dt>
-  <dd>The Google OAuth2 client ID</dd>
-
-  <dt>APP_GOOGLE_CLIENT_SECRET</dt>
-  <dd>The Google OAuth2 client secret</dd>
-
   <dt>APP_JWT_SECRET</dt>
   <dd>A cryptographic secret used for JWT signatures.</dd>
-
-  <dt>APP_OAUTH_STATE_ENCRYPTION_KEY</dt>
-  <dd>A cryptographic secret used for the  'state' parameter posted to OAuth providers.</dd>
 
   <dt>APP_PORT</dt>
   <dd>The port to which the service should bind to serve from.</dd>

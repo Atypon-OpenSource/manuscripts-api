@@ -18,7 +18,6 @@ import { Application } from 'express'
 import passport from 'passport'
 
 import { JwtAuthStrategy } from './JWT'
-import { GoogleAuthStrategy } from './Google'
 
 export class PassportAuth {
   /**
@@ -27,7 +26,6 @@ export class PassportAuth {
   public static init(app: Application): void {
     // load required strategies
     JwtAuthStrategy.use()
-    GoogleAuthStrategy.use()
 
     passport.serializeUser((user, done) => {
       done(null, user)
