@@ -19,6 +19,7 @@ import * as Joi from 'joi'
 import { jsonHeadersSchema } from '../../BaseSchema'
 
 export const sgGetSchema: Joi.SchemaMap = {
+  headers: jsonHeadersSchema.headers,
   params: Joi.object({
     id: Joi.string().required(),
     db: Joi.string().required(),

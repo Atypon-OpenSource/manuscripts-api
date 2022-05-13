@@ -109,7 +109,7 @@ export class ContainerRequestService implements IContainerRequestService {
 
     const containerService = this.containerService(request.containerID)
 
-    const container = await containerService.getContainer(request.containerID, acceptingUserID)
+    const container = await containerService.getContainer(request.containerID)
 
     if (!ContainerService.isOwner(container, acceptingUser._id)) {
       throw new RoleDoesNotPermitOperationError(
