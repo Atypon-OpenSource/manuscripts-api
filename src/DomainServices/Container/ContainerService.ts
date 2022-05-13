@@ -801,8 +801,8 @@ export class ContainerService implements IContainerService {
     return this.containerRepository.create(newContainer, ownerId)
   }
 
-  async addManuscript(docs: any, userId: string): Promise<any> {
-    return this.containerRepository.bulkDocs(docs, userId)
+  async addManuscript(docs: any): Promise<any> {
+    return this.containerRepository.bulkDocs(docs)
   }
 
   /**
