@@ -21,7 +21,7 @@ import * as HttpStatus from 'http-status-codes'
 import { BaseRoute } from '../../BaseRoute'
 import { SGController } from './SGController'
 import { AuthStrategy } from '../../../Auth/Passport/AuthStrategy'
-import { sgGetSchema, sgPostSchema, sgPutSchema } from './SGSchema'
+import { sgGetSchema, sgPostSchema, sgPutSchema, sgDeleteSchema } from './SGSchema'
 
 export class SGRoute extends BaseRoute {
   private sgController = new SGController()
@@ -77,7 +77,7 @@ export class SGRoute extends BaseRoute {
 
     router.delete(
       `${this.basePath}/:db/:id`,
-      expressJoiMiddleware(sgPutSchema, {}),
+      expressJoiMiddleware(sgDeleteSchema, {}),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
