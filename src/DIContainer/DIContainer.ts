@@ -38,6 +38,7 @@ import { ICollaborationsRepository } from '../DataAccess/Interfaces/ICollaborati
 import { IInvitationTokenRepository } from '../DataAccess/Interfaces/IInvitationTokenRepository'
 import { IUserStatusRepository } from '../DataAccess/Interfaces/IUserStatusRepository'
 import { IUserEventRepository } from '../DataAccess/Interfaces/IUserEventRepository'
+import { UserCollaboratorRepository } from '../DataAccess/UserCollaboratorRepository/UserCollaboratorRepository'
 
 import { InvitationRepository } from '../DataAccess/InvitationRepository/InvitationRepository'
 import { UserRepository } from '../DataAccess/UserRepository/UserRepository'
@@ -140,6 +141,7 @@ export class DIContainer {
   readonly invitationService: InvitationService
   readonly projectRepository: ProjectRepository
   readonly userProfileRepository: UserProfileRepository
+  readonly userCollaboratorRepository: UserCollaboratorRepository
   readonly containerService: ContainerServiceMap
   readonly containerRequestService: IContainerRequestService
   readonly containerRequestRepository: ContainerRequestRepository
@@ -169,6 +171,10 @@ export class DIContainer {
     readonly dataBucket: SQLDatabase,
     readonly enableActivityTracking: boolean
   ) {
+    this.userCollaboratorRepository = new UserCollaboratorRepository(
+      BucketKey.User,
+      this.userBucket
+    )
     this.applicationRepository = new MemorizingClientApplicationRepository(
       new ClientApplicationRepository(this.userBucket),
       60
@@ -232,7 +238,8 @@ export class DIContainer {
       this.emailService,
       this.syncService,
       this.userProfileRepository,
-      this.projectRepository
+      this.projectRepository,
+      this.userCollaboratorRepository
     )
     this.containerService = {
       [ContainerType.project]: new ContainerService(
