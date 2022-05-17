@@ -118,6 +118,22 @@ parameters:
     type: string
     in: body
     required: false
+  modifiedSinceHeaderSchema:
+    name: "if-modified-since"
+    description: "specific date to check if the data has been modified since"
+    type: string
+    in: header
+    required: false
+    format: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-Modified-Since"
+  modelTypesSchema:
+    name: "types"
+    description: "A list of types to be returned"
+    in: body
+    schema:
+      format: "['MPProject', 'MPComment', ... etc]"
+      type: array
+      items:
+        type: string
 paths:
   /auth/login:
     post:
@@ -745,7 +761,7 @@ paths:
   /project/:projectId/save:
     post:
       tags:
-        - "Save project"
+        - "project"
       summary: "Submit project data database."
       description: "Adds a JATS to database."
       operationId: "submit-project"
@@ -767,6 +783,35 @@ paths:
           description: "Invalid authorization token, or user record is in an invalid state for container creation."
         403:
           description: "User account is blocked or email is not verified."
+  /:projectId/:manuscriptsId?/load:
+    post:
+      tags:
+        - "container"
+      summary: "Load project data or specific models from database."
+      description: "Loads project from database."
+      operationId: "load-project"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - $ref: "#/parameters/JsonAcceptHeadersSchema"
+        - $ref: "#/parameters/modifiedSinceHeaderSchema"
+        - $ref: "#/parameters/AuthorizationTokenHeaderSchema"
+        - $ref: "#/parameters/modelTypesSchema"
+      responses:
+        200:
+          description: "Models are loaded successfully."
+          schema:
+            $ref: "#/definitions/NewContainerResponseSchema"
+        304:
+          description: "Models has not been modified since the given date (If-Modified-Since)"
+        401:
+          description: "Invalid authorization token, or user record is in an invalid state for container creation."
+        403:
+          description: "User account is blocked or email is not verified."
+        400:
+          description: "Failed to fetch requested models"
   /:containerType/create:
     post:
       tags:
