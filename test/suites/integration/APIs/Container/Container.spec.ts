@@ -54,7 +54,12 @@ import { validNote1 } from '../../../../data/fixtures/ManuscriptNote'
 import { config } from '../../../../../src/Config/Config'
 import { externalFile } from '../../../../data/fixtures/ExternalFiles'
 import _ from 'lodash'
-import { createProject, createProjectInvitation } from '../../../../data/fixtures/misc'
+import {
+  createManuscriptNote,
+  createProject,
+  createProjectInvitation,
+} from '../../../../data/fixtures/misc'
+import { ObjectTypes } from '@manuscripts/manuscripts-json-schema'
 
 jest.mock('email-templates', () =>
   jest.fn().mockImplementation(() => {
@@ -555,7 +560,7 @@ describe('containerService - manageUserRole', () => {
       objectType: 'MPContainerInvitation',
       containerID: 'MPProject:valid-project-id-4',
       role: ContainerRole.Writer,
-    })
+    } as any)
 
     const beforeInvitation =
       await DIContainer.sharedContainer.containerInvitationRepository.getById(
@@ -739,6 +744,31 @@ describe('ContainerService - loadProject', () => {
       }
     )
     expect(response.status).toBe(HttpStatus.OK)
+  })
+  test('should successfully loadProject if types are provided', async () => {
+    const loginResponse: supertest.Response = await basicLogin(
+      validBody,
+      ValidHeaderWithApplicationKey
+    )
+
+    expect(loginResponse.status).toBe(HttpStatus.OK)
+
+    const authHeader = authorizationHeader(loginResponse.body.token)
+    await createProject('MPProject:valid-project-id-2')
+    await createManuscriptNote('MPManuscriptNote:valid-note-id-2')
+    const response: supertest.Response = await loadProject(
+      {
+        ...ValidContentTypeAcceptJsonHeader,
+        ...authHeader,
+      },
+      { types: [ObjectTypes.ManuscriptNote] },
+      {
+        projectId: 'MPProject:valid-project-id-2',
+      }
+    )
+    expect(response.status).toBe(HttpStatus.OK)
+    expect(response.body.length).toBe(1)
+    expect(response.body[0].objectType).toBe(ObjectTypes.ManuscriptNote)
   })
 })
 

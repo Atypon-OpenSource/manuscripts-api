@@ -170,7 +170,7 @@ export class ContainersController extends ContainedBaseController implements ICo
         {
           getAttachments: false,
           onlyIDs: false,
-          allowOrphanedDocs: false,
+          allowOrphanedDocs: types && types.length > 0, // To make sure when document that are being asked they are not omitted even if they were not referenced
           includeExt: false,
           types,
         } as any

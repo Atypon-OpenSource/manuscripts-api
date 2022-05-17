@@ -22,6 +22,7 @@ import { containerRequestList } from '../dump/containerRequest'
 import { submissionsList } from '../dump/submissions'
 import { invitationsList } from '../dump/invitation'
 import { manuscriptList } from '../dump/manuscriptList'
+import {manuscriptNoteList} from "../dump/manuscriptNotes";
 
 export const GOOGLE_AUTH_URI = 'https://accounts.google.com/o/oauth2/v2/auth'
 
@@ -79,4 +80,11 @@ export async function createManuscript (id: string, userId?: string) {
     _.clone(manuscript),
     userId
   )
+}
+
+export async function createManuscriptNote(id: string, userId?: string) {
+  const manuscriptNote: any = _.clone(
+    manuscriptNoteList.find((manuscriptNote) => manuscriptNote._id === id)
+  )
+  await DIContainer.sharedContainer.manuscriptRepository.create(_.clone(manuscriptNote), userId)
 }
