@@ -63,3 +63,7 @@ export const saveProjectSchema: Joi.SchemaMap = {
     ),
   }),
 }
+
+export const projectCollaboratorsSchema: Joi.SchemaMap = {
+  headers: jsonHeadersSchema.headers,
+}

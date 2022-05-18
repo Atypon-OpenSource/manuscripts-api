@@ -27,26 +27,28 @@ export async function onUpdate(doc: any, meta: any) {
     meta.id.startsWith('MPLibraryCollection:')
   ) {
     await onUpdateContainer()
+  } else {
+    return
   }
 
   async function removeDeletedContainerFromUserCollaborator(userCollaborators: any[]) {
     for (const userCollaborator of userCollaborators) {
-      for (const role of Object.keys(userCollaborator.containers)) {
-        const index = userCollaborator.containers[role].indexOf(meta.id)
+      for (const role of Object.keys(userCollaborator.projects)) {
+        const index = userCollaborator.projects[role].indexOf(meta.id)
         if (index >= 0) {
-          userCollaborator.containers[role].splice(index, 1)
+          userCollaborator.projects[role].splice(index, 1)
           break
         }
       }
       if (
-        !userCollaborator.containers.owner.length &&
-        !userCollaborator.containers.writer.length &&
-        !userCollaborator.containers.viewer.length
+        !userCollaborator.projects.owner.length &&
+        !userCollaborator.projects.writer.length &&
+        !userCollaborator.projects.viewer.length
       ) {
         await DIContainer.sharedContainer.userCollaboratorRepository.remove(userCollaborator._id)
       } else {
         await DIContainer.sharedContainer.userCollaboratorRepository.patch(userCollaborator._id, {
-          containers: userCollaborator.containers,
+          projects: userCollaborator.projects,
         } as any)
       }
     }
@@ -66,18 +68,18 @@ export async function onUpdate(doc: any, meta: any) {
       )
 
       if (isUserProfileMissing || isUserIDMissing) {
-        const index = userCollaborator.containers[role].indexOf(meta.id)
-        userCollaborator.containers[role].splice(index, 1)
+        const index = userCollaborator.projects[role].indexOf(meta.id)
+        userCollaborator.projects[role].splice(index, 1)
 
         if (
-          !userCollaborator.containers.owner.length &&
-          !userCollaborator.containers.writer.length &&
-          !userCollaborator.containers.viewer.length
+          !userCollaborator.projects.owner.length &&
+          !userCollaborator.projects.writer.length &&
+          !userCollaborator.projects.viewer.length
         ) {
           await DIContainer.sharedContainer.userCollaboratorRepository.remove(userCollaborator._id)
         } else {
           await DIContainer.sharedContainer.userCollaboratorRepository.patch(userCollaborator._id, {
-            containers: userCollaborator.containers,
+            projects: userCollaborator.projects,
           } as any)
         }
       }
@@ -94,8 +96,7 @@ export async function onUpdate(doc: any, meta: any) {
 
         if (collaboratorProfile) {
           const userCollaborators =
-            await DIContainer.sharedContainer.userCollaboratorRepository.getByUserIdOrProfileId(
-              userID,
+            await DIContainer.sharedContainer.userCollaboratorRepository.getByProfileId(
               collaboratorProfile._id
             )
           let userCollaborator = null
@@ -104,12 +105,12 @@ export async function onUpdate(doc: any, meta: any) {
             userCollaborator = uc
 
             if (
-              userCollaborator.containers &&
-              !userCollaborator.containers[role].includes(containerID)
+              userCollaborator.projects &&
+              !userCollaborator.projects[role].includes(containerID)
             ) {
-              userCollaborator.containers[role].push(containerID)
+              userCollaborator.projects[role].push(containerID)
               await DIContainer.sharedContainer.userCollaboratorRepository.patch(uc._id, {
-                containers: userCollaborator.containers,
+                projects: userCollaborator.projects,
               } as any)
             }
           }
@@ -128,7 +129,7 @@ export async function onUpdate(doc: any, meta: any) {
                 _id: uuid_v4(),
                 userID: userID,
                 collaboratorID: collaboratorProfile._id,
-                containers: containerRoles,
+                projects: containerRoles,
                 collaboratorProfile,
               } as UserCollaborator
               await DIContainer.sharedContainer.userCollaboratorRepository.create(
@@ -157,14 +158,11 @@ export async function onUpdate(doc: any, meta: any) {
       await DIContainer.sharedContainer.userCollaboratorRepository.getByProfileId(meta.id)
     for (const uc of userCollaborators) {
       const otherUserCollaborators =
-        await DIContainer.sharedContainer.userCollaboratorRepository.getByUserIdOrProfileId(
-          uc.userID,
-          meta.id
-        )
+        await DIContainer.sharedContainer.userCollaboratorRepository.getByUserId(uc.userID)
       for (const uc of otherUserCollaborators) {
         await DIContainer.sharedContainer.userCollaboratorRepository.remove(uc._id)
       }
-      //await DIContainer.sharedContainer.userCollaboratorRepository.remove(uc._id)
+      await DIContainer.sharedContainer.userCollaboratorRepository.remove(uc._id)
     }
   }
 
@@ -193,9 +191,7 @@ export async function onUpdate(doc: any, meta: any) {
     const containerID = meta.id
 
     const userCollaborators =
-      await DIContainer.sharedContainer.userCollaboratorRepository.getByAnyContainerRole(
-        containerID
-      )
+      await DIContainer.sharedContainer.userCollaboratorRepository.getByContainerId(containerID)
     await removeDeletedContainerFromUserCollaborator(userCollaborators)
   }
 

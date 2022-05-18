@@ -17,7 +17,7 @@
 import { compare } from 'bcrypt'
 import * as jsonwebtoken from 'jsonwebtoken'
 import checksum from 'checksum'
-import { ObjectTypes } from '@manuscripts/manuscripts-json-schema'
+import { ObjectTypes, UserCollaborator } from '@manuscripts/manuscripts-json-schema'
 
 import {
   MissingUserStatusError,
@@ -280,5 +280,9 @@ export class UserService implements IUserService {
         }
       }
     }
+  }
+
+  public async getCollaborators(containerId: string): Promise<UserCollaborator[]> {
+    return this.userCollaboratorRepository.getByContainerId(containerId)
   }
 }

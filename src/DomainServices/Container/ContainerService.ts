@@ -1027,4 +1027,12 @@ export class ContainerService implements IContainerService {
     }
     return this.correctionRepository.getCorrectionStatus(containerID)
   }
+
+  public async getCollaborators(containerID: string, userId: string) {
+    const canAccess = await this.checkUserContainerAccess(userId, containerID)
+    if (!canAccess) {
+      throw new ValidationError('User must be a contributor in the container', containerID)
+    }
+    return this.userService.getCollaborators(containerID)
+  }
 }

@@ -51,7 +51,7 @@ async function addUserCollaborator (userID: string) {
   const userCollaborator = await pRetry(
     async () => {
       const userCollaborator = await DIContainer.sharedContainer.userCollaboratorRepository.getByUserId(
-        userID.replace('_', '|')
+        userID
       )
 
       if (userCollaborator) {
@@ -73,13 +73,13 @@ async function addProjectToUserCollaborator (
 ) {
   const isAdded = await pRetry(async () => {
     const userCollaborators = await DIContainer.sharedContainer.userCollaboratorRepository.getByUserId(
-      userID.replace('_', '|')
+      userID
     )
     for (const uc of userCollaborators) {
       if (
         uc &&
-        uc.containers &&
-        uc.containers[role].includes(projectID)
+        uc.projects &&
+        uc.projects[role].includes(projectID)
       ) {
         return true
       }
@@ -99,14 +99,14 @@ async function removeProjectFromUserCollaborator (
 ) {
   const isRemoved = await pRetry(async () => {
     const userCollaborators = await DIContainer.sharedContainer.userCollaboratorRepository.getByUserId(
-      userID.replace('_', '|')
+      userID
     )
 
     for (const uc of userCollaborators) {
       if (
         uc &&
-        uc.containers &&
-        !uc.containers[role].includes(projectID)
+        uc.projects &&
+        !uc.projects[role].includes(projectID)
       ) {
         return true
       }
@@ -244,7 +244,7 @@ describe('user-collaborator-function', () => {
     expect(userCollaborator2After).toBeNull()
   })
 
-  test('should add project id to containers list when both users collaborate on a second project and remove it when collaboration ends', async () => {
+  test('should add project id to projects list when both users collaborate on a second project and remove it when collaboration ends', async () => {
     const {
       userProfileRepository,
       userCollaboratorRepository,
@@ -329,7 +329,7 @@ describe('user-collaborator-function', () => {
     expect(userCollaborator2After).toBeNull()
   })
 
-  test('should remove both userCollaborator object when no more shared containers left', async () => {
+  test('should remove both userCollaborator object when no more shared projects left', async () => {
     const {
       userProfileRepository,
       userCollaboratorRepository,

@@ -15,7 +15,6 @@
  */
 
 import { SGRepository } from '../SGRepository'
-import { username as sgUsername } from '../../DomainServices/Sync/SyncService'
 import { UserCollaborator } from '@manuscripts/manuscripts-json-schema'
 
 export class UserCollaboratorRepository extends SGRepository<
@@ -48,47 +47,6 @@ export class UserCollaboratorRepository extends SGRepository<
    * @param userId user id.
    */
   public async getByUserId(userId: string): Promise<UserCollaborator[]> {
-    const syncUserId = sgUsername(userId)
-
-    const Q = {
-      AND: [
-        {
-          data: {
-            path: ['objectType'],
-            equals: this.objectType,
-          },
-        },
-        {
-          OR: [
-            {
-              data: {
-                path: ['userID'],
-                equals: syncUserId,
-              },
-            },
-            {
-              data: {
-                path: ['collaboratorProfile', 'userID'],
-                equals: syncUserId,
-              },
-            },
-          ],
-        },
-      ],
-    }
-
-    return this.database.bucket.query(Q).then((res: any) => res.map((i: any) => this.buildModel(i)))
-  }
-
-  /**
-   * Get user collaborator by user id and profile id.
-   * @param userId user id.
-   * @param profileId profile id.
-   */
-  public async getByUserIdOrProfileId(
-    userId: string,
-    profileId: string
-  ): Promise<UserCollaborator[]> {
     const Q = {
       AND: [
         {
@@ -107,8 +65,8 @@ export class UserCollaboratorRepository extends SGRepository<
             },
             {
               data: {
-                path: ['collaboratorID'],
-                equals: profileId,
+                path: ['collaboratorProfile', 'userID'],
+                equals: userId,
               },
             },
           ],
@@ -160,7 +118,7 @@ export class UserCollaboratorRepository extends SGRepository<
         },
         {
           data: {
-            path: ['containers', role],
+            path: ['projects', role],
             array_contains: containerId,
           },
         },
@@ -174,7 +132,7 @@ export class UserCollaboratorRepository extends SGRepository<
    * Get user collaborators by any role.
    * @param containerId container id.
    */
-  public async getByAnyContainerRole(containerId: string): Promise<UserCollaborator[]> {
+  public async getByContainerId(containerId: string): Promise<UserCollaborator[]> {
     const Q = {
       AND: [
         {
@@ -187,19 +145,19 @@ export class UserCollaboratorRepository extends SGRepository<
           OR: [
             {
               data: {
-                path: ['containers', 'owner'],
+                path: ['projects', 'owner'],
                 array_contains: containerId,
               },
             },
             {
               data: {
-                path: ['containers', 'writer'],
+                path: ['projects', 'writer'],
                 array_contains: containerId,
               },
             },
             {
               data: {
-                path: ['containers', 'viewer'],
+                path: ['projects', 'viewer'],
                 array_contains: containerId,
               },
             },

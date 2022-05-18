@@ -22,13 +22,18 @@ import multer from 'multer'
 import { BaseRoute } from '../../BaseRoute'
 import { ProjectController } from './ProjectController'
 import { AuthStrategy } from '../../../Auth/Passport/AuthStrategy'
-import { addSchema, createSchema, saveProjectSchema } from './ProjectSchema'
+import {
+  addSchema,
+  createSchema,
+  saveProjectSchema,
+  projectCollaboratorsSchema,
+} from './ProjectSchema'
 
 export class ProjectRoute extends BaseRoute {
   private projectController = new ProjectController()
 
   /**
-   * Returns auth route base path.
+   * Returns project route base path.
    *
    * @returns string
    */
@@ -75,6 +80,19 @@ export class ProjectRoute extends BaseRoute {
         return this.runWithErrorHandling(async () => {
           const manuscript = await this.projectController.saveProject(req)
           res.status(HttpStatus.OK).send(manuscript)
+        }, next)
+      }
+    )
+
+    router.get(
+      `${this.basePath}/:projectId/collaborators`,
+      expressJoiMiddleware(projectCollaboratorsSchema),
+      AuthStrategy.JsonHeadersValidation,
+      AuthStrategy.JWTAuth,
+      (req: Request, res: Response, next: NextFunction) => {
+        return this.runWithErrorHandling(async () => {
+          const collaborators = await this.projectController.collaborators(req)
+          res.status(HttpStatus.OK).send(collaborators)
         }, next)
       }
     )

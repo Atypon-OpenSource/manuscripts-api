@@ -252,7 +252,7 @@ describe('ContainerService - getProject', () => {
     projectRepository.getContainerResources = jest.fn(() => [ validProject ])
     containerService.checkUserContainerAccess = jest.fn(() => { return true })
     const result = await containerService.getProject('userId', 'containerId', 'manuscriptId', 'token')
-    log.debug(JSON.stringify(result))
+    //log.debug(JSON.stringify(result))
     expect(result).toBeTruthy()
   })
 })
