@@ -30,7 +30,7 @@ import {
   RoleDoesNotPermitOperationError,
   ValidationError,
 } from '../../../Errors'
-import { manuscriptIDTypes, Model } from '@manuscripts/manuscripts-json-schema'
+import { manuscriptIDTypes, Model, UserCollaborator } from '@manuscripts/manuscripts-json-schema'
 import { remove } from 'fs-extra'
 import jsonwebtoken from 'jsonwebtoken'
 import { ContainerService } from '../../../DomainServices/Container/ContainerService'
@@ -230,5 +230,23 @@ export class ProjectController extends BaseController implements IProjectControl
       ContainerType.project
     ].getContainer(projectId, userId)
     return await this.upsertManuscriptToProject(project, { data: data }, null, userId, manuscriptId)
+  }
+
+  async collaborators(req: Request): Promise<UserCollaborator[]> {
+    const { projectId } = req.params
+
+    if (!projectId) {
+      throw new ValidationError('projectId parameter must be specified', projectId)
+    }
+
+    const token = authorizationBearerToken(req)
+    const payload = jsonwebtoken.decode(token)
+    if (!isLoginTokenPayload(payload)) {
+      throw new InvalidCredentialsError('Unexpected token payload.')
+    }
+    const userId = ContainerService.userIdForSync(payload.userId)
+    return await DIContainer.sharedContainer.containerService[
+      ContainerType.project
+    ].getCollaborators(projectId, userId)
   }
 }

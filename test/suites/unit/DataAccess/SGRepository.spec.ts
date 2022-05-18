@@ -33,6 +33,8 @@ describe('SGRepository - create', () => {
   const project = {
     _id: 'MPProject:foo',
     owners: [],
+    writers: [],
+    viewers: []
   }
 
   test('should create a document', async () => {
@@ -559,6 +561,9 @@ describe('SGRepository - bulkDocs', () => {
   const docUpdate = {
     _id: 'MPProject:abc',
     title: 'foo',
+    owners: [],
+    writers: [],
+    viewers: []
   }
 
   test('should POST _bulk_docs', async () => {

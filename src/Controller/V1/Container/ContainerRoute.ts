@@ -42,9 +42,18 @@ import { AuthStrategy } from '../../../Auth/Passport/AuthStrategy'
 export class ContainerRoute extends BaseRoute {
   private containersController = new ContainersController()
 
+  /**
+   * Returns project route base path.
+   *
+   * @returns string
+   */
+  private get basePath(): string {
+    return '/container'
+  }
+
   public create(router: Router): void {
     router.post(
-      `/:containerType/create`,
+      `${this.basePath}/:containerType/create`,
       expressJoiMiddleware(createSchema, {}),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
@@ -57,7 +66,7 @@ export class ContainerRoute extends BaseRoute {
     )
 
     router.delete(
-      [`/:containerID`, `/:containerType/:containerID`],
+      [`${this.basePath}/:containerID`, `${this.basePath}/:containerType/:containerID`],
       expressJoiMiddleware(deleteSchema, {}),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
@@ -70,7 +79,7 @@ export class ContainerRoute extends BaseRoute {
     )
 
     router.get(
-      [`/:projectId/load`, `/:projectId/:manuscriptId/load`],
+      [`${this.basePath}/:projectId/load`, `${this.basePath}/:projectId/:manuscriptId/load`],
       expressJoiMiddleware(loadProjectSchema, {}),
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
@@ -87,7 +96,10 @@ export class ContainerRoute extends BaseRoute {
     )
 
     router.get(
-      [`/:containerID/archive`, `/:containerID/:manuscriptID/archive`],
+      [
+        `${this.basePath}/:containerID/archive`,
+        `${this.basePath}/:containerID/:manuscriptID/archive`,
+      ],
       expressJoiMiddleware(getArchiveSchema, {}),
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
@@ -100,7 +112,7 @@ export class ContainerRoute extends BaseRoute {
     )
 
     router.get(
-      `/:containerType/attachment/:id/:attachmentKey?`,
+      `${this.basePath}/:containerType/attachment/:id/:attachmentKey?`,
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
@@ -112,7 +124,7 @@ export class ContainerRoute extends BaseRoute {
     )
 
     router.post(
-      [`/:containerID/roles`, `/project/:containerID/roles`],
+      [`${this.basePath}/:containerID/roles`, `${this.basePath}/project/:containerID/roles`],
       expressJoiMiddleware(manageUserRoleSchema, {}),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
@@ -125,7 +137,7 @@ export class ContainerRoute extends BaseRoute {
     )
 
     router.post(
-      [`/:containerID/addUser`, `/project/:containerID/addUser`],
+      [`${this.basePath}/:containerID/addUser`, `${this.basePath}/project/:containerID/addUser`],
       expressJoiMiddleware(addUserSchema, {}),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
@@ -139,7 +151,7 @@ export class ContainerRoute extends BaseRoute {
 
     // Deprecated, moved to .well-known
     router.get(
-      `/:containerType/:scope.jwks`,
+      `${this.basePath}/:containerType/:scope.jwks`,
       expressJoiMiddleware(accessTokenJWKSchema, {}),
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
@@ -149,7 +161,7 @@ export class ContainerRoute extends BaseRoute {
     )
 
     router.get(
-      `/picker-bundle/:containerID/:manuscriptID`,
+      `${this.basePath}/picker-bundle/:containerID/:manuscriptID`,
       expressJoiMiddleware(getPickerBuilderSchema, {}),
       AuthStrategy.scopedJWTAuth('file-picker'),
       (req: Request, res: Response, next: NextFunction) => {
@@ -163,7 +175,7 @@ export class ContainerRoute extends BaseRoute {
     )
 
     router.get(
-      `/:containerType/:containerID/:scope`,
+      `${this.basePath}/:containerType/:containerID/:scope`,
       expressJoiMiddleware(accessTokenSchema, {}),
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
@@ -174,7 +186,7 @@ export class ContainerRoute extends BaseRoute {
     )
 
     router.post(
-      `/projects/:containerID/manuscripts/:manuscriptID?`,
+      `${this.basePath}/projects/:containerID/manuscripts/:manuscriptID?`,
       expressJoiMiddleware(createManuscriptSchema, {}),
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
@@ -185,7 +197,7 @@ export class ContainerRoute extends BaseRoute {
     )
 
     router.get(
-      `/projects/:containerID/manuscripts/:manuscriptID/notes`,
+      `${this.basePath}/projects/:containerID/manuscripts/:manuscriptID/notes`,
       expressJoiMiddleware(getProductionNotesSchema, {}),
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
@@ -196,7 +208,7 @@ export class ContainerRoute extends BaseRoute {
     )
 
     router.post(
-      `/projects/:containerID/manuscripts/:manuscriptID/notes`,
+      `${this.basePath}/projects/:containerID/manuscripts/:manuscriptID/notes`,
       expressJoiMiddleware(addProductionNoteSchema, {}),
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
@@ -207,7 +219,7 @@ export class ContainerRoute extends BaseRoute {
     )
 
     router.post(
-      `/external-files/submit`,
+      `${this.basePath}/external-files/submit`,
       expressJoiMiddleware(submitExternalFiles, {}),
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
@@ -218,7 +230,7 @@ export class ContainerRoute extends BaseRoute {
     )
 
     router.post(
-      `/snapshot/:containerID/create`,
+      `${this.basePath}/snapshot/:containerID/create`,
       expressJoiMiddleware(createSnapshotSchema, {}),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
@@ -230,7 +242,7 @@ export class ContainerRoute extends BaseRoute {
     )
 
     router.get(
-      `/projects/:containerID/suggestions/status`,
+      `${this.basePath}/projects/:containerID/suggestions/status`,
       expressJoiMiddleware(suggestionStatusSchema, {}),
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {

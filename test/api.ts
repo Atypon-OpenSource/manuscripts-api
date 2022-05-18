@@ -247,14 +247,14 @@ export async function notFound(body: any, headers: object): Promise<supertest.Re
 export async function create(headers: object, body: any, params: any): Promise<supertest.Response> {
   const server: IServer = await createServer()
   return supertest(server.app)
-    .post(`/api/v1/${params.containerType}/create`)
+    .post(`/api/v1/container/${params.containerType}/create`)
     .set(headers)
     .send(body)
 }
 
 export async function deleteContainer(headers: object, params: any): Promise<supertest.Response> {
   const server: IServer = await createServer()
-  return supertest(server.app).delete(`/api/v1/${params.containerID}`).set(headers).send()
+  return supertest(server.app).delete(`/api/v1/container/${params.containerID}`).set(headers).send()
 }
 
 export async function manageUserRole(
@@ -263,7 +263,7 @@ export async function manageUserRole(
   params: any
 ): Promise<supertest.Response> {
   const server: IServer = await createServer()
-  return supertest(server.app).post(`/api/v1/${params.containerID}/roles`).set(headers).send(body)
+  return supertest(server.app).post(`/api/v1/container/${params.containerID}/roles`).set(headers).send(body)
 }
 
 export async function addUser(
@@ -272,7 +272,7 @@ export async function addUser(
   params: any
 ): Promise<supertest.Response> {
   const server: IServer = await createServer()
-  return supertest(server.app).post(`/api/v1/${params.containerID}/addUser`).set(headers).send(body)
+  return supertest(server.app).post(`/api/v1/container/${params.containerID}/addUser`).set(headers).send(body)
 }
 
 export async function getArchive(
@@ -284,8 +284,8 @@ export async function getArchive(
   return supertest(server.app)
     .get(
       params.manuscriptID
-        ? `/api/v1/${params.containerID}/${params.manuscriptID}/archive`
-        : `/api/v1/${params.containerID}/archive`
+        ? `/api/v1/container/${params.containerID}/${params.manuscriptID}/archive`
+        : `/api/v1/container/${params.containerID}/archive`
     )
     .set(headers)
     .send(body)
@@ -300,8 +300,8 @@ export async function loadProject(
   return supertest(server.app)
     .get(
       params.manuscriptId
-        ? `/api/v1/${params.projectId}/${params.manuscriptId}/load`
-        : `/api/v1/${params.projectId}/load`
+        ? `/api/v1/container/${params.projectId}/${params.manuscriptId}/load`
+        : `/api/v1/container/${params.projectId}/load`
     )
     .set(headers)
     .send(body)
@@ -314,7 +314,7 @@ export async function getAttachment(
 ): Promise<supertest.Response> {
   const server: IServer = await createServer()
   return supertest(server.app)
-    .get(`/api/v1/${params.containerType}/attachment/${params.id}`)
+    .get(`/api/v1/container/${params.containerType}/attachment/${params.id}`)
     .set(headers)
     .send(body)
 }
@@ -322,7 +322,7 @@ export async function getAttachment(
 export async function accessToken(headers: object, params: any): Promise<supertest.Response> {
   const server: IServer = await createServer()
   return supertest(server.app)
-    .get(`/api/v1/${getContainerType(params.containerID)}/${params.containerID}/${params.scope}`)
+    .get(`/api/v1/container/${getContainerType(params.containerID)}/${params.containerID}/${params.scope}`)
     .set(headers)
     .send()
 }
@@ -330,7 +330,7 @@ export async function accessToken(headers: object, params: any): Promise<superte
 export async function pickerBundle(headers: object, params: any): Promise<supertest.Response> {
   const server: IServer = await createServer()
   return supertest(server.app)
-    .get(`/api/v1/picker-bundle/${params.containerID}/${params.manuscriptID}`)
+    .get(`/api/v1/container/picker-bundle/${params.containerID}/${params.manuscriptID}`)
     .set(headers)
     .send()
 }
@@ -343,7 +343,7 @@ export async function createManuscript(
   const server: IServer = await createServer()
   return supertest(server.app)
     .post(
-      `/api/v1/projects/${params.containerID}/manuscripts/${
+      `/api/v1/container/projects/${params.containerID}/manuscripts/${
         params.manuscriptID ? params.manuscriptID : ''
       }`
     )
@@ -357,7 +357,7 @@ export async function getProductionNotes(
 ): Promise<supertest.Response> {
   const server: IServer = await createServer()
   return supertest(server.app)
-    .get(`/api/v1/projects/${params.containerID}/manuscripts/${params.manuscriptID}/notes`)
+    .get(`/api/v1/container/projects/${params.containerID}/manuscripts/${params.manuscriptID}/notes`)
     .set(headers)
     .send()
 }
@@ -368,7 +368,7 @@ export async function addProductionNote(
   body: any
 ): Promise<supertest.Response> {
   const server: IServer = await createServer()
-  const url = `/api/v1/projects/${params.containerID}/manuscripts/${params.manuscriptID}/notes`
+  const url = `/api/v1/container/projects/${params.containerID}/manuscripts/${params.manuscriptID}/notes`
   return supertest(server.app).post(url).set(headers).send(body)
 }
 // Container Request
@@ -437,7 +437,7 @@ export async function createProject(headers: any, body: object): Promise<superte
 
 export async function submitExternalFiles(headers: any, body: object): Promise<supertest.Response> {
   const server: IServer = await createServer()
-  return supertest(server.app).post(`/api/v1/external-files/submit`).set(headers).send(body)
+  return supertest(server.app).post(`/api/v1/container/external-files/submit`).set(headers).send(body)
 }
 
 export async function createSnapshot(
@@ -447,7 +447,7 @@ export async function createSnapshot(
 ): Promise<supertest.Response> {
   const server: IServer = await createServer()
   return supertest(server.app)
-    .post(`/api/v1/snapshot/${params.containerID}/create`)
+    .post(`/api/v1/container/snapshot/${params.containerID}/create`)
     .set(headers)
     .send(body)
 }
@@ -455,7 +455,7 @@ export async function createSnapshot(
 export async function getCorrectionStatus(headers: any, params: any): Promise<supertest.Response> {
   const server: IServer = await createServer()
   return supertest(server.app)
-    .get(`/api/v1/projects/${params.containerID}/suggestions/status`)
+    .get(`/api/v1/container/projects/${params.containerID}/suggestions/status`)
     .set(headers)
 }
 
@@ -467,6 +467,14 @@ export async function saveProject(
   const server: IServer = await createServer()
   const req = supertest(server.app).post(`/api/v1/project/${params.containerID}/save`).set(headers)
   return req.send(body)
+}
+
+export async function getCollaborators(
+  headers: object,
+  params: any,
+): Promise<supertest.Response> {
+  const server: IServer = await createServer()
+  return supertest(server.app).get(`/api/v1/project/${params.containerID}/collaborators`).set(headers)
 }
 
 export async function importManuscript(

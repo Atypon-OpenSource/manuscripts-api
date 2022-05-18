@@ -15,6 +15,7 @@
  */
 
 import { UserProfileLike } from '../../DataAccess/Interfaces/Models'
+import { UserCollaborator } from '@manuscripts/manuscripts-json-schema'
 
 export interface IUserService {
   deleteUser(userId: string): Promise<boolean>
@@ -23,4 +24,5 @@ export interface IUserService {
   clearUsersData(): Promise<void>
   profile(token: string): Promise<UserProfileLike | null>
   authenticateUser(token: string): Promise<void>
+  getCollaborators(containerId: string): Promise<UserCollaborator[]>
 }
