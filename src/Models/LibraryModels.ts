@@ -14,25 +14,9 @@
  * limitations under the License.
  */
 
-export interface SeedOptions {
-  users?: boolean
-  applications?: boolean
-  singleUseTokens?: boolean
-  invitations?: boolean
-  projects?: boolean
-  libraries?: boolean
-  libraryCollections?: boolean
-  projectInvitations?: boolean
-  libraryInvitations?: boolean
-  invitationTokens?: boolean
-  userProfiles?: boolean
-  userTokens?: boolean
-  containerRequest?: boolean
-  submission?: boolean
-  manuscript?: boolean
-  manuscriptNotes?: boolean
-  externalFile?: boolean
-  corrections?: boolean
-  templates?: boolean
-  snapshots?: boolean
+export interface PatchLibrary {
+  _id: string
+  owners?: string[]
+  writers?: string[]
+  viewers?: string[]
 }

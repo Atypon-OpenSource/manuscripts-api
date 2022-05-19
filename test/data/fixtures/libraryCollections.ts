@@ -14,25 +14,14 @@
  * limitations under the License.
  */
 
-export interface SeedOptions {
-  users?: boolean
-  applications?: boolean
-  singleUseTokens?: boolean
-  invitations?: boolean
-  projects?: boolean
-  libraries?: boolean
-  libraryCollections?: boolean
-  projectInvitations?: boolean
-  libraryInvitations?: boolean
-  invitationTokens?: boolean
-  userProfiles?: boolean
-  userTokens?: boolean
-  containerRequest?: boolean
-  submission?: boolean
-  manuscript?: boolean
-  manuscriptNotes?: boolean
-  externalFile?: boolean
-  corrections?: boolean
-  templates?: boolean
-  snapshots?: boolean
+import { LibraryCollectionLike } from '../../../src/DataAccess/Interfaces/Models'
+
+export const validLibraryCollection: LibraryCollectionLike = {
+  _id: 'MPLibraryCollection:valid-libraryCollection-id',
+  containerID: 'MPLibrary:valid-library-id',
+  objectType: 'MPLibraryCollection',
+  owners: ['User_test'],
+  writers: [],
+  viewers: [],
+  name: ''
 }

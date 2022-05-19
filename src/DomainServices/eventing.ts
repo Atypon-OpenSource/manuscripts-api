@@ -18,13 +18,13 @@ import { v4 as uuid_v4 } from 'uuid'
 import { DIContainer } from '../DIContainer/DIContainer'
 import { UserCollaborator } from '@manuscripts/manuscripts-json-schema'
 
-export async function onUpdate(doc: any, meta: any) {
-  if (meta.id.startsWith('MPUserProfile:')) {
+export async function onUpdate(doc: any, id: string) {
+  if (id.startsWith('MPUserProfile:')) {
     await onUpdateUserProfile()
   } else if (
-    meta.id.startsWith('MPProject:') ||
-    meta.id.startsWith('MPLibrary:') ||
-    meta.id.startsWith('MPLibraryCollection:')
+    id.startsWith('MPProject:') ||
+    id.startsWith('MPLibrary:') ||
+    id.startsWith('MPLibraryCollection:')
   ) {
     await onUpdateContainer()
   } else {
@@ -34,7 +34,7 @@ export async function onUpdate(doc: any, meta: any) {
   async function removeDeletedContainerFromUserCollaborator(userCollaborators: any[]) {
     for (const userCollaborator of userCollaborators) {
       for (const role of Object.keys(userCollaborator.projects)) {
-        const index = userCollaborator.projects[role].indexOf(meta.id)
+        const index = userCollaborator.projects[role].indexOf(id)
         if (index >= 0) {
           userCollaborator.projects[role].splice(index, 1)
           break
@@ -68,7 +68,7 @@ export async function onUpdate(doc: any, meta: any) {
       )
 
       if (isUserProfileMissing || isUserIDMissing) {
-        const index = userCollaborator.projects[role].indexOf(meta.id)
+        const index = userCollaborator.projects[role].indexOf(id)
         userCollaborator.projects[role].splice(index, 1)
 
         if (
@@ -87,7 +87,7 @@ export async function onUpdate(doc: any, meta: any) {
   }
 
   async function createUserCollaborator(userID: string, collaborators: string[], role: string) {
-    const containerID = meta.id
+    const containerID = id
 
     for (const collaborator of collaborators) {
       if (userID !== collaborator) {
@@ -155,7 +155,7 @@ export async function onUpdate(doc: any, meta: any) {
 
   async function deleteUserCollaborator() {
     const userCollaborators =
-      await DIContainer.sharedContainer.userCollaboratorRepository.getByProfileId(meta.id)
+      await DIContainer.sharedContainer.userCollaboratorRepository.getByProfileId(id)
     for (const uc of userCollaborators) {
       const otherUserCollaborators =
         await DIContainer.sharedContainer.userCollaboratorRepository.getByUserId(uc.userID)
@@ -168,8 +168,8 @@ export async function onUpdate(doc: any, meta: any) {
 
   async function updateUserCollaborator() {
     const userCollaborators =
-      await DIContainer.sharedContainer.userCollaboratorRepository.getByProfileId(meta.id)
-    const docWithID = Object.assign({}, doc, { _id: meta.id })
+      await DIContainer.sharedContainer.userCollaboratorRepository.getByProfileId(id)
+    const docWithID = Object.assign({}, doc, { _id: id })
 
     for (const userCollaborator of userCollaborators) {
       await DIContainer.sharedContainer.userCollaboratorRepository.patch(userCollaborator._id, {
@@ -188,7 +188,7 @@ export async function onUpdate(doc: any, meta: any) {
   }
 
   async function deleteContainer() {
-    const containerID = meta.id
+    const containerID = id
 
     const userCollaborators =
       await DIContainer.sharedContainer.userCollaboratorRepository.getByContainerId(containerID)
@@ -196,7 +196,7 @@ export async function onUpdate(doc: any, meta: any) {
   }
 
   async function updateContainer() {
-    const containerID = meta.id
+    const containerID = id
     const owners = doc.owners
     const writers = doc.writers
     const viewers = doc.viewers.filter((x: any) => x !== '*')

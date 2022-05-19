@@ -14,25 +14,17 @@
  * limitations under the License.
  */
 
-export interface SeedOptions {
-  users?: boolean
-  applications?: boolean
-  singleUseTokens?: boolean
-  invitations?: boolean
-  projects?: boolean
-  libraries?: boolean
-  libraryCollections?: boolean
-  projectInvitations?: boolean
-  libraryInvitations?: boolean
-  invitationTokens?: boolean
-  userProfiles?: boolean
-  userTokens?: boolean
-  containerRequest?: boolean
-  submission?: boolean
-  manuscript?: boolean
-  manuscriptNotes?: boolean
-  externalFile?: boolean
-  corrections?: boolean
-  templates?: boolean
-  snapshots?: boolean
-}
+import { LibraryCollection } from '@manuscripts/manuscripts-json-schema'
+
+import { LibraryCollectionLike } from './Models'
+import { PatchLibraryCollection } from '../../Models/LibraryCollectionModels'
+import { IContainerRepository } from './IContainerRepository'
+
+/**
+ * Manages library collections persistent storage operations.
+ */
+export type ILibraryCollectionRepository = IContainerRepository<
+  LibraryCollection,
+  LibraryCollectionLike,
+  PatchLibraryCollection
+>

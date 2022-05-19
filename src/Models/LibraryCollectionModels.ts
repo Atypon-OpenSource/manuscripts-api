@@ -1,5 +1,5 @@
 /*!
- * © 2020 Atypon Systems LLC
+ * © 2021 Atypon Systems LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,25 +14,12 @@
  * limitations under the License.
  */
 
-export interface SeedOptions {
-  users?: boolean
-  applications?: boolean
-  singleUseTokens?: boolean
-  invitations?: boolean
-  projects?: boolean
-  libraries?: boolean
-  libraryCollections?: boolean
-  projectInvitations?: boolean
-  libraryInvitations?: boolean
-  invitationTokens?: boolean
-  userProfiles?: boolean
-  userTokens?: boolean
-  containerRequest?: boolean
-  submission?: boolean
-  manuscript?: boolean
-  manuscriptNotes?: boolean
-  externalFile?: boolean
-  corrections?: boolean
-  templates?: boolean
-  snapshots?: boolean
+export interface PatchLibraryCollection {
+  _id: string
+  owners?: string[]
+  writers?: string[]
+  viewers?: string[]
+  editors?: string[]
+  annotators?: string[]
+  inherited?: string[]
 }

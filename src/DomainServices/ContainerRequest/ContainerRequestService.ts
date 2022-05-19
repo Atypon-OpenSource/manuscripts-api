@@ -37,6 +37,8 @@ export class ContainerRequestService implements IContainerRequestService {
     private userProfileRepository: UserProfileRepository,
     private userRepository: IUserRepository,
     private projectService: IContainerService,
+    private libraryService: IContainerService,
+    private libraryCollectionService: IContainerService,
     private emailService: EmailService
   ) {}
 
@@ -156,6 +158,14 @@ export class ContainerRequestService implements IContainerRequestService {
   private containerService(containerID: string) {
     if (containerID.startsWith('MPProject')) {
       return this.projectService
+    }
+
+    if (containerID.startsWith('MPLibrary')) {
+      return this.libraryService
+    }
+
+    if (containerID.startsWith('MPLibraryCollection')) {
+      return this.libraryCollectionService
     }
 
     throw new ValidationError('Invalid container id.', containerID)
