@@ -18,7 +18,6 @@ import { Model, LibraryCollection } from '@manuscripts/manuscripts-json-schema'
 import { selectActiveResources } from '@manuscripts/manuscripts-json-schema-utils'
 
 import { SGRepository } from '../SGRepository'
-import { onUpdate } from '../../DomainServices/eventing'
 
 import {
   DocumentIdentifyingMetadata,
@@ -409,25 +408,5 @@ export abstract class ContainerRepository<Container, ContainerLike, PatchContain
     }
 
     return this.database.bucket.query(Q).then((res: any) => callbackFn(res))
-  }
-
-  public async create(newDocument: ContainerLike, userId?: string): Promise<Container> {
-    const res = await SGRepository.prototype.create.call(this, newDocument, userId)
-    await onUpdate(res, { id: res._id })
-    return res
-  }
-
-  public async remove(id: string | null, userId?: string): Promise<void> {
-    const res = await SGRepository.prototype.remove.call(this, id, userId)
-    if (id) {
-      await onUpdate(null, { id })
-    }
-    return res
-  }
-
-  public async patch(id: string, dataToPatch: PatchContainer, userId?: string): Promise<Container> {
-    const res = await SGRepository.prototype.patch.call(this, id, dataToPatch, userId)
-    await onUpdate(res, { id })
-    return res
   }
 }

@@ -52,7 +52,6 @@ module.exports = {
     '!src/Auth/Passport/AuthStrategy.ts',
     '!src/Config/**',
     '!src/DIContainer/DIContainer.ts',
-    '!src/DataAccess/EventingFunctions/*.ts',
     '!src/DataAccess/ExternalFileRepository/ExternalFileRepository.ts',
     '!src/DomainServices/Shackles/ShacklesService.ts',
   ],

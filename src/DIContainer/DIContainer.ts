@@ -20,6 +20,7 @@ import { config } from '../Config/Config'
 import { BucketKey } from '../Config/ConfigurationTypes'
 
 import { SQLDatabase } from '../DataAccess/SQLDatabase'
+import applyMiddleware from '../DataAccess/applyMiddleware'
 
 import { IAMTokenVerifier } from './IAMTokenVerifier'
 import { JWKSClient } from './JWKSClient' // our internal interface for JWKS
@@ -388,6 +389,8 @@ export class DIContainer {
     // do NOT parallelise these. Deferred PRIMARY index creation appears buggy in CB.
     await userBucket.loadDatabaseModels()
     await dataBucket.loadDatabaseModels()
+
+    applyMiddleware()
 
     DIContainer._sharedContainer = new DIContainer(userBucket, dataBucket, enableActivityTracking)
 
