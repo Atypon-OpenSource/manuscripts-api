@@ -17,8 +17,8 @@ node {
                 url: 'git@github.com:Atypon-OpenSource/manuscripts-api.git']
             ]]
         )
-        DOCKER_IMAGE="man/api"
-        IMG_TAG=sh(script: "git rev-parse --short HEAD", returnStdout: true).trim()
+        DOCKER_IMAGE="leanworkflow/manuspcripts-api"
+        IMG_TAG=sh(script: "jq .version < package.json", returnStdout: true).trim()
     }
 
     stage("install") {
@@ -102,6 +102,16 @@ fi""")
                         }
                     }
                 }
+
+                docker.withServer('unix:///var/run/docker-ci.sock') {
+                    app = docker.build("${DOCKER_IMAGE}:${IMG_TAG}", "-f docker/app/Dockerfile .")
+                }
+
+                // push to registry
+                docker.withRegistry("https://${REGISTRY}") {
+                    app.push();
+                    app.push('latest');
+                }
             }
         },
         'integration_tests': {
@@ -144,5 +154,6 @@ fi""")
         },
         failFast: false
     ])
+
 }
 
