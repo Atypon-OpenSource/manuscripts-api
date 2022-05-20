@@ -22,13 +22,13 @@ node {
     }
 
     stage("install") {
-        nodejs(nodeJSInstallationName: 'node 12.22.1') {
+        nodejs(nodeJSInstallationName: 'node_16_14_2') {
             sh (script: "npm ci")
         }
     }
 
     stage("lint") {
-        nodejs(nodeJSInstallationName: 'node 12.22.1') {
+        nodejs(nodeJSInstallationName: 'node_16_14_2') {
             sh (script: "npm run build")
             sh (script: "npm run lint")
         }
@@ -93,6 +93,7 @@ fi""")
                 withEnv(readFile('.env').split('\n') as List) {
                     // env.NODE_ENV="test"
                     nodejs(nodeJSInstallationName: 'node_16_14_2') {
+                        sh (script: "printenv")
                         sh (script: "npm ci")
                         sh (script: "export NODE_ENV='test' && npx gulp -f docker/utils/Gulpfile.js")
                         dir('docker') {
@@ -126,6 +127,7 @@ fi""")
                         env.APP_TEST_ACTION="test:int"
                         env.APP_PRESSROOM_BASE_URL="https://pressroom-js-dev.manuscripts.io"
                         nodejs(nodeJSInstallationName: 'node_16_14_2') {
+                            sh (script: "printenv")
                             sh (script: "npm ci")
                             sh (script: "export NODE_ENV='test' && npx gulp -f docker/utils/Gulpfile.js")
                             dir('docker') {
