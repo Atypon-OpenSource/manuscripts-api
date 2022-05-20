@@ -275,7 +275,7 @@ JMeterUtils.setProperty(&quot;MANUSCRIPT_JSON-${__threadNum}&quot;, st);</string
           <stringProp name="HTTPSampler.port">${PORT}</stringProp>
           <stringProp name="HTTPSampler.protocol">${PROTOCOL}</stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-          <stringProp name="HTTPSampler.path">/api/v1/project/create</stringProp>
+          <stringProp name="HTTPSampler.path">/api/v1/container/project/create</stringProp>
           <stringProp name="HTTPSampler.method">POST</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -375,7 +375,7 @@ JMeterUtils.setProperty(&quot;MANUSCRIPT_JSON-${__threadNum}&quot;, st);</string
           <stringProp name="HTTPSampler.port">${PORT}</stringProp>
           <stringProp name="HTTPSampler.protocol">${PROTOCOL}</stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-          <stringProp name="HTTPSampler.path">/api/v1/${__property(PROJECT_ID-${__threadNum})}/load</stringProp>
+          <stringProp name="HTTPSampler.path">/api/v1/container/${__property(PROJECT_ID-${__threadNum})}/load</stringProp>
           <stringProp name="HTTPSampler.method">GET</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -420,7 +420,7 @@ JMeterUtils.setProperty(&quot;MANUSCRIPT_JSON-${__threadNum}&quot;, st);</string
           <stringProp name="HTTPSampler.port">${PORT}</stringProp>
           <stringProp name="HTTPSampler.protocol">${PROTOCOL}</stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-          <stringProp name="HTTPSampler.path">/api/v1/${__property(PROJECT_ID-${__threadNum})}</stringProp>
+          <stringProp name="HTTPSampler.path">/api/v1/container/${__property(PROJECT_ID-${__threadNum})}</stringProp>
           <stringProp name="HTTPSampler.method">DELETE</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <boolProp name="HTTPSampler.auto_redirects">false</boolProp>

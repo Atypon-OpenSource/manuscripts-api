@@ -26,4 +26,25 @@ export class UserProfileRepository
   public get objectType(): string {
     return 'MPUserProfile'
   }
+
+  public async getByUserId(userId: string): Promise<UserProfile> {
+    const Q = {
+      AND: [
+        {
+          data: {
+            path: ['objectType'],
+            equals: this.objectType,
+          },
+        },
+        {
+          data: {
+            path: ['userID'],
+            equals: userId,
+          },
+        },
+      ],
+    }
+
+    return this.database.bucket.findFirst(Q).then((res: any) => (res ? this.buildModel(res) : null))
+  }
 }

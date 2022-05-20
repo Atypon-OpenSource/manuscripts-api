@@ -436,5 +436,62 @@ describe('ProjectController', () => {
       ).toBeCalled()
     })
   })
+
+  describe('collaborators', () => {
+    test('should get collaborators', async () => {
+      const controller: any = new ProjectController()
+      ContainerService.userIdForSync = jest.fn((id) => id)
+      DIContainer.sharedContainer.containerService[ContainerType.project].checkUserContainerAccess = jest.fn(async() => true)
+      DIContainer.sharedContainer.userCollaboratorRepository.getByContainerId = jest.fn((_id: string) => ["foo"] as any)
+      const collaborators = await controller.collaborators({
+        headers: authorizationHeader(validJWTToken),
+        params: { projectId: 'MPProject:abc' }
+      })
+
+      expect(collaborators.length).toBeGreaterThan(0)
+    })
+
+    test('should fail projectId must be provided', async () => {
+      const controller: any = new ProjectController()
+      ContainerService.userIdForSync = jest.fn((id) => id)
+      DIContainer.sharedContainer.containerService[ContainerType.project].checkUserContainerAccess = jest.fn(async() => true)
+      DIContainer.sharedContainer.userCollaboratorRepository.getByContainerId = jest.fn((_id: string) => ["foo"] as any)
+
+      await expect(
+        controller.collaborators({
+          headers: authorizationHeader(validJWTToken),
+          params: {}
+        })
+      ).rejects.toThrow(ValidationError)
+    })
+
+    test('should fail invalid credentials', async () => {
+      const controller: any = new ProjectController()
+      ContainerService.userIdForSync = jest.fn((id) => id)
+      DIContainer.sharedContainer.containerService[ContainerType.project].checkUserContainerAccess = jest.fn(async() => true)
+      DIContainer.sharedContainer.userCollaboratorRepository.getByContainerId = jest.fn((_id: string) => ["foo"] as any)
+
+      await expect(
+        controller.collaborators({
+          headers: authorizationHeader(chance.string()),
+          params: { projectId: 'MPProject:abc' },
+        })
+      ).rejects.toThrow(InvalidCredentialsError)
+    })
+
+    test('should fail no access', async () => {
+      const controller: any = new ProjectController()
+      ContainerService.userIdForSync = jest.fn((id) => id)
+      DIContainer.sharedContainer.containerService[ContainerType.project].checkUserContainerAccess = jest.fn(async() => false)
+      DIContainer.sharedContainer.userCollaboratorRepository.getByContainerId = jest.fn((_id: string) => ["foo"] as any)
+
+      await expect(
+        controller.collaborators({
+          headers: authorizationHeader(validJWTToken),
+          params: { projectId: 'MPProject:abc' }
+        })
+      ).rejects.toThrow(ValidationError)
+    })
+  })
 })
 

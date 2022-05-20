@@ -1,5 +1,5 @@
 /*!
- * © 2020 Atypon Systems LLC
+ * © 2022 Atypon Systems LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,25 +14,17 @@
  * limitations under the License.
  */
 
-export interface SeedOptions {
-  users?: boolean
-  applications?: boolean
-  singleUseTokens?: boolean
-  invitations?: boolean
-  projects?: boolean
-  libraries?: boolean
-  libraryCollections?: boolean
-  projectInvitations?: boolean
-  libraryInvitations?: boolean
-  invitationTokens?: boolean
-  userProfiles?: boolean
-  userTokens?: boolean
-  containerRequest?: boolean
-  submission?: boolean
-  manuscript?: boolean
-  manuscriptNotes?: boolean
-  externalFile?: boolean
-  corrections?: boolean
-  templates?: boolean
-  snapshots?: boolean
+import prisma from './prismaClient'
+import { onUpdate } from '../DomainServices/eventing'
+
+export default function applyMiddleware() {
+  console.log('applyMiddleware')
+  prisma.$use(async (params: any, next: any) => {
+    const res = await next(params)
+    const id = params.args.data?.id || params.args.where?.id
+    if (id) {
+      await onUpdate((res || {}).data, id)
+    }
+    return res
+  })
 }

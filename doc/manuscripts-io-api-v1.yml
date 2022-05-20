@@ -118,6 +118,22 @@ parameters:
     type: string
     in: body
     required: false
+  modifiedSinceHeaderSchema:
+    name: "if-modified-since"
+    description: "specific date to check if the data has been modified since"
+    type: string
+    in: header
+    required: false
+    format: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-Modified-Since"
+  modelTypesSchema:
+    name: "types"
+    description: "A list of types to be returned"
+    in: body
+    schema:
+      format: "['MPProject', 'MPComment', ... etc]"
+      type: array
+      items:
+        type: string
 paths:
   /auth/login:
     post:
@@ -694,7 +710,7 @@ paths:
   /project/:projectId/save:
     post:
       tags:
-        - "Save project"
+        - "project"
       summary: "Submit project data database."
       description: "Adds a JATS to database."
       operationId: "submit-project"
@@ -716,7 +732,57 @@ paths:
           description: "Invalid authorization token, or user record is in an invalid state for container creation."
         403:
           description: "User account is blocked or email is not verified."
-  /:containerType/create:
+  /project/:projectId/collaborators:
+    post:
+      tags:
+        - "project"
+      summary: "Get project collaborators"
+      description: ""
+      operationId: "get-project-collaborators"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - $ref: "#/parameters/JsonAcceptHeadersSchema"
+        - $ref: "#/parameters/AuthorizationTokenHeaderSchema"
+      responses:
+        200:
+          description: "Collaborators have been fetched successfully."
+        401:
+          description: "Invalid authorization token, or user record is in an invalid state for container creation."
+        400:
+          description: "Failed to fetch requested models"
+  /container/:projectId/:manuscriptsId?/load:
+    post:
+      tags:
+        - "container"
+      summary: "Load project data or specific models from database."
+      description: "Loads project from database."
+      operationId: "load-project"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - $ref: "#/parameters/JsonAcceptHeadersSchema"
+        - $ref: "#/parameters/modifiedSinceHeaderSchema"
+        - $ref: "#/parameters/AuthorizationTokenHeaderSchema"
+        - $ref: "#/parameters/modelTypesSchema"
+      responses:
+        200:
+          description: "Models are loaded successfully."
+          schema:
+            $ref: "#/definitions/NewContainerResponseSchema"
+        304:
+          description: "Models has not been modified since the given date (If-Modified-Since)"
+        401:
+          description: "Invalid authorization token, or user record is in an invalid state for container creation."
+        403:
+          description: "User account is blocked or email is not verified."
+        400:
+          description: "Failed to fetch requested models"
+  /container/:containerType/create:
     post:
       tags:
         - "container"
@@ -745,7 +811,7 @@ paths:
           description: "Invalid authorization token, or user record is in an invalid state for container creation."
         403:
           description: "User account is blocked or email is not verified."
-  /:containerID/roles:
+  /container/:containerID/roles:
     post:
       tags:
         - "container"
@@ -772,7 +838,7 @@ paths:
           description: "Invalid authorization token, or user record is in an invalid state for container creation."
         403:
           description: "User account is blocked or email is not verified."
-  /:containerID/addUser:
+  /container/:containerID/addUser:
     post:
       tags:
         - "container"
@@ -799,7 +865,7 @@ paths:
           description: "Invalid authorization token, or user record is in an invalid state for container creation."
         403:
           description: "User account is blocked or email is not verified."
-  /:containerID/archive:
+  /container/:containerID/archive:
     get:
       tags:
         - "container"
@@ -821,7 +887,7 @@ paths:
       responses:
         200:
           description: "Archive retrieved successfully"
-  /:containerID/attachment/:id/:attachmentKey:
+  /container/:containerID/attachment/:id/:attachmentKey:
     get:
       tags:
         - "container"
@@ -838,7 +904,7 @@ paths:
       responses:
         200:
           description: "Attachment retrieved successfully."
-  /:containerType/:containerID/:scope:
+  /container/:containerType/:containerID/:scope:
     get:
       tags:
         - "container"
@@ -859,7 +925,7 @@ paths:
           description: "User is not a contributor in the container."
         401:
           description: "Invalid authorization token."
-  /projects/:containerID/manuscript/:manuscriptID:
+  /container/projects/:containerID/manuscript/:manuscriptID:
     post:
       tags:
         - "container"
@@ -881,7 +947,7 @@ paths:
           description: "User is not a contributor in the container."
         409:
           description: "Manuscript id already taken by another manuscript."
-  /picker-bundle/:containerID/:manuscriptId:
+  /container/picker-bundle/:containerID/:manuscriptId:
     get:
       tags:
         - "container"
@@ -898,7 +964,7 @@ paths:
       responses:
         200:
           description: "Html bundle retrieved successfully."
-  /projects/:containerID/manuscripts/:manuscriptID/notes:
+  /container/projects/:containerID/manuscripts/:manuscriptID/notes:
     get:
       tags:
         - "container"
@@ -945,7 +1011,7 @@ paths:
           description: "Invalid authorization token"
         404:
           description: "manuscript not found"
-  /external-files/submit:
+  /container/external-files/submit:
     post:
       tags:
         - "container"
@@ -969,7 +1035,7 @@ paths:
           description: "External files created/updated successfully"
         401:
           description: "Invalid authorization token"
-  /projects/:containerID/suggestions/status:
+  /container/projects/:containerID/suggestions/status:
     get:
       tags:
         - "container"
@@ -993,7 +1059,7 @@ paths:
           description: "Invalid authorization token"
         404:
           description: "Container not found"
-  /snapshot/:containerID/create:
+  /container/snapshot/:containerID/create:
     post:
       tags:
         - "container"

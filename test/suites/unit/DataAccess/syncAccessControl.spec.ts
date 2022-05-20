@@ -24,7 +24,7 @@ describe('sync access control', () => {
     })
 
     test('Container creation', async () => {
-        const types = ['MPProject']
+        const types = ['MPProject', 'MPLibrary', 'MPLibraryCollection']
         for (const type of types) {
             const validObject = {
                 createdAt: 231230131,
@@ -55,6 +55,11 @@ describe('sync access control', () => {
 
             await expect(syncAccessControl({ ...validObject }, { ...validObject2 }, validObject.owners[0])).resolves
             await expect(syncAccessControl({ ...validObject }, { ...validObject2 })).rejects.toEqual({ forbidden: 'user does not have access' })
+
+            if (type !== 'MPProject') {
+                await expect(syncAccessControl({ ...validObject, ...{ category: 'a' } },
+                     { ...validObject })).rejects.toEqual({ forbidden: 'category cannot be mutated' })
+            }
         }
     })
 

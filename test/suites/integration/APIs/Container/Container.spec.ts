@@ -45,6 +45,7 @@ import {
   ValidHeaderWithApplicationKey,
 } from '../../../../data/fixtures/headers'
 import { validProject } from '../../../../data/fixtures/projects'
+import { validLibrary } from '../../../../data/fixtures/libraries'
 import { ContainerRole, ContainerType } from '../../../../../src/Models/ContainerModels'
 import { BucketKey } from '../../../../../src/Config/ConfigurationTypes'
 import { validUser1, validUser2 } from '../../../../data/fixtures/UserRepository'
@@ -54,7 +55,14 @@ import { validNote1 } from '../../../../data/fixtures/ManuscriptNote'
 import { config } from '../../../../../src/Config/Config'
 import { externalFile } from '../../../../data/fixtures/ExternalFiles'
 import _ from 'lodash'
-import { createProject, createProjectInvitation } from '../../../../data/fixtures/misc'
+import {
+  createManuscriptNote,
+  createProject,
+  createProjectInvitation,
+  createLibraryCollection,
+  createLibrary
+} from '../../../../data/fixtures/misc'
+import { ObjectTypes } from '@manuscripts/manuscripts-json-schema'
 
 jest.mock('email-templates', () =>
   jest.fn().mockImplementation(() => {
@@ -348,6 +356,81 @@ describe('containerService - addContainerUser', () => {
   })
 })
 
+describe('containerService - addContainerUser (for libraries)', () => {
+  beforeEach(async () => {
+    await drop()
+    await dropBucket(BucketKey.Project)
+    await seed({ users: true, applications: true })
+    await seedAccounts()
+  })
+
+  test('should add an owner to a library and cascade the role to library collections', async () => {
+    const containerService = DIContainer.sharedContainer.containerService[ContainerType.library]
+
+    await createLibrary('MPLibrary:valid-library-id')
+    await createLibraryCollection()
+    const didAdd = await containerService.addContainerUser(
+      validLibrary._id,
+      ContainerRole.Owner,
+      validUser1._id,
+      validUser2
+    )
+
+    const collections =
+      await DIContainer.sharedContainer.libraryRepository.getContainedLibraryCollections(
+        validLibrary._id
+      )
+
+    expect(didAdd).toBeTruthy()
+    expect(collections[0].owners.includes(validUser1._id.replace('|', '_'))).toBeTruthy()
+    expect(collections[0].inherited!.includes(validUser1._id.replace('|', '_'))).toBeTruthy()
+  })
+
+  test('should add a writer to a library and cascade the role to library collections', async () => {
+    const containerService =
+      DIContainer.sharedContainer.containerService[ContainerType.library]
+    await createLibrary('MPLibrary:valid-library-id')
+    await createLibraryCollection()
+    const didAdd = await containerService.addContainerUser(
+      validLibrary._id,
+      ContainerRole.Writer,
+      validUser1._id,
+      validUser2
+    )
+
+    const collections =
+      await DIContainer.sharedContainer.libraryRepository.getContainedLibraryCollections(
+        validLibrary._id
+      )
+
+    expect(didAdd).toBeTruthy()
+    expect(collections[0].writers.includes(validUser1._id.replace('|', '_'))).toBeTruthy()
+    expect(collections[0].inherited!.includes(validUser1._id.replace('|', '_'))).toBeTruthy()
+  })
+
+  test('should add a viewer to a library and cascade the role to library collections', async () => {
+    const containerService =
+      DIContainer.sharedContainer.containerService[ContainerType.library]
+    await createLibrary('MPLibrary:valid-library-id')
+    await createLibraryCollection()
+    const didAdd = await containerService.addContainerUser(
+      validLibrary._id,
+      ContainerRole.Viewer,
+      validUser1._id,
+      validUser2
+    )
+
+    const collections =
+      await DIContainer.sharedContainer.libraryRepository.getContainedLibraryCollections(
+        validLibrary._id
+      )
+
+    expect(didAdd).toBeTruthy()
+    expect(collections[0].viewers.includes(validUser1._id.replace('|', '_'))).toBeTruthy()
+    expect(collections[0].inherited!.includes(validUser1._id.replace('|', '_'))).toBeTruthy()
+  })
+})
+
 describe('containerService - manageUserRole', () => {
   beforeEach(async () => {
     await drop()
@@ -555,7 +638,7 @@ describe('containerService - manageUserRole', () => {
       objectType: 'MPContainerInvitation',
       containerID: 'MPProject:valid-project-id-4',
       role: ContainerRole.Writer,
-    })
+    } as any)
 
     const beforeInvitation =
       await DIContainer.sharedContainer.containerInvitationRepository.getById(
@@ -739,6 +822,31 @@ describe('ContainerService - loadProject', () => {
       }
     )
     expect(response.status).toBe(HttpStatus.OK)
+  })
+  test('should successfully loadProject if types are provided', async () => {
+    const loginResponse: supertest.Response = await basicLogin(
+      validBody,
+      ValidHeaderWithApplicationKey
+    )
+
+    expect(loginResponse.status).toBe(HttpStatus.OK)
+
+    const authHeader = authorizationHeader(loginResponse.body.token)
+    await createProject('MPProject:valid-project-id-2')
+    await createManuscriptNote('MPManuscriptNote:valid-note-id-2')
+    const response: supertest.Response = await loadProject(
+      {
+        ...ValidContentTypeAcceptJsonHeader,
+        ...authHeader,
+      },
+      { types: [ObjectTypes.ManuscriptNote] },
+      {
+        projectId: 'MPProject:valid-project-id-2',
+      }
+    )
+    expect(response.status).toBe(HttpStatus.OK)
+    expect(response.body.length).toBe(1)
+    expect(response.body[0].objectType).toBe(ObjectTypes.ManuscriptNote)
   })
 })
 

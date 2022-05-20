@@ -16,12 +16,16 @@
 
 import _ from 'lodash'
 import { projectsList } from '../dump/project'
+import { librariesList } from '../dump/library'
+import { libraryCollectionsList } from '../dump/libraryCollection'
 import { DIContainer } from '../../../src/DIContainer/DIContainer'
 import { projectInvitationsList } from '../dump/projectInvitation'
 import { containerRequestList } from '../dump/containerRequest'
 import { submissionsList } from '../dump/submissions'
+import { libraryInvitationsList } from '../dump/libraryInvitation'
 import { invitationsList } from '../dump/invitation'
 import { manuscriptList } from '../dump/manuscriptList'
+import {manuscriptNoteList} from "../dump/manuscriptNotes";
 
 
 export async function createProject (id: string) {
@@ -29,6 +33,22 @@ export async function createProject (id: string) {
   await DIContainer.sharedContainer.projectRepository.create(
     project,
     project.owners[0]
+  )
+}
+
+export async function createLibrary (id: string) {
+  const library: any = _.clone(librariesList.find((library) => library._id === id))
+  await DIContainer.sharedContainer.libraryRepository.create(
+    _.clone(library),
+    library.owners[0]
+  )
+}
+
+export async function createLibraryCollection () {
+  const libraryCollection: any = _.clone(libraryCollectionsList[0])
+  await DIContainer.sharedContainer.libraryCollectionRepository.create(
+    _.clone(libraryCollection),
+    libraryCollection.owners[0]
   )
 }
 
@@ -65,6 +85,13 @@ export async function createProjectInvitation (id: string) {
   )
 }
 
+export async function createLibraryInvitation (id: string) {
+  const invitation: any = _.clone(libraryInvitationsList.find((invitation) => invitation._id === id))
+  await DIContainer.sharedContainer.containerInvitationRepository.create(
+    _.clone(invitation),
+  )
+}
+
 export async function createInvitation (id: string) {
   const invitation: any = _.clone(invitationsList.find((invitation) => invitation._id === id))
   await DIContainer.sharedContainer.invitationRepository.create(
@@ -78,4 +105,11 @@ export async function createManuscript (id: string, userId?: string) {
     _.clone(manuscript),
     userId
   )
+}
+
+export async function createManuscriptNote(id: string, userId?: string) {
+  const manuscriptNote: any = _.clone(
+    manuscriptNoteList.find((manuscriptNote) => manuscriptNote._id === id)
+  )
+  await DIContainer.sharedContainer.manuscriptRepository.create(_.clone(manuscriptNote), userId)
 }

@@ -17,7 +17,7 @@
 import { compare } from 'bcrypt'
 import * as jsonwebtoken from 'jsonwebtoken'
 import checksum from 'checksum'
-import { ObjectTypes } from '@manuscripts/manuscripts-json-schema'
+import { ObjectTypes, UserCollaborator } from '@manuscripts/manuscripts-json-schema'
 
 import {
   MissingUserStatusError,
@@ -33,6 +33,7 @@ import { IUserRepository } from '../../DataAccess/Interfaces/IUserRepository'
 import { IUserProfileRepository } from '../../DataAccess/Interfaces/IUserProfileRepository'
 import { IUserStatusRepository } from '../../DataAccess/Interfaces/IUserStatusRepository'
 import { IUserTokenRepository } from '../../DataAccess/Interfaces/IUserTokenRepository'
+import { UserCollaboratorRepository } from '../../DataAccess/UserCollaboratorRepository/UserCollaboratorRepository'
 import { UserActivityEventType } from '../../Models/UserEventModels'
 import { UserActivityTrackingService } from '../UserActivity/UserActivityTrackingService'
 import { isLoginTokenPayload, getExpirationTime } from '../../Utilities/JWT/LoginTokenPayload'
@@ -59,7 +60,8 @@ export class UserService implements IUserService {
     private emailService: EmailService,
     private syncService: ISyncService,
     private userProfileRepository: IUserProfileRepository,
-    private projectRepository: ProjectRepository
+    private projectRepository: ProjectRepository,
+    private userCollaboratorRepository: UserCollaboratorRepository
   ) {}
 
   /**
@@ -108,6 +110,7 @@ export class UserService implements IUserService {
     })}`
 
     await this.removeUserFromProjects(user._id)
+    await this.userCollaboratorRepository.clearUserCollaborators(user._id)
     await this.userProfileRepository.purge(userProfileId)
     await this.syncService.removeUserStatus(user._id)
     await this.singleUseTokenRepository.remove({ userId: user._id })
@@ -277,5 +280,9 @@ export class UserService implements IUserService {
         }
       }
     }
+  }
+
+  public async getCollaborators(containerId: string): Promise<UserCollaborator[]> {
+    return this.userCollaboratorRepository.getByContainerId(containerId)
   }
 }

@@ -14,15 +14,17 @@
  * limitations under the License.
  */
 
-import { UserProfileLike } from '../../DataAccess/Interfaces/Models'
-import { UserCollaborator } from '@manuscripts/manuscripts-json-schema'
+import { LibraryCollection } from '@manuscripts/manuscripts-json-schema'
 
-export interface IUserService {
-  deleteUser(userId: string): Promise<boolean>
-  markUserForDeletion(userId: string, password?: string): Promise<void>
-  unmarkUserForDeletion(userId: string): Promise<void>
-  clearUsersData(): Promise<void>
-  profile(token: string): Promise<UserProfileLike | null>
-  authenticateUser(token: string): Promise<void>
-  getCollaborators(containerId: string): Promise<UserCollaborator[]>
-}
+import { LibraryCollectionLike } from './Models'
+import { PatchLibraryCollection } from '../../Models/LibraryCollectionModels'
+import { IContainerRepository } from './IContainerRepository'
+
+/**
+ * Manages library collections persistent storage operations.
+ */
+export type ILibraryCollectionRepository = IContainerRepository<
+  LibraryCollection,
+  LibraryCollectionLike,
+  PatchLibraryCollection
+>

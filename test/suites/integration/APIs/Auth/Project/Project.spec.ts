@@ -20,7 +20,7 @@ import { validBody } from '../../../../../data/fixtures/credentialsRequestPayloa
 import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
 import { BucketKey } from '../../../../../../src/Config/ConfigurationTypes'
 import * as supertest from 'supertest'
-import { basicLogin, importManuscript, saveProject } from '../../../../../api'
+import { basicLogin, getCollaborators, importManuscript, saveProject } from '../../../../../api'
 import {
   authorizationHeader,
   ValidContentTypeAcceptJsonHeader,
@@ -32,6 +32,7 @@ import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
 import { createProject, createManuscript } from '../../../../../data/fixtures/misc'
 import fs from 'fs'
 import { log } from '../../../../../../src/Utilities/Logger'
+import { ObjectTypes } from '@manuscripts/manuscripts-json-schema'
 
 let db: any = null
 const seedOptions: SeedOptions = {
@@ -233,7 +234,44 @@ describe('ContainerService - save/load Project', () => {
         manuscriptId: 'MPManuscript:valid-manuscript-id-1',
       }
     )
-    log.debug(JSON.stringify(sendFileResponse))
+    //log.debug(JSON.stringify(sendFileResponse))
     expect(sendFileResponse.status).toBe(HttpStatus.OK)
+  })
+})
+
+describe('ContainerService - get collaborators', () => {
+  beforeEach(async () => {
+    await drop()
+    await dropBucket(BucketKey.Project)
+    await seed(seedOptions)
+    await DIContainer.sharedContainer.syncService.createUserProfile(
+      {
+        _id: `User|${validBody.email}`,
+        name: 'foobar',
+        email: validBody.email
+      }
+    )
+  })
+  test('should get collaborators', async () => {
+    const loginResponse: supertest.Response = await basicLogin(
+      validBody,
+      ValidHeaderWithApplicationKey
+    )
+
+    expect(loginResponse.status).toBe(HttpStatus.OK)
+    await createProject('MPProject:valid-project-id-2')
+
+    const authHeader = authorizationHeader(loginResponse.body.token)
+    const collaboratorsResponse = await getCollaborators(
+      {
+        ...ValidContentTypeAcceptJsonHeader,
+        ...authHeader,
+      },
+      {
+        containerID: 'MPProject:valid-project-id-2',
+      }
+    )
+    expect(collaboratorsResponse.status).toBe(HttpStatus.OK)
+    expect(collaboratorsResponse.body[0].objectType).toBe(ObjectTypes.UserCollaborator)
   })
 })

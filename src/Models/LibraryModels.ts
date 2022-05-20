@@ -14,15 +14,9 @@
  * limitations under the License.
  */
 
-import { UserProfileLike } from '../../DataAccess/Interfaces/Models'
-import { UserCollaborator } from '@manuscripts/manuscripts-json-schema'
-
-export interface IUserService {
-  deleteUser(userId: string): Promise<boolean>
-  markUserForDeletion(userId: string, password?: string): Promise<void>
-  unmarkUserForDeletion(userId: string): Promise<void>
-  clearUsersData(): Promise<void>
-  profile(token: string): Promise<UserProfileLike | null>
-  authenticateUser(token: string): Promise<void>
-  getCollaborators(containerId: string): Promise<UserCollaborator[]>
+export interface PatchLibrary {
+  _id: string
+  owners?: string[]
+  writers?: string[]
+  viewers?: string[]
 }

@@ -188,7 +188,11 @@ export async function syncAccessControl(doc: any, oldDoc: any, userId?: string):
     return !equal(doc, oldDoc)
   }
 
-  if (objectTypeMatches('MPProject')) {
+  if (
+    objectTypeMatches('MPProject') ||
+    objectTypeMatches('MPLibraryCollection') ||
+    objectTypeMatches('MPLibrary')
+  ) {
     let owners, writers, viewers, annotators, editors
 
     if (doc.owners.length === 0) {
@@ -216,6 +220,13 @@ export async function syncAccessControl(doc: any, oldDoc: any, userId?: string):
         requireUser(owners, userId)
       }
 
+      if (
+        (objectTypeMatches('MPLibraryCollection') || objectTypeMatches('MPLibrary')) &&
+        hasMutated('category')
+      ) {
+        throw { forbidden: 'category cannot be mutated' }
+      }
+
       // only do this for non-deleted items for perf.
       let userIds: any = {}
       for (let i = 0; i < allUserIds.length; i++) {
@@ -230,7 +241,11 @@ export async function syncAccessControl(doc: any, oldDoc: any, userId?: string):
     if (oldDoc) {
       await proceedWithWriteAccess(oldDoc, userId)
     } else {
-      requireUser(owners, userId)
+      if (objectTypeMatches('MPLibraryCollection')) {
+        requireUser([].concat(owners, writers), userId)
+      } else {
+        requireUser(owners, userId)
+      }
     }
   } else if (
     objectTypeMatches('MPCollaboration') ||

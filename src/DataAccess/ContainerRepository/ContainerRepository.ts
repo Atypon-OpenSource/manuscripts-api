@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-import { Model } from '@manuscripts/manuscripts-json-schema'
+import { Model, LibraryCollection } from '@manuscripts/manuscripts-json-schema'
 import { selectActiveResources } from '@manuscripts/manuscripts-json-schema-utils'
 
 import { SGRepository } from '../SGRepository'
+
 import {
   DocumentIdentifyingMetadata,
   IContainerRepository,
@@ -374,5 +375,38 @@ export abstract class ContainerRepository<Container, ContainerLike, PatchContain
   public buildItem = (row: any) => {
     const { _sync, sessionID, containerID, templateID, ...item } = row.projects
     return { ...item, _id: row.id }
+  }
+
+  public getContainedLibraryCollections(containerId: string): Promise<LibraryCollection[]> {
+    const Q = {
+      AND: [
+        {
+          data: {
+            path: ['objectType'],
+            equals: 'MPLibraryCollection',
+          },
+        },
+        {
+          data: {
+            path: ['containerID'],
+            equals: containerId,
+          },
+        },
+        /*{
+          data: {
+            path: ["_deleted"],
+            equals: undefined
+          }
+        }*/
+      ],
+    }
+
+    const callbackFn = (results: any) => {
+      return results.map((row: any) => ({
+        ...this.buildModel(row),
+      }))
+    }
+
+    return this.database.bucket.query(Q).then((res: any) => callbackFn(res))
   }
 }

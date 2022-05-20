@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-import { UserProfileLike } from '../../DataAccess/Interfaces/Models'
-import { UserCollaborator } from '@manuscripts/manuscripts-json-schema'
+import { LibraryCollectionLike } from '../../../src/DataAccess/Interfaces/Models'
 
-export interface IUserService {
-  deleteUser(userId: string): Promise<boolean>
-  markUserForDeletion(userId: string, password?: string): Promise<void>
-  unmarkUserForDeletion(userId: string): Promise<void>
-  clearUsersData(): Promise<void>
-  profile(token: string): Promise<UserProfileLike | null>
-  authenticateUser(token: string): Promise<void>
-  getCollaborators(containerId: string): Promise<UserCollaborator[]>
+export const validLibraryCollection: LibraryCollectionLike = {
+  _id: 'MPLibraryCollection:valid-libraryCollection-id',
+  containerID: 'MPLibrary:valid-library-id',
+  objectType: 'MPLibraryCollection',
+  owners: ['User_test'],
+  writers: [],
+  viewers: [],
+  name: ''
 }
