@@ -27,10 +27,6 @@ jest.mock('email-templates', () =>
   })
 )
 
-jest.mock('../../../../../src/DomainServices/External/AWS', () => ({
-  SES: { sendEmail: jest.fn((_foo, callback) => callback(null, { foo: 1 })) }
-}))
-
 import { TEST_TIMEOUT } from '../../../../utilities/testSetup'
 import { BucketKey } from '../../../../../src/Config/ConfigurationTypes'
 import { drop, dropBucket, seed, testDatabase } from '../../../../utilities/db'

@@ -21,9 +21,6 @@ jest.mock('email-templates', () => jest.fn().mockImplementation(() => {
   }
 }))
 
-jest.mock('../../../../../../src/DomainServices/External/AWS', () => ({
-  SES: { sendEmail: jest.fn((_foo, callback) => callback(null)) }
-}))
 
 import * as HttpStatus from 'http-status-codes'
 import * as supertest from 'supertest'

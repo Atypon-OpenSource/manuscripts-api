@@ -26,10 +26,6 @@ jest.mock('email-templates', () =>
   })
 )
 
-jest.mock('../../../../../src/DomainServices/External/AWS', () => ({
-  SES: { sendEmail: jest.fn((_foo, callback) => callback(null, { foo: 1 })) }
-}))
-
 import { validBody } from '../../../../data/fixtures/credentialsRequestPayload'
 import { markUserForDeletion, unmarkUserForDeletion, basicLogin, getProfile, userContainers } from '../../../../api'
 import { TEST_TIMEOUT } from '../../../../utilities/testSetup'

@@ -36,11 +36,6 @@ jest.mock('../../src/Config/Config', () => {
     gateway: {
       cookieDomain: '127.0.0.1',
     },
-    AWS: {
-      accessKeyId: 'made-up-access-key-id',
-      secretAccessKey: 'made-up-secret-access-key',
-      region: 'made-up-region',
-    },
     API: {
       port: 3000,
       oauthStateEncryptionKey: 'key-12345',

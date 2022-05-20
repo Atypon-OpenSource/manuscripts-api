@@ -96,15 +96,6 @@ placed at the root of the repository.
   <dt>APP_BASE_URL</dt>
   <dd>The *client* app base URL (the manuscripts-frontend instance) corresponding to this service.</dd>
 
-  <dt>APP_AWS_ACCESS_KEY_ID</dt>
-  <dd>The AWS access key (used by system when accessing Amazon SES to send emails).</dd>
-
-  <dt>APP_AWS_REGION</dt>
-  <dd>The AWS region (used by system when accessing Amazon SES to send emails).</dd>
-
-  <dt>APP_AWS_SECRET_ACCESS_KEY</dt>
-  <dd>The AWS secret access key (used by system when accessing Amazon SES to send emails).</dd>
-
   <dt>APP_FROM_EMAIL</dt>
   <dd>The email address from which emails sent by the service are sent.</dd>
 

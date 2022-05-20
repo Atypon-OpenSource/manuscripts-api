@@ -73,10 +73,6 @@ jest.mock('email-templates', () =>
   })
 )
 
-jest.mock('../../../../../src/DomainServices/External/AWS', () => ({
-  SES: { sendEmail: jest.fn((_foo, callback) => callback(null, { foo: 1 })) },
-}))
-
 const chance = new Chance()
 let db: any = null
 const seedOptions: SeedOptions = { users: true, applications: true }
