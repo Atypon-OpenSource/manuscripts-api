@@ -89,7 +89,6 @@ fi""")
                 sh (script: "npm ci")
                 sh (script: "./bin/set-package-json-version.sh")
                 sh (script: "./bin/build-env.js .env.example > .env")
-                env.APP_TEST_ACTION="test:unit"
                 withEnv(readFile('.env').split('\n') as List) {
                     // env.NODE_ENV="test"
                     nodejs(nodeJSInstallationName: 'node_16_14_2') {
@@ -98,8 +97,8 @@ fi""")
                         sh (script: "export NODE_ENV='test' && npx gulp -f docker/utils/Gulpfile.js")
                         dir('docker') {
                             sh (script: "cp ../.env .env")
-                            sh (script: "docker-compose build --pull")
-                            sh (script: "docker-compose up --build --abort-on-container-exit test_runner")
+                            sh (script: "export APP_TEST_ACTION='test:unit' && docker-compose build --pull")
+                            sh (script: "export APP_TEST_ACTION='test:unit' && docker-compose up --build --abort-on-container-exit test_runner")
                         }
                     }
                 }
@@ -124,7 +123,6 @@ fi""")
                     withEnv(readFile('.env').split('\n') as List) {
                         env.APP_PRESSROOM_APIKEY="${APP_PRESSROOM_APIKEY}"
                         // env.NODE_ENV="test"
-                        env.APP_TEST_ACTION="test:int"
                         env.APP_PRESSROOM_BASE_URL="https://pressroom-js-dev.manuscripts.io"
                         nodejs(nodeJSInstallationName: 'node_16_14_2') {
                             sh (script: "printenv")
@@ -132,11 +130,11 @@ fi""")
                             sh (script: "export NODE_ENV='test' && npx gulp -f docker/utils/Gulpfile.js")
                             dir('docker') {
                                 sh (script: "cp ../.env .env")
-                                sh (script: "docker-compose build --pull")
+                                sh (script: "export APP_TEST_ACTION='test:int' && docker-compose build --pull")
                                 sh (script: "docker-compose up -d postgres")
                                 env.APP_DATABASE_URL="postgresql://postgres:admin@localhost:5432/test?schema=public"
                                 sh (script: "npm run migrate-prisma")
-                                sh (script: "docker-compose up --build --abort-on-container-exit test_runner")
+                                sh (script: "export APP_TEST_ACTION='test:int' && docker-compose up --build --abort-on-container-exit test_runner")
                             }
                         }
                     }
