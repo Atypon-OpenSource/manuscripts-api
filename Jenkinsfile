@@ -91,10 +91,10 @@ fi""")
                 sh (script: "./bin/build-env.js .env.example > .env")
                 env.APP_TEST_ACTION="test:unit"
                 withEnv(readFile('.env').split('\n') as List) {
-                    env.NODE_ENV="test"
+                    // env.NODE_ENV="test"
                     nodejs(nodeJSInstallationName: 'node 12.22.1') {
                         sh (script: "npm ci")
-                        sh (script: "npx gulp -f docker/utils/Gulpfile.js")
+                        sh (script: "export NODE_ENV='test' && npx gulp -f docker/utils/Gulpfile.js")
                         dir('docker') {
                             sh (script: "cp ../.env .env")
                             sh (script: "docker-compose build --pull")
@@ -122,12 +122,12 @@ fi""")
                 withCredentials([string(credentialsId: 'PRESSROOM_APIKEY', variable: 'APP_PRESSROOM_APIKEY')]) {
                     withEnv(readFile('.env').split('\n') as List) {
                         env.APP_PRESSROOM_APIKEY="${APP_PRESSROOM_APIKEY}"
-                        env.NODE_ENV="test"
+                        // env.NODE_ENV="test"
                         env.APP_TEST_ACTION="test:int"
                         env.APP_PRESSROOM_BASE_URL="https://pressroom-js-dev.manuscripts.io"
                         nodejs(nodeJSInstallationName: 'node 12.22.1') {
                             sh (script: "npm ci")
-                            sh (script: "npx gulp -f docker/utils/Gulpfile.js")
+                            sh (script: "export NODE_ENV='test' && npx gulp -f docker/utils/Gulpfile.js")
                             dir('docker') {
                                 sh (script: "cp ../.env .env")
                                 sh (script: "docker-compose build --pull")
