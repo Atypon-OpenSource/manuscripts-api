@@ -70,4 +70,6 @@ EXPOSE 3000
 
 RUN npm run attach-prisma
 
+RUN echo "APP_TEST_ACTION: ${APP_TEST_ACTION}"
+
 CMD npm run ${APP_TEST_ACTION}

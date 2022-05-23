@@ -133,7 +133,7 @@ fi""")
                                 sh (script: "export APP_TEST_ACTION='test:int' && docker-compose build --pull")
                                 sh (script: "docker-compose up -d postgres")
                                 env.APP_DATABASE_URL="postgresql://postgres:admin@localhost:5432/test?schema=public"
-                                sh (script: "npm run migrate-prisma")
+                                sh (script: "export APP_TEST_ACTION='test:int' && npm run migrate-prisma")
                                 sh (script: "export APP_TEST_ACTION='test:int' && docker-compose up --build --abort-on-container-exit test_runner")
                             }
                         }
