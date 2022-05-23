@@ -136,7 +136,13 @@ fi""")
                                 && export APP_DATABASE_URL='postgresql://postgres:admin@localhost:5432/test' \
                                 && npm run migrate-prisma
                                 """)
-                                sh (script: "export NODE_ENV='test' && export APP_TEST_ACTION='test:int' && docker-compose up --build --abort-on-container-exit test_runner")
+                                
+                                sh (script: """
+                                export NODE_ENV='test' \
+                                && export APP_TEST_ACTION='test:int' \
+                                && export APP_PRESSROOM_APIKEY=${APP_PRESSROOM_APIKEY} \
+                                && docker-compose up --build --abort-on-container-exit test_runner
+                                """)
                             }
                         }
                     }
