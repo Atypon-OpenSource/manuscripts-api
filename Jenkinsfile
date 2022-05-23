@@ -91,7 +91,6 @@ fi""")
                 sh (script: "./bin/build-env.js .env.example > .env")
                 withEnv(readFile('.env').split('\n') as List) {
                     nodejs(nodeJSInstallationName: 'node_16_14_2') {
-                        sh (script: "printenv")
                         sh (script: "npm ci")
                         sh (script: "export NODE_ENV='test' && export APP_TEST_ACTION='test:unit' && npx gulp -f docker/utils/Gulpfile.js")
                         dir('docker') {
@@ -104,6 +103,7 @@ fi""")
             }
         },
         'integration_tests': {
+
             node("ciath") {
                 VARS = checkout(scm:[$class: 'GitSCM', branches: [[name: "${sha1}"]],
                 doGenerateSubmoduleConfigurations: false,
@@ -121,19 +121,17 @@ fi""")
                 withCredentials([string(credentialsId: 'PRESSROOM_APIKEY', variable: 'APP_PRESSROOM_APIKEY')]) {
                     withEnv(readFile('.env').split('\n') as List) {
                         env.APP_PRESSROOM_APIKEY="${APP_PRESSROOM_APIKEY}"
-                        // env.NODE_ENV="test"
                         env.APP_PRESSROOM_BASE_URL="https://pressroom-js-dev.manuscripts.io"
                         nodejs(nodeJSInstallationName: 'node_16_14_2') {
-                            sh (script: "printenv")
                             sh (script: "npm ci")
                             sh (script: "export NODE_ENV='test' && npx gulp -f docker/utils/Gulpfile.js")
                             dir('docker') {
                                 sh (script: "cp ../.env .env")
-                                sh (script: "export APP_TEST_ACTION='test:int' && docker-compose build --pull")
+                                sh (script: "export NODE_ENV='test' && export APP_TEST_ACTION='test:unit'' && docker-compose build --pull")
                                 sh (script: "docker-compose up -d postgres")
-                                env.APP_DATABASE_URL="postgresql://postgres:admin@localhost:5432/test?schema=public"
-                                sh (script: "export APP_TEST_ACTION='test:int' && npm run migrate-prisma")
-                                sh (script: "export APP_TEST_ACTION='test:int' && docker-compose up --build --abort-on-container-exit test_runner")
+                                env.APP_DATABASE_URL="postgresql://postgres:admin@localhost:5432/test"
+                                sh (script: "export NODE_ENV='test' && export APP_TEST_ACTION='test:int' && npm run migrate-prisma")
+                                sh (script: "export NODE_ENV='test' && export APP_TEST_ACTION='test:int' && docker-compose up --build --abort-on-container-exit test_runner")
                             }
                         }
                     }
