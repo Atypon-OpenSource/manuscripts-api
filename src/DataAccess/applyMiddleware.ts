@@ -18,7 +18,6 @@ import prisma from './prismaClient'
 import { onUpdate } from '../DomainServices/eventing'
 
 export default function applyMiddleware() {
-  console.log('applyMiddleware')
   prisma.$use(async (params: any, next: any) => {
     const res = await next(params)
     const id = params.args.data?.id || params.args.where?.id
