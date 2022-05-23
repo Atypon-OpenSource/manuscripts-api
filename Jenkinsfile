@@ -130,7 +130,12 @@ fi""")
                                 sh (script: "export NODE_ENV='test' && export APP_TEST_ACTION='test:unit' && docker-compose build --pull")
                                 sh (script: "docker-compose up -d postgres")
                                 env.APP_DATABASE_URL="postgresql://postgres:admin@localhost:5432/test"
-                                sh (script: "export NODE_ENV='test' && export APP_TEST_ACTION='test:int' && npm run migrate-prisma")
+                                sh (script: """
+                                export NODE_ENV='test' \
+                                && export APP_TEST_ACTION='test:int' \
+                                && export APP_DATABASE_URL='postgresql://postgres:admin@localhost:5432/test' \
+                                && npm run migrate-prisma
+                                """)
                                 sh (script: "export NODE_ENV='test' && export APP_TEST_ACTION='test:int' && docker-compose up --build --abort-on-container-exit test_runner")
                             }
                         }
