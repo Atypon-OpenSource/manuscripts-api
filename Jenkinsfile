@@ -1,6 +1,7 @@
 node {
     REGISTRY="us-central1-docker.pkg.dev/atypon-artifact/docker-registry"
     REFSPEC="+refs/pull/*:refs/remotes/origin/pr/*"
+    ansiColor('xterm') {
     stage("checkout") {
         if (params != null && params.ghprbPullId == null) {
             echo 'Checking out from master'
@@ -162,6 +163,7 @@ fi""")
             app.push();
             app.push('latest');
         }
+    }
     }
 }
 
