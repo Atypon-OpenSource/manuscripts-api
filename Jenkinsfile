@@ -127,7 +127,7 @@ fi""")
                             sh (script: "export NODE_ENV='test' && npx gulp -f docker/utils/Gulpfile.js")
                             dir('docker') {
                                 sh (script: "cp ../.env .env")
-                                sh (script: "export NODE_ENV='test' && export APP_TEST_ACTION='test:unit'' && docker-compose build --pull")
+                                sh (script: "export NODE_ENV='test' && export APP_TEST_ACTION='test:unit' && docker-compose build --pull")
                                 sh (script: "docker-compose up -d postgres")
                                 env.APP_DATABASE_URL="postgresql://postgres:admin@localhost:5432/test"
                                 sh (script: "export NODE_ENV='test' && export APP_TEST_ACTION='test:int' && npm run migrate-prisma")
