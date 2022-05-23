@@ -74,7 +74,7 @@ fi""")
         },
         'unit_tests': {
             
-            node {
+            node("cisanta") {
             
                 VARS = checkout(scm:[$class: 'GitSCM', branches: [[name: "${sha1}"]],
                 doGenerateSubmoduleConfigurations: false,
@@ -105,7 +105,7 @@ fi""")
             }
         },
         'integration_tests': {
-            node {
+            node("ciath") {
                 VARS = checkout(scm:[$class: 'GitSCM', branches: [[name: "${sha1}"]],
                 doGenerateSubmoduleConfigurations: false,
                 submoduleCfg: [],
