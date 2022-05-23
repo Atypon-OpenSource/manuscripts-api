@@ -90,11 +90,10 @@ fi""")
                 sh (script: "./bin/set-package-json-version.sh")
                 sh (script: "./bin/build-env.js .env.example > .env")
                 withEnv(readFile('.env').split('\n') as List) {
-                    // env.NODE_ENV="test"
                     nodejs(nodeJSInstallationName: 'node_16_14_2') {
                         sh (script: "printenv")
                         sh (script: "npm ci")
-                        sh (script: "export NODE_ENV='test' && npx gulp -f docker/utils/Gulpfile.js")
+                        sh (script: "export NODE_ENV='test' && export APP_TEST_ACTION='test:unit' && npx gulp -f docker/utils/Gulpfile.js")
                         dir('docker') {
                             sh (script: "cp ../.env .env")
                             sh (script: "export APP_TEST_ACTION='test:unit' && docker-compose build --pull")
