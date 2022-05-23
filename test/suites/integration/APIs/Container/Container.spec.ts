@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+console.log(process.env.APP_PRESSROOM_BASE_URL, process.env.APP_PRESSROOM_APIKEY)
+
 import * as HttpStatus from 'http-status-codes'
 import * as supertest from 'supertest'
 import { Chance } from 'chance'
