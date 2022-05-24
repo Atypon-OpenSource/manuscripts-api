@@ -5,7 +5,7 @@ node {
     stage("checkout") {
         VARS = checkout scm
         DOCKER_IMAGE="leanworkflow/manuspcripts-api"
-        IMG_TAG=sh(script: "jq .version < package.json", returnStdout: true).trim()
+        IMG_TAG=sh(script: "jq .version < package.json | tr -d '\"' ", returnStdout: true).trim()
     }
 
     stage("install") {
@@ -102,7 +102,13 @@ fi""")
                                 && export APP_TEST_ACTION='test:int' \
                                 && export APP_PRESSROOM_APIKEY=${PRESSROOM_APIKEY} \
                                 && export APP_PRESSROOM_BASE_URL='https://pressroom-js-dev.manuscripts.io' \
+<<<<<<< Updated upstream
                                 && docker-compose up --build --force-recreate test_runner
+=======
+                                && docker-compose build --build-arg APP_PRESSROOM_APIKEY=${PRESSROOM_APIKEY} \
+                                   --build-arg APP_PRESSROOM_BASE_URL='https://pressroom-js-dev.manuscripts.io' --pull \
+                                && docker-compose up --force-recreate --abort-on-container-exit test_runner
+>>>>>>> Stashed changes
                                 """)
                             }
                         }
