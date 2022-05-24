@@ -102,7 +102,8 @@ fi""")
                                 && export APP_TEST_ACTION='test:int' \
                                 && export APP_PRESSROOM_APIKEY=${PRESSROOM_APIKEY} \
                                 && export APP_PRESSROOM_BASE_URL='https://pressroom-js-dev.manuscripts.io' \
-                                && docker-compose up --build --abort-on-container-exit test_runner
+                                && docker-compose up --build --abort-on-container-exit --build-arg APP_PRESSROOM_APIKEY=${PRESSROOM_APIKEY} \
+                                   --build-arg APP_PRESSROOM_BASE_URL='https://pressroom-js-dev.manuscripts.io' test_runner
                                 """)
                             }
                         }
