@@ -191,14 +191,6 @@ describe('SGRepository bulkDocs', () => {
     await seed({ projects: true })
   })
 
-  test('should update a title using bulkDocs', async () => {
-    const repository = new ProjectRepository(BucketKey.Project, db)
-    const project: any = await repository.getById(validProject2._id)
-    await repository.bulkDocs([{ ...project, title: 'foo' }])
-    const updatedProject: any = await repository.getById(validProject2._id)
-    expect(updatedProject.title).toBe('foo')
-  })
-
   test('random objects', async () => {
     const repository = new ProjectRepository(BucketKey.Project, db)
     const obj = {
@@ -218,10 +210,6 @@ describe('SGRepository bulkDocs', () => {
     await repository.bulkDocs([{ ...obj }])
     const upsertedProject: any = await repository.getById(obj._id)
     expect(upsertedProject.containingObject).toBe(obj.containingObject)
-
-    await repository.bulkDocs([{ ...obj, containingObject: 'foo' }])
-    const updatedProject: any = await repository.getById(obj._id)
-    expect(updatedProject.containingObject).toBe('foo')
   })
 })
 

@@ -19,10 +19,7 @@ import { selectActiveResources } from '@manuscripts/manuscripts-json-schema-util
 
 import { SGRepository } from '../SGRepository'
 
-import {
-  DocumentIdentifyingMetadata,
-  IContainerRepository,
-} from '../Interfaces/IContainerRepository'
+import { IContainerRepository } from '../Interfaces/IContainerRepository'
 
 export abstract class ContainerRepository<Container, ContainerLike, PatchContainer>
   extends SGRepository<Container, ContainerLike, ContainerLike, PatchContainer>
@@ -228,35 +225,25 @@ export abstract class ContainerRepository<Container, ContainerLike, PatchContain
    * @param id The Id of a container.
    */
   public async removeWithAllResources(id: string): Promise<void> {
-    const containerResources = await this.getContainerResourcesMetadata(id)
-
-    for (const resource of containerResources) {
-      await this.purge(resource.id)
-    }
-    await this.purge(id)
-  }
-
-  private getContainerResourcesMetadata(
-    containerId: string
-  ): Promise<DocumentIdentifyingMetadata[]> {
     const Q = {
       OR: [
         {
           data: {
-            path: ['projectId'],
-            equals: containerId,
+            path: ['projectID'],
+            equals: id,
           },
         },
         {
           data: {
             path: ['containerID'],
-            equals: containerId,
+            equals: id,
           },
         },
       ],
     }
 
-    return this.database.bucket.findMany(Q)
+    await this.database.bucket.remove(Q)
+    await this.purge(id)
   }
 
   /**

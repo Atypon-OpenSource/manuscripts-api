@@ -299,96 +299,6 @@ describe('SGRepository - patch', () => {
   })
 })
 
-describe('SGRepository - patchSafe', () => {
-  const citation = {
-    _id: 'foo',
-    containingObject: 'foo',
-    objectType: 'MPCitation',
-    _rev: '1-rev',
-    _revisions: {
-      ids: ['1-rev'],
-    },
-  }
-
-  const citationToPatch = {
-    _id: 'foo',
-    containingObject: 'bar',
-    _rev: '1-rev',
-  }
-
-  test('should safe patch the document', async () => {
-    const projectRepository: any = DIContainer.sharedContainer.projectRepository
-    projectRepository.getById = async (_id: string) =>
-      Promise.resolve({ ...citation, _rev: '1-rev' })
-    projectRepository.database.bucket.replace.mockImplementationOnce((_document: any) =>
-      Promise.resolve()
-    )
-
-    const patched = await projectRepository.patchSafe(citation._id, citationToPatch)
-    expect(patched.containingObject).toEqual(citationToPatch.containingObject)
-  })
-
-  test('should safe patch the document with access control', async () => {
-    const projectRepository: any = DIContainer.sharedContainer.projectRepository
-    projectRepository.getById = async (_id: string) =>
-      Promise.resolve({ ...citation, _rev: '1-rev' })
-    projectRepository.database.bucket.replace.mockImplementationOnce((_document: any) =>
-      Promise.resolve()
-    )
-    const mock = jest.spyOn(syncAccessControl, 'syncAccessControl')
-    mock.mockResolvedValue()
-
-    const patched = await projectRepository.patchSafe(citation._id, citationToPatch, 'User_foo')
-    expect(patched.containingObject).toEqual(citationToPatch.containingObject)
-  })
-
-  test('failing to safe patch a document because it is not in the db', () => {
-    const projectRepository: any = DIContainer.sharedContainer.projectRepository
-    projectRepository.getById = async (_id: string) => Promise.resolve(null)
-    return expect(projectRepository.patchSafe(citation._id, citationToPatch)).rejects.toThrowError(
-      ValidationError
-    )
-  })
-
-  test('failing to safe patch a document should throw', () => {
-    const projectRepository: any = DIContainer.sharedContainer.projectRepository
-    projectRepository.getById = async (_id: string) =>
-      Promise.resolve({ ...citation, _rev: '1-rev' })
-    const errorObj = new Error('database derp')
-    projectRepository.database.bucket.replace.mockImplementationOnce((_document: any) =>
-      Promise.reject(errorObj)
-    )
-    return expect(projectRepository.patchSafe(citation._id, citationToPatch)).rejects.toThrowError(
-      Error
-    )
-  })
-
-  test('failing to safe patch a document with access control', () => {
-    const projectRepository: any = DIContainer.sharedContainer.projectRepository
-    projectRepository.getById = async (_id: string) =>
-      Promise.resolve({ ...citation, _rev: '1-rev' })
-    const errorObj = { forbidden: 'x' }
-    const mock = jest.spyOn(syncAccessControl, 'syncAccessControl')
-    mock.mockImplementation(() => {
-      throw errorObj
-    })
-    return expect(
-      projectRepository.patchSafe(citation._id, citationToPatch, 'User_foo')
-    ).rejects.toThrowError(Error)
-  })
-
-  test('failing to safe patch a document with access control', () => {
-    const projectRepository: any = DIContainer.sharedContainer.projectRepository
-    const errorObj = { name: 'SyncError' }
-    projectRepository.getById = async (_id: string, _userId: string) => {
-      throw errorObj
-    }
-    return expect(
-      projectRepository.patchSafe(citation._id, citationToPatch, 'User_foo')
-    ).rejects.toThrowError(Error)
-  })
-})
-
 describe('SGRepository - touch', () => {
   const invitation = {
     _id: 'MPInvitation:valid-user@manuscriptsapp.com-valid-google@manuscriptsapp.com',
@@ -568,28 +478,28 @@ describe('SGRepository - bulkDocs', () => {
 
   test('should POST _bulk_docs', async () => {
     const projectRepository: any = DIContainer.sharedContainer.projectRepository
-    projectRepository.database.bucket.upsert.mockImplementationOnce((_document: any) =>
+    projectRepository.database.bucket.insertMany.mockImplementationOnce((_document: any) =>
       Promise.resolve(docUpdate)
     )
     const updated = await projectRepository.bulkDocs([docUpdate])
-    expect(updated.length).toBeGreaterThan(0)
+    expect(updated).toBeDefined()
   })
 
   test('should POST _bulk_docs with access control', async () => {
     const projectRepository: any = DIContainer.sharedContainer.projectRepository
-    projectRepository.database.bucket.upsert.mockImplementationOnce((_document: any) =>
+    projectRepository.database.bucket.insertMany.mockImplementationOnce((_document: any) =>
       Promise.resolve(docUpdate)
     )
     const mock = jest.spyOn(syncAccessControl, 'syncAccessControl')
     mock.mockResolvedValue()
     const updated = await projectRepository.bulkDocs([docUpdate], 'User_foo')
-    expect(updated.length).toBeGreaterThan(0)
+    expect(updated).toBeDefined()
   })
 
   test('should throw sync error when fail to bulkDocs', () => {
     const projectRepository: any = DIContainer.sharedContainer.projectRepository
     const errorObj = new Error('database derp')
-    projectRepository.database.bucket.insert.mockImplementationOnce((_document: any) =>
+    projectRepository.database.bucket.insertMany.mockImplementationOnce((_document: any) =>
       Promise.reject(errorObj)
     )
     return expect(projectRepository.bulkDocs([docUpdate])).rejects.toThrowError(Error)

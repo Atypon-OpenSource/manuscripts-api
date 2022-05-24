@@ -36,6 +36,7 @@ jest.mock('../../src/DataAccess/SQLDatabase', () => {
       },
       bucket: {
         insert: jest.fn((_doc: any) => Promise.resolve(null)),
+        insertMany: jest.fn((_doc: any) => Promise.resolve(null)),
         query: jest.fn((_query: any) => Promise.resolve([])),
         findMany: jest.fn((_query: any) => Promise.resolve([])),
         remove: jest.fn((_query: any) => Promise.resolve([])),

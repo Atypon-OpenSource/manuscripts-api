@@ -15,7 +15,6 @@
  */
 
 import * as _ from 'lodash'
-import * as HttpStatus from 'http-status-codes'
 
 import { ValidationError, DatabaseError, SyncError } from '../Errors'
 import { IdentifiableEntity } from './Interfaces/IdentifiableEntity'
@@ -24,6 +23,7 @@ import { BucketKey } from '../Config/ConfigurationTypes'
 import { SQLDatabase } from './SQLDatabase'
 import { timestamp } from '../Utilities/JWT/LoginTokenPayload'
 import { syncAccessControl } from './syncAccessControl'
+const { validate } = require('./jsonSchemaValidator')
 
 import { Prisma } from '@prisma/client'
 import { v4 as uuid_v4 } from 'uuid'
@@ -337,65 +337,23 @@ export abstract class SGRepository<
 
   /**
    * Direct access to bulkDocs for adding pre-formed SG objects
+   * Does simple json schema validation
+   * Assumes that containerID, manuscriptID in docs are valid
    */
-  public async bulkDocs(docs: any, userId?: string): Promise<any[]> {
-    const promises = []
+  public async bulkDocs(docs: any): Promise<any> {
+    const batch = []
+    let errorMessage
+
     for (const doc of docs) {
-      const docId = this.documentId(doc._id)
-      const dataToPatch = _.omit(doc, ['_id', 'id', 'data'])
-      promises.push(
-        this.patchSafe(docId, dataToPatch, userId).catch((err) => {
-          if (err.statusCode === HttpStatus.BAD_REQUEST || err.forbidden) {
-            return this.create(doc, userId)
-          }
-        })
-      )
-    }
-
-    return Promise.all(promises)
-  }
-
-  /**
-   * same as patch/update but without objectType validation
-   * used by bulkDocs only
-   */
-  public async patchSafe(id: string, dataToPatch: TPatchEntity, userId?: string): Promise<TEntity> {
-    const docId = this.documentId(id)
-    let document
-    try {
-      document = await this.getById(docId, userId)
-    } catch (e) {
-      if (e.name === 'SyncError') {
-        throw new SyncError(e.forbidden, {})
+      errorMessage = validate(doc)
+      if (errorMessage) {
+        throw new SyncError(errorMessage, {})
       }
+
+      batch.push({ id: doc._id, data: doc })
     }
 
-    if (!document) {
-      throw new ValidationError(`Document with id ${id} does not exist`, id)
-    }
-
-    const currentRev = document._rev
-    const patchedDocument = _.mergeWith(
-      document,
-      dataToPatch,
-      (_documentValue: any, patchValue: any) => patchValue
-    ) as any
-
-    if (patchedDocument._rev !== currentRev) {
-      throw new SyncError(`Rev mismatched ${patchedDocument._rev} with ${currentRev}`, {})
-    }
-
-    if (userId) {
-      try {
-        await this.validate({ ...patchedDocument }, { ...document }, userId)
-      } catch (e) {
-        if (e.forbidden) {
-          throw new SyncError(e.forbidden, {})
-        }
-      }
-    }
-
-    return this.update(patchedDocument)
+    return this.database.bucket.insertMany(batch)
   }
 
   /**
