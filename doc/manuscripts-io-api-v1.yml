@@ -773,7 +773,6 @@ paths:
         - $ref: "#/parameters/JsonAcceptHeadersSchema"
         - $ref: "#/parameters/AuthorizationTokenHeaderSchema"
         - $ref: "#/parameters/projectDataSchema"
-        - $ref: "#/parameters/manuscriptIdSchema"
       responses:
         200:
           description: "Manuscript has been added successfully."

@@ -20,7 +20,7 @@ import '../../../../../utilities/configMock'
 
 import {
   InvalidCredentialsError,
-  MissingTemplateError,
+  MissingTemplateError, RecordNotFoundError,
   RoleDoesNotPermitOperationError,
   ValidationError,
 } from '../../../../../../src/Errors'
@@ -34,6 +34,7 @@ import tempy from 'tempy'
 import { ContainerService } from '../../../../../../src/DomainServices/Container/ContainerService'
 import fs from 'fs'
 import { validJWTToken } from '../../../../../data/fixtures/authServiceUser'
+import { validManuscript1 } from '../../../../../data/fixtures/manuscripts'
 
 jest.setTimeout(TEST_TIMEOUT)
 
@@ -255,40 +256,71 @@ describe('ProjectController', () => {
   })
 
   describe('saveProject', () => {
-    test('should call upsertManuscriptToProject', async () => {
+    test('should call addManuscript', async () => {
       const controller: any = new ProjectController()
-      controller.upsertManuscriptToProject = jest.fn(async () => Promise.resolve())
+      const containerService = DIContainer.sharedContainer.containerService[ContainerType.project]
+      const manuscriptRepo: any = DIContainer.sharedContainer.manuscriptRepository
+      manuscriptRepo.getById = jest.fn(() => validManuscript1)
+      containerService.addManuscript = jest.fn(async () => Promise.resolve())
       ContainerService.userIdForSync = jest.fn((id) => id)
-      fs.copyFileSync(
-        'test/data/fixtures/sample/index.manuscript-json',
-        'test/data/fixtures/sample/index.manuscript-json-dup'
+      const jsonStringData = await fs.readFileSync(
+        'test/data/fixtures/sample/index.manuscript-json'
       )
+      const jsonData = JSON.parse(jsonStringData.toString())
       await controller.saveProject({
         headers: authorizationHeader(validJWTToken),
         params: { projectId: 'MPProject:abc' },
-        file: { path: 'test/data/fixtures/sample/index.manuscript-json-dup' },
         user: { _id: 'validUserId' },
-        body: {},
+        body: { data: jsonData.data },
       })
 
-      expect(controller.upsertManuscriptToProject).toBeCalled()
+      expect(containerService.addManuscript).toBeCalled()
+    })
+
+    test('should fail if manuscriptsID is not provided', async () => {
+      const controller: any = new ProjectController()
+      const containerService = DIContainer.sharedContainer.containerService[ContainerType.project]
+      const manuscriptRepo: any = DIContainer.sharedContainer.manuscriptRepository
+      manuscriptRepo.getById = jest.fn(() => undefined)
+      containerService.addManuscript = jest.fn(async () => Promise.resolve())
+      ContainerService.userIdForSync = jest.fn((id) => id)
+      const jsonStringData = await fs.readFileSync(
+        'test/data/fixtures/sample/index.manuscript-json'
+      )
+      const obj = {
+        elementType: 'p',
+        contents: 'some content',
+        paragraphStyle: 'MPParagraphStyle:339456D4-33B6-40EE-8B6F-80662870B3A7',
+        placeholderInnerHTML: '',
+        _id: 'MPParagraphElement:E51EFD7D-52FF-4B72-BF9C-B47F2989436F',
+        objectType: 'MPParagraphElement',
+      }
+      const json = JSON.parse(jsonStringData.toString())
+      json.data.push(obj)
+
+      const req = {
+        headers: authorizationHeader(validJWTToken),
+        params: { projectId: 'MPProject:abc' },
+        user: { _id: 'validUserId' },
+        body: { data: json.data },
+      }
+      await expect(controller.saveProject(req)).rejects.toThrow(RecordNotFoundError)
     })
 
     test('should fail projectId must be provided', async () => {
       const controller: any = new ProjectController()
       controller.upsertManuscriptToProject = jest.fn(async () => Promise.resolve())
-      fs.copyFileSync(
-        'test/data/fixtures/sample/index.manuscript-json',
-        'test/data/fixtures/sample/index.manuscript-json-dup'
-      )
-
+      const manuscriptRepo: any = DIContainer.sharedContainer.manuscriptRepository
+      manuscriptRepo.getById = jest.fn(() => validManuscript1)
+      const jsonStringData = fs.readFileSync('test/data/fixtures/sample/index.manuscript-json')
+      const jsonData = JSON.parse(jsonStringData.toString())
       await expect(
         controller.saveProject({
           headers: authorizationHeader(chance.string()),
           params: {},
           file: { path: 'test/data/fixtures/sample/index.manuscript-json-dup' },
           user: { _id: 'validUserId' },
-          body: {},
+          body: { data: jsonData.data },
         })
       ).rejects.toThrow(ValidationError)
     })
@@ -296,18 +328,18 @@ describe('ProjectController', () => {
     test('should fail invalid credentials', async () => {
       const controller: any = new ProjectController()
       controller.upsertManuscriptToProject = jest.fn(async () => Promise.resolve())
+      const manuscriptRepo: any = DIContainer.sharedContainer.manuscriptRepository
+      manuscriptRepo.getById = jest.fn(() => validManuscript1)
       ContainerService.userIdForSync = jest.fn((id) => id)
-      fs.copyFileSync(
-        'test/data/fixtures/sample/index.manuscript-json',
-        'test/data/fixtures/sample/index.manuscript-json-dup'
-      )
+      const jsonStringData = fs.readFileSync('test/data/fixtures/sample/index.manuscript-json')
+      const jsonData = JSON.parse(jsonStringData.toString())
       await expect(
         controller.saveProject({
           headers: authorizationHeader(chance.string()),
           params: { projectId: 'MPProject:abc' },
           file: { path: 'test/data/fixtures/sample/index.manuscript-json-dup' },
           user: { _id: 'validUserId' },
-          body: {},
+          body: { data: jsonData.data },
         })
       ).rejects.toThrow(InvalidCredentialsError)
     })

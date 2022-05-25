@@ -27,6 +27,7 @@ import decompress from 'decompress'
 import {
   InvalidCredentialsError,
   MissingTemplateError,
+  RecordNotFoundError,
   RoleDoesNotPermitOperationError,
   ValidationError,
 } from '../../../Errors'
@@ -214,7 +215,7 @@ export class ProjectController extends BaseController implements IProjectControl
 
   async saveProject(req: Request): Promise<Container> {
     const { projectId } = req.params
-    const { manuscriptId, data } = req.body
+    const { data } = req.body
 
     if (!projectId) {
       throw new ValidationError('projectId parameter must be specified', projectId)
@@ -225,11 +226,26 @@ export class ProjectController extends BaseController implements IProjectControl
     if (!isLoginTokenPayload(payload)) {
       throw new InvalidCredentialsError('Unexpected token payload.')
     }
+
     const userId = ContainerService.userIdForSync(req.user._id)
     const project = await DIContainer.sharedContainer.containerService[
       ContainerType.project
     ].getContainer(projectId, userId)
-    return await this.upsertManuscriptToProject(project, { data: data }, null, userId, manuscriptId)
+
+    for (const doc of data) {
+      if (manuscriptIDTypes.has(doc.objectType)) {
+        const manuscript = await DIContainer.sharedContainer.manuscriptRepository.getById(
+          doc.manuscriptID
+        )
+        if (!manuscript) {
+          throw new RecordNotFoundError(`referenced manuscript not found for ${doc.objectType}`)
+        }
+      }
+    }
+    // call it without userId because access control has already happened
+    await DIContainer.sharedContainer.containerService[ContainerType.project].addManuscript(data)
+
+    return project
   }
 
   async collaborators(req: Request): Promise<UserCollaborator[]> {
