@@ -241,7 +241,7 @@ export class ProjectController extends BaseController implements IProjectControl
     )
     manuscriptIdSet.delete('undefined')
     if (manuscriptIdSet.size > 1) {
-      throw new ValidationError(`contains multiple different manuscriptsId`, data)
+      throw new ValidationError(`contains multiple manuscriptIDs`, data)
     } else if (manuscriptIdSet.size === 1) {
       const [first] = manuscriptIdSet
       const manuscript = await DIContainer.sharedContainer.manuscriptRepository.getById(first)

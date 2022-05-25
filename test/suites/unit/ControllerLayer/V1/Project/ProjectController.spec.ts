@@ -20,7 +20,8 @@ import '../../../../../utilities/configMock'
 
 import {
   InvalidCredentialsError,
-  MissingTemplateError, RecordNotFoundError,
+  MissingTemplateError,
+  RecordNotFoundError,
   RoleDoesNotPermitOperationError,
   ValidationError,
 } from '../../../../../../src/Errors'
@@ -305,6 +306,37 @@ describe('ProjectController', () => {
         body: { data: json.data },
       }
       await expect(controller.saveProject(req)).rejects.toThrow(RecordNotFoundError)
+    })
+
+    test('should fail if docs contains multiple manuscriptsIDs', async () => {
+      const controller: any = new ProjectController()
+      const containerService = DIContainer.sharedContainer.containerService[ContainerType.project]
+      const manuscriptRepo: any = DIContainer.sharedContainer.manuscriptRepository
+      manuscriptRepo.getById = jest.fn(() => undefined)
+      containerService.upsertProjectModels = jest.fn(async () => Promise.resolve())
+      ContainerService.userIdForSync = jest.fn((id) => id)
+      const jsonStringData = await fs.readFileSync(
+        'test/data/fixtures/sample/index.manuscript-json'
+      )
+      const obj = {
+        elementType: 'p',
+        contents: 'some content',
+        paragraphStyle: 'MPParagraphStyle:339456D4-33B6-40EE-8B6F-80662870B3A7',
+        placeholderInnerHTML: '',
+        manuscriptID: validManuscript1._id,
+        _id: 'MPParagraphElement:E51EFD7D-52FF-4B72-BF9C-B47F2989436F',
+        objectType: 'MPParagraphElement',
+      }
+      const json = JSON.parse(jsonStringData.toString())
+      json.data.push(obj)
+
+      const req = {
+        headers: authorizationHeader(validJWTToken),
+        params: { projectId: 'MPProject:abc' },
+        user: { _id: 'validUserId' },
+        body: { data: json.data },
+      }
+      await expect(controller.saveProject(req)).rejects.toThrow(ValidationError)
     })
 
     test('should fail projectId must be provided', async () => {
