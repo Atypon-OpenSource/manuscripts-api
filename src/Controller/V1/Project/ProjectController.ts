@@ -208,7 +208,9 @@ export class ProjectController extends BaseController implements IProjectControl
       : await DIContainer.sharedContainer.manuscriptRepository.create(manuscriptObject, userID)
 
     // call it without userId because access control has already happened
-    await DIContainer.sharedContainer.containerService[ContainerType.project].addManuscript(docs)
+    await DIContainer.sharedContainer.containerService[ContainerType.project].upsertProjectModels(
+      docs
+    )
 
     return manuscriptObject
   }
@@ -232,18 +234,25 @@ export class ProjectController extends BaseController implements IProjectControl
       ContainerType.project
     ].getContainer(projectId, userId)
 
-    for (const doc of data) {
-      if (manuscriptIDTypes.has(doc.objectType)) {
-        const manuscript = await DIContainer.sharedContainer.manuscriptRepository.getById(
-          doc.manuscriptID
-        )
-        if (!manuscript) {
-          throw new RecordNotFoundError(`referenced manuscript not found for ${doc.objectType}`)
-        }
+    const manuscriptIdSet: Set<string> = new Set(
+      data.map((doc: any) => {
+        return doc.manuscriptID ? doc.manuscriptID : 'undefined'
+      })
+    )
+    manuscriptIdSet.delete('undefined')
+    if (manuscriptIdSet.size > 1) {
+      throw new ValidationError(`contains multiple different manuscriptsId`, data)
+    } else if (manuscriptIdSet.size === 1) {
+      const [first] = manuscriptIdSet
+      const manuscript = await DIContainer.sharedContainer.manuscriptRepository.getById(first)
+      if (!manuscript) {
+        throw new RecordNotFoundError(`referenced manuscript not found`)
       }
     }
     // call it without userId because access control has already happened
-    await DIContainer.sharedContainer.containerService[ContainerType.project].addManuscript(data)
+    await DIContainer.sharedContainer.containerService[ContainerType.project].upsertProjectModels(
+      data
+    )
 
     return project
   }

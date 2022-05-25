@@ -261,7 +261,7 @@ describe('ProjectController', () => {
       const containerService = DIContainer.sharedContainer.containerService[ContainerType.project]
       const manuscriptRepo: any = DIContainer.sharedContainer.manuscriptRepository
       manuscriptRepo.getById = jest.fn(() => validManuscript1)
-      containerService.addManuscript = jest.fn(async () => Promise.resolve())
+      containerService.upsertProjectModels = jest.fn(async () => Promise.resolve())
       ContainerService.userIdForSync = jest.fn((id) => id)
       const jsonStringData = await fs.readFileSync(
         'test/data/fixtures/sample/index.manuscript-json'
@@ -274,7 +274,7 @@ describe('ProjectController', () => {
         body: { data: jsonData.data },
       })
 
-      expect(containerService.addManuscript).toBeCalled()
+      expect(containerService.upsertProjectModels).toBeCalled()
     })
 
     test('should fail if manuscriptsID is not provided', async () => {
@@ -282,7 +282,7 @@ describe('ProjectController', () => {
       const containerService = DIContainer.sharedContainer.containerService[ContainerType.project]
       const manuscriptRepo: any = DIContainer.sharedContainer.manuscriptRepository
       manuscriptRepo.getById = jest.fn(() => undefined)
-      containerService.addManuscript = jest.fn(async () => Promise.resolve())
+      containerService.upsertProjectModels = jest.fn(async () => Promise.resolve())
       ContainerService.userIdForSync = jest.fn((id) => id)
       const jsonStringData = await fs.readFileSync(
         'test/data/fixtures/sample/index.manuscript-json'
@@ -348,7 +348,7 @@ describe('ProjectController', () => {
     test('should fail if template not found', async () => {
       const controller: any = new ProjectController()
 
-      DIContainer.sharedContainer.containerService[ContainerType.project].addManuscript = jest.fn(
+      DIContainer.sharedContainer.containerService[ContainerType.project].upsertProjectModels = jest.fn(
         async () => {
           return { _id: 'someValue' }
         }
@@ -380,7 +380,7 @@ describe('ProjectController', () => {
     test('should not fail if template is found in pressroom', async () => {
       const controller: any = new ProjectController()
 
-      DIContainer.sharedContainer.containerService[ContainerType.project].addManuscript = jest.fn(
+      DIContainer.sharedContainer.containerService[ContainerType.project].upsertProjectModels = jest.fn(
         async () => Promise.resolve()
       )
       DIContainer.sharedContainer.manuscriptRepository.create = jest.fn()
@@ -407,14 +407,14 @@ describe('ProjectController', () => {
 
       expect(DIContainer.sharedContainer.manuscriptRepository.create).toBeCalled()
       expect(
-        DIContainer.sharedContainer.containerService[ContainerType.project].addManuscript
+        DIContainer.sharedContainer.containerService[ContainerType.project].upsertProjectModels
       ).toBeCalled()
     })
 
     test('successfully create a mansucript and all contained resources', async () => {
       const controller: any = new ProjectController()
 
-      DIContainer.sharedContainer.containerService[ContainerType.project].addManuscript = jest.fn(
+      DIContainer.sharedContainer.containerService[ContainerType.project].upsertProjectModels = jest.fn(
         async () => Promise.resolve()
       )
       DIContainer.sharedContainer.manuscriptRepository.create = jest.fn()
@@ -434,14 +434,14 @@ describe('ProjectController', () => {
 
       expect(DIContainer.sharedContainer.manuscriptRepository.create).toBeCalled()
       expect(
-        DIContainer.sharedContainer.containerService[ContainerType.project].addManuscript
+        DIContainer.sharedContainer.containerService[ContainerType.project].upsertProjectModels
       ).toBeCalled()
     })
 
     test('successfully update the manuscript when the manuscriptId is provided and create all contained resources', async () => {
       const controller: any = new ProjectController()
 
-      DIContainer.sharedContainer.containerService[ContainerType.project].addManuscript = jest.fn(
+      DIContainer.sharedContainer.containerService[ContainerType.project].upsertProjectModels = jest.fn(
         async () => Promise.resolve()
       )
       DIContainer.sharedContainer.manuscriptRepository.patch = jest.fn()
@@ -464,7 +464,7 @@ describe('ProjectController', () => {
 
       expect(DIContainer.sharedContainer.manuscriptRepository.patch).toBeCalled()
       expect(
-        DIContainer.sharedContainer.containerService[ContainerType.project].addManuscript
+        DIContainer.sharedContainer.containerService[ContainerType.project].upsertProjectModels
       ).toBeCalled()
     })
   })
