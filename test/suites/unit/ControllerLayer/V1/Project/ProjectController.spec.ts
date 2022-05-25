@@ -256,7 +256,7 @@ describe('ProjectController', () => {
   })
 
   describe('saveProject', () => {
-    test('should call addManuscript', async () => {
+    test('should call upsertProjectModels', async () => {
       const controller: any = new ProjectController()
       const containerService = DIContainer.sharedContainer.containerService[ContainerType.project]
       const manuscriptRepo: any = DIContainer.sharedContainer.manuscriptRepository
