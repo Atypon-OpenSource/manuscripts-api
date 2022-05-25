@@ -31,7 +31,6 @@ import { validManuscript } from '../../../../../data/fixtures/manuscripts'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
 import { createProject, createManuscript } from '../../../../../data/fixtures/misc'
 import fs from 'fs'
-import { log } from '../../../../../../src/Utilities/Logger'
 import { ObjectTypes } from '@manuscripts/manuscripts-json-schema'
 
 let db: any = null
@@ -169,7 +168,7 @@ describe('ContainerService - createProject', () => {
   })
 })
 
-describe('ContainerService - save/load Project', () => {
+describe('Project - Save Project', () => {
   beforeEach(async () => {
     await drop()
     await dropBucket(BucketKey.Project)
@@ -182,33 +181,8 @@ describe('ContainerService - save/load Project', () => {
       }
     )
   })
+
   test('should save project JSON', async () => {
-    const loginResponse: supertest.Response = await basicLogin(
-      validBody,
-      ValidHeaderWithApplicationKey
-    )
-
-    expect(loginResponse.status).toBe(HttpStatus.OK)
-    await createProject('MPProject:valid-project-id-2')
-
-    const authHeader = authorizationHeader(loginResponse.body.token)
-    const data = await fs.readFileSync('test/data/fixtures/sample/index.manuscript-json')
-    const json = JSON.parse(data.toString())
-    const sendFileResponse = await saveProject(
-      {
-        ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader,
-      },
-      {
-        containerID: 'MPProject:valid-project-id-2',
-      },
-      {
-        data: json.data
-      }
-    )
-    expect(sendFileResponse.status).toBe(HttpStatus.OK)
-  })
-  test('should save project JSON with manuacriptId Provided', async () => {
     const loginResponse: supertest.Response = await basicLogin(
       validBody,
       ValidHeaderWithApplicationKey
@@ -231,10 +205,8 @@ describe('ContainerService - save/load Project', () => {
       },
       {
         data: json.data,
-        manuscriptId: 'MPManuscript:valid-manuscript-id-1',
       }
     )
-    //log.debug(JSON.stringify(sendFileResponse))
     expect(sendFileResponse.status).toBe(HttpStatus.OK)
   })
 })

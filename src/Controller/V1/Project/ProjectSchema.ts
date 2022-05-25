@@ -54,7 +54,6 @@ export const saveProjectSchema: Joi.SchemaMap = {
     projectId: Joi.string().required(),
   }),
   body: Joi.object({
-    manuscriptId: Joi.string().optional(),
     data: Joi.array().items(
       allowUnknownObjectsSchema.object({
         _id: Joi.string().required(),

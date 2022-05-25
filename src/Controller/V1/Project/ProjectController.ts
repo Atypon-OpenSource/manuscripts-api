@@ -27,6 +27,7 @@ import decompress from 'decompress'
 import {
   InvalidCredentialsError,
   MissingTemplateError,
+  RecordNotFoundError,
   RoleDoesNotPermitOperationError,
   ValidationError,
 } from '../../../Errors'
@@ -207,14 +208,16 @@ export class ProjectController extends BaseController implements IProjectControl
       : await DIContainer.sharedContainer.manuscriptRepository.create(manuscriptObject, userID)
 
     // call it without userId because access control has already happened
-    await DIContainer.sharedContainer.containerService[ContainerType.project].addManuscript(docs)
+    await DIContainer.sharedContainer.containerService[ContainerType.project].upsertProjectModels(
+      docs
+    )
 
     return manuscriptObject
   }
 
   async saveProject(req: Request): Promise<Container> {
     const { projectId } = req.params
-    const { manuscriptId, data } = req.body
+    const { data } = req.body
 
     if (!projectId) {
       throw new ValidationError('projectId parameter must be specified', projectId)
@@ -225,11 +228,33 @@ export class ProjectController extends BaseController implements IProjectControl
     if (!isLoginTokenPayload(payload)) {
       throw new InvalidCredentialsError('Unexpected token payload.')
     }
+
     const userId = ContainerService.userIdForSync(req.user._id)
     const project = await DIContainer.sharedContainer.containerService[
       ContainerType.project
     ].getContainer(projectId, userId)
-    return await this.upsertManuscriptToProject(project, { data: data }, null, userId, manuscriptId)
+
+    const manuscriptIdSet: Set<string> = new Set(
+      data.map((doc: any) => {
+        return doc.manuscriptID ? doc.manuscriptID : 'undefined'
+      })
+    )
+    manuscriptIdSet.delete('undefined')
+    if (manuscriptIdSet.size > 1) {
+      throw new ValidationError(`contains multiple manuscriptIDs`, data)
+    } else if (manuscriptIdSet.size === 1) {
+      const [first] = manuscriptIdSet
+      const manuscript = await DIContainer.sharedContainer.manuscriptRepository.getById(first)
+      if (!manuscript) {
+        throw new RecordNotFoundError(`referenced manuscript not found`)
+      }
+    }
+    // call it without userId because access control has already happened
+    await DIContainer.sharedContainer.containerService[ContainerType.project].upsertProjectModels(
+      data
+    )
+
+    return project
   }
 
   async collaborators(req: Request): Promise<UserCollaborator[]> {
