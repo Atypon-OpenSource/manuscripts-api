@@ -33,7 +33,7 @@ export interface Index {
 const projectIndexesObj = {
   [BucketKey.Project]: {
     // The bucket level indicies
-    bucket: [{ fields: ['objectType'] }, { fields: ['containerID'] }],
+    bucket: [{ fields: ['objectType'] }, { fields: ['containerID'] }, { fields: ['projectID'] }],
     [ObjectTypes.ContainerInvitation]: [
       { fields: ['invitedUserEmail'] },
       { fields: ['containerID'] },
