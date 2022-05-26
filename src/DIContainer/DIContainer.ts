@@ -191,7 +191,7 @@ export class DIContainer {
     this.singleUseTokenRepository = new SingleUseTokenRepository(this.userBucket)
     this.invitationTokenRepository = new InvitationTokenRepository(this.userBucket)
     this.collaborationsRepository = new CollaborationsRepository(BucketKey.Project, this.dataBucket)
-    this.emailService = new EmailService(config.email, config.AWS)
+    this.emailService = new EmailService(config.email, {})
     this.userEventRepository = new UserEventRepository(this.userBucket)
     this.activityTrackingService = new UserActivityTrackingService(
       this.userEventRepository,

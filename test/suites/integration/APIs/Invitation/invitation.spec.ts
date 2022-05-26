@@ -26,10 +26,6 @@ jest.mock('email-templates', () =>
   })
 )
 
-jest.mock('../../../../../src/DomainServices/External/AWS', () => ({
-  SES: { sendEmail: jest.fn((_foo, callback) => callback(null, { foo: 1 })) }
-}))
-
 const emailTemplates = require('email-templates')
 
 import { invite, basicLogin, inviteToContainer } from '../../../../api'

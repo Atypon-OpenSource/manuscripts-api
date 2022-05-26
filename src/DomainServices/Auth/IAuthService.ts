@@ -17,7 +17,6 @@
 import {
   AuthorizedUser,
   Credentials,
-  GoogleAccessCredentials,
   ResetPasswordCredentials,
   ChangePasswordCredentials,
   ServerToServerAuthCredentials,
@@ -76,12 +75,6 @@ export interface IAuthService {
    * @param stateParam
    */
   decodeIAMState(stateParam: string): IAMState
-
-  /**
-   * Validate user's google login info and create new user object if user doesn't exists.
-   * @param googleAccess User's google login access.
-   */
-  loginGoogle(googleAccess: GoogleAccessCredentials): Promise<AuthorizedUser>
 
   /**
    * Sends email to reset password.

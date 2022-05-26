@@ -33,10 +33,6 @@ jest.mock('email-templates', () => jest.fn().mockImplementation(() => {
   }
 }))
 
-jest.mock('../../../../../../src/DomainServices/External/AWS', () => ({
-  SES: { sendEmail: jest.fn((_foo, callback) => callback(null, { foo: 1 })) }
-}))
-
 import { userList } from '../../../../../data/dump/user'
 import {
   ConflictingRecordError,

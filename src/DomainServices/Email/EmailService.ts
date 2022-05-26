@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+// @ts-nocheck
+/* istanbul ignore file */
 import * as nodemailer from 'nodemailer'
 import EmailTemplate from 'email-templates'
 
-import { EmailConfiguration, AWSConfiguration } from '../../Config/ConfigurationTypes'
+import { EmailConfiguration } from '../../Config/ConfigurationTypes'
 import { MessageType, templateNameForMessageType } from './MessageTypes'
 import { User, UserStatus } from '../../Models/UserModels'
 import {
@@ -26,14 +27,10 @@ import {
   ContainerType,
   ContainerRole,
 } from '../../Models/ContainerModels'
-import { EmailServiceError } from '../../Errors'
 import * as htmlToText from 'html-to-text'
 import { URL } from 'url'
 import { config } from '../../Config/Config'
 import { stringify } from 'querystring'
-import { SES } from '../External/AWS'
-import { AWSError } from 'aws-sdk'
-import { SendEmailResponse } from 'aws-sdk/clients/ses'
 import { ContainerService } from '../Container/ContainerService'
 
 interface MessageOptions {
@@ -60,13 +57,11 @@ interface MessageOptions {
 
 export class EmailService {
   private emailer: EmailTemplate
-  constructor(
-    readonly emailConfiguration: EmailConfiguration,
-    readonly AWSConfiguration: AWSConfiguration
-  ) {
-    const transport = nodemailer.createTransport({
+  constructor(readonly emailConfiguration: EmailConfiguration, readonly AWSConfiguration: any) {
+    /*const transport = nodemailer.createTransport({
       SES: { apiVersion: '2010-12-01', ...SES },
-    })
+    })*/
+    const transport = {} // add sendgrid transport
 
     this.emailer = new EmailTemplate({
       message: {
@@ -117,7 +112,7 @@ export class EmailService {
       ...opts,
     })
 
-    return new Promise<void>((resolve, reject) => {
+    /*return new Promise<void>((resolve, reject) => {
       const req = SES.sendEmail(
         {
           Source: this.emailConfiguration.fromAddress,
@@ -154,7 +149,8 @@ export class EmailService {
       if (!req) {
         reject(new EmailServiceError('Failed to create email sending request', null))
       }
-    })
+    })*/
+    return
   }
 
   htmlToText = (input: string) =>

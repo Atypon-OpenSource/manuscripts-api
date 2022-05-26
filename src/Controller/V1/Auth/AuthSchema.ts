@@ -23,7 +23,7 @@ import {
   deviceIdSchema,
   appIdHeadersSchema,
 } from '../../BaseSchema'
-import { APP_ID_HEADER_KEY, APP_SECRET_HEADER_KEY } from './AuthController'
+import { APP_ID_HEADER_KEY } from './AuthController'
 
 export const credentialsSchema: Joi.SchemaMap = {
   body: Joi.object({
@@ -51,19 +51,6 @@ export const serverToServerTokenAuthSchema: Joi.SchemaMap = {
   headers: appSecretHeadersSchema.headers,
 }
 
-export const googleLoginSchema: Joi.SchemaMap = {
-  query: Joi.object({
-    deviceId: deviceIdSchema,
-    [APP_ID_HEADER_KEY]: Joi.string().max(100),
-    [APP_SECRET_HEADER_KEY]: Joi.string().max(100),
-    invitationId: Joi.string().max(100),
-  }),
-  headers: Joi.object({
-    [APP_ID_HEADER_KEY]: Joi.string().max(100),
-    [APP_SECRET_HEADER_KEY]: Joi.string().max(100),
-  }).options({ allowUnknown: true }),
-}
-
 export const iamOAuthStartSchema: Joi.SchemaMap = {
   query: Joi.object({
     deviceId: deviceIdSchema,
@@ -86,14 +73,6 @@ export const iamOAuthCallbackSchema: Joi.SchemaMap = {
 export const backchannelLogoutSchema: Joi.SchemaMap = {
   query: Joi.object({
     logout_token: Joi.string().required(),
-  }),
-}
-
-export const googleRedirectSchema: Joi.SchemaMap = {
-  query: Joi.object({
-    code: Joi.string().required(),
-    state: Joi.string().required(),
-    scope: Joi.string().required(),
   }),
 }
 

@@ -43,7 +43,6 @@ module.exports = {
         "!src/DataAccess/**Repository/**",
         "!src/DataAccess/QueryKind.ts",
         "!src/DomainServices/UserActivity/UserActivityTrackingService.ts",
-        "!src/DomainServices/External/AWS.ts",
         "!src/DataAccess/applyMiddleware.ts",
         "!src/DomainServices/Pressroom/PressroomService.ts",
         "!src/DomainServices/Shackles/ShacklesService.ts",

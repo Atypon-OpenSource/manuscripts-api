@@ -17,7 +17,6 @@
 import { Request, Response, NextFunction } from 'express'
 import passport from 'passport'
 import * as HttpStatus from 'http-status-codes'
-import { AES } from 'crypto-js'
 import { stringify } from 'qs'
 import { IpFilter } from 'express-ipfilter'
 import cookie from 'cookie'
@@ -43,27 +42,9 @@ import { ScopedJwtAuthStrategy } from './ScopedJWT'
 export enum AuthStrategyTypes {
   scopedJwt = 'scopedJwt',
   jwt = 'jwt',
-  google = 'google',
 }
 
 export class AuthStrategy {
-  /**
-   * Information we request access to from Google.
-   */
-  public static get googleScope(): string[] {
-    return [
-      'https://www.googleapis.com/auth/userinfo.profile',
-      'https://www.googleapis.com/auth/userinfo.email',
-    ]
-  }
-
-  /**
-   * Information we request access to from Google.
-   */
-  public static get googleScopesString(): string {
-    return AuthStrategy.googleScope.join(' ')
-  }
-
   /**
    * Express authentication middleware.
    */
@@ -88,45 +69,6 @@ export class AuthStrategy {
         return next(new InvalidCredentialsError('Invalid token.'))
       })(req, res, next)
     }
-  }
-
-  public static googleLogin(req: Request, res: Response, next: NextFunction) {
-    let appId = req.headers[APP_ID_HEADER_KEY]
-
-    const { deviceId, invitationId } = req.query
-
-    if (!appId) {
-      appId = req.query[APP_ID_HEADER_KEY] as string
-    }
-
-    if (!isString(appId) || !isString(deviceId)) {
-      return res.status(HttpStatus.UNAUTHORIZED).json({
-        message: 'Invalid or not registered application',
-      })
-    }
-
-    if (invitationId && !isString(invitationId)) {
-      return res.status(HttpStatus.UNAUTHORIZED).json({
-        message: 'invitationId must be a string',
-      })
-    }
-
-    const authState = {
-      appId,
-      deviceId,
-      invitationId,
-    }
-    const opts = {
-      scope: AuthStrategy.googleScope,
-      state: AES.encrypt(JSON.stringify(authState), config.API.oauthStateEncryptionKey).toString(),
-    }
-    passport.authenticate(AuthStrategyTypes.google, opts)(req, res, next)
-  }
-
-  public static googleRedirect(req: Request, res: Response, next: NextFunction) {
-    passport.authenticate(AuthStrategyTypes.google, {}, (error: Error, user: UserClaim) => {
-      AuthStrategy.googleUserValidationCallback(error, user, req, res, next)
-    })(req, res, next)
   }
 
   public static verifyIAMToken(req: Request, res: Response, next: NextFunction) {
@@ -301,35 +243,6 @@ export class AuthStrategy {
     return contentTypeArray.indexOf('application/json') >= 0
       ? next()
       : next(new InvalidJsonHeadersError(acceptHeader))
-  }
-
-  /**
-   * Check if user object is set or not.
-   */
-  public static googleUserValidationCallback(
-    error: Error | null,
-    user: UserClaim | null,
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): void {
-    if (!user) {
-      res.redirect(
-        `${config.email.fromBaseURL}/login#${stringify({
-          error: 'user-not-found',
-        })}`
-      )
-    } else if (error) {
-      res.redirect(`${config.email.fromBaseURL}/login#
-      ${stringify({
-        error: 'external-identity-provider-error',
-        error_description: error.message,
-      })}
-      `)
-    } else {
-      req.user = user
-      return next()
-    }
   }
 
   public static userValidationCallback(

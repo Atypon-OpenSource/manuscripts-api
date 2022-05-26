@@ -27,7 +27,6 @@ import {
   User,
   Credentials,
   AuthorizedUser,
-  GoogleAccessCredentials,
   UserToken,
   ResetPasswordCredentials,
   UserStatus,
@@ -175,7 +174,7 @@ export class AuthService implements IAuthService {
       ...(user.deleteAt && { deleteAt: user.deleteAt }),
     }
 
-    const { userToken } = await this.createUserSessions(userModel, appId, deviceId, {}, {}, false)
+    const { userToken } = await this.createUserSessions(userModel, appId, deviceId, {}, false)
 
     return { token: userToken.token, user: userModel }
   }
@@ -228,7 +227,7 @@ export class AuthService implements IAuthService {
       email: user.email,
     }
 
-    const { userToken } = await this.createUserSessions(userModel, appId, deviceId, {}, {}, false)
+    const { userToken } = await this.createUserSessions(userModel, appId, deviceId, {}, false)
 
     return { user: userModel, token: userToken.token }
   }
@@ -312,81 +311,6 @@ export class AuthService implements IAuthService {
 
   public userEmailID(email: string) {
     return checksum(email, { algorithm: 'sha1' })
-  }
-
-  /**
-   * Validate user's google access info and create new user object if user doesn't exists.
-   */
-  public async loginGoogle(googleAccess: GoogleAccessCredentials): Promise<AuthorizedUser> {
-    AuthService.ensureNonConnectAuthEnabled()
-
-    const email = AuthService.normalizeEmail(googleAccess.email)
-    const { appId, deviceId, name, invitationId, accessToken } = googleAccess
-
-    let user = await this.userRepository.getOne({ email })
-
-    let userStatus: UserStatus | null = null
-
-    if (!user) {
-      const userEmailID = this.userEmailID(email)
-      try {
-        await this.userEmailRepository.create({ _id: userEmailID })
-      } catch (error) {
-        throw new DuplicateEmailError(email)
-      }
-
-      const u = await this.userRepository.create({ name, email })
-
-      user = u
-
-      userStatus = await this.syncService.getOrCreateUserStatus(u._id)
-
-      await this.syncService.createUserProfile(u)
-
-      // tslint:disable-next-line: no-floating-promises
-      this.activityTrackingService.createEvent(
-        u._id,
-        UserActivityEventType.Registration,
-        appId,
-        deviceId
-      )
-    } else {
-      userStatus = await this.userStatusRepository.statusForUserId(user._id)
-    }
-
-    if (!userStatus) {
-      // tslint:disable-next-line: no-floating-promises
-      this.activityTrackingService.createEvent(
-        user._id,
-        UserActivityEventType.StatusNotFound,
-        appId,
-        deviceId
-      )
-
-      throw new MissingUserStatusError(user._id)
-    }
-
-    const credentials = {
-      google: {
-        accessToken,
-        refreshToken: '', // The Google OAuth strategy incorrectly requires a refresh token, hence empty string passed in.
-      },
-    }
-
-    const { userToken } = await this.createUserSessions(
-      user,
-      googleAccess.appId,
-      googleAccess.deviceId,
-      {},
-      credentials,
-      false
-    )
-
-    if (invitationId) {
-      await this.invitationService.accept(invitationId, null, null)
-    }
-
-    return { token: userToken.token, user: user }
   }
 
   public decodeIAMState(stateParam: string): IAMState {
@@ -486,7 +410,6 @@ export class AuthService implements IAuthService {
       appID,
       deviceId,
       { iamSessionID },
-      {},
       true
     )
 
@@ -586,7 +509,7 @@ export class AuthService implements IAuthService {
       email: user.email,
     }
 
-    const { userToken } = await this.createUserSessions(userModel, appId, deviceId, {}, {}, false)
+    const { userToken } = await this.createUserSessions(userModel, appId, deviceId, {}, false)
 
     return { token: userToken.token, user: userModel }
   }
@@ -733,7 +656,6 @@ export class AuthService implements IAuthService {
     appId: string,
     deviceId: string,
     iamCredentials: { iamSessionID?: string },
-    googleCredentials: any,
     hasExpiry: boolean
   ) {
     await this.ensureUserProfileExists(user)
@@ -744,7 +666,6 @@ export class AuthService implements IAuthService {
       deviceId,
       hasExpiry,
       user.email,
-      googleCredentials,
       iamCredentials.iamSessionID
     )
 
@@ -768,7 +689,6 @@ export class AuthService implements IAuthService {
     deviceId: string,
     hasExpiry: boolean,
     email?: string,
-    credentials?: any,
     iamSessionID?: string
   ): Promise<UserToken> {
     const criteria = {
@@ -810,7 +730,6 @@ export class AuthService implements IAuthService {
         appId,
         token,
         iamSessionID,
-        credentials,
       }
 
       await this.userTokenRepository.create(userToken)

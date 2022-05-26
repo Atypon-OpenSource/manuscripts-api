@@ -16,23 +16,6 @@
 
 import { validApplication } from './applications'
 
-export const validGoogleRequestWithHeader = {
-  query: {
-    deviceId: 'Device Id Example'
-  },
-  headers: {
-    'manuscripts-app-id': validApplication._id,
-    'manuscripts-app-secret': validApplication.secret
-  }
-}
-
-export const validGoogleRequestNoHeaders = {
-  query: {
-    deviceId: 'Device Id Example',
-    'manuscripts-app-id': validApplication._id,
-    'manuscripts-app-secret': validApplication.secret
-  }
-}
 
 export const validIAMOAuthStartRequest = {
   query: {

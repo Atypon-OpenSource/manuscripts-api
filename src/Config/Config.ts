@@ -28,8 +28,6 @@ import {
   APIConfiguration,
   DatabaseConfiguration,
   AuthConfiguration,
-  AWSConfiguration,
-  GoogleConfiguration,
   EmailConfiguration,
   GatewayConfiguration,
   ServerConfiguration,
@@ -99,8 +97,6 @@ export class Configuration implements ConfigurationContainer {
   readonly API: APIConfiguration
   readonly DB: DatabaseConfiguration
   readonly auth: AuthConfiguration
-  readonly AWS: AWSConfiguration
-  readonly google: GoogleConfiguration
   readonly IAM: IAMConfiguration
   readonly email: EmailConfiguration
   readonly gateway: GatewayConfiguration
@@ -146,20 +142,6 @@ export class Configuration implements ConfigurationContainer {
 
     this.DB = {
       buckets,
-    }
-
-    this.AWS = {
-      accessKeyId: getString(env.APP_AWS_ACCESS_KEY_ID, 'APP_AWS_ACCESS_KEY_ID'),
-      secretAccessKey: getString(env.APP_AWS_SECRET_ACCESS_KEY, 'APP_AWS_SECRET_ACCESS_KEY'),
-      region: getString(env.APP_AWS_REGION, 'APP_AWS_REGION'),
-    }
-
-    this.google = {
-      clientID: getString(env.APP_GOOGLE_CLIENT_ID, 'APP_GOOGLE_CLIENT_ID'),
-      clientSecret: getString(env.APP_GOOGLE_CLIENT_SECRET, 'APP_GOOGLE_CLIENT_SECRET'),
-      authCallback: normalizeURL(
-        getString(env.APP_GOOGLE_AUTH_CALLBACK, 'APP_GOOGLE_AUTH_CALLBACK')
-      ),
     }
 
     this.IAM = {

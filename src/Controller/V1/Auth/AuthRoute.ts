@@ -23,8 +23,6 @@ import { removeEmptyValuesFromObj } from '../../../util'
 import { BaseRoute } from '../../BaseRoute'
 import {
   credentialsSchema,
-  googleRedirectSchema,
-  googleLoginSchema,
   forgotPasswordSchema,
   resetPasswordSchema,
   changePasswordSchema,
@@ -109,51 +107,6 @@ export class AuthRoute extends BaseRoute {
           const { token } = await this.authController.serverToServerTokenAuth(req)
 
           res.status(HttpStatus.OK).json({ token }).end()
-        }, next)
-      }
-    )
-
-    router.get(
-      `${this.basePath}/google`,
-      expressJoiMiddleware(googleLoginSchema, {}),
-      AuthStrategy.applicationValidation(),
-      AuthStrategy.googleLogin
-    )
-
-    router.get(
-      `${this.basePath}/google/callback`,
-      expressJoiMiddleware(googleRedirectSchema, {
-        validationCallback: (_req: Request, res: Response, next: NextFunction) => {
-          return (error: any, _value: any) => {
-            if (error) {
-              res.redirect(
-                `${config.email.fromBaseURL}/login#${stringify({
-                  error: 'validation-error',
-                })}`
-              )
-            } else {
-              return next()
-            }
-          }
-        },
-      }),
-      AuthStrategy.googleRedirect,
-      (req: Request, res: Response, next: NextFunction) => {
-        return this.runWithErrorHandling(async () => {
-          if (!req.user || !req.user.syncSessions) {
-            res.redirect(
-              `${config.email.fromBaseURL}/login#${stringify({
-                error: 'user-not-found',
-              })}`
-            )
-          } else {
-            // this.setSyncCookies(req.user.syncSessions, res)
-            res.redirect(
-              `${config.email.fromBaseURL}/login#${stringify({
-                access_token: req.user.token,
-              })}`
-            )
-          }
         }, next)
       }
     )

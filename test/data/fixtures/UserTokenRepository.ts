@@ -21,5 +21,4 @@ export const validUserToken = {
   userId: '9f338224-b0d5-45aa-b02c-21c7e0c3c07a',
   appId: 'appId',
   token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI5ZjMzODIyNC1iMGQ1LTQ1YWEtYjAyYy0yMWM3ZTBjM2MwN2EiLCJ0b2tlbklkIjoiOTFmNGRhNmIxY2MyNThlZjA1MmQ5NTgwMGRmMTNhMzdkNWY1ZWNkZiIsImlhdCI6MTUxNzMyODc1NH0.0-JFP1iUTGc_GVJEVvpzPCZ4FYCNMf1VsfWBr5-tULE',
-  credentials: { google: { accessToken: 'foo', refreshToken: 'bar' } }
 }

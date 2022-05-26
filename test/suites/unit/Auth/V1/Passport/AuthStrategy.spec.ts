@@ -20,7 +20,6 @@ import * as HttpStatus from 'http-status-codes'
 import { Chance } from 'chance'
 
 import { AuthStrategy } from '../../../../../../src/Auth/Passport/AuthStrategy'
-import { validGoogleRequestWithHeader } from '../../../../../data/fixtures/requests'
 
 jest.mock('passport', () => {
   const originalModule = jest.requireActual('passport')
@@ -46,27 +45,10 @@ jest.mock('passport', () => {
 })
 
 describe('AuthStrategy', () => {
-  test('Google scope should be [profile, email]', () => {
-    expect(AuthStrategy.googleScope).toEqual([
-      'https://www.googleapis.com/auth/userinfo.profile',
-      'https://www.googleapis.com/auth/userinfo.email',
-    ])
-  })
-
   test('should pass JWT authenticate middleware', () => {
     const req: any = {}
     const { res, next } = getMockRes()
     AuthStrategy.JWTAuth(req, res, next)
-    expect(next).toBeCalled()
-    expect(req.user).toEqual({
-      _id: 'd5108332658149c4c2b276e1b16a1f8dca7fd6af',
-    })
-  })
-
-  test('should pass google authenticate middleware', () => {
-    const req: any = validGoogleRequestWithHeader
-    const { res, next } = getMockRes()
-    AuthStrategy.googleRedirect(req, res, next)
     expect(next).toBeCalled()
     expect(req.user).toEqual({
       _id: 'd5108332658149c4c2b276e1b16a1f8dca7fd6af',
@@ -90,23 +72,6 @@ describe('AuthStrategy', () => {
 
     expect(res.status).toHaveBeenCalledWith(HttpStatus.UNAUTHORIZED)
     expect(res.end).toBeCalled()
-  })
-
-  test('should redirect if error is set in google login', () => {
-    const req: any = {}
-    const { res, next } = getMockRes()
-    const error = new Error()
-    AuthStrategy.googleUserValidationCallback(error, null, req, res, next)
-
-    expect(res.redirect).toBeCalled()
-  })
-
-  test('should redirect if user not set in google login', () => {
-    const req: any = {}
-    const { res, next } = getMockRes()
-    AuthStrategy.googleUserValidationCallback(null, null, req, res, next)
-
-    expect(res.redirect).toBeCalled()
   })
 
   test('should set user in req object and call next function', () => {

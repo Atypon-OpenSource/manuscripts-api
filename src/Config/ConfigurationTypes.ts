@@ -64,21 +64,6 @@ export type AuthConfiguration = {
   readonly enableNonConnectAuth: boolean
 }
 
-export type AWSConfiguration = {
-  accessKeyId: string
-  secretAccessKey: string
-  region: string
-}
-
-/**
- * Represents Google authentication configuration.
- */
-export type GoogleConfiguration = {
-  readonly clientID: string
-  readonly clientSecret: string
-  readonly authCallback: string
-}
-
 /**
  * Represents configuration for IAM
  */
@@ -147,8 +132,6 @@ export interface ConfigurationContainer {
   readonly API: APIConfiguration
   readonly DB: DatabaseConfiguration
   readonly auth: AuthConfiguration
-  readonly AWS: AWSConfiguration
-  readonly google: GoogleConfiguration
   readonly IAM: IAMConfiguration
   readonly email: EmailConfiguration
   readonly gateway: GatewayConfiguration
