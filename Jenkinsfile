@@ -165,7 +165,8 @@ fi""")
         echo "Pushing ${DOCKER_IMAGE}:${IMG_TAG}"
         // push to registry
         sh("""
-        docker push ${REGISTRY}/${DOCKER_IMAGE}:${IMG_TAG}
+        docker push ${REGISTRY}/${DOCKER_IMAGE}:${IMG_TAG} && \
+        docker push ${REGISTRY}/${DOCKER_IMAGE}
         """)
 
         // docker.withRegistry("https://${REGISTRY}") {
