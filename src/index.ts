@@ -21,7 +21,6 @@ import { config } from './Config/Config'
 import { log } from './Utilities/Logger'
 
 import { DIContainer } from './DIContainer/DIContainer'
-import { ServerStatus } from './Controller/V1/ServerStatus/ServerStatus'
 import { SQLDatabase } from './DataAccess/SQLDatabase'
 
 process.on('unhandledRejection', (reason, promise) => {
@@ -42,9 +41,6 @@ function main() {
       const container = DIContainer.sharedContainer
       container.server.bootstrap()
       return container.server.start(config.API.port)
-    })
-    .then(() => {
-      log.info(`Manuscripts.io ${ServerStatus.version} started 🚀`)
     })
     .then(() => {
       cron.schedule('0 1 * * *', async () => {

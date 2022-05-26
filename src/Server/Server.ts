@@ -29,6 +29,12 @@ import { SQLDatabase } from '../DataAccess/SQLDatabase'
 import { isStatusCoded, ForbiddenOriginError, IllegalStateError } from '../Errors'
 import { config } from '../Config/Config'
 import { Environment } from '../Config/ConfigurationTypes'
+import { ServerStatus } from '../Controller/V1/ServerStatus/ServerStatus'
+
+import cluster from 'cluster'
+import { cpus } from 'os'
+
+const numCPUs = cpus().length
 
 /**
  * The server.
@@ -137,30 +143,37 @@ export class Server implements IServer {
     })
   }
 
+  private listen(port: number) {
+    this.app
+      .listen(port, () => {
+        log.info(`Worker ${process.pid} server ${ServerStatus.version} started on port ${port} 🚀`)
+      })
+      .on('error', (error: Error) => {
+        log.error(`can't start server`, error)
+      })
+  }
+
   /**
    * Starts web server on specific port.
    */
   public async start(port: number): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
-      /*this.app.listen(port, (error: Error) => {
-        if (error) {
-          log.error(`can't start server`, error)
-          reject(error)
-        } else {
-          log.info(`Server started on port ${port}`)
-          resolve()
-        }
-      })*/
+    if (process.env.NODE_ENV !== Environment.Production) {
+      this.listen(port)
+      return
+    }
 
-      this.app
-        .listen(port, () => {
-          log.info(`Server started on port ${port}`)
-          resolve()
-        })
-        .on('error', (error: Error) => {
-          log.error(`can't start server`, error)
-          reject(error)
-        })
-    })
+    if (cluster.isPrimary) {
+      log.info(`Primary ${process.pid} is running`)
+
+      for (let i = 0; i < numCPUs; i++) {
+        cluster.fork()
+      }
+
+      cluster.on('exit', (worker, code, signal) => {
+        log.info(`worker ${worker.process.pid} died with code ${code} and signal ${signal}`)
+      })
+    } else {
+      this.listen(port)
+    }
   }
 }
