@@ -103,19 +103,22 @@ parameters:
   templateIdSchema:
     name: templateId
     description: "Template ID"
-    type: string
+    schema:
+      type: string
     in: body
     required: false
   manuscriptIdSchema:
     name: manuscriptId
     description: "Manuscript ID"
-    type: string
+    schema:
+      type: string
     in: body
     required: false
   snapshotNameSchema:
     name: name
     description: "Snapshot name"
-    type: string
+    schema:
+      type: string
     in: body
     required: false
   modifiedSinceHeaderSchema:
@@ -602,6 +605,8 @@ paths:
        parameters:
          - in: "body"
            name: "body"
+           schema:
+            $ref: "#/definitions/MarkDeletionSchema"
          - $ref: "#/parameters/AuthorizationTokenHeaderSchema"
        responses:
          200:
@@ -752,7 +757,7 @@ paths:
           description: "Invalid authorization token, or user record is in an invalid state for container creation."
         400:
           description: "Failed to fetch requested models"
-  /container/:projectId/:manuscriptsId?/load:
+  /container/:projectId/:manuscriptsId/load:
     post:
       tags:
         - "container"
@@ -1345,6 +1350,8 @@ paths:
           name: "body"
           description: "A manuscripts-json (sub)object"
           required: true
+          schema:
+            $ref: "#/definitions/GenericSchema"
         - in: "query"
           name: "rev"
           description: "The latest revision of the object"
@@ -1402,12 +1409,16 @@ paths:
           name: "body"
           description: "A manuscripts-json object"
           required: true
+          schema:
+            $ref: "#/definitions/GenericSchema"
       responses:
         200:
           description: "Object added successfully"
         401:
           description: "Invalid authorization token"
 definitions:
+  GenericSchema:
+    type: "object"
   AcceptInvitationSchema:
     type: "object"
     required:
@@ -1472,6 +1483,13 @@ definitions:
         type: "string"
         format: "email"
         example: "example@example.com"
+      password:
+        type: "string"
+  MarkDeletionSchema:
+    type: "object"
+    required:
+      - "password"
+    properties:
       password:
         type: "string"
   EmptyBodySchema:
