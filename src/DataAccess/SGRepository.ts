@@ -24,7 +24,7 @@ import { BucketKey } from '../Config/ConfigurationTypes'
 import { SQLDatabase } from './SQLDatabase'
 import { timestamp } from '../Utilities/JWT/LoginTokenPayload'
 import { syncAccessControl } from './syncAccessControl'
-
+const { validate } = require('./jsonSchemaValidator')
 import { Prisma } from '@prisma/client'
 import { v4 as uuid_v4 } from 'uuid'
 
@@ -338,7 +338,7 @@ export abstract class SGRepository<
   /**
    * Direct access to bulkDocs for adding pre-formed SG objects
    */
-  public async bulkDocs(docs: any, userId?: string): Promise<any[]> {
+  public async bulkUpsert(docs: any, userId?: string): Promise<any[]> {
     const promises = []
     for (const doc of docs) {
       const docId = this.documentId(doc._id)
@@ -353,6 +353,19 @@ export abstract class SGRepository<
     }
 
     return Promise.all(promises)
+  }
+
+  public async bulkInsert(docs: any): Promise<any> {
+    const batch = []
+    let errorMessage
+    for (const doc of docs) {
+      errorMessage = validate(doc)
+      if (errorMessage) {
+        throw new SyncError(errorMessage, {})
+      }
+      batch.push({ id: doc._id, data: doc })
+    }
+    return this.database.bucket.insertMany(batch)
   }
 
   /**

@@ -194,7 +194,7 @@ describe('SGRepository bulkDocs', () => {
   test('should update a title using bulkDocs', async () => {
     const repository = new ProjectRepository(BucketKey.Project, db)
     const project: any = await repository.getById(validProject2._id)
-    await repository.bulkDocs([{ ...project, title: 'foo' }])
+    await repository.bulkUpsert([{ ...project, title: 'foo' }])
     const updatedProject: any = await repository.getById(validProject2._id)
     expect(updatedProject.title).toBe('foo')
   })
@@ -215,11 +215,11 @@ describe('SGRepository bulkDocs', () => {
       containerID: 'MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C',
       manuscriptID: 'MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232',
     }
-    await repository.bulkDocs([{ ...obj }])
+    await repository.bulkUpsert([{ ...obj }])
     const upsertedProject: any = await repository.getById(obj._id)
     expect(upsertedProject.containingObject).toBe(obj.containingObject)
 
-    await repository.bulkDocs([{ ...obj, containingObject: 'foo' }])
+    await repository.bulkUpsert([{ ...obj, containingObject: 'foo' }])
     const updatedProject: any = await repository.getById(obj._id)
     expect(updatedProject.containingObject).toBe('foo')
   })

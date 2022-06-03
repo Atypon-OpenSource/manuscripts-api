@@ -31,6 +31,8 @@ interface SQLBucket {
 
   insert(doc: any): Prisma.PromiseReturnType<any>
 
+  insertMany(docs: any): Prisma.PromiseReturnType<any>
+
   query(query: any): Prisma.PromiseReturnType<any>
 
   queryRaw(query: string): Prisma.PromiseReturnType<any>
@@ -118,6 +120,13 @@ class PrismaBucket implements SQLBucket {
       data: doc,
     })
   }
+
+  insertMany(docs: any): Prisma.PromiseReturnType<any> {
+    return this.prismaClient.createMany({
+      data: docs,
+    })
+  }
+
   count(query: any): Prisma.PromiseReturnType<any> {
     return this.prismaClient.count({
       where: query,

@@ -213,6 +213,19 @@ export class MissingContainerError extends Error implements StatusCoded {
   }
 }
 
+export class MissingManuscriptError extends Error implements StatusCoded {
+  readonly internalErrorCode = InternalErrorCode.MissingManuscriptError
+  readonly invalidValue: any
+  readonly statusCode = HttpStatus.NOT_FOUND
+
+  constructor(invalidValue: any) {
+    super(`Manuscript '${invalidValue}' was not found.`)
+    this.invalidValue = invalidValue
+    this.name = 'MissingManuscriptError'
+    Object.setPrototypeOf(this, new.target.prototype)
+  }
+}
+
 export class MissingProductionNoteError extends Error implements StatusCoded {
   readonly internalErrorCode = InternalErrorCode.MissingProductionNoteError
   readonly invalidValue: any
