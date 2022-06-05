@@ -20,7 +20,13 @@ import { validBody } from '../../../../../data/fixtures/credentialsRequestPayloa
 import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
 import { BucketKey } from '../../../../../../src/Config/ConfigurationTypes'
 import * as supertest from 'supertest'
-import { basicLogin, getCollaborators, importManuscript, saveProject } from '../../../../../api'
+import {
+  basicLogin,
+  getCollaborators,
+  importManuscript,
+  insertProject,
+  saveProject,
+} from '../../../../../api'
 import {
   authorizationHeader,
   ValidContentTypeAcceptJsonHeader,
@@ -208,6 +214,86 @@ describe('Project - Save Project', () => {
       }
     )
     expect(sendFileResponse.status).toBe(HttpStatus.OK)
+  })
+})
+
+describe('Project - insert Project', () => {
+  beforeEach(async () => {
+    await drop()
+    await dropBucket(BucketKey.Project)
+    await seed(seedOptions)
+    await DIContainer.sharedContainer.syncService.createUserProfile({
+      _id: `User|${validBody.email}`,
+      name: 'foobar',
+      email: validBody.email,
+    })
+  })
+  test('Should insert new JSON to DB', async () => {
+    const loginResponse: supertest.Response = await basicLogin(
+      validBody,
+      ValidHeaderWithApplicationKey
+    )
+
+    expect(loginResponse.status).toBe(HttpStatus.OK)
+    await createProject('MPProject:valid-project-id-2')
+    await createManuscript('MPManuscript:valid-manuscript-id-1')
+
+    const authHeader = authorizationHeader(loginResponse.body.token)
+    const data = await fs.readFileSync('test/data/fixtures/sample/index.manuscript-json')
+    const json = JSON.parse(data.toString())
+    const result = await insertProject(
+      {
+        ...ValidContentTypeAcceptJsonHeader,
+        ...authHeader,
+      },
+      {
+        containerID: 'MPProject:valid-project-id-2',
+        manuscriptID: 'MPManuscript:valid-manuscript-id-1',
+      },
+      {
+        data: json.data,
+      }
+    )
+    expect(result.status).toBe(HttpStatus.OK)
+  })
+
+  test('project resources should be removed before inserting new JSON', async () => {
+    const loginResponse: supertest.Response = await basicLogin(
+      validBody,
+      ValidHeaderWithApplicationKey
+    )
+
+    expect(loginResponse.status).toBe(HttpStatus.OK)
+    await createProject('MPProject:valid-project-id-2')
+    await createManuscript('MPManuscript:valid-manuscript-id-1')
+
+    const authHeader = authorizationHeader(loginResponse.body.token)
+    const data = await fs.readFileSync('test/data/fixtures/sample/index.manuscript-json')
+    const json = JSON.parse(data.toString())
+    await insertProject(
+      {
+        ...ValidContentTypeAcceptJsonHeader,
+        ...authHeader,
+      },
+      {
+        containerID: 'MPProject:valid-project-id-2',
+        manuscriptID: 'MPManuscript:valid-manuscript-id-1',
+      },
+      {
+        data: json.data,
+      }
+    )
+    const repo: any = DIContainer.sharedContainer.projectRepository
+    repo.bulkInsert = Promise.resolve(async (docs: any) => {
+      const oldData = await DIContainer.sharedContainer.projectRepository.getContainerResources(
+        'MPProject:valid-project-id-2',
+        'MPManuscript:valid-manuscript-id-1',
+        true
+      )
+      // this is to make sure all data were removed
+      expect(oldData).toBeNull()
+      return docs
+    })
   })
 })
 

@@ -259,32 +259,32 @@ export class ProjectController extends BaseController implements IProjectControl
   }
 
   async projectReplace(req: Request): Promise<Model> {
-    const { projectId, manuscriptsID } = req.params
+    const { projectId, manuscriptId } = req.params
     const { data } = req.body
     if (!projectId) {
       throw new ValidationError('projectId parameter must be specified', projectId)
     }
 
-    if (!manuscriptsID) {
-      throw new ValidationError('manuscriptsID parameter must be specified', manuscriptsID)
+    if (!manuscriptId) {
+      throw new ValidationError('manuscriptsID parameter must be specified', manuscriptId)
     }
 
     const userId = ContainerService.userIdForSync(req.user._id)
     //TODO: who can make this action?
     const haveAccess = await DIContainer.sharedContainer.containerService[
       ContainerType.project
-    ].checkIfOwnerOrWriter(projectId, userId)
+    ].checkIfCanEdit(userId, projectId)
     if (!haveAccess) {
       //TODO: better error warding
       throw new RoleDoesNotPermitOperationError(`permission denied`, userId)
     }
 
     const manuscriptsObj = DIContainer.sharedContainer.manuscriptRepository.getById(
-      manuscriptsID,
+      manuscriptId,
       userId
     )
     if (!manuscriptsObj) {
-      throw new MissingManuscriptError(manuscriptsID)
+      throw new MissingManuscriptError(manuscriptId)
     }
     await DIContainer.sharedContainer.projectRepository.removeWithAllResources(projectId)
     return await DIContainer.sharedContainer.projectRepository.bulkInsert(data)

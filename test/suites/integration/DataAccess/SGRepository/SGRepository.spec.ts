@@ -184,14 +184,14 @@ describe('SGRepository remove', () => {
   })
 })
 
-describe('SGRepository bulkDocs', () => {
+describe('SGRepository bulkUpsert', () => {
   beforeEach(async () => {
     await drop()
     await dropBucket(BucketKey.Project)
     await seed({ projects: true })
   })
 
-  test('should update a title using bulkDocs', async () => {
+  test('should update a title using bulkUpsert', async () => {
     const repository = new ProjectRepository(BucketKey.Project, db)
     const project: any = await repository.getById(validProject2._id)
     await repository.bulkUpsert([{ ...project, title: 'foo' }])

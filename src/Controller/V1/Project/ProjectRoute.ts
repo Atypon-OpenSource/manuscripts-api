@@ -86,7 +86,7 @@ export class ProjectRoute extends BaseRoute {
     )
 
     router.post(
-      `${this.basePath}/:projectId/manuscripts/:manuscriptsId/save`,
+      `${this.basePath}/:projectId/manuscripts/:manuscriptId/save`,
       expressJoiMiddleware(replaceProjectSchema),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,

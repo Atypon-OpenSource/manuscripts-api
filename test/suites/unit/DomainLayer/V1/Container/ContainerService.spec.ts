@@ -1982,13 +1982,10 @@ describe('ContainerService - submitExternalFile', () => {
     DIContainer.sharedContainer.projectRepository.patch = jest.fn()
     const repo: any = DIContainer.sharedContainer.externalFileRepository
     repo.findByContainerIDAndPublicUrl = jest.fn()
-    repo.bulkDocs = jest.fn(() => [externalFile])
+    repo.bulkUpsert = jest.fn(() => [externalFile])
     await containerService.submitExternalFiles([externalFile])
-    expect(repo.bulkDocs).toBeCalled()
+    expect(repo.bulkUpsert).toBeCalled()
   })
-})
-
-describe('ContainerService - submitExternalFile', () => {
   test('should update externalFile', async () => {
     const containerService: any =
       DIContainer.sharedContainer.containerService[ContainerType.project]

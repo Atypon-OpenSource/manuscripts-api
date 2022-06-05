@@ -70,7 +70,7 @@ export const replaceProjectSchema: Joi.SchemaMap = {
   }).options({ allowUnknown: true }),
   params: Joi.object({
     projectId: Joi.string().required(),
-    manuscriptsId: Joi.string().required(),
+    manuscriptId: Joi.string().required(),
   }),
   body: Joi.object({
     data: Joi.array().items(
