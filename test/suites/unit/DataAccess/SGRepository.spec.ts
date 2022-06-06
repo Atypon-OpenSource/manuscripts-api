@@ -571,7 +571,7 @@ describe('SGRepository - bulkDocs', () => {
     projectRepository.database.bucket.upsert.mockImplementationOnce((_document: any) =>
       Promise.resolve(docUpdate)
     )
-    const updated = await projectRepository.bulkDocs([docUpdate])
+    const updated = await projectRepository.bulkUpsert([docUpdate])
     expect(updated.length).toBeGreaterThan(0)
   })
 
@@ -582,7 +582,7 @@ describe('SGRepository - bulkDocs', () => {
     )
     const mock = jest.spyOn(syncAccessControl, 'syncAccessControl')
     mock.mockResolvedValue()
-    const updated = await projectRepository.bulkDocs([docUpdate], 'User_foo')
+    const updated = await projectRepository.bulkUpsert([docUpdate], 'User_foo')
     expect(updated.length).toBeGreaterThan(0)
   })
 
@@ -592,6 +592,6 @@ describe('SGRepository - bulkDocs', () => {
     projectRepository.database.bucket.insert.mockImplementationOnce((_document: any) =>
       Promise.reject(errorObj)
     )
-    return expect(projectRepository.bulkDocs([docUpdate])).rejects.toThrowError(Error)
+    return expect(projectRepository.bulkUpsert([docUpdate])).rejects.toThrowError(Error)
   })
 })

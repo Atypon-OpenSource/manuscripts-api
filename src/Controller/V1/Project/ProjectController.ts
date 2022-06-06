@@ -26,6 +26,7 @@ import getStream from 'get-stream'
 import decompress from 'decompress'
 import {
   InvalidCredentialsError,
+  MissingManuscriptError,
   MissingTemplateError,
   RecordNotFoundError,
   RoleDoesNotPermitOperationError,
@@ -255,6 +256,36 @@ export class ProjectController extends BaseController implements IProjectControl
     )
 
     return project
+  }
+
+  async projectReplace(req: Request): Promise<Model> {
+    const { projectId, manuscriptId } = req.params
+    const { data } = req.body
+    if (!projectId) {
+      throw new ValidationError('projectId parameter must be specified', projectId)
+    }
+
+    if (!manuscriptId) {
+      throw new ValidationError('manuscriptsID parameter must be specified', manuscriptId)
+    }
+
+    const userId = ContainerService.userIdForSync(req.user._id)
+    const canEdit = await DIContainer.sharedContainer.containerService[
+      ContainerType.project
+    ].checkIfCanEdit(userId, projectId)
+    if (!canEdit) {
+      throw new RoleDoesNotPermitOperationError(`permission denied`, userId)
+    }
+
+    const manuscriptsObj = DIContainer.sharedContainer.manuscriptRepository.getById(
+      manuscriptId,
+      userId
+    )
+    if (!manuscriptsObj) {
+      throw new MissingManuscriptError(manuscriptId)
+    }
+    await DIContainer.sharedContainer.projectRepository.removeWithAllResources(projectId)
+    return await DIContainer.sharedContainer.projectRepository.bulkInsert(data)
   }
 
   async collaborators(req: Request): Promise<UserCollaborator[]> {

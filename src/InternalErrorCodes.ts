@@ -24,6 +24,7 @@ export enum InternalErrorCode {
   GatewayInaccessibleError = 'SG_INACCESSIBLE',
   MissingQueryParameterError = 'QUERY_PARAM_NOT_FOUND',
   MissingContainerError = 'CONTAINER_NOT_FOUND',
+  MissingManuscriptError = 'MANUSCRIPT_NOT_FOUND',
   MissingProductionNoteError = 'PN_NOTES_NOT_FOUND',
   MissingUserRecordError = 'USER_RECORD_NOT_FOUND',
   MissingTemplateError = 'TEMPLATE_NOT_FOUND',

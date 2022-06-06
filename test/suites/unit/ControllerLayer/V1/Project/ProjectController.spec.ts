@@ -19,7 +19,7 @@ import '../../../../../utilities/dbMock'
 import '../../../../../utilities/configMock'
 
 import {
-  InvalidCredentialsError,
+  InvalidCredentialsError, MissingManuscriptError,
   MissingTemplateError,
   RecordNotFoundError,
   RoleDoesNotPermitOperationError,
@@ -36,6 +36,7 @@ import { ContainerService } from '../../../../../../src/DomainServices/Container
 import fs from 'fs'
 import { validJWTToken } from '../../../../../data/fixtures/authServiceUser'
 import { validManuscript1 } from '../../../../../data/fixtures/manuscripts'
+import {validProject} from "../../../../../data/fixtures/projects";
 
 jest.setTimeout(TEST_TIMEOUT)
 
@@ -555,6 +556,108 @@ describe('ProjectController', () => {
           params: { projectId: 'MPProject:abc' }
         })
       ).rejects.toThrow(ValidationError)
+    })
+  })
+  describe('projectReplace', () => {
+    const json = {
+      data: [
+        { _id: 'MPManuscript:abc', objectType: 'MPManuscript' },
+        { _id: 'MPCitation:abc', objectType: 'MPCitation' },
+        { _id: 'MPMPAuxiliaryObjectReference:abc', objectType: 'MPAuxiliaryObjectReference' },
+      ],
+    }
+    test('should fail if project id is not provided', async () => {
+      const controller: any = new ProjectController()
+      const req = {
+        params: {
+          manuscriptId: validManuscript1._id,
+        },
+        user: {
+          _id: 'someId',
+        },
+        body: {
+          data: json,
+        },
+      }
+      await expect(controller.projectReplace(req)).rejects.toThrow(ValidationError)
+    })
+    test('should fail if manuscript id is not provided', async () => {
+      const controller: any = new ProjectController()
+      const req = {
+        params: {
+          projectId: validProject._id,
+        },
+        user: {
+          _id: 'someId',
+        },
+        body: {
+          data: json,
+        },
+      }
+      await expect(controller.projectReplace(req)).rejects.toThrow(ValidationError)
+    })
+    test('should fail if user dont have access', async () => {
+      const controller: any = new ProjectController()
+      const service: any = DIContainer.sharedContainer.containerService[ContainerType.project]
+      service.checkIfCanEdit = jest.fn(() => false)
+      const req = {
+        params: {
+          projectId: validProject._id,
+          manuscriptId: validManuscript1._id,
+        },
+        user: {
+          _id: 'someId',
+        },
+        body: {
+          data: json,
+        },
+      }
+      await expect(controller.projectReplace(req)).rejects.toThrow(RoleDoesNotPermitOperationError)
+    })
+    test('should fail if manuscript not found', async () => {
+      const controller: any = new ProjectController()
+      const service: any = DIContainer.sharedContainer.containerService[ContainerType.project]
+      const repo: any = DIContainer.sharedContainer.manuscriptRepository
+      repo.getById = jest.fn(() => null)
+      service.checkIfCanEdit = jest.fn(() => true)
+      const req = {
+        params: {
+          projectId: validProject._id,
+          manuscriptId: validManuscript1._id,
+        },
+        user: {
+          _id: 'someId',
+        },
+        body: {
+          data: json,
+        },
+      }
+      await expect(controller.projectReplace(req)).rejects.toThrow(MissingManuscriptError)
+    })
+    test('should removeWithAllResources & bulkInsert to be called', async () => {
+      const controller: any = new ProjectController()
+      const service: any = DIContainer.sharedContainer.containerService[ContainerType.project]
+      const manuscriptRepo: any = DIContainer.sharedContainer.manuscriptRepository
+      const projectRepo: any = DIContainer.sharedContainer.projectRepository
+      projectRepo.removeWithAllResources = jest.fn()
+      projectRepo.bulkInsert = jest.fn()
+      manuscriptRepo.getById = jest.fn(() => validManuscript1)
+      service.checkIfCanEdit = jest.fn(() => true)
+      const req = {
+        params: {
+          projectId: validProject._id,
+          manuscriptId: validManuscript1._id,
+        },
+        user: {
+          _id: 'someId',
+        },
+        body: {
+          data: json,
+        },
+      }
+      await controller.projectReplace(req)
+      expect(projectRepo.removeWithAllResources).toBeCalled()
+      expect(projectRepo.bulkInsert).toBeCalled()
     })
   })
 })

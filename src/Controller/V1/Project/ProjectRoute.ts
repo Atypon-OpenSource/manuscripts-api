@@ -27,6 +27,7 @@ import {
   createSchema,
   saveProjectSchema,
   projectCollaboratorsSchema,
+  replaceProjectSchema,
 } from './ProjectSchema'
 
 export class ProjectRoute extends BaseRoute {
@@ -79,6 +80,19 @@ export class ProjectRoute extends BaseRoute {
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           const manuscript = await this.projectController.saveProject(req)
+          res.status(HttpStatus.OK).send(manuscript)
+        }, next)
+      }
+    )
+
+    router.post(
+      `${this.basePath}/:projectId/manuscripts/:manuscriptId/save`,
+      expressJoiMiddleware(replaceProjectSchema),
+      AuthStrategy.JsonHeadersValidation,
+      AuthStrategy.JWTAuth,
+      (req: Request, res: Response, next: NextFunction) => {
+        return this.runWithErrorHandling(async () => {
+          const manuscript = await this.projectController.projectReplace(req)
           res.status(HttpStatus.OK).send(manuscript)
         }, next)
       }

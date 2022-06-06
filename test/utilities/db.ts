@@ -166,7 +166,7 @@ async function createSubmission (): Promise<void> {
 }
 
 async function createManuscript (): Promise<void> {
-  await DIContainer.sharedContainer.projectRepository.bulkDocs(manuscriptList)
+  await DIContainer.sharedContainer.projectRepository.bulkUpsert(manuscriptList)
 }
 
 async function createManuscriptNotes (): Promise<void> {

@@ -736,6 +736,32 @@ paths:
           description: "Invalid authorization token, or user record is in an invalid state for container creation."
         403:
           description: "User account is blocked or email is not verified."
+  /project/:projectId/manuscripts/:manuscriptId/save:
+    post:
+      tags:
+        - "project"
+      summary: "Replace project models."
+      description: "Replace old project models with the new input json."
+      operationId: "replace-project"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - $ref: "#/parameters/JsonAcceptHeadersSchema"
+        - $ref: "#/parameters/AuthorizationTokenHeaderSchema"
+        - $ref: "#/parameters/projectDataSchema"
+      responses:
+        200:
+          description: "Manuscript has been added successfully."
+          schema:
+            $ref: "#/definitions/NewContainerResponseSchema"
+        401:
+          description: "Invalid authorization token, or user record is in an invalid state for container creation."
+        403:
+          description: "User account is blocked or email is not verified."
+        404:
+          description: "Manuscript object not found"
   /project/:projectId/collaborators:
     post:
       tags:

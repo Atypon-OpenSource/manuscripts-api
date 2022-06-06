@@ -679,6 +679,15 @@ export class ContainerService implements IContainerService {
     )
   }
 
+  public async checkIfCanEdit(userID: string, containerID: string): Promise<boolean> {
+    const { owners, editors, writers } = await this.getContainer(containerID, userID)
+    let userList = [...owners, ...writers]
+    if (editors && editors.length) {
+      userList = userList.concat(editors)
+    }
+    return userList.includes(ContainerService.userIdForSync(userID))
+  }
+
   public async checkIfOwnerOrWriter(userID: string, containerID: string): Promise<boolean> {
     const { owners, writers } = await this.getContainer(containerID, userID)
     return [...owners, ...writers].includes(ContainerService.userIdForSync(userID))
@@ -838,7 +847,7 @@ export class ContainerService implements IContainerService {
   }
 
   async upsertProjectModels(docs: any): Promise<any> {
-    return this.containerRepository.bulkDocs(docs)
+    return this.containerRepository.bulkUpsert(docs)
   }
 
   /**
@@ -1032,7 +1041,7 @@ export class ContainerService implements IContainerService {
       }
     }
     if (externalFiles.length > 0) {
-      const result = await this.externalFileRepository.bulkDocs(externalFiles)
+      const result = await this.externalFileRepository.bulkUpsert(externalFiles)
       output.push(result)
     }
     return output

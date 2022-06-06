@@ -458,6 +458,18 @@ export async function saveProject(
   return req.send(body)
 }
 
+export async function insertProject(
+  headers: object,
+  params: any,
+  body: object
+): Promise<supertest.Response> {
+  const server: IServer = await createServer()
+  const req = supertest(server.app)
+    .post(`/api/v1/project/${params.containerID}/manuscripts/${params.manuscriptID}/save`)
+    .set(headers)
+  return req.send(body)
+}
+
 export async function getCollaborators(
   headers: object,
   params: any,
