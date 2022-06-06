@@ -270,12 +270,10 @@ export class ProjectController extends BaseController implements IProjectControl
     }
 
     const userId = ContainerService.userIdForSync(req.user._id)
-    //TODO: who can make this action?
-    const haveAccess = await DIContainer.sharedContainer.containerService[
+    const canEdit = await DIContainer.sharedContainer.containerService[
       ContainerType.project
     ].checkIfCanEdit(userId, projectId)
-    if (!haveAccess) {
-      //TODO: better error warding
+    if (!canEdit) {
       throw new RoleDoesNotPermitOperationError(`permission denied`, userId)
     }
 
