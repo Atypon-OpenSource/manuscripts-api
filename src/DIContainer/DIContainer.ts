@@ -86,7 +86,6 @@ import { PressroomService } from '../DomainServices/Pressroom/PressroomService'
 import { ManuscriptNoteRepository } from '../DataAccess/ManuscriptNoteRepository/ManuscriptNoteRepository'
 import { LibraryRepository } from '../DataAccess/LibraryRepository/LibraryRepository'
 import { LibraryCollectionRepository } from '../DataAccess/LibraryCollectionRepository/LibraryCollectionRepository'
-import { ExternalFileRepository } from '../DataAccess/ExternalFileRepository/ExternalFileRepository'
 import { IManuscriptRepository } from '../DataAccess/Interfaces/IManuscriptRepository'
 import { ManuscriptRepository } from '../DataAccess/ManuscriptRepository/ManuscriptRepository'
 import { SnapshotRepository } from '../DataAccess/SnapshotRepository/SnapshotRepository'
@@ -158,7 +157,6 @@ export class DIContainer {
   readonly shacklesService: IShacklesService
   readonly manuscriptRepository: IManuscriptRepository
   readonly manuscriptNotesRepository: ManuscriptNoteRepository
-  readonly externalFileRepository: ExternalFileRepository
   readonly correctionRepository: CorrectionRepository
   readonly snapshotRepository: SnapshotRepository
   readonly templateRepository: TemplateRepository
@@ -232,7 +230,6 @@ export class DIContainer {
       BucketKey.Project,
       this.dataBucket
     )
-    this.externalFileRepository = new ExternalFileRepository(BucketKey.Project, this.dataBucket)
     this.correctionRepository = new CorrectionRepository(BucketKey.Project, this.dataBucket)
     this.snapshotRepository = new SnapshotRepository(BucketKey.Project, this.dataBucket)
     this.templateRepository = new TemplateRepository(BucketKey.Project, this.dataBucket)
@@ -264,7 +261,6 @@ export class DIContainer {
         this.libraryCollectionRepository,
         this.manuscriptRepository,
         this.manuscriptNotesRepository,
-        this.externalFileRepository,
         this.correctionRepository,
         this.snapshotRepository,
         this.templateRepository
@@ -281,7 +277,6 @@ export class DIContainer {
         this.libraryCollectionRepository,
         this.manuscriptRepository,
         this.manuscriptNotesRepository,
-        this.externalFileRepository,
         this.correctionRepository,
         this.snapshotRepository,
         this.templateRepository
@@ -298,7 +293,6 @@ export class DIContainer {
         this.libraryCollectionRepository,
         this.manuscriptRepository,
         this.manuscriptNotesRepository,
-        this.externalFileRepository,
         this.correctionRepository,
         this.snapshotRepository,
         this.templateRepository

@@ -31,7 +31,6 @@ export interface SeedOptions {
   submission?: boolean
   manuscript?: boolean
   manuscriptNotes?: boolean
-  externalFile?: boolean
   corrections?: boolean
   templates?: boolean
   snapshots?: boolean

@@ -1041,30 +1041,6 @@ paths:
           description: "Invalid authorization token"
         404:
           description: "manuscript not found"
-  /container/external-files/submit:
-    post:
-      tags:
-        - "container"
-      summary: "Add/update External-Files"
-      description: ""
-      operationId: "submit-external-files"
-      consumes:
-        - "application/json"
-      produces:
-        - "application/json"
-      parameters:
-        - $ref: "#/parameters/AuthorizationTokenHeaderSchema"
-        - in: "body"
-          name: "body"
-          description: ""
-          required: true
-          schema:
-            $ref: "#/definitions/submitExternalFilesSchema"
-      responses:
-        202:
-          description: "External files created/updated successfully"
-        401:
-          description: "Invalid authorization token"
   /container/projects/:containerID/suggestions/status:
     get:
       tags:
@@ -1548,38 +1524,6 @@ definitions:
         type: string
       target:
         type: string
-  submitExternalFilesSchema:
-    type: "object"
-    required:
-      - "content"
-    properties:
-      content:
-        type: "array"
-        items:
-          type: "object"
-          required:
-            - "containerID"
-            - "manuscriptID"
-            - "publicUrl"
-          properties:
-            containerID:
-              type: string
-            manuscriptID:
-              type: string
-            publicUrl:
-              type: string
-            fileName:
-              type: string
-            MIME:
-              type: string
-            designation:
-              type: string
-            displayName:
-              type: string
-            description:
-              type: string
-            storeId:
-              type: string
   createSnapshotSchema:
     type: "object"
     required:

@@ -30,7 +30,6 @@ import {
   getPickerBuilderSchema,
   getProductionNotesSchema,
   addProductionNoteSchema,
-  submitExternalFiles,
   createManuscriptSchema,
   suggestionStatusSchema,
   createSnapshotSchema,
@@ -214,17 +213,6 @@ export class ContainerRoute extends BaseRoute {
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           res.send(await this.containersController.addProductionNote(req))
-        }, next)
-      }
-    )
-
-    router.post(
-      `${this.basePath}/external-files/submit`,
-      expressJoiMiddleware(submitExternalFiles, {}),
-      AuthStrategy.JWTAuth,
-      (req: Request, res: Response, next: NextFunction) => {
-        return this.runWithErrorHandling(async () => {
-          res.send(await this.containersController.submitExternalFiles(req))
         }, next)
       }
     )

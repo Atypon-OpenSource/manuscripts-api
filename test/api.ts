@@ -424,11 +424,6 @@ export async function createProject(headers: any, body: object): Promise<superte
   return supertest(server.app).post(`/api/v1/project/`).set(headers).send(body)
 }
 
-export async function submitExternalFiles(headers: any, body: object): Promise<supertest.Response> {
-  const server: IServer = await createServer()
-  return supertest(server.app).post(`/api/v1/container/external-files/submit`).set(headers).send(body)
-}
-
 export async function createSnapshot(
   headers: any,
   params: any,

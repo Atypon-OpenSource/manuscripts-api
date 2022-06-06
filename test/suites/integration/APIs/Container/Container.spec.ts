@@ -30,7 +30,6 @@ import {
   pickerBundle,
   addProductionNote,
   getProductionNotes,
-  submitExternalFiles,
   createManuscript,
   getCorrectionStatus,
   createSnapshot,
@@ -53,7 +52,6 @@ import { SeedOptions } from '../../../../../src/DataAccess/Interfaces/SeedOption
 import { validManuscript, validManuscript1 } from '../../../../data/fixtures/manuscripts'
 import { validNote1 } from '../../../../data/fixtures/ManuscriptNote'
 import { config } from '../../../../../src/Config/Config'
-import { externalFile } from '../../../../data/fixtures/ExternalFiles'
 import _ from 'lodash'
 import {
   createManuscriptNote,
@@ -1136,67 +1134,6 @@ describe('ContainerService - getProductionNotes', () => {
     )
     expect(getProductionNoteResponse.status).toBe(HttpStatus.OK)
     expect(JSON.parse(getProductionNoteResponse.text).length).toBeGreaterThan(0)
-  })
-})
-
-describe('ContainerService - addExternalFiles', () => {
-  beforeEach(async () => {
-    await drop()
-    await dropBucket(BucketKey.Project)
-    await seed({ users: true, applications: true, projects: true, externalFile: true })
-    await DIContainer.sharedContainer.syncService.createUserProfile(
-      {
-        _id: `User|${validBody2.email}`,
-        name: 'foobar',
-        email: validBody2.email
-      }
-    )
-  })
-  test('should add external files', async () => {
-    const loginResponse: supertest.Response = await basicLogin(
-      validBody2,
-      ValidHeaderWithApplicationKey
-    )
-    expect(loginResponse.status).toBe(HttpStatus.OK)
-
-    const authHeader = authorizationHeader(loginResponse.body.token)
-    const { _id, ...noId } = externalFile
-    const externalFilesResponse: supertest.Response = await submitExternalFiles(
-      {
-        ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader,
-      },
-      {
-        content: [
-          {
-            ...noId,
-            publicUrl: 'https://exampleUrl.com/path3',
-          },
-        ],
-      }
-    )
-    expect(externalFilesResponse.status).toBe(HttpStatus.OK)
-  })
-
-  test('should update external files', async () => {
-    const loginResponse: supertest.Response = await basicLogin(
-      validBody2,
-      ValidHeaderWithApplicationKey
-    )
-    expect(loginResponse.status).toBe(HttpStatus.OK)
-
-    const authHeader = authorizationHeader(loginResponse.body.token)
-    const { _id, ...noId } = externalFile
-    const externalFilesResponse: supertest.Response = await submitExternalFiles(
-      {
-        ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader,
-      },
-      {
-        content: [noId],
-      }
-    )
-    expect(externalFilesResponse.status).toBe(HttpStatus.OK)
   })
 })
 

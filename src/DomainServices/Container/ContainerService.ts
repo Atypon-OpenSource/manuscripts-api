@@ -15,7 +15,7 @@
  */
 
 import * as jsonwebtoken from 'jsonwebtoken'
-import { v4 as uuid_v4 } from 'uuid'
+import { v4 as uuidv4, v4 as uuid_v4 } from 'uuid'
 import * as _ from 'lodash'
 
 import { IContainerService, ArchiveOptions } from './IContainerService'
@@ -59,13 +59,7 @@ import { ManuscriptNoteRepository } from '../../DataAccess/ManuscriptNoteReposit
 import { UserService } from '../User/UserService'
 import { DIContainer } from '../../DIContainer/DIContainer'
 import { LibraryCollectionRepository } from '../../DataAccess/LibraryCollectionRepository/LibraryCollectionRepository'
-import {
-  ManuscriptNote,
-  ExternalFile,
-  ObjectTypes,
-  Snapshot,
-} from '@manuscripts/manuscripts-json-schema'
-import { ExternalFileRepository } from '../../DataAccess/ExternalFileRepository/ExternalFileRepository'
+import { ManuscriptNote, ObjectTypes, Snapshot, Model } from '@manuscripts/manuscripts-json-schema'
 import { CorrectionRepository } from '../../DataAccess/CorrectionRepository/CorrectionRepository'
 import { IManuscriptRepository } from '../../DataAccess/Interfaces/IManuscriptRepository'
 import { SnapshotRepository } from '../../DataAccess/SnapshotRepository/SnapshotRepository'
@@ -86,7 +80,6 @@ export class ContainerService implements IContainerService {
     private libraryCollectionRepository: LibraryCollectionRepository,
     private manuscriptRepository: IManuscriptRepository,
     private manuscriptNoteRepository: ManuscriptNoteRepository,
-    private externalFileRepository: ExternalFileRepository,
     private correctionRepository: CorrectionRepository,
     private snapshotRepository: SnapshotRepository,
     private templateRepository: TemplateRepository
@@ -1010,43 +1003,6 @@ export class ContainerService implements IContainerService {
     }
   }
 
-  public async submitExternalFiles(docs: ExternalFile[]) {
-    const stamp = timestamp()
-    const externalFiles: ExternalFile[] = []
-    const containerIDs: string[] = []
-    const output: any[] = []
-    for (const incomingDoc of docs) {
-      const existingDoc = await this.externalFileRepository.findByContainerIDAndPublicUrl(
-        incomingDoc.containerID,
-        incomingDoc.manuscriptID,
-        incomingDoc.publicUrl
-      )
-      if (existingDoc) {
-        _.extend(existingDoc, { ...incomingDoc, updatedAt: stamp })
-        const result = await this.externalFileRepository.update(existingDoc)
-        output.push(result)
-      } else {
-        externalFiles.push({
-          ...incomingDoc,
-          _id: `${this.externalFileRepository.objectType}:${uuid_v4()}`,
-          objectType: 'MPExternalFile',
-          createdAt: stamp,
-          updatedAt: stamp,
-          sessionID: uuid_v4(),
-        })
-      }
-      if (containerIDs.indexOf(incomingDoc.containerID) < 0) {
-        containerIDs.push(incomingDoc.containerID)
-        await this.updateDocumentSessionId(incomingDoc.containerID)
-      }
-    }
-    if (externalFiles.length > 0) {
-      const result = await this.externalFileRepository.bulkUpsert(externalFiles)
-      output.push(result)
-    }
-    return output
-  }
-
   public async updateDocumentSessionId(docId: string) {
     const sessionID = uuid_v4()
     await DIContainer.sharedContainer.projectRepository.patch(docId, { _id: docId, sessionID })
@@ -1083,5 +1039,19 @@ export class ContainerService implements IContainerService {
       throw new ValidationError('User must be a contributor in the container', containerID)
     }
     return this.userService.getCollaborators(containerID)
+  }
+
+  public async bulkInsert(docs: Model[]) {
+    const sessionID = uuidv4()
+    const createdAt = Math.round(Date.now() / 1000)
+    const projectDocs = docs.map((doc) => {
+      return {
+        ...doc,
+        sessionID,
+        createdAt,
+        updatedAt: createdAt,
+      }
+    })
+    return DIContainer.sharedContainer.projectRepository.bulkInsert(projectDocs)
   }
 }

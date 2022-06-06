@@ -591,7 +591,7 @@ describe('ProjectController', () => {
           _id: 'someId',
         },
         body: {
-          data: json,
+          data: json.data,
         },
       }
       await expect(controller.projectReplace(req)).rejects.toThrow(ValidationError)
@@ -609,7 +609,7 @@ describe('ProjectController', () => {
           _id: 'someId',
         },
         body: {
-          data: json,
+          data: json.data,
         },
       }
       await expect(controller.projectReplace(req)).rejects.toThrow(RoleDoesNotPermitOperationError)
@@ -629,7 +629,7 @@ describe('ProjectController', () => {
           _id: 'someId',
         },
         body: {
-          data: json,
+          data: json.data,
         },
       }
       await expect(controller.projectReplace(req)).rejects.toThrow(MissingManuscriptError)
@@ -643,7 +643,7 @@ describe('ProjectController', () => {
       projectRepo.bulkInsert = jest.fn()
       manuscriptRepo.getById = jest.fn(() => validManuscript1)
       service.checkIfCanEdit = jest.fn(() => true)
-      const req = {
+      const req: any = {
         params: {
           projectId: validProject._id,
           manuscriptId: validManuscript1._id,
@@ -652,7 +652,7 @@ describe('ProjectController', () => {
           _id: 'someId',
         },
         body: {
-          data: json,
+          data: json.data,
         },
       }
       await controller.projectReplace(req)

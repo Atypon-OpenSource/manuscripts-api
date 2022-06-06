@@ -35,7 +35,6 @@ import { submissionsList } from '../data/dump/submissions'
 //import { validManuscript, validManuscript1 } from '../data/fixtures/manuscripts'
 import { manuscriptList } from '../data/dump/manuscriptList'
 import { manuscriptNoteList } from '../data/dump/manuscriptNotes'
-import { externalFileList } from '../data/dump/externalFilesList'
 import { correctionList } from '../data/dump/correctionList'
 import { templates } from '../data/dump/templates'
 import { librariesList } from '../data/dump/library'
@@ -177,18 +176,10 @@ async function createManuscriptNotes (): Promise<void> {
   }
 }
 
-async function createExternalFile (): Promise<void> {
-  for (const externalFile of externalFileList) {
-    await DIContainer.sharedContainer.externalFileRepository.create(
-      _.clone(externalFile)
-    )
-  }
-}
-
 async function createCorrections (): Promise<void> {
-  for (const externalFile of correctionList) {
+  for (const correction of correctionList) {
     await DIContainer.sharedContainer.correctionRepository.create(
-      _.clone(externalFile)
+      _.clone(correction)
     )
   }
 }
@@ -314,10 +305,6 @@ export async function seed (options: SeedOptions): Promise<void> {
 
   if (options.manuscriptNotes) {
     storagePromises.push(createManuscriptNotes())
-  }
-
-  if (options.externalFile) {
-    storagePromises.push(createExternalFile())
   }
 
   if (options.corrections) {
