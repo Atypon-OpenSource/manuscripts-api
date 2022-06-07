@@ -15,7 +15,7 @@
  */
 
 import * as jsonwebtoken from 'jsonwebtoken'
-import { v4 as uuidv4, v4 as uuid_v4 } from 'uuid'
+import { v4 as uuid_v4 } from 'uuid'
 import * as _ from 'lodash'
 
 import { IContainerService, ArchiveOptions } from './IContainerService'
@@ -1042,7 +1042,7 @@ export class ContainerService implements IContainerService {
   }
 
   public async bulkInsert(docs: Model[]) {
-    const sessionID = uuidv4()
+    const sessionID = uuid_v4()
     const createdAt = Math.round(Date.now() / 1000)
     const projectDocs = docs.map((doc) => {
       return {
