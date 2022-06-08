@@ -25,7 +25,6 @@ import {
   ContainerRequest,
   Submission,
   ManuscriptNote,
-  ExternalFile,
   Manuscript,
   Correction,
   ManuscriptTemplate,
@@ -71,11 +70,6 @@ export type ManuscriptNoteLike = Pick<
 >
 
 export type ManuscriptLike = Pick<Manuscript, Exclude<keyof Manuscript, 'createdAt' | 'updatedAt'>>
-
-export type ExternalFileLike = Pick<
-  ExternalFile,
-  Exclude<keyof ExternalFile, 'createdAt' | 'updatedAt'>
->
 
 export type CorrectionLike = Pick<Correction, Exclude<keyof Correction, 'createdAt' | 'updatedAt'>>
 

@@ -27,7 +27,6 @@ import { ContainerType } from '../../../../../../src/Models/ContainerModels'
 import { validProject } from '../../../../../data/fixtures/projects'
 import { validJWTToken } from '../../../../../data/fixtures/authServiceUser'
 import { UserService } from '../../../../../../src/DomainServices/User/UserService'
-import { externalFile, externalFile1 } from '../../../../../data/fixtures/ExternalFiles'
 import { validSnapshot } from '../../../../../data/fixtures/Snapshots'
 import { validCorrection } from '../../../../../data/fixtures/Corrections'
 
@@ -1022,20 +1021,6 @@ describe('ContainersController - addProductionNote', () => {
     const containersController: ContainersController = new ContainersController()
     await containersController.addProductionNote(req)
     expect(containerService.createManuscriptNote).toBeCalled()
-  })
-})
-describe('ContainersController - submitExternalFiles', () => {
-  test('should call addExternalFiles', async () => {
-    const containerService = DIContainer.sharedContainer.containerService[ContainerType.project]
-    containerService.submitExternalFiles = jest.fn()
-    const req: any = {
-      body: {
-        content: [externalFile, externalFile1]
-      }
-    }
-    const containersController: ContainersController = new ContainersController()
-    await containersController.submitExternalFiles(req)
-    expect(containerService.submitExternalFiles).toBeCalled()
   })
 })
 

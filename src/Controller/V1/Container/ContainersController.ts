@@ -14,12 +14,7 @@
  * limitations under the License.
  */
 
-import {
-  Correction,
-  ExternalFile,
-  ObjectTypes,
-  Snapshot,
-} from '@manuscripts/manuscripts-json-schema'
+import { Correction, ObjectTypes, Snapshot } from '@manuscripts/manuscripts-json-schema'
 import { Request } from 'express'
 import { isString } from '../../../util'
 import * as HttpStatus from 'http-status-codes'
@@ -390,14 +385,6 @@ export class ContainersController extends ContainedBaseController implements ICo
       connectUserID,
       source,
       target
-    )
-  }
-
-  async submitExternalFiles(req: Request) {
-    const { content } = req.body
-    const externalFiles: ExternalFile[] = content
-    return DIContainer.sharedContainer.containerService[ContainerType.project].submitExternalFiles(
-      externalFiles
     )
   }
 

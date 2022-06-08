@@ -48,11 +48,6 @@ const projectIndexesObj = {
       { fields: ['expiry'], indexType: 'BTREE' },
     ],
     [ObjectTypes.Invitation]: [{ fields: ['expiry'], indexType: 'BTREE' }],
-    [ObjectTypes.ExternalFile]: [
-      { fields: ['containerID'] },
-      { fields: ['manuscriptID'] },
-      { fields: ['publicUrl'] },
-    ],
   } as any,
 } as any
 

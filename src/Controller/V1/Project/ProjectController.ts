@@ -285,7 +285,10 @@ export class ProjectController extends BaseController implements IProjectControl
       throw new MissingManuscriptError(manuscriptId)
     }
     await DIContainer.sharedContainer.projectRepository.removeWithAllResources(projectId)
-    return await DIContainer.sharedContainer.projectRepository.bulkInsert(data)
+
+    return await DIContainer.sharedContainer.containerService[ContainerType.project].bulkInsert(
+      data
+    )
   }
 
   async collaborators(req: Request): Promise<UserCollaborator[]> {

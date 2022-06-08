@@ -16,13 +16,7 @@
 
 import { ContainerRole, Container } from '../../Models/ContainerModels'
 import { User } from '../../Models/UserModels'
-import {
-  ExternalFile,
-  Manuscript,
-  ManuscriptNote,
-  Model,
-  Snapshot,
-} from '@manuscripts/manuscripts-json-schema'
+import { Manuscript, ManuscriptNote, Model, Snapshot } from '@manuscripts/manuscripts-json-schema'
 
 export interface ArchiveOptions {
   getAttachments?: boolean
@@ -159,16 +153,18 @@ export interface IContainerService {
   ): Promise<ManuscriptNote[]>
 
   /**
-   * create/update given list of external files
-   * @param docs list of ExternalFile document to be created/updated
-   */
-  submitExternalFiles(docs: ExternalFile[]): void
-
-  /**
    * Updates the document (project) sessionID
    * @param docId the document/project ID
    */
   updateDocumentSessionId(docId: string): void
 
   saveSnapshot(key: string, containerId: string, creator: string, name?: string): Promise<Snapshot>
+
+  /**
+   * Submit list of docs to the database
+   * Adding sessionID, createdAt, updatedAt attributes
+   * @param docs list of Models
+   * @return an object with the number of docs inserted.
+   */
+  bulkInsert(docs: Model[]): Promise<any>
 }

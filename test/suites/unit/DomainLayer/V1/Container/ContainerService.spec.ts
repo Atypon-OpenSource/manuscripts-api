@@ -64,7 +64,6 @@ import { validUser } from '../../../../../data/fixtures/userServiceUser'
 import { validManuscript } from '../../../../../data/fixtures/manuscripts'
 import { validNote1, validNote2 } from '../../../../../data/fixtures/ManuscriptNote'
 import { validBody2 } from '../../../../../data/fixtures/credentialsRequestPayload'
-import { externalFile } from '../../../../../data/fixtures/ExternalFiles'
 import { ContainerService } from '../../../../../../src/DomainServices/Container/ContainerService'
 const JSZip = require('jszip')
 
@@ -1972,29 +1971,6 @@ describe('ContainerService - getProductionNotes', () => {
     const notes = await containerService.getProductionNotes(containerID, manuscriptID)
     expect(notes).toBeTruthy()
     expect(notes.length).toBe(1)
-  })
-})
-
-describe('ContainerService - submitExternalFile', () => {
-  test('should add externalFiles', async () => {
-    const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
-    DIContainer.sharedContainer.projectRepository.patch = jest.fn()
-    const repo: any = DIContainer.sharedContainer.externalFileRepository
-    repo.findByContainerIDAndPublicUrl = jest.fn()
-    repo.bulkUpsert = jest.fn(() => [externalFile])
-    await containerService.submitExternalFiles([externalFile])
-    expect(repo.bulkUpsert).toBeCalled()
-  })
-  test('should update externalFile', async () => {
-    const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
-    DIContainer.sharedContainer.projectRepository.patch = jest.fn()
-    const repo: any = DIContainer.sharedContainer.externalFileRepository
-    repo.findByContainerIDAndPublicUrl = jest.fn(() => externalFile)
-    repo.update = jest.fn()
-    await containerService.submitExternalFiles([externalFile])
-    expect(repo.update).toBeCalled()
   })
 })
 
