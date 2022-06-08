@@ -224,7 +224,7 @@ export abstract class ContainerRepository<Container, ContainerLike, PatchContain
    * Overriding the remove method to make it delete all related resources.
    * @param id The Id of a container.
    */
-  public async removeWithAllResources(id: string): Promise<void> {
+  public async removeAllResources(id: string): Promise<void> {
     const Q = {
       OR: [
         {
@@ -243,6 +243,15 @@ export abstract class ContainerRepository<Container, ContainerLike, PatchContain
     }
 
     await this.database.bucket.remove(Q)
+  }
+
+  /**
+   * Overriding the remove method to make it delete all related resources.
+   * plus the container itself
+   * @param id The Id of a container.
+   */
+  public async removeWithAllResources(id: string): Promise<void> {
+    await this.removeAllResources(id)
     await this.purge(id)
   }
 
