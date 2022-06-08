@@ -166,5 +166,5 @@ export interface IContainerService {
    * @param docs list of Models
    * @return an object with the number of docs inserted.
    */
-  bulkInsert(docs: Model[]): Promise<any>
+  bulkInsert(docs: Model[], containerID: string, manuscriptID: string): Promise<any>
 }

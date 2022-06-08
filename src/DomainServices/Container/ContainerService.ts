@@ -59,7 +59,13 @@ import { ManuscriptNoteRepository } from '../../DataAccess/ManuscriptNoteReposit
 import { UserService } from '../User/UserService'
 import { DIContainer } from '../../DIContainer/DIContainer'
 import { LibraryCollectionRepository } from '../../DataAccess/LibraryCollectionRepository/LibraryCollectionRepository'
-import { ManuscriptNote, ObjectTypes, Snapshot, Model } from '@manuscripts/manuscripts-json-schema'
+import {
+  ManuscriptNote,
+  ObjectTypes,
+  Snapshot,
+  Model,
+  manuscriptIDTypes,
+} from '@manuscripts/manuscripts-json-schema'
 import { CorrectionRepository } from '../../DataAccess/CorrectionRepository/CorrectionRepository'
 import { IManuscriptRepository } from '../../DataAccess/Interfaces/IManuscriptRepository'
 import { SnapshotRepository } from '../../DataAccess/SnapshotRepository/SnapshotRepository'
@@ -1041,16 +1047,23 @@ export class ContainerService implements IContainerService {
     return this.userService.getCollaborators(containerID)
   }
 
-  public async bulkInsert(docs: Model[]) {
+  public async bulkInsert(docs: Model[], containerID: string, manuscriptID: string) {
     const sessionID = uuid_v4()
     const createdAt = Math.round(Date.now() / 1000)
     const projectDocs = docs.map((doc) => {
-      return {
+      const updatedDoc = {
         ...doc,
         sessionID,
         createdAt,
         updatedAt: createdAt,
+        containerID,
+      } as any
+
+      if (manuscriptIDTypes.has(doc.objectType)) {
+        updatedDoc.manuscriptID = manuscriptID
       }
+
+      return updatedDoc
     })
     return DIContainer.sharedContainer.projectRepository.bulkInsert(projectDocs)
   }

@@ -284,10 +284,12 @@ export class ProjectController extends BaseController implements IProjectControl
     if (!manuscriptsObj) {
       throw new MissingManuscriptError(manuscriptId)
     }
-    await DIContainer.sharedContainer.projectRepository.removeWithAllResources(projectId)
+    await DIContainer.sharedContainer.projectRepository.removeAllResources(projectId)
 
     return await DIContainer.sharedContainer.containerService[ContainerType.project].bulkInsert(
-      data
+      data,
+      projectId,
+      manuscriptId
     )
   }
 

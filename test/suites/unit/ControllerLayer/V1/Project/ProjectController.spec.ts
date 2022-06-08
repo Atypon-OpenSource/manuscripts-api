@@ -634,11 +634,12 @@ describe('ProjectController', () => {
       }
       await expect(controller.projectReplace(req)).rejects.toThrow(MissingManuscriptError)
     })
-    test('should removeWithAllResources & bulkInsert to be called', async () => {
+    test('removeAllResources & bulkInsert should be called', async () => {
       const controller: any = new ProjectController()
       const service: any = DIContainer.sharedContainer.containerService[ContainerType.project]
       const manuscriptRepo: any = DIContainer.sharedContainer.manuscriptRepository
       const projectRepo: any = DIContainer.sharedContainer.projectRepository
+      projectRepo.removeAllResources = jest.fn()
       projectRepo.removeWithAllResources = jest.fn()
       projectRepo.bulkInsert = jest.fn()
       manuscriptRepo.getById = jest.fn(() => validManuscript1)
@@ -656,7 +657,7 @@ describe('ProjectController', () => {
         },
       }
       await controller.projectReplace(req)
-      expect(projectRepo.removeWithAllResources).toBeCalled()
+      expect(projectRepo.removeAllResources).toBeCalled()
       expect(projectRepo.bulkInsert).toBeCalled()
     })
   })
