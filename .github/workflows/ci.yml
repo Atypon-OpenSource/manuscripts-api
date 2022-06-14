@@ -54,7 +54,7 @@ jobs:
 
       - name: run_app
         run: |
-          npm ci
+          npm ci --legacy-peer-deps
           ./bin/build-env.js .env.example > .env
           export env $(grep -v '^#' ".env" | xargs)
           NODE_ENV=production npx gulp -f docker/utils/Gulpfile.js
@@ -89,7 +89,7 @@ jobs:
 
       - name: run_test_suite
         run: |
-          npm ci
+          npm ci --legacy-peer-deps
           ./bin/set-package-json-version.sh
           ./bin/build-env.js .env.example > .env
           export env $(grep -v '^#' ".env" | xargs)
@@ -119,7 +119,7 @@ jobs:
         env:
           DEV_PRESSROOM_APIKEY: ${{secrets.DEV_PRESSROOM_APIKEY}}
         run: |
-          npm ci
+          npm ci --legacy-peer-deps
           ./bin/set-package-json-version.sh
           ./bin/build-env.js .env.example > .env
           export env $(grep -v '^#' ".env" | xargs)
