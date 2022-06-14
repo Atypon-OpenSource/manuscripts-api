@@ -46,17 +46,28 @@ do
   --data-binary "{\"_id\":\"MPProject:$user\"}" && \
   echo -e "Project\"MPProject:$user\" created\n"
 
+  curl  -X "POST" "http://localhost:3000/api/v1/container/projects/MPProject:$user/manuscripts/MPManuscript:$user" \
+  --fail \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H 'manuscripts-app-id: io.manuscripts' \
+  -H 'manuscripts-app-secret: Valid secret' \
+  -H "Authorization: Bearer $token" && \
+  echo -e "\"Manuscript:$user\" created\n"
+
+
   parent_path=$(pwd)
-  zip_path="test/data/fixtures/jats-sample.zip"
+  zip_path="test/data/fixtures/sample/seed.manuscript-json"
   file_path="$parent_path/$zip_path"
 
-  curl "http://localhost:3000/api/v1/container/project/MPProject:$user" \
+  curl "http://localhost:3000/api/v1/project/MPProject:$user/save" \
   --fail \
+  -H 'Content-Type: application/json' \
   -H 'Accept: application/json, */*' \
   -H 'manuscripts-app-id: io.manuscripts' \
   -H 'manuscripts-app-secret: Valid secret' \
   -H "Authorization: Bearer $token" \
-  -F "file=@$file_path"
+  --data "@$file_path" \
 
   echo -e "Project\"MPProject:$user\" seeded with a manuscript\n"
 
