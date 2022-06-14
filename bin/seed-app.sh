@@ -16,7 +16,7 @@ do
     -H 'Accept: application/json' \
     --data-binary "{\"email\":\"$email\",\"password\":\"123123123\",\"name\":\"$user\"}" && \
     echo -e "User \"$email\" created\n"
-  
+
   token=$(curl -o response.txt 'http://localhost:3000/api/v1/auth/login' \
     --silent \
     -H 'Content-Type: application/json' \
@@ -28,7 +28,7 @@ do
 
   echo -e "Token \"$token\" created\n"
 
-  curl -X "DELETE" "http://localhost:3000/api/v1/MPProject:$user" \
+  curl -X "DELETE" "http://localhost:3000/api/v1/container/MPProject:$user" \
   --fail \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
@@ -36,7 +36,7 @@ do
   -H 'manuscripts-app-secret: Valid secret' \
   -H "Authorization: Bearer $token" \
 
-  curl 'http://localhost:3000/api/v1/project/create' \
+  curl 'http://localhost:3000/api/v1/container/project/create' \
   --fail \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
@@ -50,13 +50,13 @@ do
   zip_path="test/data/fixtures/jats-sample.zip"
   file_path="$parent_path/$zip_path"
 
-  curl "http://localhost:3000/api/v1/project/MPProject:$user" \
+  curl "http://localhost:3000/api/v1/container/project/MPProject:$user" \
   --fail \
   -H 'Accept: application/json, */*' \
   -H 'manuscripts-app-id: io.manuscripts' \
   -H 'manuscripts-app-secret: Valid secret' \
   -H "Authorization: Bearer $token" \
-  -F "file=@$file_path" 
+  -F "file=@$file_path"
 
   echo -e "Project\"MPProject:$user\" seeded with a manuscript\n"
 
