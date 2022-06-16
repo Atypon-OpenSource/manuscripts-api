@@ -31,7 +31,7 @@ const headers = authorizationHeader(
   generateLoginToken(
     {
       tokenId: 'foo',
-      userId: 'bar',
+      userId: 'User|bar',
       appId: 'foobar',
       email: 'foo@bar.com',
       userProfileId: 'foo',
@@ -255,7 +255,9 @@ describe('SGController', () => {
 
       const sgController: any = new SGController()
       const projectRepository: any = DIContainer.sharedContainer.projectRepository
-      projectRepository.patch = jest.fn(() =>Promise.reject(new InvalidBucketError('project' as BucketKey)))
+      projectRepository.patch = jest.fn(() =>
+        Promise.reject(new InvalidBucketError('project' as BucketKey))
+      )
       sgController.configuration = {
         buckets: {
           project: req.params.db,

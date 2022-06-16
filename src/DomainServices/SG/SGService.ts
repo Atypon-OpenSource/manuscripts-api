@@ -15,6 +15,7 @@
  */
 
 import { DIContainer } from '../../DIContainer/DIContainer'
+import { ContainerService } from '../Container/ContainerService'
 import { ISGService } from './ISGService'
 import jsonwebtoken from 'jsonwebtoken'
 import { isLoginTokenPayload } from '../../Utilities/JWT/LoginTokenPayload'
@@ -43,36 +44,21 @@ export class SGService implements ISGService {
   }
 
   public async get(token: string, id: string): Promise<any> {
-    const payload = jsonwebtoken.decode(token)
-
-    if (!isLoginTokenPayload(payload)) {
-      throw new InvalidCredentialsError('Unexpected token payload.')
-    }
-
+    const userId = this.getUserId(token)
     const repo = this.getRepoById(id)
-    return repo.getById(id, payload.userId)
+    return repo.getById(id, userId)
   }
 
   public async create(token: string, doc: any): Promise<any> {
-    const payload = jsonwebtoken.decode(token)
-
-    if (!isLoginTokenPayload(payload)) {
-      throw new InvalidCredentialsError('Unexpected token payload.')
-    }
-
+    const userId = this.getUserId(token)
     const repo = this.getRepoById(doc._id)
-    return repo.create(doc, payload.userId)
+    return repo.create(doc, userId)
   }
 
   public async update(token: string, id: string, doc: any): Promise<any> {
-    const payload = jsonwebtoken.decode(token)
-
-    if (!isLoginTokenPayload(payload)) {
-      throw new InvalidCredentialsError('Unexpected token payload.')
-    }
-
+    const userId = this.getUserId(token)
     const repo = this.getRepoById(id)
-    return repo.patch(id, doc, payload.userId).catch((err: any) => {
+    return repo.patch(id, doc, userId).catch((err: any) => {
       if (err.statusCode === HttpStatus.BAD_REQUEST) {
         doc._id = id
         return this.create(token, doc)
@@ -82,14 +68,17 @@ export class SGService implements ISGService {
   }
 
   public async remove(token: string, id: any): Promise<any> {
-    const payload = jsonwebtoken.decode(token)
+    const userId = this.getUserId(token)
+    const repo = this.getRepoById(id)
+    return repo.remove(id, userId)
+  }
 
+  private getUserId(token: string) {
+    const payload = jsonwebtoken.decode(token)
     if (!isLoginTokenPayload(payload)) {
       throw new InvalidCredentialsError('Unexpected token payload.')
     }
-
-    const repo = this.getRepoById(id)
-    return repo.remove(id, payload.userId)
+    return ContainerService.userIdForSync(payload.userId)
   }
 
   private getRepoById(id: string) {

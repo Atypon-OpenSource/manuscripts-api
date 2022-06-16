@@ -43,9 +43,7 @@ beforeAll(async () => {
 })
 
 async function seedAccounts() {
-  await DIContainer.sharedContainer.syncService.getOrCreateUserStatus(
-    'User|' + validBody.email
-  )
+  await DIContainer.sharedContainer.syncService.getOrCreateUserStatus('User|' + validBody.email)
 }
 
 afterAll(() => {
@@ -54,8 +52,8 @@ afterAll(() => {
 
 jest.setTimeout(180000)
 
-const userId = 'User|' + validBody.email
-const project = {...validProject, ...{ owners: [userId]}}
+const userId = 'User_' + validBody.email
+const project = { ...validProject, ...{ owners: [userId] } }
 
 describe('SG - CRUD', () => {
   let currentRev: any
@@ -77,7 +75,6 @@ describe('SG - CRUD', () => {
         db: 'project',
       }
     )
-
     expect(response.status).toBe(HttpStatus.OK)
     const doc = response.body
     currentRev = doc._rev
@@ -251,7 +248,7 @@ describe('SG - CRUD', () => {
     expect(loginResponse.status).toBe(HttpStatus.OK)
 
     const authHeader = authorizationHeader(loginResponse.body.token)
-    const body = { writers: ['User|' + validBody2.email] }
+    const body = { writers: ['User_' + validBody2.email] }
 
     const response: supertest.Response = await SGUpdate(
       {
