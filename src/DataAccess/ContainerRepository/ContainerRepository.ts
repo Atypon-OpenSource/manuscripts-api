@@ -15,11 +15,11 @@
  */
 
 import { Model, LibraryCollection } from '@manuscripts/manuscripts-json-schema'
-import { selectActiveResources } from '@manuscripts/manuscripts-json-schema-utils'
 
 import { SGRepository } from '../SGRepository'
 
 import { IContainerRepository } from '../Interfaces/IContainerRepository'
+import { selectActiveResources } from '../../Utilities/ContainerUtils/selectActiveResources'
 
 export abstract class ContainerRepository<Container, ContainerLike, PatchContainer>
   extends SGRepository<Container, ContainerLike, ContainerLike, PatchContainer>
