@@ -77,7 +77,7 @@ export class ContainerRoute extends BaseRoute {
       }
     )
 
-    router.get(
+    router.post(
       [`${this.basePath}/:projectId/load`, `${this.basePath}/:projectId/:manuscriptId/load`],
       expressJoiMiddleware(loadProjectSchema, {}),
       AuthStrategy.JWTAuth,
