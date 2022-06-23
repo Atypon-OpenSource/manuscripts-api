@@ -11,6 +11,7 @@
     "isolatedModules": true,
     "noUnusedLocals": true,
     "strictNullChecks": true,
+    "resolveJsonModule": true,
     "strictFunctionTypes": true,
     "noUnusedParameters": true,
     "forceConsistentCasingInFileNames": true,
