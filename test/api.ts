@@ -252,7 +252,10 @@ export async function manageUserRole(
   params: any
 ): Promise<supertest.Response> {
   const server: IServer = await createServer()
-  return supertest(server.app).post(`/api/v1/container/${params.containerID}/roles`).set(headers).send(body)
+  return supertest(server.app)
+    .post(`/api/v1/container/${params.containerID}/roles`)
+    .set(headers)
+    .send(body)
 }
 
 export async function addUser(
@@ -261,7 +264,10 @@ export async function addUser(
   params: any
 ): Promise<supertest.Response> {
   const server: IServer = await createServer()
-  return supertest(server.app).post(`/api/v1/container/${params.containerID}/addUser`).set(headers).send(body)
+  return supertest(server.app)
+    .post(`/api/v1/container/${params.containerID}/addUser`)
+    .set(headers)
+    .send(body)
 }
 
 export async function getArchive(
@@ -287,7 +293,7 @@ export async function loadProject(
 ): Promise<supertest.Response> {
   const server: IServer = await createServer()
   return supertest(server.app)
-    .get(
+    .post(
       params.manuscriptId
         ? `/api/v1/container/${params.projectId}/${params.manuscriptId}/load`
         : `/api/v1/container/${params.projectId}/load`
@@ -311,7 +317,11 @@ export async function getAttachment(
 export async function accessToken(headers: object, params: any): Promise<supertest.Response> {
   const server: IServer = await createServer()
   return supertest(server.app)
-    .get(`/api/v1/container/${getContainerType(params.containerID)}/${params.containerID}/${params.scope}`)
+    .get(
+      `/api/v1/container/${getContainerType(params.containerID)}/${params.containerID}/${
+        params.scope
+      }`
+    )
     .set(headers)
     .send()
 }
@@ -346,7 +356,9 @@ export async function getProductionNotes(
 ): Promise<supertest.Response> {
   const server: IServer = await createServer()
   return supertest(server.app)
-    .get(`/api/v1/container/projects/${params.containerID}/manuscripts/${params.manuscriptID}/notes`)
+    .get(
+      `/api/v1/container/projects/${params.containerID}/manuscripts/${params.manuscriptID}/notes`
+    )
     .set(headers)
     .send()
 }
@@ -465,12 +477,11 @@ export async function insertProject(
   return req.send(body)
 }
 
-export async function getCollaborators(
-  headers: object,
-  params: any,
-): Promise<supertest.Response> {
+export async function getCollaborators(headers: object, params: any): Promise<supertest.Response> {
   const server: IServer = await createServer()
-  return supertest(server.app).get(`/api/v1/project/${params.containerID}/collaborators`).set(headers)
+  return supertest(server.app)
+    .get(`/api/v1/project/${params.containerID}/collaborators`)
+    .set(headers)
 }
 
 export async function importManuscript(

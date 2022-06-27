@@ -612,7 +612,7 @@ paths:
          200:
            description: "User account marked for deletion successfully."
          401:
-           description: "Invalid authorization token, or user record not found."   
+           description: "Invalid authorization token, or user record not found."
   /user/unmark-for-deletion:
     post:
        tags:
@@ -763,7 +763,7 @@ paths:
         404:
           description: "Manuscript object not found"
   /project/:projectId/collaborators:
-    post:
+    get:
       tags:
         - "project"
       summary: "Get project collaborators"
@@ -945,7 +945,7 @@ paths:
         - "application/json"
       produces:
         - "application/json"
-      parameters: 
+      parameters:
         - $ref: '#/parameters/JsonAcceptHeadersSchema'
         - $ref: '#/parameters/AuthorizationTokenHeaderSchema'
       responses:
@@ -1704,7 +1704,7 @@ definitions:
         type: "string"
   UserContainersResponseSchema:
     type: "array"
-    items: 
+    items:
       type: "object"
       description: "Object of type container."
       properties:
@@ -1726,9 +1726,9 @@ definitions:
             type: "string"
         title:
           type: "string"
-        createdAt: 
+        createdAt:
           type: "number"
-        updatedAt: 
+        updatedAt:
           type: "number"
   UserSchema:
     type: "object"
