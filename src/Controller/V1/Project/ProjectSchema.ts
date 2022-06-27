@@ -85,6 +85,5 @@ export const replaceProjectSchema: Joi.SchemaMap = {
 export const projectCollaboratorsSchema: Joi.SchemaMap = {
   headers: Joi.object({
     accept: appJsonAndCharset,
-    'content-type': Joi.string().required(),
   }).options({ allowUnknown: true }),
 }
