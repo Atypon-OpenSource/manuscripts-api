@@ -55,7 +55,6 @@ do
   -H "Authorization: Bearer $token" && \
   echo -e "\"MPManuscript:$user\" created\n"
 
-
   parent_path=$(pwd)
   zip_path="test/data/fixtures/sample/seed.manuscript-json"
   user_specific_zip_path="test/data/fixtures/sample/$user.manuscript-json"
@@ -63,8 +62,13 @@ do
   user_specific_file_path="$parent_path/$user_specific_zip_path"
 
   cp $file_path $user_specific_file_path
-  sed -i '' "s/MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C/MPProject:$user/g" $user_specific_file_path
-  sed -i '' "s/MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232/MPManuscript:$user/g" $user_specific_file_path
+  if [ "$(uname)" == "Darwin" ]; then
+      sed -i '' "s/MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C/MPProject:$user/g" $user_specific_file_path
+      sed -i '' "s/MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232/MPManuscript:$user/g" $user_specific_file_path
+  elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
+      sed -i "s/MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C/MPProject:$user/g" $user_specific_file_path
+      sed -i "s/MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232/MPManuscript:$user/g" $user_specific_file_path
+  fi
 
   curl "http://localhost:3000/api/v1/project/MPProject:$user/save" \
   --fail \
