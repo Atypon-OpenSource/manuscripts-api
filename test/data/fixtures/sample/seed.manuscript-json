@@ -25,7 +25,9 @@
       "contents": "<div xmlns=\"http://www.w3.org/1999/xhtml\" class=\"csl-bib-body\" id=\"MPBibliographyElement:C65083EA-1727-4AC4-900B-B89FA4376CFB\">  <div class=\"csl-entry\">\n    <div class=\"csl-left-margin\">1.</div><div class=\"csl-right-inline\">Piipari, M., Eaton, A. &amp; Pepe, A. <a href=\"https://www.ncbi.nlm.nih.gov/books/NBK540955/\"><i>Introducing Manuscripts.io: open source editing environment for structured, computationally reproducible research documents</i></a>. (National Center for Biotechnology Information (US), 2019).</div>\n  </div>\n</div>",
       "paragraphStyle": "MPParagraphStyle:339456D4-33B6-40EE-8B6F-80662870B3A7",
       "_id": "MPBibliographyElement:C65083EA-1727-4AC4-900B-B89FA4376CFB",
-      "objectType": "MPBibliographyElement"
+      "objectType": "MPBibliographyElement",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
     },
     {
       "type": "book",
@@ -529,7 +531,9 @@
     {
       "contentType": "image/png",
       "_id": "MPFigure:C9A3CBCE-4AF4-4AD2-97B0-D2848BEFDE5A",
-      "objectType": "MPFigure"
+      "objectType": "MPFigure",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
     },
     {
       "containedObjectIDs": [
@@ -692,7 +696,8 @@
       "TeXRepresentation": "2+3=5",
       "SVGRepresentation": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"9.176ex\" height=\"1.692ex\" role=\"img\" focusable=\"false\" viewBox=\"0 -666 4056 748\" style=\"vertical-align: -0.186ex;\"><g stroke=\"currentColor\" fill=\"currentColor\" stroke-width=\"0\" transform=\"matrix(1 0 0 -1 0 0)\"><g data-mml-node=\"math\"><g data-mml-node=\"mn\"><path data-c=\"32\" d=\"M109 429Q82 429 66 447T50 491Q50 562 103 614T235 666Q326 666 387 610T449 465Q449 422 429 383T381 315T301 241Q265 210 201 149L142 93L218 92Q375 92 385 97Q392 99 409 186V189H449V186Q448 183 436 95T421 3V0H50V19V31Q50 38 56 46T86 81Q115 113 136 137Q145 147 170 174T204 211T233 244T261 278T284 308T305 340T320 369T333 401T340 431T343 464Q343 527 309 573T212 619Q179 619 154 602T119 569T109 550Q109 549 114 549Q132 549 151 535T170 489Q170 464 154 447T109 429Z\"></path></g><g data-mml-node=\"mo\" transform=\"translate(722.2, 0)\"><path data-c=\"2B\" d=\"M56 237T56 250T70 270H369V420L370 570Q380 583 389 583Q402 583 409 568V270H707Q722 262 722 250T707 230H409V-68Q401 -82 391 -82H389H387Q375 -82 369 -68V230H70Q56 237 56 250Z\"></path></g><g data-mml-node=\"mn\" transform=\"translate(1722.4, 0)\"><path data-c=\"33\" d=\"M127 463Q100 463 85 480T69 524Q69 579 117 622T233 665Q268 665 277 664Q351 652 390 611T430 522Q430 470 396 421T302 350L299 348Q299 347 308 345T337 336T375 315Q457 262 457 175Q457 96 395 37T238 -22Q158 -22 100 21T42 130Q42 158 60 175T105 193Q133 193 151 175T169 130Q169 119 166 110T159 94T148 82T136 74T126 70T118 67L114 66Q165 21 238 21Q293 21 321 74Q338 107 338 175V195Q338 290 274 322Q259 328 213 329L171 330L168 332Q166 335 166 348Q166 366 174 366Q202 366 232 371Q266 376 294 413T322 525V533Q322 590 287 612Q265 626 240 626Q208 626 181 615T143 592T132 580H135Q138 579 143 578T153 573T165 566T175 555T183 540T186 520Q186 498 172 481T127 463Z\"></path></g><g data-mml-node=\"mo\" transform=\"translate(2500.2, 0)\"><path data-c=\"3D\" d=\"M56 347Q56 360 70 367H707Q722 359 722 347Q722 336 708 328L390 327H72Q56 332 56 347ZM56 153Q56 168 72 173H708Q722 163 722 153Q722 140 707 133H70Q56 140 56 153Z\"></path></g><g data-mml-node=\"mn\" transform=\"translate(3556, 0)\"><path data-c=\"35\" d=\"M164 157Q164 133 148 117T109 101H102Q148 22 224 22Q294 22 326 82Q345 115 345 210Q345 313 318 349Q292 382 260 382H254Q176 382 136 314Q132 307 129 306T114 304Q97 304 95 310Q93 314 93 485V614Q93 664 98 664Q100 666 102 666Q103 666 123 658T178 642T253 634Q324 634 389 662Q397 666 402 666Q410 666 410 648V635Q328 538 205 538Q174 538 149 544L139 546V374Q158 388 169 396T205 412T256 420Q337 420 393 355T449 201Q449 109 385 44T229 -22Q148 -22 99 32T50 154Q50 178 61 192T84 210T107 214Q132 214 148 197T164 157Z\"></path></g></g></g></svg>",
       "_id": "MPInlineMathFragment:2BA6B7DC-EFFF-480B-A046-EB567179B09F",
-      "objectType": "MPInlineMathFragment"
+      "objectType": "MPInlineMathFragment",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C"
     },
     {
       "_id": "MPInlineMathFragment:9E31084B-642E-4CA6-A05A-D42D6676A76E",
@@ -806,7 +811,9 @@
       "paragraphStyle": "MPParagraphStyle:339456D4-33B6-40EE-8B6F-80662870B3A7",
       "placeholderInnerHTML": "",
       "_id": "MPParagraphElement:E51EFD7D-52FF-4B72-BF9C-B47F2989436F",
-      "objectType": "MPParagraphElement"
+      "objectType": "MPParagraphElement",
+      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+      "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
     },
     {
       "elementType": "p",
