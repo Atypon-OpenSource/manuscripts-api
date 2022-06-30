@@ -741,15 +741,6 @@
       "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
     },
     {
-      "_id": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232",
-      "objectType": "MPManuscript",
-      "title": "A Test Manuscript",
-      "bundle": "MPBundle:E8B2DFE8-B19D-4779-9CE7-15DB5B2DFC6F",
-      "pageLayout": "MPPageLayout:AB0289F4-FFD9-430E-B057-55ADEDCFD8A0",
-      "priority": 1,
-      "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C"
-    },
-    {
       "_id": "MPPageLayout:AB0289F4-FFD9-430E-B057-55ADEDCFD8A0",
       "objectType": "MPPageLayout",
       "bundled": true,

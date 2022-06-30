@@ -221,6 +221,21 @@ export abstract class ContainerRepository<Container, ContainerLike, PatchContain
   }
 
   /**
+   * Overriding the remove method to make it delete a manuscripts resources.
+   * @param manuscriptID The Id of the manuscript.
+   */
+  public async removeAllManuscriptResources(manuscriptID: string): Promise<void> {
+    const Q = {
+      data: {
+        path: ['manuscriptID'],
+        equals: manuscriptID,
+      },
+    }
+
+    await this.database.bucket.remove(Q)
+  }
+
+  /**
    * Overriding the remove method to make it delete all related resources.
    * @param id The Id of a container.
    */
