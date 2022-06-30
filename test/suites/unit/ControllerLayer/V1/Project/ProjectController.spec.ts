@@ -639,7 +639,7 @@ describe('ProjectController', () => {
       const service: any = DIContainer.sharedContainer.containerService[ContainerType.project]
       const manuscriptRepo: any = DIContainer.sharedContainer.manuscriptRepository
       const projectRepo: any = DIContainer.sharedContainer.projectRepository
-      projectRepo.removeAllResources = jest.fn()
+      projectRepo.removeAllManuscriptResources = jest.fn()
       projectRepo.removeWithAllResources = jest.fn()
       projectRepo.bulkInsert = jest.fn()
       manuscriptRepo.getById = jest.fn(() => validManuscript1)
@@ -657,7 +657,7 @@ describe('ProjectController', () => {
         },
       }
       await controller.projectReplace(req)
-      expect(projectRepo.removeAllResources).toBeCalled()
+      expect(projectRepo.removeAllManuscriptResources).toBeCalled()
       expect(projectRepo.bulkInsert).toBeCalled()
     })
   })
