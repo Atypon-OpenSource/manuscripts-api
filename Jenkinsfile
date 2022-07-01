@@ -1,3 +1,4 @@
+#! /usr/bin/groovy
 node("cisanta") {
     REGISTRY="us-central1-docker.pkg.dev/atypon-artifact/docker-registry-public"
     REFSPEC="+refs/pull/*:refs/remotes/origin/pr/*"
