@@ -23,7 +23,7 @@ import { log } from './Utilities/Logger'
 import { DIContainer } from './DIContainer/DIContainer'
 import { ServerStatus } from './Controller/V1/ServerStatus/ServerStatus'
 import { SQLDatabase } from './DataAccess/SQLDatabase'
-
+console.log('Hi')
 process.on('unhandledRejection', (reason, promise) => {
   log.error(`Unhandled rejection – reason: ${reason}, promise: ${promise}`)
 })
