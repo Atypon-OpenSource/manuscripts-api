@@ -484,6 +484,16 @@ export async function getCollaborators(headers: object, params: any): Promise<su
     .set(headers)
 }
 
+export async function deleteModel(
+  headers: object,
+  params: any
+): Promise<supertest.Response> {
+  const server: IServer = await createServer()
+  return supertest(server.app)
+  .delete(`/api/v1/project/${params.containerID}/manuscripts/${params.manuscriptID}/model/${params.modelID}/`)
+  .set(headers)
+}
+
 export async function importManuscript(
   headers: object,
   params: any,

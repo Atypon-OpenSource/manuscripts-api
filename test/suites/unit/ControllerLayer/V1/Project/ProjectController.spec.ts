@@ -19,7 +19,9 @@ import '../../../../../utilities/dbMock'
 import '../../../../../utilities/configMock'
 
 import {
-  InvalidCredentialsError, MissingManuscriptError,
+  InvalidCredentialsError,
+  MissingManuscriptError,
+  MissingModelError,
   MissingTemplateError,
   RecordNotFoundError,
   RoleDoesNotPermitOperationError,
@@ -659,6 +661,129 @@ describe('ProjectController', () => {
       await controller.projectReplace(req)
       expect(projectRepo.removeAllManuscriptResources).toBeCalled()
       expect(projectRepo.bulkInsert).toBeCalled()
+    })
+  })
+
+  describe('deleteModel', () => {
+    const json = {
+      data: [
+        { _id: 'MPManuscript:abc', objectType: 'MPManuscript' },
+        { _id: 'MPCitation:abc', objectType: 'MPCitation' },
+        { _id: 'MPMPAuxiliaryObjectReference:abc', objectType: 'MPAuxiliaryObjectReference' },
+      ],
+    }
+    test('should fail if project id is not provided', async () => {
+      const controller: any = new ProjectController()
+      const req = {
+        params: {
+          manuscriptId: validManuscript1._id,
+        },
+        user: {
+          _id: 'someId',
+        },
+      }
+      await expect(controller.deleteModel(req)).rejects.toThrow(ValidationError)
+    })
+    test('should fail if manuscript id is not provided', async () => {
+      const controller: any = new ProjectController()
+      const req = {
+        params: {
+          projectId: validProject._id,
+        },
+        user: {
+          _id: 'someId',
+        },
+      }
+      await expect(controller.deleteModel(req)).rejects.toThrow(ValidationError)
+    })
+    test('should fail if model id is not provided', async () => {
+      const controller: any = new ProjectController()
+      const req = {
+        params: {
+          projectId: validProject._id,
+          manuscriptId: validManuscript1._id,
+        },
+        user: {
+          _id: 'someId',
+        },
+      }
+      await expect(controller.deleteModel(req)).rejects.toThrow(ValidationError)
+    })
+    test('should fail if user doesn\'t have access', async () => {
+      const controller: any = new ProjectController()
+      const service: any = DIContainer.sharedContainer.containerService[ContainerType.project]
+      service.checkIfCanEdit = jest.fn(() => false)
+      const req = {
+        params: {
+          projectId: validProject._id,
+          manuscriptId: validManuscript1._id,
+          modelId: json.data[2]._id
+        },
+        user: {
+          _id: 'User_someId',
+        },
+      }
+      await expect(controller.deleteModel(req)).rejects.toThrow(RoleDoesNotPermitOperationError)
+    })
+    test('should fail if manuscript not found', async () => {
+      const controller: any = new ProjectController()
+      const service: any = DIContainer.sharedContainer.containerService[ContainerType.project]
+      const repo: any = DIContainer.sharedContainer.manuscriptRepository
+      repo.getById = jest.fn(() => null)
+      service.checkIfCanEdit = jest.fn(() => true)
+      const req = {
+        params: {
+          projectId: validProject._id,
+          manuscriptId: validManuscript1._id,
+          modelId: json.data[2]._id
+        },
+        user: {
+          _id: 'User_someId',
+        },
+      }
+      await expect(controller.deleteModel(req)).rejects.toThrow(MissingManuscriptError)
+    })
+    test('should fail if model not found', async () => {
+      const controller: any = new ProjectController()
+      const service: any = DIContainer.sharedContainer.containerService[ContainerType.project]
+      const manuscriptRepo: any = DIContainer.sharedContainer.manuscriptRepository
+      manuscriptRepo.getById = jest.fn(() => validManuscript1)
+      const projectRepo: any = DIContainer.sharedContainer.projectRepository
+      projectRepo.resourceExists = jest.fn(() => false)
+      service.checkIfCanEdit = jest.fn(() => true)
+      const req = {
+        params: {
+          projectId: validProject._id,
+          manuscriptId: validManuscript1._id,
+          modelId: 'MPNull'
+        },
+        user: {
+          _id: 'User_someId',
+        },
+      }
+      await expect(controller.deleteModel(req)).rejects.toThrow(MissingModelError)
+    })
+    test('removeResource should be called', async () => {
+      const controller: any = new ProjectController()
+      const service: any = DIContainer.sharedContainer.containerService[ContainerType.project]
+      const manuscriptRepo: any = DIContainer.sharedContainer.manuscriptRepository
+      const projectRepo: any = DIContainer.sharedContainer.projectRepository
+      projectRepo.removeResource = jest.fn()
+      projectRepo.resourceExists = jest.fn(() => true)
+      manuscriptRepo.getById = jest.fn(() => validManuscript1)
+      service.checkIfCanEdit = jest.fn(() => true)
+      const req: any = {
+        params: {
+          projectId: validProject._id,
+          manuscriptId: validManuscript1._id,
+          modelId: json.data[2]._id
+        },
+        user: {
+          _id: 'User_someId',
+        },
+      }
+      await controller.deleteModel(req)
+      expect(projectRepo.removeResource).toBeCalled()
     })
   })
 })
