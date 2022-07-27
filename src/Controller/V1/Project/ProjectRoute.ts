@@ -28,6 +28,7 @@ import {
   saveProjectSchema,
   projectCollaboratorsSchema,
   replaceProjectSchema,
+  deleteModelSchema,
 } from './ProjectSchema'
 
 export class ProjectRoute extends BaseRoute {
@@ -107,6 +108,19 @@ export class ProjectRoute extends BaseRoute {
         return this.runWithErrorHandling(async () => {
           const collaborators = await this.projectController.collaborators(req)
           res.status(HttpStatus.OK).send(collaborators)
+        }, next)
+      }
+    )
+
+    router.delete(
+      `${this.basePath}/:projectId/manuscripts/:manuscriptId/model/:modelId`,
+      expressJoiMiddleware(deleteModelSchema),
+      AuthStrategy.JsonHeadersValidation,
+      AuthStrategy.JWTAuth,
+      (req: Request, res: Response, next: NextFunction) => {
+        return this.runWithErrorHandling(async () => {
+          await this.projectController.deleteModel(req)
+          res.status(HttpStatus.OK).end()
         }, next)
       }
     )

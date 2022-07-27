@@ -26,6 +26,8 @@ import {
   importManuscript,
   insertProject,
   saveProject,
+  deleteModel,
+  loadProject,
 } from '../../../../../api'
 import {
   authorizationHeader,
@@ -331,5 +333,77 @@ describe('ContainerService - get collaborators', () => {
     )
     expect(collaboratorsResponse.status).toBe(HttpStatus.OK)
     expect(collaboratorsResponse.body[0].objectType).toBe(ObjectTypes.UserCollaborator)
+  })
+})
+
+describe('Project - Delete Model', () => {
+  beforeEach(async () => {
+    await drop()
+    await dropBucket(BucketKey.Project)
+    await seed(seedOptions)
+    await DIContainer.sharedContainer.syncService.createUserProfile(
+      {
+        _id: `User|${validBody.email}`,
+        name: 'foobar',
+        email: validBody.email
+      }
+    )
+  })
+
+  test('should delete model in project', async () => {
+    const loginResponse: supertest.Response = await basicLogin(
+      validBody,
+      ValidHeaderWithApplicationKey
+    )
+
+    expect(loginResponse.status).toBe(HttpStatus.OK)
+    await createProject('MPProject:valid-project-id-2')
+    await createManuscript('MPManuscript:valid-manuscript-id-1')
+
+    const authHeader = authorizationHeader(loginResponse.body.token)
+    const data = await fs.readFileSync('test/data/fixtures/sample/index.manuscript-json')
+    const json = JSON.parse(data.toString())
+    const sendFileResponse = await saveProject(
+      {
+        ...ValidContentTypeAcceptJsonHeader,
+        ...authHeader,
+      },
+      {
+        containerID: 'MPProject:valid-project-id-2',
+      },
+      {
+        data: json.data,
+      }
+    )
+    expect(sendFileResponse.status).toBe(HttpStatus.OK)
+
+    const deleteModelResponse = await deleteModel(
+      {
+        ...ValidContentTypeAcceptJsonHeader,
+        ...authHeader,
+      },
+      {
+        containerID: 'MPProject:valid-project-id-2',
+        manuscriptID: 'MPManuscript:valid-manuscript-id-1',
+        modelID: 'MPParagraphElement:2F64B77A-161C-48BB-AC09-C7EF425F752F'
+      }
+    )
+
+    expect(deleteModelResponse.status).toBe(HttpStatus.OK)
+
+    const response: supertest.Response = await loadProject(
+      {
+        ...ValidContentTypeAcceptJsonHeader,
+        ...authHeader,
+      },
+      {},
+      {
+        projectId: 'MPProject:valid-project-id-2',
+      }
+    )
+    expect(response.status).toBe(HttpStatus.OK)
+
+    const models = JSON.parse(response.text)
+    expect(models.some(({_id}) => _id === 'MPParagraphElement:2F64B77A-161C-48BB-AC09-C7EF425F752F')).toBe(false)
   })
 })

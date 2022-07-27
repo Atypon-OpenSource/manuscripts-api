@@ -27,6 +27,7 @@ import decompress from 'decompress'
 import {
   InvalidCredentialsError,
   MissingManuscriptError,
+  MissingModelError,
   MissingTemplateError,
   RecordNotFoundError,
   RoleDoesNotPermitOperationError,
@@ -310,5 +311,46 @@ export class ProjectController extends BaseController implements IProjectControl
     return await DIContainer.sharedContainer.containerService[
       ContainerType.project
     ].getCollaborators(projectId, userId)
+  }
+
+  async deleteModel(req: Request): Promise<void> {
+    const { projectId, manuscriptId, modelId } = req.params
+    if (!projectId) {
+      throw new ValidationError('projectId parameter must be specified', projectId)
+    }
+
+    if (!manuscriptId) {
+      throw new ValidationError('manuscriptsID parameter must be specified', manuscriptId)
+    }
+
+    if (!modelId) {
+      throw new ValidationError('modelID parameter must be specified', modelId)
+    }
+
+    const userId = ContainerService.userIdForSync(req.user._id)
+    const canEdit = await DIContainer.sharedContainer.containerService[
+      ContainerType.project
+    ].checkIfCanEdit(userId, projectId)
+    if (!canEdit) {
+      throw new RoleDoesNotPermitOperationError(`permission denied`, userId)
+    }
+
+    const manuscriptsObj = DIContainer.sharedContainer.manuscriptRepository.getById(
+      manuscriptId,
+      userId
+    )
+    if (!manuscriptsObj) {
+      throw new MissingManuscriptError(manuscriptId)
+    }
+
+    const modelExists = DIContainer.sharedContainer.projectRepository.resourceExists(
+      projectId,
+      modelId
+    )
+    if (!modelExists) {
+      throw new MissingModelError(modelId)
+    }
+
+    return await DIContainer.sharedContainer.projectRepository.removeResource(modelId)
   }
 }

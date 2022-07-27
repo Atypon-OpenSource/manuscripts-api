@@ -87,3 +87,15 @@ export const projectCollaboratorsSchema: Joi.SchemaMap = {
     accept: appJsonAndCharset,
   }).options({ allowUnknown: true }),
 }
+
+export const deleteModelSchema: Joi.SchemaMap = {
+  headers: Joi.object({
+    accept: appJsonAndCharset,
+    'content-type': Joi.string().required(),
+  }).options({ allowUnknown: true }),
+  params: Joi.object({
+    projectId: Joi.string().required(),
+    manuscriptId: Joi.string().required(),
+    modelId: Joi.string().required(),
+  }),
+}

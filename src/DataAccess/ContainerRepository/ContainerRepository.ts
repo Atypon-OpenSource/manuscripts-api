@@ -271,6 +271,34 @@ export abstract class ContainerRepository<Container, ContainerLike, PatchContain
   }
 
   /**
+   * deletes a model by id.
+   * caution: call this after checking resourceExists
+   * and ensuring the caller has access to the container
+   * @param id The Id of a model.
+   */
+  public async removeResource(id: string): Promise<any> {
+    const Q = {
+      id,
+    }
+
+    return this.database.bucket.remove(Q)
+  }
+
+  /**
+   * checks existence of a model by id inside a container.
+   * @param containerID The Id of a container.
+   * @param id The Id of a model.
+   */
+  public async resourceExists(containerID: string, id: string): Promise<boolean> {
+    const Q = {
+      id,
+    }
+
+    const resource = await this.database.bucket.findUnique(Q)
+    return resource && (resource.containerID === containerID || resource.projectID === containerID)
+  }
+
+  /**
    * Get all container resources attachments and return map with document id as key and the attachments as the map value.
    */
   public async getContainerAttachments(containerID: string, manuscriptID: string | null) {
