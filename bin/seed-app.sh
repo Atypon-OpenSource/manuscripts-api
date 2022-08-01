@@ -61,6 +61,8 @@ do
   file_path="$parent_path/$zip_path"
   user_specific_file_path="$parent_path/$user_specific_zip_path"
 
+  echo $user_specific_file_path
+
   cp $file_path $user_specific_file_path
   if [ "$(uname)" == "Darwin" ]; then
       sed -i '' "s/MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C/MPProject:$user/g" $user_specific_file_path

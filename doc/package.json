@@ -4,7 +4,8 @@
   "description": "Tokomak documentation.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
@@ -18,5 +19,9 @@
   "homepage": "https://gitlab.com/mpapp-public/manuscripts-api#README",
   "dependencies": {
     "swagger-to-static": "^1.1.0"
+  },
+  "devDependencies": {
+    "express": "^4.18.1",
+    "swagger-ui-express": "^4.4.0"
   }
 }

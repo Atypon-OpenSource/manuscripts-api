@@ -22,6 +22,7 @@ import { ContainerType, Container } from '../../../Models/ContainerModels'
 import { DIContainer } from '../../../DIContainer/DIContainer'
 import { Readable } from 'stream'
 import * as fs from 'fs'
+import path from 'path'
 import getStream from 'get-stream'
 import decompress from 'decompress'
 import {
@@ -285,6 +286,8 @@ export class ProjectController extends BaseController implements IProjectControl
       throw new MissingManuscriptError(manuscriptId)
     }
     await DIContainer.sharedContainer.projectRepository.removeAllResources(projectId)
+
+    fs.writeFileSync(path.join(__dirname, '/XApreparedData.json'), JSON.stringify(data))
 
     return await DIContainer.sharedContainer.containerService[ContainerType.project].bulkInsert(
       data,

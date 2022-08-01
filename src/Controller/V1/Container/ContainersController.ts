@@ -170,7 +170,6 @@ export class ContainersController extends ContainedBaseController implements ICo
           types,
         } as any
       )
-
       return { data, status: HttpStatus.OK }
     } catch (e) {
       throw new ManuscriptContentParsingError('Failed to make an archive.', e)

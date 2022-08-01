@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Archiving and Interchange DTD v1.2 20190208//EN" "JATS-archivearticle1.dtd">
+<article article-type="research-article" dtd-version="1.2" xml:lang="en" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">
+<front>
+<journal-meta>
+<journal-id journal-id-type="publisher-id">eXtyles Arc</journal-id>
+<journal-id journal-id-type="nlm-ta">eXtyles Arc</journal-id>
+<journal-title-group>
+<journal-title>eXtyles Arc</journal-title>
+<abbrev-journal-title abbrev-type="pubmed">eXtyles Arc</abbrev-journal-title>
+</journal-title-group>
+<issn></issn>
+<publisher><publisher-name>Inera</publisher-name></publisher>
+</journal-meta>
+<article-meta>
+<article-id pub-id-type="publisher-id">9999999</article-id>
+<article-categories><subj-group subj-group-type="heading"><subject>research-article</subject></subj-group>
+</article-categories>
+<title-group>
+<article-title></article-title>
+</title-group>
+<pub-date pub-type="ppub"><year></year></pub-date>
+<volume></volume>
+<permissions>
+</permissions>
+<counts>
+<count count-type="box" count="0"/>
+<fig-count count="0"/>
+<table-count count="0"/>
+<equation-count count="0"/>
+<ref-count count="0"/>
+<word-count count="70"/></counts>
+</article-meta>
+</front>
+<body>
+<sec sec-type="intro">
+<title>Introduction</title>
+<p>This is serious research part 1.</p>
+</sec>
+<sec sec-type="other1">
+<title>Summry</title>
+<sec>
+<title>dsaasd</title>
+<sec id="sec4.1" sec-type="intro">
+<label>4.1</label><title>Introduction</title>
+<sec>
+<title>This is kitty cat</title>
+</sec>
+</sec>
+<sec id="sec4.2" sec-type="results">
+<label>4.2</label><title>Results</title>
+<sec>
+<title>Kitty cat was found</title>
+</sec>
+</sec>
+<sec id="sec4.3" sec-type="conclusions">
+<label>4.3</label><title>Conclusions</title>
+<sec>
+<title>Kitty can can be found</title>
+<sec>
+<title>Abbreviations</title>
+<sec>
+<title>Kitty</title>
+</sec>
+<sec sec-type="results">
+<title>Results</title>
+<p>Kitty cat can get lost and also be found again.</p>
+</sec>
+<sec>
+<title>Author Information</title>
+</sec>
+<sec>
+<title>Competing Interests</title>
+</sec>
+</sec>
+</sec>
+</sec>
+</sec>
+</sec>
+<sec sec-type="discussion">
+<title>Discussion</title>
+<sec sec-type="conclusions">
+<title>Conclusions</title>
+</sec>
+</sec>
+<sec sec-type="materials|methods">
+<title>Materials and methods</title>
+</sec>
+</body>
+<back>
+<ack>
+<title>Acknowledgments</title>
+<p>Acknowledgements note</p>
+</ack>
+</back>
+</article>

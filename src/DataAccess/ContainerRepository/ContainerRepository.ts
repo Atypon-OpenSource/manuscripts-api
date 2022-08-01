@@ -242,7 +242,9 @@ export abstract class ContainerRepository<Container, ContainerLike, PatchContain
       ],
     }
 
-    await this.database.bucket.remove(Q)
+    const result = await this.database.bucket.remove(Q)
+    console.log('Deletion result')
+    console.log(result)
   }
 
   /**

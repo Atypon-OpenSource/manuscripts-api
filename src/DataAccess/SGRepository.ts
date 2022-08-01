@@ -365,7 +365,12 @@ export abstract class SGRepository<
       }
       batch.push({ id: doc._id, data: doc })
     }
-    return this.database.bucket.insertMany(batch)
+    // return Promise.resolve({ count: 58 })
+    try {
+      return this.database.bucket.insertMany(batch)
+    } catch (e) {
+      console.log(e)
+    }
   }
 
   /**
