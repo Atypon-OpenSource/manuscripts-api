@@ -221,6 +221,21 @@ export abstract class ContainerRepository<Container, ContainerLike, PatchContain
   }
 
   /**
+   * Overriding the remove method to make it delete a manuscripts resources.
+   * @param manuscriptID The Id of the manuscript.
+   */
+  public async removeAllManuscriptResources(manuscriptID: string): Promise<void> {
+    const Q = {
+      data: {
+        path: ['manuscriptID'],
+        equals: manuscriptID,
+      },
+    }
+
+    await this.database.bucket.remove(Q)
+  }
+
+  /**
    * Overriding the remove method to make it delete all related resources.
    * @param id The Id of a container.
    */
@@ -255,6 +270,34 @@ export abstract class ContainerRepository<Container, ContainerLike, PatchContain
   public async removeWithAllResources(id: string): Promise<void> {
     await this.removeAllResources(id)
     await this.purge(id)
+  }
+
+  /**
+   * deletes a model by id.
+   * caution: call this after checking resourceExists
+   * and ensuring the caller has access to the container
+   * @param id The Id of a model.
+   */
+  public async removeResource(id: string): Promise<any> {
+    const Q = {
+      id,
+    }
+
+    return this.database.bucket.remove(Q)
+  }
+
+  /**
+   * checks existence of a model by id inside a container.
+   * @param containerID The Id of a container.
+   * @param id The Id of a model.
+   */
+  public async resourceExists(containerID: string, id: string): Promise<boolean> {
+    const Q = {
+      id,
+    }
+
+    const resource = await this.database.bucket.findUnique(Q)
+    return resource && (resource.containerID === containerID || resource.projectID === containerID)
   }
 
   /**

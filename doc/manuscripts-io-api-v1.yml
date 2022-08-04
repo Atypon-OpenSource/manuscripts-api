@@ -783,6 +783,31 @@ paths:
           description: "Invalid authorization token, or user record is in an invalid state for container creation."
         400:
           description: "Failed to fetch requested models"
+  /project/:projectId/manuscripts/:manuscriptId/model/:modelId:
+    delete:
+      tags:
+        - "project"
+      summary: "Delete project model by id."
+      description: ""
+      operationId: "delete-model"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - $ref: "#/parameters/JsonAcceptHeadersSchema"
+        - $ref: "#/parameters/AuthorizationTokenHeaderSchema"
+      responses:
+        200:
+          description: "Model has been deleted successfully."
+        401:
+          description: "Invalid authorization token, or user record is in an invalid state for container creation."
+        403:
+          description: "User account is blocked or email is not verified."
+        404:
+          description: "Manuscript object not found | Model not found"
+        400:
+          description: "Invalid projectId | Invalid manuscriptId | invalid modelId"
   /container/:projectId/:manuscriptsId/load:
     post:
       tags:

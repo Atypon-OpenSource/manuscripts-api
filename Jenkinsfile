@@ -1,23 +1,10 @@
-node {
+#! /usr/bin/groovy
+node("cisanta") {
     REGISTRY="us-central1-docker.pkg.dev/atypon-artifact/docker-registry-public"
     REFSPEC="+refs/pull/*:refs/remotes/origin/pr/*"
     ansiColor('xterm') {
     stage("checkout") {
-        if (params != null && params.ghprbPullId == null) {
-            echo 'Checking out from master'
-            // master needs to be substituted with the release branch.
-            REFSPEC="+refs/heads/master:refs/remotes/origin/master"
-        }
-        VARS = checkout(scm:[$class: 'GitSCM', branches: [[name: "${sha1}"]],
-            doGenerateSubmoduleConfigurations: false,
-            submoduleCfg: [],
-            userRemoteConfigs: [
-                [credentialsId: '336d4fc3-f420-4a3e-b96c-0d0f36ad12be',
-                name: 'origin',
-                refspec: "${REFSPEC}",
-                url: 'git@github.com:Atypon-OpenSource/manuscripts-api.git']
-            ]]
-        )
+        VARS = checkout scm
         DOCKER_IMAGE="leanworkflow/manuscripts-api"
         IMG_TAG=sh(script: "jq .version < package.json | tr -d '\"' ", returnStdout: true).trim()
     }
@@ -153,26 +140,21 @@ fi""")
         failFast: false
     ])
 
-    stage("Build docker image") {
-        // build docker image with native docker 
-        sh("""
-        docker build -t ${REGISTRY}/${DOCKER_IMAGE}:${IMG_TAG} -f docker/app/Dockerfile .
-        """)
+    if (VARS.GIT_BRANCH == "origin/master" ) {
+        stage("Build docker image") {
+            // build docker image with native docker 
+            sh("""
+            docker build -t ${REGISTRY}/${DOCKER_IMAGE}:${IMG_TAG} -f docker/app/Dockerfile .
+            """)
 
-        // docker.withServer('unix:///var/run/docker-ci.sock') {
-        //     app = docker.build("${DOCKER_IMAGE}:${IMG_TAG}", "-f docker/app/Dockerfile .")
-        // }
-        echo "Pushing ${DOCKER_IMAGE}:${IMG_TAG}"
-        // push to registry
-        sh("""
-        docker push ${REGISTRY}/${DOCKER_IMAGE}:${IMG_TAG} && \
-        docker push ${REGISTRY}/${DOCKER_IMAGE}
-        """)
+            echo "Pushing ${DOCKER_IMAGE}:${IMG_TAG}"
+            // push to registry
+            sh("""
+            docker push ${REGISTRY}/${DOCKER_IMAGE}:${IMG_TAG} && \
+            docker push ${REGISTRY}/${DOCKER_IMAGE}
+            """)
 
-        // docker.withRegistry("https://${REGISTRY}") {
-        //     app.push();
-        //     app.push('latest');
-        // }
+        }
     }
     }
 }

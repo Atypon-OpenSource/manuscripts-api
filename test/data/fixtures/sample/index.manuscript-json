@@ -739,15 +739,6 @@
       "manuscriptID": "MPManuscript:valid-manuscript-id-1"
     },
     {
-      "_id": "MPManuscript:valid-manuscript-id-1",
-      "objectType": "MPManuscript",
-      "title": "A Test Manuscript",
-      "bundle": "MPBundle:E8B2DFE8-B19D-4779-9CE7-15DB5B2DFC6F",
-      "pageLayout": "MPPageLayout:AB0289F4-FFD9-430E-B057-55ADEDCFD8A0",
-      "priority": 1,
-      "containerID": "MPProject:valid-project-id-2"
-    },
-    {
       "_id": "MPPageLayout:AB0289F4-FFD9-430E-B057-55ADEDCFD8A0",
       "objectType": "MPPageLayout",
       "bundled": true,
