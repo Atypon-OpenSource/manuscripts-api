@@ -1,6 +1,6 @@
 {
   "name": "manuscripts-api",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "manuscripts.io API server",
   "license": "Apache-2.0",
   "private": true,
