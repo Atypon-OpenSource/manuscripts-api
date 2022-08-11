@@ -54,15 +54,15 @@ export class ProjectController extends BaseController implements IProjectControl
 
     const owners = [payload.userId]
 
-    const { id }: any = await DIContainer.sharedContainer.containerService[
+    const { _id }: Container = await DIContainer.sharedContainer.containerService[
       ContainerType.project
     ].createContainer(token, null)
 
     await DIContainer.sharedContainer.containerService[
       ContainerType.project
-    ].updateContainerTitleAndCollaborators(id, title, owners, undefined, undefined)
+    ].updateContainerTitleAndCollaborators(_id, title, owners, undefined, undefined)
 
-    return DIContainer.sharedContainer.containerService[ContainerType.project].getContainer(id)
+    return DIContainer.sharedContainer.containerService[ContainerType.project].getContainer(_id)
   }
 
   async add(req: Request): Promise<Container> {
