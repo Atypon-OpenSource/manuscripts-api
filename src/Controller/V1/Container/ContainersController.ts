@@ -96,8 +96,7 @@ export class ContainersController extends ContainedBaseController implements ICo
       req.user,
       containerID,
       { userId: managedUserId, connectUserId: managedUserConnectId },
-      newRole,
-      secret
+      newRole
     )
   }
 

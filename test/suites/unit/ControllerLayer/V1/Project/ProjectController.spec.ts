@@ -92,7 +92,7 @@ describe('ProjectController', () => {
 
       const controller: any = new ProjectController()
 
-      containerService.createContainer = jest.fn(async () => ({ id: testProjectId }))
+      containerService.createContainer = jest.fn(async () => ({ _id: testProjectId }))
       containerService.updateContainerTitleAndCollaborators = jest.fn()
       containerService.getContainer = jest.fn()
 

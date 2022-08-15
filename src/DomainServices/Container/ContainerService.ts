@@ -167,8 +167,7 @@ export class ContainerService implements IContainerService {
     user: User,
     containerId: string,
     managedUser: { userId: string; connectUserId: string },
-    newRole: ContainerRole | null,
-    secret?: string
+    newRole: ContainerRole | null
   ): Promise<void> {
     const container = await this.getContainer(containerId)
 
@@ -184,9 +183,7 @@ export class ContainerService implements IContainerService {
       throw new RoleDoesNotPermitOperationError('User must be an owner to manage roles.', newRole)
     }
 
-    const isServer = this.validateSecret(secret)
-
-    await this.validateManagedUser(managedUserObj._id, user._id, container, newRole, isServer)
+    await this.validateManagedUser(managedUserObj._id, user._id, newRole)
 
     if (ContainerService.isOwner(container, managedUserObj._id) && container.owners.length < 2) {
       throw new UserRoleError('User is the only owner', newRole)
@@ -226,23 +223,13 @@ export class ContainerService implements IContainerService {
     }
   }
 
-  private validateSecret = (secret?: string) =>
-    secret ? secret === config.auth.serverSecret : false
-
   public async validateManagedUser(
     managedUserId: string,
     userId: string,
-    container: Container,
-    newRole: ContainerRole | null,
-    isServer: boolean
+    newRole: ContainerRole | null
   ): Promise<void> {
-    if (
-      !isServer &&
-      managedUserId !== '*' &&
-      userId !== managedUserId &&
-      !ContainerService.isContainerUser(container, managedUserId)
-    ) {
-      throw new ValidationError('User is not in container', managedUserId)
+    if (managedUserId !== '*' && userId !== managedUserId) {
+      throw new ValidationError('managedUser cannot be the same user', managedUserId)
     }
 
     if (managedUserId === '*' && (newRole === 'Owner' || newRole === 'Writer')) {
