@@ -183,7 +183,7 @@ export class ContainerService implements IContainerService {
       throw new RoleDoesNotPermitOperationError('User must be an owner to manage roles.', newRole)
     }
 
-    await this.validateManagedUser(managedUserObj._id, user._id, newRole)
+    await this.validateManagedUser(managedUserObj._id, newRole)
 
     if (ContainerService.isOwner(container, managedUserObj._id) && container.owners.length < 2) {
       throw new UserRoleError('User is the only owner', newRole)
@@ -225,13 +225,8 @@ export class ContainerService implements IContainerService {
 
   public async validateManagedUser(
     managedUserId: string,
-    userId: string,
     newRole: ContainerRole | null
   ): Promise<void> {
-    if (managedUserId !== '*' && userId !== managedUserId) {
-      throw new ValidationError('managedUser cannot be the same user', managedUserId)
-    }
-
     if (managedUserId === '*' && (newRole === 'Owner' || newRole === 'Writer')) {
       throw new ValidationError('User can not be owner or writer', managedUserId)
     }
