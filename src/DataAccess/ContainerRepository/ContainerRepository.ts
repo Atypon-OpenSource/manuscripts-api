@@ -20,6 +20,7 @@ import { SGRepository } from '../SGRepository'
 
 import { IContainerRepository } from '../Interfaces/IContainerRepository'
 import { selectActiveResources } from '../../Utilities/ContainerUtils/selectActiveResources'
+import { proceedWithReadAccess } from '../syncAccessControl'
 
 export abstract class ContainerRepository<Container, ContainerLike, PatchContainer>
   extends SGRepository<Container, ContainerLike, ContainerLike, PatchContainer>
@@ -432,5 +433,9 @@ export abstract class ContainerRepository<Container, ContainerLike, PatchContain
     }
 
     return this.database.bucket.query(Q).then((res: any) => callbackFn(res))
+  }
+
+  public async validateReadAccess(doc: any, userId: string): Promise<void> {
+    await proceedWithReadAccess(doc, userId)
   }
 }

@@ -129,7 +129,7 @@ export abstract class SGRepository<
             const doc = this.buildModel(res)
             if (userId) {
               try {
-                await this.validate({ ...doc }, { ...doc }, userId)
+                await this.validateReadAccess(doc, userId)
               } catch (e) {
                 return Promise.reject(e)
               }
@@ -450,6 +450,10 @@ export abstract class SGRepository<
           resolve(res)
         })
     })
+  }
+
+  protected async validateReadAccess(doc: any, userId: string): Promise<void> {
+    await this.validate({ ...doc }, { ...doc }, userId)
   }
 
   private validate(doc: any, oldDoc: any, userId?: string): Promise<void> {
