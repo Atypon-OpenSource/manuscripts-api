@@ -98,8 +98,8 @@ describe('SGRepository - getById', () => {
     projectRepository.database.bucket.findUnique.mockImplementationOnce((_document: any) =>
       Promise.resolve({ data: project, _id: project._id })
     )
-    const mock = jest.spyOn(syncAccessControl, 'syncAccessControl')
-    mock.mockResolvedValue()
+    const mock = jest.spyOn(syncAccessControl, 'proceedWithReadAccess')
+    mock.mockImplementationOnce(() => Promise.resolve())
 
     const created = await projectRepository.getById(project._id, 'User_foo')
     expect(created._id).toEqual('MPProject:foo')
