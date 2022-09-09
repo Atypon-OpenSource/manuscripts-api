@@ -4,9 +4,16 @@ node("cisanta") {
     REFSPEC="+refs/pull/*:refs/remotes/origin/pr/*"
     ansiColor('xterm') {
     stage("checkout") {
+        // keep the original branch name before the checkout step overrides it
+        BRANCH="$GIT_BRANCH"
         VARS = checkout scm
+        echo "VARS: $VARS"
         DOCKER_IMAGE="leanworkflow/manuscripts-api"
-        IMG_TAG=sh(script: "jq .version < package.json | tr -d '\"' ", returnStdout: true).trim()
+        if (VARS.GIT_BRANCH == "origin/master") {
+            IMG_TAG=sh(script: "jq .version < package.json | tr -d '\"' ", returnStdout: true).trim()
+        } else {
+            IMG_TAG=BRANCH + "-" + VARS.GIT_COMMIT.substring(0,6)
+        }
     }
 
     stage("install") {
