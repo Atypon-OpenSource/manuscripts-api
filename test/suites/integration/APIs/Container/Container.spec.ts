@@ -60,7 +60,7 @@ import {
   createLibraryCollection,
   createLibrary
 } from '../../../../data/fixtures/misc'
-import { ObjectTypes } from '@manuscripts/manuscripts-json-schema'
+import {Model, ObjectTypes } from '@manuscripts/manuscripts-json-schema'
 
 jest.mock('email-templates', () =>
   jest.fn().mockImplementation(() => {
@@ -841,6 +841,34 @@ describe('ContainerService - loadProject', () => {
     expect(response.status).toBe(HttpStatus.OK)
     expect(response.body.length).toBe(1)
     expect(response.body[0].objectType).toBe(ObjectTypes.ManuscriptNote)
+  })
+
+  test('should successfully load notes even if types are not provided', async () => {
+    const loginResponse: supertest.Response = await basicLogin(
+      validBody,
+      ValidHeaderWithApplicationKey
+    )
+
+    expect(loginResponse.status).toBe(HttpStatus.OK)
+
+    const authHeader = authorizationHeader(loginResponse.body.token)
+    await createProject('MPProject:valid-project-id-2')
+    await createManuscriptNote('MPManuscriptNote:valid-note-id-2')
+    const response: supertest.Response = await loadProject(
+      {
+        ...ValidContentTypeAcceptJsonHeader,
+        ...authHeader,
+      },
+      {},
+      {
+        projectId: 'MPProject:valid-project-id-2',
+      }
+    )
+    expect(response.status).toBe(HttpStatus.OK)
+    const manuscriptsNotes = response.body.filter(
+      (model: Model) => model.objectType === ObjectTypes.ManuscriptNote
+    )
+    expect(manuscriptsNotes.length).toBeGreaterThan(0)
   })
 })
 
