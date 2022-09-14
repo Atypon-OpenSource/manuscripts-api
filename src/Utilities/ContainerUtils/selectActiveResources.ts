@@ -34,6 +34,7 @@
  */
 
 import {
+  CommentAnnotation,
   Contributor,
   Corresponding,
   ElementsOrder,
@@ -41,6 +42,7 @@ import {
   FootnotesOrder,
   Journal,
   Manuscript,
+  ManuscriptNote,
   Model,
   ObjectTypes,
   Project,
@@ -181,6 +183,8 @@ export const selectActiveResources = (project: Model[]) => {
   const elementsOrder = project
     .filter(isObjectType<ElementsOrder>(ObjectTypes.ElementsOrder))
     .filter((doc) => doc.manuscriptID && manuscriptIDs.includes(doc.manuscriptID))
+  const comments = project.filter(isObjectType<CommentAnnotation>(ObjectTypes.CommentAnnotation))
+  const productionNotes = project.filter(isObjectType<ManuscriptNote>(ObjectTypes.ManuscriptNote))
 
   const toVisit = [
     ...journalModel,
@@ -194,6 +198,8 @@ export const selectActiveResources = (project: Model[]) => {
     ...footnotesOrder,
     ...corresps,
     ...supplements,
+    ...comments,
+    ...productionNotes,
   ]
 
   const visited = walkChildren(project, root, toVisit)
