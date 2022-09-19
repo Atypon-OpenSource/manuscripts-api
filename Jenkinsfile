@@ -5,7 +5,10 @@ node("cisanta") {
     ansiColor('xterm') {
     stage("checkout") {
         // keep the original branch name before the checkout step overrides it
-        BRANCH="$GIT_BRANCH"
+        if (env.GIT_BRANCH) {
+            BRANCH="$GIT_BRANCH"
+            echo "BRANCH: $BRANCH"
+        }
         VARS = checkout scm
         echo "VARS: $VARS"
         DOCKER_IMAGE="leanworkflow/manuscripts-api"
