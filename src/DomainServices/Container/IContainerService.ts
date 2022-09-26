@@ -161,10 +161,10 @@ export interface IContainerService {
   saveSnapshot(key: string, containerId: string, creator: string, name?: string): Promise<Snapshot>
 
   /**
-   * Submit list of docs to the database
-   * Adding sessionID, createdAt, updatedAt attributes
+   * Adds sessionID, createdAt, updatedAt, containerID, manuscriptID attributes
+   * validates against schema
    * @param docs list of Models
-   * @return an object with the number of docs inserted.
+   * @return an array with validated objects
    */
-  bulkInsert(docs: Model[], containerID: string, manuscriptID: string): Promise<any>
+  processManuscriptModels(docs: Model[], containerID: string, manuscriptID: string): Promise<any>
 }
