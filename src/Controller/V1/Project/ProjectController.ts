@@ -285,13 +285,16 @@ export class ProjectController extends BaseController implements IProjectControl
     if (!manuscriptsObj) {
       throw new MissingManuscriptError(manuscriptId)
     }
+
+    // prevalidate models, so in the case of
+    // validation errors we fail before removing resources
+    const docs = await DIContainer.sharedContainer.containerService[
+      ContainerType.project
+    ].processManuscriptModels(data, projectId, manuscriptId)
+
     await DIContainer.sharedContainer.projectRepository.removeAllResources(projectId)
 
-    return await DIContainer.sharedContainer.containerService[ContainerType.project].bulkInsert(
-      data,
-      projectId,
-      manuscriptId
-    )
+    return await DIContainer.sharedContainer.projectRepository.bulkInsert(docs)
   }
 
   async collaborators(req: Request): Promise<UserCollaborator[]> {

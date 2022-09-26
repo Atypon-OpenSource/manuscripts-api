@@ -47,6 +47,7 @@ import {
   RoleDoesNotPermitOperationError,
   ProductionNotesLoadError,
   ProductionNotesUpdateError,
+  SyncError,
 } from '../../Errors'
 import { isBlocked, User } from '../../Models/UserModels'
 import { UserActivityEventType } from '../../Models/UserEventModels'
@@ -72,6 +73,7 @@ import { SnapshotRepository } from '../../DataAccess/SnapshotRepository/Snapshot
 import { TemplateRepository } from '../../DataAccess/TemplateRepository/TemplateRepository'
 
 const JSZip = require('jszip')
+const { validate } = require('../../DataAccess/jsonSchemaValidator')
 
 export class ContainerService implements IContainerService {
   constructor(
@@ -1029,9 +1031,10 @@ export class ContainerService implements IContainerService {
     return this.userService.getCollaborators(containerID)
   }
 
-  public async bulkInsert(docs: Model[], containerID: string, manuscriptID: string) {
+  public async processManuscriptModels(docs: Model[], containerID: string, manuscriptID: string) {
     const sessionID = uuid_v4()
     const createdAt = Math.round(Date.now() / 1000)
+
     const projectDocs = docs.map((doc) => {
       const updatedDoc = {
         ...doc,
@@ -1045,8 +1048,14 @@ export class ContainerService implements IContainerService {
         updatedDoc.manuscriptID = manuscriptID
       }
 
+      const errorMessage = validate(doc)
+      if (errorMessage) {
+        throw new SyncError(errorMessage, doc)
+      }
+
       return updatedDoc
     })
-    return DIContainer.sharedContainer.projectRepository.bulkInsert(projectDocs)
+
+    return projectDocs
   }
 }
