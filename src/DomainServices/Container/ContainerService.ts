@@ -1048,9 +1048,9 @@ export class ContainerService implements IContainerService {
         updatedDoc.manuscriptID = manuscriptID
       }
 
-      const errorMessage = validate(doc)
+      const errorMessage = validate(updatedDoc)
       if (errorMessage) {
-        throw new SyncError(errorMessage, doc)
+        throw new SyncError(errorMessage, updatedDoc)
       }
 
       return updatedDoc
