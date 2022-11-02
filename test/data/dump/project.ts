@@ -133,3 +133,12 @@ projectsList.push({
   writers: [],
   viewers: []
 })
+
+projectsList.push({
+  _id: 'MPProject:valid-project-id-12',
+  objectType: 'MPProject',
+  owners: ['User_valid-user@manuscriptsapp.com', 'User_test'],
+  writers: [],
+  viewers: [],
+  annotators: ['User_valid-user-2@manuscriptsapp.com'],
+})
