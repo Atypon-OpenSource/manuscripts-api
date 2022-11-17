@@ -38,7 +38,7 @@ import {
   Contributor,
   Corresponding,
   ElementsOrder,
-  ExternalFile,
+  Footnote,
   FootnotesOrder,
   Journal,
   Manuscript,
@@ -169,12 +169,9 @@ export const selectActiveResources = (project: Model[]) => {
   const contributors = project
     .filter(isObjectType<Contributor>(ObjectTypes.Contributor))
     .filter((doc) => doc.manuscriptID && manuscriptIDs.includes(doc.manuscriptID) && doc.role)
-  const externalFiles = project
-    .filter(isObjectType<ExternalFile>(ObjectTypes.ExternalFile))
-    .filter((doc) => doc.manuscriptID && manuscriptIDs.includes(doc.manuscriptID))
   const snapshots = project.filter(isObjectType<Snapshot>(ObjectTypes.Snapshot))
   const footnotes = project
-    .filter(isObjectType<ExternalFile>(ObjectTypes.Footnote))
+    .filter(isObjectType<Footnote>(ObjectTypes.Footnote))
     .filter((doc) => doc.manuscriptID && manuscriptIDs.includes(doc.manuscriptID))
   const journalModel = project.filter(isObjectType<Journal>(ObjectTypes.Journal))
   const corresps = project.filter(isObjectType<Corresponding>(ObjectTypes.Corresponding))
@@ -191,7 +188,6 @@ export const selectActiveResources = (project: Model[]) => {
     ...manuscripts,
     ...sections,
     ...contributors,
-    ...externalFiles,
     ...elementsOrder,
     ...snapshots,
     ...footnotes,
