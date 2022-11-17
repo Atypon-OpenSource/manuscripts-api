@@ -1,6 +1,6 @@
 #! /usr/bin/groovy
 node("cisanta") {
-    REGISTRY="us-central1-docker.pkg.dev/atypon-artifact/docker-registry-public"
+    REGISTRY="${env.PRIVATE_ARTIFACT_REGISTRY}" // this is set globally on Jenkins
     REFSPEC="+refs/pull/*:refs/remotes/origin/pr/*"
     ansiColor('xterm') {
     stage("checkout") {
@@ -150,22 +150,18 @@ fi""")
         failFast: false
     ])
 
-    if (VARS.GIT_BRANCH == "origin/master" ) {
-        stage("Build docker image") {
-            // build docker image with native docker 
-            sh("""
-            docker build -t ${REGISTRY}/${DOCKER_IMAGE}:${IMG_TAG} -f docker/app/Dockerfile .
-            """)
+    stage("Build docker image") {
+        // build docker image with native docker 
+        sh("""
+        docker build -t ${REGISTRY}/${DOCKER_IMAGE}:${IMG_TAG} -f docker/app/Dockerfile .
+        """)
 
-            echo "Pushing ${DOCKER_IMAGE}:${IMG_TAG}"
-            // push to registry
-            sh("""
-            docker push ${REGISTRY}/${DOCKER_IMAGE}:${IMG_TAG} && \
-            docker push ${REGISTRY}/${DOCKER_IMAGE}
-            """)
-
-        }
-    }
+        echo "Pushing ${DOCKER_IMAGE}:${IMG_TAG}"
+        // push to registry
+        sh("""
+        docker push ${REGISTRY}/${DOCKER_IMAGE}:${IMG_TAG} && \
+        docker push ${REGISTRY}/${DOCKER_IMAGE}
+        """)
     }
 }
 
