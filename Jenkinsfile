@@ -163,5 +163,5 @@ fi""")
         docker push ${REGISTRY}/${DOCKER_IMAGE}
         """)
     }
+    }
 }
-
