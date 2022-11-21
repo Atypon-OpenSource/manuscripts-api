@@ -106,8 +106,13 @@ export async function onUpdate(doc: any, id: string) {
           for (const uc of userCollaborators) {
             userCollaborator = uc
 
+            if (userCollaborator.projects && !userCollaborator.projects[role]) {
+              userCollaborator.projects[role] = []
+            }
+
             if (
               userCollaborator.projects &&
+              userCollaborator.projects[role] &&
               !userCollaborator.projects[role].includes(containerID)
             ) {
               userCollaborator.projects[role].push(containerID)
@@ -203,7 +208,7 @@ export async function onUpdate(doc: any, id: string) {
     const owners = doc.owners
     const writers = doc.writers
     const viewers = doc.viewers.filter((x: any) => x !== '*')
-    const annotators = doc.annotators
+    const annotators = doc.annotators ?? []
     const usersIDs = owners.concat(writers, viewers, annotators)
 
     for (const userID of usersIDs) {
