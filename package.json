@@ -1,6 +1,6 @@
 {
   "name": "manuscripts-api",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "description": "manuscripts.io API server",
   "license": "Apache-2.0",
   "private": true,
@@ -34,7 +34,7 @@
     "lint"
   ],
   "dependencies": {
-    "@manuscripts/manuscripts-json-schema": "^1.49.9",
+    "@manuscripts/manuscripts-json-schema": "^1.52.0",
     "@manuscripts/examples": "^0.0.6",
     "bcrypt": "^5.0.1",
     "body-parser": "^1.18.2",

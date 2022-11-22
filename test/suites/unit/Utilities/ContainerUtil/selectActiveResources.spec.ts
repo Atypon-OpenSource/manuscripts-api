@@ -242,7 +242,6 @@ describe('selectActiveResources', () => {
     expect(result).toContain('MPSection:section-1')
     expect(result).toContain('MPParagraphElement:element-1')
     expect(result).toContain('MPCitation:citation-1')
-    expect(result).toContain('MPExternalFile:externalFile-1')
     expect(result).toContain('MPFootnote:00062739-B5CC-44FD-BAA1-81ECC2147695')
     expect(result).toContain('MPCorresponding:corresp-1')
     expect(result).toContain('MPSupplement:supp-1')

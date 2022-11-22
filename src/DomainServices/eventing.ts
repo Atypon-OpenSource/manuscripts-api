@@ -43,7 +43,8 @@ export async function onUpdate(doc: any, id: string) {
       if (
         !userCollaborator.projects.owner.length &&
         !userCollaborator.projects.writer.length &&
-        !userCollaborator.projects.viewer.length
+        !userCollaborator.projects.viewer.length &&
+        !userCollaborator.projects.annotator.length
       ) {
         await DIContainer.sharedContainer.userCollaboratorRepository.remove(userCollaborator._id)
       } else {
@@ -59,7 +60,7 @@ export async function onUpdate(doc: any, id: string) {
     userCollaborators: any[],
     role: string
   ) {
-    const usersIDs = doc.owners.concat(doc.writers, doc.viewers)
+    const usersIDs = doc.owners.concat(doc.writers, doc.viewers, doc.annotator)
 
     for (const userCollaborator of userCollaborators) {
       const isUserIDMissing = !usersIDs.includes(userCollaborator.userID)
@@ -74,7 +75,8 @@ export async function onUpdate(doc: any, id: string) {
         if (
           !userCollaborator.projects.owner.length &&
           !userCollaborator.projects.writer.length &&
-          !userCollaborator.projects.viewer.length
+          !userCollaborator.projects.viewer.length &&
+          !userCollaborator.projects.annotator.length
         ) {
           await DIContainer.sharedContainer.userCollaboratorRepository.remove(userCollaborator._id)
         } else {
@@ -104,8 +106,13 @@ export async function onUpdate(doc: any, id: string) {
           for (const uc of userCollaborators) {
             userCollaborator = uc
 
+            if (userCollaborator.projects && !userCollaborator.projects[role]) {
+              userCollaborator.projects[role] = []
+            }
+
             if (
               userCollaborator.projects &&
+              userCollaborator.projects[role] &&
               !userCollaborator.projects[role].includes(containerID)
             ) {
               userCollaborator.projects[role].push(containerID)
@@ -120,6 +127,7 @@ export async function onUpdate(doc: any, id: string) {
               owner: [],
               writer: [],
               viewer: [],
+              annotator: [],
             }
 
             containerRoles[role] = [containerID]
@@ -200,12 +208,16 @@ export async function onUpdate(doc: any, id: string) {
     const owners = doc.owners
     const writers = doc.writers
     const viewers = doc.viewers.filter((x: any) => x !== '*')
-    const usersIDs = owners.concat(writers, viewers)
+    const annotators = doc.annotators ?? []
+    const usersIDs = owners.concat(writers, viewers, annotators)
 
     for (const userID of usersIDs) {
       await createUserCollaborator(userID, owners, 'owner')
       await createUserCollaborator(userID, writers, 'writer')
       await createUserCollaborator(userID, viewers, 'viewer')
+      if (annotators) {
+        await createUserCollaborator(userID, annotators, 'annotator')
+      }
     }
 
     const ownersIDs =
@@ -228,5 +240,12 @@ export async function onUpdate(doc: any, id: string) {
         'viewer'
       )
     await removeContainerFromUserCollaborator(doc.viewers, viewersIDs, 'viewer')
+
+    const annotatorsIDs =
+      await DIContainer.sharedContainer.userCollaboratorRepository.getByContainerRole(
+        containerID,
+        'annotator'
+      )
+    await removeContainerFromUserCollaborator(doc.annotators, annotatorsIDs, 'annotator')
   }
 }

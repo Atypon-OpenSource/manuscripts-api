@@ -39,7 +39,7 @@ import { validManuscript } from '../../../../../data/fixtures/manuscripts'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
 import { createProject, createManuscript } from '../../../../../data/fixtures/misc'
 import fs from 'fs'
-import { ObjectTypes } from '@manuscripts/manuscripts-json-schema'
+import {Model, ObjectTypes } from '@manuscripts/manuscripts-json-schema'
 
 let db: any = null
 const seedOptions: SeedOptions = {
@@ -304,13 +304,16 @@ describe('ContainerService - get collaborators', () => {
     await drop()
     await dropBucket(BucketKey.Project)
     await seed(seedOptions)
-    await DIContainer.sharedContainer.syncService.createUserProfile(
-      {
-        _id: `User|${validBody.email}`,
-        name: 'foobar',
-        email: validBody.email
-      }
-    )
+    await DIContainer.sharedContainer.syncService.createUserProfile({
+      _id: `User|${validBody.email}`,
+      name: 'foobar',
+      email: validBody.email,
+    })
+    await DIContainer.sharedContainer.syncService.createUserProfile({
+      _id: `User|valid-user-2@manuscriptsapp.com`,
+      name: 'foobar2',
+      email: 'valid-user-2@manuscriptsapp.com',
+    })
   })
   test('should get collaborators', async () => {
     const loginResponse: supertest.Response = await basicLogin(
@@ -319,7 +322,7 @@ describe('ContainerService - get collaborators', () => {
     )
 
     expect(loginResponse.status).toBe(HttpStatus.OK)
-    await createProject('MPProject:valid-project-id-2')
+    await createProject('MPProject:valid-project-id-12')
 
     const authHeader = authorizationHeader(loginResponse.body.token)
     const collaboratorsResponse = await getCollaborators(
@@ -328,10 +331,11 @@ describe('ContainerService - get collaborators', () => {
         ...authHeader,
       },
       {
-        containerID: 'MPProject:valid-project-id-2',
+        containerID: 'MPProject:valid-project-id-12',
       }
     )
     expect(collaboratorsResponse.status).toBe(HttpStatus.OK)
+    expect(collaboratorsResponse.body.length).toBe(2)
     expect(collaboratorsResponse.body[0].objectType).toBe(ObjectTypes.UserCollaborator)
   })
 })
@@ -403,7 +407,9 @@ describe('Project - Delete Model', () => {
     )
     expect(response.status).toBe(HttpStatus.OK)
 
-    const models = JSON.parse(response.text)
-    expect(models.some(({_id}) => _id === 'MPParagraphElement:2F64B77A-161C-48BB-AC09-C7EF425F752F')).toBe(false)
+    const models: Model[] = JSON.parse(response.text)
+    expect(
+      models.some(({ _id }) => _id === 'MPParagraphElement:2F64B77A-161C-48BB-AC09-C7EF425F752F')
+    ).toBe(false)
   })
 })
