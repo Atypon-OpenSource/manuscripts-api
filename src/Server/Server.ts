@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-// tslint:disable:member-ordering
-import methodOverride from 'method-override'
 import express from 'express'
 import cors from 'cors'
 import logger from 'morgan'
@@ -90,8 +88,6 @@ export class Server implements IServer {
 
     this.app.use(express.json({ limit: '50mb' }))
     this.app.use(express.urlencoded({ extended: true, limit: '50mb' }))
-
-    this.app.use(methodOverride())
 
     PassportAuth.init(this.app)
   }

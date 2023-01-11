@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
+import { INewUser, IUpdateUser, User } from '../../Models/UserModels'
 import { IndexedRepository } from './IndexedRepository'
-import { User, INewUser, IUpdateUser } from '../../Models/UserModels'
 import { UserQueryCriteria } from './QueryCriteria'
 
 /**

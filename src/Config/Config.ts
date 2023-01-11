@@ -14,37 +14,36 @@
  * limitations under the License.
  */
 
+import { config as load } from 'dotenv-safe'
+import { existsSync } from 'fs'
 import * as path from 'path'
-import { load } from 'dotenv-safe'
-import { isString, isNumber } from '../util'
+
+import { ConfigurationError } from '../Errors'
 import {
   clientApplicationsFromSplitString,
   scopeConfigurationsFromSplitString,
 } from '../Models/ClientApplicationModels'
-import { existsSync, readFileSync } from 'fs'
+import { isNumber, isString } from '../util'
 import { log } from '../Utilities/Logger'
-import { ConfigurationError } from '../Errors'
 import {
   APIConfiguration,
-  DatabaseConfiguration,
   AuthConfiguration,
-  EmailConfiguration,
-  GatewayConfiguration,
-  ServerConfiguration,
   ClientApplicationsConfiguration,
-  EnvironmentLike,
-  Environment,
   ConfigurationContainer,
+  DatabaseConfiguration,
+  EmailConfiguration,
+  Environment,
+  EnvironmentLike,
+  GatewayConfiguration,
   IAMConfiguration,
-  ScopedAccessTokenConfiguration,
   LiteratumConfiguration,
   PressroomConfiguration,
-  TemplateConfiguration,
+  ScopedAccessTokenConfiguration,
+  ServerConfiguration,
   ShacklesConfiguration,
+  TemplateConfiguration,
 } from './ConfigurationTypes'
 import { normalizeURL } from './normalize-url'
-
-const isUTF8 = require('is-utf8')
 
 /**
  * Configuration string validator:
@@ -242,7 +241,7 @@ export class Configuration implements ConfigurationContainer {
   }
 
   static fromEnv(envExamplePath: string) {
-    if (existsSync('.env') && isUTF8(readFileSync('.env'))) {
+    if (existsSync('.env')) {
       const dotenvResult = load({
         allowEmptyValues: false,
         sample: envExamplePath,

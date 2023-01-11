@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { normalizeURL } from '../../../src/Config/normalize-url'
 import { getMap } from '../../../src/Config/ConfigUtil'
+import { normalizeURL } from '../../../src/Config/normalize-url'
 import { ValidationError } from '../../../src/Errors'
 
 describe('normalizeURL', () => {

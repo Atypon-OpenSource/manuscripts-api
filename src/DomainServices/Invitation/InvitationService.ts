@@ -15,7 +15,7 @@
  */
 
 import checksum from 'checksum'
-import { ObjectTypes } from '@manuscripts/manuscripts-json-schema'
+import { ObjectTypes } from '@manuscripts/json-schema'
 
 import { isString } from '../../util'
 import { v4 as uuid_v4 } from 'uuid'

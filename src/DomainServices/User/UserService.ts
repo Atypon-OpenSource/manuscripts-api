@@ -14,38 +14,38 @@
  * limitations under the License.
  */
 
+import { ObjectTypes, UserCollaborator } from '@manuscripts/json-schema'
 import { compare } from 'bcrypt'
-import * as jsonwebtoken from 'jsonwebtoken'
 import checksum from 'checksum'
-import { ObjectTypes, UserCollaborator } from '@manuscripts/manuscripts-json-schema'
+import * as jsonwebtoken from 'jsonwebtoken'
 
+import { config } from '../../Config/Config'
+import { ContainerInvitationRepository } from '../../DataAccess/ContainerInvitationRepository/ContainerInvitationRepository'
+import { ContainerRequestRepository } from '../../DataAccess/ContainerRequestRepository/ContainerRequestRepository'
+import { ISingleUseTokenRepository } from '../../DataAccess/Interfaces/ISingleUseTokenRepository'
+import { IUserProfileRepository } from '../../DataAccess/Interfaces/IUserProfileRepository'
+import { IUserRepository } from '../../DataAccess/Interfaces/IUserRepository'
+import { IUserStatusRepository } from '../../DataAccess/Interfaces/IUserStatusRepository'
+import { IUserTokenRepository } from '../../DataAccess/Interfaces/IUserTokenRepository'
+import { UserProfileLike } from '../../DataAccess/Interfaces/Models'
+import { InvitationRepository } from '../../DataAccess/InvitationRepository/InvitationRepository'
+import { ProjectRepository } from '../../DataAccess/ProjectRepository/ProjectRepository'
+import { UserCollaboratorRepository } from '../../DataAccess/UserCollaboratorRepository/UserCollaboratorRepository'
+import { username as sgUsername } from '../../DomainServices/Sync/SyncService'
 import {
-  MissingUserStatusError,
   InvalidCredentialsError,
   InvalidPasswordError,
+  MissingUserStatusError,
   NoTokenError,
   ValidationError,
 } from '../../Errors'
-import { IUserService } from './IUserService'
-import { ISyncService } from '../Sync/ISyncService'
-import { ISingleUseTokenRepository } from '../../DataAccess/Interfaces/ISingleUseTokenRepository'
-import { IUserRepository } from '../../DataAccess/Interfaces/IUserRepository'
-import { IUserProfileRepository } from '../../DataAccess/Interfaces/IUserProfileRepository'
-import { IUserStatusRepository } from '../../DataAccess/Interfaces/IUserStatusRepository'
-import { IUserTokenRepository } from '../../DataAccess/Interfaces/IUserTokenRepository'
-import { UserCollaboratorRepository } from '../../DataAccess/UserCollaboratorRepository/UserCollaboratorRepository'
 import { UserActivityEventType } from '../../Models/UserEventModels'
-import { UserActivityTrackingService } from '../UserActivity/UserActivityTrackingService'
-import { isLoginTokenPayload, getExpirationTime } from '../../Utilities/JWT/LoginTokenPayload'
-import { InvitationRepository } from '../../DataAccess/InvitationRepository/InvitationRepository'
-import { ContainerInvitationRepository } from '../../DataAccess/ContainerInvitationRepository/ContainerInvitationRepository'
-import { config } from '../../Config/Config'
-import { EmailService } from '../Email/EmailService'
-import { UserProfileLike } from '../../DataAccess/Interfaces/Models'
-import { ProjectRepository } from '../../DataAccess/ProjectRepository/ProjectRepository'
-import { username as sgUsername } from '../../DomainServices/Sync/SyncService'
-import { ContainerRequestRepository } from '../../DataAccess/ContainerRequestRepository/ContainerRequestRepository'
+import { getExpirationTime, isLoginTokenPayload } from '../../Utilities/JWT/LoginTokenPayload'
 import { isScopedTokenPayload } from '../../Utilities/JWT/ScopedTokenPayload'
+import { EmailService } from '../Email/EmailService'
+import { ISyncService } from '../Sync/ISyncService'
+import { UserActivityTrackingService } from '../UserActivity/UserActivityTrackingService'
+import { IUserService } from './IUserService'
 
 export class UserService implements IUserService {
   constructor(

@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-import { IPressroomService } from './IPressroomService'
-import { Readable, PassThrough } from 'stream'
 import FormData from 'form-data'
-import fetch from 'node-fetch'
 import getStream from 'get-stream'
+import fetch from 'node-fetch'
+import { PassThrough, Readable } from 'stream'
+
 import { RequestError } from '../../Errors'
+import { IPressroomService } from './IPressroomService'
 
 export class PressroomService implements IPressroomService {
   constructor(private baseurl: string, private apiKey: string) {}
@@ -37,12 +38,12 @@ export class PressroomService implements IPressroomService {
       'pressroom-api-key': this.apiKey,
     }
 
-    const res = await fetch(`${this.baseurl}/api/v2/import/jats-arc`, {
+    const res = await fetch(`${this.baseurl}/api/v2/import/jats`, {
       method: 'POST',
       body: form,
       headers,
     })
-    if (res.ok) {
+    if (res.ok && res.body) {
       const duplex = new PassThrough()
       res.body.pipe(duplex)
       return duplex
@@ -68,7 +69,7 @@ export class PressroomService implements IPressroomService {
       body: form,
       headers,
     })
-    if (res.ok) {
+    if (res.ok && res.body) {
       return getStream.buffer(res.body)
     }
     // should only apply in case of server client errors

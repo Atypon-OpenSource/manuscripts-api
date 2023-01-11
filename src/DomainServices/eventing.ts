@@ -16,7 +16,7 @@
 
 import { v4 as uuid_v4 } from 'uuid'
 import { DIContainer } from '../DIContainer/DIContainer'
-import { UserCollaborator } from '@manuscripts/manuscripts-json-schema'
+import { UserCollaborator } from '@manuscripts/json-schema'
 
 export async function onUpdate(doc: any, id: string) {
   if (id.startsWith('MPUserProfile:')) {

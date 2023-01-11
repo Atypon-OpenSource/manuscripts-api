@@ -17,25 +17,24 @@
 import { Request } from 'express'
 import * as jsonwebtoken from 'jsonwebtoken'
 
-import { isString, isNumber } from '../../../util'
-import { IAuthController } from './IAuthController'
-import { BaseController, isBearerHeaderValue, authorizationBearerToken } from '../../BaseController'
+import { IAMState } from '../../../Auth/Interfaces/IAMState'
+import { config } from '../../../Config/Config'
+import { DIContainer } from '../../../DIContainer/DIContainer'
+import { ContainerService } from '../../../DomainServices/Container/ContainerService'
 import {
-  ValidationError,
+  InvalidBackchannelLogoutError,
   InvalidClientApplicationError,
-  MissingQueryParameterError,
   InvalidCredentialsError,
   InvalidServerCredentialsError,
-  InvalidBackchannelLogoutError,
+  MissingQueryParameterError,
+  ValidationError,
 } from '../../../Errors'
-import { DIContainer } from '../../../DIContainer/DIContainer'
 import { AuthorizedUser } from '../../../Models/UserModels'
-import { isIAMOAuthTokenPayload } from '../../../Utilities/JWT/IAMAuthTokenPayload'
-import { IAMState } from '../../../Auth/Interfaces/IAMState'
-import { isIAMLogoutTokenPayload } from '../../../Utilities/JWT/IAMLogoutTokenPayload'
+import { isNumber, isString } from '../../../util'
 import { AdminTokenPayload, isAdminTokenPayload } from '../../../Utilities/JWT/AdminTokenPayload'
-import { ContainerService } from '../../../DomainServices/Container/ContainerService'
-import { config } from '../../../Config/Config'
+import { isIAMOAuthTokenPayload } from '../../../Utilities/JWT/IAMAuthTokenPayload'
+import { isIAMLogoutTokenPayload } from '../../../Utilities/JWT/IAMLogoutTokenPayload'
+import { authorizationBearerToken, BaseController, isBearerHeaderValue } from '../../BaseController'
 
 /**
  * The app-id header key.
@@ -47,7 +46,7 @@ export const APP_ID_HEADER_KEY = 'manuscripts-app-id'
  */
 export const APP_SECRET_HEADER_KEY = 'manuscripts-app-secret'
 
-export class AuthController extends BaseController implements IAuthController {
+export class AuthController extends BaseController {
   /**
    * Logs user into the system.
    */
@@ -253,6 +252,10 @@ export class AuthController extends BaseController implements IAuthController {
   async createAuthorizationToken(req: Request): Promise<string> {
     const { scope } = req.params
     const user = req.user
+
+    if (!user) {
+      throw new ValidationError('No user found', user)
+    }
 
     if (!isString(scope)) {
       throw new ValidationError('scope should be string', scope)

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as winston from 'winston'
+import { createLogger, format, Logger, transports } from 'winston'
 
 import { Environment } from '../../../Config/ConfigurationTypes'
 import { ILogger } from '../ILogger'
@@ -23,7 +23,7 @@ export class WinstonLogger implements ILogger {
   /**
    * winston logger
    */
-  private logger: winston.LoggerInstance
+  private logger: Logger
 
   constructor() {
     this.configure()
@@ -33,48 +33,23 @@ export class WinstonLogger implements ILogger {
    * Configures winston.
    */
   public configure(): void {
-    this.logger = new winston.Logger()
+    this.logger = createLogger()
 
-    this.logger.add(winston.transports.Console, {
-      level: 'debug',
-      showLevel: true,
-      // exceptionsLevel: ["info"],
-      colorize: process.env.NODE_ENV === Environment.Development,
-      // json: true,
-      // maxsize: 5242880, // 5MB
-      // maxFiles: 5
-    })
+    this.logger.add(
+      new transports.Console({
+        level: 'debug',
+      })
+    )
 
-    this.logger.add(winston.transports.File, {
-      name: 'info-file',
-      filename: '.logs/info.log',
-      level: 'info',
-
-      json: true,
-      maxsize: 5242880, // 5MB
-      maxFiles: 5,
-    })
-
-    this.logger.add(winston.transports.File, {
-      name: 'info-error',
-      filename: '.logs/error.log',
-      level: 'error',
-
-      json: true,
-      maxsize: 5242880, // 5MB
-      maxFiles: 5,
-      levelOnly: true,
-    })
-
-    this.logger.add(winston.transports.File, {
-      name: 'info-debug',
-      filename: '.logs/debug.log',
-      level: 'debug',
-
-      json: true,
-      maxsize: 5242880, // 5MB
-      maxFiles: 5,
-    })
+    this.logger.add(
+      new transports.File({
+        filename: '.logs/info.log',
+        level: 'info',
+        format: format.json(),
+        maxsize: 5242880, // 5MB
+        maxFiles: 5,
+      })
+    )
   }
 
   /**

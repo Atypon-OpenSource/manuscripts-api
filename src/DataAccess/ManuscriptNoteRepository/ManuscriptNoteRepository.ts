@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-import { SGRepository } from '../SGRepository'
-import { DatabaseError } from '../../Errors'
 import { Prisma } from '@prisma/client'
+
+import { DatabaseError } from '../../Errors'
+import { SGRepository } from '../SGRepository'
 
 class ManuscriptNoteRepository extends SGRepository<any, any, any, any> {
   public get objectType(): string {

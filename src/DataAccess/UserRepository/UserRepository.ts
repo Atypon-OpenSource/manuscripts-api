@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-import { SQLRepository } from '../SQLRepository'
+import { Prisma } from '@prisma/client'
+
+import { DatabaseError } from '../../Errors'
+import { INewUser, IUpdateUser, User, userForRow, UserRow } from '../../Models/UserModels'
 import { IUserRepository } from '../Interfaces/IUserRepository'
 import { UserQueryCriteria } from '../Interfaces/QueryCriteria'
-import { User, INewUser, IUpdateUser, UserRow, userForRow } from '../../Models/UserModels'
-import { required, maxLength, validEmail } from '../validators'
-import { DatabaseError } from '../../Errors'
-import { Prisma } from '@prisma/client'
+import { SQLRepository } from '../SQLRepository'
+import { maxLength, required, validEmail } from '../validators'
 
 /**
  * Manages user persistent storage operations.

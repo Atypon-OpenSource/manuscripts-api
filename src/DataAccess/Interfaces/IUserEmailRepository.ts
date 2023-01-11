@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { IndexedRepository } from './IndexedRepository'
 import { UserEmail } from '../../Models/UserModels'
+import { IndexedRepository } from './IndexedRepository'
 
 /**
  * Manages user token persistent storage operations.

@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-import { ContainerRole, Container } from '../../Models/ContainerModels'
+import { Manuscript, ManuscriptNote, Model } from '@manuscripts/json-schema'
+
+import { Container, ContainerRole } from '../../Models/ContainerModels'
 import { User } from '../../Models/UserModels'
-import { Manuscript, ManuscriptNote, Model, Snapshot } from '@manuscripts/manuscripts-json-schema'
 
 export interface ArchiveOptions {
   getAttachments?: boolean
@@ -157,8 +158,6 @@ export interface IContainerService {
    * @param docId the document/project ID
    */
   updateDocumentSessionId(docId: string): void
-
-  saveSnapshot(key: string, containerId: string, creator: string, name?: string): Promise<Snapshot>
 
   /**
    * Adds sessionID, createdAt, updatedAt, containerID, manuscriptID attributes

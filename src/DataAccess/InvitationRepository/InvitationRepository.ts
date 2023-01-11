@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Invitation } from '@manuscripts/manuscripts-json-schema'
+import { Invitation } from '@manuscripts/json-schema'
 import { PatchInvitation } from 'src/Models/InvitationModels'
 
 import { InvitationLike } from '../Interfaces/Models'

@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-const expressJoiMiddleware = require('express-joi-middleware')
+import { celebrate } from 'celebrate'
 import { NextFunction, Request, Response, Router } from 'express'
-import * as HttpStatus from 'http-status-codes'
+import { StatusCodes } from 'http-status-codes'
 
+import { AuthStrategy } from '../../../Auth/Passport/AuthStrategy'
 import { BaseRoute } from '../../BaseRoute'
 import { SGController } from './SGController'
-import { AuthStrategy } from '../../../Auth/Passport/AuthStrategy'
-import { sgGetSchema, sgPostSchema, sgPutSchema, sgDeleteSchema } from './SGSchema'
+import { sgDeleteSchema, sgGetSchema, sgPostSchema, sgPutSchema } from './SGSchema'
 
 export class SGRoute extends BaseRoute {
   private sgController = new SGController()
@@ -38,52 +38,52 @@ export class SGRoute extends BaseRoute {
   public create(router: Router): void {
     router.get(
       `${this.basePath}/:db/:id`,
-      expressJoiMiddleware(sgGetSchema, {}),
+      celebrate(sgGetSchema, {}),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           const result = await this.sgController.get(req)
-          res.status(HttpStatus.OK).send(result ? result : {})
+          res.status(StatusCodes.OK).send(result ? result : {})
         }, next)
       }
     )
 
     router.post(
       `${this.basePath}/:db`,
-      expressJoiMiddleware(sgPostSchema, {}),
+      celebrate(sgPostSchema, {}),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           const result = await this.sgController.create(req)
-          res.status(HttpStatus.OK).send(result)
+          res.status(StatusCodes.OK).send(result)
         }, next)
       }
     )
 
     router.put(
       `${this.basePath}/:db/:id`,
-      expressJoiMiddleware(sgPutSchema, {}),
+      celebrate(sgPutSchema, {}),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           const result = await this.sgController.update(req)
-          res.status(HttpStatus.OK).send(result)
+          res.status(StatusCodes.OK).send(result)
         }, next)
       }
     )
 
     router.delete(
       `${this.basePath}/:db/:id`,
-      expressJoiMiddleware(sgDeleteSchema, {}),
+      celebrate(sgDeleteSchema, {}),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           await this.sgController.remove(req)
-          res.status(HttpStatus.OK).send()
+          res.status(StatusCodes.OK).send()
         }, next)
       }
     )

@@ -14,29 +14,22 @@
  * limitations under the License.
  */
 
-import { Request, Response, NextFunction } from 'express'
+import { NextFunction, Request, Response } from 'express'
+import { StatusCodes } from 'http-status-codes'
 import passport from 'passport'
-import * as HttpStatus from 'http-status-codes'
-import { stringify } from 'qs'
-import { IpFilter } from 'express-ipfilter'
-import cookie from 'cookie'
 
-import { isString, removeEmptyValuesFromObj } from '../../util'
-import * as jsonwebtoken from 'jsonwebtoken'
-import { UserClaim } from '../Interfaces/UserClaim'
 import { config } from '../../Config/Config'
+import { APP_ID_HEADER_KEY, APP_SECRET_HEADER_KEY } from '../../Controller/V1/Auth/AuthController'
 import { DIContainer } from '../../DIContainer/DIContainer'
 import {
   InvalidClientApplicationError,
-  InvalidJsonHeadersError,
   InvalidCredentialsError,
+  InvalidJsonHeadersError,
   InvalidServerCredentialsError,
-  InvalidBackchannelLogoutError,
-  MissingCookieError,
   ValidationError,
 } from '../../Errors'
-import { APP_ID_HEADER_KEY, APP_SECRET_HEADER_KEY } from '../../Controller/V1/Auth/AuthController'
-import { authorizationBearerToken } from '../../Controller/BaseController'
+import { User } from '../../Models/UserModels'
+import { isString } from '../../util'
 import { ScopedJwtAuthStrategy } from './ScopedJWT'
 
 export enum AuthStrategyTypes {
@@ -49,7 +42,7 @@ export class AuthStrategy {
    * Express authentication middleware.
    */
   public static JWTAuth(req: Request, res: Response, next: NextFunction) {
-    passport.authenticate(AuthStrategyTypes.jwt, {}, (error: Error, user: UserClaim) => {
+    passport.authenticate(AuthStrategyTypes.jwt, {}, (error: Error, user: User) => {
       AuthStrategy.userValidationCallback(error, user, req, res, next)
     })(req, res, next)
   }
@@ -69,122 +62,6 @@ export class AuthStrategy {
         return next(new InvalidCredentialsError('Invalid token.'))
       })(req, res, next)
     }
-  }
-
-  public static verifyIAMToken(req: Request, res: Response, next: NextFunction) {
-    const idToken: string = req.query.id_token as string
-
-    const decode = jsonwebtoken.decode(idToken, { complete: true })
-
-    if (
-      // typeof decode !== 'object' ||
-      decode === null ||
-      !decode.payload ||
-      !decode.header
-    ) {
-      return next(new InvalidCredentialsError('Invalid IAM token.'))
-    }
-
-    const {
-      payload,
-      header: { kid: keyID },
-    } = decode
-
-    if (!req.headers.cookie) {
-      return next(new MissingCookieError())
-    }
-
-    const parsedCookie = cookie.parse(req.headers.cookie)
-
-    const state = DIContainer.sharedContainer.authService.decodeIAMState(req.query.state as string)
-    const params = removeEmptyValuesFromObj({
-      redirectUri: state.redirectUri,
-      theme: state.theme,
-    })
-
-    DIContainer.sharedContainer.jwksClient.getSigningKey(keyID as string, (error, key) => {
-      if (error) {
-        return res.redirect(`${config.IAM.libraryURL}/error?${stringify(params)}#error=error`)
-      }
-
-      if (!key) {
-        return res.redirect(`${config.IAM.libraryURL}/error?${stringify(params)}#error=invalid-key`)
-      }
-
-      try {
-        DIContainer.sharedContainer.iamTokenVerifier.loginVerify(
-          idToken,
-          key.rsaPublicKey,
-          parsedCookie.nonce,
-          (payload as any).aud
-        )
-      } catch (error) {
-        return res.redirect(
-          `${config.IAM.libraryURL}/error?${stringify(params)}#error=invalid-token`
-        )
-      }
-      req.user = payload
-      next()
-    })
-  }
-
-  public static verifyLogoutToken(req: Request, _res: Response, next: NextFunction) {
-    const idToken: string = req.query.logout_token as string
-
-    const decoded = jsonwebtoken.decode(idToken, { complete: true })
-
-    if (
-      // typeof decoded !== 'object' ||
-      decoded === null ||
-      !decoded.payload ||
-      !decoded.header
-    ) {
-      return next(new InvalidCredentialsError('Invalid logout token.'))
-    }
-
-    const {
-      payload,
-      header: { kid: keyID },
-    } = decoded
-
-    DIContainer.sharedContainer.jwksClient.getSigningKey(keyID as string, (error, key) => {
-      if (error) {
-        return next(new InvalidBackchannelLogoutError('Error verifying token', error))
-      }
-
-      if (!key) {
-        return next(new InvalidBackchannelLogoutError('Missing key', (decoded as any).kid))
-      }
-
-      try {
-        DIContainer.sharedContainer.iamTokenVerifier.logoutVerify(
-          idToken,
-          key.rsaPublicKey,
-          (payload as any).aud
-        )
-      } catch (error) {
-        return next(new InvalidBackchannelLogoutError('Invalid token', idToken))
-      }
-
-      next()
-    })
-  }
-
-  public static verifyAdminToken(req: Request, _res: Response, next: NextFunction) {
-    const authHeader = req.headers.authorization
-    if (!authHeader) {
-      return next(new InvalidServerCredentialsError('Admin token not set.'))
-    }
-
-    const adminToken = authorizationBearerToken(req)
-
-    try {
-      jsonwebtoken.verify(adminToken, config.auth.serverSecret)
-    } catch (e) {
-      return next(new InvalidServerCredentialsError('Admin token is invalid.'))
-    }
-
-    return next()
   }
 
   /**
@@ -219,14 +96,6 @@ export class AuthStrategy {
     }
   }
 
-  public static verifyIpAddress(req: Request, res: Response, next: NextFunction) {
-    if (process.env.NODE_ENV !== 'test') {
-      return IpFilter(config.literatum.allowedIPAddresses, { mode: 'allow' })(req, res, next)
-    }
-
-    return next()
-  }
-
   public static JsonHeadersValidation(req: Request, _res: Response, next: NextFunction) {
     const acceptHeader = req.headers.accept
 
@@ -246,15 +115,15 @@ export class AuthStrategy {
   }
 
   public static userValidationCallback(
-    error: Error | null,
-    user: UserClaim | null,
+    error: Error,
+    user: User,
     req: Request,
     res: Response,
     next: NextFunction
   ): void {
     if (error || !user) {
       const notFound = true
-      res.status(HttpStatus.UNAUTHORIZED).json({ notFound }).end()
+      res.status(StatusCodes.UNAUTHORIZED).json({ notFound }).end()
     } else {
       req.user = user
       return next()

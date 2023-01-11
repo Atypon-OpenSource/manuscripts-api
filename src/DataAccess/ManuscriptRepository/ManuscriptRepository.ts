@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Manuscript } from '@manuscripts/manuscripts-json-schema'
+import { Manuscript } from '@manuscripts/json-schema'
 import { IManuscriptRepository } from '../Interfaces/IManuscriptRepository'
 import { ManuscriptLike } from '../Interfaces/Models'
 import { SGRepository } from '../SGRepository'

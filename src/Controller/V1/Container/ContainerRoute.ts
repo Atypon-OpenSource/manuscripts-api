@@ -14,29 +14,27 @@
  * limitations under the License.
  */
 
-const expressJoiMiddleware = require('express-joi-middleware')
+import { celebrate } from 'celebrate'
 import { NextFunction, Request, Response, Router } from 'express'
-import * as HttpStatus from 'http-status-codes'
+import { StatusCodes } from 'http-status-codes'
 
+import { AuthStrategy } from '../../../Auth/Passport/AuthStrategy'
 import { BaseRoute } from '../../BaseRoute'
 import {
+  accessTokenJWKSchema,
+  accessTokenSchema,
+  addProductionNoteSchema,
+  addUserSchema,
+  createManuscriptSchema,
   createSchema,
   deleteSchema,
-  manageUserRoleSchema,
-  addUserSchema,
   getArchiveSchema,
-  accessTokenSchema,
-  accessTokenJWKSchema,
   getPickerBuilderSchema,
   getProductionNotesSchema,
-  addProductionNoteSchema,
-  createManuscriptSchema,
-  suggestionStatusSchema,
-  createSnapshotSchema,
   loadProjectSchema,
+  manageUserRoleSchema,
 } from './ContainerSchema'
 import { ContainersController } from './ContainersController'
-import { AuthStrategy } from '../../../Auth/Passport/AuthStrategy'
 
 export class ContainerRoute extends BaseRoute {
   private containersController = new ContainersController()
@@ -53,38 +51,38 @@ export class ContainerRoute extends BaseRoute {
   public create(router: Router): void {
     router.post(
       `${this.basePath}/:containerType/create`,
-      expressJoiMiddleware(createSchema, {}),
+      celebrate(createSchema, {}),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           await this.containersController.create(req)
-          res.status(HttpStatus.OK).end()
+          res.status(StatusCodes.OK).end()
         }, next)
       }
     )
 
     router.delete(
       [`${this.basePath}/:containerID`, `${this.basePath}/:containerType/:containerID`],
-      expressJoiMiddleware(deleteSchema, {}),
+      celebrate(deleteSchema, {}),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           await this.containersController.delete(req)
-          res.status(HttpStatus.OK).end()
+          res.status(StatusCodes.OK).end()
         }, next)
       }
     )
 
     router.post(
       [`${this.basePath}/:projectId/load`, `${this.basePath}/:projectId/:manuscriptId/load`],
-      expressJoiMiddleware(loadProjectSchema, {}),
+      celebrate(loadProjectSchema, {}),
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           const { data, status } = await this.containersController.loadProject(req)
-          if (status === HttpStatus.OK) {
+          if (status === StatusCodes.OK) {
             res.set('Content-Type', 'application/json')
             res.status(status).send(data)
           } else {
@@ -99,13 +97,13 @@ export class ContainerRoute extends BaseRoute {
         `${this.basePath}/:containerID/archive`,
         `${this.basePath}/:containerID/:manuscriptID/archive`,
       ],
-      expressJoiMiddleware(getArchiveSchema, {}),
+      celebrate(getArchiveSchema, {}),
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           const archive = await this.containersController.getArchive(req)
           res.set('Content-Type', 'application/zip')
-          res.status(HttpStatus.OK).send(archive)
+          res.status(StatusCodes.OK).send(archive)
         }, next)
       }
     )
@@ -117,33 +115,33 @@ export class ContainerRoute extends BaseRoute {
         return this.runWithErrorHandling(async () => {
           const attachment = await this.containersController.getAttachment(req)
           res.set('Content-Type', attachment.contentType)
-          res.status(HttpStatus.OK).send(attachment.body)
+          res.status(StatusCodes.OK).send(attachment.body)
         }, next)
       }
     )
 
     router.post(
       [`${this.basePath}/:containerID/roles`, `${this.basePath}/project/:containerID/roles`],
-      expressJoiMiddleware(manageUserRoleSchema, {}),
+      celebrate(manageUserRoleSchema, {}),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           await this.containersController.manageUserRole(req)
-          res.status(HttpStatus.OK).end()
+          res.status(StatusCodes.OK).end()
         }, next)
       }
     )
 
     router.post(
       [`${this.basePath}/:containerID/addUser`, `${this.basePath}/project/:containerID/addUser`],
-      expressJoiMiddleware(addUserSchema, {}),
+      celebrate(addUserSchema, {}),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           await this.containersController.addUser(req)
-          res.status(HttpStatus.OK).end()
+          res.status(StatusCodes.OK).end()
         }, next)
       }
     )
@@ -151,7 +149,7 @@ export class ContainerRoute extends BaseRoute {
     // Deprecated, moved to .well-known
     router.get(
       `${this.basePath}/:containerType/:scope.jwks`,
-      expressJoiMiddleware(accessTokenJWKSchema, {}),
+      celebrate(accessTokenJWKSchema, {}),
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           res.send(this.containersController.jwksForAccessScope(req))
@@ -161,13 +159,13 @@ export class ContainerRoute extends BaseRoute {
 
     router.get(
       `${this.basePath}/picker-bundle/:containerID/:manuscriptID`,
-      expressJoiMiddleware(getPickerBuilderSchema, {}),
+      celebrate(getPickerBuilderSchema, {}),
       AuthStrategy.scopedJWTAuth('file-picker'),
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           await this.containersController.getBundle(req, (zipFile: any) => {
             res.set('Content-Type', 'application/zip')
-            res.status(HttpStatus.OK).send(zipFile)
+            res.status(StatusCodes.OK).send(zipFile)
           })
         }, next)
       }
@@ -175,7 +173,7 @@ export class ContainerRoute extends BaseRoute {
 
     router.get(
       `${this.basePath}/:containerType/:containerID/:scope`,
-      expressJoiMiddleware(accessTokenSchema, {}),
+      celebrate(accessTokenSchema, {}),
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
@@ -186,7 +184,7 @@ export class ContainerRoute extends BaseRoute {
 
     router.post(
       `${this.basePath}/projects/:containerID/manuscripts/:manuscriptID?`,
-      expressJoiMiddleware(createManuscriptSchema, {}),
+      celebrate(createManuscriptSchema, {}),
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
@@ -197,7 +195,7 @@ export class ContainerRoute extends BaseRoute {
 
     router.get(
       `${this.basePath}/projects/:containerID/manuscripts/:manuscriptID/notes`,
-      expressJoiMiddleware(getProductionNotesSchema, {}),
+      celebrate(getProductionNotesSchema, {}),
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
@@ -208,39 +206,11 @@ export class ContainerRoute extends BaseRoute {
 
     router.post(
       `${this.basePath}/projects/:containerID/manuscripts/:manuscriptID/notes`,
-      expressJoiMiddleware(addProductionNoteSchema, {}),
+      celebrate(addProductionNoteSchema, {}),
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           res.send(await this.containersController.addProductionNote(req))
-        }, next)
-      }
-    )
-
-    router.post(
-      `${this.basePath}/snapshot/:containerID/create`,
-      expressJoiMiddleware(createSnapshotSchema, {}),
-      AuthStrategy.JsonHeadersValidation,
-      AuthStrategy.JWTAuth,
-      (req: Request, res: Response, next: NextFunction) => {
-        return this.runWithErrorHandling(async () => {
-          res.send(await this.containersController.createSnapshot(req))
-        }, next)
-      }
-    )
-
-    router.get(
-      `${this.basePath}/projects/:containerID/suggestions/status`,
-      expressJoiMiddleware(suggestionStatusSchema, {}),
-      AuthStrategy.JWTAuth,
-      (req: Request, res: Response, next: NextFunction) => {
-        return this.runWithErrorHandling(async () => {
-          const result: any = await this.containersController.getCorrectionStatus(req)
-          if (!Object.keys(result).length) {
-            res.status(HttpStatus.NO_CONTENT).send()
-          } else {
-            res.status(HttpStatus.OK).send(result)
-          }
         }, next)
       }
     )

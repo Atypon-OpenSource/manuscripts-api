@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-import { SingleUseTokenType } from '../../Models/SingleUseTokenModels'
 import { ContainerRole } from '../../Models/ContainerModels'
+import { SingleUseTokenType } from '../../Models/SingleUseTokenModels'
+
 export interface QueryCriteria {
   [key: string]: string | number | boolean | string[] | number[] | boolean[] | null | undefined
 }

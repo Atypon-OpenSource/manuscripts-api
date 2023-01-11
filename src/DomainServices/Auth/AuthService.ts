@@ -14,68 +14,67 @@
  * limitations under the License.
  */
 
-import * as jsonwebtoken from 'jsonwebtoken'
 import { compare, genSalt, hash } from 'bcrypt'
 import checksum from 'checksum'
-import { stringify } from 'qs'
 import crypto from 'crypto'
+import cryptoRandomString from 'crypto-random-string'
+import * as jsonwebtoken from 'jsonwebtoken'
+import { stringify } from 'qs'
 import querystring from 'querystring'
+import { URL } from 'url'
 
-import { IAuthService } from './IAuthService'
-import { ISyncService } from '../Sync/ISyncService'
-import {
-  User,
-  Credentials,
-  AuthorizedUser,
-  UserToken,
-  ResetPasswordCredentials,
-  UserStatus,
-  isBlocked,
-  ChangePasswordCredentials,
-  CreatedIAMDetails,
-  ServerToServerAuthCredentials,
-} from '../../Models/UserModels'
-import { SingleUseTokenType } from '../../Models/SingleUseTokenModels'
-import { IUserRepository } from '../../DataAccess/Interfaces/IUserRepository'
+import { IAMState } from '../../Auth/Interfaces/IAMState'
+import { config } from '../../Config/Config'
 import { ISingleUseTokenRepository } from '../../DataAccess/Interfaces/ISingleUseTokenRepository'
+import { IUserEmailRepository } from '../../DataAccess/Interfaces/IUserEmailRepository'
+import { IUserProfileRepository } from '../../DataAccess/Interfaces/IUserProfileRepository'
+import { IUserRepository } from '../../DataAccess/Interfaces/IUserRepository'
+import { IUserStatusRepository } from '../../DataAccess/Interfaces/IUserStatusRepository'
+import { IUserTokenRepository } from '../../DataAccess/Interfaces/IUserTokenRepository'
 import {
+  AccountNotFoundError,
+  DuplicateEmailError,
+  InvalidBackchannelLogoutError,
   InvalidCredentialsError,
-  NoTokenError,
+  InvalidPasswordError,
+  MissingUserRecordError,
   MissingUserStatusError,
+  NoTokenError,
+  OperationDisabledError,
   UserBlockedError,
   UserNotVerifiedError,
   ValidationError,
-  InvalidPasswordError,
-  AccountNotFoundError,
-  OperationDisabledError,
-  DuplicateEmailError,
-  InvalidBackchannelLogoutError,
-  MissingUserRecordError,
 } from '../../Errors'
-import { IUserTokenRepository } from '../../DataAccess/Interfaces/IUserTokenRepository'
-import {
-  isLoginTokenPayload,
-  generateLoginToken,
-  LoginTokenPayload,
-  getExpirationTime,
-} from '../../Utilities/JWT/LoginTokenPayload'
-import { UserActivityEventType } from '../../Models/UserEventModels'
-import { IUserStatusRepository } from '../../DataAccess/Interfaces/IUserStatusRepository'
-import { UserActivityTrackingService } from '../UserActivity/UserActivityTrackingService'
-import { config } from '../../Config/Config'
-import { UserService } from '../User/UserService'
-import { EmailService } from '../Email/EmailService'
-import { IAMAuthTokenPayload } from '../../Utilities/JWT/IAMAuthTokenPayload'
-import { IAMState } from '../../Auth/Interfaces/IAMState'
-import { IInvitationService } from '../Invitation/IInvitationService'
-
-import { log } from '../../Utilities/Logger'
-import { IUserEmailRepository } from '../../DataAccess/Interfaces/IUserEmailRepository'
 import { IAMStartData } from '../../Models/IAMModels'
+import { SingleUseTokenType } from '../../Models/SingleUseTokenModels'
+import { UserActivityEventType } from '../../Models/UserEventModels'
+import {
+  AuthorizedUser,
+  ChangePasswordCredentials,
+  CreatedIAMDetails,
+  Credentials,
+  isBlocked,
+  ResetPasswordCredentials,
+  ServerToServerAuthCredentials,
+  User,
+  UserStatus,
+  UserToken,
+} from '../../Models/UserModels'
+import { IAMAuthTokenPayload } from '../../Utilities/JWT/IAMAuthTokenPayload'
+import {
+  generateLoginToken,
+  getExpirationTime,
+  isLoginTokenPayload,
+  LoginTokenPayload,
+} from '../../Utilities/JWT/LoginTokenPayload'
+import { log } from '../../Utilities/Logger'
+import { EmailService } from '../Email/EmailService'
 import { IContainerInvitationService } from '../Invitation/IContainerInvitationService'
-import { URL } from 'url'
-import { IUserProfileRepository } from '../../DataAccess/Interfaces/IUserProfileRepository'
-const cryptoRandomString = require('crypto-random-string')
+import { IInvitationService } from '../Invitation/IInvitationService'
+import { ISyncService } from '../Sync/ISyncService'
+import { UserService } from '../User/UserService'
+import { UserActivityTrackingService } from '../UserActivity/UserActivityTrackingService'
+import { IAuthService } from './IAuthService'
 
 /** Authentication token timeout */
 const AUTH_TOKEN_TIMEOUT = () => getExpirationTime(14 * 24) // 14 days
@@ -161,7 +160,7 @@ export class AuthService implements IAuthService {
 
     const userStatus = await this.ensureValidUserStatus(user, appId, deviceId, false)
 
-    let isMatched = await compare(password, userStatus.password)
+    const isMatched = password && (await compare(password, userStatus.password))
 
     if (!isMatched) {
       throw new InvalidPasswordError(user)

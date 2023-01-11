@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-import { KeyValueRepository } from './KeyValueRepository'
+import { UserProfile } from '@manuscripts/json-schema'
+
 import { UserProfileLike } from '../Interfaces/Models'
-import { UserProfile } from '@manuscripts/manuscripts-json-schema'
+import { KeyValueRepository } from './KeyValueRepository'
 
 /**
  * Manages user profile persistent storage operations.

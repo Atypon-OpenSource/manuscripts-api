@@ -15,6 +15,7 @@
  */
 
 import { Request } from 'express'
+
 import { ValidationError } from '../Errors'
 
 export abstract class BaseController {}

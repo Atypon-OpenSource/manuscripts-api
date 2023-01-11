@@ -14,18 +14,15 @@
  * limitations under the License.
  */
 
-import { Request } from 'express'
+/*
+ * This the emit function used in couchbase view map function implementations.
+ * This function should not be ever called, it's add just to simulate the emit function in the view's execution context.
+ */
 
-export interface IUserController {
-  /**
-   * Sets the user deleteAt property.
-   * @param req Request express request.
-   */
-  markUserForDeletion(req: Request): Promise<void>
+import { User as ManuscriptsUser } from '../../src/Models/UserModels'
 
-  /**
-   * Sets the user deleteAt property to undefined.
-   * @param req Request express request.
-   */
-  unmarkUserForDeletion(req: Request): Promise<void>
+declare global {
+  namespace Express {
+    interface User extends ManuscriptsUser {}
+  }
 }

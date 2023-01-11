@@ -14,19 +14,14 @@
  * limitations under the License.
  */
 
-const expressJoiMiddleware = require('express-joi-middleware')
+import { celebrate } from 'celebrate'
 import { NextFunction, Request, Response, Router } from 'express'
-import * as HttpStatus from 'http-status-codes'
+import { StatusCodes } from 'http-status-codes'
 
+import { AuthStrategy } from '../../../Auth/Passport/AuthStrategy'
 import { BaseRoute } from '../../BaseRoute'
 import { RegistrationController } from './RegistrationController'
-import { AuthStrategy } from '../../../Auth/Passport/AuthStrategy'
-import {
-  signupSchema,
-  verificationSchema,
-  requestVerificationEmailSchema,
-  connectSignupSchema,
-} from './RegistrationSchema'
+import { connectSignupSchema } from './RegistrationSchema'
 
 export class RegistrationRoute extends BaseRoute {
   private registrationController = new RegistrationController()
@@ -42,48 +37,14 @@ export class RegistrationRoute extends BaseRoute {
 
   public create(router: Router): void {
     router.post(
-      `${this.basePath}/signup`,
-      expressJoiMiddleware(signupSchema, {}),
-      AuthStrategy.JsonHeadersValidation,
-      (req: Request, res: Response, next: NextFunction) => {
-        return this.runWithErrorHandling(async () => {
-          await this.registrationController.signup(req)
-          res.status(HttpStatus.NO_CONTENT).end()
-        }, next)
-      }
-    )
-
-    router.post(
       `${this.basePath}/connect/signup`,
-      expressJoiMiddleware(connectSignupSchema, {}),
+      celebrate(connectSignupSchema, {}),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.applicationValidation(),
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           await this.registrationController.connectSignup(req)
-          res.status(HttpStatus.NO_CONTENT).end()
-        }, next)
-      }
-    )
-
-    router.post(
-      `${this.basePath}/verify`,
-      expressJoiMiddleware(verificationSchema, {}),
-      (req: Request, res: Response, next: NextFunction) => {
-        return this.runWithErrorHandling(async () => {
-          await this.registrationController.verify(req)
-          res.status(HttpStatus.NO_CONTENT).end()
-        }, next)
-      }
-    )
-
-    router.post(
-      `${this.basePath}/verify/resend`,
-      expressJoiMiddleware(requestVerificationEmailSchema, {}),
-      (req: Request, res: Response, next: NextFunction) => {
-        return this.runWithErrorHandling(async () => {
-          await this.registrationController.requestVerificationEmail(req)
-          res.status(HttpStatus.NO_CONTENT).end()
+          res.status(StatusCodes.NO_CONTENT).end()
         }, next)
       }
     )

@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import prisma from './prismaClient'
 import { Container } from '../Models/ContainerModels'
+import prisma from './prismaClient'
 
 const { equal, validate } = require('./jsonSchemaValidator')
 

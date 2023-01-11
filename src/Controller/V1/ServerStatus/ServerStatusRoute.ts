@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
+import { celebrate } from 'celebrate'
 import { NextFunction, Request, Response, Router } from 'express'
-import * as HttpStatus from 'http-status-codes'
+import { StatusCodes } from 'http-status-codes'
 
+import { DIContainer } from '../../../DIContainer/DIContainer'
 import { BaseRoute } from '../../BaseRoute'
 import { ServerStatus } from './ServerStatus'
 import { appVersionSchema } from './ServerStatusSchema'
-import { DIContainer } from '../../../DIContainer/DIContainer'
-const expressJoiMiddleware = require('express-joi-middleware')
 
 export class ServerStatusRoute extends BaseRoute {
   private get basePath(): string {
@@ -31,13 +31,13 @@ export class ServerStatusRoute extends BaseRoute {
   private static getVersion(_req: Request, res: Response, _next: NextFunction) {
     const version = ServerStatus.version
 
-    return res.status(HttpStatus.OK).json({ version: version }).end()
+    return res.status(StatusCodes.OK).json({ version: version }).end()
   }
 
   public create(router: Router): void {
     router.get(
       `${this.basePath}/version`,
-      expressJoiMiddleware(appVersionSchema, {}),
+      celebrate(appVersionSchema, {}),
       ServerStatusRoute.getVersion
     )
     router.get(`${this.basePath}/alive`, async (_req, res: Response) => {

@@ -15,7 +15,7 @@
  */
 
 export const userRowData = {
-  _id: '1',
+  id: '1',
   name: 'Abdallah',
   email: 'abarmawi@live.com',
   password: '$2a$05$LpEIAuWg7aF4leM9aZaKDO3.7r.6IkkcS4qrj5qMhHZEWzFoZHrv.',
@@ -24,7 +24,7 @@ export const userRowData = {
 }
 
 export const userSocialRowData = {
-  _id: '1',
+  id: '1',
   name: 'Abdallah',
   email: 'abarmawi@gmail.com',
   isVerified: true,
@@ -32,7 +32,7 @@ export const userSocialRowData = {
 }
 
 export const deletdUserRowData = {
-  _id: '1',
+  id: '1',
   name: 'user',
   email: 'user@gmail.com',
   isVerified: true,

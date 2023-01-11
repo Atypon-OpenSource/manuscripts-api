@@ -1,12 +1,12 @@
 {
   "compilerOptions": {
-    "target": "es2017",
+    "target": "es2020",
     "module": "commonjs",
     "noImplicitAny": true,
     "removeComments": false,
     "sourceMap": true,
     "outDir": "dist",
-    "lib": ["dom", "es2017"],
+    "lib": ["dom", "es2020"],
     "moduleResolution": "node",
     "isolatedModules": true,
     "noUnusedLocals": true,
@@ -25,7 +25,7 @@
     "test"
   ],
   "files": [
-    "./types/globals.d.ts"
+    "./types/express/index.d.ts",
+    "./types/crypto-random-string/index.d.ts"
   ]
-
 }

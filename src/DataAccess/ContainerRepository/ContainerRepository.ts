@@ -14,15 +14,19 @@
  * limitations under the License.
  */
 
-import { Model, LibraryCollection } from '@manuscripts/manuscripts-json-schema'
+import { LibraryCollection, Model } from '@manuscripts/json-schema'
 
-import { SGRepository } from '../SGRepository'
-
-import { IContainerRepository } from '../Interfaces/IContainerRepository'
 import { selectActiveResources } from '../../Utilities/ContainerUtils/selectActiveResources'
+import { IContainerRepository } from '../Interfaces/IContainerRepository'
+import { SGRepository } from '../SGRepository'
 import { proceedWithReadAccess } from '../syncAccessControl'
+import {IdentifiableEntity} from "../Interfaces/IdentifiableEntity";
 
-export abstract class ContainerRepository<Container, ContainerLike, PatchContainer>
+export abstract class ContainerRepository<
+    Container extends Partial<IdentifiableEntity>,
+  ContainerLike extends Partial<IdentifiableEntity>,
+    PatchContainer
+  >
   extends SGRepository<Container, ContainerLike, ContainerLike, PatchContainer>
   implements IContainerRepository<Container, ContainerLike, PatchContainer>
 {

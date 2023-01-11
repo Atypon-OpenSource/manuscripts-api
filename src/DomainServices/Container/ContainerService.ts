@@ -14,63 +14,55 @@
  * limitations under the License.
  */
 
+import { manuscriptIDTypes, ManuscriptNote, Model, ObjectTypes } from '@manuscripts/json-schema'
 import * as jsonwebtoken from 'jsonwebtoken'
-import { v4 as uuid_v4 } from 'uuid'
 import * as _ from 'lodash'
+import { v4 as uuid_v4 } from 'uuid'
 
-import { IContainerService, ArchiveOptions } from './IContainerService'
-import { IUserRepository } from '../../DataAccess/Interfaces/IUserRepository'
-import { IUserStatusRepository } from '../../DataAccess/Interfaces/IUserStatusRepository'
-import { UserActivityTrackingService } from '../UserActivity/UserActivityTrackingService'
-import {
-  ContainerRole,
-  Container,
-  ContainerType,
-  ContainerRepository,
-  ContainerObjectType,
-} from '../../Models/ContainerModels'
-import { isLoginTokenPayload, timestamp } from '../../Utilities/JWT/LoginTokenPayload'
-import {
-  InvalidCredentialsError,
-  MissingUserStatusError,
-  UserBlockedError,
-  UserNotVerifiedError,
-  ValidationError,
-  UserRoleError,
-  RecordNotFoundError,
-  InvalidScopeNameError,
-  ConflictingRecordError,
-  MissingContainerError,
-  MissingProductionNoteError,
-  MissingUserRecordError,
-  MissingTemplateError,
-  RoleDoesNotPermitOperationError,
-  ProductionNotesLoadError,
-  ProductionNotesUpdateError,
-  SyncError,
-} from '../../Errors'
-import { isBlocked, User } from '../../Models/UserModels'
-import { UserActivityEventType } from '../../Models/UserEventModels'
-import { IUserService } from '../User/IUserService'
-import { EmailService } from '../Email/EmailService'
-import { ContainerInvitationRepository } from '../../DataAccess/ContainerInvitationRepository/ContainerInvitationRepository'
 import { config } from '../../Config/Config'
 import { ScopedAccessTokenConfiguration } from '../../Config/ConfigurationTypes'
-import { ManuscriptNoteRepository } from '../../DataAccess/ManuscriptNoteRepository/ManuscriptNoteRepository'
-import { UserService } from '../User/UserService'
-import { DIContainer } from '../../DIContainer/DIContainer'
-import { LibraryCollectionRepository } from '../../DataAccess/LibraryCollectionRepository/LibraryCollectionRepository'
-import {
-  ManuscriptNote,
-  ObjectTypes,
-  Snapshot,
-  Model,
-  manuscriptIDTypes,
-} from '@manuscripts/manuscripts-json-schema'
-import { CorrectionRepository } from '../../DataAccess/CorrectionRepository/CorrectionRepository'
+import { ContainerInvitationRepository } from '../../DataAccess/ContainerInvitationRepository/ContainerInvitationRepository'
 import { IManuscriptRepository } from '../../DataAccess/Interfaces/IManuscriptRepository'
-import { SnapshotRepository } from '../../DataAccess/SnapshotRepository/SnapshotRepository'
+import { IUserRepository } from '../../DataAccess/Interfaces/IUserRepository'
+import { IUserStatusRepository } from '../../DataAccess/Interfaces/IUserStatusRepository'
+import { LibraryCollectionRepository } from '../../DataAccess/LibraryCollectionRepository/LibraryCollectionRepository'
+import { ManuscriptNoteRepository } from '../../DataAccess/ManuscriptNoteRepository/ManuscriptNoteRepository'
 import { TemplateRepository } from '../../DataAccess/TemplateRepository/TemplateRepository'
+import { DIContainer } from '../../DIContainer/DIContainer'
+import {
+  ConflictingRecordError,
+  InvalidCredentialsError,
+  InvalidScopeNameError,
+  MissingContainerError,
+  MissingProductionNoteError,
+  MissingTemplateError,
+  MissingUserRecordError,
+  MissingUserStatusError,
+  ProductionNotesLoadError,
+  ProductionNotesUpdateError,
+  RecordNotFoundError,
+  RoleDoesNotPermitOperationError,
+  SyncError,
+  UserBlockedError,
+  UserNotVerifiedError,
+  UserRoleError,
+  ValidationError,
+} from '../../Errors'
+import {
+  Container,
+  ContainerObjectType,
+  ContainerRepository,
+  ContainerRole,
+  ContainerType,
+} from '../../Models/ContainerModels'
+import { UserActivityEventType } from '../../Models/UserEventModels'
+import { isBlocked, User } from '../../Models/UserModels'
+import { isLoginTokenPayload, timestamp } from '../../Utilities/JWT/LoginTokenPayload'
+import { EmailService } from '../Email/EmailService'
+import { IUserService } from '../User/IUserService'
+import { UserService } from '../User/UserService'
+import { UserActivityTrackingService } from '../UserActivity/UserActivityTrackingService'
+import { ArchiveOptions, IContainerService } from './IContainerService'
 
 const JSZip = require('jszip')
 const { validate } = require('../../DataAccess/jsonSchemaValidator')
@@ -88,8 +80,6 @@ export class ContainerService implements IContainerService {
     private libraryCollectionRepository: LibraryCollectionRepository,
     private manuscriptRepository: IManuscriptRepository,
     private manuscriptNoteRepository: ManuscriptNoteRepository,
-    private correctionRepository: CorrectionRepository,
-    private snapshotRepository: SnapshotRepository,
     private templateRepository: TemplateRepository
   ) {}
 
@@ -996,31 +986,6 @@ export class ContainerService implements IContainerService {
   public async updateDocumentSessionId(docId: string) {
     const sessionID = uuid_v4()
     await DIContainer.sharedContainer.projectRepository.patch(docId, { _id: docId, sessionID })
-  }
-
-  public async saveSnapshot(key: string, containerID: string, creator: string, name?: string) {
-    const stamp = timestamp()
-    const doc: Snapshot = {
-      _id: `MPSnapshot:${uuid_v4()}`,
-      objectType: ObjectTypes.Snapshot,
-      s3Id: key,
-      containerID,
-      creator,
-      createdAt: stamp,
-      updatedAt: stamp,
-    }
-    if (name) {
-      doc['name'] = name
-    }
-    return this.snapshotRepository.create(doc, ContainerService.userIdForSync(creator))
-  }
-
-  public async getCorrectionStatus(containerID: string, userId: string) {
-    const canAccess = await this.checkUserContainerAccess(userId, containerID)
-    if (!canAccess) {
-      throw new ValidationError('User must be a contributor in the container', containerID)
-    }
-    return this.correctionRepository.getCorrectionStatus(containerID)
   }
 
   public async getCollaborators(containerID: string, userId: string) {

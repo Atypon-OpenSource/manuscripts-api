@@ -4,7 +4,7 @@ const path = require('path')
 const { js_beautify: beautify } = require('js-beautify')
 const {
   manuscriptsFn,
-} = require('@manuscripts/manuscripts-json-schema')
+} = require('@manuscripts/json-schema')
 
 const distDir = path.join(__dirname, '..', 'dist')
 

@@ -14,23 +14,23 @@
  * limitations under the License.
  */
 
-const expressJoiMiddleware = require('express-joi-middleware')
+import { celebrate } from 'celebrate'
 import { NextFunction, Request, Response, Router } from 'express'
-import * as HttpStatus from 'http-status-codes'
+import { StatusCodes } from 'http-status-codes'
 
+import { AuthStrategy } from '../../../Auth/Passport/AuthStrategy'
 import { BaseRoute } from '../../BaseRoute'
 import { InvitationController } from './InvitationController'
 import {
-  inviteSchema,
-  rejectSchema,
   acceptSchema,
-  uninviteSchema,
-  containerInviteSchema,
-  requestInvitationTokenSchema,
-  refreshInvitationTokenSchema,
   accessSharedUriSchema,
+  containerInviteSchema,
+  inviteSchema,
+  refreshInvitationTokenSchema,
+  rejectSchema,
+  requestInvitationTokenSchema,
+  uninviteSchema,
 } from './InvitationSchema'
-import { AuthStrategy } from '../../../Auth/Passport/AuthStrategy'
 
 export class InvitationRoute extends BaseRoute {
   private invitationController = new InvitationController()
@@ -47,44 +47,42 @@ export class InvitationRoute extends BaseRoute {
   public create(router: Router): void {
     router.post(
       `${this.basePath}/invite`,
-      expressJoiMiddleware(inviteSchema, {}),
+      celebrate(inviteSchema, {}),
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           const result = await this.invitationController.invite(req)
-
-          res.status(HttpStatus.OK).json(result).end()
+          res.status(StatusCodes.OK).json(result).end()
         }, next)
       }
     )
 
     router.post(
       [`${this.basePath}/:containerID/invite`, `${this.basePath}/project/:containerID/invite`],
-      expressJoiMiddleware(containerInviteSchema, {}),
+      celebrate(containerInviteSchema, {}),
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           const result = await this.invitationController.inviteToContainer(req)
-
-          res.status(HttpStatus.OK).json(result).end()
+          res.status(StatusCodes.OK).json(result).end()
         }, next)
       }
     )
 
     router.post(
       `${this.basePath}/reject`,
-      expressJoiMiddleware(rejectSchema, {}),
+      celebrate(rejectSchema, {}),
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           const result = await this.invitationController.reject(req)
-          res.status(HttpStatus.OK).json(result).end()
+          res.status(StatusCodes.OK).json(result).end()
         }, next)
       }
     )
 
     router.post(
       `${this.basePath}/accept`,
-      expressJoiMiddleware(acceptSchema, {}),
+      celebrate(acceptSchema, {}),
       (req: Request, res: Response, next: NextFunction) => {
         if (req.body.invitationId.startsWith('MPContainerInvitation')) {
           AuthStrategy.JWTAuth(req, res, next)
@@ -95,54 +93,54 @@ export class InvitationRoute extends BaseRoute {
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           const result = await this.invitationController.accept(req)
-          res.status(HttpStatus.OK).json(result).end()
+          res.status(StatusCodes.OK).json(result).end()
         }, next)
       }
     )
 
     router.delete(
       `${this.basePath}`,
-      expressJoiMiddleware(uninviteSchema, {}),
+      celebrate(uninviteSchema, {}),
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           const result = await this.invitationController.uninvite(req)
-          res.status(HttpStatus.OK).json(result).end()
+          res.status(StatusCodes.OK).json(result).end()
         }, next)
       }
     )
 
     router.get(
       [`${this.basePath}/:containerID/:role`, `${this.basePath}/project/:containerID/:role`],
-      expressJoiMiddleware(requestInvitationTokenSchema, {}),
+      celebrate(requestInvitationTokenSchema, {}),
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           const token = await this.invitationController.requestInvitationToken(req)
-          res.status(HttpStatus.OK).send(token).end()
+          res.status(StatusCodes.OK).send(token).end()
         }, next)
       }
     )
 
     router.post(
       `${this.basePath}/:containerType/access`,
-      expressJoiMiddleware(accessSharedUriSchema, {}),
+      celebrate(accessSharedUriSchema, {}),
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           const response = await this.invitationController.acceptInvitationToken(req)
-          res.status(HttpStatus.OK).send(response).end()
+          res.status(StatusCodes.OK).send(response).end()
         }, next)
       }
     )
 
     router.post(
       `${this.basePath}/:containerID/:role`,
-      expressJoiMiddleware(refreshInvitationTokenSchema, {}),
+      celebrate(refreshInvitationTokenSchema, {}),
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           await this.invitationController.refreshInvitationToken(req)
-          res.status(HttpStatus.OK).end()
+          res.status(StatusCodes.OK).end()
         }, next)
       }
     )

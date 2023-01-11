@@ -49,7 +49,7 @@ import {
   Section,
   Snapshot,
   Supplement,
-} from '@manuscripts/manuscripts-json-schema'
+} from '@manuscripts/json-schema'
 
 /**
  * find a document within an array of documents by its _id

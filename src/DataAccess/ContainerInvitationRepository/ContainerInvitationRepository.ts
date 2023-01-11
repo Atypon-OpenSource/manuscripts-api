@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import { ContainerInvitation } from '@manuscripts/manuscripts-json-schema'
+import { ContainerInvitation } from '@manuscripts/json-schema'
 
-import { SGRepository } from '../SGRepository'
-import { ContainerInvitationLike } from '../Interfaces/Models'
 import { PatchContainerInvitation } from '../../Models/ContainerModels'
 import { User } from '../../Models/UserModels'
+import { ContainerInvitationLike } from '../Interfaces/Models'
+import { SGRepository } from '../SGRepository'
 
 /**
  * Manages tokens persistent storage operations.

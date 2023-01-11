@@ -30,12 +30,6 @@ jest.mock(
   })
 )
 
-jest.mock('../../../../../../src/DIContainer/IAMTokenVerifier.ts', () => ({
-  IAMTokenVerifier: jest.fn(() => ({
-    setIssuer: jest.fn(),
-  })),
-}))
-
 import '../../../../../utilities/dbMock'
 
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'

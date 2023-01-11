@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Project } from '@manuscripts/manuscripts-json-schema'
+import { Project } from '@manuscripts/json-schema'
 
 import { IProjectRepository } from '../Interfaces/IProjectRepository'
 import { ProjectLike } from '../Interfaces/Models'

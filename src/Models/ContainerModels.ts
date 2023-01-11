@@ -20,7 +20,7 @@ import {
   ObjectTypes,
   Project,
   UserProfile,
-} from '@manuscripts/manuscripts-json-schema'
+} from '@manuscripts/json-schema'
 
 import { LibraryRepository } from '../DataAccess/LibraryRepository/LibraryRepository'
 import { LibraryCollectionRepository } from '../DataAccess/LibraryCollectionRepository/LibraryCollectionRepository'

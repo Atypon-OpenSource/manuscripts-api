@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Library } from '@manuscripts/manuscripts-json-schema'
+import { Library } from '@manuscripts/json-schema'
 
 import { LibraryLike } from './Models'
 import { PatchLibrary } from '../../Models/LibraryModels'

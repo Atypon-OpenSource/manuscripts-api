@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Model, ParagraphElement, Section } from '@manuscripts/manuscripts-json-schema'
+import { Model, ParagraphElement, Section } from '@manuscripts/json-schema'
 import deepFreeze from 'deep-freeze'
 
 import {

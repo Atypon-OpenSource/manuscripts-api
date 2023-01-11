@@ -29,7 +29,7 @@ import {
   Correction,
   ManuscriptTemplate,
   Snapshot,
-} from '@manuscripts/manuscripts-json-schema'
+} from '@manuscripts/json-schema'
 
 export type ProjectLike = Pick<Project, Exclude<keyof Project, 'createdAt' | 'updatedAt'>>
 

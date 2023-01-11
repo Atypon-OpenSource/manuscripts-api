@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { isString } from '../../../util'
 import { IllegalStateError } from '../../../Errors'
+import { isString } from '../../../util'
 
 const pjson = require('../../../../package.json')
 

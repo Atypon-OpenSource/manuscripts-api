@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { UserProfile, ObjectTypes } from '@manuscripts/manuscripts-json-schema'
+import { UserProfile, ObjectTypes } from '@manuscripts/json-schema'
 import { v4 as uuid_v4 } from 'uuid'
 import { randomBytes } from 'crypto'
 import { promisify } from 'util'

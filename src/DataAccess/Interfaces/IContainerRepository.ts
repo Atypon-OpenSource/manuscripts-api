@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ManuscriptTemplate, Model } from '@manuscripts/manuscripts-json-schema'
+import { ManuscriptTemplate, Model } from '@manuscripts/json-schema'
 
 import { KeyValueRepository } from './KeyValueRepository'
 
