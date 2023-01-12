@@ -5,9 +5,9 @@ ENV APP_SKIP_ACCOUNT_VERIFICATION="0"
 WORKDIR /usr/src/app
 
 COPY package.json ./
-COPY package-lock.json ./
+COPY yarn.lock ./
 
-RUN npm ci --legacy-peer-deps
+RUN yarn install --non-interactive --frozen-lock-file
 
 COPY ./src ./src
 COPY ./prisma ./prisma
@@ -24,8 +24,8 @@ RUN ./bin/build-env.js .env.example > .env
 
 EXPOSE 3000
 
-RUN npm run attach-prisma
-RUN npm run build-app
+RUN yarn attach-prisma
+RUN yarn build-app
 RUN ./bin/build-validator-function.js
 
 ENTRYPOINT ["/bin/bash"]

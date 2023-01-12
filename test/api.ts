@@ -22,28 +22,6 @@ import { getContainerType } from '../src/Controller/ContainedBaseController'
 
 // Auth
 
-export async function basicLogin(body: any, headers: object): Promise<supertest.Response> {
-  const server = await createServer()
-  return supertest(server.app).post('/api/v1/auth/login').set(headers).send(body)
-}
-
-export async function serverToServerAuth(body: any, headers: object): Promise<supertest.Response> {
-  const server = await createServer()
-  return supertest(server.app).post('/api/v1/auth/admin').set(headers).send(body)
-}
-
-export async function serverToServerTokenAuth(
-  body: any,
-  headers: object,
-  params: any
-): Promise<supertest.Response> {
-  const server = await createServer()
-  return supertest(server.app)
-    .post(`/api/v1/auth/token/${params.connectUserID}`)
-    .set(headers)
-    .send(body)
-}
-
 export async function connectSignup(body: any, headers: object): Promise<supertest.Response> {
   const server = await createServer()
   return supertest(server.app).post('/api/v1/registration/connect/signup').set(headers).send(body)
@@ -52,43 +30,6 @@ export async function connectSignup(body: any, headers: object): Promise<superte
 export async function logout(headers: object): Promise<supertest.Response> {
   const server = await createServer()
   return supertest(server.app).post('/api/v1/auth/logout').set(headers).send()
-}
-
-export async function backchannelLogout(
-  headers: object,
-  query: object
-): Promise<supertest.Response> {
-  const server = await createServer()
-  return supertest(server.app)
-    .post('/api/v1/auth/backchannel_logout')
-    .query(query)
-    .set(headers)
-    .send()
-}
-
-export async function forgotPassword(body: any, headers: object): Promise<supertest.Response> {
-  const server = await createServer()
-  return supertest(server.app).post('/api/v1/auth/sendForgottenPassword').set(headers).send(body)
-}
-
-export async function resetPassword(body: any, headers: object): Promise<supertest.Response> {
-  const server = await createServer()
-  return supertest(server.app).post('/api/v1/auth/resetPassword').set(headers).send(body)
-}
-
-export async function changePassword(body: any, headers: object): Promise<supertest.Response> {
-  const server = await createServer()
-  return supertest(server.app).post('/api/v1/auth/changePassword').set(headers).send(body)
-}
-
-export async function iamOAuthStart(headers: object, query: any): Promise<supertest.Response> {
-  const server: IServer = await createServer()
-  return supertest(server.app).get('/api/v1/auth/iam').set(headers).query(query).send()
-}
-
-export async function iamOAuthCallback(query: any, headers: object): Promise<supertest.Response> {
-  const server: IServer = await createServer()
-  return supertest(server.app).get('/api/v1/auth/iam/callback').query(query).set(headers).send()
 }
 
 export async function authorizationToken(

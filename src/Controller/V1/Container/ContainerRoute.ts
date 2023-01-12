@@ -102,8 +102,9 @@ export class ContainerRoute extends BaseRoute {
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           const archive = await this.containersController.getArchive(req)
+          const buffer = await archive.arrayBuffer()
           res.set('Content-Type', 'application/zip')
-          res.status(StatusCodes.OK).send(archive)
+          res.status(StatusCodes.OK).send(Buffer.from(buffer))
         }, next)
       }
     )

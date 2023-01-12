@@ -14,22 +14,21 @@
  * limitations under the License.
  */
 
-import * as HttpStatus from 'http-status-codes'
+import { StatusCodes } from 'http-status-codes'
 import * as supertest from 'supertest'
 
-import { basicLogin, authorizationToken } from '../../../../../api'
-import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
+import { BucketKey } from '../../../../../../src/Config/ConfigurationTypes'
+import { SeedOptions } from '../../../../../../src/DataAccess/Interfaces/SeedOptions'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
-import { drop, seed, testDatabase, dropBucket } from '../../../../../utilities/db'
+import { authorizationToken } from '../../../../../api'
 import { validBody } from '../../../../../data/fixtures/credentialsRequestPayload'
 import {
-  ValidHeaderWithApplicationKey,
+  authorizationHeader,
   ValidContentTypeAcceptJsonHeader,
-  authorizationHeader
+  ValidHeaderWithApplicationKey,
 } from '../../../../../data/fixtures/headers'
-
-import { SeedOptions } from '../../../../../../src/DataAccess/Interfaces/SeedOptions'
-import { BucketKey } from '../../../../../../src/Config/ConfigurationTypes'
+import { drop, dropBucket, seed, testDatabase } from '../../../../../utilities/db'
+import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
 
 let db: any = null
 const seedOptions: SeedOptions = { users: true, applications: true }
@@ -53,37 +52,46 @@ describe('authorization scope - GET api/v1/authorization/:scope', () => {
   })
 
   test('should generate an authorization token', async () => {
-    const loginResponse: supertest.Response = await basicLogin(validBody, ValidHeaderWithApplicationKey)
-    expect(loginResponse.status).toBe(HttpStatus.OK)
+    const loginResponse = await basicLogin(validBody, ValidHeaderWithApplicationKey)
+    expect(loginResponse.status).toBe(StatusCodes.OK)
 
     const header = authorizationHeader(loginResponse.body.token)
-    const response: supertest.Response = await authorizationToken({ ...header, ...ValidContentTypeAcceptJsonHeader }, {
-      scope: 'jupyterhub'
-    })
+    const response: supertest.Response = await authorizationToken(
+      { ...header, ...ValidContentTypeAcceptJsonHeader },
+      {
+        scope: 'jupyterhub',
+      }
+    )
 
-    expect(response.status).toBe(HttpStatus.OK)
+    expect(response.status).toBe(StatusCodes.OK)
   })
 
   test('should barr unauthorized user', async () => {
-    const loginResponse: supertest.Response = await basicLogin(validBody, ValidHeaderWithApplicationKey)
-    expect(loginResponse.status).toBe(HttpStatus.OK)
+    const loginResponse = await basicLogin(validBody, ValidHeaderWithApplicationKey)
+    expect(loginResponse.status).toBe(StatusCodes.OK)
 
-    const response: supertest.Response = await authorizationToken({ ...ValidContentTypeAcceptJsonHeader }, {
-      scope: 'jupyterhub'
-    })
+    const response: supertest.Response = await authorizationToken(
+      { ...ValidContentTypeAcceptJsonHeader },
+      {
+        scope: 'jupyterhub',
+      }
+    )
 
-    expect(response.status).toBe(HttpStatus.UNAUTHORIZED)
+    expect(response.status).toBe(StatusCodes.UNAUTHORIZED)
   })
 
   test('should fail on invalid scope', async () => {
-    const loginResponse: supertest.Response = await basicLogin(validBody, ValidHeaderWithApplicationKey)
-    expect(loginResponse.status).toBe(HttpStatus.OK)
+    const loginResponse = await basicLogin(validBody, ValidHeaderWithApplicationKey)
+    expect(loginResponse.status).toBe(StatusCodes.OK)
 
     const header = authorizationHeader(loginResponse.body.token)
-    const response: supertest.Response = await authorizationToken({ ...header, ...ValidContentTypeAcceptJsonHeader }, {
-      scope: 'invalid_scope'
-    })
+    const response: supertest.Response = await authorizationToken(
+      { ...header, ...ValidContentTypeAcceptJsonHeader },
+      {
+        scope: 'invalid_scope',
+      }
+    )
 
-    expect(response.status).toBe(HttpStatus.BAD_REQUEST)
+    expect(response.status).toBe(StatusCodes.BAD_REQUEST)
   })
 })

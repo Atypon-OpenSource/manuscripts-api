@@ -197,7 +197,7 @@ export class ContainersController extends ContainedBaseController {
    */
   async getArchive(req: Request) {
     const { containerID, manuscriptID } = req.params
-    const { allowOrphanedDocs, onlyIDs } = req.query
+    const { onlyIDs } = req.query
     const { accept: acceptHeader } = req.headers
 
     if (!req.user) {
@@ -208,7 +208,7 @@ export class ContainersController extends ContainedBaseController {
       throw new ValidationError('containerID should be string', containerID)
     }
 
-    let token = authorizationBearerToken(req)
+    const token = authorizationBearerToken(req)
 
     const getAttachments = acceptHeader !== 'application/json'
     const containerType = getContainerType(containerID)
@@ -223,9 +223,9 @@ export class ContainersController extends ContainedBaseController {
         {
           getAttachments,
           onlyIDs: onlyIDs === 'true',
-          allowOrphanedDocs,
+          allowOrphanedDocs: true,
           includeExt: false,
-        } as any
+        }
       )
     } catch (e) {
       throw new ManuscriptContentParsingError('Failed to make an archive.', e)
@@ -276,7 +276,7 @@ export class ContainersController extends ContainedBaseController {
       throw new ValidationError('manuscriptID should be string', manuscriptID)
     }
 
-    let token = authorizationBearerToken(req)
+    const token = authorizationBearerToken(req)
 
     const getAttachments = true
     const includeExt = false
@@ -294,6 +294,10 @@ export class ContainersController extends ContainedBaseController {
         includeExt,
       }
     )
+
+    if (!archive) {
+      throw new IllegalStateError('', archive)
+    }
 
     await DIContainer.sharedContainer.pressroomService
       .fetchHtml(archive, manuscriptID)

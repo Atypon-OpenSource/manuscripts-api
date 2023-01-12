@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import * as jsonwebtoken from 'jsonwebtoken'
+import jwt from 'jsonwebtoken'
+
 import { config } from '../../../src/Config/Config'
 
 const validLogoutTokenObj = {
@@ -53,11 +54,8 @@ const invalidLogoutTokenObj = {
   sid: 'invalid-session-id'
 }
 
-export const validLogoutToken = jsonwebtoken.sign(validLogoutTokenObj, 'jwt')
+export const validLogoutToken = jwt.sign(validLogoutTokenObj, 'jwt')
 
-export const validLogoutToken2 = jsonwebtoken.sign(validLogoutToken2Obj, 'jwt')
+export const validLogoutToken2 = jwt.sign(validLogoutToken2Obj, 'jwt')
 
-export const invalidLogoutToken = jsonwebtoken.sign(
-  invalidLogoutTokenObj,
-  'jwt'
-)
+export const invalidLogoutToken = jwt.sign(invalidLogoutTokenObj, 'jwt')

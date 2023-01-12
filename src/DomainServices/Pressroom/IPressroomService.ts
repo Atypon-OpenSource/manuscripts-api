@@ -19,7 +19,7 @@ import { Readable } from 'stream'
 export interface IPressroomService {
   importJATS(stream: Readable): Promise<Readable>
 
-  fetchHtml(archive: Buffer, manuscriptID: string): Promise<Buffer>
+  fetchHtml(archive: Blob, manuscriptID: string): Promise<Buffer>
 
   validateTemplateId(templateID: string): Promise<boolean>
 }

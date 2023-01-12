@@ -17,7 +17,7 @@
 import { ObjectTypes, UserCollaborator } from '@manuscripts/json-schema'
 import { compare } from 'bcrypt'
 import checksum from 'checksum'
-import * as jsonwebtoken from 'jsonwebtoken'
+import jwt from 'jsonwebtoken'
 
 import { config } from '../../Config/Config'
 import { ContainerInvitationRepository } from '../../DataAccess/ContainerInvitationRepository/ContainerInvitationRepository'
@@ -201,7 +201,7 @@ export class UserService implements IUserService {
    * @param token User's token
    */
   public async profile(token: string): Promise<UserProfileLike | null> {
-    const payload = jsonwebtoken.decode(token)
+    const payload = jwt.decode(token)
 
     if (!isLoginTokenPayload(payload)) {
       throw new InvalidCredentialsError('Unexpected token payload.')
@@ -214,7 +214,7 @@ export class UserService implements IUserService {
   }
 
   public async authenticateUser(token: string): Promise<void> {
-    const payload = jsonwebtoken.decode(token)
+    const payload = jwt.decode(token)
     if (isScopedTokenPayload(payload)) {
       const user = await this.userRepository.getById(payload.sub.replace('_', '|'))
       if (!user) {
@@ -237,7 +237,7 @@ export class UserService implements IUserService {
     } else {
       try {
         // Server secret based authentication
-        jsonwebtoken.verify(token, config.auth.serverSecret)
+        jwt.verify(token, config.auth.serverSecret)
       } catch (e) {
         throw new InvalidCredentialsError('Unexpected token payload.')
       }

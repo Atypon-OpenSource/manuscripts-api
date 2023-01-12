@@ -89,7 +89,7 @@ export interface IContainerService {
     containerID: string,
     manuscriptID: string | null,
     token: string | null,
-    options: { getAttachments: boolean; onlyIDs: boolean; includeExt: boolean }
+    options: ArchiveOptions
   ): Promise<Blob>
 
   loadProject(

@@ -18,7 +18,7 @@ import { compare, genSalt, hash } from 'bcrypt'
 import checksum from 'checksum'
 import crypto from 'crypto'
 import cryptoRandomString from 'crypto-random-string'
-import * as jsonwebtoken from 'jsonwebtoken'
+import jwt from 'jsonwebtoken'
 import { stringify } from 'qs'
 import querystring from 'querystring'
 import { URL } from 'url'
@@ -132,7 +132,7 @@ export class AuthService implements IAuthService {
     }
 
     const token = authorizationHeader.replace('Bearer ', '')
-    const jwtPayload = jsonwebtoken.decode(token)
+    const jwtPayload = jwt.decode(token)
 
     if (!isLoginTokenPayload(jwtPayload)) {
       throw new InvalidCredentialsError('Invalid authenticated user payload object')
@@ -518,7 +518,7 @@ export class AuthService implements IAuthService {
    * @param token User's token.
    */
   public async logout(token: string): Promise<void> {
-    const payload = jsonwebtoken.decode(token)
+    const payload = jwt.decode(token)
 
     if (!isLoginTokenPayload(payload)) {
       throw new InvalidCredentialsError('Unexpected token payload')

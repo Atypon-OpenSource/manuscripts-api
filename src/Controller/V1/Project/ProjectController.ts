@@ -20,7 +20,7 @@ import { Request } from 'express'
 import * as fs from 'fs'
 import { remove } from 'fs-extra'
 import getStream from 'get-stream'
-import jsonwebtoken from 'jsonwebtoken'
+import jwt from 'jsonwebtoken'
 import { Readable } from 'stream'
 import tempy from 'tempy'
 import { v4 as uuidv4 } from 'uuid'
@@ -45,7 +45,7 @@ export class ProjectController extends BaseController {
     const title = req.body.title
 
     const token = authorizationBearerToken(req)
-    const payload = jsonwebtoken.decode(token)
+    const payload = jwt.decode(token)
 
     if (!isLoginTokenPayload(payload)) {
       throw new InvalidCredentialsError('Unexpected token payload.')
@@ -233,7 +233,7 @@ export class ProjectController extends BaseController {
     }
 
     const token = authorizationBearerToken(req)
-    const payload = jsonwebtoken.decode(token)
+    const payload = jwt.decode(token)
     if (!isLoginTokenPayload(payload)) {
       throw new InvalidCredentialsError('Unexpected token payload.')
     }
@@ -317,7 +317,7 @@ export class ProjectController extends BaseController {
     }
 
     const token = authorizationBearerToken(req)
-    const payload = jsonwebtoken.decode(token)
+    const payload = jwt.decode(token)
     if (!isLoginTokenPayload(payload)) {
       throw new InvalidCredentialsError('Unexpected token payload.')
     }

@@ -15,7 +15,7 @@
  */
 
 import { Request } from 'express'
-import * as jsonwebtoken from 'jsonwebtoken'
+import jwt from 'jsonwebtoken'
 
 import { IAMState } from '../../../Auth/Interfaces/IAMState'
 import { config } from '../../../Config/Config'
@@ -96,7 +96,7 @@ export class AuthController extends BaseController {
       throw new InvalidCredentialsError('Device id must be string.')
     }
 
-    const tokenPayload = jsonwebtoken.decode(token) as AdminTokenPayload
+    const tokenPayload = jwt.decode(token) as AdminTokenPayload
     if (!isAdminTokenPayload(tokenPayload)) {
       throw new InvalidServerCredentialsError('Admin token missing email and connectUserID.')
     }
@@ -147,7 +147,7 @@ export class AuthController extends BaseController {
       return Promise.reject(new MissingQueryParameterError('state'))
     }
 
-    const tokenPayload = jsonwebtoken.decode(token)
+    const tokenPayload = jwt.decode(token)
 
     if (!isIAMOAuthTokenPayload(tokenPayload)) {
       throw new InvalidCredentialsError('Invalid IAM OAuth token')
@@ -220,7 +220,7 @@ export class AuthController extends BaseController {
       throw new InvalidBackchannelLogoutError('Logout token must be a string', logoutToken)
     }
 
-    const tokenPayload = jsonwebtoken.decode(logoutToken)
+    const tokenPayload = jwt.decode(logoutToken)
 
     if (!isIAMLogoutTokenPayload(tokenPayload)) {
       throw new InvalidBackchannelLogoutError('Invalid backchannel logout token', tokenPayload)
@@ -272,14 +272,10 @@ export class AuthController extends BaseController {
       email: user.email,
     }
 
-    const options = {
-      header: {
-        kid: scopeInfo.identifier,
-      },
+    return jwt.sign(payload, scopeInfo.secret, {
       algorithm: scopeInfo.publicKeyPEM === null ? 'HS256' : 'RS256',
+      keyid: scopeInfo.identifier,
       expiresIn: `${scopeInfo.expiry}m`,
-    }
-
-    return jsonwebtoken.sign(payload, scopeInfo.secret, options as any)
+    })
   }
 }

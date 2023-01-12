@@ -15,9 +15,8 @@
  */
 
 import { Container } from '../Models/ContainerModels'
+import { equal, validate } from './jsonSchemaValidator'
 import prisma from './prismaClient'
-
-const { equal, validate } = require('./jsonSchemaValidator')
 
 enum AccessType {
   Read = 'read',

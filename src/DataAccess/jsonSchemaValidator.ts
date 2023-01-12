@@ -16,10 +16,10 @@
 
 import * as _ from 'lodash'
 
-export function validate(doc) {
+export function validate(_doc: any) {
   return null
 }
 
-export function equal(a, b) {
+export function equal(a: any, b: any) {
   return _.isEqual(a, b)
 }
