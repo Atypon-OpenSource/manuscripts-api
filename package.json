@@ -34,7 +34,7 @@
     "lint"
   ],
   "dependencies": {
-    "@manuscripts/manuscripts-json-schema": "^1.52.0",
+    "@manuscripts/manuscripts-json-schema": "^1.53.0",
     "@manuscripts/examples": "^0.0.6",
     "bcrypt": "^5.0.1",
     "body-parser": "^1.18.2",
