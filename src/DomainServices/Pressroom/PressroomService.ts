@@ -54,7 +54,7 @@ export class PressroomService implements IPressroomService {
     )
   }
 
-  public async fetchHtml(archive: Blob, manuscriptID: string): Promise<Buffer> {
+  public async fetchHtml(archive: Buffer, manuscriptID: string): Promise<Buffer> {
     const form = new FormData()
     form.append('file', archive, { filename: 'file.zip', contentType: 'application/zip' })
     form.append('manuscriptID', manuscriptID)

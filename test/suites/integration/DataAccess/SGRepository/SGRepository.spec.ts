@@ -14,28 +14,24 @@
  * limitations under the License.
  */
 
+import { ContainerInvitation } from '@manuscripts/json-schema'
 import { v4 as uuid_v4 } from 'uuid'
-import { ContainerInvitation } from '@manuscripts/manuscripts-json-schema'
-import { PatchProject } from '../../../../../src/Models/ProjectModels'
 
-import { ProjectRepository } from '../../../../../src/DataAccess/ProjectRepository/ProjectRepository'
 import { BucketKey } from '../../../../../src/Config/ConfigurationTypes'
-import { TEST_TIMEOUT } from '../../../../utilities/testSetup'
+import { ContainerInvitationRepository } from '../../../../../src/DataAccess/ContainerInvitationRepository/ContainerInvitationRepository'
+import { InvitationRepository } from '../../../../../src/DataAccess/InvitationRepository/InvitationRepository'
+import { ProjectRepository } from '../../../../../src/DataAccess/ProjectRepository/ProjectRepository'
+import { DatabaseError, ValidationError } from '../../../../../src/Errors'
+import { PatchProject } from '../../../../../src/Models/ProjectModels'
 import { log } from '../../../../../src/Utilities/Logger'
+import { validProjectInvitationObject } from '../../../../data/fixtures/invitation'
 import {
   validProject,
-  validProjectNotInDB,
   validProject2,
+  validProjectNotInDB,
 } from '../../../../data/fixtures/projects'
-import { ValidationError, DatabaseError } from '../../../../../src/Errors'
-import { drop, seed, dropBucket, testDatabase } from '../../../../utilities/db'
-import { InvitationRepository } from '../../../../../src/DataAccess/InvitationRepository/InvitationRepository'
-import { ContainerInvitationRepository } from '../../../../../src/DataAccess/ContainerInvitationRepository/ContainerInvitationRepository'
-import {
-  validProjectInvitation,
-  validProjectInvitationObject,
-} from '../../../../data/fixtures/invitation'
-import { validUserProfile2 } from '../../../../data/fixtures/UserRepository'
+import { drop, dropBucket, seed, testDatabase } from '../../../../utilities/db'
+import { TEST_TIMEOUT } from '../../../../utilities/testSetup'
 
 jest.setTimeout(TEST_TIMEOUT)
 
@@ -68,7 +64,7 @@ describe('SGRepository Create', () => {
 
   test('should fail to create project if the project already exists', () => {
     const repository = new ProjectRepository(BucketKey.Project, db)
-    return expect(repository.create(validProject)).rejects.toThrowError(DatabaseError)
+    return expect(repository.create(validProject)).rejects.toThrow(DatabaseError)
   })
 })
 
@@ -78,24 +74,6 @@ describe('SGRepository update', () => {
     await dropBucket(BucketKey.Project)
     await seed({ projectInvitations: true })
   })
-
-  const invitation: ContainerInvitation = {
-    _id: 'id',
-    objectType: 'MPContainerInvitation',
-    containerID: 'MPProject:id',
-    message: validProjectInvitation.message,
-    invitingUserProfile: {
-      ...validUserProfile2,
-      createdAt: new Date().getMilliseconds() - 1000,
-      updatedAt: new Date().getMilliseconds(),
-    },
-    invitedUserEmail: validProjectInvitation.invitedUsers[0].email,
-    invitedUserName: validProjectInvitation.invitedUsers[0].name,
-    invitingUserID: 'User_foo',
-    role: validProjectInvitation.role,
-    createdAt: new Date().getMilliseconds() - 1000,
-    updatedAt: new Date().getMilliseconds(),
-  }
 
   test('should update user role successfully', async () => {
     const repository = new ContainerInvitationRepository(BucketKey.Project, db)
@@ -108,9 +86,7 @@ describe('SGRepository update', () => {
       _rev: beforeUpdate._rev,
     }
 
-    await repository.update(
-      projectInvitationUpdatedData as ContainerInvitation
-    )
+    await repository.update(projectInvitationUpdatedData as ContainerInvitation)
     const afterUpdate: any = await repository.getById(validProjectInvitationObject._id)
     expect(afterUpdate.role).toBe('Writer')
   })
@@ -126,7 +102,7 @@ describe('SGRepository patch', () => {
   test('should fail if id does not exists in the database', () => {
     const repository = new ProjectRepository(BucketKey.Project, db)
 
-    return expect(repository.patch('not-in-db', validProject)).rejects.toThrowError(ValidationError)
+    return expect(repository.patch('not-in-db', validProject)).rejects.toThrow(ValidationError)
   })
 
   test('should patch user successfully', async () => {
@@ -154,7 +130,7 @@ describe('SGRepository touch', () => {
 
   test('should fail if id does not exists in the database', () => {
     const repository = new InvitationRepository(BucketKey.Project, db)
-    return expect(repository.touch('not-in-db', 1)).rejects.toThrowError(ValidationError)
+    return expect(repository.touch('not-in-db', 1)).rejects.toThrow(ValidationError)
   })
 })
 
@@ -175,7 +151,7 @@ describe('SGRepository remove', () => {
   test('should not fail if the document is not in db', () => {
     const repository = new ProjectRepository(BucketKey.Project, db)
     const id = uuid_v4()
-    return expect(repository.remove(id)).resolves.not.toThrowError()
+    return expect(repository.remove(id)).resolves.not.toThrow()
   })
 
   test('should remove all documents when the id given is null', async () => {

@@ -14,21 +14,22 @@
  * limitations under the License.
  */
 
-import { Chance } from 'chance'
 import '../../../../../utilities/dbMock'
 
-import { log } from '../../../../../../src/Utilities/Logger'
+import { Chance } from 'chance'
+
 import { UserController } from '../../../../../../src/Controller/V1/User/UserController'
-import { ValidationError } from '../../../../../../src/Errors'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
+import { ValidationError } from '../../../../../../src/Errors'
+import { log } from '../../../../../../src/Utilities/Logger'
 import { authorizationHeader } from '../../../../../data/fixtures/headers'
-import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
 import { validUser } from '../../../../../data/fixtures/userServiceUser'
+import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
 
 jest.setTimeout(TEST_TIMEOUT)
 
 beforeEach(() => {
-  (DIContainer as any)._sharedContainer = null
+  ;(DIContainer as any)._sharedContainer = null
   return DIContainer.init()
 })
 
@@ -37,7 +38,7 @@ describe('UserController', () => {
     const userService: any = DIContainer.sharedContainer.userService
     const req: any = {
       body: {},
-      user: { _id: 'foo' }
+      user: { _id: 'foo' },
     }
 
     userService.markUserForDeletion = jest.fn(() => {
@@ -47,13 +48,13 @@ describe('UserController', () => {
     const userController: UserController = new UserController()
     await userController.markUserForDeletion(req)
 
-    expect(userService.markUserForDeletion).toBeCalled()
+    expect(userService.markUserForDeletion).toHaveBeenCalled()
   })
 
   test('should call unmarkUserForDeletion()', async () => {
     const userService: any = DIContainer.sharedContainer.userService
     const req: any = {
-      user: { _id: 'foo' }
+      user: { _id: 'foo' },
     }
 
     userService.unmarkUserForDeletion = jest.fn(() => {
@@ -63,40 +64,39 @@ describe('UserController', () => {
     const userController: UserController = new UserController()
     await userController.unmarkUserForDeletion(req)
 
-    expect(userService.unmarkUserForDeletion).toBeCalled()
+    expect(userService.unmarkUserForDeletion).toHaveBeenCalled()
   })
 
   test('unmarkUserForDeletion should fail if user not found', () => {
     const req: any = {
-      body: {}
+      body: {},
     }
 
     const userController: UserController = new UserController()
-    return expect(userController.unmarkUserForDeletion(req)).rejects.toThrowError(ValidationError)
+    return expect(userController.unmarkUserForDeletion(req)).rejects.toThrow(ValidationError)
   })
 
   test('markUserForDeletion should fail if the password defined but it is not a string', () => {
     const chance = new Chance()
     const req: any = {
       body: {
-        password: chance.integer()
+        password: chance.integer(),
       },
-      user: { _id: 'foo' }
+      user: { _id: 'foo' },
     }
 
     const userController: UserController = new UserController()
-    return expect(userController.markUserForDeletion(req)).rejects.toThrowError(ValidationError)
+    return expect(userController.markUserForDeletion(req)).rejects.toThrow(ValidationError)
   })
 
   test('markUserForDeletion should fail if user not found', () => {
     const req: any = {
-      body: {}
+      body: {},
     }
 
     const userController: UserController = new UserController()
-    return expect(userController.markUserForDeletion(req)).rejects.toThrowError(ValidationError)
+    return expect(userController.markUserForDeletion(req)).rejects.toThrow(ValidationError)
   })
-
 })
 
 describe('UserController - getProfile', () => {
@@ -104,7 +104,7 @@ describe('UserController - getProfile', () => {
     const userService: any = DIContainer.sharedContainer.userService
     const chance = new Chance()
     const req: any = {
-      headers: authorizationHeader(chance.string())
+      headers: authorizationHeader(chance.string()),
     }
 
     userService.profile = jest.fn(() => {
@@ -115,42 +115,42 @@ describe('UserController - getProfile', () => {
     const userController: UserController = new UserController()
     await userController.getProfile(req)
 
-    expect(userService.profile).toBeCalled()
+    expect(userService.profile).toHaveBeenCalled()
   })
 
   test('getProfile should fail if the token is not a bearer token', () => {
     const chance = new Chance()
     const req: any = {
       headers: {
-        authorization: chance.string()
-      }
+        authorization: chance.string(),
+      },
     }
 
     const userController: UserController = new UserController()
-    return expect(userController.getProfile(req)).rejects.toThrowError(ValidationError)
+    return expect(userController.getProfile(req)).rejects.toThrow(ValidationError)
   })
 
   test('getProfile should fail if the token is undefined', () => {
     const req: any = {
       headers: {
-        authorization: undefined
-      }
+        authorization: undefined,
+      },
     }
 
     const userController: UserController = new UserController()
-    return expect(userController.getProfile(req)).rejects.toThrowError(ValidationError)
+    return expect(userController.getProfile(req)).rejects.toThrow(ValidationError)
   })
 
   test('getProfile should fail if the token is array', () => {
     const chance = new Chance()
     const req: any = {
       headers: {
-        authorization: [chance.string(), chance.string()]
-      }
+        authorization: [chance.string(), chance.string()],
+      },
     }
 
     const userController: UserController = new UserController()
-    return expect(userController.getProfile(req)).rejects.toThrowError(ValidationError)
+    return expect(userController.getProfile(req)).rejects.toThrow(ValidationError)
   })
 })
 
@@ -158,9 +158,9 @@ describe('UserController - userContainers', () => {
   test('should call getUserContainers', async () => {
     const req: any = {
       headers: {
-        authorization: 'Bearer ' + new Chance().string()
+        authorization: 'Bearer ' + new Chance().string(),
       },
-      user: validUser
+      user: validUser,
     }
 
     const projectRepository = DIContainer.sharedContainer.projectRepository
@@ -170,6 +170,6 @@ describe('UserController - userContainers', () => {
     const userController = new UserController()
     await userController.userContainers(req)
 
-    return expect(projectRepository.getUserContainers).toBeCalled()
+    return expect(projectRepository.getUserContainers).toHaveBeenCalled()
   })
 })

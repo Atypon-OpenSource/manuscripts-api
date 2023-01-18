@@ -14,85 +14,71 @@
  * limitations under the License.
  */
 
-import * as _ from 'lodash'
 import checksum from 'checksum'
+import * as _ from 'lodash'
 
 import { BucketKey } from '../../src/Config/ConfigurationTypes'
-import { singleUseTokens, userList } from '../data/dump/user'
-import { userStatusList } from '../data/dump/userStatus'
-import { invitationsList } from '../data/dump/invitation'
-import { projectInvitationsList } from '../data/dump/projectInvitation'
-import { applicationList } from '../data/dump/applications'
+import { SeedOptions } from '../../src/DataAccess/Interfaces/SeedOptions'
 import { DIContainer } from '../../src/DIContainer/DIContainer'
 import { NoBucketError } from '../../src/Errors'
-import { SeedOptions } from '../../src/DataAccess/Interfaces/SeedOptions'
-import { projectsList } from '../data/dump/project'
-import { invitationTokenList } from '../data/dump/invitationTokens'
-import { userProfileList } from '../data/dump/userProfile'
-import { userTokensList } from '../data/dump/userToken'
+import { applicationList } from '../data/dump/applications'
 import { containerRequestList } from '../data/dump/containerRequest'
-import { submissionsList } from '../data/dump/submissions'
-//import { validManuscript, validManuscript1 } from '../data/fixtures/manuscripts'
-import { manuscriptList } from '../data/dump/manuscriptList'
-import { manuscriptNoteList } from '../data/dump/manuscriptNotes'
-import { correctionList } from '../data/dump/correctionList'
-import { templates } from '../data/dump/templates'
+import { invitationsList } from '../data/dump/invitation'
+import { invitationTokenList } from '../data/dump/invitationTokens'
 import { librariesList } from '../data/dump/library'
 import { libraryCollectionsList } from '../data/dump/libraryCollection'
 import { libraryInvitationsList } from '../data/dump/libraryInvitation'
-import { snapshotList } from '../data/dump/SnapshotList'
+//import { validManuscript, validManuscript1 } from '../data/fixtures/manuscripts'
+import { manuscriptList } from '../data/dump/manuscriptList'
+import { manuscriptNoteList } from '../data/dump/manuscriptNotes'
+import { projectsList } from '../data/dump/project'
+import { projectInvitationsList } from '../data/dump/projectInvitation'
+import { templates } from '../data/dump/templates'
+import { singleUseTokens, userList } from '../data/dump/user'
+import { userProfileList } from '../data/dump/userProfile'
+import { userStatusList } from '../data/dump/userStatus'
+import { userTokensList } from '../data/dump/userToken'
 
-async function createUsers (): Promise<void> {
+async function createUsers(): Promise<void> {
   const { userRepository, userEmailRepository } = DIContainer.sharedContainer
   for (const user of userList) {
     await userRepository.create(_.clone(user))
-    await userEmailRepository.create(
-      { _id: checksum(user.email, { algorithm: 'sha1' }) }
-    )
+    await userEmailRepository.create({ _id: checksum(user.email, { algorithm: 'sha1' }) })
   }
 }
 
-async function createUserStatus (): Promise<void> {
+async function createUserStatus(): Promise<void> {
   for (const status of userStatusList) {
-    await DIContainer.sharedContainer.userStatusRepository.create(
-      _.clone(status)
-    )
+    await DIContainer.sharedContainer.userStatusRepository.create(_.clone(status))
   }
 }
 
-async function createApplications (): Promise<void> {
+async function createApplications(): Promise<void> {
   for (const application of applicationList) {
-    await DIContainer.sharedContainer.applicationRepository.create(
-      _.clone(application)
-    )
+    await DIContainer.sharedContainer.applicationRepository.create(_.clone(application))
   }
 }
 
-async function createSingleUseTokens (): Promise<void> {
-  const singleUseTokenRepository =
-    DIContainer.sharedContainer.singleUseTokenRepository
+async function createSingleUseTokens(): Promise<void> {
+  const singleUseTokenRepository = DIContainer.sharedContainer.singleUseTokenRepository
   for (const token of singleUseTokens) {
     await singleUseTokenRepository.create(_.clone(token))
   }
 }
 
-async function createInvitationTokens (): Promise<void> {
+async function createInvitationTokens(): Promise<void> {
   for (const token of invitationTokenList) {
-    await DIContainer.sharedContainer.invitationTokenRepository.create(
-      _.clone(token)
-    )
+    await DIContainer.sharedContainer.invitationTokenRepository.create(_.clone(token))
   }
 }
 
-async function createInvitations (): Promise<void> {
+async function createInvitations(): Promise<void> {
   for (const invitation of invitationsList) {
-    await DIContainer.sharedContainer.invitationRepository.create(
-      _.clone(invitation)
-    )
+    await DIContainer.sharedContainer.invitationRepository.create(_.clone(invitation))
   }
 }
 
-async function createProjectInvitations (): Promise<void> {
+async function createProjectInvitations(): Promise<void> {
   for (const invitation of projectInvitationsList) {
     await DIContainer.sharedContainer.containerInvitationRepository.create(
       _.clone(invitation as any)
@@ -100,134 +86,92 @@ async function createProjectInvitations (): Promise<void> {
   }
 }
 
-async function createLibraryInvitations (): Promise<void> {
+async function createLibraryInvitations(): Promise<void> {
   for (const invitation of libraryInvitationsList) {
-    await DIContainer.sharedContainer.containerInvitationRepository.create(
-      _.clone(invitation)
-    )
+    await DIContainer.sharedContainer.containerInvitationRepository.create(_.clone(invitation))
   }
 }
 
-async function createUserProfiles (): Promise<void> {
+async function createUserProfiles(): Promise<void> {
   for (const userProfile of userProfileList) {
-    await DIContainer.sharedContainer.userProfileRepository.create(
-      _.clone(userProfile)
-    )
+    await DIContainer.sharedContainer.userProfileRepository.create(_.clone(userProfile))
   }
 }
 
-async function createUserTokens (): Promise<void> {
+async function createUserTokens(): Promise<void> {
   for (const userToken of userTokensList) {
-    await DIContainer.sharedContainer.userTokenRepository.create(
-      _.clone(userToken)
-    )
+    await DIContainer.sharedContainer.userTokenRepository.create(_.clone(userToken))
   }
 }
 
-async function createProjects (): Promise<void> {
+async function createProjects(): Promise<void> {
   for (const project of projectsList) {
-    await DIContainer.sharedContainer.projectRepository.create(
-      _.clone(project)
-    )
+    await DIContainer.sharedContainer.projectRepository.create(_.clone(project))
   }
 }
 
-async function createLibraries (): Promise<void> {
+async function createLibraries(): Promise<void> {
   for (const library of librariesList) {
-    await DIContainer.sharedContainer.libraryRepository.create(
-      _.clone(library)
-    )
+    await DIContainer.sharedContainer.libraryRepository.create(_.clone(library))
   }
 }
 
-async function createLibraryCollections (): Promise<void> {
+async function createLibraryCollections(): Promise<void> {
   for (const libraryCollection of libraryCollectionsList) {
-    await DIContainer.sharedContainer.libraryCollectionRepository.create(
-      _.clone(libraryCollection)
-    )
+    await DIContainer.sharedContainer.libraryCollectionRepository.create(_.clone(libraryCollection))
   }
 }
 
-async function createContainerRequests (): Promise<void> {
+async function createContainerRequests(): Promise<void> {
   for (const request of containerRequestList) {
-    await DIContainer.sharedContainer.containerRequestRepository.create(
-    _.clone(request)
-    )
+    await DIContainer.sharedContainer.containerRequestRepository.create(_.clone(request))
   }
 }
 
-async function createSubmission (): Promise<void> {
-  for (const submission of submissionsList) {
-    await DIContainer.sharedContainer.submissionRepository.create(
-      _.clone(submission)
-    )
-  }
-}
-
-async function createManuscript (): Promise<void> {
+async function createManuscript(): Promise<void> {
   await DIContainer.sharedContainer.projectRepository.bulkUpsert(manuscriptList)
 }
 
-async function createManuscriptNotes (): Promise<void> {
+async function createManuscriptNotes(): Promise<void> {
   for (const note of manuscriptNoteList) {
-    await DIContainer.sharedContainer.manuscriptNotesRepository.create(
-      _.clone(note)
-    )
+    await DIContainer.sharedContainer.manuscriptNotesRepository.create(_.clone(note))
   }
 }
 
-async function createCorrections (): Promise<void> {
-  for (const correction of correctionList) {
-    await DIContainer.sharedContainer.correctionRepository.create(
-      _.clone(correction)
-    )
-  }
-}
-
-async function createTemplates (): Promise<void> {
+async function createTemplates(): Promise<void> {
   for (const template of templates) {
-    await DIContainer.sharedContainer.templateRepository.create(
-      _.clone(template)
-    )
-  }
-}
-
-async function createSnapshot (): Promise<void> {
-  for (const template of snapshotList) {
-    await DIContainer.sharedContainer.snapshotRepository.create(
-      _.clone(template)
-    )
+    await DIContainer.sharedContainer.templateRepository.create(_.clone(template))
   }
 }
 
 let _db: any = null
-export async function testDatabase (
-  enableActivityTracking: boolean = false,
+export async function testDatabase(
+  enableActivityTracking = false,
   bucketKey: BucketKey = BucketKey.User
 ) {
   if (_db === null) {
-    const container = await DIContainer.init(
-      enableActivityTracking
-    )
+    const container = await DIContainer.init(enableActivityTracking)
     switch (bucketKey) {
-      case BucketKey.User: _db = container.userBucket
+      case BucketKey.User:
+        _db = container.userBucket
         break
-      case BucketKey.Project: _db = container.dataBucket
+      case BucketKey.Project:
+        _db = container.dataBucket
         break
     }
 
-    (container as any).jwksClient = {
+    ;(container as any).jwksClient = {
       getSigningKey: (_: string, callback: Function) => {
         callback(null, {
           rsaPublicKey:
-            'public-key-that-will-not-be-used-because-the-iam-token-verified-below-is-faked-too'
+            'public-key-that-will-not-be-used-because-the-iam-token-verified-below-is-faked-too',
         })
-      }
-    };
-    (container as any).iamTokenVerifier = {
+      },
+    }
+    ;(container as any).iamTokenVerifier = {
       verify: () => true,
       isValidIssuer: () => Promise.resolve(true),
-      loginVerify: () => true
+      loginVerify: () => true,
     }
     if (!_db) {
       throw new NoBucketError(
@@ -239,7 +183,7 @@ export async function testDatabase (
 }
 
 // tslint:disable-next-line:cyclomatic-complexity
-export async function seed (options: SeedOptions): Promise<void> {
+export async function seed(options: SeedOptions): Promise<void> {
   await testDatabase()
   const storagePromises = []
   if (options.users) {
@@ -295,10 +239,6 @@ export async function seed (options: SeedOptions): Promise<void> {
     storagePromises.push(createContainerRequests())
   }
 
-  if (options.submission) {
-    storagePromises.push(createSubmission())
-  }
-
   if (options.manuscript) {
     storagePromises.push(createManuscript())
   }
@@ -307,36 +247,25 @@ export async function seed (options: SeedOptions): Promise<void> {
     storagePromises.push(createManuscriptNotes())
   }
 
-  if (options.corrections) {
-    storagePromises.push(createCorrections())
-  }
-
   if (options.templates) {
     storagePromises.push(createTemplates())
-  }
-
-  if (options.snapshots) {
-    storagePromises.push(createSnapshot())
   }
 
   await Promise.all(storagePromises)
 }
 
-
-export async function dropBucket (_bucketKey: BucketKey): Promise<void> {
+export async function dropBucket(_bucketKey: BucketKey): Promise<void> {
   return DIContainer.sharedContainer.bucketForKey(_bucketKey).bucket.remove({})
 }
 
-
-export async function drop (): Promise<void> {
+export async function drop(): Promise<void> {
   await testDatabase()
   const repositories = DIContainer.sharedContainer.repositories
 
   const gatewayRepositories = DIContainer.sharedContainer.gatewayRepositories
 
-
   await Promise.all([
-    ...repositories.map(x => x.remove(null)) as any,
-    ...gatewayRepositories.map(x => x.remove(null))
+    ...(repositories.map((x) => x.remove(null)) as any),
+    ...gatewayRepositories.map((x) => x.remove(null)),
   ])
 }

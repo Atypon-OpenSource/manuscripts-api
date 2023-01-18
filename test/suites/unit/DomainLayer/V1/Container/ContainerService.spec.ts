@@ -14,63 +14,53 @@
  * limitations under the License.
  */
 
-import { Chance } from 'chance'
-import * as jsonwebtoken from 'jsonwebtoken'
 import '../../../../../utilities/dbMock'
 import '../../../../../utilities/configMock'
 
+import { Chance } from 'chance'
+import jwt from 'jsonwebtoken'
+
+import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
+import { ContainerService } from '../../../../../../src/DomainServices/Container/ContainerService'
 import {
-  MissingUserStatusError,
+  ConflictingRecordError,
   InvalidCredentialsError,
+  InvalidScopeNameError,
+  MissingContainerError,
+  MissingProductionNoteError,
+  MissingTemplateError,
+  MissingUserRecordError,
+  MissingUserStatusError,
+  RecordNotFoundError,
+  RoleDoesNotPermitOperationError,
   UserBlockedError,
   UserNotVerifiedError,
-  ValidationError,
   UserRoleError,
-  RecordNotFoundError,
-  InvalidScopeNameError,
-  ConflictingRecordError,
-  MissingContainerError,
-  RoleDoesNotPermitOperationError,
-  MissingTemplateError,
-  MissingProductionNoteError, MissingUserRecordError
+  ValidationError,
 } from '../../../../../../src/Errors'
-import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
-import {
-  validUser1,
-  validUserProfile
-} from '../../../../../data/fixtures/UserRepository'
-import {
-  validUserStatus,
-  validJWTToken
-} from '../../../../../data/fixtures/authServiceUser'
-import {
-  blockedStatus,
-  notVerifiedStatus
-} from '../../../../../data/fixtures/userStatus'
-import {
-  ContainerRole,
-  ContainerType
-} from '../../../../../../src/Models/ContainerModels'
+import { ContainerRole, ContainerType } from '../../../../../../src/Models/ContainerModels'
+import { validJWTToken, validUserStatus } from '../../../../../data/fixtures/authServiceUser'
+import { validBody2 } from '../../../../../data/fixtures/credentialsRequestPayload'
+import { validNote1, validNote2 } from '../../../../../data/fixtures/ManuscriptNote'
+import { validManuscript } from '../../../../../data/fixtures/manuscripts'
 import {
   validProject,
   validProject2,
-  validProject5,
   validProject4,
+  validProject5,
   validProject7,
-  validProject8
+  validProject8,
 } from '../../../../../data/fixtures/projects'
-import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
+import { validUser1, validUserProfile } from '../../../../../data/fixtures/UserRepository'
 import { validUser } from '../../../../../data/fixtures/userServiceUser'
-import { validManuscript } from '../../../../../data/fixtures/manuscripts'
-import { validNote1, validNote2 } from '../../../../../data/fixtures/ManuscriptNote'
-import { validBody2 } from '../../../../../data/fixtures/credentialsRequestPayload'
-import { ContainerService } from '../../../../../../src/DomainServices/Container/ContainerService'
+import { blockedStatus, notVerifiedStatus } from '../../../../../data/fixtures/userStatus'
+import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
 const JSZip = require('jszip')
 
 jest.setTimeout(TEST_TIMEOUT)
 
 beforeEach(() => {
-  (DIContainer as any)._sharedContainer = null
+  ;(DIContainer as any)._sharedContainer = null
   return DIContainer.init()
 })
 
@@ -82,9 +72,9 @@ describe('containerService - createContainer', () => {
 
     const chance = new Chance()
 
-    return expect(
-      containerService.createContainer(chance.string())
-    ).rejects.toThrowError(InvalidCredentialsError)
+    return expect(containerService.createContainer(chance.string())).rejects.toThrow(
+      InvalidCredentialsError
+    )
   })
 
   test('should fail if user does not exist in the DB', () => {
@@ -92,12 +82,12 @@ describe('containerService - createContainer', () => {
       DIContainer.sharedContainer.containerService[ContainerType.project]
 
     containerService.userRepository = {
-      getById: async () => Promise.resolve(null)
+      getById: async () => Promise.resolve(null),
     }
 
-    return expect(
-      containerService.createContainer(validJWTToken)
-    ).rejects.toThrowError(InvalidCredentialsError)
+    return expect(containerService.createContainer(validJWTToken)).rejects.toThrow(
+      InvalidCredentialsError
+    )
   })
 
   test('should fail if user status does not exist in the DB', () => {
@@ -105,17 +95,17 @@ describe('containerService - createContainer', () => {
       DIContainer.sharedContainer.containerService[ContainerType.project]
 
     containerService.userRepository = {
-      getById: async () => Promise.resolve(validUser1)
+      getById: async () => Promise.resolve(validUser1),
     }
 
     containerService.userStatusRepository = {
       statusForUserId: async () => Promise.resolve(null),
-      fullyQualifiedId: (id: string) => `UserStatus|${id}`
+      fullyQualifiedId: (id: string) => `UserStatus|${id}`,
     }
 
-    return expect(
-      containerService.createContainer(validJWTToken)
-    ).rejects.toThrowError(MissingUserStatusError)
+    return expect(containerService.createContainer(validJWTToken)).rejects.toThrow(
+      MissingUserStatusError
+    )
   })
 
   test('should fail if user is blocked', () => {
@@ -123,17 +113,15 @@ describe('containerService - createContainer', () => {
       DIContainer.sharedContainer.containerService[ContainerType.project]
 
     containerService.userRepository = {
-      getById: async () => Promise.resolve(validUser1)
+      getById: async () => Promise.resolve(validUser1),
     }
 
     containerService.userStatusRepository = {
       statusForUserId: async () => Promise.resolve(blockedStatus),
-      fullyQualifiedId: (id: string) => `UserStatus|${id}`
+      fullyQualifiedId: (id: string) => `UserStatus|${id}`,
     }
 
-    return expect(
-      containerService.createContainer(validJWTToken)
-    ).rejects.toThrowError(UserBlockedError)
+    return expect(containerService.createContainer(validJWTToken)).rejects.toThrow(UserBlockedError)
   })
 
   test('should fail if user is not verified', () => {
@@ -141,17 +129,17 @@ describe('containerService - createContainer', () => {
       DIContainer.sharedContainer.containerService[ContainerType.project]
 
     containerService.userRepository = {
-      getById: async () => Promise.resolve(validUser1)
+      getById: async () => Promise.resolve(validUser1),
     }
 
     containerService.userStatusRepository = {
       statusForUserId: async () => Promise.resolve(notVerifiedStatus),
-      fullyQualifiedId: (id: string) => `UserStatus|${id}`
+      fullyQualifiedId: (id: string) => `UserStatus|${id}`,
     }
 
-    return expect(
-      containerService.createContainer(validJWTToken)
-    ).rejects.toThrowError(UserNotVerifiedError)
+    return expect(containerService.createContainer(validJWTToken)).rejects.toThrow(
+      UserNotVerifiedError
+    )
   })
 
   test('should create a project', async () => {
@@ -159,20 +147,20 @@ describe('containerService - createContainer', () => {
       DIContainer.sharedContainer.containerService[ContainerType.project]
 
     containerService.userRepository = {
-      getById: async () => Promise.resolve(validUser1)
+      getById: async () => Promise.resolve(validUser1),
     }
 
     containerService.userStatusRepository = {
       statusForUserId: async () => Promise.resolve(validUserStatus),
-      userStatusId: (id: string) => `UserStatus|${id}`
+      userStatusId: (id: string) => `UserStatus|${id}`,
     }
 
     containerService.containerRepository = {
-      create: jest.fn()
+      create: jest.fn(),
     }
 
     await containerService.createContainer(validJWTToken)
-    expect(containerService.containerRepository.create).toBeCalled()
+    expect(containerService.containerRepository.create).toHaveBeenCalled()
   })
 
   test('should create a library', async () => {
@@ -180,20 +168,20 @@ describe('containerService - createContainer', () => {
       DIContainer.sharedContainer.containerService[ContainerType.library]
 
     containerService.userRepository = {
-      getById: async () => Promise.resolve(validUser1)
+      getById: async () => Promise.resolve(validUser1),
     }
 
     containerService.userStatusRepository = {
       statusForUserId: async () => Promise.resolve(validUserStatus),
-      userStatusId: (id: string) => `UserStatus|${id}`
+      userStatusId: (id: string) => `UserStatus|${id}`,
     }
 
     containerService.containerRepository = {
-      create: jest.fn()
+      create: jest.fn(),
     }
 
     await containerService.createContainer(validJWTToken)
-    expect(containerService.containerRepository.create).toBeCalled()
+    expect(containerService.containerRepository.create).toHaveBeenCalled()
   })
 
   test('should create a library collection', async () => {
@@ -201,20 +189,20 @@ describe('containerService - createContainer', () => {
       DIContainer.sharedContainer.containerService[ContainerType.libraryCollection]
 
     containerService.userRepository = {
-      getById: async () => Promise.resolve(validUser1)
+      getById: async () => Promise.resolve(validUser1),
     }
 
     containerService.userStatusRepository = {
       statusForUserId: async () => Promise.resolve(validUserStatus),
-      userStatusId: (id: string) => `UserStatus|${id}`
+      userStatusId: (id: string) => `UserStatus|${id}`,
     }
 
     containerService.containerRepository = {
-      create: jest.fn()
+      create: jest.fn(),
     }
 
     await containerService.createContainer(validJWTToken)
-    expect(containerService.containerRepository.create).toBeCalled()
+    expect(containerService.containerRepository.create).toHaveBeenCalled()
   })
 
   test('should create the project with a specified _id', async () => {
@@ -222,20 +210,20 @@ describe('containerService - createContainer', () => {
       DIContainer.sharedContainer.containerService[ContainerType.project]
 
     containerService.userRepository = {
-      getById: async () => Promise.resolve(validUser1)
+      getById: async () => Promise.resolve(validUser1),
     }
 
     containerService.userStatusRepository = {
       statusForUserId: async () => Promise.resolve(validUserStatus),
-      userStatusId: (id: string) => `UserStatus|${id}`
+      userStatusId: (id: string) => `UserStatus|${id}`,
     }
 
     containerService.containerRepository = {
-      create: jest.fn()
+      create: jest.fn(),
     }
 
     await containerService.createContainer(validJWTToken, { _id: 'foo' })
-    expect(containerService.containerRepository.create).toBeCalled()
+    expect(containerService.containerRepository.create).toHaveBeenCalled()
   })
 })
 
@@ -245,12 +233,12 @@ describe('containerService - deleteContainer', () => {
       DIContainer.sharedContainer.containerService[ContainerType.project]
 
     containerService.containerRepository = {
-      getById: async () => Promise.resolve(null)
+      getById: async () => Promise.resolve(null),
     }
 
     return expect(
       containerService.deleteContainer(chance.guid(), { _id: `User|${chance.guid()}` })
-    ).rejects.toThrowError(MissingContainerError)
+    ).rejects.toThrow(MissingContainerError)
   })
 
   test('should fail if user is not an owner', () => {
@@ -258,12 +246,12 @@ describe('containerService - deleteContainer', () => {
       DIContainer.sharedContainer.containerService[ContainerType.project]
 
     containerService.containerRepository = {
-      getById: async () => Promise.resolve({ owners: [] })
+      getById: async () => Promise.resolve({ owners: [] }),
     }
 
     return expect(
       containerService.deleteContainer(chance.guid(), { _id: `User|${chance.guid()}` })
-    ).rejects.toThrowError(RoleDoesNotPermitOperationError)
+    ).rejects.toThrow(RoleDoesNotPermitOperationError)
   })
 
   test('should delete a project', async () => {
@@ -271,12 +259,12 @@ describe('containerService - deleteContainer', () => {
       DIContainer.sharedContainer.containerService[ContainerType.project]
 
     containerService.containerRepository = {
-      getById: async () => Promise.resolve({ owners: [ 'User_123abc123abc' ] }),
-      removeWithAllResources: jest.fn()
+      getById: async () => Promise.resolve({ owners: ['User_123abc123abc'] }),
+      removeWithAllResources: jest.fn(),
     }
 
     await containerService.deleteContainer(chance.guid(), { _id: 'User|123abc123abc' })
-    expect(containerService.containerRepository.removeWithAllResources).toBeCalled()
+    expect(containerService.containerRepository.removeWithAllResources).toHaveBeenCalled()
   })
 })
 
@@ -288,17 +276,14 @@ describe('containerService - addContainerUser', () => {
     const chance = new Chance()
 
     containerService.containerRepository = {
-      getById: async () => Promise.resolve(null)
+      getById: async () => Promise.resolve(null),
     }
 
     return expect(
-      containerService.addContainerUser(
-        chance.string(),
-        ContainerRole.Writer,
-        'User|userId',
-        {_id: 'User|userId2'}
-      )
-    ).rejects.toThrowError(MissingContainerError)
+      containerService.addContainerUser(chance.string(), ContainerRole.Writer, 'User|userId', {
+        _id: 'User|userId2',
+      })
+    ).rejects.toThrow(MissingContainerError)
   })
 
   test('should fail if the added user is not in the database', () => {
@@ -306,21 +291,18 @@ describe('containerService - addContainerUser', () => {
       DIContainer.sharedContainer.containerService[ContainerType.project]
 
     containerService.containerRepository = {
-      getById: async () => Promise.resolve({ _id: 'project', viewers: [] })
+      getById: async () => Promise.resolve({ _id: 'project', viewers: [] }),
     }
 
     containerService.userRepository = {
-      getById: async () => Promise.resolve(null)
+      getById: async () => Promise.resolve(null),
     }
 
     return expect(
-      containerService.addContainerUser(
-        chance.string(),
-        ContainerRole.Viewer,
-        'User|userId',
-        {_id: 'User|userId2'}
-      )
-    ).rejects.toThrowError(ValidationError)
+      containerService.addContainerUser(chance.string(), ContainerRole.Viewer, 'User|userId', {
+        _id: 'User|userId2',
+      })
+    ).rejects.toThrow(ValidationError)
   })
 
   test('should fail if wrong role assigned', async () => {
@@ -328,21 +310,19 @@ describe('containerService - addContainerUser', () => {
       DIContainer.sharedContainer.containerService[ContainerType.project]
 
     containerService.containerRepository = {
-      getById: async () => Promise.resolve({ _id: 'project', owners: [], writers: [], viewers: [] })
+      getById: async () =>
+        Promise.resolve({ _id: 'project', owners: [], writers: [], viewers: [] }),
     }
 
     containerService.userRepository = {
-      getById: async () => Promise.resolve({})
+      getById: async () => Promise.resolve({}),
     }
 
     return expect(
-      containerService.addContainerUser(
-        chance.string(),
-        'striker',
-        'User|userId',
-        {_id: 'User|userId2'}
-      )
-    ).rejects.toThrowError(ValidationError)
+      containerService.addContainerUser(chance.string(), 'striker', 'User|userId', {
+        _id: 'User|userId2',
+      })
+    ).rejects.toThrow(ValidationError)
   })
 
   test('should update the project owners', async () => {
@@ -355,28 +335,25 @@ describe('containerService - addContainerUser', () => {
           _id: 'project',
           owners: [],
           writers: [],
-          viewers: []
+          viewers: [],
         }),
       patch: jest.fn(),
-      getContainedLibraryCollections: jest.fn(async () => [])
+      getContainedLibraryCollections: jest.fn(async () => []),
     }
 
     containerService.userRepository = {
-      getById: async () => Promise.resolve({})
+      getById: async () => Promise.resolve({}),
     }
 
     containerService.emailService = {
       sendContainerInvitationAcceptance: jest.fn(),
-      sendOwnerNotificationOfCollaborator: jest.fn()
+      sendOwnerNotificationOfCollaborator: jest.fn(),
     }
 
-    await containerService.addContainerUser(
-      'project',
-      ContainerRole.Owner,
-      'User|userId',
-      {_id: 'User|userId2'}
-    )
-    return expect(containerService.containerRepository.patch).toBeCalled()
+    await containerService.addContainerUser('project', ContainerRole.Owner, 'User|userId', {
+      _id: 'User|userId2',
+    })
+    return expect(containerService.containerRepository.patch).toHaveBeenCalled()
   })
 
   test('should update the project writers', async () => {
@@ -389,28 +366,25 @@ describe('containerService - addContainerUser', () => {
           _id: 'project',
           writers: [],
           owners: [],
-          viewers: []
+          viewers: [],
         }),
-        patch: jest.fn(),
-        getContainedLibraryCollections: jest.fn(async () => [])
+      patch: jest.fn(),
+      getContainedLibraryCollections: jest.fn(async () => []),
     }
 
     containerService.userRepository = {
-      getById: async () => Promise.resolve({})
+      getById: async () => Promise.resolve({}),
     }
 
     containerService.emailService = {
       sendContainerInvitationAcceptance: jest.fn(),
-      sendOwnerNotificationOfCollaborator: jest.fn()
+      sendOwnerNotificationOfCollaborator: jest.fn(),
     }
 
-    await containerService.addContainerUser(
-      'project',
-      ContainerRole.Writer,
-      'User|userId',
-      {_id: 'User|userId2'}
-    )
-    return expect(containerService.containerRepository.patch).toBeCalled()
+    await containerService.addContainerUser('project', ContainerRole.Writer, 'User|userId', {
+      _id: 'User|userId2',
+    })
+    return expect(containerService.containerRepository.patch).toHaveBeenCalled()
   })
 
   test('should update the project viewers', async () => {
@@ -423,28 +397,25 @@ describe('containerService - addContainerUser', () => {
           _id: 'project',
           viewers: [],
           owners: [],
-          writers: []
+          writers: [],
         }),
-        patch: jest.fn(),
-        getContainedLibraryCollections: jest.fn(async () => [])
+      patch: jest.fn(),
+      getContainedLibraryCollections: jest.fn(async () => []),
     }
 
     containerService.userRepository = {
-      getById: async () => Promise.resolve({})
+      getById: async () => Promise.resolve({}),
     }
 
     containerService.emailService = {
       sendContainerInvitationAcceptance: jest.fn(),
-      sendOwnerNotificationOfCollaborator: jest.fn()
+      sendOwnerNotificationOfCollaborator: jest.fn(),
     }
 
-    await containerService.addContainerUser(
-      'project',
-      ContainerRole.Viewer,
-      'User|userId',
-      {_id: 'User|userId2'}
-    )
-    return expect(containerService.containerRepository.patch).toBeCalled()
+    await containerService.addContainerUser('project', ContainerRole.Viewer, 'User|userId', {
+      _id: 'User|userId2',
+    })
+    return expect(containerService.containerRepository.patch).toHaveBeenCalled()
   })
 
   test('should update the library viewers and cascade the changes to related collections', async () => {
@@ -457,7 +428,7 @@ describe('containerService - addContainerUser', () => {
           _id: 'MPLibrary:some-random-id',
           viewers: [],
           owners: ['User_some-random-id'],
-          writers: ['User_some-random-id-2']
+          writers: ['User_some-random-id-2'],
         }),
       patch: jest.fn(),
       getContainedLibraryCollections: jest.fn(async () => [
@@ -467,43 +438,45 @@ describe('containerService - addContainerUser', () => {
           viewers: [],
           owners: ['User_some-random-id'],
           writers: ['User_some-random-id-2'],
-          inherited: ['User_some-random-id', 'User_some-random-id-2']
-        }
-      ])
+          inherited: ['User_some-random-id', 'User_some-random-id-2'],
+        },
+      ]),
     }
 
     containerService.userRepository = {
-      getById: async () => Promise.resolve({ _id: 'User|userId' })
+      getById: async () => Promise.resolve({ _id: 'User|userId' }),
     }
 
     containerService.emailService = {
       sendContainerInvitationAcceptance: jest.fn(),
-      sendOwnerNotificationOfCollaborator: jest.fn()
+      sendOwnerNotificationOfCollaborator: jest.fn(),
     }
 
     containerService.libraryCollectionRepository = {
-      patch: jest.fn()
+      patch: jest.fn(),
     }
 
     await containerService.addContainerUser(
       'MPLibrary:some-random-id',
       ContainerRole.Viewer,
       'User|userId',
-      {_id: 'User|userId2'}
+      { _id: 'User|userId2' }
     )
 
-    expect(containerService.containerRepository.patch).toBeCalled()
-    expect(containerService.libraryCollectionRepository.patch).toBeCalled()
+    expect(containerService.containerRepository.patch).toHaveBeenCalled()
+    expect(containerService.libraryCollectionRepository.patch).toHaveBeenCalled()
   })
 
   test('should fail with InvalidCredentailsError if the user is malformed', async () => {
-    const containerService: any = DIContainer.sharedContainer.containerService[ContainerType.project]
-    return expect(containerService.getValidUser('User|foo')).rejects.toThrowError(ValidationError)
+    const containerService: any =
+      DIContainer.sharedContainer.containerService[ContainerType.project]
+    return expect(containerService.getValidUser('User|foo')).rejects.toThrow(ValidationError)
   })
 
   test('should fail with a TypeError if the value is null', async () => {
-    const containerService: any = DIContainer.sharedContainer.containerService[ContainerType.project]
-    return expect(containerService.getValidUser(null)).rejects.toThrowError(TypeError)
+    const containerService: any =
+      DIContainer.sharedContainer.containerService[ContainerType.project]
+    return expect(containerService.getValidUser(null)).rejects.toThrow(TypeError)
   })
 
   test('should fail if user id is not started with User_', async () => {
@@ -511,21 +484,18 @@ describe('containerService - addContainerUser', () => {
       DIContainer.sharedContainer.containerService[ContainerType.project]
 
     containerService.containerRepository = {
-      getById: async () => Promise.resolve({ _id: 'project', viewers: [] })
+      getById: async () => Promise.resolve({ _id: 'project', viewers: [] }),
     }
 
     containerService.userRepository = {
-      getById: async () => Promise.resolve({})
+      getById: async () => Promise.resolve({}),
     }
 
     return expect(
-      containerService.addContainerUser(
-        'project',
-        ContainerRole.Viewer,
-        'userId',
-        {_id: 'User|userId2'}
-      )
-    ).rejects.toThrowError(ValidationError)
+      containerService.addContainerUser('project', ContainerRole.Viewer, 'userId', {
+        _id: 'User|userId2',
+      })
+    ).rejects.toThrow(ValidationError)
   })
 
   test('should return false if the user already exists in the project', async () => {
@@ -538,27 +508,24 @@ describe('containerService - addContainerUser', () => {
           _id: 'project',
           viewers: [],
           owners: [],
-          writers: ['User_userId']
+          writers: ['User_userId'],
         }),
-      patch: jest.fn()
+      patch: jest.fn(),
     }
 
     containerService.userRepository = {
-      getById: async () => Promise.resolve({})
+      getById: async () => Promise.resolve({}),
     }
 
     containerService.emailService = {
       sendContainerInvitationAcceptance: jest.fn(),
-      sendOwnerNotificationOfCollaborator: jest.fn()
+      sendOwnerNotificationOfCollaborator: jest.fn(),
     }
 
     return expect(
-      await containerService.addContainerUser(
-        'project',
-        ContainerRole.Viewer,
-        'User|userId',
-        {_id: 'User|userId2'}
-      )
+      await containerService.addContainerUser('project', ContainerRole.Viewer, 'User|userId', {
+        _id: 'User|userId2',
+      })
     ).toBeFalsy()
   })
 
@@ -572,48 +539,37 @@ describe('containerService - addContainerUser', () => {
           _id: 'project',
           writers: [],
           owners: ['User_userId90'],
-          viewers: []
+          viewers: [],
         }),
-        patch: jest.fn(),
-        getContainedLibraryCollections: jest.fn(async () => [])
+      patch: jest.fn(),
+      getContainedLibraryCollections: jest.fn(async () => []),
     }
 
     containerService.userRepository = {
-      getById: async () =>
-        Promise.resolve({ _id: 'User|userId', email: 'userId@example.com' })
+      getById: async () => Promise.resolve({ _id: 'User|userId', email: 'userId@example.com' }),
     }
 
     containerService.emailService = {
       sendContainerInvitationAcceptance: jest.fn(),
-      sendOwnerNotificationOfCollaborator: jest.fn()
+      sendOwnerNotificationOfCollaborator: jest.fn(),
     }
 
-    await containerService.addContainerUser(
-      'project',
-      ContainerRole.Writer,
-      'User|userId',
-      { _id: 'User|userId90' }
-    )
+    await containerService.addContainerUser('project', ContainerRole.Writer, 'User|userId', {
+      _id: 'User|userId90',
+    })
 
-    expect(
-      containerService.emailService.sendContainerInvitationAcceptance
-    ).toHaveBeenCalledTimes(1)
+    expect(containerService.emailService.sendContainerInvitationAcceptance).toHaveBeenCalledTimes(1)
 
     containerService.emailService = {
       sendContainerInvitationAcceptance: jest.fn(),
-      sendOwnerNotificationOfCollaborator: jest.fn()
+      sendOwnerNotificationOfCollaborator: jest.fn(),
     }
 
-    await containerService.addContainerUser(
-      'project',
-      ContainerRole.Viewer,
-      'User|userId',
-      { _id: 'User|userId90' }
-    )
+    await containerService.addContainerUser('project', ContainerRole.Viewer, 'User|userId', {
+      _id: 'User|userId90',
+    })
 
-    expect(
-      containerService.emailService.sendContainerInvitationAcceptance
-    ).toHaveBeenCalledTimes(1)
+    expect(containerService.emailService.sendContainerInvitationAcceptance).toHaveBeenCalledTimes(1)
   })
 
   test('should send email to the added user even if the adding user is null', async () => {
@@ -626,49 +582,34 @@ describe('containerService - addContainerUser', () => {
           _id: 'project',
           writers: [],
           owners: ['User_userId90'],
-          viewers: []
+          viewers: [],
         }),
-        patch: jest.fn(),
-        getContainedLibraryCollections: jest.fn(async () => [])
+      patch: jest.fn(),
+      getContainedLibraryCollections: jest.fn(async () => []),
     }
 
     containerService.userRepository = {
-      getById: async () =>
-        Promise.resolve({ _id: 'User|userId', email: 'userId@example.com' })
+      getById: async () => Promise.resolve({ _id: 'User|userId', email: 'userId@example.com' }),
     }
 
     containerService.emailService = {
       sendContainerInvitationAcceptance: jest.fn(),
-      sendOwnerNotificationOfCollaborator: jest.fn()
+      sendOwnerNotificationOfCollaborator: jest.fn(),
     }
 
-    await containerService.addContainerUser(
-      'project',
-      ContainerRole.Writer,
-      'User|userId',
-      null
-    )
-    expect(
-      containerService.emailService.sendContainerInvitationAcceptance
-    ).toHaveBeenCalledTimes(1)
+    await containerService.addContainerUser('project', ContainerRole.Writer, 'User|userId', null)
+    expect(containerService.emailService.sendContainerInvitationAcceptance).toHaveBeenCalledTimes(1)
 
     containerService.emailService = {
       sendContainerInvitationAcceptance: jest.fn(),
-      sendOwnerNotificationOfCollaborator: jest.fn()
+      sendOwnerNotificationOfCollaborator: jest.fn(),
     }
 
-    await containerService.addContainerUser(
-      'project',
-      ContainerRole.Viewer,
-      'User|userId',
-      null
+    await containerService.addContainerUser('project', ContainerRole.Viewer, 'User|userId', null)
+    expect(containerService.emailService.sendContainerInvitationAcceptance).toHaveBeenCalledTimes(1)
+    expect(containerService.emailService.sendOwnerNotificationOfCollaborator).toHaveBeenCalledTimes(
+      1
     )
-    expect(
-      containerService.emailService.sendContainerInvitationAcceptance
-    ).toHaveBeenCalledTimes(1)
-    expect(
-      containerService.emailService.sendOwnerNotificationOfCollaborator
-    ).toHaveBeenCalledTimes(1)
   })
 
   test('should send email to the added user and to two owners', async () => {
@@ -681,34 +622,28 @@ describe('containerService - addContainerUser', () => {
           _id: 'project',
           writers: [],
           owners: ['User_userId90', 'User_userId11'],
-          viewers: []
+          viewers: [],
         }),
-        patch: jest.fn(),
-        getContainedLibraryCollections: jest.fn(async () => [])
+      patch: jest.fn(),
+      getContainedLibraryCollections: jest.fn(async () => []),
     }
 
     containerService.userRepository = {
-      getById: async () =>
-        Promise.resolve({ _id: 'User|userId', email: 'userId@example.com' })
+      getById: async () => Promise.resolve({ _id: 'User|userId', email: 'userId@example.com' }),
     }
 
     containerService.emailService = {
       sendContainerInvitationAcceptance: jest.fn(),
-      sendOwnerNotificationOfCollaborator: jest.fn()
+      sendOwnerNotificationOfCollaborator: jest.fn(),
     }
 
-    await containerService.addContainerUser(
-      'project',
-      ContainerRole.Writer,
-      'User|userId',
-      { _id: 'User|userId90' }
+    await containerService.addContainerUser('project', ContainerRole.Writer, 'User|userId', {
+      _id: 'User|userId90',
+    })
+    expect(containerService.emailService.sendContainerInvitationAcceptance).toHaveBeenCalledTimes(1)
+    expect(containerService.emailService.sendOwnerNotificationOfCollaborator).toHaveBeenCalledTimes(
+      1
     )
-    expect(
-      containerService.emailService.sendContainerInvitationAcceptance
-    ).toHaveBeenCalledTimes(1)
-    expect(
-      containerService.emailService.sendOwnerNotificationOfCollaborator
-    ).toHaveBeenCalledTimes(1)
   })
 
   test('should send email to the added user and to all other owners of the project', async () => {
@@ -721,42 +656,35 @@ describe('containerService - addContainerUser', () => {
           _id: 'project',
           writers: [],
           owners: ['User_userId90', 'User_userId99', 'User_userId77'],
-          viewers: ['User|userId']
+          viewers: ['User|userId'],
         }),
       patch: async () => Promise.resolve(),
-      getContainedLibraryCollections: jest.fn(async () => [])
+      getContainedLibraryCollections: jest.fn(async () => []),
     }
 
     containerService.userRepository = {
-      getById: async () =>
-        Promise.resolve({ _id: 'User|userId', email: 'userId@example.com' })
+      getById: async () => Promise.resolve({ _id: 'User|userId', email: 'userId@example.com' }),
     }
 
     containerService.emailService = {
       sendContainerInvitationAcceptance: jest.fn(),
-      sendOwnerNotificationOfCollaborator: jest.fn()
+      sendOwnerNotificationOfCollaborator: jest.fn(),
     }
 
-    await containerService.addContainerUser(
-      'project',
-      ContainerRole.Writer,
-      'User|userId',
-      { _id: 'User|userId90' }
+    await containerService.addContainerUser('project', ContainerRole.Writer, 'User|userId', {
+      _id: 'User|userId90',
+    })
+    expect(containerService.emailService.sendContainerInvitationAcceptance).toHaveBeenCalled()
+    expect(containerService.emailService.sendOwnerNotificationOfCollaborator).toHaveBeenCalledTimes(
+      2
     )
-    expect(
-      containerService.emailService.sendContainerInvitationAcceptance
-    ).toHaveBeenCalled()
-    expect(
-      containerService.emailService.sendOwnerNotificationOfCollaborator
-    ).toHaveBeenCalledTimes(2)
   })
 
   test('should not send email to the added user or any other owners', async () => {
     const containerService: any =
       DIContainer.sharedContainer.containerService[ContainerType.project]
 
-    containerService.addContainerUser = async (_a: any, _b: any, _c: any) =>
-      Promise.resolve(true)
+    containerService.addContainerUser = async (_a: any, _b: any, _c: any) => Promise.resolve(true)
 
     containerService.containerRepository = {
       getById: async () =>
@@ -764,33 +692,30 @@ describe('containerService - addContainerUser', () => {
           _id: 'project',
           writers: [],
           owners: ['User_userId90', 'User_userId99', 'User_userId77'],
-          viewers: ['User|userId']
-        })
+          viewers: ['User|userId'],
+        }),
     }
 
     containerService.userRepository = {
       getById: async () => {
         containerService.userRepository = {
-          getById: async () => Promise.resolve(null)
+          getById: async () => Promise.resolve(null),
         }
         return Promise.resolve({})
-      }
+      },
     }
 
     containerService.emailService = {
       sendContainerInvitationAcceptance: jest.fn(),
-      sendOwnerNotificationOfCollaborator: jest.fn()
+      sendOwnerNotificationOfCollaborator: jest.fn(),
     }
 
-    await containerService.addContainerUser(
-      'project',
-      ContainerRole.Writer,
-      'User|userId',
-      { _id: 'User|userId90' }
-    )
+    await containerService.addContainerUser('project', ContainerRole.Writer, 'User|userId', {
+      _id: 'User|userId90',
+    })
     return expect(
       containerService.emailService.sendContainerInvitationAcceptance
-    ).not.toBeCalled()
+    ).not.toHaveBeenCalled()
   })
 })
 
@@ -802,21 +727,16 @@ describe('containerService - manageUserRole', () => {
     const chance = new Chance()
 
     containerService.userRepository = {
-      getById: async () => Promise.resolve(validUser)
+      getById: async () => Promise.resolve(validUser),
     }
 
     containerService.containerRepository = {
-      getById: async () => Promise.resolve(null)
+      getById: async () => Promise.resolve(null),
     }
 
     return expect(
-      containerService.manageUserRole(
-        validUser,
-        chance.string(),
-        chance.string(),
-        chance.string()
-      )
-    ).rejects.toThrowError(MissingContainerError)
+      containerService.manageUserRole(validUser, chance.string(), chance.string(), chance.string())
+    ).rejects.toThrow(MissingContainerError)
   })
 
   test('should fail if the user record is missing in the db', () => {
@@ -826,11 +746,11 @@ describe('containerService - manageUserRole', () => {
     const chance = new Chance()
 
     containerService.userRepository = {
-      getById: async () => Promise.resolve()
+      getById: async () => Promise.resolve(),
     }
 
     containerService.containerRepository = {
-      getById: async () => Promise.resolve(validProject)
+      getById: async () => Promise.resolve(validProject),
     }
 
     return expect(
@@ -840,7 +760,7 @@ describe('containerService - manageUserRole', () => {
         { userId: `User|${chance.string()}` },
         chance.string()
       )
-    ).rejects.toThrowError(ValidationError)
+    ).rejects.toThrow(ValidationError)
   })
 
   test('should fail if the user is not an owner', () => {
@@ -850,11 +770,11 @@ describe('containerService - manageUserRole', () => {
     const chance = new Chance()
 
     containerService.userRepository = {
-      getById: async () => Promise.resolve(validUser)
+      getById: async () => Promise.resolve(validUser),
     }
 
     containerService.containerRepository = {
-      getById: async () => Promise.resolve(validProject)
+      getById: async () => Promise.resolve(validProject),
     }
 
     return expect(
@@ -864,7 +784,7 @@ describe('containerService - manageUserRole', () => {
         { userId: `User|${chance.string()}` },
         chance.string()
       )
-    ).rejects.toThrowError(RoleDoesNotPermitOperationError)
+    ).rejects.toThrow(RoleDoesNotPermitOperationError)
   })
 
   test('should fail if the managedUser is not in the project', () => {
@@ -874,11 +794,11 @@ describe('containerService - manageUserRole', () => {
     const chance = new Chance()
 
     containerService.userRepository = {
-      getById: async () => Promise.resolve(validUser)
+      getById: async () => Promise.resolve(validUser),
     }
 
     containerService.containerRepository = {
-      getById: async () => Promise.resolve(validProject2)
+      getById: async () => Promise.resolve(validProject2),
     }
 
     return expect(
@@ -888,7 +808,7 @@ describe('containerService - manageUserRole', () => {
         { userId: `User|${chance.string()}` },
         chance.string()
       )
-    ).rejects.toThrowError(ValidationError)
+    ).rejects.toThrow(ValidationError)
   })
 
   test('should fail if there is only one owner being managed', () => {
@@ -898,11 +818,11 @@ describe('containerService - manageUserRole', () => {
     const chance = new Chance()
 
     containerService.userRepository = {
-      getById: async () => Promise.resolve(validUser1)
+      getById: async () => Promise.resolve(validUser1),
     }
 
     containerService.containerRepository = {
-      getById: async () => Promise.resolve(validProject5)
+      getById: async () => Promise.resolve(validProject5),
     }
 
     return expect(
@@ -912,7 +832,7 @@ describe('containerService - manageUserRole', () => {
         { userId: validUser1._id },
         chance.string()
       )
-    ).rejects.toThrowError(UserRoleError)
+    ).rejects.toThrow(UserRoleError)
   })
 
   // FIXME: Needs to fix the * logic
@@ -921,11 +841,11 @@ describe('containerService - manageUserRole', () => {
       DIContainer.sharedContainer.containerService[ContainerType.project]
 
     containerService.userRepository = {
-      getById: async () => Promise.resolve(validUser)
+      getById: async () => Promise.resolve(validUser),
     }
 
     containerService.containerRepository = {
-      getById: async () => Promise.resolve(validProject4)
+      getById: async () => Promise.resolve(validProject4),
     }
 
     containerService.updateProjectUser = jest.fn()
@@ -937,7 +857,7 @@ describe('containerService - manageUserRole', () => {
         '*',
         ContainerRole.Writer
       )
-    ).rejects.toThrowError(ValidationError)
+    ).rejects.toThrow(ValidationError)
   })
 
   test('should call update project user', async () => {
@@ -945,14 +865,13 @@ describe('containerService - manageUserRole', () => {
       DIContainer.sharedContainer.containerService[ContainerType.project]
 
     containerService.userRepository = {
-      getById: async () =>
-        Promise.resolve({ _id: validProject4.writers[0].replace('_', '|') })
+      getById: async () => Promise.resolve({ _id: validProject4.writers[0].replace('_', '|') }),
     }
 
     containerService.containerRepository = {
       getById: async () => Promise.resolve(validProject4),
       patch: jest.fn(),
-      getContainedLibraryCollections: jest.fn(async () => [])
+      getContainedLibraryCollections: jest.fn(async () => []),
     }
 
     containerService.updateContainerTitleAndCollaborators = jest.fn()
@@ -964,7 +883,7 @@ describe('containerService - manageUserRole', () => {
       ContainerRole.Owner
     )
 
-    expect(containerService.updateContainerTitleAndCollaborators).toBeCalled()
+    expect(containerService.updateContainerTitleAndCollaborators).toHaveBeenCalled()
   })
 
   test('should call update project user using connectUserID', async () => {
@@ -972,14 +891,13 @@ describe('containerService - manageUserRole', () => {
       DIContainer.sharedContainer.containerService[ContainerType.project]
 
     containerService.userRepository = {
-      getOne: async () =>
-        Promise.resolve({ _id: validProject4.writers[0].replace('_', '|') })
+      getOne: async () => Promise.resolve({ _id: validProject4.writers[0].replace('_', '|') }),
     }
 
     containerService.containerRepository = {
       getById: async () => Promise.resolve(validProject4),
       patch: jest.fn(),
-      getContainedLibraryCollections: jest.fn(async () => [])
+      getContainedLibraryCollections: jest.fn(async () => []),
     }
 
     containerService.updateContainerTitleAndCollaborators = jest.fn()
@@ -991,7 +909,7 @@ describe('containerService - manageUserRole', () => {
       ContainerRole.Owner
     )
 
-    expect(containerService.updateContainerTitleAndCollaborators).toBeCalled()
+    expect(containerService.updateContainerTitleAndCollaborators).toHaveBeenCalled()
   })
 
   test('should call update project user with secret', async () => {
@@ -999,13 +917,13 @@ describe('containerService - manageUserRole', () => {
       DIContainer.sharedContainer.containerService[ContainerType.project]
 
     containerService.userRepository = {
-      getById: async () => Promise.resolve(validUser)
+      getById: async () => Promise.resolve(validUser),
     }
 
     containerService.containerRepository = {
       getById: async () => Promise.resolve(validProject4),
       patch: jest.fn(),
-      getContainedLibraryCollections: jest.fn(async () => [])
+      getContainedLibraryCollections: jest.fn(async () => []),
     }
 
     containerService.updateContainerTitleAndCollaborators = jest.fn()
@@ -1018,7 +936,7 @@ describe('containerService - manageUserRole', () => {
       '123456789'
     )
 
-    expect(containerService.updateContainerTitleAndCollaborators).toBeCalled()
+    expect(containerService.updateContainerTitleAndCollaborators).toHaveBeenCalled()
   })
 })
 
@@ -1030,19 +948,15 @@ describe('containerService - updateContainerUser', () => {
     const chance = new Chance()
 
     containerService.containerRepository = {
-      getById: async () => Promise.resolve(null)
+      getById: async () => Promise.resolve(null),
     }
 
     return expect(
-      containerService.updateContainerUser(
-        chance.string(),
-        ContainerRole.Writer,
-        {
-          _id: 'User|userId',
-          email: 'foobar@baz.com'
-        }
-      )
-    ).rejects.toThrowError(MissingContainerError)
+      containerService.updateContainerUser(chance.string(), ContainerRole.Writer, {
+        _id: 'User|userId',
+        email: 'foobar@baz.com',
+      })
+    ).rejects.toThrow(MissingContainerError)
   })
 
   test('should fail if wrong role assigned', async () => {
@@ -1050,19 +964,15 @@ describe('containerService - updateContainerUser', () => {
       DIContainer.sharedContainer.containerService[ContainerType.project]
 
     containerService.containerRepository = {
-      getById: async () => Promise.resolve(validProject4)
+      getById: async () => Promise.resolve(validProject4),
     }
 
     return expect(
-      containerService.updateContainerUser(
-        validProject4._id,
-        'wrestler',
-        {
-          _id: 'User|userId',
-          email: 'foobar@baz.com'
-        }
-      )
-    ).rejects.toThrowError(ValidationError)
+      containerService.updateContainerUser(validProject4._id, 'wrestler', {
+        _id: 'User|userId',
+        email: 'foobar@baz.com',
+      })
+    ).rejects.toThrow(ValidationError)
   })
 
   test('should update the user from viewer to owner', async () => {
@@ -1072,29 +982,25 @@ describe('containerService - updateContainerUser', () => {
     containerService.containerRepository = {
       getById: async () => Promise.resolve(validProject4),
       patch: jest.fn(),
-      getContainedLibraryCollections: jest.fn(async () => [])
+      getContainedLibraryCollections: jest.fn(async () => []),
     }
 
     const newOwners = ['User_valid-user-1@manuscriptsapp.com', 'User_test2']
     const newWriters = ['User_test', 'User_test10']
     const newViewers: string[] = []
 
-    await containerService.updateContainerUser(
-      validProject4._id,
-      ContainerRole.Owner,
-      {
-        _id: 'User|test2',
-        email: 'foobar@baz.com'
-      }
-    )
+    await containerService.updateContainerUser(validProject4._id, ContainerRole.Owner, {
+      _id: 'User|test2',
+      email: 'foobar@baz.com',
+    })
 
-    return expect(containerService.containerRepository.patch).toBeCalledWith(
+    return expect(containerService.containerRepository.patch).toHaveBeenCalledWith(
       validProject4._id,
       {
         _id: validProject4._id,
         owners: newOwners,
         writers: newWriters,
-        viewers: newViewers
+        viewers: newViewers,
       }
     )
   })
@@ -1106,29 +1012,25 @@ describe('containerService - updateContainerUser', () => {
     containerService.containerRepository = {
       getById: async () => Promise.resolve(validProject4),
       patch: jest.fn(),
-      getContainedLibraryCollections: jest.fn(async () => [])
+      getContainedLibraryCollections: jest.fn(async () => []),
     }
 
     const newOwners = ['User_valid-user-1@manuscriptsapp.com']
     const newWriters = ['User_test', 'User_test10']
     const newViewers = ['User_test2']
 
-    await containerService.updateContainerUser(
-      validProject4._id,
-      ContainerRole.Viewer,
-      {
-        _id: 'User|test2',
-        email: 'foobar@baz.com'
-      }
-    )
+    await containerService.updateContainerUser(validProject4._id, ContainerRole.Viewer, {
+      _id: 'User|test2',
+      email: 'foobar@baz.com',
+    })
 
-    return expect(containerService.containerRepository.patch).toBeCalledWith(
+    return expect(containerService.containerRepository.patch).toHaveBeenCalledWith(
       validProject4._id,
       {
         _id: validProject4._id,
         owners: newOwners,
         writers: newWriters,
-        viewers: newViewers
+        viewers: newViewers,
       }
     )
   })
@@ -1140,29 +1042,25 @@ describe('containerService - updateContainerUser', () => {
     containerService.containerRepository = {
       getById: async () => Promise.resolve(validProject4),
       patch: jest.fn(),
-      getContainedLibraryCollections: jest.fn(async () => [])
+      getContainedLibraryCollections: jest.fn(async () => []),
     }
 
     const newOwners = ['User_valid-user-1@manuscriptsapp.com', 'User_test']
     const newWriters = ['User_test10']
     const newViewers = ['User_test2']
 
-    await containerService.updateContainerUser(
-      validProject4._id,
-      ContainerRole.Owner,
-      {
-        _id: 'User|test',
-        email: 'foobar@baz.com'
-      }
-    )
+    await containerService.updateContainerUser(validProject4._id, ContainerRole.Owner, {
+      _id: 'User|test',
+      email: 'foobar@baz.com',
+    })
 
-    return expect(containerService.containerRepository.patch).toBeCalledWith(
+    return expect(containerService.containerRepository.patch).toHaveBeenCalledWith(
       validProject4._id,
       {
         _id: validProject4._id,
         owners: newOwners,
         writers: newWriters,
-        viewers: newViewers
+        viewers: newViewers,
       }
     )
   })
@@ -1174,29 +1072,25 @@ describe('containerService - updateContainerUser', () => {
     containerService.containerRepository = {
       getById: async () => Promise.resolve(validProject4),
       patch: jest.fn(),
-      getContainedLibraryCollections: jest.fn(async () => [])
+      getContainedLibraryCollections: jest.fn(async () => []),
     }
 
     const newOwners = ['User_valid-user-1@manuscriptsapp.com']
     const newWriters = ['User_test10', 'User_test']
     const newViewers = ['User_test2']
 
-    await containerService.updateContainerUser(
-      validProject4._id,
-      ContainerRole.Writer,
-      {
-        _id: 'User|test',
-        email: 'foobar@baz.com'
-      }
-    )
+    await containerService.updateContainerUser(validProject4._id, ContainerRole.Writer, {
+      _id: 'User|test',
+      email: 'foobar@baz.com',
+    })
 
-    return expect(containerService.containerRepository.patch).toBeCalledWith(
+    return expect(containerService.containerRepository.patch).toHaveBeenCalledWith(
       validProject4._id,
       {
         _id: validProject4._id,
         owners: newOwners,
         writers: newWriters,
-        viewers: newViewers
+        viewers: newViewers,
       }
     )
   })
@@ -1208,28 +1102,24 @@ describe('containerService - updateContainerUser', () => {
     containerService.containerRepository = {
       getById: async () => Promise.resolve(validProject4),
       patch: jest.fn(),
-      getContainedLibraryCollections: jest.fn(async () => [])
+      getContainedLibraryCollections: jest.fn(async () => []),
     }
 
     const newOwners = ['User_valid-user-1@manuscriptsapp.com']
     const newWriters = ['User_test10']
     const newViewers = ['User_test2', 'User_test']
 
-    await containerService.updateContainerUser(
-      validProject4._id,
-      ContainerRole.Viewer,
-      {
-        _id: 'User|test',
-        email: 'foobar@baz.com'
-      }
-    )
-    return expect(containerService.containerRepository.patch).toBeCalledWith(
+    await containerService.updateContainerUser(validProject4._id, ContainerRole.Viewer, {
+      _id: 'User|test',
+      email: 'foobar@baz.com',
+    })
+    return expect(containerService.containerRepository.patch).toHaveBeenCalledWith(
       validProject4._id,
       {
         _id: validProject4._id,
         owners: newOwners,
         writers: newWriters,
-        viewers: newViewers
+        viewers: newViewers,
       }
     )
   })
@@ -1241,29 +1131,25 @@ describe('containerService - updateContainerUser', () => {
     containerService.containerRepository = {
       getById: async () => Promise.resolve(validProject4),
       patch: jest.fn(),
-      getContainedLibraryCollections: jest.fn(async () => [])
+      getContainedLibraryCollections: jest.fn(async () => []),
     }
 
     const newOwners = ['User_valid-user-1@manuscriptsapp.com']
     const newWriters = ['User_test10', 'User_test']
     const newViewers = ['User_test2']
 
-    await containerService.updateContainerUser(
-      validProject4._id,
-      ContainerRole.Writer,
-      {
-        _id: 'User|test',
-        email: 'foobar@baz.com'
-      }
-    )
+    await containerService.updateContainerUser(validProject4._id, ContainerRole.Writer, {
+      _id: 'User|test',
+      email: 'foobar@baz.com',
+    })
 
-    return expect(containerService.containerRepository.patch).toBeCalledWith(
+    return expect(containerService.containerRepository.patch).toHaveBeenCalledWith(
       validProject4._id,
       {
         _id: validProject4._id,
         owners: newOwners,
         writers: newWriters,
-        viewers: newViewers
+        viewers: newViewers,
       }
     )
   })
@@ -1275,30 +1161,26 @@ describe('containerService - updateContainerUser', () => {
     containerService.containerRepository = {
       getById: async () => Promise.resolve(validProject4),
       patch: jest.fn(),
-      getContainedLibraryCollections: jest.fn(async () => [])
+      getContainedLibraryCollections: jest.fn(async () => []),
     }
 
     const newOwners = ['User_valid-user-1@manuscriptsapp.com']
     const newWriters = ['User_test10']
     const newViewers = ['User_test2']
 
-    await containerService.updateContainerUser(
-      validProject4._id,
-      ContainerRole.Annotator,
-      {
-        _id: 'User|test',
-        email: 'foobar@baz.com'
-      }
-    )
+    await containerService.updateContainerUser(validProject4._id, ContainerRole.Annotator, {
+      _id: 'User|test',
+      email: 'foobar@baz.com',
+    })
 
-    return expect(containerService.containerRepository.patch).toBeCalledWith(
+    return expect(containerService.containerRepository.patch).toHaveBeenCalledWith(
       validProject4._id,
       {
         _id: validProject4._id,
         owners: newOwners,
         writers: newWriters,
         viewers: newViewers,
-        annotators: ['User_test']
+        annotators: ['User_test'],
       }
     )
   })
@@ -1310,21 +1192,17 @@ describe('containerService - updateContainerUser', () => {
     containerService.containerRepository = {
       getById: async () => Promise.resolve(validProject8),
       patch: jest.fn(),
-      getContainedLibraryCollections: jest.fn(async () => [])
+      getContainedLibraryCollections: jest.fn(async () => []),
     }
 
     const newOwners = ['User_valid-user-1@manuscriptsapp.com']
 
-    await containerService.updateContainerUser(
-      validProject8._id,
-      ContainerRole.Editor,
-      {
-        _id: 'User|test2',
-        email: 'foobar@baz.com'
-      }
-    )
+    await containerService.updateContainerUser(validProject8._id, ContainerRole.Editor, {
+      _id: 'User|test2',
+      email: 'foobar@baz.com',
+    })
 
-    return expect(containerService.containerRepository.patch).toBeCalledWith(
+    return expect(containerService.containerRepository.patch).toHaveBeenCalledWith(
       validProject8._id,
       {
         _id: validProject8._id,
@@ -1333,7 +1211,7 @@ describe('containerService - updateContainerUser', () => {
         writers: [],
         viewers: [],
         annotators: [],
-        title: undefined
+        title: undefined,
       }
     )
   })
@@ -1345,21 +1223,17 @@ describe('containerService - updateContainerUser', () => {
     containerService.containerRepository = {
       getById: async () => Promise.resolve(validProject8),
       patch: jest.fn(),
-      getContainedLibraryCollections: jest.fn(async () => [])
+      getContainedLibraryCollections: jest.fn(async () => []),
     }
 
     const newOwners = ['User_valid-user-1@manuscriptsapp.com']
 
-    await containerService.updateContainerUser(
-      validProject8._id,
-      ContainerRole.Annotator,
-      {
-        _id: 'User|foo@bar.com',
-        email: 'foobar@baz.com'
-      }
-    )
+    await containerService.updateContainerUser(validProject8._id, ContainerRole.Annotator, {
+      _id: 'User|foo@bar.com',
+      email: 'foobar@baz.com',
+    })
 
-    return expect(containerService.containerRepository.patch).toBeCalledWith(
+    return expect(containerService.containerRepository.patch).toHaveBeenCalledWith(
       validProject8._id,
       {
         _id: validProject8._id,
@@ -1368,7 +1242,7 @@ describe('containerService - updateContainerUser', () => {
         writers: [],
         viewers: [],
         annotators: ['User_test2', 'User_foo@bar.com'],
-        title: undefined
+        title: undefined,
       }
     )
   })
@@ -1380,34 +1254,30 @@ describe('containerService - updateContainerUser', () => {
     containerService.containerRepository = {
       getById: async () => Promise.resolve(validProject4),
       patch: jest.fn(),
-      getContainedLibraryCollections: jest.fn(async () => [])
+      getContainedLibraryCollections: jest.fn(async () => []),
     }
 
     containerService.containerInvitationRepository = {
       getInvitationsForUser: async () => Promise.resolve([]),
-      deleteInvitations: async () => Promise.resolve()
+      deleteInvitations: async () => Promise.resolve(),
     }
 
     const newOwners = ['User_valid-user-1@manuscriptsapp.com']
     const newWriters = ['User_test10']
     const newViewers = ['User_test2']
 
-    await containerService.updateContainerUser(
-      validProject4._id,
-      null,
-      {
-        _id: 'User|test',
-        email: 'foobar@baz.com'
-      }
-    )
+    await containerService.updateContainerUser(validProject4._id, null, {
+      _id: 'User|test',
+      email: 'foobar@baz.com',
+    })
 
-    return expect(containerService.containerRepository.patch).toBeCalledWith(
+    return expect(containerService.containerRepository.patch).toHaveBeenCalledWith(
       validProject4._id,
       {
         _id: validProject4._id,
         owners: newOwners,
         writers: newWriters,
-        viewers: newViewers
+        viewers: newViewers,
       }
     )
   })
@@ -1419,26 +1289,22 @@ describe('containerService - updateContainerUser', () => {
     containerService.containerRepository = {
       getById: async () => Promise.resolve(validProject4),
       patch: jest.fn(),
-      getContainedLibraryCollections: jest.fn(async () => [])
+      getContainedLibraryCollections: jest.fn(async () => []),
     }
 
     containerService.containerInvitationRepository = {
       getInvitationsForUser: async () => Promise.resolve([{ _id: 'User_asd' }]),
-      deleteInvitations: jest.fn()
+      deleteInvitations: jest.fn(),
     }
 
-    await containerService.updateContainerUser(
-      validProject4._id,
-      null,
-      {
-        _id: 'User|test',
-        email: 'foobar@baz.com'
-      }
-    )
+    await containerService.updateContainerUser(validProject4._id, null, {
+      _id: 'User|test',
+      email: 'foobar@baz.com',
+    })
 
     return expect(
       containerService.containerInvitationRepository.deleteInvitations
-    ).toBeCalled()
+    ).toHaveBeenCalled()
   })
 })
 
@@ -1448,10 +1314,7 @@ describe('containerService - getUserRole', () => {
       DIContainer.sharedContainer.containerService[ContainerType.project]
 
     expect(
-      containerService.getUserRole(
-        validProject2,
-        'User|valid-user-1@manuscriptsapp.com'
-      )
+      containerService.getUserRole(validProject2, 'User|valid-user-1@manuscriptsapp.com')
     ).toBe(ContainerRole.Owner)
   })
 
@@ -1459,18 +1322,14 @@ describe('containerService - getUserRole', () => {
     const containerService: any =
       DIContainer.sharedContainer.containerService[ContainerType.project]
 
-    expect(containerService.getUserRole(validProject4, 'User|test10')).toBe(
-      ContainerRole.Writer
-    )
+    expect(containerService.getUserRole(validProject4, 'User|test10')).toBe(ContainerRole.Writer)
   })
 
   test('should return viewer if the user is an viewer', () => {
     const containerService: any =
       DIContainer.sharedContainer.containerService[ContainerType.project]
 
-    expect(containerService.getUserRole(validProject4, 'User|test2')).toBe(
-      ContainerRole.Viewer
-    )
+    expect(containerService.getUserRole(validProject4, 'User|test2')).toBe(ContainerRole.Viewer)
   })
 
   test('should return editor if the user is an editor', () => {
@@ -1486,9 +1345,7 @@ describe('containerService - getUserRole', () => {
     const containerService: any =
       DIContainer.sharedContainer.containerService[ContainerType.project]
 
-    expect(containerService.getUserRole(validProject8, 'User|test2')).toBe(
-      ContainerRole.Annotator
-    )
+    expect(containerService.getUserRole(validProject8, 'User|test2')).toBe(ContainerRole.Annotator)
   })
 
   test('should return true if user is editor', () => {
@@ -1514,17 +1371,17 @@ describe('containerService - getArchive', () => {
     const userService: any = DIContainer.sharedContainer.userService
 
     userService.userProfileRepository = {
-      getById: async () => Promise.resolve(validUserProfile)
+      getById: async () => Promise.resolve(validUserProfile),
     }
 
     containerService.containerRepository = {
       getById: async () => Promise.resolve(null),
-      getContainerResources: async () => Promise.resolve([])
+      getContainerResources: async () => Promise.resolve([]),
     }
 
-    return expect(
-      containerService.getArchive('User_test', validProject4._id)
-    ).rejects.toThrow(MissingContainerError)
+    return expect(containerService.getArchive('User_test', validProject4._id)).rejects.toThrow(
+      MissingContainerError
+    )
   })
 
   test('should return an object if project is public and attachments are not requested', async () => {
@@ -1533,18 +1390,24 @@ describe('containerService - getArchive', () => {
     const userService: any = DIContainer.sharedContainer.userService
 
     userService.userProfileRepository = {
-      getById: async () => Promise.resolve(validUserProfile)
+      getById: async () => Promise.resolve(validUserProfile),
     }
 
     containerService.containerRepository = {
       getById: async () => Promise.resolve(validProject7),
       getContainerResources: async () => Promise.resolve([validProject7]),
-      getContainerAttachments: async () => Promise.resolve([])
+      getContainerAttachments: async () => Promise.resolve([]),
     }
 
-    const archive = await containerService.getArchive(validUserProfile.userID, validProject7._id, null, false, { getAttachments: true })
+    const archive = await containerService.getArchive(
+      validUserProfile.userID,
+      validProject7._id,
+      null,
+      false,
+      { getAttachments: true }
+    )
     const zip = await JSZip.loadAsync(archive)
-    expect(Object.keys(zip.files).length).toBe(2)
+    expect(Object.keys(zip.files).length).toBe(1)
     const content = await zip.files['index.manuscript-json'].async('text')
     const json = JSON.parse(content)
     expect(json.data[0]._id).toBe('valid-project-id-7')
@@ -1556,20 +1419,25 @@ describe('containerService - getArchive', () => {
     const userService: any = DIContainer.sharedContainer.userService
 
     userService.userProfileRepository = {
-      getById: async () => Promise.resolve(validUserProfile)
+      getById: async () => Promise.resolve(validUserProfile),
     }
 
     containerService.containerRepository = {
       getById: async () => Promise.resolve(validProject7),
-      getContainerResourcesIDs: async () =>
-        Promise.resolve([validProject7._id]),
-      getContainerAttachments: async () => Promise.resolve([])
+      getContainerResourcesIDs: async () => Promise.resolve([validProject7._id]),
+      getContainerAttachments: async () => Promise.resolve([]),
     }
 
-    const archive = await containerService.getArchive(validUserProfile.userID, validProject7._id, null, false, { onlyIDs: true, getAttachments: true })
+    const archive = await containerService.getArchive(
+      validUserProfile.userID,
+      validProject7._id,
+      null,
+      false,
+      { onlyIDs: true, getAttachments: true }
+    )
 
     const zip = await JSZip.loadAsync(archive)
-    expect(Object.keys(zip.files).length).toBe(2)
+    expect(Object.keys(zip.files).length).toBe(1)
     const content = await zip.files['index.manuscript-json'].async('text')
     const json = JSON.parse(content)
     expect(json.data[0]).toBe('valid-project-id-7')
@@ -1582,7 +1450,7 @@ describe('containerService - getArchive', () => {
     containerService.containerRepository = {
       getById: async () => Promise.resolve(validProject4),
       getContainerResources: async () => Promise.resolve([validProject4]),
-      getContainerAttachments: async () => Promise.resolve([])
+      getContainerAttachments: async () => Promise.resolve([]),
     }
 
     return expect(
@@ -1600,13 +1468,19 @@ describe('containerService - getArchive', () => {
     containerService.containerRepository = {
       getById: async () => Promise.resolve(validProject4),
       getContainerResources: async () => Promise.resolve([validProject4]),
-      getContainerAttachments: async () => Promise.resolve([])
+      getContainerAttachments: async () => Promise.resolve([]),
     }
 
     const chance = new Chance()
-    const archive = await containerService.getArchive(validUserProfile.userID, validProject4._id, null, chance.string(), { getAttachments: true })
+    const archive = await containerService.getArchive(
+      validUserProfile.userID,
+      validProject4._id,
+      null,
+      chance.string(),
+      { getAttachments: true }
+    )
     const zip = await JSZip.loadAsync(archive)
-    expect(Object.keys(zip.files).length).toBe(2)
+    expect(Object.keys(zip.files).length).toBe(1)
     const content = await zip.files['index.manuscript-json'].async('text')
     const json = JSON.parse(content)
     expect(json.data[0]._id).toBe('valid-project-id-4')
@@ -1622,13 +1496,19 @@ describe('containerService - getArchive', () => {
     containerService.containerRepository = {
       getById: async () => Promise.resolve(validProject4),
       getContainerResources: async () => Promise.resolve([validProject4]),
-      getContainerAttachments: async () => Promise.resolve([])
+      getContainerAttachments: async () => Promise.resolve([]),
     }
 
     const chance = new Chance()
 
     return expect(
-      containerService.getArchive(validUserProfile.userID, validProject4._id, null, chance.string(), { getAttachments: true })
+      containerService.getArchive(
+        validUserProfile.userID,
+        validProject4._id,
+        null,
+        chance.string(),
+        { getAttachments: true }
+      )
     ).resolves.toBeInstanceOf(Buffer)
   })
 })
@@ -1639,12 +1519,12 @@ describe('containerService - getAttachment', () => {
       DIContainer.sharedContainer.containerService[ContainerType.project]
 
     containerService.containerRepository = {
-      getById: async () => Promise.resolve(null)
+      getById: async () => Promise.resolve(null),
     }
 
-    return expect(
-      containerService.getAttachment('MPFigure:12345')
-    ).rejects.toThrow(MissingContainerError)
+    return expect(containerService.getAttachment('MPFigure:12345')).rejects.toThrow(
+      MissingContainerError
+    )
   })
 
   test('should return a contentType and body', () => {
@@ -1661,18 +1541,16 @@ describe('containerService - getAttachment', () => {
             containerID: 'MPProject',
             _attachments: {
               image: {
-                content_type: 'image/png'
-              }
-            }
+                content_type: 'image/png',
+              },
+            },
           })
         }
       },
-      getAttachmentBody: async () => Promise.resolve('body')
+      getAttachmentBody: async () => Promise.resolve('body'),
     }
 
-    return expect(
-      containerService.getAttachment('MPFigure:12345')
-    ).resolves.toHaveProperty('body')
+    return expect(containerService.getAttachment('MPFigure:12345')).resolves.toHaveProperty('body')
   })
 
   test('should fail to return the file if the project is not public and user not contributor in project', () => {
@@ -1689,13 +1567,13 @@ describe('containerService - getAttachment', () => {
             containerID: 'MPProject',
             _attachments: {
               image: {
-                content_type: 'image/png'
-              }
-            }
+                content_type: 'image/png',
+              },
+            },
           })
         }
       },
-      getAttachmentBody: async () => Promise.resolve('body')
+      getAttachmentBody: async () => Promise.resolve('body'),
     }
 
     return expect(containerService.getAttachment('MPFigure:12345')).rejects.toThrow(ValidationError)
@@ -1715,29 +1593,31 @@ describe('containerService - getAttachment', () => {
             containerID: 'MPProject',
             _attachments: {
               image: {
-                content_type: 'image/png'
-              }
-            }
+                content_type: 'image/png',
+              },
+            },
           })
         }
       },
-      getAttachmentBody: async () => Promise.resolve('body')
+      getAttachmentBody: async () => Promise.resolve('body'),
     }
 
-    return expect(
-      containerService.getAttachment('MPFigure:12345')
-    ).rejects.toThrow(MissingContainerError)
+    return expect(containerService.getAttachment('MPFigure:12345')).rejects.toThrow(
+      MissingContainerError
+    )
   })
 
   test('should fail if the attachment is not found', () => {
     const containerService = DIContainer.sharedContainer.containerService[ContainerType.project]
     const containerRepo = DIContainer.sharedContainer.projectRepository
     containerRepo.getById = jest.fn(async (): Promise<any> => {
-      return { containerID: 'MPProject:valid-project-id', ...validProject, _attachments: { } }
+      return { containerID: 'MPProject:valid-project-id', ...validProject, _attachments: {} }
     })
     const documentID = chance.string()
     const attachmentKey = chance.string()
-    return expect(containerService.getAttachment('User_test', documentID, attachmentKey)).rejects.toThrowError(RecordNotFoundError)
+    return expect(
+      containerService.getAttachment('User_test', documentID, attachmentKey)
+    ).rejects.toThrow(RecordNotFoundError)
   })
 })
 
@@ -1746,17 +1626,14 @@ describe('ContainerService - accessToken', () => {
     const containerService: any =
       DIContainer.sharedContainer.containerService[ContainerType.project]
 
-    containerService.getContainer = () =>
-      Promise.resolve({ owners: ['User_test'] })
+    containerService.getContainer = () => Promise.resolve({ owners: ['User_test'] })
 
     const accessToken = await containerService.accessToken(
       'User|test',
       'jupyterhub',
       'MPProject:foobarbaz'
     )
-    const payload = jsonwebtoken.decode(
-      accessToken.replace('Bearer ', '')
-    ) as any
+    const payload = jwt.decode(accessToken.replace('Bearer ', '')) as any
 
     expect(payload.iss).toBe('https://api-server.atypon.com')
   })
@@ -1768,28 +1645,19 @@ describe('ContainerService - accessToken', () => {
     containerService.getContainer = () => Promise.resolve({ owners: [] })
 
     return expect(
-      containerService.accessToken(
-        'User|test',
-        'jupyterhub',
-        'MPProject:foobarbaz'
-      )
-    ).rejects.toThrowError(ValidationError)
+      containerService.accessToken('User|test', 'jupyterhub', 'MPProject:foobarbaz')
+    ).rejects.toThrow(ValidationError)
   })
 
   test('should fail if the scope name is invalid', async () => {
     const containerService: any =
       DIContainer.sharedContainer.containerService[ContainerType.project]
 
-    containerService.getContainer = () =>
-      Promise.resolve({ owners: ['User_test'] })
+    containerService.getContainer = () => Promise.resolve({ owners: ['User_test'] })
 
     return expect(
-      containerService.accessToken(
-        'User|test',
-        'something-random',
-        'MPProject:foobarbaz'
-      )
-    ).rejects.toThrowError(InvalidScopeNameError)
+      containerService.accessToken('User|test', 'something-random', 'MPProject:foobarbaz')
+    ).rejects.toThrow(InvalidScopeNameError)
   })
 })
 
@@ -1828,7 +1696,9 @@ describe('ContainerService - createManuscript', () => {
     containerService.manuscriptRepository.getById = jest.fn(() => Promise.resolve(null))
     containerService.manuscriptRepository.create = jest.fn()
     containerService.templateRepository.getById = jest.fn(() => Promise.resolve(null))
-    DIContainer.sharedContainer.pressroomService.validateTemplateId = jest.fn(() => Promise.resolve(false))
+    DIContainer.sharedContainer.pressroomService.validateTemplateId = jest.fn(() =>
+      Promise.resolve(false)
+    )
     const containerID = validNote1.containerID
     const manuscriptID = validNote1.manuscriptID
     const userID = 'User_test'
@@ -1845,15 +1715,15 @@ describe('ContainerService - createManuscript', () => {
     containerService.manuscriptRepository.getById = jest.fn(() => Promise.resolve(null))
     containerService.manuscriptRepository.create = jest.fn(() => Promise.resolve({}))
     containerService.templateRepository.getById = jest.fn(() => Promise.resolve(null))
-    DIContainer.sharedContainer.pressroomService.validateTemplateId = jest.fn(() => Promise.resolve(true))
+    DIContainer.sharedContainer.pressroomService.validateTemplateId = jest.fn(() =>
+      Promise.resolve(true)
+    )
     const containerID = validNote1.containerID
     const manuscriptID = validNote1.manuscriptID
     const userID = 'User_test'
 
     await containerService.createManuscript(userID, containerID, manuscriptID, 'templateId')
-    expect(
-      containerService.manuscriptRepository.create
-    ).toBeCalled()
+    expect(containerService.manuscriptRepository.create).toHaveBeenCalled()
   })
 
   test('should create a manuscript', async () => {
@@ -1861,19 +1731,19 @@ describe('ContainerService - createManuscript', () => {
       DIContainer.sharedContainer.containerService[ContainerType.project]
     containerService.getContainer = jest.fn(() => Promise.resolve(validProject))
     containerService.templateRepository.getById = jest.fn(() => Promise.resolve(null))
-    DIContainer.sharedContainer.pressroomService.validateTemplateId = jest.fn(() => Promise.resolve(true))
+    DIContainer.sharedContainer.pressroomService.validateTemplateId = jest.fn(() =>
+      Promise.resolve(true)
+    )
     containerService.manuscriptRepository = {
       getById: jest.fn(() => Promise.resolve(null)),
-      create: jest.fn(() => Promise.resolve({}))
+      create: jest.fn(() => Promise.resolve({})),
     }
     const containerID = validNote1.containerID
     const manuscriptID = validNote1.manuscriptID
     const userID = 'User_test'
 
     await containerService.createManuscript(userID, containerID, manuscriptID, 'templateId')
-    expect(
-      containerService.manuscriptRepository.create
-    ).toBeCalled()
+    expect(containerService.manuscriptRepository.create).toHaveBeenCalled()
   })
 })
 
@@ -1895,11 +1765,20 @@ describe('ContainerService - addProductionNote', () => {
     const userID = 'User_test'
     const target = 'invalidTarget'
     const source = 'DASHBOARD'
-    await expect(containerService.createManuscriptNote(containerID, manuscriptID, content, userID, source, target)).rejects.toThrow(MissingProductionNoteError)
+    await expect(
+      containerService.createManuscriptNote(
+        containerID,
+        manuscriptID,
+        content,
+        userID,
+        source,
+        target
+      )
+    ).rejects.toThrow(MissingProductionNoteError)
   })
   test('should fail if user does not exists', async () => {
     const containerService: any =
-        DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService[ContainerType.project]
     containerService.getContainer = jest.fn(() => Promise.resolve(validProject))
     const userRebo: any = DIContainer.sharedContainer.userRepository
     userRebo.getOne = jest.fn(() => {
@@ -1913,7 +1792,9 @@ describe('ContainerService - addProductionNote', () => {
     const content = validNote1.contents
     const userID = validUser1._id
     const source = 'DASHBOARD'
-    await expect(containerService.createManuscriptNote(containerID, manuscriptID, content, userID, source)).rejects.toThrow(MissingUserRecordError)
+    await expect(
+      containerService.createManuscriptNote(containerID, manuscriptID, content, userID, source)
+    ).rejects.toThrow(MissingUserRecordError)
   })
 
   test('should fail if user not contributor', async () => {
@@ -1954,7 +1835,14 @@ describe('ContainerService - addProductionNote', () => {
     const userID = validUser1._id
     const target = validNote1._id
     const source = 'DASHBOARD'
-    const note = await containerService.createManuscriptNote(containerID, manuscriptID, content, userID, source, target)
+    const note = await containerService.createManuscriptNote(
+      containerID,
+      manuscriptID,
+      content,
+      userID,
+      source,
+      target
+    )
     expect(note).toBeTruthy()
     expect(note.id).toBe('MPManuscriptNote:valid-note-id-2')
   })
@@ -1971,68 +1859,5 @@ describe('ContainerService - getProductionNotes', () => {
     const notes = await containerService.getProductionNotes(containerID, manuscriptID)
     expect(notes).toBeTruthy()
     expect(notes.length).toBe(1)
-  })
-})
-
-describe('ContainerService - getCorrectionStatus', () => {
-  test('should call getCorrectionStatus', async () => {
-    const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
-    containerService.containerRepository.getById = jest.fn().mockImplementationOnce(() => {
-      return {
-        _id: 'MPProject:project-id',
-        owners: ['User_validId'],
-        viewers: [],
-        writers: []
-      }
-    })
-    const repo: any = DIContainer.sharedContainer.correctionRepository
-    repo.getCorrectionStatus = jest.fn()
-    await containerService.getCorrectionStatus('MPProject:project-id', 'User_validId')
-    expect(repo.getCorrectionStatus).toBeCalled()
-  })
-
-  test('should fail if container not found', async () => {
-    const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
-    containerService.containerRepository.getById = jest.fn().mockImplementationOnce(() => {
-      return null
-    })
-    const repo: any = DIContainer.sharedContainer.correctionRepository
-    repo.getCorrectionStatus = jest.fn()
-    await expect(containerService.getCorrectionStatus('MPProject:project-id', 'User_validId')).rejects.toThrow(MissingContainerError)
-  })
-
-  test('should fail if user is not a contributor', async () => {
-    const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
-    containerService.containerRepository.getById = jest.fn().mockImplementationOnce(() => {
-      return {
-        _id: 'MPProject:project-id',
-        owners: ['User_validId'],
-        viewers: [],
-        writers: []
-      }
-    })
-    const repo: any = DIContainer.sharedContainer.correctionRepository
-    repo.getCorrectionStatus = jest.fn()
-    await expect(
-      containerService.getCorrectionStatus(
-        'MPProject:project-id',
-        'User_invalidId'
-      )
-    ).rejects.toThrow(ValidationError)
-  })
-})
-describe('containerService - saveSnapshot', () => {
-  test('saveSnapshot', async () => {
-    const snapRepo: any = DIContainer.sharedContainer.snapshotRepository
-    snapRepo.create = jest.fn(() => Promise.resolve())
-    const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
-    ContainerService.userIdForSync = jest.fn(() => 'User_foo')
-
-    await containerService.saveSnapshot('someKey', 'MPProject:someProject', 'someUser', 'name')
-    expect(snapRepo.create).toBeCalled()
   })
 })

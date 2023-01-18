@@ -15,7 +15,9 @@
  */
 module.exports = {
   verbose: true,
-  testURL: 'http://localhost',
+  "testEnvironmentOptions": {
+    "url": 'http://localhost'
+  },
   testEnvironment: 'node',
   testMatch: ['**/test/suites/integration/**/*.ts', '**/test/suites/unit+integration/**/*.ts'],
   testRunner: 'jest-circus/runner',

@@ -16,18 +16,16 @@
 
 import '../../../../utilities/dbMock'
 
-import { UserTokenRepository } from '../../../../../src/DataAccess/UserTokenRepository/UserTokenRepository'
-import { UserTokenQueryCriteria } from '../../../../../src/DataAccess/Interfaces/QueryCriteria'
-import { validUserToken } from '../../../../data/fixtures/UserTokenRepository'
-
-import { SQLDatabase } from '../../../../../src/DataAccess/SQLDatabase'
 import { config } from '../../../../../src/Config/Config'
 import { BucketKey } from '../../../../../src/Config/ConfigurationTypes'
+import { SQLDatabase } from '../../../../../src/DataAccess/SQLDatabase'
+import { UserTokenRepository } from '../../../../../src/DataAccess/UserTokenRepository/UserTokenRepository'
+import { validUserToken } from '../../../../data/fixtures/UserTokenRepository'
 import { TEST_TIMEOUT } from '../../../../utilities/testSetup'
 
 jest.setTimeout(TEST_TIMEOUT)
 
-function testDatabase (): any {
+function testDatabase(): any {
   return new SQLDatabase(config.DB, BucketKey.User)
 }
 

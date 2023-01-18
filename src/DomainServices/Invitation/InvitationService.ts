@@ -14,26 +14,25 @@
  * limitations under the License.
  */
 
-import checksum from 'checksum'
 import { ObjectTypes } from '@manuscripts/json-schema'
-
-import { isString } from '../../util'
+import checksum from 'checksum'
 import { v4 as uuid_v4 } from 'uuid'
 
-import { InvalidCredentialsError, ValidationError } from '../../Errors'
-import { username as sgUsername } from '../Sync/SyncService'
-import { IUserRepository } from '../../DataAccess/Interfaces/IUserRepository'
-import { UserActivityEventType } from '../../Models/UserEventModels'
-import { UserActivityTrackingService } from '../UserActivity/UserActivityTrackingService'
-import { InvitationRepository } from '../../DataAccess/InvitationRepository/InvitationRepository'
 import { ICollaborationsRepository } from '../../DataAccess/Interfaces/ICollaborationsRepository'
-import { IUserRegistrationService } from '../Registration/IUserRegistrationService'
+import { IUserProfileRepository } from '../../DataAccess/Interfaces/IUserProfileRepository'
+import { IUserRepository } from '../../DataAccess/Interfaces/IUserRepository'
+import { InvitationRepository } from '../../DataAccess/InvitationRepository/InvitationRepository'
+import { InvalidCredentialsError, ValidationError } from '../../Errors'
+import { ContainerInvitationResponse } from '../../Models/ContainerModels'
+import { UserActivityEventType } from '../../Models/UserEventModels'
+import { isString } from '../../util'
 import { getExpirationTime } from '../../Utilities/JWT/LoginTokenPayload'
 import { EmailService } from '../Email/EmailService'
-import { IUserProfileRepository } from '../../DataAccess/Interfaces/IUserProfileRepository'
+import { IUserRegistrationService } from '../Registration/IUserRegistrationService'
+import { username as sgUsername } from '../Sync/SyncService'
 import { UserService } from '../User/UserService'
+import { UserActivityTrackingService } from '../UserActivity/UserActivityTrackingService'
 import { IInvitationService } from './IInvitationService'
-import { ContainerInvitationResponse } from '../../Models/ContainerModels'
 
 export class InvitationService implements IInvitationService {
   /**
@@ -193,7 +192,7 @@ export class InvitationService implements IInvitationService {
 
   public async updateInvitedUserID(userID: string, userEmail: string) {
     const invitations = await this.invitationRepository.getAllByEmail(userEmail)
-    for (let invitation of invitations) {
+    for (const invitation of invitations) {
       await this.invitationRepository.patch(invitation._id, { invitedUserID: userID })
     }
   }

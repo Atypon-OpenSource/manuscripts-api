@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as HttpStatus from 'http-status-codes'
+import { StatusCodes } from 'http-status-codes'
 import * as supertest from 'supertest'
 import checksum from 'checksum'
 
@@ -58,7 +58,7 @@ describe('InvitationService - reject', () => {
         ...ValidContentTypeAcceptJsonHeader
       }
     )
-    expect(rejectResponse.status).toBe(HttpStatus.OK)
+    expect(rejectResponse.status).toBe(StatusCodes.OK)
     const invitation = await invitationRepository.getById(
       `MPInvitation:${hash}`
     )
@@ -88,7 +88,7 @@ describe('InvitationService - rejectProjectInvite', () => {
         ...ValidContentTypeAcceptJsonHeader
       }
     )
-    expect(rejectResponse.status).toBe(HttpStatus.OK)
+    expect(rejectResponse.status).toBe(StatusCodes.OK)
   })
 
 })

@@ -14,45 +14,48 @@
  * limitations under the License.
  */
 
-import * as HttpStatus from 'http-status-codes'
-import * as supertest from 'supertest'
 import checksum from 'checksum'
+import { StatusCodes } from 'http-status-codes'
+import * as supertest from 'supertest'
+
+import { BucketKey } from '../../../../../src/Config/ConfigurationTypes'
+import { DIContainer } from '../../../../../src/DIContainer/DIContainer'
+import { ContainerRole } from '../../../../../src/Models/ContainerModels'
+import {
+  acceptContainerRequest,
+  basicLogin,
+  createContainerRequest,
+  rejectContainerRequest,
+} from '../../../../api'
+import { validBody } from '../../../../data/fixtures/credentialsRequestPayload'
+import {
+  authorizationHeader,
+  ValidContentTypeAcceptJsonHeader,
+  ValidHeaderWithApplicationKey,
+} from '../../../../data/fixtures/headers'
+import {
+  createContainerReq,
+  createProject,
+  purgeContainerReq,
+} from '../../../../data/fixtures/misc'
+import { validProject } from '../../../../data/fixtures/projects'
+import { drop, dropBucket, seed, testDatabase } from '../../../../utilities/db'
+import { TEST_TIMEOUT } from '../../../../utilities/testSetup'
 
 jest.mock('email-templates', () =>
   jest.fn().mockImplementation(() => {
     return {
       send: jest.fn(() => Promise.resolve({})),
-      render: jest.fn(() => Promise.resolve({}))
+      render: jest.fn(() => Promise.resolve({})),
     }
   })
 )
-
-import {
-  basicLogin,
-  createContainerRequest,
-  acceptContainerRequest,
-  rejectContainerRequest
-} from '../../../../api'
-import { TEST_TIMEOUT } from '../../../../utilities/testSetup'
-import { drop, dropBucket, seed, testDatabase } from '../../../../utilities/db'
-import { validBody } from '../../../../data/fixtures/credentialsRequestPayload'
-import { DIContainer } from '../../../../../src/DIContainer/DIContainer'
-import {
-  ValidContentTypeAcceptJsonHeader,
-  authorizationHeader,
-  ValidHeaderWithApplicationKey
-} from '../../../../data/fixtures/headers'
-import { ContainerRole } from '../../../../../src/Models/ContainerModels'
-import { BucketKey } from '../../../../../src/Config/ConfigurationTypes'
-import { validProject } from '../../../../data/fixtures/projects'
-import { createContainerReq, purgeContainerReq, createProject } from '../../../../data/fixtures/misc'
 
 let db: any = null
 
 beforeAll(async () => {
   db = await testDatabase()
 })
-
 
 afterAll(() => {
   db.bucket.disconnect()
@@ -67,15 +70,13 @@ describe('ContainerRequestService - create', () => {
     await seed({
       users: true,
       applications: true,
-      projects: true
+      projects: true,
     })
-    await DIContainer.sharedContainer.syncService.createUserProfile(
-      {
-        _id: `User|${validBody.email}`,
-        name: 'foobar',
-        email: validBody.email
-      }
-    )
+    await DIContainer.sharedContainer.syncService.createUserProfile({
+      _id: `User|${validBody.email}`,
+      name: 'foobar',
+      email: validBody.email,
+    })
   })
 
   test('should create container request', async () => {
@@ -84,21 +85,23 @@ describe('ContainerRequestService - create', () => {
       ValidHeaderWithApplicationKey
     )
 
-    expect(loginResponse.status).toBe(HttpStatus.OK)
-    await purgeContainerReq(`MPContainerRequest:${checksum(
-      'User_valid-user@manuscriptsapp.com-MPProject:valid-project-id'
-    )}`)
+    expect(loginResponse.status).toBe(StatusCodes.OK)
+    await purgeContainerReq(
+      `MPContainerRequest:${checksum(
+        'User_valid-user@manuscriptsapp.com-MPProject:valid-project-id'
+      )}`
+    )
     const authHeader = authorizationHeader(loginResponse.body.token)
     const response: supertest.Response = await createContainerRequest(
       {
         ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
+        ...authHeader,
       },
       { role: ContainerRole.Writer },
       { containerID: validProject._id }
     )
 
-    expect(response.status).toBe(HttpStatus.OK)
+    expect(response.status).toBe(StatusCodes.OK)
   })
 
   test('should update container request if another request exists', async () => {
@@ -107,24 +110,25 @@ describe('ContainerRequestService - create', () => {
       validBody,
       ValidHeaderWithApplicationKey
     )
-    await createContainerReq(`MPContainerRequest:${checksum(
-      'User_valid-user@manuscriptsapp.com-MPProject:valid-project-id-request-4'
-    )}`)
-    expect(loginResponse.status).toBe(HttpStatus.OK)
+    await createContainerReq(
+      `MPContainerRequest:${checksum(
+        'User_valid-user@manuscriptsapp.com-MPProject:valid-project-id-request-4'
+      )}`
+    )
+    expect(loginResponse.status).toBe(StatusCodes.OK)
 
     const authHeader = authorizationHeader(loginResponse.body.token)
     const response: supertest.Response = await createContainerRequest(
       {
         ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
+        ...authHeader,
       },
       { role: ContainerRole.Owner },
       { containerID: `MPProject:valid-project-id-request-4` }
     )
 
-    expect(response.status).toBe(HttpStatus.OK)
+    expect(response.status).toBe(StatusCodes.OK)
   })
-
 })
 
 describe('ContainerRequestService - accept', () => {
@@ -143,55 +147,58 @@ describe('ContainerRequestService - accept', () => {
       ValidHeaderWithApplicationKey
     )
 
-    expect(loginResponse.status).toBe(HttpStatus.OK)
-    await createContainerReq(`MPContainerRequest:${checksum(
-      'User_valid-user-3@manuscriptsapp.com-MPProject:valid-project-id-request-2'
-    )}`)
+    expect(loginResponse.status).toBe(StatusCodes.OK)
+    await createContainerReq(
+      `MPContainerRequest:${checksum(
+        'User_valid-user-3@manuscriptsapp.com-MPProject:valid-project-id-request-2'
+      )}`
+    )
     const authHeader = authorizationHeader(loginResponse.body.token)
     await createProject('MPProject:valid-project-id-request-2')
     const response: supertest.Response = await acceptContainerRequest(
       {
         ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
+        ...authHeader,
       },
       {
         requestID: `MPContainerRequest:${checksum(
           'User_valid-user-3@manuscriptsapp.com-MPProject:valid-project-id-request-2'
-        )}`
+        )}`,
       },
       { containerID: `MPProject:valid-project-id-request-2` }
     )
 
-    expect(response.status).toBe(HttpStatus.OK)
+    expect(response.status).toBe(StatusCodes.OK)
   })
 
-  test('should accept container request and update user\'s role', async () => {
+  test("should accept container request and update user's role", async () => {
     const loginResponse: supertest.Response = await basicLogin(
       validBody,
       ValidHeaderWithApplicationKey
     )
 
-    expect(loginResponse.status).toBe(HttpStatus.OK)
-    await createContainerReq(`MPContainerRequest:${checksum(
-      'User_valid-user-3@manuscriptsapp.com-MPProject:valid-project-id-request'
-    )}`)
+    expect(loginResponse.status).toBe(StatusCodes.OK)
+    await createContainerReq(
+      `MPContainerRequest:${checksum(
+        'User_valid-user-3@manuscriptsapp.com-MPProject:valid-project-id-request'
+      )}`
+    )
     const authHeader = authorizationHeader(loginResponse.body.token)
     await createProject('MPProject:valid-project-id-request')
     const response: supertest.Response = await acceptContainerRequest(
       {
         ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
+        ...authHeader,
       },
       {
         requestID: `MPContainerRequest:${checksum(
           'User_valid-user-3@manuscriptsapp.com-MPProject:valid-project-id-request'
-        )}`
+        )}`,
       },
       { containerID: `MPProject:valid-project-id-request` }
     )
-    expect(response.status).toBe(HttpStatus.OK)
+    expect(response.status).toBe(StatusCodes.OK)
   })
-
 })
 
 describe('ContainerRequestService - reject', () => {
@@ -210,27 +217,28 @@ describe('ContainerRequestService - reject', () => {
       ValidHeaderWithApplicationKey
     )
 
-    expect(loginResponse.status).toBe(HttpStatus.OK)
-    await createContainerReq(`MPContainerRequest:${checksum(
-      'User_valid-user-3@manuscriptsapp.com-MPProject:valid-project-id-request-2'
-    )}`)
+    expect(loginResponse.status).toBe(StatusCodes.OK)
+    await createContainerReq(
+      `MPContainerRequest:${checksum(
+        'User_valid-user-3@manuscriptsapp.com-MPProject:valid-project-id-request-2'
+      )}`
+    )
     await createProject('MPProject:valid-project-id-2')
     await createProject('MPProject:valid-project-id-request-2')
     const authHeader = authorizationHeader(loginResponse.body.token)
     const response: supertest.Response = await rejectContainerRequest(
       {
         ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
+        ...authHeader,
       },
       {
         requestID: `MPContainerRequest:${checksum(
           'User_valid-user-3@manuscriptsapp.com-MPProject:valid-project-id-request-2'
-        )}`
+        )}`,
       },
       { containerID: `MPProject:valid-project-id-2` }
     )
 
-    expect(response.status).toBe(HttpStatus.OK)
+    expect(response.status).toBe(StatusCodes.OK)
   })
-
 })

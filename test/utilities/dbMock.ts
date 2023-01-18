@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 jest.mock('../../src/DataAccess/SQLDatabase', () => {
   return {
     SQLDatabase: jest.fn(() => ({
@@ -22,7 +21,7 @@ jest.mock('../../src/DataAccess/SQLDatabase', () => {
       createDesignDocument: jest.fn(),
       getDesignDocument: jest.fn(),
       documentMapper: {
-        ensureIndices: jest.fn((_DeferBuild: boolean, callback: Function) => {
+        ensureIndices: jest.fn((_DeferBuild: boolean, callback: any) => {
           callback(null)
         }),
         model: jest.fn(),
@@ -30,9 +29,9 @@ jest.mock('../../src/DataAccess/SQLDatabase', () => {
           User: {
             create: jest.fn(),
             getById: jest.fn(),
-            fromData: jest.fn()
-          }
-        }
+            fromData: jest.fn(),
+          },
+        },
       },
       bucket: {
         insert: jest.fn((_doc: any) => Promise.resolve(null)),
@@ -42,12 +41,14 @@ jest.mock('../../src/DataAccess/SQLDatabase', () => {
         count: jest.fn((_query: any) => Promise.resolve(0)),
         findFirst: jest.fn((_query: any) => Promise.resolve(null)),
         findUnique: jest.fn((_query: any) => Promise.resolve(null)),
-        touch: jest.fn((_key: any | Buffer, _expiry: number, _options: any, callback: any) => callback(null, null)),
-        replace: jest.fn((_id: String, _document: any) => Promise.resolve(null)),
-        upsert: jest.fn((_id: String, _document: any) => Promise.resolve(null)),
-        _name: 'BUCKET_NAME'
-      }
-    }))
+        touch: jest.fn((_key: any | Buffer, _expiry: number, _options: any, callback: any) =>
+          callback(null, null)
+        ),
+        replace: jest.fn((_id: string, _document: any) => Promise.resolve(null)),
+        upsert: jest.fn((_id: string, _document: any) => Promise.resolve(null)),
+        _name: 'BUCKET_NAME',
+      },
+    })),
   }
 })
 

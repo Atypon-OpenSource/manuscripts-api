@@ -90,7 +90,7 @@ export interface IContainerService {
     manuscriptID: string | null,
     token: string | null,
     options: ArchiveOptions
-  ): Promise<Blob>
+  ): Promise<Buffer>
 
   loadProject(
     containerID: string,

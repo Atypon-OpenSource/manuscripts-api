@@ -20,7 +20,7 @@ import * as supertest from 'supertest'
 import { BucketKey } from '../../../../../../src/Config/ConfigurationTypes'
 import { SeedOptions } from '../../../../../../src/DataAccess/Interfaces/SeedOptions'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
-import { authorizationToken } from '../../../../../api'
+import { authorizationToken, basicLogin } from '../../../../../api'
 import { validBody } from '../../../../../data/fixtures/credentialsRequestPayload'
 import {
   authorizationHeader,

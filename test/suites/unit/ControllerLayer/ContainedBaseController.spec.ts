@@ -14,17 +14,13 @@
  * limitations under the License.
  */
 
-import { ValidationError } from '../../../../src/Errors'
 import { getContainerType } from '../../../../src/Controller/ContainedBaseController'
+import { ValidationError } from '../../../../src/Errors'
 import { ContainerType } from '../../../../src/Models/ContainerModels'
 
 describe('ContainedBaseRController - getContainerType', () => {
   test('should retrun valid container types', async () => {
-    expect(getContainerType('MPProject:foo-bar-baz')).toEqual(
-      ContainerType.project
-    )
-    expect(() => getContainerType('MPUserProfile:foo-bar-baz')).toThrowError(
-      ValidationError
-    )
+    expect(getContainerType('MPProject:foo-bar-baz')).toEqual(ContainerType.project)
+    expect(() => getContainerType('MPUserProfile:foo-bar-baz')).toThrow(ValidationError)
   })
 })

@@ -19,8 +19,8 @@ import { removeEmptyValuesFromObj } from '../../../src/util'
 describe('removeEmptyValuesFromObj', () => {
   test('should remove key with undefined value in object', () => {
     const obj = {
-      'key1': undefined,
-      'key2': 'foo'
+      key1: undefined,
+      key2: 'foo',
     }
     const newObj = removeEmptyValuesFromObj(obj)
     expect('key1' in newObj).toBe(false)
@@ -28,8 +28,8 @@ describe('removeEmptyValuesFromObj', () => {
 
   test('should remove key with null value in object', () => {
     const obj = {
-      'key1': null,
-      'key2': 'foo'
+      key1: null,
+      key2: 'foo',
     }
     const newObj = removeEmptyValuesFromObj(obj)
     expect('key1' in newObj).toBe(false)
@@ -37,8 +37,8 @@ describe('removeEmptyValuesFromObj', () => {
 
   test('should remove key with empty value in object', () => {
     const obj = {
-      'key1': '',
-      'key2': 'foo'
+      key1: '',
+      key2: 'foo',
     }
     const newObj = removeEmptyValuesFromObj(obj)
     expect('key1' in newObj).toBe(false)
@@ -46,8 +46,8 @@ describe('removeEmptyValuesFromObj', () => {
 
   test('should preserve key with non-empty value in object', () => {
     const obj = {
-      'key1': null,
-      'key2': 'foo'
+      key1: null,
+      key2: 'foo',
     }
     const newObj = removeEmptyValuesFromObj(obj)
     expect(newObj['key2']).toBe('foo')

@@ -20,15 +20,16 @@ import { ValidationError } from '../../../src/Errors'
 
 describe('normalizeURL', () => {
   test('should normalize away trailing slashes', () => {
-    expect(normalizeURL('https://community.manuscripts.io/'))
-        .toEqual('https://community.manuscripts.io')
+    expect(normalizeURL('https://community.manuscripts.io/')).toEqual(
+      'https://community.manuscripts.io'
+    )
   })
 
   test('should not modify a URL that does not have a trailing slash', () => {
-    expect(normalizeURL('https://community.manuscripts.io'))
-        .toEqual('https://community.manuscripts.io')
+    expect(normalizeURL('https://community.manuscripts.io')).toEqual(
+      'https://community.manuscripts.io'
+    )
   })
-
 })
 
 describe('getMap utility', () => {

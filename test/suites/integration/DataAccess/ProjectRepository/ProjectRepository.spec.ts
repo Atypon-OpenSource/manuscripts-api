@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-import { drop, testDatabase, seed, dropBucket } from '../../../../utilities/db'
 import checksum from 'checksum'
 
-import { TEST_TIMEOUT } from '../../../../utilities/testSetup'
 import { BucketKey } from '../../../../../src/Config/ConfigurationTypes'
-import { ProjectRepository } from '../../../../../src/DataAccess/ProjectRepository/ProjectRepository'
-import { validProject } from '../../../../data/fixtures/projects'
 import { ContainerInvitationRepository } from '../../../../../src/DataAccess/ContainerInvitationRepository/ContainerInvitationRepository'
+import { ProjectRepository } from '../../../../../src/DataAccess/ProjectRepository/ProjectRepository'
 import { createProjectInvitation } from '../../../../data/fixtures/misc'
+import { validProject } from '../../../../data/fixtures/projects'
+import { drop, dropBucket, seed, testDatabase } from '../../../../utilities/db'
+import { TEST_TIMEOUT } from '../../../../utilities/testSetup'
 
 jest.setTimeout(TEST_TIMEOUT)
 
@@ -39,16 +39,14 @@ describe('ProjectRepository removeWithAllResources', () => {
 
   test('should remove project with all its resources', async () => {
     const repository = new ProjectRepository(BucketKey.Project, db)
-    const projectInvitationRepository = new ContainerInvitationRepository(
-      BucketKey.Project,
-      db
-    )
+    const projectInvitationRepository = new ContainerInvitationRepository(BucketKey.Project, db)
     const validId = `MPProject:valid-project-id-6`
     const projectBefore = await repository.getById(validId)
-    const invId = 'MPContainerInvitation:' + checksum(
-      'valid-user@manuscriptsapp.com-valid-user-6@manuscriptsapp.com-valid-project-id-6',
-      { algorithm: 'sha1' }
-    )
+    const invId =
+      'MPContainerInvitation:' +
+      checksum('valid-user@manuscriptsapp.com-valid-user-6@manuscriptsapp.com-valid-project-id-6', {
+        algorithm: 'sha1',
+      })
     await createProjectInvitation(invId)
     const invitationBefore = await projectInvitationRepository.getById(invId)
 
@@ -59,10 +57,11 @@ describe('ProjectRepository removeWithAllResources', () => {
 
     const projectAfter = await repository.getById(validId)
     const invitationAfter = await projectInvitationRepository.getById(
-      'MPContainerInvitation:' + checksum(
-        'valid-user@manuscriptsapp.com-valid-user-6@manuscriptsapp.com-valid-project-id-6',
-        { algorithm: 'sha1' }
-      )
+      'MPContainerInvitation:' +
+        checksum(
+          'valid-user@manuscriptsapp.com-valid-user-6@manuscriptsapp.com-valid-project-id-6',
+          { algorithm: 'sha1' }
+        )
     )
 
     expect(projectAfter).toBeNull()
@@ -82,11 +81,9 @@ describe('ProjectRepository getUserContainers', () => {
     const validUserId = 'User_test'
     const projects = await repository.getUserContainers(validUserId)
 
-    expect(
-      projects.find(
-        (project: { _id: string }) => project._id === validProject._id
-      )._id
-    ).toBe(validProject._id)
+    expect(projects.find((project: { _id: string }) => project._id === validProject._id)._id).toBe(
+      validProject._id
+    )
   })
 })
 

@@ -294,15 +294,10 @@ export class DIContainer {
     this.authService = new AuthService(
       this.userRepository,
       this.userTokenRepository,
-      this.userEmailRepository,
       this.userProfileRepository,
-      this.emailService,
-      this.singleUseTokenRepository,
       this.activityTrackingService,
       this.syncService,
-      this.userStatusRepository,
-      this.invitationService,
-      this.containerInvitationService
+      this.userStatusRepository
     )
     this.expirationService = new ExpirationService(
       this.userEventRepository,

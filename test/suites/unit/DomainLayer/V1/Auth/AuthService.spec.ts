@@ -14,7 +14,41 @@
  * limitations under the License.
  */
 
-import { Chance } from 'chance'
+import '../../../../../../test/utilities/configMock'
+import '../../../../../../test/utilities/dbMock'
+
+import { describe } from 'jest-circus'
+
+import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
+import {
+  AuthService,
+  MAX_NUMBER_OF_LOGIN_ATTEMPTS,
+} from '../../../../../../src/DomainServices/Auth/AuthService'
+import {
+  AccountNotFoundError,
+  InvalidCredentialsError,
+  InvalidPasswordError,
+  MissingUserStatusError,
+  UserBlockedError,
+  UserNotVerifiedError,
+  ValidationError,
+} from '../../../../../../src/Errors'
+import { UserActivityEventType } from '../../../../../../src/Models/UserEventModels'
+import { ServerToServerAuthCredentials } from '../../../../../../src/Models/UserModels'
+import {
+  userWithValidCredentials,
+  validJWTToken,
+  validUserStatus,
+  validUserToken,
+} from '../../../../../data/fixtures/authServiceUser'
+import {
+  invalidCredentials,
+  invalidPasswordCredentials,
+  validCredentials,
+} from '../../../../../data/fixtures/credentials'
+import { validBody } from '../../../../../data/fixtures/credentialsRequestPayload'
+import { validUser } from '../../../../../data/fixtures/userServiceUser'
+import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
 
 jest.mock('../../../../../../src/DomainServices/Sync/SyncService', () => {
   return {
@@ -26,62 +60,14 @@ jest.mock('../../../../../../src/DomainServices/Sync/SyncService', () => {
       createGatewayAdministrator: jest.fn(),
       removeGatewaySessions: jest.fn(),
       removeAllGatewaySessions: jest.fn(),
-    }))
+    })),
   }
 })
 
-import '../../../../../../test/utilities/configMock'
-import '../../../../../../test/utilities/dbMock'
-import {
-  invalidCredentials,
-  invalidPasswordCredentials,
-  validCredentials,
-  validEmailCredentials
-} from '../../../../../data/fixtures/credentials'
-import { defaultSystemUser } from '../../../../../data/fixtures/user'
-import {
-  InvalidCredentialsError,
-  NoTokenError,
-  ValidationError,
-  MissingUserStatusError,
-  UserBlockedError,
-  UserNotVerifiedError,
-  EmailServiceError,
-  AccountNotFoundError,
-  InvalidPasswordError,
-  DuplicateEmailError,
-  InvalidBackchannelLogoutError,
-  MissingUserRecordError
-} from '../../../../../../src/Errors'
-import {
-  userWithValidCredentials,
-  validUserToken,
-  validJWTToken,
-  invalidUserJWTToken,
-  validUserStatus
-} from '../../../../../data/fixtures/authServiceUser'
-import {
-  userRowData,
-  userSocialRowData
-} from '../../../../../data/fixtures/userRowData'
-import { SingleUseTokenType } from '../../../../../../src/Models/SingleUseTokenModels'
-
-import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
-import { UserActivityEventType } from '../../../../../../src/Models/UserEventModels'
-import {
-  MAX_NUMBER_OF_LOGIN_ATTEMPTS,
-  AuthService
-} from '../../../../../../src/DomainServices/Auth/AuthService'
-
-import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
-import { validLogoutToken } from '../../../../../data/fixtures/logoutTokens'
-import { ServerToServerAuthCredentials } from '../../../../../../src/Models/UserModels'
-import { validBody } from '../../../../../data/fixtures/credentialsRequestPayload'
 jest.setTimeout(TEST_TIMEOUT)
 
-const chance = new Chance()
 beforeEach(() => {
-  (DIContainer as any)._sharedContainer = null
+  ;(DIContainer as any)._sharedContainer = null
   return DIContainer.init(true)
 })
 
@@ -90,59 +76,55 @@ describe('AuthService - Login', () => {
     const authService: any = DIContainer.sharedContainer.authService
 
     authService.userRepository = {
-      getOne: () => Promise.resolve(null)
+      getOne: () => Promise.resolve(null),
     }
 
-    return expect(authService.login(invalidCredentials)).rejects.toThrowError(
-      AccountNotFoundError
-    )
+    return expect(authService.login(invalidCredentials)).rejects.toThrow(AccountNotFoundError)
   })
 
   test("should fail if user status doesn't exists", () => {
     const authService: any = DIContainer.sharedContainer.authService
 
     authService.userRepository = {
-      getOne: async () => Promise.resolve(userWithValidCredentials)
+      getOne: async () => Promise.resolve(userWithValidCredentials),
     }
     authService.userStatusRepository = {
-      statusForUserId: async () => Promise.resolve(null)
+      statusForUserId: async () => Promise.resolve(null),
     }
     authService.userEventRepository = {
-      create: async () => Promise.resolve(null)
+      create: async () => Promise.resolve(null),
     }
 
-    return expect(
-      authService.login(invalidPasswordCredentials)
-    ).rejects.toThrowError(MissingUserStatusError)
+    return expect(authService.login(invalidPasswordCredentials)).rejects.toThrow(
+      MissingUserStatusError
+    )
   })
 
   test('should fail if user is blocked', () => {
     const authService: any = DIContainer.sharedContainer.authService
 
     authService.userRepository = {
-      getOne: async () => Promise.resolve(userWithValidCredentials)
+      getOne: async () => Promise.resolve(userWithValidCredentials),
     }
     authService.userStatusRepository = {
       statusForUserId: async () =>
         Promise.resolve({
           blockUntil: new Date().getTime() + 2000,
-          isVerified: true
-        })
+          isVerified: true,
+        }),
     }
     authService.userEventRepository = {
-      create: async () => Promise.resolve(null)
+      create: async () => Promise.resolve(null),
     }
 
-    return expect(
-      authService.login(invalidPasswordCredentials)
-    ).rejects.toThrowError(UserBlockedError)
+    return expect(authService.login(invalidPasswordCredentials)).rejects.toThrow(UserBlockedError)
   })
 
   test('should fail if password is wrong and block user', () => {
     const authService: any = DIContainer.sharedContainer.authService
 
     authService.userRepository = {
-      getOne: async () => Promise.resolve(userWithValidCredentials)
+      getOne: async () => Promise.resolve(userWithValidCredentials),
     }
     authService.userStatusRepository = {
       statusForUserId: async () =>
@@ -150,53 +132,52 @@ describe('AuthService - Login', () => {
           isBlocked: true,
           blockUntil: new Date().getTime() - 5000,
           password: '123',
-          isVerified: true
+          isVerified: true,
         }),
-      failedLoginCount: async () =>
-        Promise.resolve(MAX_NUMBER_OF_LOGIN_ATTEMPTS),
+      failedLoginCount: async () => Promise.resolve(MAX_NUMBER_OF_LOGIN_ATTEMPTS),
       patch: async () => Promise.resolve(),
-      fullyQualifiedId: (id: string) => `UserStatus|${id}`
+      fullyQualifiedId: (id: string) => `UserStatus|${id}`,
     }
     authService.userEventRepository = {
-      create: async () => Promise.resolve(null)
+      create: async () => Promise.resolve(null),
     }
 
-    return expect(
-      authService.login(invalidPasswordCredentials)
-    ).rejects.toThrowError(InvalidPasswordError)
+    return expect(authService.login(invalidPasswordCredentials)).rejects.toThrow(
+      InvalidPasswordError
+    )
   })
 
   test('should fail if password is wrong', async () => {
     const authService: any = DIContainer.sharedContainer.authService
 
     authService.userRepository = {
-      getOne: () => Promise.resolve(userWithValidCredentials)
+      getOne: () => Promise.resolve(userWithValidCredentials),
     }
     authService.userStatusRepository = {
       statusForUserId: async () =>
         Promise.resolve({
           blockUntil: new Date().getTime() - 5000,
           password: '123',
-          isVerified: true
+          isVerified: true,
         }),
       failedLoginCount: async () => Promise.resolve(0),
       patch: async () => Promise.resolve(),
-      fullyQualifiedId: (id: string) => `UserStatus|${id}`
+      fullyQualifiedId: (id: string) => `UserStatus|${id}`,
     }
     authService.userEventRepository = {
-      create: async () => Promise.resolve(null)
+      create: async () => Promise.resolve(null),
     }
 
-    return expect(
-      authService.login(invalidPasswordCredentials)
-    ).rejects.toThrowError(InvalidPasswordError)
+    return expect(authService.login(invalidPasswordCredentials)).rejects.toThrow(
+      InvalidPasswordError
+    )
   })
 
   test('should fail if user is not verified', () => {
     const authService: any = DIContainer.sharedContainer.authService
 
     authService.userRepository = {
-      getOne: () => Promise.resolve(userWithValidCredentials)
+      getOne: () => Promise.resolve(userWithValidCredentials),
     }
     authService.userStatusRepository = {
       statusForUserId: async () =>
@@ -204,45 +185,42 @@ describe('AuthService - Login', () => {
           isBlocked: false,
           blockUntil: null,
           password: 'the-password',
-          isVerified: false
+          isVerified: false,
         }),
-      failedLoginCount: async () =>
-        Promise.resolve(MAX_NUMBER_OF_LOGIN_ATTEMPTS),
-      patch: async () => Promise.resolve()
+      failedLoginCount: async () => Promise.resolve(MAX_NUMBER_OF_LOGIN_ATTEMPTS),
+      patch: async () => Promise.resolve(),
     }
     authService.userEventRepository = {
-      create: async () => Promise.resolve(null)
+      create: async () => Promise.resolve(null),
     }
 
-    return expect(authService.login(validCredentials)).rejects.toThrowError(
-      UserNotVerifiedError
-    )
+    return expect(authService.login(validCredentials)).rejects.toThrow(UserNotVerifiedError)
   })
 
   test('should log user in and generates new user token', async () => {
     const authService: any = DIContainer.sharedContainer.authService
 
     authService.userRepository = {
-      getOne: () => Promise.resolve(userWithValidCredentials)
+      getOne: () => Promise.resolve(userWithValidCredentials),
     }
     authService.userStatusRepository = {
       statusForUserId: async () => Promise.resolve(validUserStatus),
       failedLoginCount: async () => Promise.resolve(0),
       patch: async () => Promise.resolve(),
-      fullyQualifiedId: (id: string) => `UserStatus|${id}`
+      fullyQualifiedId: (id: string) => `UserStatus|${id}`,
     }
     authService.userEventRepository = {
-      create: async () => Promise.resolve(null)
+      create: async () => Promise.resolve(null),
     }
     authService.userTokenRepository = {
       getOne: async () => Promise.resolve(null),
       create: async () => Promise.resolve(null),
       touch: async () => Promise.resolve(null),
-      fullyQualifiedId: (id: string) => `User|${id}`
+      fullyQualifiedId: (id: string) => `User|${id}`,
     }
 
     authService.userProfileRepository = {
-      getById: async () => Promise.resolve({})
+      getById: async () => Promise.resolve({}),
     }
 
     const user = await authService.login(validCredentials)
@@ -257,7 +235,7 @@ describe('AuthService - Login', () => {
     const authService: any = DIContainer.sharedContainer.authService
 
     authService.userRepository = {
-      getOne: () => Promise.resolve(userWithValidCredentials)
+      getOne: () => Promise.resolve(userWithValidCredentials),
     }
 
     authService.userTokenRepository = {
@@ -265,20 +243,20 @@ describe('AuthService - Login', () => {
       create: () => Promise.resolve(null),
       patch: () => Promise.resolve(null),
       touch: () => Promise.resolve(null),
-      fullyQualifiedId: (id: string) => `User|${id}`
+      fullyQualifiedId: (id: string) => `User|${id}`,
     }
     authService.userStatusRepository = {
       statusForUserId: async () => Promise.resolve(validUserStatus),
       failedLoginCount: async () => Promise.resolve(0),
       patch: async () => Promise.resolve(),
-      fullyQualifiedId: (id: string) => `UserStatus|${id}`
+      fullyQualifiedId: (id: string) => `UserStatus|${id}`,
     }
     authService.userEventRepository = {
-      create: async () => Promise.resolve(null)
+      create: async () => Promise.resolve(null),
     }
 
     authService.userProfileRepository = {
-      getById: async () => Promise.resolve({})
+      getById: async () => Promise.resolve({}),
     }
 
     const user = await authService.login(validCredentials)
@@ -290,457 +268,22 @@ describe('AuthService - Login', () => {
   })
 })
 
-describe('AuthService - serverToServerAuth', () => {
-  test('should fail if user does not exists', async () => {
-    const authService: any = DIContainer.sharedContainer.authService
-
-    authService.userRepository = {
-      getOne: () => Promise.resolve(null)
-    }
-
-    return expect(
-      authService.serverToServerAuth({
-        email: chance.email(),
-        appId: chance.guid(),
-        deviceId: chance.guid()
-      })
-    ).rejects.toThrowError(AccountNotFoundError)
-  })
-})
-
-
-describe('AuthService - logout', () => {
-  test('should fail if the token is invalid', () => {
-    const authService: any = DIContainer.sharedContainer.authService
-
-    authService.userRepository = { getById: () => Promise.resolve(undefined) }
-    authService.userTokenRepository = { getById: () => Promise.resolve(null) }
-
-    return expect(authService.logout('foobar')).rejects.toThrowError(
-      InvalidCredentialsError
-    )
-  })
-
-
-  test('should fail if there is no token in DB', () => {
-    const authService: any = DIContainer.sharedContainer.authService
-
-    authService.userTokenRepository = {
-      fullyQualifiedId: (id: string) => `UserToken|${id}`,
-      getById: () => Promise.resolve(null)
-    }
-    return expect(authService.logout(invalidUserJWTToken)).rejects.toThrowError(
-      NoTokenError
-    )
-  })
-
-  test('should fail if user status is not in the db', () => {
-    const authService: any = DIContainer.sharedContainer.authService
-
-    authService.userRepository = {
-      getById: () => Promise.resolve(defaultSystemUser)
-    }
-    authService.userEventRepository = {
-      create: async () => Promise.resolve(null)
-    }
-
-    authService.userTokenRepository = {
-      fullyQualifiedId: (id: string) => `UserToken|${id}`,
-      getById: () => Promise.resolve(validUserToken),
-      remove: jest.fn(() => {
-        return Promise.resolve(null)
-      })
-    }
-
-    authService.userStatusRepository = {
-      statusForUserId: () => Promise.resolve(null),
-      fullyQualifiedId: (id: string) => `UserStatus|${id}`
-    }
-
-    return expect(authService.logout(validJWTToken)).rejects.toThrowError()
-  })
-})
-
-describe('AuthService - sendPasswordResetInstructions', () => {
-  test('should fail if email does not exist', () => {
-    const authService: any = DIContainer.sharedContainer.authService
-
-    authService.userRepository = { getOne: () => Promise.resolve(null) }
-
-    return expect(
-      authService.sendPasswordResetInstructions(invalidCredentials.email)
-    ).rejects.toThrowError(InvalidCredentialsError)
-  })
-
-  test('should fail if user status does not exist', () => {
-    const authService: any = DIContainer.sharedContainer.authService
-
-    authService.userRepository = {
-      getOne: async () =>
-        Promise.resolve({
-          _id: '1',
-          name: 'Abdallah',
-          email: 'abarmawi@live.com',
-          password:
-            '$2a$05$LpEIAuWg7aF4leM9aZaKDO3.7r.6IkkcS4qrj5qMhHZEWzFoZHrv.',
-          isVerified: true,
-          createdAt: 1518357671676
-        })
-    }
-    authService.userStatusRepository = {
-      statusForUserId: async () => Promise.resolve(null)
-    }
-    authService.userEventRepository = {
-      create: async () => Promise.resolve(null)
-    }
-
-    return expect(
-      authService.sendPasswordResetInstructions(invalidCredentials.email)
-    ).rejects.toThrowError()
-  })
-
-  test('should send reset password and save token if the email is valid and token does not exist in db.', async () => {
-    const authService: any = DIContainer.sharedContainer.authService
-    const ensureTokenExists: any =
-      DIContainer.sharedContainer.singleUseTokenRepository.ensureTokenExists
-    const rawData = {
-      _id: '1',
-      name: 'Abdallah',
-      email: 'abarmawi@live.com',
-      password: '$2a$05$LpEIAuWg7aF4leM9aZaKDO3.7r.6IkkcS4qrj5qMhHZEWzFoZHrv.',
-      isVerified: true,
-      createdAt: 1518357671676
-    }
-
-    authService.userRepository = { getOne: () => Promise.resolve(rawData) }
-    authService.emailService = {
-      sendAccountVerification: jest.fn(() => Promise.resolve(true)),
-      sendPasswordResetInstructions: jest.fn(() => Promise.resolve(true))
-    }
-    authService.userRepository = {
-      getOne: () => Promise.resolve(rawData)
-    }
-    authService.userStatusRepository = {
-      statusForUserId: async () => Promise.resolve(validUserStatus),
-      fullyQualifiedId: (id: string) => `UserStatus|${id}`
-    }
-
-    authService.userEventRepository = {
-      create: async () => Promise.resolve(null)
-    }
-
-    authService.singleUseTokenRepository = {
-      getOne: () => Promise.resolve(null),
-      create: jest.fn(() => Promise.resolve({ _id: 'foo' })),
-      ensureTokenExists: ensureTokenExists,
-      fullyQualifiedId: (id: string) => `SingleUseToken|${id}`
-    }
-
-    await authService.sendPasswordResetInstructions(validEmailCredentials.email)
-    expect(authService.emailService.sendPasswordResetInstructions).toBeCalled()
-    expect(authService.singleUseTokenRepository.create).toBeCalled()
-  })
-
-  test('should send reset password and update token if the email is valid and token exist in db.', async () => {
-    const authService: any = DIContainer.sharedContainer.authService
-    const ensureTokenExists: any =
-      DIContainer.sharedContainer.singleUseTokenRepository.ensureTokenExists
-
-    authService.userRepository = {
-      getOne: () =>
-        Promise.resolve({
-          _id: '1',
-          name: 'Abdallah',
-          email: 'abarmawi@live.com',
-          password:
-            '$2a$05$LpEIAuWg7aF4leM9aZaKDO3.7r.6IkkcS4qrj5qMhHZEWzFoZHrv.',
-          isVerified: true,
-          createdAt: 1518357671676
-        })
-    }
-
-    authService.userStatusRepository = {
-      statusForUserId: async () =>
-        Promise.resolve({
-          password: '12345-hash'
-        }),
-      fullyQualifiedId: (id: string) => `UserStatus|${id}`
-    }
-    authService.userEventRepository = {
-      create: async () => Promise.resolve(null)
-    }
-    authService.emailService = {
-      sendPasswordResetInstructions: jest.fn(() => Promise.resolve(true))
-    }
-
-    const token = {
-      _id: 'foo',
-      userId: 'bar',
-      tokenType: SingleUseTokenType.ResetPasswordToken,
-      createdAt: new Date(1900, 1, 1).getTime(),
-      updatedAt: new Date().getTime()
-    }
-    authService.singleUseTokenRepository = {
-      getOne: () => Promise.resolve(token),
-      patch: jest.fn(),
-      ensureTokenExists: ensureTokenExists,
-      fullyQualifiedId: (id: string) => `SingleUseToken|${id}`
-    }
-
-    await authService.sendPasswordResetInstructions(validEmailCredentials.email)
-
-    expect(authService.emailService.sendPasswordResetInstructions).toBeCalled()
-    expect(authService.singleUseTokenRepository.patch).toBeCalled()
-  })
-
-  test('should send login with google and save token if the email is valid and token does not exist in db.', async () => {
-    const authService: any = DIContainer.sharedContainer.authService
-    const ensureTokenExists: any =
-      DIContainer.sharedContainer.singleUseTokenRepository.ensureTokenExists
-
-    authService.userRepository = {
-      getOne: () => Promise.resolve(userSocialRowData)
-    }
-
-    authService.emailService = {
-      sendPasswordResetInstructions: jest.fn(() => Promise.resolve(true))
-    }
-
-    authService.userEventRepository = {
-      create: async () => Promise.resolve(null)
-    }
-    authService.userStatusRepository = {
-      statusForUserId: async () => Promise.resolve({}),
-      fullyQualifiedId: (id: string) => `UserStatus|${id}`
-    }
-
-    authService.singleUseTokenRepository = {
-      getOne: () => Promise.resolve(null),
-      create: jest.fn(() => Promise.resolve({ _id: 'foo' })),
-      ensureTokenExists: ensureTokenExists
-    }
-
-    await authService.sendPasswordResetInstructions(validEmailCredentials.email)
-    expect(authService.emailService.sendPasswordResetInstructions).toBeCalled()
-    expect(authService.singleUseTokenRepository.create).toBeCalled()
-  })
-
-  test('should send login with google and update token if the email is valid and token exist in db.', async () => {
-    const authService: any = DIContainer.sharedContainer.authService
-    const ensureTokenExists: any =
-      DIContainer.sharedContainer.singleUseTokenRepository.ensureTokenExists
-
-    const rawData = {
-      _id: '1',
-      name: 'Abdallah',
-      email: 'abarmawi@gmail.com',
-      isVerified: true,
-      createdAt: 1518357671676
-    }
-    authService.userRepository = { getOne: () => Promise.resolve(rawData) }
-    authService.userRepository = {
-      getOne: () => Promise.resolve(rawData)
-    }
-    authService.emailService = {
-      sendPasswordResetInstructions: jest.fn(() => Promise.resolve(true))
-    }
-
-    authService.userEventRepository = {
-      create: async () => Promise.resolve(null)
-    }
-    authService.userStatusRepository = {
-      statusForUserId: async () => Promise.resolve({}),
-      fullyQualifiedId: (id: string) => `UserStatus|${id}`
-    }
-
-    const token = {
-      _id: 'foo',
-      userId: 'bar',
-      tokenType: SingleUseTokenType.ResetPasswordToken,
-      createdAt: new Date(1900, 1, 1).getTime(),
-      updatedAt: new Date().getTime()
-    }
-    authService.singleUseTokenRepository = {
-      getOne: () => Promise.resolve(token),
-      patch: jest.fn(),
-      ensureTokenExists: ensureTokenExists
-    }
-    await authService.sendPasswordResetInstructions(validEmailCredentials.email)
-    expect(authService.emailService.sendPasswordResetInstructions).toBeCalled()
-    expect(authService.singleUseTokenRepository.patch).toBeCalled()
-  })
-
-  test('should fail to send email, because an error occurred in emailService sendPasswordResetInstructions method', async () => {
-    const authService: any = DIContainer.sharedContainer.authService
-    const ensureTokenExists: any =
-      DIContainer.sharedContainer.singleUseTokenRepository.ensureTokenExists
-
-    authService.userRepository = { getOne: () => Promise.resolve(userRowData) }
-    authService.emailService = {
-      sendPasswordResetInstructions: () =>
-        Promise.reject(
-          new EmailServiceError(
-            'an error happened in sendPasswordResetInstructions',
-            null
-          )
-        )
-    }
-
-    authService.singleUseTokenRepository = {
-      getOne: () => Promise.resolve(null),
-      create: jest.fn(() => Promise.resolve({ _id: 'foo' })),
-      ensureTokenExists: ensureTokenExists,
-      fullyQualifiedId: (id: string) => `SingleUseToken|${id}`
-    }
-    authService.userStatusRepository = {
-      statusForUserId: async () =>
-        Promise.resolve({
-          password: '12345-hash'
-        }),
-      fullyQualifiedId: (id: string) => `UserStatus|${id}`
-    }
-
-    return expect(
-      authService.sendPasswordResetInstructions(validEmailCredentials.email)
-    ).rejects.toThrowError(EmailServiceError)
-  })
-})
-
-describe('AuthService - resetPassword', () => {
-  test('should fail if reset password credentials is null', () => {
-    const authService = DIContainer.sharedContainer.authService
-
-    return expect(authService.resetPassword(null as any)).rejects.toThrowError(
-      InvalidCredentialsError
-    )
-  })
-  test('should fail if the token is not in the db', () => {
-    const authService: any = DIContainer.sharedContainer.authService
-
-    authService.singleUseTokenRepository = {
-      getById: async () => null
-    }
-    authService.userStatusRepository = {
-      patch: jest.fn()
-    }
-
-    const resetPasswordCredentials = {
-      tokenId: 'not-in-db',
-      password: '54321',
-      deviceId: '9f338224-b0d5-45aa-b02c-21c7e0c3c07b'
-    }
-    return expect(
-      authService.resetPassword(resetPasswordCredentials)
-    ).rejects.toThrowError(NoTokenError)
-  })
-
-  test('should fail if the user is not in the db', () => {
-    const authService: any = DIContainer.sharedContainer.authService
-    const resetPasswordCredentials: any = {
-      token: chance.hash(),
-      password: '54321',
-      deviceId: '9f338224-b0d5-45aa-b02c-21c7e0c3c07b'
-    }
-    const token = {
-      _id: 'foo',
-      userId: 'bar',
-      tokenType: SingleUseTokenType.ResetPasswordToken,
-      createdAt: new Date(1900, 1, 1).getTime(),
-      updatedAt: new Date().getTime()
-    }
-    authService.singleUseTokenRepository = {
-      getById: () => Promise.resolve(token)
-    }
-    authService.userRepository = {
-      getById: () => Promise.resolve(null)
-    }
-
-    expect.assertions(1)
-    return expect(
-      authService.resetPassword(resetPasswordCredentials)
-    ).rejects.toThrowError(MissingUserRecordError)
-  })
-
-  test('should reset the password', () => {
-    const authService: any = DIContainer.sharedContainer.authService
-    const token = {
-      _id: 'foo',
-      userId: 'User|bar',
-      tokenType: SingleUseTokenType.ResetPasswordToken,
-      createdAt: new Date(1900, 1, 1).getTime(),
-      updatedAt: new Date().getTime()
-    }
-
-    const resetPasswordCredentials: any = {
-      token: token._id,
-      newPassword: '54321',
-      deviceId: '9f338224-b0d5-45aa-b02c-21c7e0c3c07b'
-    }
-
-    authService.userRepository = {
-      getById: () => Promise.resolve(defaultSystemUser)
-    }
-
-    authService.userStatusRepository = {
-      patchStatusWithUserId: jest.fn(() => Promise.resolve(defaultSystemUser)),
-      fullyQualifiedId: jest.fn((id: string) => `UserStatus|${id}`)
-    }
-
-    authService.singleUseTokenRepository = {
-      getById: () => Promise.resolve(token),
-      patch: jest.fn(),
-      create: jest.fn(),
-      remove: jest.fn()
-    }
-
-    authService.userTokenRepository = {
-      remove: jest.fn(),
-      getOne: () => Promise.resolve(defaultSystemUser)
-    }
-
-    authService.userProfileRepository = {
-      getById: async () => Promise.resolve({})
-    }
-
-    authService.emailService = {
-      sendPasswordResetInstructions: jest.fn(() => Promise.resolve())
-    }
-
-    return authService.resetPassword(resetPasswordCredentials).then(() => {
-      expect(authService.singleUseTokenRepository.remove).toBeCalled()
-      expect(authService.userTokenRepository.remove).toBeCalled()
-      expect(
-        authService.userStatusRepository.patchStatusWithUserId
-      ).toBeCalled()
-    })
-  })
-})
-
 describe('AuthService - createEvent', () => {
   test('should fail if error occurred', () => {
-    const activityTrackingService: any =
-      DIContainer.sharedContainer.activityTrackingService
+    const activityTrackingService: any = DIContainer.sharedContainer.activityTrackingService
     activityTrackingService.userEventRepository = {
       create: function () {
-        return new Promise((_resolve, reject) =>
-          reject(new Error('User tracking derp'))
-        )
-      }
+        return new Promise((_resolve, reject) => reject(new Error('User tracking derp')))
+      },
     }
 
     return expect(
-      activityTrackingService.createEvent(
-        '123',
-        UserActivityEventType.EmailVerified,
-        null,
-        null
-      )
+      activityTrackingService.createEvent('123', UserActivityEventType.EmailVerified, null, null)
     ).rejects.toThrow()
   })
 
   test('should create event successfully', async () => {
-    const activityTrackingService: any =
-      DIContainer.sharedContainer.activityTrackingService
+    const activityTrackingService: any = DIContainer.sharedContainer.activityTrackingService
     activityTrackingService.userEventRepository = {
       create: () => {
         return new Promise((resolve, _reject) =>
@@ -748,10 +291,10 @@ describe('AuthService - createEvent', () => {
             userId: '123',
             userActivity: UserActivityEventType.EmailVerified,
             appId: null,
-            deviceId: null
+            deviceId: null,
           })
         )
-      }
+      },
     }
 
     await activityTrackingService.awaitCreation()
@@ -767,83 +310,8 @@ describe('AuthService - createEvent', () => {
       userId: '123',
       userActivity: UserActivityEventType.EmailVerified,
       appId: null,
-      deviceId: null
+      deviceId: null,
     })
-  })
-})
-
-describe('AuthService - changePassword', () => {
-  test('should fail if user not found', () => {
-    const authService: any = DIContainer.sharedContainer.authService
-
-    authService.userRepository = {
-      getById: async () => Promise.resolve(null)
-    }
-
-    return expect(
-      authService.changePassword({ userId: 'foo' })
-    ).rejects.toThrowError(InvalidCredentialsError)
-  })
-
-  test('should fail if user status not found', () => {
-    const authService: any = DIContainer.sharedContainer.authService
-
-    authService.userRepository = {
-      getById: async () => Promise.resolve({ _id: 'foo' })
-    }
-
-    authService.userStatusRepository = {
-      statusForUserId: async () => Promise.resolve(null)
-    }
-    return expect(
-      authService.changePassword({ userId: 'foo' })
-    ).rejects.toThrowError(MissingUserStatusError)
-  })
-
-  test('should fail if password does not match', async () => {
-    const authService: any = DIContainer.sharedContainer.authService
-
-    authService.userRepository = {
-      getById: async () => Promise.resolve({ _id: 'foo' })
-    }
-
-    authService.userStatusRepository = {
-      statusForUserId: async () => Promise.resolve({ password: '123' })
-    }
-
-    await expect(
-      authService.changePassword({ userId: 'foo', currentPassword: '1234' })
-    ).rejects.toThrowError(InvalidPasswordError)
-  })
-
-  test('should change user password and delete sync sessions, token for all the other devices', async () => {
-    const authService: any = DIContainer.sharedContainer.authService
-
-    authService.userRepository = {
-      getById: async () => Promise.resolve({ _id: 'foo' })
-    }
-
-    authService.userStatusRepository = {
-      statusForUserId: async () =>
-        Promise.resolve({
-          password:
-            '$2a$05$LpEIAuWg7aF4leM9aZaKDO3.7r.6IkkcS4qrj5qMhHZEWzFoZHrv.',
-          deviceSessions: { dev1: 's1', dev2: 's2' }
-        }),
-      patchStatusWithUserId: async () => Promise.resolve({})
-    }
-
-    authService.userTokenRepository = {
-      remove: jest.fn()
-    }
-
-    await authService.changePassword({
-      userId: 'foo',
-      currentPassword: '12345',
-      newPassword: '123',
-      deviceId: 'bar'
-    })
-    expect(authService.userTokenRepository.remove).toBeCalled()
   })
 })
 
@@ -851,10 +319,10 @@ describe('AuthService - ensureUserStatusExists', () => {
   test('should call getOrCreateUserStatus if gateway account does not exists', async () => {
     const authService: any = DIContainer.sharedContainer.authService
     authService.syncService = {
-      getOrCreateUserStatus: jest.fn()
+      getOrCreateUserStatus: jest.fn(),
     }
     await authService.ensureUserStatusExists('userId')
-    expect(authService.syncService.getOrCreateUserStatus).toBeCalled()
+    expect(authService.syncService.getOrCreateUserStatus).toHaveBeenCalled()
   })
 })
 
@@ -874,358 +342,19 @@ describe('AuthService - isBearerHeaderValue', () => {
 
 describe('AuthService - ensureValidAuthorizationBearer', () => {
   test('should fail if the value is not Bearer', () => {
-    return expect(() =>
-      AuthService.ensureValidAuthorizationBearer('foo')
-    ).toThrowError(ValidationError)
+    return expect(() => AuthService.ensureValidAuthorizationBearer('foo')).toThrow(ValidationError)
   })
 
-  test('should fail if the value is loginTokenPayload', () => {
-    return expect(() =>
-      AuthService.ensureValidAuthorizationBearer('Bearer foo')
-    ).toThrowError(InvalidCredentialsError)
+  test('should fail if the value is invalid', () => {
+    return expect(() => AuthService.ensureValidAuthorizationBearer('Bearer foo')).toThrow(
+      InvalidCredentialsError
+    )
   })
 
-  test('should fail if the value is loginTokenPayload', () => {
+  test('should pass if the value is loginTokenPayload', () => {
     return expect(() =>
       AuthService.ensureValidAuthorizationBearer(`Bearer ${validJWTToken}`)
-    ).not.toThrowError()
-  })
-})
-
-describe('AuthService - iamOAuthCallback', () => {
-  test('should fail if connectUserID is missing', async () => {
-    const authService: any = DIContainer.sharedContainer.authService
-
-    const payload = {}
-    const state = {
-      deviceId: 'devoceId'
-    }
-
-    await expect(
-      authService.iamOAuthCallback(payload, state)
-    ).rejects.toThrowError(InvalidCredentialsError)
-  })
-
-  test('should fail if deviceId is missing', async () => {
-    const authService: any = DIContainer.sharedContainer.authService
-
-    const payload = {
-      email: 'foo@bar.com',
-      sub: chance.guid()
-    }
-
-    const state = {}
-
-    authService.userRepository = {
-      getOne: async () => Promise.resolve({})
-    }
-
-    await expect(
-      authService.iamOAuthCallback(payload, state)
-    ).rejects.toThrowError(ValidationError)
-  })
-
-  test('should create user status if missing', async () => {
-    const authService: any = DIContainer.sharedContainer.authService
-
-    const payload = {
-      email: 'foo@bar.com',
-      aud: 'app-id',
-      sub: chance.guid()
-    }
-
-    const state = {
-      deviceId: 'deviceId'
-    }
-
-    authService.userRepository = {
-      getOne: async () => Promise.resolve({ _id: 'User|foobarovic' }),
-      create: async () =>
-        Promise.resolve({
-          _id: 'User|foobarovic'
-        })
-    }
-
-    authService.userProfileRepository = {
-      getById: () => Promise.resolve({})
-    }
-
-    authService.syncService = {
-      getOrCreateUserStatus: async () =>
-      Promise.resolve({
-        _id: 'User|foobarovic',
-        email: 'foo@bar.com'
-      }),
-      createUserProfile: jest.fn(),
-      createGatewaySessions: async () => Promise.resolve('session')
-    }
-
-    authService.userStatusRepository = {
-      statusForUserId: async () => Promise.resolve(null)
-    }
-
-    authService.activityTrackingService = {
-      createEvent: jest.fn()
-    }
-
-    authService.userTokenRepository = {
-      getOne: async () =>
-        Promise.resolve({
-          token: 'foobar'
-        })
-    }
-
-    const x = await authService.iamOAuthCallback(payload, state)
-    expect(x).toEqual({ token: 'foobar', user: { _id: 'User|foobarovic' } })
-  })
-
-  test('should fail if user status of the new user is missing', async () => {
-    const authService: any = DIContainer.sharedContainer.authService
-
-    const payload = {
-      email: 'foo@bar.com',
-      aud: 'app-id',
-      sub: chance.guid()
-    }
-
-    const state = {
-      deviceId: 'deviceId'
-    }
-
-    authService.userRepository = {
-      getOne: async () => Promise.resolve(null),
-      create: async () => Promise.resolve({ _id: 'User|someone' })
-    }
-
-    authService.userEmailRepository = {
-      create: async () => Promise.resolve()
-    }
-
-    authService.syncService = {
-      getOrCreateUserStatus: jest.fn(),
-      createUserProfile: jest.fn(),
-      createGatewaySessions: async () => Promise.resolve('session')
-    }
-
-    authService.userStatusRepository = {
-      create: async () => Promise.resolve(null)
-    }
-
-    authService.activityTrackingService = {
-      createEvent: jest.fn()
-    }
-
-    authService.userTokenRepository = {
-      getOne: async () =>
-        Promise.resolve({
-          token: 'foobar'
-        })
-    }
-
-    await expect(
-      authService.iamOAuthCallback(payload, state)
-    ).rejects.toThrowError(MissingUserStatusError)
-  })
-
-  test('should fail if email is already used', async () => {
-    const authService: any = DIContainer.sharedContainer.authService
-
-    const payload = {
-      email: 'foo@bar.com',
-      aud: 'app-id',
-      sub: chance.guid()
-    }
-
-    const state = {
-      deviceId: 'deviceId'
-    }
-
-    authService.userEmailRepository = {
-      create: async () => Promise.reject(new Error())
-    }
-
-    authService.userRepository = {
-      getOne: async () => Promise.resolve(null),
-      create: async () => Promise.resolve({})
-    }
-
-    authService.syncService = {
-      getOrCreateUserStatus: jest.fn(),
-      createUserProfile: jest.fn(),
-      createGatewaySessions: async () => Promise.resolve('session')
-    }
-
-    authService.userStatusRepository = {
-      create: async () =>
-        Promise.resolve({
-          _id: 'User|foobarovic',
-          email: 'foo@bar.com'
-        })
-    }
-
-    authService.activityTrackingService = {
-      createEvent: jest.fn()
-    }
-
-    authService.userTokenRepository = {
-      getOne: async () =>
-        Promise.resolve({
-          token: 'foobar'
-        })
-    }
-
-    await expect(
-      authService.iamOAuthCallback(payload, state)
-    ).rejects.toThrowError(DuplicateEmailError)
-  })
-
-  test('should get and log in the user', async () => {
-    const authService: any = DIContainer.sharedContainer.authService
-
-    const payload = {
-      email: 'foo@bar.com',
-      aud: 'app-id',
-      sub: chance.guid()
-    }
-
-    const state = {
-      deviceId: 'deviceId'
-    }
-
-    authService.userRepository = {
-      getOne: async () => Promise.resolve({ _id: 'User|foobarovic' }),
-      create: async () =>
-        Promise.resolve({
-          _id: 'User|foobarovic'
-        }),
-      patch: async () => Promise.resolve({})
-    }
-
-    authService.syncService = {
-      getOrCreateUserStatus: jest.fn(),
-      createUserProfile: jest.fn(),
-      createGatewaySessions: async () => Promise.resolve('session')
-    }
-
-    authService.userProfileRepository = {
-      getById: () => Promise.resolve({})
-    }
-
-    authService.invitationService = {
-      updateInvitedUserID: jest.fn()
-    }
-
-    authService.containerInvitationService = {
-      updateInvitedUserID: jest.fn()
-    }
-
-    authService.userStatusRepository = {
-      create: async () =>
-        Promise.resolve({
-          _id: 'User|foobarovic',
-          email: 'foo@bar.com'
-        }),
-      statusForUserId: async () => Promise.resolve({})
-    }
-
-    authService.activityTrackingService = {
-      createEvent: jest.fn()
-    }
-
-    authService.userTokenRepository = {
-      getOne: async () =>
-        Promise.resolve({
-          token: 'foobar',
-          userId: 'User|foobarovic'
-        })
-    }
-
-    const x = await authService.iamOAuthCallback(payload, state)
-    expect(x).toEqual({ token: 'foobar', user: { _id: 'User|foobarovic' } })
-  })
-
-  test('should create and log in the user', async () => {
-    const authService: any = DIContainer.sharedContainer.authService
-
-    const payload = {
-      email: 'foo@bar.com',
-      aud: 'app-id',
-      sub: chance.guid()
-    }
-
-    const state = {
-      deviceId: 'deviceId'
-    }
-
-    authService.userEmailRepository = {
-      create: async () => Promise.resolve()
-    }
-
-    authService.userRepository = {
-      getOne: async () => Promise.resolve(null),
-      create: async () => Promise.resolve({ _id: 'User|someone' })
-    }
-
-    authService.syncService = {
-      getOrCreateUserStatus: async () => Promise.resolve({
-        _id: 'User|foobarovic',
-        email: 'foo@bar.com'
-      }),
-      createUserProfile: jest.fn(),
-      createGatewaySessions: async () => Promise.resolve('session')
-    }
-
-    authService.activityTrackingService = {
-      createEvent: jest.fn()
-    }
-
-    authService.userTokenRepository = {
-      getOne: async () =>
-        Promise.resolve({
-          token: 'foobar'
-        })
-    }
-
-    authService.userProfileRepository = {
-      getById: () => Promise.resolve({})
-    }
-
-    const x = await authService.iamOAuthCallback(payload, state)
-    expect(x).toEqual({
-      token: 'foobar',
-      user: { _id: 'User|someone' }
-    })
-  })
-})
-
-describe('AuthService - backchannelLogout', () => {
-  test('should fail if user token does not exist', () => {
-    const authService: any = DIContainer.sharedContainer.authService
-
-    authService.userTokenRepository = {
-      getOne: async () => Promise.resolve(null)
-    }
-
-    return expect(
-      authService.backchannelLogout(validLogoutToken)
-    ).rejects.toThrowError(InvalidBackchannelLogoutError)
-  })
-
-  test('should fail if user status does not exist', () => {
-    const authService: any = DIContainer.sharedContainer.authService
-
-    authService.userTokenRepository = {
-      getOne: async () => Promise.resolve(validUserToken),
-      remove: async () => jest.fn()
-    }
-
-    authService.userStatusRepository = {
-      statusForUserId: async () => Promise.resolve(null)
-    }
-
-    return expect(
-      authService.backchannelLogout(validLogoutToken)
-    ).rejects.toThrowError(InvalidBackchannelLogoutError)
+    ).not.toThrow()
   })
 })
 
@@ -1236,9 +365,11 @@ describe('AuthService - serverToServerTokenAuth', () => {
     const credentials: ServerToServerAuthCredentials = {
       appId: 'app-id',
       connectUserID: 'invalid-connectId',
-      deviceId: 'valid-deviceId'
+      deviceId: 'valid-deviceId',
     }
-    await expect(authService.serverToServerTokenAuth(credentials)).rejects.toThrow(AccountNotFoundError)
+    await expect(authService.serverToServerTokenAuth(credentials)).rejects.toThrow(
+      AccountNotFoundError
+    )
   })
 
   test('should call createUserSessionAndToken', async () => {
@@ -1248,9 +379,22 @@ describe('AuthService - serverToServerTokenAuth', () => {
     const credentials: ServerToServerAuthCredentials = {
       appId: 'app-id',
       connectUserID: 'invalid-connectId',
-      deviceId: 'valid-deviceId'
+      deviceId: 'valid-deviceId',
     }
     await authService.serverToServerTokenAuth(credentials)
-    expect(authService.createUserSessionAndToken).toBeCalled()
+    expect(authService.createUserSessionAndToken).toHaveBeenCalled()
+  })
+})
+
+describe('AuthService - createUserSessionAndToken', () => {
+  test('should call createUserSessions', async () => {
+    const authService: any = DIContainer.sharedContainer.authService
+    authService.ensureValidUserStatus = jest.fn()
+    authService.createUserSessions = jest.fn(async () => {
+      return { userToken: { token: 'token' } }
+    })
+
+    await authService.createUserSessionAndToken(validUser, 'appId', 'deviceId', false, true)
+    expect(authService.createUserSessions).toHaveBeenCalled()
   })
 })

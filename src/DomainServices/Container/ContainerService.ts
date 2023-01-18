@@ -521,10 +521,10 @@ export class ContainerService implements IContainerService {
     zip.file('index.manuscript-json', JSON.stringify(index))
 
     if (options.getAttachments) {
-      return zip.generateAsync({ type: 'blob' })
+      return zip.generateAsync({ type: 'nodebuffer' })
     } else {
       // @ts-ignore
-      return zip.file('index.manuscript-json').async('blob')
+      return zip.file('index.manuscript-json').async('nodebuffer')
     }
   }
 

@@ -16,30 +16,37 @@
 
 import '../../../../utilities/dbMock'
 
-import { TEST_TIMEOUT } from '../../../../utilities/testSetup'
-import { testDatabase } from '../../../../utilities/db'
-import { ManuscriptNoteRepository } from '../../../../../src/DataAccess/ManuscriptNoteRepository/ManuscriptNoteRepository'
-import { BucketKey } from '../../../../../src/Config/ConfigurationTypes'
-import { DatabaseError, NoBucketError } from '../../../../../src/Errors'
-import { UserRepository } from '../../../../../src/DataAccess/UserRepository/UserRepository'
 import { Chance } from 'chance'
+
+import { BucketKey } from '../../../../../src/Config/ConfigurationTypes'
+import { ManuscriptNoteRepository } from '../../../../../src/DataAccess/ManuscriptNoteRepository/ManuscriptNoteRepository'
+import { UserRepository } from '../../../../../src/DataAccess/UserRepository/UserRepository'
+import { DatabaseError, NoBucketError } from '../../../../../src/Errors'
+import { testDatabase } from '../../../../utilities/db'
+import { TEST_TIMEOUT } from '../../../../utilities/testSetup'
 
 jest.setTimeout(TEST_TIMEOUT)
 
 let db: any = null
-beforeAll(async () => db = await testDatabase())
-afterAll(() => { if (db && db.bucket && db.bucket.disconnect) { db.bucket.disconnect() } })
+beforeAll(async () => (db = await testDatabase()))
+afterAll(() => {
+  if (db && db.bucket && db.bucket.disconnect) {
+    db.bucket.disconnect()
+  }
+})
 describe('ManuscriptNoteRepository getProductionNotes', () => {
   test('should fail if invalid data', async () => {
     const repository = new ManuscriptNoteRepository(BucketKey.Project, db)
     const errorObject = {
       message: 'Internal database error occurred. Operation = fetchData',
-      code: 400
+      code: 400,
     }
     db.bucket.query.mockImplementationOnce((_q: any, _p: any[]) => {
       return Promise.reject(errorObject)
     })
-    await expect(repository.getProductionNotes('invalidContainerID', 'invalidManuscriptID')).rejects.toThrow(DatabaseError)
+    await expect(
+      repository.getProductionNotes('invalidContainerID', 'invalidManuscriptID')
+    ).rejects.toThrow(DatabaseError)
   })
 
   test('should fail if database.documentMapper not set', () => {
@@ -47,6 +54,6 @@ describe('ManuscriptNoteRepository getProductionNotes', () => {
     repository.database = {}
     const chance = new Chance()
     const id = chance.hash()
-    return expect(repository.touch(id, 100)).rejects.toThrowError(NoBucketError)
+    return expect(repository.touch(id, 100)).rejects.toThrow(NoBucketError)
   })
 })

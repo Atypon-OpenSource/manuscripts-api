@@ -15,19 +15,20 @@
  */
 
 import '../../../../../utilities/dbMock'
+
 import Chance from 'chance'
 
 import { ContainerRequestController } from '../../../../../../src/Controller/V1/ContainerRequest/ContainerRequestController'
+import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
 import { ValidationError } from '../../../../../../src/Errors'
 import { ContainerRole } from '../../../../../../src/Models/ContainerModels'
-import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
 import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
 
 jest.setTimeout(TEST_TIMEOUT)
 const chance = new Chance()
 
 beforeEach(() => {
-  (DIContainer as any)._sharedContainer = null
+  ;(DIContainer as any)._sharedContainer = null
   return DIContainer.init()
 })
 
@@ -37,19 +38,17 @@ describe('ContainerRequestController - create', () => {
 
     const req: any = {
       user: {
-        _id: chance.guid()
+        _id: chance.guid(),
       },
       body: {
-        role: ContainerRole.Viewer
+        role: ContainerRole.Viewer,
       },
       params: {
-        containerID: chance.integer()
-      }
+        containerID: chance.integer(),
+      },
     }
 
-    return expect(containerRequestController.create(req)).rejects.toThrowError(
-      ValidationError
-    )
+    return expect(containerRequestController.create(req)).rejects.toThrow(ValidationError)
   })
 
   test('should fail if the role is not of ContainerRole type', () => {
@@ -57,35 +56,32 @@ describe('ContainerRequestController - create', () => {
 
     const req: any = {
       user: {
-        _id: chance.guid()
+        _id: chance.guid(),
       },
       body: {
-        role: 'Samurai'
+        role: 'Samurai',
       },
       params: {
-        containerID: chance.guid()
-      }
+        containerID: chance.guid(),
+      },
     }
 
-    return expect(containerRequestController.create(req)).rejects.toThrowError(
-      ValidationError
-    )
+    return expect(containerRequestController.create(req)).rejects.toThrow(ValidationError)
   })
 
   test('should call create method on the container request service', async () => {
-    const containerRequestService: any =
-      DIContainer.sharedContainer.containerRequestService
+    const containerRequestService: any = DIContainer.sharedContainer.containerRequestService
 
     const req: any = {
       user: {
-        _id: chance.guid()
+        _id: chance.guid(),
       },
       body: {
-        role: ContainerRole.Writer
+        role: ContainerRole.Writer,
       },
       params: {
-        containerID: chance.guid()
-      }
+        containerID: chance.guid(),
+      },
     }
 
     containerRequestService.create = jest.fn()
@@ -94,7 +90,7 @@ describe('ContainerRequestController - create', () => {
 
     await containerRequestController.create(req)
 
-    expect(containerRequestService.create).toBeCalled()
+    expect(containerRequestService.create).toHaveBeenCalled()
   })
 })
 
@@ -104,19 +100,17 @@ describe('ContainerRequestController - response', () => {
 
     const req: any = {
       user: {
-        _id: chance.guid()
+        _id: chance.guid(),
       },
       body: {
-        requestID: chance.guid()
+        requestID: chance.guid(),
       },
       params: {
-        containerID: 123
-      }
+        containerID: 123,
+      },
     }
 
-    return expect(
-      containerRequestController.response(req, true)
-    ).rejects.toThrowError(ValidationError)
+    return expect(containerRequestController.response(req, true)).rejects.toThrow(ValidationError)
   })
 
   test('should fail if requestID is not string', () => {
@@ -124,35 +118,32 @@ describe('ContainerRequestController - response', () => {
 
     const req: any = {
       user: {
-        _id: chance.guid()
+        _id: chance.guid(),
       },
       body: {
-        requestID: chance.integer()
+        requestID: chance.integer(),
       },
       params: {
-        containerID: chance.guid()
-      }
+        containerID: chance.guid(),
+      },
     }
 
-    return expect(
-      containerRequestController.response(req, true)
-    ).rejects.toThrowError(ValidationError)
+    return expect(containerRequestController.response(req, true)).rejects.toThrow(ValidationError)
   })
 
   test('should call response method on the container request service', async () => {
-    const containerRequestService: any =
-      DIContainer.sharedContainer.containerRequestService
+    const containerRequestService: any = DIContainer.sharedContainer.containerRequestService
 
     const req: any = {
       user: {
-        _id: 'foo'
+        _id: 'foo',
       },
       body: {
-        requestID: chance.guid()
+        requestID: chance.guid(),
       },
       params: {
-        containerID: chance.guid()
-      }
+        containerID: chance.guid(),
+      },
     }
 
     containerRequestService.response = jest.fn()
@@ -161,6 +152,6 @@ describe('ContainerRequestController - response', () => {
 
     await containerRequestController.response(req)
 
-    expect(containerRequestService.response).toBeCalled()
+    expect(containerRequestService.response).toHaveBeenCalled()
   })
 })

@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { IServer } from '../../src/Server/IServer'
 import { DIContainer } from '../../src/DIContainer/DIContainer'
+import { IServer } from '../../src/Server/IServer'
 
-export function createServer (): Promise<IServer> {
-  return new Promise(async (resolve) => {
+export function createServer(): Promise<IServer> {
+  return new Promise((resolve) => {
     const server = DIContainer.sharedContainer.server
     server.bootstrap()
     resolve(server)

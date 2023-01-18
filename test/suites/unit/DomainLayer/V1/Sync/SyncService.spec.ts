@@ -22,22 +22,20 @@ jest.mock('../../../../../../src/DataAccess/SQLRepository', () => ({
 }))
 
 jest.mock(
-  '../../../../../../src/DataAccess/ClientApplicationRepository/MemorizingClientApplicationRepository',
+  '../../../../../../src/DataAccess/ClientApplicationRepository/ClientApplicationRepository',
   () => ({
-    MemorizingClientApplicationRepository: jest.fn(() => ({
+    ClientApplicationRepository: jest.fn(() => ({
       ensureApplicationsExist: jest.fn(),
     })),
   })
 )
 
 import '../../../../../utilities/dbMock'
+import '../../../../../utilities/configMock'
 
-import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
-import {
-  SyncService,
-} from '../../../../../../src/DomainServices/Sync/SyncService'
 import * as syncAccessControl from '../../../../../../src/DataAccess/syncAccessControl'
-
+import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
+import { SyncService } from '../../../../../../src/DomainServices/Sync/SyncService'
 import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
 
 jest.setTimeout(TEST_TIMEOUT)
@@ -47,109 +45,107 @@ beforeEach(() => {
   return DIContainer.init()
 })
 
-describe('SyncService - isAlive', () => {
-  test('should not throw if service is running', () => {
-    return expect(SyncService.isAlive()).resolves.toBeTruthy()
-  })
-})
-
-describe('SyncService - getOrCreateUserStatus', () => {
-  const userToken = {
-    _id: 'foo',
-    userId: 'User|bar',
-    hasExpiry: false,
-    token: 'baz',
-    deviceId: 'potato',
-    appId: 'blah',
-  }
-
-  test('creates user status', async () => {
-    const syncService: any = DIContainer.sharedContainer.syncService
-    syncService.userStatusRepository.fullyQualifiedId = (id: string) => `UserStatus|${id}`
-
-    syncService.userStatusRepository.getById = async (_id: string) => Promise.resolve(null)
-    syncService.userStatusRepository.create = async (_doc: any) => Promise.resolve(userToken)
-
-    const userStatus = await syncService.getOrCreateUserStatus(userToken.userId)
-    expect(userStatus._id).toEqual('UserStatus|User|bar')
+describe('syncService', () => {
+  describe('SyncService - isAlive', () => {
+    test('should not throw if service is running', () => {
+      return expect(SyncService.isAlive()).resolves.toBeTruthy()
+    })
   })
 
-  test('failing to create a user status should throw', () => {
-    const syncService: any = DIContainer.sharedContainer.syncService
-    syncService.userStatusRepository.fullyQualifiedId = (id: string) => `UserStatus|${id}`
-    syncService.userStatusRepository.getById = async (_id: string) => {
-      throw new Error()
+  describe('SyncService - getOrCreateUserStatus', () => {
+    const userToken = {
+      _id: 'foo',
+      userId: 'User|bar',
+      hasExpiry: false,
+      token: 'baz',
+      deviceId: 'potato',
+      appId: 'blah',
     }
-    return expect(
-      syncService.getOrCreateUserStatus(userToken.userId)
-    ).rejects.toThrowError(Error)
-  })
-})
 
-describe('SyncService - createUserProfile', () => {
-  test('creates a contributor', async () => {
-    const user = {
-      _id: 'User|foo',
-      name: 'bar foo',
-      email: 'foo@bar.com',
-      isVerified: true,
-    }
-    const syncService: any = DIContainer.sharedContainer.syncService
-    syncService.userProfileRepository.database.bucket.insert = async (_id: string) => {
-      Promise.resolve()
-    }
-    const mock = jest.spyOn(syncAccessControl, 'syncAccessControl');
-    mock.mockResolvedValue()
-    
-    const contrib = await syncService.createUserProfile(user)
+    test('creates user status', async () => {
+      const syncService: any = DIContainer.sharedContainer.syncService
+      syncService.userStatusRepository.fullyQualifiedId = (id: string) => `UserStatus|${id}`
 
-    expect(contrib._id).toContain('MPUserProfile:')
-    expect(contrib.bibliographicName._id).toContain('MPBibliographicName:')
-    expect(contrib.createdAt).toBeGreaterThan(1541070000)
-    expect(contrib.createdAt).toEqual(contrib.updatedAt)
+      syncService.userStatusRepository.getById = async (_id: string) => Promise.resolve(null)
+      syncService.userStatusRepository.create = async (_doc: any) => Promise.resolve(userToken)
+
+      const userStatus = await syncService.getOrCreateUserStatus(userToken.userId)
+      expect(userStatus._id).toEqual('UserStatus|User|bar')
+    })
+
+    test('failing to create a user status should throw', () => {
+      const syncService: any = DIContainer.sharedContainer.syncService
+      syncService.userStatusRepository.fullyQualifiedId = (id: string) => `UserStatus|${id}`
+      syncService.userStatusRepository.getById = async (_id: string) => {
+        throw new Error()
+      }
+      return expect(syncService.getOrCreateUserStatus(userToken.userId)).rejects.toThrow(Error)
+    })
   })
 
-  test('failing to create a contributor should throw', () => {
-    const user = {
-      _id: 'User|userId',
-      name: 'bar',
-      email: 'foo@bar.com',
-      isVerified: true,
-    }
-    const syncService: any = DIContainer.sharedContainer.syncService
-    syncService.userProfileRepository.create = async (_id: string) => {
-      throw new Error()
-    }
-    return expect(syncService.createUserProfile(user)).rejects.toThrowError(
-      Error
-    )
+  describe('SyncService - createUserProfile', () => {
+    test('creates a contributor', async () => {
+      const user = {
+        _id: 'User|foo',
+        name: 'bar foo',
+        email: 'foo@bar.com',
+        isVerified: true,
+      }
+      const syncService: any = DIContainer.sharedContainer.syncService
+      syncService.userProfileRepository.database.bucket.insert = async (_id: string) => {
+        await Promise.resolve()
+      }
+      const mock = jest.spyOn(syncAccessControl, 'syncAccessControl')
+      mock.mockResolvedValue()
+
+      const contrib = await syncService.createUserProfile(user)
+
+      expect(contrib._id).toContain('MPUserProfile:')
+      expect(contrib.bibliographicName._id).toContain('MPBibliographicName:')
+      expect(contrib.createdAt).toBeGreaterThan(1541070000)
+      expect(contrib.createdAt).toEqual(contrib.updatedAt)
+    })
+
+    test('failing to create a contributor should throw', () => {
+      const user = {
+        _id: 'User|userId',
+        name: 'bar',
+        email: 'foo@bar.com',
+        isVerified: true,
+      }
+      const syncService: any = DIContainer.sharedContainer.syncService
+      syncService.userProfileRepository.create = async (_id: string) => {
+        throw new Error()
+      }
+      return expect(syncService.createUserProfile(user)).rejects.toThrow(Error)
+    })
   })
-})
 
-describe('SyncService - removeUserStatus', () => {
-  const userToken = {
-    _id: 'foo',
-    userId: 'User|bar',
-    hasExpiry: false,
-    token: 'baz',
-    deviceId: 'potato',
-    appId: 'blah',
-  }
-
-  test('remove user status', async () => {
-    const syncService: any = DIContainer.sharedContainer.syncService
-    syncService.userStatusRepository.fullyQualifiedId = (id: string) => `UserStatus|${id}`
-    syncService.userStatusRepository.remove = (_id: string) => Promise.resolve()
-    syncService.userStatusRepository.getById = async (_id: string) => Promise.resolve({})
-
-    await syncService.removeUserStatus(userToken.userId)
-  })
-
-  test('failing to remove a user status should throw', () => {
-    const syncService: any = DIContainer.sharedContainer.syncService
-    syncService.userStatusRepository.remove = async (_id: string) => {
-      throw new Error()
+  describe('SyncService - removeUserStatus', () => {
+    const userToken = {
+      _id: 'foo',
+      userId: 'User|bar',
+      hasExpiry: false,
+      token: 'baz',
+      deviceId: 'potato',
+      appId: 'blah',
     }
-    return expect(syncService.removeUserStatus(userToken.userId)).rejects.toThrowError(Error)
+
+    test('remove user status', async () => {
+      const syncService: any = DIContainer.sharedContainer.syncService
+      syncService.userStatusRepository.fullyQualifiedId = (id: string) => `UserStatus|${id}`
+      syncService.userStatusRepository.remove = (_id: string) => Promise.resolve()
+      syncService.userStatusRepository.getById = async (_id: string) => Promise.resolve({})
+
+      await syncService.removeUserStatus(userToken.userId)
+    })
+
+    test('failing to remove a user status should throw', () => {
+      const syncService: any = DIContainer.sharedContainer.syncService
+      syncService.userStatusRepository.remove = async (_id: string) => {
+        throw new Error()
+      }
+      return expect(syncService.removeUserStatus(userToken.userId)).rejects.toThrow(Error)
+    })
   })
 })

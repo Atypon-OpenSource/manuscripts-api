@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
+import * as StatusCodes from 'http-status-codes'
+
 import { notFound } from '../../../../../api'
 import { validBody } from '../../../../../data/fixtures/credentialsRequestPayload'
 import { ValidHeaderWithApplicationKey } from '../../../../../data/fixtures/headers'
-import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
 import { testDatabase } from '../../../../../utilities/db'
-import * as StatusCodes from 'http-status-codes'
+import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
 
 jest.setTimeout(TEST_TIMEOUT)
 
 let db: any = null
 
-beforeAll(async () => db = await testDatabase())
+beforeAll(async () => (db = await testDatabase()))
 afterAll(() => db.bucket.disconnect())
 
 describe('Not Found - POST api/v1/not/found', () => {

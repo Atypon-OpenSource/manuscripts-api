@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`selectActiveResources Project dump 1`] = `
-Array [
-  Object {
+[
+  {
     "_id": "MPFigure:AD65D628-A904-4DC4-A026-F8F4C08F6557",
     "_rev": "3-16c9025f8d2f4705a67337146f88bb2f",
     "containerID": "MPProject:1",
@@ -10,11 +10,11 @@ Array [
     "createdAt": 1538472940.39497,
     "manuscriptID": "MPManuscript:8EB79C14-9F61-483A-902F-A0B8EF5973C9",
     "objectType": "MPFigure",
-    "originalURL": "chemoji/chemoji7.png",
     "sessionID": "F0E376FF-3F4A-4A58-8478-C0FE73DB3053",
+    "src": "chemoji/chemoji7.png",
     "updatedAt": 1538472940.4034,
   },
-  Object {
+  {
     "_id": "MPFigure:D673DF08-D75E-4061-8EC1-9611EAB302F0",
     "_rev": "3-d12114f5defd8e9045ceb3a1faf95ac4",
     "containerID": "MPProject:1",
@@ -22,11 +22,11 @@ Array [
     "createdAt": 1538472397.918236,
     "manuscriptID": "MPManuscript:8EB79C14-9F61-483A-902F-A0B8EF5973C9",
     "objectType": "MPFigure",
-    "originalURL": "chemoji/chemoji8.png",
     "sessionID": "67B27E3B-1E1E-42E2-9B9D-2D2123AA95F6",
+    "src": "chemoji/chemoji8.png",
     "updatedAt": 1538472397.927731,
   },
-  Object {
+  {
     "_id": "MPAffiliation:DED56C09-42E2-4AB4-BA15-9260389E2B08",
     "_rev": "3-ab6a5d56246fb3d89ed44c6b3b24a7f7",
     "addressLine1": "",
@@ -45,7 +45,7 @@ Array [
     "priority": 1,
     "updatedAt": 1538472852.567393,
   },
-  Object {
+  {
     "_id": "MPManuscript:8EB79C14-9F61-483A-902F-A0B8EF5973C9",
     "_rev": "4-0674262c6160ff2dc616681f7f20dbd0",
     "collection": "Manuscripts",
@@ -59,13 +59,13 @@ Array [
     "title": "Example Manuscript",
     "updatedAt": 1538472121.690101,
   },
-  Object {
+  {
     "_id": "MPSection:77786D47-6060-4FBC-BC13-5FA754968D6A",
     "_rev": "15-3fd1719b46c99ee475aabaa66de3160f",
     "collection": "sections",
     "containerID": "MPProject:1",
     "createdAt": 1538472122.46513,
-    "elementIDs": Array [
+    "elementIDs": [
       "MPParagraphElement:150780D7-CFED-4529-9398-77B5C7625044",
       "MPParagraphElement:60C13548-23C0-4348-FE98-0510E0B61B18",
       "MPParagraphElement:A89DC62A-90ED-4283-AB6D-06CA2519D801",
@@ -73,7 +73,7 @@ Array [
     ],
     "manuscriptID": "MPManuscript:8EB79C14-9F61-483A-902F-A0B8EF5973C9",
     "objectType": "MPSection",
-    "path": Array [
+    "path": [
       "MPSection:77786D47-6060-4FBC-BC13-5FA754968D6A",
     ],
     "placeholderTitle": "",
@@ -82,51 +82,51 @@ Array [
     "title": "First section",
     "updatedAt": 1538472122.495019,
   },
-  Object {
+  {
     "_id": "MPSection:DFCBE345-A12D-451E-8320-723F25D2F472",
     "_rev": "4-898cae6f58b00ac8b03c1dec70eaa3df",
     "category": "MPSectionCategory:toc",
     "collection": "sections",
     "containerID": "MPProject:1",
     "createdAt": 1538472729,
-    "elementIDs": Array [
+    "elementIDs": [
       "MPTOCElement:657C54DB-78B5-4206-E322-170F68263A01",
     ],
     "manuscriptID": "MPManuscript:8EB79C14-9F61-483A-902F-A0B8EF5973C9",
     "objectType": "MPSection",
-    "path": Array [
+    "path": [
       "MPSection:DFCBE345-A12D-451E-8320-723F25D2F472",
     ],
     "priority": 1,
     "sessionID": "fb8b3d44-9515-4747-c7d8-a30fb1bc188b",
     "title": "Table of Contents",
   },
-  Object {
+  {
     "_id": "MPSection:E07B0D52-9642-4D58-E577-26F8804E3DEE",
     "_rev": "4-875bd46d4b3222f4517f47ccb6c38f1a",
     "category": "MPSectionCategory:bibliography",
     "collection": "sections",
     "containerID": "MPProject:1",
     "createdAt": 1538472961,
-    "elementIDs": Array [
+    "elementIDs": [
       "MPBibliographyElement:5987B3BA-D894-4700-90D6-114E20B9F3B1",
     ],
     "manuscriptID": "MPManuscript:8EB79C14-9F61-483A-902F-A0B8EF5973C9",
     "objectType": "MPSection",
-    "path": Array [
+    "path": [
       "MPSection:E07B0D52-9642-4D58-E577-26F8804E3DEE",
     ],
     "priority": 4,
     "sessionID": "58d96cc7-c834-4810-8f39-55cbca7eef93",
     "title": "Bibliography",
   },
-  Object {
+  {
     "_id": "MPSection:F8EE617B-484B-4CF2-F1CA-014F5307D5CF",
     "_rev": "36-bd4236b408fa04495241ed2973a1949f",
     "collection": "sections",
     "containerID": "MPProject:1",
     "createdAt": 1538472327,
-    "elementIDs": Array [
+    "elementIDs": [
       "MPParagraphElement:4DF93A63-D44D-41CF-AF54-23712B8703FA",
       "MPListElement:D1C6E3B5-C549-47B8-B051-1F534E8AA7E7",
       "MPListElement:F11B9FCA-5DB5-4ED4-FEF9-10CDCB64F96E",
@@ -149,7 +149,7 @@ Array [
     ],
     "manuscriptID": "MPManuscript:8EB79C14-9F61-483A-902F-A0B8EF5973C9",
     "objectType": "MPSection",
-    "path": Array [
+    "path": [
       "MPSection:F8EE617B-484B-4CF2-F1CA-014F5307D5CF",
     ],
     "priority": 3,
@@ -158,7 +158,7 @@ Array [
     "titleSuppressed": true,
     "updatedAt": 1538473639.575045,
   },
-  Object {
+  {
     "URL": "http://example.com",
     "_id": "MPBibliographyItem:8C394C86-F7B0-48CE-D5BC-E7A10FCE7FA5",
     "_rev": "2-f2bd9bf745a1c3079fd940da85ace705",
@@ -171,14 +171,14 @@ Array [
     "title": "A hyperlink",
     "updatedAt": 1538472697.621097,
   },
-  Object {
+  {
     "_id": "MPFigureStyle:12916784-C8A2-414E-919D-490172E82B25",
     "_rev": "1-a23f7ade18a753ba5549642106f6b7c7",
     "bundled": 0,
     "captionPosition": "below",
     "containerID": "MPProject:1",
     "createdAt": 1513260334.619346,
-    "innerBorder": Object {
+    "innerBorder": {
       "_id": "MPBorder:0FFF4CDC-9D5C-4B7D-A606-F0374354FB7F",
       "color": "MPColor:black",
       "objectType": "MPBorder",
@@ -189,7 +189,7 @@ Array [
     "manuscriptID": "MPManuscript:8EB79C14-9F61-483A-902F-A0B8EF5973C9",
     "name": "default",
     "objectType": "MPFigureStyle",
-    "outerBorder": Object {
+    "outerBorder": {
       "_id": "MPBorder:0FFF4CDC-9D5C-4B7D-A606-F0374354FB7F",
       "objectType": "MPBorder",
       "width": 0,
@@ -201,7 +201,7 @@ Array [
     "title": "Default",
     "updatedAt": 1538472122.354767,
   },
-  Object {
+  {
     "_id": "MPParagraphStyle:031D900A-33A0-4EEF-8545-EBEB633174C6",
     "_rev": "1-acf6b7d7f7e5d6535351ac7e29624418",
     "alignment": "left",
@@ -224,7 +224,7 @@ Array [
     "prototype": "MPParagraphStyle:listing",
     "sessionID": "9932A9D7-59D9-41A7-965D-4170F8BD3F40",
     "tailIndent": 0,
-    "textStyling": Object {
+    "textStyling": {
       "_id": "MPTextStyling:38ED2127-F6B6-4465-B739-09A3701A832D",
       "bold": false,
       "color": "MPColor:black",
@@ -237,7 +237,7 @@ Array [
     "topSpacing": 10,
     "updatedAt": 1538472122.433868,
   },
-  Object {
+  {
     "_id": "MPParagraphStyle:74D17A3A-33C0-43EB-9389-51335C698744",
     "_rev": "1-9013a57d91e9a60be29978dfaacf9532",
     "alignment": "left",
@@ -245,20 +245,20 @@ Array [
     "bundled": 0,
     "containerID": "MPProject:1",
     "createdAt": 1513260334.618817,
-    "embeddedListItemBulletStyles": Object {
-      "1": Object {
+    "embeddedListItemBulletStyles": {
+      "1": {
         "_id": "MPListItemBulletStyle:DD563297-776A-42C6-9408-21501DD0B0AC",
         "bulletStyle": "none",
         "objectType": "MPListItemBulletStyle",
       },
-      "2": Object {
+      "2": {
         "_id": "MPListItemBulletStyle:EC293DED-80AD-414C-9988-9EF62A9A4EF4",
         "bulletStyle": "none",
         "objectType": "MPListItemBulletStyle",
       },
     },
-    "embeddedListItemNumberingStyles": Object {
-      "1": Object {
+    "embeddedListItemNumberingStyles": {
+      "1": {
         "_id": "MPNumberingStyle:43D2A1BA-0ED9-4B8E-8C29-265B17B9F1DD",
         "numberingScheme": "none",
         "objectType": "MPNumberingStyle",
@@ -266,7 +266,7 @@ Array [
         "startIndex": 1,
         "suffix": ".",
       },
-      "2": Object {
+      "2": {
         "_id": "MPNumberingStyle:9D6F6970-0273-4C53-BC7A-8B2FAA784D4A",
         "numberingScheme": "none",
         "objectType": "MPNumberingStyle",
@@ -274,7 +274,7 @@ Array [
         "startIndex": 1,
         "suffix": ".",
       },
-      "3": Object {
+      "3": {
         "_id": "MPNumberingStyle:AAB86A8A-5D9D-4C37-995F-F0226E22E10D",
         "numberingScheme": "none",
         "objectType": "MPNumberingStyle",
@@ -303,7 +303,7 @@ Array [
     "prototype": "MPParagraphStyle:toc",
     "sessionID": "9932A9D7-59D9-41A7-965D-4170F8BD3F40",
     "tailIndent": 0,
-    "textStyling": Object {
+    "textStyling": {
       "_id": "MPTextStyling:2E79D76D-CAC1-492F-8709-DAD9FD369B8B",
       "bold": false,
       "color": "MPColor:black",
@@ -316,7 +316,7 @@ Array [
     "topSpacing": 10,
     "updatedAt": 1538472122.445866,
   },
-  Object {
+  {
     "_id": "MPParagraphStyle:76353811-8E1D-4D11-A1B5-C960C9EEEFCD",
     "_rev": "1-406f429306691c68b3c463b1166a2425",
     "alignment": "left",
@@ -324,20 +324,20 @@ Array [
     "bundled": 0,
     "containerID": "MPProject:1",
     "createdAt": 1513260334.618985,
-    "embeddedListItemBulletStyles": Object {
-      "1": Object {
+    "embeddedListItemBulletStyles": {
+      "1": {
         "_id": "MPListItemBulletStyle:0E9110F4-8426-4B66-B97A-9053CFC9C77A",
         "bulletStyle": "disc",
         "objectType": "MPListItemBulletStyle",
       },
-      "2": Object {
+      "2": {
         "_id": "MPListItemBulletStyle:1066DC6B-704F-4CA0-B807-72F461F5E0BA",
         "bulletStyle": "circle",
         "objectType": "MPListItemBulletStyle",
       },
     },
-    "embeddedListItemNumberingStyles": Object {
-      "1": Object {
+    "embeddedListItemNumberingStyles": {
+      "1": {
         "_id": "MPNumberingStyle:5A479546-C898-4C4B-9836-202EA34332A8",
         "numberingScheme": "decimal",
         "objectType": "MPNumberingStyle",
@@ -345,7 +345,7 @@ Array [
         "startIndex": 1,
         "suffix": ".",
       },
-      "2": Object {
+      "2": {
         "_id": "MPNumberingStyle:BE16BD50-9F21-49A7-8F66-15011A3DBCEE",
         "numberingScheme": "decimal",
         "objectType": "MPNumberingStyle",
@@ -353,7 +353,7 @@ Array [
         "startIndex": 1,
         "suffix": ".",
       },
-      "3": Object {
+      "3": {
         "_id": "MPNumberingStyle:5AC47239-EDA2-4314-8BE5-8A5399F379DF",
         "numberingScheme": "decimal",
         "objectType": "MPNumberingStyle",
@@ -382,7 +382,7 @@ Array [
     "prototype": "MPParagraphStyle:footnote",
     "sessionID": "9932A9D7-59D9-41A7-965D-4170F8BD3F40",
     "tailIndent": 0,
-    "textStyling": Object {
+    "textStyling": {
       "_id": "MPTextStyling:A6E169AC-4610-44C6-A979-7FD95AE787CC",
       "bold": false,
       "color": "MPColor:black",
@@ -395,7 +395,7 @@ Array [
     "topSpacing": 10,
     "updatedAt": 1538472122.386252,
   },
-  Object {
+  {
     "_id": "MPParagraphStyle:7EAB5784-717B-4672-BD59-8CA324FB0637",
     "_rev": "1-bce5a83050fa016427a46187d47078d6",
     "alignment": "left",
@@ -403,20 +403,20 @@ Array [
     "bundled": 0,
     "containerID": "MPProject:1",
     "createdAt": 1513260334.618464,
-    "embeddedListItemBulletStyles": Object {
-      "1": Object {
+    "embeddedListItemBulletStyles": {
+      "1": {
         "_id": "MPListItemBulletStyle:0E9110F4-8426-4B66-B97A-9053CFC9C77A",
         "bulletStyle": "disc",
         "objectType": "MPListItemBulletStyle",
       },
-      "2": Object {
+      "2": {
         "_id": "MPListItemBulletStyle:1066DC6B-704F-4CA0-B807-72F461F5E0BA",
         "bulletStyle": "circle",
         "objectType": "MPListItemBulletStyle",
       },
     },
-    "embeddedListItemNumberingStyles": Object {
-      "1": Object {
+    "embeddedListItemNumberingStyles": {
+      "1": {
         "_id": "MPNumberingStyle:5A479546-C898-4C4B-9836-202EA34332A8",
         "numberingScheme": "decimal",
         "objectType": "MPNumberingStyle",
@@ -424,7 +424,7 @@ Array [
         "startIndex": 1,
         "suffix": ".",
       },
-      "2": Object {
+      "2": {
         "_id": "MPNumberingStyle:BE16BD50-9F21-49A7-8F66-15011A3DBCEE",
         "numberingScheme": "decimal",
         "objectType": "MPNumberingStyle",
@@ -432,7 +432,7 @@ Array [
         "startIndex": 1,
         "suffix": ".",
       },
-      "3": Object {
+      "3": {
         "_id": "MPNumberingStyle:5AC47239-EDA2-4314-8BE5-8A5399F379DF",
         "numberingScheme": "decimal",
         "objectType": "MPNumberingStyle",
@@ -461,7 +461,7 @@ Array [
     "prototype": "MPParagraphStyle:bodyText",
     "sessionID": "9932A9D7-59D9-41A7-965D-4170F8BD3F40",
     "tailIndent": 0,
-    "textStyling": Object {
+    "textStyling": {
       "_id": "MPTextStyling:A6E169AC-4610-44C6-A979-7FD95AE787CC",
       "bold": false,
       "color": "MPColor:black",
@@ -474,12 +474,12 @@ Array [
     "topSpacing": 10,
     "updatedAt": 1538472122.371228,
   },
-  Object {
+  {
     "_id": "MPTableStyle:08C0E93B-848D-491F-8EB2-A8A0B17714BA",
     "_rev": "1-74489d6ea1a13d6e565d2ed0eec2ad3f",
     "bodyBackgroundAlternateColor": "MPColor:white",
     "bodyBackgroundColor": "MPColor:white",
-    "bodyColumnSeparatorBorder": Object {
+    "bodyColumnSeparatorBorder": {
       "_id": "MPBorder:EBB5D0B3-A9FE-49B3-ADAD-2CC5851D91F9",
       "color": "MPColor:black",
       "objectType": "MPBorder",
@@ -490,14 +490,14 @@ Array [
     "containerID": "MPProject:1",
     "createdAt": 1513260334.617013,
     "footerBackgroundColor": "MPColor:white",
-    "footerBottomBorder": Object {
+    "footerBottomBorder": {
       "_id": "MPBorder:EC933CA4-ABBB-49D0-A2EF-4B0B2D1DA786",
       "color": "MPColor:black",
       "objectType": "MPBorder",
       "style": "MPBorderStyle:EBBB68B9-16A9-4EA2-8817-43755FF1B7A1",
       "width": 1,
     },
-    "footerTopBorder": Object {
+    "footerTopBorder": {
       "_id": "MPBorder:2338AB83-D20B-4118-8C38-D0F330E85F23",
       "color": "MPColor:black",
       "objectType": "MPBorder",
@@ -506,7 +506,7 @@ Array [
     },
     "footerTopSpacing": 3,
     "headerBackgroundColor": "MPColor:verylightgray",
-    "headerBottomBorder": Object {
+    "headerBottomBorder": {
       "_id": "MPBorder:EB6A90B8-E464-4016-A6E7-90F704EC63C2",
       "color": "MPColor:black",
       "objectType": "MPBorder",
@@ -514,7 +514,7 @@ Array [
       "width": 1,
     },
     "headerBottomSpacing": 3,
-    "headerTopBorder": Object {
+    "headerTopBorder": {
       "_id": "MPBorder:6BC92907-B7DF-4542-84CF-1456246EFEA9",
       "color": "MPColor:black",
       "objectType": "MPBorder",
@@ -531,7 +531,7 @@ Array [
     "title": "Default Table Style",
     "updatedAt": 1538472122.454675,
   },
-  Object {
+  {
     "_id": "MPListing:4D688DCF-29CD-40CC-93BD-2B13CD883257",
     "_rev": "3-31803bcf85875ab8e496f74dda93ebf9",
     "collection": "listings",
@@ -548,12 +548,15 @@ const x = 'y'",
     "title": "Listing",
     "updatedAt": 1538472547.888146,
   },
-  Object {
+  {
     "_id": "MPBibliographyElement:5987B3BA-D894-4700-90D6-114E20B9F3B1",
     "_rev": "1-3f3d155b921836ef7cf8eace119ad684",
     "collection": "elements",
+    "containedObjectIDs": [
+      "MPBibliographyItem:8C394C86-F7B0-48CE-D5BC-E7A10FCE7FA5",
+    ],
     "containerID": "MPProject:1",
-    "contents": "<div xmlns=\\"http://www.w3.org/1999/xhtml\\" class=\\"csl-bib-body\\" id=\\"MPBibliographyElement:5987B3BA-D894-4700-90D6-114E20B9F3B1\\"></div>",
+    "contents": "",
     "createdAt": 1538472961,
     "elementType": "div",
     "manuscriptID": "MPManuscript:8EB79C14-9F61-483A-902F-A0B8EF5973C9",
@@ -562,15 +565,15 @@ const x = 'y'",
     "placeholderInnerHTML": "This bibliography updates automatically as you cite.",
     "sessionID": "7da6ec69-984f-452f-d9b9-762f5da1ac13",
   },
-  Object {
+  {
     "_id": "MPEquationElement:3896A81A-D43B-483F-B990-F64518A940D1",
     "_rev": "1-49955eebb814af431686f736ad333a5b",
     "caption": "",
     "collection": "elements",
-    "containedObject": Object {
-      "MathMLStringRepresentation": "<math xmlns=\\"http://www.w3.org/1998/Math/MathML\\" display=\\"block\\"><mn>2</mn><mi>x</mi><mn>3</mn><mo>=</mo><mn>6</mn></math>",
-      "OMMLStringRepresentation": "<m:oMath xmlns:m=\\"http://schemas.openxmlformats.org/officeDocument/2006/math\\"><m:r><w:rPr><w:rFonts w:ascii=\\"Cambria Math\\" w:eastAsia=\\"Cambria Math\\" w:hAnsi=\\"Cambria Math\\" w:cs=\\"Cambria Math\\"/></w:rPr><m:t>2x3=6</m:t></m:r></m:oMath>",
-      "SVGStringRepresentation": "<svg xmlns:xlink=\\"http://www.w3.org/1999/xlink\\" xmlns=\\"http://www.w3.org/2000/svg\\" width=\\"7.916ex\\" height=\\"2.097ex\\" viewBox=\\"0 -781.2 3408.1 903.1\\" role=\\"img\\" focusable=\\"false\\" style=\\"vertical-align: -0.283ex;\\"><defs xmlns=\\"http://www.w3.org/2000/svg\\"><path stroke-width=\\"1\\" id=\\"MJMAIN-32\\" d=\\"M109 429Q82 429 66 447T50 491Q50 562 103 614T235 666Q326 666 387 610T449 465Q449 422 429 383T381 315T301 241Q265 210 201 149L142 93L218 92Q375 92 385 97Q392 99 409 186V189H449V186Q448 183 436 95T421 3V0H50V19V31Q50 38 56 46T86 81Q115 113 136 137Q145 147 170 174T204 211T233 244T261 278T284 308T305 340T320 369T333 401T340 431T343 464Q343 527 309 573T212 619Q179 619 154 602T119 569T109 550Q109 549 114 549Q132 549 151 535T170 489Q170 464 154 447T109 429Z\\"/><path stroke-width=\\"1\\" id=\\"MJMATHI-78\\" d=\\"M52 289Q59 331 106 386T222 442Q257 442 286 424T329 379Q371 442 430 442Q467 442 494 420T522 361Q522 332 508 314T481 292T458 288Q439 288 427 299T415 328Q415 374 465 391Q454 404 425 404Q412 404 406 402Q368 386 350 336Q290 115 290 78Q290 50 306 38T341 26Q378 26 414 59T463 140Q466 150 469 151T485 153H489Q504 153 504 145Q504 144 502 134Q486 77 440 33T333 -11Q263 -11 227 52Q186 -10 133 -10H127Q78 -10 57 16T35 71Q35 103 54 123T99 143Q142 143 142 101Q142 81 130 66T107 46T94 41L91 40Q91 39 97 36T113 29T132 26Q168 26 194 71Q203 87 217 139T245 247T261 313Q266 340 266 352Q266 380 251 392T217 404Q177 404 142 372T93 290Q91 281 88 280T72 278H58Q52 284 52 289Z\\"/><path stroke-width=\\"1\\" id=\\"MJMAIN-33\\" d=\\"M127 463Q100 463 85 480T69 524Q69 579 117 622T233 665Q268 665 277 664Q351 652 390 611T430 522Q430 470 396 421T302 350L299 348Q299 347 308 345T337 336T375 315Q457 262 457 175Q457 96 395 37T238 -22Q158 -22 100 21T42 130Q42 158 60 175T105 193Q133 193 151 175T169 130Q169 119 166 110T159 94T148 82T136 74T126 70T118 67L114 66Q165 21 238 21Q293 21 321 74Q338 107 338 175V195Q338 290 274 322Q259 328 213 329L171 330L168 332Q166 335 166 348Q166 366 174 366Q202 366 232 371Q266 376 294 413T322 525V533Q322 590 287 612Q265 626 240 626Q208 626 181 615T143 592T132 580H135Q138 579 143 578T153 573T165 566T175 555T183 540T186 520Q186 498 172 481T127 463Z\\"/><path stroke-width=\\"1\\" id=\\"MJMAIN-3D\\" d=\\"M56 347Q56 360 70 367H707Q722 359 722 347Q722 336 708 328L390 327H72Q56 332 56 347ZM56 153Q56 168 72 173H708Q722 163 722 153Q722 140 707 133H70Q56 140 56 153Z\\"/><path stroke-width=\\"1\\" id=\\"MJMAIN-36\\" d=\\"M42 313Q42 476 123 571T303 666Q372 666 402 630T432 550Q432 525 418 510T379 495Q356 495 341 509T326 548Q326 592 373 601Q351 623 311 626Q240 626 194 566Q147 500 147 364L148 360Q153 366 156 373Q197 433 263 433H267Q313 433 348 414Q372 400 396 374T435 317Q456 268 456 210V192Q456 169 451 149Q440 90 387 34T253 -22Q225 -22 199 -14T143 16T92 75T56 172T42 313ZM257 397Q227 397 205 380T171 335T154 278T148 216Q148 133 160 97T198 39Q222 21 251 21Q302 21 329 59Q342 77 347 104T352 209Q352 289 347 316T329 361Q302 397 257 397Z\\"/></defs><g stroke=\\"currentColor\\" fill=\\"currentColor\\" stroke-width=\\"0\\" transform=\\"matrix(1 0 0 -1 0 0)\\"><use xlink:href=\\"#MJMAIN-32\\" x=\\"0\\" y=\\"0\\"/><use xlink:href=\\"#MJMATHI-78\\" x=\\"500\\" y=\\"0\\"/><use xlink:href=\\"#MJMAIN-33\\" x=\\"1073\\" y=\\"0\\"/><use xlink:href=\\"#MJMAIN-3D\\" x=\\"1851\\" y=\\"0\\"/><use xlink:href=\\"#MJMAIN-36\\" x=\\"2907\\" y=\\"0\\"/></g></svg>",
+    "containedObject": {
+      "MathMLStringRepresentation": "<math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mn>2</mn><mi>x</mi><mn>3</mn><mo>=</mo><mn>6</mn></math>",
+      "OMMLStringRepresentation": "<m:oMath xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math"><m:r><w:rPr><w:rFonts w:ascii="Cambria Math" w:eastAsia="Cambria Math" w:hAnsi="Cambria Math" w:cs="Cambria Math"/></w:rPr><m:t>2x3=6</m:t></m:r></m:oMath>",
+      "SVGStringRepresentation": "<svg xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" width="7.916ex" height="2.097ex" viewBox="0 -781.2 3408.1 903.1" role="img" focusable="false" style="vertical-align: -0.283ex;"><defs xmlns="http://www.w3.org/2000/svg"><path stroke-width="1" id="MJMAIN-32" d="M109 429Q82 429 66 447T50 491Q50 562 103 614T235 666Q326 666 387 610T449 465Q449 422 429 383T381 315T301 241Q265 210 201 149L142 93L218 92Q375 92 385 97Q392 99 409 186V189H449V186Q448 183 436 95T421 3V0H50V19V31Q50 38 56 46T86 81Q115 113 136 137Q145 147 170 174T204 211T233 244T261 278T284 308T305 340T320 369T333 401T340 431T343 464Q343 527 309 573T212 619Q179 619 154 602T119 569T109 550Q109 549 114 549Q132 549 151 535T170 489Q170 464 154 447T109 429Z"/><path stroke-width="1" id="MJMATHI-78" d="M52 289Q59 331 106 386T222 442Q257 442 286 424T329 379Q371 442 430 442Q467 442 494 420T522 361Q522 332 508 314T481 292T458 288Q439 288 427 299T415 328Q415 374 465 391Q454 404 425 404Q412 404 406 402Q368 386 350 336Q290 115 290 78Q290 50 306 38T341 26Q378 26 414 59T463 140Q466 150 469 151T485 153H489Q504 153 504 145Q504 144 502 134Q486 77 440 33T333 -11Q263 -11 227 52Q186 -10 133 -10H127Q78 -10 57 16T35 71Q35 103 54 123T99 143Q142 143 142 101Q142 81 130 66T107 46T94 41L91 40Q91 39 97 36T113 29T132 26Q168 26 194 71Q203 87 217 139T245 247T261 313Q266 340 266 352Q266 380 251 392T217 404Q177 404 142 372T93 290Q91 281 88 280T72 278H58Q52 284 52 289Z"/><path stroke-width="1" id="MJMAIN-33" d="M127 463Q100 463 85 480T69 524Q69 579 117 622T233 665Q268 665 277 664Q351 652 390 611T430 522Q430 470 396 421T302 350L299 348Q299 347 308 345T337 336T375 315Q457 262 457 175Q457 96 395 37T238 -22Q158 -22 100 21T42 130Q42 158 60 175T105 193Q133 193 151 175T169 130Q169 119 166 110T159 94T148 82T136 74T126 70T118 67L114 66Q165 21 238 21Q293 21 321 74Q338 107 338 175V195Q338 290 274 322Q259 328 213 329L171 330L168 332Q166 335 166 348Q166 366 174 366Q202 366 232 371Q266 376 294 413T322 525V533Q322 590 287 612Q265 626 240 626Q208 626 181 615T143 592T132 580H135Q138 579 143 578T153 573T165 566T175 555T183 540T186 520Q186 498 172 481T127 463Z"/><path stroke-width="1" id="MJMAIN-3D" d="M56 347Q56 360 70 367H707Q722 359 722 347Q722 336 708 328L390 327H72Q56 332 56 347ZM56 153Q56 168 72 173H708Q722 163 722 153Q722 140 707 133H70Q56 140 56 153Z"/><path stroke-width="1" id="MJMAIN-36" d="M42 313Q42 476 123 571T303 666Q372 666 402 630T432 550Q432 525 418 510T379 495Q356 495 341 509T326 548Q326 592 373 601Q351 623 311 626Q240 626 194 566Q147 500 147 364L148 360Q153 366 156 373Q197 433 263 433H267Q313 433 348 414Q372 400 396 374T435 317Q456 268 456 210V192Q456 169 451 149Q440 90 387 34T253 -22Q225 -22 199 -14T143 16T92 75T56 172T42 313ZM257 397Q227 397 205 380T171 335T154 278T148 216Q148 133 160 97T198 39Q222 21 251 21Q302 21 329 59Q342 77 347 104T352 209Q352 289 347 316T329 361Q302 397 257 397Z"/></defs><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use xlink:href="#MJMAIN-32" x="0" y="0"/><use xlink:href="#MJMATHI-78" x="500" y="0"/><use xlink:href="#MJMAIN-33" x="1073" y="0"/><use xlink:href="#MJMAIN-3D" x="1851" y="0"/><use xlink:href="#MJMAIN-36" x="2907" y="0"/></g></svg>",
       "TeXRepresentation": "2x3=6",
       "_id": "MPEquation:C900DDA4-BE45-4AF6-8C9F-CA0AA5FCC403",
       "_rev": "4-3e9077e26f2a313d84a2f18245a459a5",
@@ -591,48 +594,50 @@ const x = 'y'",
     "sessionID": "fb8b3d44-9515-4747-c7d8-a30fb1bc188b",
     "suppressCaption": true,
   },
-  Object {
+  {
     "_id": "MPFigureElement:A5D68C57-B5BB-4D10-E0C3-ECED717A2AA7",
     "_rev": "5-b64df25740f122c84fad90e24ccf71fd",
     "caption": "A figure with a caption",
     "collection": "elements",
-    "containedObjectIDs": Array [
+    "containedObjectIDs": [
       "MPFigure:D673DF08-D75E-4061-8EC1-9611EAB302F0",
     ],
     "containerID": "MPProject:1",
     "createdAt": 1538472386,
     "elementType": "figure",
     "figureStyle": "MPFigureStyle:12916784-C8A2-414E-919D-490172E82B25",
+    "label": "",
     "manuscriptID": "MPManuscript:8EB79C14-9F61-483A-902F-A0B8EF5973C9",
     "objectType": "MPFigureElement",
     "sessionID": "7da6ec69-984f-452f-d9b9-762f5da1ac13",
     "updatedAt": 1538472397.931468,
   },
-  Object {
+  {
     "_id": "MPFigureElement:B32BDEC8-E816-4946-C0BB-0404AF2F0C29",
     "_rev": "5-f2ffd5bab0f0db9b1ec890cde3b820d0",
     "caption": "A figure with hidden caption",
     "collection": "elements",
-    "containedObjectIDs": Array [
+    "containedObjectIDs": [
       "MPFigure:AD65D628-A904-4DC4-A026-F8F4C08F6557",
     ],
     "containerID": "MPProject:1",
     "createdAt": 1538472925,
     "elementType": "figure",
     "figureStyle": "MPFigureStyle:12916784-C8A2-414E-919D-490172E82B25",
+    "label": "",
     "manuscriptID": "MPManuscript:8EB79C14-9F61-483A-902F-A0B8EF5973C9",
     "objectType": "MPFigureElement",
     "sessionID": "F0E376FF-3F4A-4A58-8478-C0FE73DB3053",
     "suppressCaption": true,
     "updatedAt": 1538472944.654471,
   },
-  Object {
+  {
     "_id": "MPFootnotesElement:4CD7CE08-0880-46BD-FF83-52E32AEFAC3E",
     "_rev": "1-f01f7995cd38a0b307d729eadaf44e51",
     "collateByKind": "footnote",
     "collection": "elements",
     "containerID": "MPProject:1",
-    "contents": "<div xmlns=\\"http://www.w3.org/1999/xhtml\\" xmlns=\\"http://www.w3.org/1999/xhtml\\" id=\\"MPFootnotesElement:4CD7CE08-0880-46BD-FF83-52E32AEFAC3E\\" class=\\"footnotes\\"></div>",
+    "contents": "<div></div>",
     "createdAt": 1538473899,
     "elementType": "div",
     "manuscriptID": "MPManuscript:8EB79C14-9F61-483A-902F-A0B8EF5973C9",
@@ -640,12 +645,12 @@ const x = 'y'",
     "paragraphStyle": "MPParagraphStyle:76353811-8E1D-4D11-A1B5-C960C9EEEFCD",
     "sessionID": "58d96cc7-c834-4810-8f39-55cbca7eef93",
   },
-  Object {
+  {
     "_id": "MPListElement:AF5341C4-5E24-40BF-B853-F966726431EB",
     "_rev": "7-3241c6f9cdfe0d58b13782a7a66986b0",
     "collection": "elements",
     "containerID": "MPProject:1",
-    "contents": "<ol xmlns=\\"http://www.w3.org/1999/xhtml\\" id=\\"MPListElement:AF5341C4-5E24-40BF-B853-F966726431EB\\" class=\\"MPElement MPParagraphStyle_7EAB5784-717B-4672-BD59-8CA324FB0637\\" data-object-type=\\"MPListElement\\"><li data-placeholder-text=\\"List item\\">A numbered list with a nested list.<ol><li data-placeholder-text=\\"List item\\">This item is nested.</li></ol></li></ol>",
+    "contents": "<ol xmlns="http://www.w3.org/1999/xhtml" id="MPListElement:AF5341C4-5E24-40BF-B853-F966726431EB" class="MPElement MPParagraphStyle_7EAB5784-717B-4672-BD59-8CA324FB0637" data-object-type="MPListElement"><li data-placeholder-text="List item">A numbered list with a nested list.<ol><li data-placeholder-text="List item">This item is nested.</li></ol></li></ol>",
     "createdAt": 1538473660,
     "elementType": "ol",
     "manuscriptID": "MPManuscript:8EB79C14-9F61-483A-902F-A0B8EF5973C9",
@@ -653,12 +658,12 @@ const x = 'y'",
     "paragraphStyle": "MPParagraphStyle:7EAB5784-717B-4672-BD59-8CA324FB0637",
     "sessionID": "58d96cc7-c834-4810-8f39-55cbca7eef93",
   },
-  Object {
+  {
     "_id": "MPListElement:D1C6E3B5-C549-47B8-B051-1F534E8AA7E7",
     "_rev": "3-8082583ec835b7960d328753aa76ec1a",
     "collection": "elements",
     "containerID": "MPProject:1",
-    "contents": "<ol xmlns=\\"http://www.w3.org/1999/xhtml\\" id=\\"MPListElement:D1C6E3B5-C549-47B8-B051-1F534E8AA7E7\\" class=\\"MPElement MPParagraphStyle_7EAB5784-717B-4672-BD59-8CA324FB0637\\" data-object-type=\\"MPListElement\\"><li data-placeholder-text=\\"List item\\">A numbered list.</li></ol>",
+    "contents": "<ol xmlns="http://www.w3.org/1999/xhtml" id="MPListElement:D1C6E3B5-C549-47B8-B051-1F534E8AA7E7" class="MPElement MPParagraphStyle_7EAB5784-717B-4672-BD59-8CA324FB0637" data-object-type="MPListElement"><li data-placeholder-text="List item">A numbered list.</li></ol>",
     "createdAt": 1538472356,
     "elementType": "ol",
     "manuscriptID": "MPManuscript:8EB79C14-9F61-483A-902F-A0B8EF5973C9",
@@ -666,12 +671,12 @@ const x = 'y'",
     "paragraphStyle": "MPParagraphStyle:7EAB5784-717B-4672-BD59-8CA324FB0637",
     "sessionID": "fb8b3d44-9515-4747-c7d8-a30fb1bc188b",
   },
-  Object {
+  {
     "_id": "MPListElement:F11B9FCA-5DB5-4ED4-FEF9-10CDCB64F96E",
     "_rev": "2-c8f687527b63b1e4c880607518b70bc0",
     "collection": "elements",
     "containerID": "MPProject:1",
-    "contents": "<ul xmlns=\\"http://www.w3.org/1999/xhtml\\" id=\\"MPListElement:F11B9FCA-5DB5-4ED4-FEF9-10CDCB64F96E\\" class=\\"MPElement MPParagraphStyle_7EAB5784-717B-4672-BD59-8CA324FB0637\\" data-object-type=\\"MPListElement\\"><li data-placeholder-text=\\"List item\\">A bullet list.</li></ul>",
+    "contents": "<ul xmlns="http://www.w3.org/1999/xhtml" id="MPListElement:F11B9FCA-5DB5-4ED4-FEF9-10CDCB64F96E" class="MPElement MPParagraphStyle_7EAB5784-717B-4672-BD59-8CA324FB0637" data-object-type="MPListElement"><li data-placeholder-text="List item">A bullet list.</li></ul>",
     "createdAt": 1538472366,
     "elementType": "ul",
     "manuscriptID": "MPManuscript:8EB79C14-9F61-483A-902F-A0B8EF5973C9",
@@ -679,12 +684,12 @@ const x = 'y'",
     "paragraphStyle": "MPParagraphStyle:7EAB5784-717B-4672-BD59-8CA324FB0637",
     "sessionID": "fb8b3d44-9515-4747-c7d8-a30fb1bc188b",
   },
-  Object {
+  {
     "_id": "MPListingElement:160785A9-4BC0-4C55-C4DE-AF5F4D858DCE",
     "_rev": "1-ace978e061e0df8bfe77753000245cdf",
     "caption": "",
     "collection": "elements",
-    "containedObject": Object {
+    "containedObject": {
       "_id": "MPListing:4D688DCF-29CD-40CC-93BD-2B13CD883257",
       "_rev": "3-31803bcf85875ab8e496f74dda93ebf9",
       "collection": "listings",
@@ -710,12 +715,12 @@ const x = 'y'",
     "sessionID": "fb8b3d44-9515-4747-c7d8-a30fb1bc188b",
     "suppressCaption": false,
   },
-  Object {
+  {
     "_id": "MPParagraphElement:05A0ED43-8928-4C69-A17C-0A98795001CD",
     "_rev": "4-678a0c2212daae58c0059daa9fa5200a",
     "collection": "elements",
     "containerID": "MPProject:1",
-    "contents": "<p xmlns=\\"http://www.w3.org/1999/xhtml\\" id=\\"MPParagraphElement:05A0ED43-8928-4C69-A17C-0A98795001CD\\" class=\\"MPElement MPParagraphStyle_7EAB5784-717B-4672-BD59-8CA324FB0637\\" data-object-type=\\"MPParagraphElement\\">The text in this sentence is <sup>superscript</sup> and <sub>subscript</sub>.</p>",
+    "contents": "<p xmlns="http://www.w3.org/1999/xhtml" id="MPParagraphElement:05A0ED43-8928-4C69-A17C-0A98795001CD" class="MPElement MPParagraphStyle_7EAB5784-717B-4672-BD59-8CA324FB0637" data-object-type="MPParagraphElement">The text in this sentence is <sup>superscript</sup> and <sub>subscript</sub>.</p>",
     "createdAt": 1538473157,
     "elementType": "p",
     "manuscriptID": "MPManuscript:8EB79C14-9F61-483A-902F-A0B8EF5973C9",
@@ -724,12 +729,12 @@ const x = 'y'",
     "placeholderInnerHTML": "",
     "sessionID": "58d96cc7-c834-4810-8f39-55cbca7eef93",
   },
-  Object {
+  {
     "_id": "MPParagraphElement:150780D7-CFED-4529-9398-77B5C7625044",
     "_rev": "6-29228e9aaad3c064e5d89f075e6635ca",
     "collection": "elements",
     "containerID": "MPProject:1",
-    "contents": "<p xmlns=\\"http://www.w3.org/1999/xhtml\\" id=\\"MPParagraphElement:150780D7-CFED-4529-9398-77B5C7625044\\" class=\\"MPElement MPParagraphStyle_7EAB5784-717B-4672-BD59-8CA324FB0637\\" data-object-type=\\"MPParagraphElement\\" data-placeholder-text=\\"Start from here. Enjoy writing! - the Manuscripts Team.\\">The first section.</p>",
+    "contents": "<p xmlns="http://www.w3.org/1999/xhtml" id="MPParagraphElement:150780D7-CFED-4529-9398-77B5C7625044" class="MPElement MPParagraphStyle_7EAB5784-717B-4672-BD59-8CA324FB0637" data-object-type="MPParagraphElement" data-placeholder-text="Start from here. Enjoy writing! - the Manuscripts Team.">The first section.</p>",
     "createdAt": 1538472122.473331,
     "elementType": "p",
     "manuscriptID": "MPManuscript:8EB79C14-9F61-483A-902F-A0B8EF5973C9",
@@ -739,12 +744,12 @@ const x = 'y'",
     "sessionID": "58d96cc7-c834-4810-8f39-55cbca7eef93",
     "updatedAt": 1538472122.473331,
   },
-  Object {
+  {
     "_id": "MPParagraphElement:345B8B57-2E5E-45ED-E587-4EAAC2BD63E9",
     "_rev": "16-9cc791a1557e1de40e6472bcab70f0d1",
     "collection": "elements",
     "containerID": "MPProject:1",
-    "contents": "<p xmlns=\\"http://www.w3.org/1999/xhtml\\" id=\\"MPParagraphElement:345B8B57-2E5E-45ED-E587-4EAAC2BD63E9\\" class=\\"MPElement MPParagraphStyle_7EAB5784-717B-4672-BD59-8CA324FB0637\\" data-object-type=\\"MPParagraphElement\\">An inline equation: <span class=\\"MPInlineMathFragment\\" id=\\"MPInlineMathFragment:A8A76DC2-EA6A-44BF-E8E7-B4A9EAEDF090\\" data-tex-representation=\\"3+5=8\\"><svg xmlns:xlink=\\"http://www.w3.org/1999/xlink\\" width=\\"9.426ex\\" height=\\"2.237ex\\" viewBox=\\"0 -781.2 4058.5 963\\" role=\\"img\\" focusable=\\"false\\" xmlns=\\"http://www.w3.org/2000/svg\\" style=\\"vertical-align: -0.422ex;\\"><defs><path stroke-width=\\"1\\" id=\\"MJMAIN-33\\" d=\\"M127 463Q100 463 85 480T69 524Q69 579 117 622T233 665Q268 665 277 664Q351 652 390 611T430 522Q430 470 396 421T302 350L299 348Q299 347 308 345T337 336T375 315Q457 262 457 175Q457 96 395 37T238 -22Q158 -22 100 21T42 130Q42 158 60 175T105 193Q133 193 151 175T169 130Q169 119 166 110T159 94T148 82T136 74T126 70T118 67L114 66Q165 21 238 21Q293 21 321 74Q338 107 338 175V195Q338 290 274 322Q259 328 213 329L171 330L168 332Q166 335 166 348Q166 366 174 366Q202 366 232 371Q266 376 294 413T322 525V533Q322 590 287 612Q265 626 240 626Q208 626 181 615T143 592T132 580H135Q138 579 143 578T153 573T165 566T175 555T183 540T186 520Q186 498 172 481T127 463Z\\"/><path stroke-width=\\"1\\" id=\\"MJMAIN-2B\\" d=\\"M56 237T56 250T70 270H369V420L370 570Q380 583 389 583Q402 583 409 568V270H707Q722 262 722 250T707 230H409V-68Q401 -82 391 -82H389H387Q375 -82 369 -68V230H70Q56 237 56 250Z\\"/><path stroke-width=\\"1\\" id=\\"MJMAIN-35\\" d=\\"M164 157Q164 133 148 117T109 101H102Q148 22 224 22Q294 22 326 82Q345 115 345 210Q345 313 318 349Q292 382 260 382H254Q176 382 136 314Q132 307 129 306T114 304Q97 304 95 310Q93 314 93 485V614Q93 664 98 664Q100 666 102 666Q103 666 123 658T178 642T253 634Q324 634 389 662Q397 666 402 666Q410 666 410 648V635Q328 538 205 538Q174 538 149 544L139 546V374Q158 388 169 396T205 412T256 420Q337 420 393 355T449 201Q449 109 385 44T229 -22Q148 -22 99 32T50 154Q50 178 61 192T84 210T107 214Q132 214 148 197T164 157Z\\"/><path stroke-width=\\"1\\" id=\\"MJMAIN-3D\\" d=\\"M56 347Q56 360 70 367H707Q722 359 722 347Q722 336 708 328L390 327H72Q56 332 56 347ZM56 153Q56 168 72 173H708Q722 163 722 153Q722 140 707 133H70Q56 140 56 153Z\\"/><path stroke-width=\\"1\\" id=\\"MJMAIN-38\\" d=\\"M70 417T70 494T124 618T248 666Q319 666 374 624T429 515Q429 485 418 459T392 417T361 389T335 371T324 363L338 354Q352 344 366 334T382 323Q457 264 457 174Q457 95 399 37T249 -22Q159 -22 101 29T43 155Q43 263 172 335L154 348Q133 361 127 368Q70 417 70 494ZM286 386L292 390Q298 394 301 396T311 403T323 413T334 425T345 438T355 454T364 471T369 491T371 513Q371 556 342 586T275 624Q268 625 242 625Q201 625 165 599T128 534Q128 511 141 492T167 463T217 431Q224 426 228 424L286 386ZM250 21Q308 21 350 55T392 137Q392 154 387 169T375 194T353 216T330 234T301 253T274 270Q260 279 244 289T218 306L210 311Q204 311 181 294T133 239T107 157Q107 98 150 60T250 21Z\\"/></defs><g stroke=\\"currentColor\\" fill=\\"currentColor\\" stroke-width=\\"0\\" transform=\\"matrix(1 0 0 -1 0 0)\\"><use xlink:href=\\"#MJMAIN-33\\" x=\\"0\\" y=\\"0\\"/><use xlink:href=\\"#MJMAIN-2B\\" x=\\"722\\" y=\\"0\\"/><use xlink:href=\\"#MJMAIN-35\\" x=\\"1723\\" y=\\"0\\"/><use xlink:href=\\"#MJMAIN-3D\\" x=\\"2501\\" y=\\"0\\"/><use xlink:href=\\"#MJMAIN-38\\" x=\\"3558\\" y=\\"0\\"/></g></svg></span></p>",
+    "contents": "<p xmlns="http://www.w3.org/1999/xhtml" id="MPParagraphElement:345B8B57-2E5E-45ED-E587-4EAAC2BD63E9" class="MPElement MPParagraphStyle_7EAB5784-717B-4672-BD59-8CA324FB0637" data-object-type="MPParagraphElement">An inline equation: <span class="MPInlineMathFragment" id="MPInlineMathFragment:A8A76DC2-EA6A-44BF-E8E7-B4A9EAEDF090" data-tex-representation="3+5=8"><svg xmlns:xlink="http://www.w3.org/1999/xlink" width="9.426ex" height="2.237ex" viewBox="0 -781.2 4058.5 963" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" style="vertical-align: -0.422ex;"><defs><path stroke-width="1" id="MJMAIN-33" d="M127 463Q100 463 85 480T69 524Q69 579 117 622T233 665Q268 665 277 664Q351 652 390 611T430 522Q430 470 396 421T302 350L299 348Q299 347 308 345T337 336T375 315Q457 262 457 175Q457 96 395 37T238 -22Q158 -22 100 21T42 130Q42 158 60 175T105 193Q133 193 151 175T169 130Q169 119 166 110T159 94T148 82T136 74T126 70T118 67L114 66Q165 21 238 21Q293 21 321 74Q338 107 338 175V195Q338 290 274 322Q259 328 213 329L171 330L168 332Q166 335 166 348Q166 366 174 366Q202 366 232 371Q266 376 294 413T322 525V533Q322 590 287 612Q265 626 240 626Q208 626 181 615T143 592T132 580H135Q138 579 143 578T153 573T165 566T175 555T183 540T186 520Q186 498 172 481T127 463Z"/><path stroke-width="1" id="MJMAIN-2B" d="M56 237T56 250T70 270H369V420L370 570Q380 583 389 583Q402 583 409 568V270H707Q722 262 722 250T707 230H409V-68Q401 -82 391 -82H389H387Q375 -82 369 -68V230H70Q56 237 56 250Z"/><path stroke-width="1" id="MJMAIN-35" d="M164 157Q164 133 148 117T109 101H102Q148 22 224 22Q294 22 326 82Q345 115 345 210Q345 313 318 349Q292 382 260 382H254Q176 382 136 314Q132 307 129 306T114 304Q97 304 95 310Q93 314 93 485V614Q93 664 98 664Q100 666 102 666Q103 666 123 658T178 642T253 634Q324 634 389 662Q397 666 402 666Q410 666 410 648V635Q328 538 205 538Q174 538 149 544L139 546V374Q158 388 169 396T205 412T256 420Q337 420 393 355T449 201Q449 109 385 44T229 -22Q148 -22 99 32T50 154Q50 178 61 192T84 210T107 214Q132 214 148 197T164 157Z"/><path stroke-width="1" id="MJMAIN-3D" d="M56 347Q56 360 70 367H707Q722 359 722 347Q722 336 708 328L390 327H72Q56 332 56 347ZM56 153Q56 168 72 173H708Q722 163 722 153Q722 140 707 133H70Q56 140 56 153Z"/><path stroke-width="1" id="MJMAIN-38" d="M70 417T70 494T124 618T248 666Q319 666 374 624T429 515Q429 485 418 459T392 417T361 389T335 371T324 363L338 354Q352 344 366 334T382 323Q457 264 457 174Q457 95 399 37T249 -22Q159 -22 101 29T43 155Q43 263 172 335L154 348Q133 361 127 368Q70 417 70 494ZM286 386L292 390Q298 394 301 396T311 403T323 413T334 425T345 438T355 454T364 471T369 491T371 513Q371 556 342 586T275 624Q268 625 242 625Q201 625 165 599T128 534Q128 511 141 492T167 463T217 431Q224 426 228 424L286 386ZM250 21Q308 21 350 55T392 137Q392 154 387 169T375 194T353 216T330 234T301 253T274 270Q260 279 244 289T218 306L210 311Q204 311 181 294T133 239T107 157Q107 98 150 60T250 21Z"/></defs><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use xlink:href="#MJMAIN-33" x="0" y="0"/><use xlink:href="#MJMAIN-2B" x="722" y="0"/><use xlink:href="#MJMAIN-35" x="1723" y="0"/><use xlink:href="#MJMAIN-3D" x="2501" y="0"/><use xlink:href="#MJMAIN-38" x="3558" y="0"/></g></svg></span></p>",
     "createdAt": 1538472516,
     "elementType": "p",
     "manuscriptID": "MPManuscript:8EB79C14-9F61-483A-902F-A0B8EF5973C9",
@@ -753,12 +758,12 @@ const x = 'y'",
     "placeholderInnerHTML": "",
     "sessionID": "fb8b3d44-9515-4747-c7d8-a30fb1bc188b",
   },
-  Object {
+  {
     "_id": "MPParagraphElement:3708E8C7-441C-4502-8BFC-D3A2059CEF8B",
     "_rev": "4-2a70e73ad6d7aa54efda263d91182741",
     "collection": "elements",
     "containerID": "MPProject:1",
-    "contents": "<p xmlns=\\"http://www.w3.org/1999/xhtml\\" id=\\"MPParagraphElement:3708E8C7-441C-4502-8BFC-D3A2059CEF8B\\" class=\\"MPElement MPParagraphStyle_7EAB5784-717B-4672-BD59-8CA324FB0637\\" data-object-type=\\"MPParagraphElement\\">A footnote:<span class=\\"footnote\\" id=\\"MPFootnote:B1589279-0F3B-472B-BF11-3F59D6B65791\\">1</span></p>",
+    "contents": "<p xmlns="http://www.w3.org/1999/xhtml" id="MPParagraphElement:3708E8C7-441C-4502-8BFC-D3A2059CEF8B" class="MPElement MPParagraphStyle_7EAB5784-717B-4672-BD59-8CA324FB0637" data-object-type="MPParagraphElement">A footnote:<span class="footnote" data-reference-id="MPFootnote:B1589279-0F3B-472B-BF11-3F59D6B65791">1</span></p>",
     "createdAt": 1538472713,
     "elementType": "p",
     "manuscriptID": "MPManuscript:8EB79C14-9F61-483A-902F-A0B8EF5973C9",
@@ -767,12 +772,12 @@ const x = 'y'",
     "placeholderInnerHTML": "",
     "sessionID": "58d96cc7-c834-4810-8f39-55cbca7eef93",
   },
-  Object {
+  {
     "_id": "MPParagraphElement:41B99DAB-F86C-477F-D36C-2B8590B5DAD0",
     "_rev": "4-3c92735b353a6b7214034dc8c96a58d5",
     "collection": "elements",
     "containerID": "MPProject:1",
-    "contents": "<p xmlns=\\"http://www.w3.org/1999/xhtml\\" id=\\"MPParagraphElement:41B99DAB-F86C-477F-D36C-2B8590B5DAD0\\" class=\\"MPElement MPParagraphStyle_7EAB5784-717B-4672-BD59-8CA324FB0637\\" data-object-type=\\"MPParagraphElement\\">A cross-reference to a table: <span class=\\"cross-reference\\" data-reference-id=\\"MPAuxiliaryObjectReference:88AF1DCA-B232-4791-8EAA-F38E0025A3C6\\"><span class=\\"kind elementIndex\\"><b>Table 1</b></span></span></p>",
+    "contents": "<p xmlns="http://www.w3.org/1999/xhtml" id="MPParagraphElement:41B99DAB-F86C-477F-D36C-2B8590B5DAD0" class="MPElement MPParagraphStyle_7EAB5784-717B-4672-BD59-8CA324FB0637" data-object-type="MPParagraphElement">A cross-reference to a table: <span class="cross-reference" data-reference-id="MPAuxiliaryObjectReference:88AF1DCA-B232-4791-8EAA-F38E0025A3C6"><span class="kind elementIndex"><b>Table 1</b></span></span></p>",
     "createdAt": 1538472658,
     "elementType": "p",
     "manuscriptID": "MPManuscript:8EB79C14-9F61-483A-902F-A0B8EF5973C9",
@@ -781,12 +786,12 @@ const x = 'y'",
     "placeholderInnerHTML": "",
     "sessionID": "fb8b3d44-9515-4747-c7d8-a30fb1bc188b",
   },
-  Object {
+  {
     "_id": "MPParagraphElement:4DF93A63-D44D-41CF-AF54-23712B8703FA",
     "_rev": "3-ac5a96b4d006b1f3615b2491db679fed",
     "collection": "elements",
     "containerID": "MPProject:1",
-    "contents": "<p xmlns=\\"http://www.w3.org/1999/xhtml\\" id=\\"MPParagraphElement:4DF93A63-D44D-41CF-AF54-23712B8703FA\\" class=\\"MPElement MPParagraphStyle_7EAB5784-717B-4672-BD59-8CA324FB0637\\" data-object-type=\\"MPParagraphElement\\">The heading of this section is hidden.</p>",
+    "contents": "<p xmlns="http://www.w3.org/1999/xhtml" id="MPParagraphElement:4DF93A63-D44D-41CF-AF54-23712B8703FA" class="MPElement MPParagraphStyle_7EAB5784-717B-4672-BD59-8CA324FB0637" data-object-type="MPParagraphElement">The heading of this section is hidden.</p>",
     "createdAt": 1538472339,
     "elementType": "p",
     "manuscriptID": "MPManuscript:8EB79C14-9F61-483A-902F-A0B8EF5973C9",
@@ -795,12 +800,12 @@ const x = 'y'",
     "placeholderInnerHTML": "",
     "sessionID": "58d96cc7-c834-4810-8f39-55cbca7eef93",
   },
-  Object {
+  {
     "_id": "MPParagraphElement:60C13548-23C0-4348-FE98-0510E0B61B18",
     "_rev": "15-64ba534642271e2e5418bb9d866262a5",
     "collection": "elements",
     "containerID": "MPProject:1",
-    "contents": "<p xmlns=\\"http://www.w3.org/1999/xhtml\\" id=\\"MPParagraphElement:60C13548-23C0-4348-FE98-0510E0B61B18\\" class=\\"MPElement MPParagraphStyle_7EAB5784-717B-4672-BD59-8CA324FB0637\\" data-object-type=\\"MPParagraphElement\\">The text in this sentence is <b>bold</b>, <i>italic</i>, or <u>underlined</u>.</p>",
+    "contents": "<p xmlns="http://www.w3.org/1999/xhtml" id="MPParagraphElement:60C13548-23C0-4348-FE98-0510E0B61B18" class="MPElement MPParagraphStyle_7EAB5784-717B-4672-BD59-8CA324FB0637" data-object-type="MPParagraphElement">The text in this sentence is <b>bold</b>, <i>italic</i>, or <u>underlined</u>.</p>",
     "createdAt": 1538473087,
     "elementType": "p",
     "manuscriptID": "MPManuscript:8EB79C14-9F61-483A-902F-A0B8EF5973C9",
@@ -809,12 +814,12 @@ const x = 'y'",
     "placeholderInnerHTML": "",
     "sessionID": "58d96cc7-c834-4810-8f39-55cbca7eef93",
   },
-  Object {
+  {
     "_id": "MPParagraphElement:6B6DBF43-F7B2-404C-89DD-0EC1E1442B27",
     "_rev": "4-551e036efbae12e1b19b81cddb886621",
     "collection": "elements",
     "containerID": "MPProject:1",
-    "contents": "<p xmlns=\\"http://www.w3.org/1999/xhtml\\" id=\\"MPParagraphElement:6B6DBF43-F7B2-404C-89DD-0EC1E1442B27\\" class=\\"MPElement MPParagraphStyle_7EAB5784-717B-4672-BD59-8CA324FB0637\\" data-object-type=\\"MPParagraphElement\\">A cross-reference to a figure: <span class=\\"cross-reference\\" data-reference-id=\\"MPAuxiliaryObjectReference:82E2F9F9-797F-4397-9084-D98B72C12903\\"><span class=\\"kind elementIndex\\"><b>Figure 1</b></span></span></p>",
+    "contents": "<p xmlns="http://www.w3.org/1999/xhtml" id="MPParagraphElement:6B6DBF43-F7B2-404C-89DD-0EC1E1442B27" class="MPElement MPParagraphStyle_7EAB5784-717B-4672-BD59-8CA324FB0637" data-object-type="MPParagraphElement">A cross-reference to a figure: <span class="cross-reference" data-reference-id="MPAuxiliaryObjectReference:82E2F9F9-797F-4397-9084-D98B72C12903"><span class="kind elementIndex"><b>Figure 1</b></span></span></p>",
     "createdAt": 1538472620,
     "elementType": "p",
     "manuscriptID": "MPManuscript:8EB79C14-9F61-483A-902F-A0B8EF5973C9",
@@ -823,12 +828,12 @@ const x = 'y'",
     "placeholderInnerHTML": "",
     "sessionID": "fb8b3d44-9515-4747-c7d8-a30fb1bc188b",
   },
-  Object {
+  {
     "_id": "MPParagraphElement:A89DC62A-90ED-4283-AB6D-06CA2519D801",
     "_rev": "5-e5db9a167ee0e63e38dc5843f4614695",
     "collection": "elements",
     "containerID": "MPProject:1",
-    "contents": "<p xmlns=\\"http://www.w3.org/1999/xhtml\\" id=\\"MPParagraphElement:A89DC62A-90ED-4283-AB6D-06CA2519D801\\" class=\\"MPElement MPParagraphStyle_7EAB5784-717B-4672-BD59-8CA324FB0637\\" data-object-type=\\"MPParagraphElement\\"><b><i><u>The text in this sentence is bold, italic and underlined.</u></i></b></p>",
+    "contents": "<p xmlns="http://www.w3.org/1999/xhtml" id="MPParagraphElement:A89DC62A-90ED-4283-AB6D-06CA2519D801" class="MPElement MPParagraphStyle_7EAB5784-717B-4672-BD59-8CA324FB0637" data-object-type="MPParagraphElement"><b><i><u>The text in this sentence is bold, italic and underlined.</u></i></b></p>",
     "createdAt": 1538473142,
     "elementType": "p",
     "manuscriptID": "MPManuscript:8EB79C14-9F61-483A-902F-A0B8EF5973C9",
@@ -837,12 +842,12 @@ const x = 'y'",
     "placeholderInnerHTML": "",
     "sessionID": "58d96cc7-c834-4810-8f39-55cbca7eef93",
   },
-  Object {
+  {
     "_id": "MPParagraphElement:C8A173A4-DF32-4242-E800-28A1AE5B48B8",
     "_rev": "4-6d9aacae0eb3467be3007a67352f2655",
     "collection": "elements",
     "containerID": "MPProject:1",
-    "contents": "<p xmlns=\\"http://www.w3.org/1999/xhtml\\" id=\\"MPParagraphElement:C8A173A4-DF32-4242-E800-28A1AE5B48B8\\" class=\\"MPElement MPParagraphStyle_7EAB5784-717B-4672-BD59-8CA324FB0637\\" data-object-type=\\"MPParagraphElement\\">A cross-reference to an equation: <span class=\\"cross-reference\\" data-reference-id=\\"MPAuxiliaryObjectReference:461D1AFF-1871-4594-8E07-963D3476B7F5\\"><span class=\\"kind elementIndex\\"><b>Equation 1</b></span></span></p>",
+    "contents": "<p xmlns="http://www.w3.org/1999/xhtml" id="MPParagraphElement:C8A173A4-DF32-4242-E800-28A1AE5B48B8" class="MPElement MPParagraphStyle_7EAB5784-717B-4672-BD59-8CA324FB0637" data-object-type="MPParagraphElement">A cross-reference to an equation: <span class="cross-reference" data-reference-id="MPAuxiliaryObjectReference:461D1AFF-1871-4594-8E07-963D3476B7F5"><span class="kind elementIndex"><b>Equation 1</b></span></span></p>",
     "createdAt": 1538472670,
     "elementType": "p",
     "manuscriptID": "MPManuscript:8EB79C14-9F61-483A-902F-A0B8EF5973C9",
@@ -851,12 +856,12 @@ const x = 'y'",
     "placeholderInnerHTML": "",
     "sessionID": "fb8b3d44-9515-4747-c7d8-a30fb1bc188b",
   },
-  Object {
+  {
     "_id": "MPParagraphElement:CB7347E5-8502-4667-82B9-51104BB1FEDB",
     "_rev": "5-a20975ce424a7bfb06182c5b1280905e",
     "collection": "elements",
     "containerID": "MPProject:1",
-    "contents": "<p xmlns=\\"http://www.w3.org/1999/xhtml\\" id=\\"MPParagraphElement:CB7347E5-8502-4667-82B9-51104BB1FEDB\\" class=\\"MPElement MPParagraphStyle_7EAB5784-717B-4672-BD59-8CA324FB0637\\" data-object-type=\\"MPParagraphElement\\"><span class=\\"citation\\" data-reference-id=\\"MPCitation:C1BA9478-E940-4273-CB5C-0DDCD62CFBF2\\">A hyperlink</span></p>",
+    "contents": "<p xmlns="http://www.w3.org/1999/xhtml" id="MPParagraphElement:CB7347E5-8502-4667-82B9-51104BB1FEDB" class="MPElement MPParagraphStyle_7EAB5784-717B-4672-BD59-8CA324FB0637" data-object-type="MPParagraphElement"><span class="citation" data-reference-id="MPCitation:C1BA9478-E940-4273-CB5C-0DDCD62CFBF2">A hyperlink</span></p>",
     "createdAt": 1538472681,
     "elementType": "p",
     "manuscriptID": "MPManuscript:8EB79C14-9F61-483A-902F-A0B8EF5973C9",
@@ -865,7 +870,7 @@ const x = 'y'",
     "placeholderInnerHTML": "",
     "sessionID": "58d96cc7-c834-4810-8f39-55cbca7eef93",
   },
-  Object {
+  {
     "_id": "MPTableElement:1DF69096-DBA3-47B0-B8C2-E06491E4C655",
     "_rev": "3-e74c2b7caf1e726aab91c6a72311bf57",
     "caption": "A table with hidden footer",
@@ -882,7 +887,7 @@ const x = 'y'",
     "tableStyle": "MPTableStyle:08C0E93B-848D-491F-8EB2-A8A0B17714BA",
     "updatedAt": 1538472486.955807,
   },
-  Object {
+  {
     "_id": "MPTableElement:82BD8BAF-D136-4536-AD9C-92C30B9D7315",
     "_rev": "2-6e50cb208e1e0ced2bb890180ce75f06",
     "caption": "A table",
@@ -897,7 +902,7 @@ const x = 'y'",
     "sessionID": "fb8b3d44-9515-4747-c7d8-a30fb1bc188b",
     "tableStyle": "MPTableStyle:08C0E93B-848D-491F-8EB2-A8A0B17714BA",
   },
-  Object {
+  {
     "_id": "MPTableElement:89CF51B2-A20C-4AB9-CBD9-F47DAF167DAA",
     "_rev": "2-1907b916a11c44731855d65db4b33474",
     "caption": "A table with hidden caption",
@@ -912,7 +917,7 @@ const x = 'y'",
     "sessionID": "fb8b3d44-9515-4747-c7d8-a30fb1bc188b",
     "tableStyle": "MPTableStyle:08C0E93B-848D-491F-8EB2-A8A0B17714BA",
   },
-  Object {
+  {
     "_id": "MPTableElement:E0D445B4-18C4-43D3-97B3-1076A7BB5CF4",
     "_rev": "3-3d78b03bf5370cae3f824e56fb18e8a7",
     "caption": "A table with hidden header",
@@ -929,12 +934,12 @@ const x = 'y'",
     "tableStyle": "MPTableStyle:08C0E93B-848D-491F-8EB2-A8A0B17714BA",
     "updatedAt": 1538472467.565576,
   },
-  Object {
+  {
     "_id": "MPTOCElement:657C54DB-78B5-4206-E322-170F68263A01",
     "_rev": "6-bbecf20c3d3510e3d35e673043624864",
     "collection": "elements",
     "containerID": "MPProject:1",
-    "contents": "<div id=\\"MPTOCElement:657C54DB-78B5-4206-E322-170F68263A01\\" class=\\"manuscript-toc\\" contenteditable=\\"false\\">
+    "contents": "<div id="MPTOCElement:657C54DB-78B5-4206-E322-170F68263A01" class="manuscript-toc" contenteditable="false">
   
     
     
@@ -945,11 +950,11 @@ const x = 'y'",
       
         
         
-        <ul class=\\"manuscript-toc-list\\">
+        <ul class="manuscript-toc-list">
       
 	
 	 
-    <li class=\\"manuscript-toc-list-item\\" data-referenced-section=\\"MPSection:DFCBE345-A12D-451E-8320-723F25D2F472\\" data-referenced-section-path-length=\\"1\\">
+    <li class="manuscript-toc-list-item" data-referenced-section="MPSection:DFCBE345-A12D-451E-8320-723F25D2F472" data-referenced-section-path-length="1">
       1. Table of Contents
     </li>
 
@@ -967,7 +972,7 @@ const x = 'y'",
 
 	
 	 
-    <li class=\\"manuscript-toc-list-item\\" data-referenced-section=\\"MPSection:77786D47-6060-4FBC-BC13-5FA754968D6A\\" data-referenced-section-path-length=\\"1\\">
+    <li class="manuscript-toc-list-item" data-referenced-section="MPSection:77786D47-6060-4FBC-BC13-5FA754968D6A" data-referenced-section-path-length="1">
       2. First section
     </li>
 
@@ -985,7 +990,7 @@ const x = 'y'",
 
 	
 	 
-    <li class=\\"manuscript-toc-list-item\\" data-referenced-section=\\"MPSection:F8EE617B-484B-4CF2-F1CA-014F5307D5CF\\" data-referenced-section-path-length=\\"1\\">
+    <li class="manuscript-toc-list-item" data-referenced-section="MPSection:F8EE617B-484B-4CF2-F1CA-014F5307D5CF" data-referenced-section-path-length="1">
       3. Section Two
     </li>
 
@@ -1003,7 +1008,7 @@ const x = 'y'",
 
 	
 	 
-    <li class=\\"manuscript-toc-list-item\\" data-referenced-section=\\"MPSection:E07B0D52-9642-4D58-E577-26F8804E3DEE\\" data-referenced-section-path-length=\\"1\\">
+    <li class="manuscript-toc-list-item" data-referenced-section="MPSection:E07B0D52-9642-4D58-E577-26F8804E3DEE" data-referenced-section-path-length="1">
       4. Bibliography
     </li>
 
@@ -1025,10 +1030,10 @@ const x = 'y'",
     "placeholderInnerHTML": null,
     "sessionID": "fb8b3d44-9515-4747-c7d8-a30fb1bc188b",
   },
-  Object {
-    "MathMLStringRepresentation": "<math xmlns=\\"http://www.w3.org/1998/Math/MathML\\" display=\\"block\\"><mn>2</mn><mi>x</mi><mn>3</mn><mo>=</mo><mn>6</mn></math>",
-    "OMMLStringRepresentation": "<m:oMath xmlns:m=\\"http://schemas.openxmlformats.org/officeDocument/2006/math\\"><m:r><w:rPr><w:rFonts w:ascii=\\"Cambria Math\\" w:eastAsia=\\"Cambria Math\\" w:hAnsi=\\"Cambria Math\\" w:cs=\\"Cambria Math\\"/></w:rPr><m:t>2x3=6</m:t></m:r></m:oMath>",
-    "SVGStringRepresentation": "<svg xmlns:xlink=\\"http://www.w3.org/1999/xlink\\" xmlns=\\"http://www.w3.org/2000/svg\\" width=\\"7.916ex\\" height=\\"2.097ex\\" viewBox=\\"0 -781.2 3408.1 903.1\\" role=\\"img\\" focusable=\\"false\\" style=\\"vertical-align: -0.283ex;\\"><defs xmlns=\\"http://www.w3.org/2000/svg\\"><path stroke-width=\\"1\\" id=\\"MJMAIN-32\\" d=\\"M109 429Q82 429 66 447T50 491Q50 562 103 614T235 666Q326 666 387 610T449 465Q449 422 429 383T381 315T301 241Q265 210 201 149L142 93L218 92Q375 92 385 97Q392 99 409 186V189H449V186Q448 183 436 95T421 3V0H50V19V31Q50 38 56 46T86 81Q115 113 136 137Q145 147 170 174T204 211T233 244T261 278T284 308T305 340T320 369T333 401T340 431T343 464Q343 527 309 573T212 619Q179 619 154 602T119 569T109 550Q109 549 114 549Q132 549 151 535T170 489Q170 464 154 447T109 429Z\\"/><path stroke-width=\\"1\\" id=\\"MJMATHI-78\\" d=\\"M52 289Q59 331 106 386T222 442Q257 442 286 424T329 379Q371 442 430 442Q467 442 494 420T522 361Q522 332 508 314T481 292T458 288Q439 288 427 299T415 328Q415 374 465 391Q454 404 425 404Q412 404 406 402Q368 386 350 336Q290 115 290 78Q290 50 306 38T341 26Q378 26 414 59T463 140Q466 150 469 151T485 153H489Q504 153 504 145Q504 144 502 134Q486 77 440 33T333 -11Q263 -11 227 52Q186 -10 133 -10H127Q78 -10 57 16T35 71Q35 103 54 123T99 143Q142 143 142 101Q142 81 130 66T107 46T94 41L91 40Q91 39 97 36T113 29T132 26Q168 26 194 71Q203 87 217 139T245 247T261 313Q266 340 266 352Q266 380 251 392T217 404Q177 404 142 372T93 290Q91 281 88 280T72 278H58Q52 284 52 289Z\\"/><path stroke-width=\\"1\\" id=\\"MJMAIN-33\\" d=\\"M127 463Q100 463 85 480T69 524Q69 579 117 622T233 665Q268 665 277 664Q351 652 390 611T430 522Q430 470 396 421T302 350L299 348Q299 347 308 345T337 336T375 315Q457 262 457 175Q457 96 395 37T238 -22Q158 -22 100 21T42 130Q42 158 60 175T105 193Q133 193 151 175T169 130Q169 119 166 110T159 94T148 82T136 74T126 70T118 67L114 66Q165 21 238 21Q293 21 321 74Q338 107 338 175V195Q338 290 274 322Q259 328 213 329L171 330L168 332Q166 335 166 348Q166 366 174 366Q202 366 232 371Q266 376 294 413T322 525V533Q322 590 287 612Q265 626 240 626Q208 626 181 615T143 592T132 580H135Q138 579 143 578T153 573T165 566T175 555T183 540T186 520Q186 498 172 481T127 463Z\\"/><path stroke-width=\\"1\\" id=\\"MJMAIN-3D\\" d=\\"M56 347Q56 360 70 367H707Q722 359 722 347Q722 336 708 328L390 327H72Q56 332 56 347ZM56 153Q56 168 72 173H708Q722 163 722 153Q722 140 707 133H70Q56 140 56 153Z\\"/><path stroke-width=\\"1\\" id=\\"MJMAIN-36\\" d=\\"M42 313Q42 476 123 571T303 666Q372 666 402 630T432 550Q432 525 418 510T379 495Q356 495 341 509T326 548Q326 592 373 601Q351 623 311 626Q240 626 194 566Q147 500 147 364L148 360Q153 366 156 373Q197 433 263 433H267Q313 433 348 414Q372 400 396 374T435 317Q456 268 456 210V192Q456 169 451 149Q440 90 387 34T253 -22Q225 -22 199 -14T143 16T92 75T56 172T42 313ZM257 397Q227 397 205 380T171 335T154 278T148 216Q148 133 160 97T198 39Q222 21 251 21Q302 21 329 59Q342 77 347 104T352 209Q352 289 347 316T329 361Q302 397 257 397Z\\"/></defs><g stroke=\\"currentColor\\" fill=\\"currentColor\\" stroke-width=\\"0\\" transform=\\"matrix(1 0 0 -1 0 0)\\"><use xlink:href=\\"#MJMAIN-32\\" x=\\"0\\" y=\\"0\\"/><use xlink:href=\\"#MJMATHI-78\\" x=\\"500\\" y=\\"0\\"/><use xlink:href=\\"#MJMAIN-33\\" x=\\"1073\\" y=\\"0\\"/><use xlink:href=\\"#MJMAIN-3D\\" x=\\"1851\\" y=\\"0\\"/><use xlink:href=\\"#MJMAIN-36\\" x=\\"2907\\" y=\\"0\\"/></g></svg>",
+  {
+    "MathMLStringRepresentation": "<math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mn>2</mn><mi>x</mi><mn>3</mn><mo>=</mo><mn>6</mn></math>",
+    "OMMLStringRepresentation": "<m:oMath xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math"><m:r><w:rPr><w:rFonts w:ascii="Cambria Math" w:eastAsia="Cambria Math" w:hAnsi="Cambria Math" w:cs="Cambria Math"/></w:rPr><m:t>2x3=6</m:t></m:r></m:oMath>",
+    "SVGStringRepresentation": "<svg xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" width="7.916ex" height="2.097ex" viewBox="0 -781.2 3408.1 903.1" role="img" focusable="false" style="vertical-align: -0.283ex;"><defs xmlns="http://www.w3.org/2000/svg"><path stroke-width="1" id="MJMAIN-32" d="M109 429Q82 429 66 447T50 491Q50 562 103 614T235 666Q326 666 387 610T449 465Q449 422 429 383T381 315T301 241Q265 210 201 149L142 93L218 92Q375 92 385 97Q392 99 409 186V189H449V186Q448 183 436 95T421 3V0H50V19V31Q50 38 56 46T86 81Q115 113 136 137Q145 147 170 174T204 211T233 244T261 278T284 308T305 340T320 369T333 401T340 431T343 464Q343 527 309 573T212 619Q179 619 154 602T119 569T109 550Q109 549 114 549Q132 549 151 535T170 489Q170 464 154 447T109 429Z"/><path stroke-width="1" id="MJMATHI-78" d="M52 289Q59 331 106 386T222 442Q257 442 286 424T329 379Q371 442 430 442Q467 442 494 420T522 361Q522 332 508 314T481 292T458 288Q439 288 427 299T415 328Q415 374 465 391Q454 404 425 404Q412 404 406 402Q368 386 350 336Q290 115 290 78Q290 50 306 38T341 26Q378 26 414 59T463 140Q466 150 469 151T485 153H489Q504 153 504 145Q504 144 502 134Q486 77 440 33T333 -11Q263 -11 227 52Q186 -10 133 -10H127Q78 -10 57 16T35 71Q35 103 54 123T99 143Q142 143 142 101Q142 81 130 66T107 46T94 41L91 40Q91 39 97 36T113 29T132 26Q168 26 194 71Q203 87 217 139T245 247T261 313Q266 340 266 352Q266 380 251 392T217 404Q177 404 142 372T93 290Q91 281 88 280T72 278H58Q52 284 52 289Z"/><path stroke-width="1" id="MJMAIN-33" d="M127 463Q100 463 85 480T69 524Q69 579 117 622T233 665Q268 665 277 664Q351 652 390 611T430 522Q430 470 396 421T302 350L299 348Q299 347 308 345T337 336T375 315Q457 262 457 175Q457 96 395 37T238 -22Q158 -22 100 21T42 130Q42 158 60 175T105 193Q133 193 151 175T169 130Q169 119 166 110T159 94T148 82T136 74T126 70T118 67L114 66Q165 21 238 21Q293 21 321 74Q338 107 338 175V195Q338 290 274 322Q259 328 213 329L171 330L168 332Q166 335 166 348Q166 366 174 366Q202 366 232 371Q266 376 294 413T322 525V533Q322 590 287 612Q265 626 240 626Q208 626 181 615T143 592T132 580H135Q138 579 143 578T153 573T165 566T175 555T183 540T186 520Q186 498 172 481T127 463Z"/><path stroke-width="1" id="MJMAIN-3D" d="M56 347Q56 360 70 367H707Q722 359 722 347Q722 336 708 328L390 327H72Q56 332 56 347ZM56 153Q56 168 72 173H708Q722 163 722 153Q722 140 707 133H70Q56 140 56 153Z"/><path stroke-width="1" id="MJMAIN-36" d="M42 313Q42 476 123 571T303 666Q372 666 402 630T432 550Q432 525 418 510T379 495Q356 495 341 509T326 548Q326 592 373 601Q351 623 311 626Q240 626 194 566Q147 500 147 364L148 360Q153 366 156 373Q197 433 263 433H267Q313 433 348 414Q372 400 396 374T435 317Q456 268 456 210V192Q456 169 451 149Q440 90 387 34T253 -22Q225 -22 199 -14T143 16T92 75T56 172T42 313ZM257 397Q227 397 205 380T171 335T154 278T148 216Q148 133 160 97T198 39Q222 21 251 21Q302 21 329 59Q342 77 347 104T352 209Q352 289 347 316T329 361Q302 397 257 397Z"/></defs><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use xlink:href="#MJMAIN-32" x="0" y="0"/><use xlink:href="#MJMATHI-78" x="500" y="0"/><use xlink:href="#MJMAIN-33" x="1073" y="0"/><use xlink:href="#MJMAIN-3D" x="1851" y="0"/><use xlink:href="#MJMAIN-36" x="2907" y="0"/></g></svg>",
     "TeXRepresentation": "2x3=6",
     "_id": "MPEquation:C900DDA4-BE45-4AF6-8C9F-CA0AA5FCC403",
     "_rev": "4-3e9077e26f2a313d84a2f18245a459a5",
@@ -1041,56 +1046,56 @@ const x = 'y'",
     "title": "Equation",
     "updatedAt": 1538472510.576513,
   },
-  Object {
+  {
     "_id": "MPTable:2A2413E2-71F5-4B6C-F513-7B44748E49A8",
     "_rev": "3-70afa454233e041169c1ec5840bf8d1d",
     "caption": "Caption",
     "collection": "tables",
     "containerID": "MPProject:1",
-    "contents": "<table id=\\"MPTableElement:1DF69096-DBA3-47B0-B8C2-E06491E4C655\\" class=\\"MPElement MPTableStyle_08C0E93B-848D-491F-8EB2-A8A0B17714BA MPParagraphStyle_7EAB5784-717B-4672-BD59-8CA324FB0637\\" data-contained-object-id=\\"MPTable:2A2413E2-71F5-4B6C-F513-7B44748E49A8\\"><thead style=\\"display: table-header-group;\\"><tr><th data-placeholder-text=\\"Header 1\\" class=\\"placeholder\\"></th><th data-placeholder-text=\\"Header 2\\" class=\\"placeholder\\"></th></tr></thead><tbody><tr><td data-placeholder-text=\\"Data\\" class=\\"placeholder\\"></td><td data-placeholder-text=\\"Data\\" class=\\"placeholder\\"></td></tr><tr><td data-placeholder-text=\\"Data\\" class=\\"placeholder\\"></td><td data-placeholder-text=\\"Data\\" class=\\"placeholder\\"></td></tr></tbody><tfoot style=\\"display: none;\\"><tr><td data-placeholder-text=\\"Footer 1\\" class=\\"placeholder\\"></td><td data-placeholder-text=\\"Footer 2\\" class=\\"placeholder\\"></td></tr></tfoot></table>",
+    "contents": "<table xmlns="http://www.w3.org/1999/xhtml" id="MPTableElement:1DF69096-DBA3-47B0-B8C2-E06491E4C655" class="MPElement MPTableStyle_08C0E93B-848D-491F-8EB2-A8A0B17714BA MPParagraphStyle_7EAB5784-717B-4672-BD59-8CA324FB0637" data-contained-object-id="MPTable:2A2413E2-71F5-4B6C-F513-7B44748E49A8"><thead style="display: table-header-group;"><tr><th data-placeholder-text="Header 1" class="placeholder"></th><th data-placeholder-text="Header 2" class="placeholder"></th></tr></thead><tbody><tr><td data-placeholder-text="Data" class="placeholder"></td><td data-placeholder-text="Data" class="placeholder"></td></tr><tr><td data-placeholder-text="Data" class="placeholder"></td><td data-placeholder-text="Data" class="placeholder"></td></tr></tbody><tfoot style="display: none;"><tr><td data-placeholder-text="Footer 1" class="placeholder"></td><td data-placeholder-text="Footer 2" class="placeholder"></td></tr></tfoot></table>",
     "createdAt": 1538472477,
     "manuscriptID": "MPManuscript:8EB79C14-9F61-483A-902F-A0B8EF5973C9",
     "objectType": "MPTable",
     "sessionID": "fb8b3d44-9515-4747-c7d8-a30fb1bc188b",
   },
-  Object {
+  {
     "_id": "MPTable:509A944E-994C-4867-AE55-593628C5DBD5",
     "_rev": "12-4ea2e4d6da2de922a2069516bfaaa661",
     "caption": "Caption",
     "collection": "tables",
     "containerID": "MPProject:1",
-    "contents": "<table id=\\"MPTableElement:82BD8BAF-D136-4536-AD9C-92C30B9D7315\\" class=\\"MPElement MPTableStyle_08C0E93B-848D-491F-8EB2-A8A0B17714BA MPParagraphStyle_7EAB5784-717B-4672-BD59-8CA324FB0637\\" data-contained-object-id=\\"MPTable:509A944E-994C-4867-AE55-593628C5DBD5\\"><thead style=\\"display: table-header-group;\\"><tr><th data-placeholder-text=\\"Header 1\\">Table Header</th><th data-placeholder-text=\\"Header 2\\">Table Header</th></tr></thead><tbody><tr><td data-placeholder-text=\\"Data\\">Table Data</td><td data-placeholder-text=\\"Data\\">Table Data</td></tr><tr><td data-placeholder-text=\\"Data\\">Table Data</td><td data-placeholder-text=\\"Data\\">Table Data</td></tr></tbody><tfoot style=\\"display: table-footer-group;\\"><tr><td data-placeholder-text=\\"Footer 1\\">Table Footer</td><td data-placeholder-text=\\"Footer 2\\">Table Footer</td></tr></tfoot></table>",
+    "contents": "<table xmlns="http://www.w3.org/1999/xhtml" id="MPTableElement:82BD8BAF-D136-4536-AD9C-92C30B9D7315" class="MPElement MPTableStyle_08C0E93B-848D-491F-8EB2-A8A0B17714BA MPParagraphStyle_7EAB5784-717B-4672-BD59-8CA324FB0637" data-contained-object-id="MPTable:509A944E-994C-4867-AE55-593628C5DBD5"><thead style="display: table-header-group;"><tr><th data-placeholder-text="Header 1">Table Header</th><th data-placeholder-text="Header 2">Table Header</th></tr></thead><tbody><tr><td data-placeholder-text="Data">Table Data</td><td data-placeholder-text="Data">Table Data</td></tr><tr><td data-placeholder-text="Data">Table Data</td><td data-placeholder-text="Data">Table Data</td></tr></tbody><tfoot style="display: table-footer-group;"><tr><td data-placeholder-text="Footer 1">Table Footer</td><td data-placeholder-text="Footer 2">Table Footer</td></tr></tfoot></table>",
     "createdAt": 1538472409,
     "manuscriptID": "MPManuscript:8EB79C14-9F61-483A-902F-A0B8EF5973C9",
     "objectType": "MPTable",
     "sessionID": "fb8b3d44-9515-4747-c7d8-a30fb1bc188b",
   },
-  Object {
+  {
     "_id": "MPTable:6C045963-404A-4E1E-FF81-B40E9772A6A6",
     "_rev": "2-15e056ae229aea06819fd680e7813bef",
     "caption": "Caption",
     "collection": "tables",
     "containerID": "MPProject:1",
-    "contents": "<table id=\\"MPTableElement:89CF51B2-A20C-4AB9-CBD9-F47DAF167DAA\\" class=\\"MPElement MPTableStyle_08C0E93B-848D-491F-8EB2-A8A0B17714BA MPParagraphStyle_7EAB5784-717B-4672-BD59-8CA324FB0637\\" data-contained-object-id=\\"MPTable:6C045963-404A-4E1E-FF81-B40E9772A6A6\\"><thead style=\\"display: table-header-group;\\"><tr><th data-placeholder-text=\\"Header 1\\" class=\\"placeholder\\"></th><th data-placeholder-text=\\"Header 2\\" class=\\"placeholder\\"></th></tr></thead><tbody><tr><td data-placeholder-text=\\"Data\\" class=\\"placeholder\\"></td><td data-placeholder-text=\\"Data\\" class=\\"placeholder\\"></td></tr><tr><td data-placeholder-text=\\"Data\\" class=\\"placeholder\\"></td><td data-placeholder-text=\\"Data\\" class=\\"placeholder\\"></td></tr></tbody><tfoot style=\\"display: table-footer-group;\\"><tr><td data-placeholder-text=\\"Footer 1\\" class=\\"placeholder\\"></td><td data-placeholder-text=\\"Footer 2\\" class=\\"placeholder\\"></td></tr></tfoot></table>",
+    "contents": "<table xmlns="http://www.w3.org/1999/xhtml" id="MPTableElement:89CF51B2-A20C-4AB9-CBD9-F47DAF167DAA" class="MPElement MPTableStyle_08C0E93B-848D-491F-8EB2-A8A0B17714BA MPParagraphStyle_7EAB5784-717B-4672-BD59-8CA324FB0637" data-contained-object-id="MPTable:6C045963-404A-4E1E-FF81-B40E9772A6A6"><thead style="display: table-header-group;"><tr><th data-placeholder-text="Header 1" class="placeholder"></th><th data-placeholder-text="Header 2" class="placeholder"></th></tr></thead><tbody><tr><td data-placeholder-text="Data" class="placeholder"></td><td data-placeholder-text="Data" class="placeholder"></td></tr><tr><td data-placeholder-text="Data" class="placeholder"></td><td data-placeholder-text="Data" class="placeholder"></td></tr></tbody><tfoot style="display: table-footer-group;"><tr><td data-placeholder-text="Footer 1" class="placeholder"></td><td data-placeholder-text="Footer 2" class="placeholder"></td></tr></tfoot></table>",
     "createdAt": 1538472490,
     "manuscriptID": "MPManuscript:8EB79C14-9F61-483A-902F-A0B8EF5973C9",
     "objectType": "MPTable",
     "sessionID": "fb8b3d44-9515-4747-c7d8-a30fb1bc188b",
   },
-  Object {
+  {
     "_id": "MPTable:7E83812B-A759-4D38-C1C5-F6507D2FC2A9",
     "_rev": "4-85c901661faba71ee78592827949f346",
     "caption": "Caption",
     "collection": "tables",
     "containerID": "MPProject:1",
-    "contents": "<table id=\\"MPTableElement:E0D445B4-18C4-43D3-97B3-1076A7BB5CF4\\" class=\\"MPElement MPTableStyle_08C0E93B-848D-491F-8EB2-A8A0B17714BA MPParagraphStyle_7EAB5784-717B-4672-BD59-8CA324FB0637\\" data-contained-object-id=\\"MPTable:7E83812B-A759-4D38-C1C5-F6507D2FC2A9\\"><thead style=\\"display: none;\\"><tr><th data-placeholder-text=\\"Header 1\\">Table Header</th><th data-placeholder-text=\\"Header 2\\" class=\\"placeholder\\"></th></tr></thead><tbody><tr><td data-placeholder-text=\\"Data\\" class=\\"placeholder\\"></td><td data-placeholder-text=\\"Data\\" class=\\"placeholder\\"></td></tr><tr><td data-placeholder-text=\\"Data\\" class=\\"placeholder\\"></td><td data-placeholder-text=\\"Data\\" class=\\"placeholder\\"></td></tr></tbody><tfoot style=\\"display: table-footer-group;\\"><tr><td data-placeholder-text=\\"Footer 1\\" class=\\"placeholder\\"></td><td data-placeholder-text=\\"Footer 2\\" class=\\"placeholder\\"></td></tr></tfoot></table>",
+    "contents": "<table xmlns="http://www.w3.org/1999/xhtml" id="MPTableElement:E0D445B4-18C4-43D3-97B3-1076A7BB5CF4" class="MPElement MPTableStyle_08C0E93B-848D-491F-8EB2-A8A0B17714BA MPParagraphStyle_7EAB5784-717B-4672-BD59-8CA324FB0637" data-contained-object-id="MPTable:7E83812B-A759-4D38-C1C5-F6507D2FC2A9"><thead style="display: none;"><tr><th data-placeholder-text="Header 1">Table Header</th><th data-placeholder-text="Header 2" class="placeholder"></th></tr></thead><tbody><tr><td data-placeholder-text="Data" class="placeholder"></td><td data-placeholder-text="Data" class="placeholder"></td></tr><tr><td data-placeholder-text="Data" class="placeholder"></td><td data-placeholder-text="Data" class="placeholder"></td></tr></tbody><tfoot style="display: table-footer-group;"><tr><td data-placeholder-text="Footer 1" class="placeholder"></td><td data-placeholder-text="Footer 2" class="placeholder"></td></tr></tfoot></table>",
     "createdAt": 1538472459,
     "manuscriptID": "MPManuscript:8EB79C14-9F61-483A-902F-A0B8EF5973C9",
     "objectType": "MPTable",
     "sessionID": "67B27E3B-1E1E-42E2-9B9D-2D2123AA95F6",
     "updatedAt": 1538472461.381721,
   },
-  Object {
+  {
     "_id": "MPAuxiliaryObjectReference:461D1AFF-1871-4594-8E07-963D3476B7F5",
     "_rev": "1-90e9759cef24b0146c947a25fe9ad118",
     "collection": "auxiliary-object-references",
@@ -1102,7 +1107,7 @@ const x = 'y'",
     "referencedObject": "MPEquation:C900DDA4-BE45-4AF6-8C9F-CA0AA5FCC403",
     "sessionID": "fb8b3d44-9515-4747-c7d8-a30fb1bc188b",
   },
-  Object {
+  {
     "_id": "MPAuxiliaryObjectReference:82E2F9F9-797F-4397-9084-D98B72C12903",
     "_rev": "1-6c9ee88b256f29569530724cb3d266c7",
     "collection": "auxiliary-object-references",
@@ -1111,10 +1116,10 @@ const x = 'y'",
     "createdAt": 1538472627,
     "manuscriptID": "MPManuscript:8EB79C14-9F61-483A-902F-A0B8EF5973C9",
     "objectType": "MPAuxiliaryObjectReference",
-    "referencedObject": "MPFigure:D673DF08-D75E-4061-8EC1-9611EAB302F0",
+    "referencedObject": "MPFigureElement:A5D68C57-B5BB-4D10-E0C3-ECED717A2AA7",
     "sessionID": "fb8b3d44-9515-4747-c7d8-a30fb1bc188b",
   },
-  Object {
+  {
     "_id": "MPAuxiliaryObjectReference:88AF1DCA-B232-4791-8EAA-F38E0025A3C6",
     "_rev": "1-c695f88cbced3cc3e2e17c2c914ec5de",
     "collection": "auxiliary-object-references",
@@ -1126,15 +1131,15 @@ const x = 'y'",
     "referencedObject": "MPTable:509A944E-994C-4867-AE55-593628C5DBD5",
     "sessionID": "fb8b3d44-9515-4747-c7d8-a30fb1bc188b",
   },
-  Object {
+  {
     "_id": "MPCitation:C1BA9478-E940-4273-CB5C-0DDCD62CFBF2",
     "_rev": "1-2286c531562db2f8fee2ffcedb01df95",
     "collection": "citations",
     "containerID": "MPProject:1",
     "containingObject": "MPParagraphElement:CB7347E5-8502-4667-82B9-51104BB1FEDB",
     "createdAt": 1538472685,
-    "embeddedCitationItems": Array [
-      Object {
+    "embeddedCitationItems": [
+      {
         "_id": "MPCitationItem:2B3C3557-01FB-4142-A20F-62804E85B596",
         "bibliographyItem": "MPBibliographyItem:8C394C86-F7B0-48CE-D5BC-E7A10FCE7FA5",
         "objectType": "MPCitationItem",
@@ -1144,43 +1149,43 @@ const x = 'y'",
     "objectType": "MPCitation",
     "sessionID": "fb8b3d44-9515-4747-c7d8-a30fb1bc188b",
   },
-  Object {
+  {
     "_id": "MPFootnote:B1589279-0F3B-472B-BF11-3F59D6B65791",
     "_rev": "3-b142b108cb392c578e9cccbd6cf1c7b6",
     "collection": "footnotes",
     "containerID": "MPProject:1",
-    "containingObject": "MPParagraphElement:3708E8C7-441C-4502-8BFC-D3A2059CEF8B",
-    "contents": "<div id=\\"MPFootnote:B1589279-0F3B-472B-BF11-3F59D6B65791\\" class=\\"footnote-contents\\" ><div class=\\"footnote-text\\"><p placeholder-text=\\"Footnote\\">This is a footnote.</p></div></div>",
+    "containingObject": "MPFootnotesElement:4CD7CE08-0880-46BD-FF83-52E32AEFAC3E",
+    "contents": "<div xmlns="http://www.w3.org/1999/xhtml" class="footnote-text" id="MPFootnote:B1589279-0F3B-472B-BF11-3F59D6B65791" data-kind="footnote"><p>This is a footnote.</p></div>",
     "createdAt": 1538473899,
     "kind": "footnote",
     "manuscriptID": "MPManuscript:8EB79C14-9F61-483A-902F-A0B8EF5973C9",
     "objectType": "MPFootnote",
     "sessionID": "58d96cc7-c834-4810-8f39-55cbca7eef93",
   },
-  Object {
+  {
     "_id": "MPFootnote:D4C99F2D-4663-4510-869C-AFA02AB7B155",
     "_rev": "1-6d7bb9f88153907da56b2e72b4fc5e0b",
     "collection": "footnotes",
     "containerID": "MPProject:1",
     "containingObject": "MPParagraphElement:C4468780-CC08-4F22-8B5E-EAE555D59A14",
-    "contents": "<div id=\\"MPFootnote:D4C99F2D-4663-4510-869C-AFA02AB7B155\\" class=\\"footnote-contents\\" ><div class=\\"footnote-text\\"><p placeholder-text=\\"Endnote\\"></p></div></div>",
+    "contents": "<div xmlns="http://www.w3.org/1999/xhtml" id="MPFootnote:D4C99F2D-4663-4510-869C-AFA02AB7B155" class="footnote-contents" ><div class="footnote-text"><p placeholder-text="Endnote"></p></div></div>",
     "createdAt": 1538473915,
     "kind": "endnote",
     "manuscriptID": "MPManuscript:8EB79C14-9F61-483A-902F-A0B8EF5973C9",
     "objectType": "MPFootnote",
     "sessionID": "58d96cc7-c834-4810-8f39-55cbca7eef93",
   },
-  Object {
-    "MathMLRepresentation": "<math xmlns=\\"http://www.w3.org/1998/Math/MathML\\">
+  {
+    "MathMLRepresentation": "<math xmlns="http://www.w3.org/1998/Math/MathML">
   <mn>3</mn>
   <mo>+</mo>
   <mn>5</mn>
   <mo>=</mo>
   <mn>8</mn>
 </math>",
-    "OMMLRepresentation": "<?xml version=\\"1.0\\" encoding=\\"UTF-8\\" standalone=\\"yes\\"?><m:oMath xmlns:w=\\"http://schemas.openxmlformats.org/wordprocessingml/2006/main\\" xmlns:m=\\"http://schemas.openxmlformats.org/officeDocument/2006/math\\"><m:r><w:rPr><w:rFonts w:ascii=\\"Cambria Math\\" w:eastAsia=\\"Cambria Math\\" w:hAnsi=\\"Cambria Math\\" w:cs=\\"Cambria Math\\"/></w:rPr><m:t>3+5=8</m:t></m:r></m:oMath>",
-    "SVGGlyphs": "<defs xmlns=\\"http://www.w3.org/2000/svg\\"><path stroke-width=\\"1\\" id=\\"MJMAIN-33\\" d=\\"M127 463Q100 463 85 480T69 524Q69 579 117 622T233 665Q268 665 277 664Q351 652 390 611T430 522Q430 470 396 421T302 350L299 348Q299 347 308 345T337 336T375 315Q457 262 457 175Q457 96 395 37T238 -22Q158 -22 100 21T42 130Q42 158 60 175T105 193Q133 193 151 175T169 130Q169 119 166 110T159 94T148 82T136 74T126 70T118 67L114 66Q165 21 238 21Q293 21 321 74Q338 107 338 175V195Q338 290 274 322Q259 328 213 329L171 330L168 332Q166 335 166 348Q166 366 174 366Q202 366 232 371Q266 376 294 413T322 525V533Q322 590 287 612Q265 626 240 626Q208 626 181 615T143 592T132 580H135Q138 579 143 578T153 573T165 566T175 555T183 540T186 520Q186 498 172 481T127 463Z\\"/><path stroke-width=\\"1\\" id=\\"MJMAIN-2B\\" d=\\"M56 237T56 250T70 270H369V420L370 570Q380 583 389 583Q402 583 409 568V270H707Q722 262 722 250T707 230H409V-68Q401 -82 391 -82H389H387Q375 -82 369 -68V230H70Q56 237 56 250Z\\"/><path stroke-width=\\"1\\" id=\\"MJMAIN-35\\" d=\\"M164 157Q164 133 148 117T109 101H102Q148 22 224 22Q294 22 326 82Q345 115 345 210Q345 313 318 349Q292 382 260 382H254Q176 382 136 314Q132 307 129 306T114 304Q97 304 95 310Q93 314 93 485V614Q93 664 98 664Q100 666 102 666Q103 666 123 658T178 642T253 634Q324 634 389 662Q397 666 402 666Q410 666 410 648V635Q328 538 205 538Q174 538 149 544L139 546V374Q158 388 169 396T205 412T256 420Q337 420 393 355T449 201Q449 109 385 44T229 -22Q148 -22 99 32T50 154Q50 178 61 192T84 210T107 214Q132 214 148 197T164 157Z\\"/><path stroke-width=\\"1\\" id=\\"MJMAIN-3D\\" d=\\"M56 347Q56 360 70 367H707Q722 359 722 347Q722 336 708 328L390 327H72Q56 332 56 347ZM56 153Q56 168 72 173H708Q722 163 722 153Q722 140 707 133H70Q56 140 56 153Z\\"/><path stroke-width=\\"1\\" id=\\"MJMAIN-38\\" d=\\"M70 417T70 494T124 618T248 666Q319 666 374 624T429 515Q429 485 418 459T392 417T361 389T335 371T324 363L338 354Q352 344 366 334T382 323Q457 264 457 174Q457 95 399 37T249 -22Q159 -22 101 29T43 155Q43 263 172 335L154 348Q133 361 127 368Q70 417 70 494ZM286 386L292 390Q298 394 301 396T311 403T323 413T334 425T345 438T355 454T364 471T369 491T371 513Q371 556 342 586T275 624Q268 625 242 625Q201 625 165 599T128 534Q128 511 141 492T167 463T217 431Q224 426 228 424L286 386ZM250 21Q308 21 350 55T392 137Q392 154 387 169T375 194T353 216T330 234T301 253T274 270Q260 279 244 289T218 306L210 311Q204 311 181 294T133 239T107 157Q107 98 150 60T250 21Z\\"/></defs>",
-    "SVGRepresentation": "<svg xmlns:xlink=\\"http://www.w3.org/1999/xlink\\" width=\\"9.426ex\\" height=\\"2.237ex\\" viewBox=\\"0 -781.2 4058.5 963\\" role=\\"img\\" focusable=\\"false\\" xmlns=\\"http://www.w3.org/2000/svg\\" style=\\"vertical-align: -0.422ex;\\"><defs><path stroke-width=\\"1\\" id=\\"MJMAIN-33\\" d=\\"M127 463Q100 463 85 480T69 524Q69 579 117 622T233 665Q268 665 277 664Q351 652 390 611T430 522Q430 470 396 421T302 350L299 348Q299 347 308 345T337 336T375 315Q457 262 457 175Q457 96 395 37T238 -22Q158 -22 100 21T42 130Q42 158 60 175T105 193Q133 193 151 175T169 130Q169 119 166 110T159 94T148 82T136 74T126 70T118 67L114 66Q165 21 238 21Q293 21 321 74Q338 107 338 175V195Q338 290 274 322Q259 328 213 329L171 330L168 332Q166 335 166 348Q166 366 174 366Q202 366 232 371Q266 376 294 413T322 525V533Q322 590 287 612Q265 626 240 626Q208 626 181 615T143 592T132 580H135Q138 579 143 578T153 573T165 566T175 555T183 540T186 520Q186 498 172 481T127 463Z\\"></path><path stroke-width=\\"1\\" id=\\"MJMAIN-2B\\" d=\\"M56 237T56 250T70 270H369V420L370 570Q380 583 389 583Q402 583 409 568V270H707Q722 262 722 250T707 230H409V-68Q401 -82 391 -82H389H387Q375 -82 369 -68V230H70Q56 237 56 250Z\\"></path><path stroke-width=\\"1\\" id=\\"MJMAIN-35\\" d=\\"M164 157Q164 133 148 117T109 101H102Q148 22 224 22Q294 22 326 82Q345 115 345 210Q345 313 318 349Q292 382 260 382H254Q176 382 136 314Q132 307 129 306T114 304Q97 304 95 310Q93 314 93 485V614Q93 664 98 664Q100 666 102 666Q103 666 123 658T178 642T253 634Q324 634 389 662Q397 666 402 666Q410 666 410 648V635Q328 538 205 538Q174 538 149 544L139 546V374Q158 388 169 396T205 412T256 420Q337 420 393 355T449 201Q449 109 385 44T229 -22Q148 -22 99 32T50 154Q50 178 61 192T84 210T107 214Q132 214 148 197T164 157Z\\"></path><path stroke-width=\\"1\\" id=\\"MJMAIN-3D\\" d=\\"M56 347Q56 360 70 367H707Q722 359 722 347Q722 336 708 328L390 327H72Q56 332 56 347ZM56 153Q56 168 72 173H708Q722 163 722 153Q722 140 707 133H70Q56 140 56 153Z\\"></path><path stroke-width=\\"1\\" id=\\"MJMAIN-38\\" d=\\"M70 417T70 494T124 618T248 666Q319 666 374 624T429 515Q429 485 418 459T392 417T361 389T335 371T324 363L338 354Q352 344 366 334T382 323Q457 264 457 174Q457 95 399 37T249 -22Q159 -22 101 29T43 155Q43 263 172 335L154 348Q133 361 127 368Q70 417 70 494ZM286 386L292 390Q298 394 301 396T311 403T323 413T334 425T345 438T355 454T364 471T369 491T371 513Q371 556 342 586T275 624Q268 625 242 625Q201 625 165 599T128 534Q128 511 141 492T167 463T217 431Q224 426 228 424L286 386ZM250 21Q308 21 350 55T392 137Q392 154 387 169T375 194T353 216T330 234T301 253T274 270Q260 279 244 289T218 306L210 311Q204 311 181 294T133 239T107 157Q107 98 150 60T250 21Z\\"></path></defs><g stroke=\\"currentColor\\" fill=\\"currentColor\\" stroke-width=\\"0\\" transform=\\"matrix(1 0 0 -1 0 0)\\"><use xlink:href=\\"#MJMAIN-33\\" x=\\"0\\" y=\\"0\\"></use><use xlink:href=\\"#MJMAIN-2B\\" x=\\"722\\" y=\\"0\\"></use><use xlink:href=\\"#MJMAIN-35\\" x=\\"1723\\" y=\\"0\\"></use><use xlink:href=\\"#MJMAIN-3D\\" x=\\"2501\\" y=\\"0\\"></use><use xlink:href=\\"#MJMAIN-38\\" x=\\"3558\\" y=\\"0\\"></use></g></svg>",
+    "OMMLRepresentation": "<?xml version="1.0" encoding="UTF-8" standalone="yes"?><m:oMath xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math"><m:r><w:rPr><w:rFonts w:ascii="Cambria Math" w:eastAsia="Cambria Math" w:hAnsi="Cambria Math" w:cs="Cambria Math"/></w:rPr><m:t>3+5=8</m:t></m:r></m:oMath>",
+    "SVGGlyphs": "<defs xmlns="http://www.w3.org/2000/svg"><path stroke-width="1" id="MJMAIN-33" d="M127 463Q100 463 85 480T69 524Q69 579 117 622T233 665Q268 665 277 664Q351 652 390 611T430 522Q430 470 396 421T302 350L299 348Q299 347 308 345T337 336T375 315Q457 262 457 175Q457 96 395 37T238 -22Q158 -22 100 21T42 130Q42 158 60 175T105 193Q133 193 151 175T169 130Q169 119 166 110T159 94T148 82T136 74T126 70T118 67L114 66Q165 21 238 21Q293 21 321 74Q338 107 338 175V195Q338 290 274 322Q259 328 213 329L171 330L168 332Q166 335 166 348Q166 366 174 366Q202 366 232 371Q266 376 294 413T322 525V533Q322 590 287 612Q265 626 240 626Q208 626 181 615T143 592T132 580H135Q138 579 143 578T153 573T165 566T175 555T183 540T186 520Q186 498 172 481T127 463Z"/><path stroke-width="1" id="MJMAIN-2B" d="M56 237T56 250T70 270H369V420L370 570Q380 583 389 583Q402 583 409 568V270H707Q722 262 722 250T707 230H409V-68Q401 -82 391 -82H389H387Q375 -82 369 -68V230H70Q56 237 56 250Z"/><path stroke-width="1" id="MJMAIN-35" d="M164 157Q164 133 148 117T109 101H102Q148 22 224 22Q294 22 326 82Q345 115 345 210Q345 313 318 349Q292 382 260 382H254Q176 382 136 314Q132 307 129 306T114 304Q97 304 95 310Q93 314 93 485V614Q93 664 98 664Q100 666 102 666Q103 666 123 658T178 642T253 634Q324 634 389 662Q397 666 402 666Q410 666 410 648V635Q328 538 205 538Q174 538 149 544L139 546V374Q158 388 169 396T205 412T256 420Q337 420 393 355T449 201Q449 109 385 44T229 -22Q148 -22 99 32T50 154Q50 178 61 192T84 210T107 214Q132 214 148 197T164 157Z"/><path stroke-width="1" id="MJMAIN-3D" d="M56 347Q56 360 70 367H707Q722 359 722 347Q722 336 708 328L390 327H72Q56 332 56 347ZM56 153Q56 168 72 173H708Q722 163 722 153Q722 140 707 133H70Q56 140 56 153Z"/><path stroke-width="1" id="MJMAIN-38" d="M70 417T70 494T124 618T248 666Q319 666 374 624T429 515Q429 485 418 459T392 417T361 389T335 371T324 363L338 354Q352 344 366 334T382 323Q457 264 457 174Q457 95 399 37T249 -22Q159 -22 101 29T43 155Q43 263 172 335L154 348Q133 361 127 368Q70 417 70 494ZM286 386L292 390Q298 394 301 396T311 403T323 413T334 425T345 438T355 454T364 471T369 491T371 513Q371 556 342 586T275 624Q268 625 242 625Q201 625 165 599T128 534Q128 511 141 492T167 463T217 431Q224 426 228 424L286 386ZM250 21Q308 21 350 55T392 137Q392 154 387 169T375 194T353 216T330 234T301 253T274 270Q260 279 244 289T218 306L210 311Q204 311 181 294T133 239T107 157Q107 98 150 60T250 21Z"/></defs>",
+    "SVGRepresentation": "<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="9.426ex" height="2.237ex" viewBox="0 -781.2 4058.5 963" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" style="vertical-align: -0.422ex;"><defs><path stroke-width="1" id="MJMAIN-33" d="M127 463Q100 463 85 480T69 524Q69 579 117 622T233 665Q268 665 277 664Q351 652 390 611T430 522Q430 470 396 421T302 350L299 348Q299 347 308 345T337 336T375 315Q457 262 457 175Q457 96 395 37T238 -22Q158 -22 100 21T42 130Q42 158 60 175T105 193Q133 193 151 175T169 130Q169 119 166 110T159 94T148 82T136 74T126 70T118 67L114 66Q165 21 238 21Q293 21 321 74Q338 107 338 175V195Q338 290 274 322Q259 328 213 329L171 330L168 332Q166 335 166 348Q166 366 174 366Q202 366 232 371Q266 376 294 413T322 525V533Q322 590 287 612Q265 626 240 626Q208 626 181 615T143 592T132 580H135Q138 579 143 578T153 573T165 566T175 555T183 540T186 520Q186 498 172 481T127 463Z"></path><path stroke-width="1" id="MJMAIN-2B" d="M56 237T56 250T70 270H369V420L370 570Q380 583 389 583Q402 583 409 568V270H707Q722 262 722 250T707 230H409V-68Q401 -82 391 -82H389H387Q375 -82 369 -68V230H70Q56 237 56 250Z"></path><path stroke-width="1" id="MJMAIN-35" d="M164 157Q164 133 148 117T109 101H102Q148 22 224 22Q294 22 326 82Q345 115 345 210Q345 313 318 349Q292 382 260 382H254Q176 382 136 314Q132 307 129 306T114 304Q97 304 95 310Q93 314 93 485V614Q93 664 98 664Q100 666 102 666Q103 666 123 658T178 642T253 634Q324 634 389 662Q397 666 402 666Q410 666 410 648V635Q328 538 205 538Q174 538 149 544L139 546V374Q158 388 169 396T205 412T256 420Q337 420 393 355T449 201Q449 109 385 44T229 -22Q148 -22 99 32T50 154Q50 178 61 192T84 210T107 214Q132 214 148 197T164 157Z"></path><path stroke-width="1" id="MJMAIN-3D" d="M56 347Q56 360 70 367H707Q722 359 722 347Q722 336 708 328L390 327H72Q56 332 56 347ZM56 153Q56 168 72 173H708Q722 163 722 153Q722 140 707 133H70Q56 140 56 153Z"></path><path stroke-width="1" id="MJMAIN-38" d="M70 417T70 494T124 618T248 666Q319 666 374 624T429 515Q429 485 418 459T392 417T361 389T335 371T324 363L338 354Q352 344 366 334T382 323Q457 264 457 174Q457 95 399 37T249 -22Q159 -22 101 29T43 155Q43 263 172 335L154 348Q133 361 127 368Q70 417 70 494ZM286 386L292 390Q298 394 301 396T311 403T323 413T334 425T345 438T355 454T364 471T369 491T371 513Q371 556 342 586T275 624Q268 625 242 625Q201 625 165 599T128 534Q128 511 141 492T167 463T217 431Q224 426 228 424L286 386ZM250 21Q308 21 350 55T392 137Q392 154 387 169T375 194T353 216T330 234T301 253T274 270Q260 279 244 289T218 306L210 311Q204 311 181 294T133 239T107 157Q107 98 150 60T250 21Z"></path></defs><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use xlink:href="#MJMAIN-33" x="0" y="0"></use><use xlink:href="#MJMAIN-2B" x="722" y="0"></use><use xlink:href="#MJMAIN-35" x="1723" y="0"></use><use xlink:href="#MJMAIN-3D" x="2501" y="0"></use><use xlink:href="#MJMAIN-38" x="3558" y="0"></use></g></svg>",
     "TeXRepresentation": "3+5=8",
     "_id": "MPInlineMathFragment:A8A76DC2-EA6A-44BF-E8E7-B4A9EAEDF090",
     "_rev": "3-a84b5374afabc00abefe6eaaf6c2994a",
@@ -1193,13 +1198,13 @@ const x = 'y'",
     "sessionID": "67B27E3B-1E1E-42E2-9B9D-2D2123AA95F6",
     "updatedAt": 1538472590.478792,
   },
-  Object {
+  {
     "_id": "MPContributor:585DB23A-8778-4AFF-986F-CFF7B733CDE6",
     "_rev": "131-f8add0194691b6beba3ba881ea1b2ea6",
-    "affiliations": Array [
+    "affiliations": [
       "MPAffiliation:DED56C09-42E2-4AB4-BA15-9260389E2B08",
     ],
-    "bibliographicName": Object {
+    "bibliographicName": {
       "_id": "MPBibliographicName:24C5AC82-0130-4C94-A6D7-E8A2699EAAC8",
       "family": "Author",
       "given": "Example",
@@ -1210,7 +1215,7 @@ const x = 'y'",
     "createdAt": 1538472774.30736,
     "email": "user@example.com",
     "fullName": "Example Author",
-    "grants": Array [
+    "grants": [
       "MPGrant:EFF99DA8-065D-4DC8-B6DA-521F36371547",
     ],
     "isJointContributor": true,
@@ -1221,10 +1226,10 @@ const x = 'y'",
     "role": "author",
     "updatedAt": 1538472894.363645,
   },
-  Object {
+  {
     "_id": "MPContributor:8AD5903E-0C9C-4F46-87AE-124142CE12C2",
     "_rev": "57-71c71bf50c1031325470337f179e9bf3",
-    "bibliographicName": Object {
+    "bibliographicName": {
       "_id": "MPBibliographicName:E5B649B2-1B97-46FF-AA36-ADDC3B532517",
       "family": "Author",
       "given": "Corresponding",
@@ -1243,33 +1248,33 @@ const x = 'y'",
     "role": "author",
     "updatedAt": 1538472823.003292,
   },
-  Object {
+  {
     "_id": "MPProject:1",
     "createdAt": 0,
     "objectType": "MPProject",
-    "owners": Array [],
+    "owners": [],
     "updatedAt": 0,
-    "viewers": Array [],
-    "writers": Array [],
+    "viewers": [],
+    "writers": [],
   },
 ]
 `;
 
 exports[`selectActiveResources Project dump 2 1`] = `
-Array [
-  Object {
+[
+  {
     "_id": "MPProject:0430F469-3E30-43F5-8F67-10EECC8AD9F1",
     "_rev": "1-904bb0f92a80b54db960ac7e1348b8df",
     "createdAt": 1557747761,
     "objectType": "MPProject",
-    "owners": Array [
+    "owners": [
       "User_imomani@atypon.com",
     ],
     "sessionID": "ec45d501-2479-4228-9922-a05cc42ef251",
     "title": "",
     "updatedAt": 1557747761,
-    "viewers": Array [],
-    "writers": Array [],
+    "viewers": [],
+    "writers": [],
   },
 ]
 `;

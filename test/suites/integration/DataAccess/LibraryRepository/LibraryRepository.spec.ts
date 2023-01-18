@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-import { drop, testDatabase, seed, dropBucket } from '../../../../utilities/db'
 import checksum from 'checksum'
 
-import { TEST_TIMEOUT } from '../../../../utilities/testSetup'
 import { BucketKey } from '../../../../../src/Config/ConfigurationTypes'
+import { ContainerInvitationRepository } from '../../../../../src/DataAccess/ContainerInvitationRepository/ContainerInvitationRepository'
 import { LibraryRepository } from '../../../../../src/DataAccess/LibraryRepository/LibraryRepository'
 import { validLibrary } from '../../../../data/fixtures/libraries'
-import { ContainerInvitationRepository } from '../../../../../src/DataAccess/ContainerInvitationRepository/ContainerInvitationRepository'
 import { createLibrary, createLibraryInvitation } from '../../../../data/fixtures/misc'
+import { drop, dropBucket, seed, testDatabase } from '../../../../utilities/db'
+import { TEST_TIMEOUT } from '../../../../utilities/testSetup'
 
 jest.setTimeout(TEST_TIMEOUT)
 
@@ -34,27 +34,24 @@ describe('LibraryRepository - removeWithAllResources', () => {
   beforeEach(async () => {
     await drop()
     await dropBucket(BucketKey.Project)
-    await seed({ })
+    await seed({})
   })
 
   test('should remove library with all its resources', async () => {
     const repository = new LibraryRepository(BucketKey.Project, db)
-    const libraryInvitationRepository = new ContainerInvitationRepository(
-      BucketKey.Project,
-      db
-    )
+    const libraryInvitationRepository = new ContainerInvitationRepository(BucketKey.Project, db)
     const validId = `MPLibrary:valid-library-id-6`
     await createLibrary('valid-library-id-6')
-    await createLibraryInvitation(checksum(
-      'valid-user@manuscriptsapp.com-valid-user-6@manuscriptsapp.com-valid-library-id-6',
-      { algorithm: 'sha1' }
-    ))
+    await createLibraryInvitation(
+      checksum('valid-user@manuscriptsapp.com-valid-user-6@manuscriptsapp.com-valid-library-id-6', {
+        algorithm: 'sha1',
+      })
+    )
     const libraryBefore = await repository.getById(validId)
     const invitationBefore = await libraryInvitationRepository.getById(
-      checksum(
-        'valid-user@manuscriptsapp.com-valid-user-6@manuscriptsapp.com-valid-library-id-6',
-        { algorithm: 'sha1' }
-      )
+      checksum('valid-user@manuscriptsapp.com-valid-user-6@manuscriptsapp.com-valid-library-id-6', {
+        algorithm: 'sha1',
+      })
     )
 
     expect(libraryBefore!._id).toBe(validId)
@@ -64,10 +61,9 @@ describe('LibraryRepository - removeWithAllResources', () => {
 
     const libraryAfter = await repository.getById(validId)
     const invitationAfter = await libraryInvitationRepository.getById(
-      checksum(
-        'valid-user@manuscriptsapp.com-valid-user-6@manuscriptsapp.com-valid-library-id-6',
-        { algorithm: 'sha1' }
-      )
+      checksum('valid-user@manuscriptsapp.com-valid-user-6@manuscriptsapp.com-valid-library-id-6', {
+        algorithm: 'sha1',
+      })
     )
 
     expect(libraryAfter).toBeNull()
@@ -87,10 +83,8 @@ describe('LibraryRepository - getUserContainers', () => {
     const validUserId = 'User_test'
     const libraries = await repository.getUserContainers(validUserId)
 
-    expect(
-      libraries.find(
-        (library: any) => library._id === validLibrary._id
-      )._id
-    ).toBe(validLibrary._id)
+    expect(libraries.find((library: any) => library._id === validLibrary._id)._id).toBe(
+      validLibrary._id
+    )
   })
 })

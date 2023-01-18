@@ -14,32 +14,33 @@
  * limitations under the License.
  */
 
-import { SeedOptions } from '../../../../../../src/DataAccess/Interfaces/SeedOptions'
-import { drop, dropBucket, seed, testDatabase } from '../../../../../utilities/db'
-import { validBody } from '../../../../../data/fixtures/credentialsRequestPayload'
-import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
-import { BucketKey } from '../../../../../../src/Config/ConfigurationTypes'
+import { Model, ObjectTypes } from '@manuscripts/json-schema'
+import fs from 'fs'
+import { StatusCodes } from 'http-status-codes'
 import * as supertest from 'supertest'
+
+import { BucketKey } from '../../../../../../src/Config/ConfigurationTypes'
+import { SeedOptions } from '../../../../../../src/DataAccess/Interfaces/SeedOptions'
+import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
 import {
   basicLogin,
+  deleteModel,
   getCollaborators,
   importManuscript,
   insertProject,
-  saveProject,
-  deleteModel,
   loadProject,
+  saveProject,
 } from '../../../../../api'
+import { validBody } from '../../../../../data/fixtures/credentialsRequestPayload'
 import {
   authorizationHeader,
   ValidContentTypeAcceptJsonHeader,
   ValidHeaderWithApplicationKey,
 } from '../../../../../data/fixtures/headers'
-import * as HttpStatus from 'http-status-codes'
 import { validManuscript } from '../../../../../data/fixtures/manuscripts'
-import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
-import { createProject, createManuscript } from '../../../../../data/fixtures/misc'
-import fs from 'fs'
-import {Model, ObjectTypes } from '@manuscripts/manuscripts-json-schema'
+import { createManuscript, createProject } from '../../../../../data/fixtures/misc'
+import { drop, dropBucket, seed, testDatabase } from '../../../../../utilities/db'
+import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
 
 let db: any = null
 const seedOptions: SeedOptions = {
@@ -63,13 +64,11 @@ describe('ContainerService - createProject', () => {
     await drop()
     await dropBucket(BucketKey.Project)
     await seed(seedOptions)
-    await DIContainer.sharedContainer.syncService.createUserProfile(
-      {
-        _id: `User|${validBody.email}`,
-        name: 'foobar',
-        email: validBody.email
-      }
-    )
+    await DIContainer.sharedContainer.syncService.createUserProfile({
+      _id: `User|${validBody.email}`,
+      name: 'foobar',
+      email: validBody.email,
+    })
   })
   test('should import jats into new manuscript', async () => {
     const loginResponse: supertest.Response = await basicLogin(
@@ -77,7 +76,7 @@ describe('ContainerService - createProject', () => {
       ValidHeaderWithApplicationKey
     )
 
-    expect(loginResponse.status).toBe(HttpStatus.OK)
+    expect(loginResponse.status).toBe(StatusCodes.OK)
 
     const authHeader = authorizationHeader(loginResponse.body.token)
     await createProject('MPProject:valid-project-id-2')
@@ -92,7 +91,7 @@ describe('ContainerService - createProject', () => {
       },
       'test/data/fixtures/jats-arc.zip'
     )
-    expect(sendFileResponse.status).toBe(HttpStatus.OK)
+    expect(sendFileResponse.status).toBe(StatusCodes.OK)
   })
 
   test('should import jats into an existing manuscript', async () => {
@@ -101,11 +100,14 @@ describe('ContainerService - createProject', () => {
       ValidHeaderWithApplicationKey
     )
 
-    expect(loginResponse.status).toBe(HttpStatus.OK)
+    expect(loginResponse.status).toBe(StatusCodes.OK)
 
     const authHeader = authorizationHeader(loginResponse.body.token)
     await createProject('MPProject:valid-project-id-2')
-    await createManuscript('MPManuscript:valid-manuscript-id-1', 'User_valid-user@manuscriptsapp.com')
+    await createManuscript(
+      'MPManuscript:valid-manuscript-id-1',
+      'User_valid-user@manuscriptsapp.com'
+    )
 
     const sendFileResponse = await importManuscript(
       {
@@ -118,7 +120,7 @@ describe('ContainerService - createProject', () => {
       'test/data/fixtures/jats-arc.zip',
       validManuscript._id
     )
-    expect(sendFileResponse.status).toBe(HttpStatus.OK)
+    expect(sendFileResponse.status).toBe(StatusCodes.OK)
   })
 
   test('should import jats and update manuscript with templateId', async () => {
@@ -127,11 +129,14 @@ describe('ContainerService - createProject', () => {
       ValidHeaderWithApplicationKey
     )
 
-    expect(loginResponse.status).toBe(HttpStatus.OK)
+    expect(loginResponse.status).toBe(StatusCodes.OK)
 
     const authHeader = authorizationHeader(loginResponse.body.token)
     await createProject('MPProject:valid-project-id-2')
-    await createManuscript('MPManuscript:valid-manuscript-id-1', 'User_valid-user@manuscriptsapp.com')
+    await createManuscript(
+      'MPManuscript:valid-manuscript-id-1',
+      'User_valid-user@manuscriptsapp.com'
+    )
 
     const sendFileResponse = await importManuscript(
       {
@@ -145,7 +150,7 @@ describe('ContainerService - createProject', () => {
       validManuscript._id,
       'MPManuscriptTemplate:valid-template-2'
     )
-    expect(sendFileResponse.status).toBe(HttpStatus.OK)
+    expect(sendFileResponse.status).toBe(StatusCodes.OK)
   })
 
   test('should import jats and update manuscript with templateId 2', async () => {
@@ -154,11 +159,14 @@ describe('ContainerService - createProject', () => {
       ValidHeaderWithApplicationKey
     )
 
-    expect(loginResponse.status).toBe(HttpStatus.OK)
+    expect(loginResponse.status).toBe(StatusCodes.OK)
 
     const authHeader = authorizationHeader(loginResponse.body.token)
     await createProject('MPProject:valid-project-id-2')
-    await createManuscript('MPManuscript:valid-manuscript-id-1', 'User_valid-user@manuscriptsapp.com')
+    await createManuscript(
+      'MPManuscript:valid-manuscript-id-1',
+      'User_valid-user@manuscriptsapp.com'
+    )
 
     const sendFileResponse = await importManuscript(
       {
@@ -172,7 +180,7 @@ describe('ContainerService - createProject', () => {
       validManuscript._id,
       'MPManuscriptTemplate:www-zotero-org-styles-nature-genetics-Nature-Genetics-Journal-Publication-Article'
     )
-    expect(sendFileResponse.status).toBe(HttpStatus.OK)
+    expect(sendFileResponse.status).toBe(StatusCodes.OK)
   })
 })
 
@@ -181,13 +189,11 @@ describe('Project - Save Project', () => {
     await drop()
     await dropBucket(BucketKey.Project)
     await seed(seedOptions)
-    await DIContainer.sharedContainer.syncService.createUserProfile(
-      {
-        _id: `User|${validBody.email}`,
-        name: 'foobar',
-        email: validBody.email
-      }
-    )
+    await DIContainer.sharedContainer.syncService.createUserProfile({
+      _id: `User|${validBody.email}`,
+      name: 'foobar',
+      email: validBody.email,
+    })
   })
 
   test('should save project JSON', async () => {
@@ -196,7 +202,7 @@ describe('Project - Save Project', () => {
       ValidHeaderWithApplicationKey
     )
 
-    expect(loginResponse.status).toBe(HttpStatus.OK)
+    expect(loginResponse.status).toBe(StatusCodes.OK)
     await createProject('MPProject:valid-project-id-2')
     await createManuscript('MPManuscript:valid-manuscript-id-1')
 
@@ -215,7 +221,7 @@ describe('Project - Save Project', () => {
         data: json.data,
       }
     )
-    expect(sendFileResponse.status).toBe(HttpStatus.OK)
+    expect(sendFileResponse.status).toBe(StatusCodes.OK)
   })
 })
 
@@ -236,7 +242,7 @@ describe('Project - insert Project', () => {
       ValidHeaderWithApplicationKey
     )
 
-    expect(loginResponse.status).toBe(HttpStatus.OK)
+    expect(loginResponse.status).toBe(StatusCodes.OK)
     await createProject('MPProject:valid-project-id-2')
     await createManuscript('MPManuscript:valid-manuscript-id-1')
 
@@ -256,7 +262,7 @@ describe('Project - insert Project', () => {
         data: json.data,
       }
     )
-    expect(result.status).toBe(HttpStatus.OK)
+    expect(result.status).toBe(StatusCodes.OK)
   })
 
   test('project resources should be removed before inserting new JSON', async () => {
@@ -265,7 +271,7 @@ describe('Project - insert Project', () => {
       ValidHeaderWithApplicationKey
     )
 
-    expect(loginResponse.status).toBe(HttpStatus.OK)
+    expect(loginResponse.status).toBe(StatusCodes.OK)
     await createProject('MPProject:valid-project-id-2')
     await createManuscript('MPManuscript:valid-manuscript-id-1')
 
@@ -321,7 +327,7 @@ describe('ContainerService - get collaborators', () => {
       ValidHeaderWithApplicationKey
     )
 
-    expect(loginResponse.status).toBe(HttpStatus.OK)
+    expect(loginResponse.status).toBe(StatusCodes.OK)
     await createProject('MPProject:valid-project-id-12')
 
     const authHeader = authorizationHeader(loginResponse.body.token)
@@ -334,7 +340,7 @@ describe('ContainerService - get collaborators', () => {
         containerID: 'MPProject:valid-project-id-12',
       }
     )
-    expect(collaboratorsResponse.status).toBe(HttpStatus.OK)
+    expect(collaboratorsResponse.status).toBe(StatusCodes.OK)
     expect(collaboratorsResponse.body.length).toBe(2)
     expect(collaboratorsResponse.body[0].objectType).toBe(ObjectTypes.UserCollaborator)
   })
@@ -345,13 +351,11 @@ describe('Project - Delete Model', () => {
     await drop()
     await dropBucket(BucketKey.Project)
     await seed(seedOptions)
-    await DIContainer.sharedContainer.syncService.createUserProfile(
-      {
-        _id: `User|${validBody.email}`,
-        name: 'foobar',
-        email: validBody.email
-      }
-    )
+    await DIContainer.sharedContainer.syncService.createUserProfile({
+      _id: `User|${validBody.email}`,
+      name: 'foobar',
+      email: validBody.email,
+    })
   })
 
   test('should delete model in project', async () => {
@@ -360,7 +364,7 @@ describe('Project - Delete Model', () => {
       ValidHeaderWithApplicationKey
     )
 
-    expect(loginResponse.status).toBe(HttpStatus.OK)
+    expect(loginResponse.status).toBe(StatusCodes.OK)
     await createProject('MPProject:valid-project-id-2')
     await createManuscript('MPManuscript:valid-manuscript-id-1')
 
@@ -379,7 +383,7 @@ describe('Project - Delete Model', () => {
         data: json.data,
       }
     )
-    expect(sendFileResponse.status).toBe(HttpStatus.OK)
+    expect(sendFileResponse.status).toBe(StatusCodes.OK)
 
     const deleteModelResponse = await deleteModel(
       {
@@ -389,11 +393,11 @@ describe('Project - Delete Model', () => {
       {
         containerID: 'MPProject:valid-project-id-2',
         manuscriptID: 'MPManuscript:valid-manuscript-id-1',
-        modelID: 'MPParagraphElement:2F64B77A-161C-48BB-AC09-C7EF425F752F'
+        modelID: 'MPParagraphElement:2F64B77A-161C-48BB-AC09-C7EF425F752F',
       }
     )
 
-    expect(deleteModelResponse.status).toBe(HttpStatus.OK)
+    expect(deleteModelResponse.status).toBe(StatusCodes.OK)
 
     const response: supertest.Response = await loadProject(
       {
@@ -405,7 +409,7 @@ describe('Project - Delete Model', () => {
         projectId: 'MPProject:valid-project-id-2',
       }
     )
-    expect(response.status).toBe(HttpStatus.OK)
+    expect(response.status).toBe(StatusCodes.OK)
 
     const models: Model[] = JSON.parse(response.text)
     expect(

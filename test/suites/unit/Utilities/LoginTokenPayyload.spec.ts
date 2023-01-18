@@ -23,7 +23,7 @@ describe('LoginTokenPayyload', () => {
     const invalidObjTokenA = { tokenId: 2, userId: 'foo', appId: 'bar' }
     const invalidObjTokenB = { tokenId: 'foo', userId: 3, appId: 'bar' }
     const invalidObjTokenC = { tokenId: 'foo', userId: 'bar', appId: 4 }
-    const invalidObjTokenD = { }
+    const invalidObjTokenD = {}
     const validToken = { tokenId: 'foo', userId: 'bar', appId: 'foobar' }
 
     expect(isLoginTokenPayload(nullToken)).toBeFalsy()
