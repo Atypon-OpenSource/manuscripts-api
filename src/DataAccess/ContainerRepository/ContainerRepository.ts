@@ -18,13 +18,13 @@ import { LibraryCollection, Model } from '@manuscripts/json-schema'
 
 import { selectActiveResources } from '../../Utilities/ContainerUtils/selectActiveResources'
 import { IContainerRepository } from '../Interfaces/IContainerRepository'
+import { IdentifiableEntity } from '../Interfaces/IdentifiableEntity'
 import { SGRepository } from '../SGRepository'
 import { proceedWithReadAccess } from '../syncAccessControl'
-import {IdentifiableEntity} from "../Interfaces/IdentifiableEntity";
 
 export abstract class ContainerRepository<
     Container extends Partial<IdentifiableEntity>,
-  ContainerLike extends Partial<IdentifiableEntity>,
+    ContainerLike extends Partial<IdentifiableEntity>,
     PatchContainer
   >
   extends SGRepository<Container, ContainerLike, ContainerLike, PatchContainer>

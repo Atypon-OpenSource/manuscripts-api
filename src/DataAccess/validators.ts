@@ -15,8 +15,9 @@
  */
 
 import * as _ from 'lodash'
-import { ValidationError } from '../Errors'
 import moment from 'moment'
+
+import { ValidationError } from '../Errors'
 
 export function required(val: string | number, fieldName: string) {
   if (_.isEmpty(val.toString()) || _.isEmpty(val.toString().trim())) {
@@ -25,7 +26,7 @@ export function required(val: string | number, fieldName: string) {
 }
 
 const EMAIL_REGEX =
-  /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+  /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
 export function validEmail(val: string, fieldName: string) {
   if (!EMAIL_REGEX.test(val)) {

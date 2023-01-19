@@ -86,7 +86,7 @@ export class UserRepository
       },
     }
     return new Promise((resolve, reject) => {
-      this.database.bucket
+      return this.database.bucket
         .query(Q)
         .catch((error: Prisma.PrismaClientKnownRequestError) =>
           reject(
@@ -102,9 +102,9 @@ export class UserRepository
             const users = docs.map((user: any) => {
               return this.buildModel(user)
             })
-            resolve(users)
+            return resolve(users)
           } else {
-            resolve(null)
+            return resolve(null)
           }
         })
     })

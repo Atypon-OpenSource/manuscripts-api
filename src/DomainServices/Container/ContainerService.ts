@@ -572,6 +572,7 @@ export class ContainerService implements IContainerService {
   }
 
   public async checkUserContainerAccess(userID: string, containerID: string): Promise<boolean> {
+    // eslint-disable-next-line prefer-const
     let { owners, writers, viewers, editors, annotators } = await this.getContainer(
       containerID,
       ContainerService.userIdForSync(userID)

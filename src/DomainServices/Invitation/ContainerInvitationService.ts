@@ -129,7 +129,7 @@ export class ContainerInvitationService implements IContainerInvitationService {
       )
 
       const invitationId = `${ObjectTypes.ContainerInvitation}:${invitationTupleHash}`
-      let invitation = await this.containerInvitationRepository.getById(invitationId, userID)
+      const invitation = await this.containerInvitationRepository.getById(invitationId, userID)
 
       const expiry = ContainerInvitationService.invitationExpiryInDays()
       if (invitation) {
@@ -419,7 +419,7 @@ export class ContainerInvitationService implements IContainerInvitationService {
   ): Promise<InvitationToken> {
     await this.resolveInvitationTokenDetails(clientId, containerID, role)
 
-    let invitationToken = await this.invitationTokenRepository.getById(
+    const invitationToken = await this.invitationTokenRepository.getById(
       `InvitationToken|${containerID}+${role}`
     )
 
@@ -464,7 +464,7 @@ export class ContainerInvitationService implements IContainerInvitationService {
 
   public async updateInvitedUserID(userID: string, userEmail: string) {
     const invitations = await this.containerInvitationRepository.getAllByEmail(userEmail)
-    for (let invitation of invitations) {
+    for (const invitation of invitations) {
       await this.containerInvitationRepository.patch(invitation._id, { invitedUserID: userID })
     }
   }
@@ -484,7 +484,7 @@ export class ContainerInvitationService implements IContainerInvitationService {
     let roleToAssign = permittedRole
     let invitationToAccept: ContainerInvitationLike | null = null
 
-    for (let invitation of invitations) {
+    for (const invitation of invitations) {
       if (ContainerService.compareRoles(invitation.role as ContainerRole, roleToAssign) >= 0) {
         roleToAssign = invitation.role as ContainerRole
         invitationToAccept = invitation

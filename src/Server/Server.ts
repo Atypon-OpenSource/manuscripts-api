@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-import express from 'express'
 import cors from 'cors'
+import express from 'express'
 import logger from 'morgan'
 import * as path from 'path'
 
-import { log } from '../Utilities/Logger'
-import { IServer } from './IServer'
 import { PassportAuth } from '../Auth/Passport/Passport'
-import { loadRoutes } from '../Controller/RouteLoader'
-import { SQLDatabase } from '../DataAccess/SQLDatabase'
-import { isStatusCoded, ForbiddenOriginError, IllegalStateError } from '../Errors'
 import { config } from '../Config/Config'
 import { Environment } from '../Config/ConfigurationTypes'
+import { loadRoutes } from '../Controller/RouteLoader'
+import { SQLDatabase } from '../DataAccess/SQLDatabase'
+import { ForbiddenOriginError, IllegalStateError,isStatusCoded } from '../Errors'
+import { log } from '../Utilities/Logger'
+import { IServer } from './IServer'
 
 /**
  * The server.
@@ -110,6 +110,7 @@ export class Server implements IServer {
     })
 
     // catch any error and forward to error handler
+    // eslint-disable-next-line @typescript-eslint/ban-types
     this.app.use((req: express.Request, res: express.Response, _next: Function) => {
       if (process.env.NODE_ENV !== 'test') {
         log.error(
@@ -120,6 +121,7 @@ export class Server implements IServer {
     })
 
     // catch any error and forward to error handler
+    // eslint-disable-next-line @typescript-eslint/ban-types
     this.app.use((error: Error, req: express.Request, res: express.Response, _next: Function) => {
       const statusCode = isStatusCoded(error) ? error.statusCode : 400
       if (process.env.NODE_ENV !== 'test') {

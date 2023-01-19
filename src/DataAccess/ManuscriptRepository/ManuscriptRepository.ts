@@ -15,6 +15,7 @@
  */
 
 import { Manuscript } from '@manuscripts/json-schema'
+
 import { IManuscriptRepository } from '../Interfaces/IManuscriptRepository'
 import { ManuscriptLike } from '../Interfaces/Models'
 import { SGRepository } from '../SGRepository'

@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-import { ClientApplication } from '../Models/ClientApplicationModels'
 import { RSA_JWK } from 'pem-jwk'
+
+import { ClientApplication } from '../Models/ClientApplicationModels'
 
 export enum Environment {
   Test = 'test',

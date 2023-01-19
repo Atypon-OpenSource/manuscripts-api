@@ -1,3 +1,4 @@
+/* eslint-disable */
 /*!
  * © 2020 Atypon Systems LLC
  *

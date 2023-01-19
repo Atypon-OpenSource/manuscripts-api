@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
-import { UserProfile, ObjectTypes } from '@manuscripts/json-schema'
-import { v4 as uuid_v4 } from 'uuid'
+import { ObjectTypes, UserProfile } from '@manuscripts/json-schema'
 import { randomBytes } from 'crypto'
 import { promisify } from 'util'
+import { v4 as uuid_v4 } from 'uuid'
 
-import { ValidationError } from '../../Errors'
-import { BucketKey } from '../../Config/ConfigurationTypes'
-import { User } from '../../Models/UserModels'
+import { IUserProfileRepository } from '../../DataAccess/Interfaces/IUserProfileRepository'
 import { IUserStatusRepository } from '../../DataAccess/Interfaces/IUserStatusRepository'
-import { ISyncService } from './ISyncService'
+import { ValidationError } from '../../Errors'
+import { User } from '../../Models/UserModels'
 import { timestamp } from '../../Utilities/JWT/LoginTokenPayload'
 import { UserService } from '../User/UserService'
-import { IUserProfileRepository } from 'src/DataAccess/Interfaces/IUserProfileRepository'
+import { ISyncService } from './ISyncService'
 
 const randomBytesPromisified = promisify(randomBytes)
 
@@ -39,9 +38,6 @@ export const PASSWORD_BYTE_COUNT = 40
  * Default expiry of the cookie, so we send it to the client with
  * the same expiry
  */
-export const COOKIE_EXPIRY_IN_MS = 24 * 60 * 60 * 1000
-
-export const GATEWAY_BUCKETS: Array<BucketKey> = [BucketKey.Project]
 
 const randomPassword = () =>
   randomBytesPromisified(PASSWORD_BYTE_COUNT).then((buf) => buf.toString('hex'))

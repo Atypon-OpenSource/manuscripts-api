@@ -17,6 +17,7 @@
 import { IllegalStateError } from '../../../Errors'
 import { isString } from '../../../util'
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const pjson = require('../../../../package.json')
 
 export class ServerStatus {

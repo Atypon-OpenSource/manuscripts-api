@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-import { v4 as uuid_v4 } from 'uuid'
-import { DIContainer } from '../DIContainer/DIContainer'
 import { UserCollaborator } from '@manuscripts/json-schema'
+import { v4 as uuid_v4 } from 'uuid'
+
+import { DIContainer } from '../DIContainer/DIContainer'
 
 export async function onUpdate(doc: any, id: string) {
   if (id.startsWith('MPUserProfile:')) {

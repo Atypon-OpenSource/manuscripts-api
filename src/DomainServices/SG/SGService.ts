@@ -64,6 +64,7 @@ export class SGService implements ISGService {
         doc._id = id
         return this.create(token, doc)
       }
+      // eslint-disable-next-line promise/no-return-wrap
       return Promise.reject(err)
     })
   }

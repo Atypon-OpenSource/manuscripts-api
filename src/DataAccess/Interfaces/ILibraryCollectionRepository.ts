@@ -16,9 +16,9 @@
 
 import { LibraryCollection } from '@manuscripts/json-schema'
 
-import { LibraryCollectionLike } from './Models'
 import { PatchLibraryCollection } from '../../Models/LibraryCollectionModels'
 import { IContainerRepository } from './IContainerRepository'
+import { LibraryCollectionLike } from './Models'
 
 /**
  * Manages library collections persistent storage operations.

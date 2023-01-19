@@ -179,7 +179,7 @@ export class Configuration implements ConfigurationContainer {
       cookieDomain: getString(env.APP_GATEWAY_COOKIE_DOMAIN, 'APP_GATEWAY_COOKIE_DOMAIN'),
     }
 
-    const host = this.email.fromBaseURL.replace(/https{0,1}\:\/\//, '')
+    const host = this.email.fromBaseURL.replace(/https{0,1}\/\//, '')
     const additionalOrigins = [`http://${host}`, `https://${host}`]
     this.server = {
       storeOnlySSLTransmittedCookies: Boolean(

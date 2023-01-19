@@ -20,4 +20,5 @@ import { IndexedRepository } from './IndexedRepository'
 /**
  * Manages user token persistent storage operations.
  */
+// eslint-disable-next-line @typescript-eslint/ban-types
 export type IUserEmailRepository = IndexedRepository<UserEmail, UserEmail, {}, {}>

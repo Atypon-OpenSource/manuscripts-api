@@ -41,9 +41,11 @@ function main() {
       container.server.bootstrap()
       return container.server.start(config.API.port)
     })
+    // eslint-disable-next-line promise/always-return
     .then(() => {
       log.info(`Manuscripts.io ${ServerStatus.version} started 🚀`)
     })
+    // eslint-disable-next-line promise/always-return
     .then(() => {
       schedule('0 1 * * *', async () => {
         log.debug('clearUsersData every day')

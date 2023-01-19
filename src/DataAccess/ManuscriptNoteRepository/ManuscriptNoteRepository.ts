@@ -57,14 +57,15 @@ class ManuscriptNoteRepository extends SGRepository<any, any, any, any> {
     return this.database.bucket
       .query(Q)
       .catch((error: Prisma.PrismaClientKnownRequestError) =>
-        Promise.reject(
-          DatabaseError.fromPrismaError(
-            error,
-            `Error getProductionNotes of type ${this.objectType}`,
-            JSON.stringify(Q)
-          )
+      // eslint-disable-next-line promise/no-return-wrap
+      Promise.reject(
+        DatabaseError.fromPrismaError(
+          error,
+          `Error getProductionNotes of type ${this.objectType}`,
+          JSON.stringify(Q)
         )
       )
+    )
   }
 }
 
