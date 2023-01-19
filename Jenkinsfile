@@ -20,15 +20,15 @@ node("cisanta") {
     }
 
     stage("install") {
-        nodejs(nodeJSInstallationName: 'node_16_14_2') {
-            sh (script: "npm ci")
+        nodejs(nodeJSInstallationName: 'node_18_13_0') {
+            sh (script: "yarn install --non-interactive --frozen-lock-file")
         }
     }
 
     stage("lint") {
-        nodejs(nodeJSInstallationName: 'node_16_14_2') {
-            sh (script: "npm run build")
-            sh (script: "npm run lint")
+        nodejs(nodeJSInstallationName: 'node_18_13_0') {
+            sh (script: "yarn build")
+            sh (script: "yarn lint")
         }
     }
 
@@ -49,8 +49,8 @@ node("cisanta") {
             env.NODE_ENV="production"
             withEnv(readFile('.env').split('\n') as List) {
                 sh "env"
-                nodejs(nodeJSInstallationName: 'node_16_14_2') {
-                    sh (script: "npm ci")
+                nodejs(nodeJSInstallationName: 'node_18_13_0') {
+                    sh (script: "yarn install --non-interactive --frozen-lock-file")
                     sh (script: "npx gulp -f docker/utils/Gulpfile.js")
                     dir('docker') {
                         sh (script: "cp ../.env .env")
@@ -84,12 +84,12 @@ fi""")
                     url: 'git@github.com:Atypon-OpenSource/manuscripts-api.git']
                 ]])
 
-                sh (script: "npm ci")
+                sh (script: "yarn install --non-interactive --frozen-lock-file")
                 sh (script: "./bin/set-package-json-version.sh")
                 sh (script: "./bin/build-env.js .env.example > .env")
                 withEnv(readFile('.env').split('\n') as List) {
-                    nodejs(nodeJSInstallationName: 'node_16_14_2') {
-                        sh (script: "npm ci")
+                    nodejs(nodeJSInstallationName: 'node_18_13_0') {
+                        sh (script: "yarn install --non-interactive --frozen-lock-file")
                         sh (script: "export NODE_ENV='test' && export APP_TEST_ACTION='test:unit' && npx gulp -f docker/utils/Gulpfile.js")
                         dir('docker') {
                             sh (script: "cp ../.env .env")
@@ -118,7 +118,7 @@ fi""")
             //     sh (script: "./bin/build-env.js .env.example > .env")
             //     withCredentials([string(credentialsId: 'PRESSROOM_APIKEY', variable: 'PRESSROOM_APIKEY')]) {
             //         withEnv(readFile('.env').split('\n') as List) {
-            //             nodejs(nodeJSInstallationName: 'node_16_14_2') {
+            //             nodejs(nodeJSInstallationName: 'node_18_13_0') {
             //                 sh (script: "npm ci")
             //                 sh (script: "export NODE_ENV='test' && npx gulp -f docker/utils/Gulpfile.js")
             //                 dir('docker') {
