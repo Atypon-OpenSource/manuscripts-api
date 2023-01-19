@@ -54,9 +54,7 @@ class ManuscriptNoteRepository extends SGRepository<any, any, any, any> {
       ],
     }
 
-    return this.database.bucket
-      .query(Q)
-      .catch((error: Prisma.PrismaClientKnownRequestError) =>
+    return this.database.bucket.query(Q).catch((error: Prisma.PrismaClientKnownRequestError) =>
       // eslint-disable-next-line promise/no-return-wrap
       Promise.reject(
         DatabaseError.fromPrismaError(

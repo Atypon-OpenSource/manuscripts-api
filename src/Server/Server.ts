@@ -24,7 +24,7 @@ import { config } from '../Config/Config'
 import { Environment } from '../Config/ConfigurationTypes'
 import { loadRoutes } from '../Controller/RouteLoader'
 import { SQLDatabase } from '../DataAccess/SQLDatabase'
-import { ForbiddenOriginError, IllegalStateError,isStatusCoded } from '../Errors'
+import { ForbiddenOriginError, IllegalStateError, isStatusCoded } from '../Errors'
 import { log } from '../Utilities/Logger'
 import { IServer } from './IServer'
 

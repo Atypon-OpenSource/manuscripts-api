@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { UpdateUserStatus,UserStatus } from '../../Models/UserModels'
+import { UpdateUserStatus, UserStatus } from '../../Models/UserModels'
 import { IndexedRepository } from './IndexedRepository'
 import { QueryCriteria } from './QueryCriteria'
 
