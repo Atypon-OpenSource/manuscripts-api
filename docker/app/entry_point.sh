@@ -4,4 +4,4 @@ set -e
 
 sleep 2
 yarn migrate-prisma-deploy
-yarn run
+node dist/index
