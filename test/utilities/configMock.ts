@@ -18,9 +18,6 @@ import { ConfigurationContainer } from '../../src/Config/ConfigurationTypes'
 
 jest.mock('../../src/Config/Config', () => {
   const config: ConfigurationContainer = {
-    shackles: {
-      baseUrl: 'someUrl',
-    },
     DB: {
       buckets: {
         user: 'manuscripts_user',
@@ -32,9 +29,6 @@ jest.mock('../../src/Config/Config', () => {
       bucketAdminPassword: 'zuippadui',
       uri: 'couchbase://couchbase/',
       bucketOptions: {},
-    },
-    gateway: {
-      cookieDomain: '127.0.0.1',
     },
     API: {
       port: 3000,
@@ -48,24 +42,12 @@ jest.mock('../../src/Config/Config', () => {
       serverSecret: '123456789',
       enableNonConnectAuth: true,
     },
-    IAM: {
-      clientID: 'test',
-      authServerURL: 'https://iam-test.atypon.com/IAM',
-      authCallbackPath: 'https://iam-test.atypon.com/callback',
-      libraryURL: 'https://iam-test.atypon.com/library',
-      apiServerURL: ['https://iam-test.atypon.com/api-server'],
-      authServerPermittedURLs: ['https://iam-test.atypon.com'],
-    },
     email: {
       fromAddress: 'no-reply@manuscriptsapp.com',
       fromBaseURL: 'http://localhost:3000',
     },
     server: {
-      storeOnlySSLTransmittedCookies: true,
       allowedCORSOrigins: ['http://localhost:8080'],
-    },
-    literatum: {
-      allowedIPAddresses: ['localhost'],
     },
     apps: {
       knownClientApplications: [
@@ -107,11 +89,6 @@ jest.mock('../../src/Config/Config', () => {
     pressroom: {
       baseurl: 'https://pressroom-js-dev.manuscripts.io',
       apiKey: 'something-random',
-    },
-
-    template: {
-      allowedOwners: ['User_valid-user@manuscriptsapp.com'],
-      allowedProjects: ['MPProject:valid-project-id-2', 'MPProject:valid-project-id-invalid'],
     },
   }
 

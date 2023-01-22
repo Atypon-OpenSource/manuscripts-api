@@ -160,14 +160,6 @@ export async function testDatabase(
         break
     }
 
-    ;(container as any).jwksClient = {
-      getSigningKey: (_: string, callback: Function) => {
-        callback(null, {
-          rsaPublicKey:
-            'public-key-that-will-not-be-used-because-the-iam-token-verified-below-is-faked-too',
-        })
-      },
-    }
     ;(container as any).iamTokenVerifier = {
       verify: () => true,
       isValidIssuer: () => Promise.resolve(true),

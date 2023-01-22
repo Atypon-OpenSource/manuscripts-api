@@ -16,18 +16,16 @@
 
 import jwt from 'jsonwebtoken'
 
-import { config } from '../../../src/Config/Config'
-
 const validLogoutTokenObj = {
   aud: 'manuscripts',
   sub: 'something',
-  iss: config.IAM.authServerURL,
+  iss: 'https://iam-test.atypon.com',
   iat: 1571747294,
   jti: '7a52c957-2c23-4ab1-b20e-cbc4d220af28',
   events: {
-    'http://schemas.openid.net/event/backchannel-logout': {}
+    'http://schemas.openid.net/event/backchannel-logout': {},
   },
-  sid: 'random-session-id'
+  sid: 'random-session-id',
 }
 
 const validLogoutToken2Obj = {
@@ -37,9 +35,9 @@ const validLogoutToken2Obj = {
   iat: 1571747294,
   jti: '7a52c957-2c23-4ab1-b20e-cbc4d220af28',
   events: {
-    'http://schemas.openid.net/event/backchannel-logout': {}
+    'http://schemas.openid.net/event/backchannel-logout': {},
   },
-  sid: 'random-session-id-2'
+  sid: 'random-session-id-2',
 }
 
 const invalidLogoutTokenObj = {
@@ -49,9 +47,9 @@ const invalidLogoutTokenObj = {
   iat: 1571747294,
   jti: '7a52c957-2c23-4ab1-b20e-cbc4d220af28',
   events: {
-    'http://schemas.openid.net/event/backchannel-logout': {}
+    'http://schemas.openid.net/event/backchannel-logout': {},
   },
-  sid: 'invalid-session-id'
+  sid: 'invalid-session-id',
 }
 
 export const validLogoutToken = jwt.sign(validLogoutTokenObj, 'jwt')

@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-import jwks from 'jwks-rsa'
-
 import { config } from '../Config/Config'
 import { BucketKey } from '../Config/ConfigurationTypes'
 import applyMiddleware from '../DataAccess/applyMiddleware'
@@ -75,7 +73,6 @@ import { UserActivityTrackingService } from '../DomainServices/UserActivity/User
 import { ContainerServiceMap, ContainerType } from '../Models/ContainerModels'
 import { IServer } from '../Server/IServer'
 import { Server } from '../Server/Server'
-import { JWKSClient } from './JWKSClient' // our internal interface for JWKS
 
 export class UninitializedContainerError extends Error {
   constructor() {
@@ -132,7 +129,6 @@ export class DIContainer {
   readonly containerService: ContainerServiceMap
   readonly containerRequestService: IContainerRequestService
   readonly containerRequestRepository: ContainerRequestRepository
-  readonly jwksClient: JWKSClient
   readonly pressroomService: IPressroomService
   readonly manuscriptRepository: IManuscriptRepository
   readonly manuscriptNotesRepository: ManuscriptNoteRepository
@@ -306,14 +302,6 @@ export class DIContainer {
       this.invitationTokenRepository,
       this.containerInvitationRepository
     )
-    this.jwksClient = jwks({
-      cache: true,
-      cacheMaxEntries: 5,
-      cacheMaxAge: 10 * 60 * 60 * 1000, // 10h in ms
-      rateLimit: true,
-      jwksRequestsPerMinute: 1,
-      jwksUri: `${config.IAM.authServerURL}/api/oidc/jwk.json`,
-    })
     this.pressroomService = new PressroomService(config.pressroom.baseurl, config.pressroom.apiKey)
   }
 
