@@ -34,20 +34,26 @@ export class JwtAuthStrategy {
     passport.use(
       AuthStrategyTypes.jwt,
       new Strategy(opts, async (jwt, done) => {
-        const id = DIContainer.sharedContainer.userTokenRepository.fullyQualifiedId(jwt.tokenId)
-        const token = await DIContainer.sharedContainer.userTokenRepository.getById(id)
-        log.error(`UserToken: ${JSON.stringify(token)}`)
-        if (!token) {
-          return done(null, false)
-        }
+        log.error(`JWT: ${JSON.stringify(jwt)}`)
+        try {
+          const id = DIContainer.sharedContainer.userTokenRepository.fullyQualifiedId(jwt.tokenId)
+          log.error(`UserTokenQualifiedId: ${id}`)
+          const token = await DIContainer.sharedContainer.userTokenRepository.getById(id)
+          log.error(`UserToken: ${token}`)
+          if (!token) {
+            return done(null, false)
+          }
 
-        const user = await DIContainer.sharedContainer.userRepository.getById(jwt.userId)
-        log.error(`User: ${JSON.stringify(user)}`)
-        if (!user) {
-          return done(null, false)
-        }
+          const user = await DIContainer.sharedContainer.userRepository.getById(jwt.userId)
+          if (!user) {
+            return done(null, false)
+          }
 
-        return done(null, user)
+          return done(null, user)
+        } catch (error) {
+          log.error(`Error: ${JSON.stringify(error)}`)
+          return done(error, false)
+        }
       })
     )
   }
