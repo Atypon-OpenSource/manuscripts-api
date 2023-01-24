@@ -36,13 +36,13 @@ export class JwtAuthStrategy {
       new Strategy(opts, async (jwt, done) => {
         const id = DIContainer.sharedContainer.userTokenRepository.fullyQualifiedId(jwt.tokenId)
         const token = await DIContainer.sharedContainer.userTokenRepository.getById(id)
-        log.error(`UserToken: ${JSON.stringify(token)}`)
+        log.info(`UserToken: ${JSON.stringify(token)}`)
         if (!token) {
           return done(null, false)
         }
 
         const user = await DIContainer.sharedContainer.userRepository.getById(jwt.userId)
-        log.error(`User: ${JSON.stringify(user)}`)
+        log.info(`User: ${JSON.stringify(user)}`)
         if (!user) {
           return done(null, false)
         }
