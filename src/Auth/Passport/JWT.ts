@@ -28,6 +28,7 @@ export class JwtAuthStrategy {
       secretOrKey: config.auth.jwtSecret,
       issuer: config.API.hostname,
       audience: config.email.fromBaseURL,
+      ignoreExpiration: true,
     }
 
     passport.use(
