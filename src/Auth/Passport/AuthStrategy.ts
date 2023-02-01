@@ -30,7 +30,6 @@ import {
 } from '../../Errors'
 import { User } from '../../Models/UserModels'
 import { isString } from '../../util'
-import { log } from '../../Utilities/Logger'
 import { ScopedJwtAuthStrategy } from './ScopedJWT'
 
 export enum AuthStrategyTypes {
@@ -123,22 +122,6 @@ export class AuthStrategy {
     next: NextFunction
   ): void {
     if (error || !user) {
-      const reqData = JSON.stringify({
-        headers: req.headers,
-        method: req.method,
-        url: req.url,
-        httpVersion: req.httpVersion,
-        body: req.body,
-        cookies: req.cookies,
-        path: req.path,
-        protocol: req.protocol,
-        query: req.query,
-        hostname: req.hostname,
-        ip: req.ip,
-        originalUrl: req.originalUrl,
-        params: req.params,
-      })
-      log.error(`Request Data: ${reqData}`)
       const notFound = true
       res.status(StatusCodes.UNAUTHORIZED).json({ notFound }).end()
     } else {
