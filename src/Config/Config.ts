@@ -14,37 +14,31 @@
  * limitations under the License.
  */
 
+import { config as load } from 'dotenv-safe'
+import { existsSync } from 'fs'
 import * as path from 'path'
-import { load } from 'dotenv-safe'
-import { isString, isNumber } from '../util'
+
+import { ConfigurationError } from '../Errors'
 import {
   clientApplicationsFromSplitString,
   scopeConfigurationsFromSplitString,
 } from '../Models/ClientApplicationModels'
-import { existsSync, readFileSync } from 'fs'
+import { isNumber, isString } from '../util'
 import { log } from '../Utilities/Logger'
-import { ConfigurationError } from '../Errors'
 import {
   APIConfiguration,
-  DatabaseConfiguration,
   AuthConfiguration,
-  EmailConfiguration,
-  GatewayConfiguration,
-  ServerConfiguration,
   ClientApplicationsConfiguration,
-  EnvironmentLike,
-  Environment,
   ConfigurationContainer,
-  IAMConfiguration,
-  ScopedAccessTokenConfiguration,
-  LiteratumConfiguration,
+  DatabaseConfiguration,
+  EmailConfiguration,
+  Environment,
+  EnvironmentLike,
   PressroomConfiguration,
-  TemplateConfiguration,
-  ShacklesConfiguration,
+  ScopedAccessTokenConfiguration,
+  ServerConfiguration,
 } from './ConfigurationTypes'
 import { normalizeURL } from './normalize-url'
-
-const isUTF8 = require('is-utf8')
 
 /**
  * Configuration string validator:
@@ -71,20 +65,6 @@ function getArray(value: string, key: string, separator: string): string[] {
   return arrayParts
 }
 
-function getOptionalArray(envVar: string | undefined, key: string, separator: string): string[] {
-  if (envVar === undefined || envVar === '') {
-    return []
-  }
-  const value = getString(envVar, key)
-  const arrayParts = value.split(separator)
-  for (const part of arrayParts) {
-    if (!isString(part) || part.length === 0) {
-      throw new ConfigurationError(key, value)
-    }
-  }
-  return arrayParts
-}
-
 function getNumber(value: any, key: string, allowMissing?: boolean): number {
   const numberVal = Number(value)
   if (!allowMissing && (!isNumber(numberVal) || isNaN(numberVal) || !isFinite(numberVal))) {
@@ -97,16 +77,11 @@ export class Configuration implements ConfigurationContainer {
   readonly API: APIConfiguration
   readonly DB: DatabaseConfiguration
   readonly auth: AuthConfiguration
-  readonly IAM: IAMConfiguration
   readonly email: EmailConfiguration
-  readonly gateway: GatewayConfiguration
   readonly server: ServerConfiguration
   readonly apps: ClientApplicationsConfiguration
   readonly scopes: ScopedAccessTokenConfiguration[]
-  readonly literatum: LiteratumConfiguration
   readonly pressroom: PressroomConfiguration
-  readonly shackles: ShacklesConfiguration
-  readonly template: TemplateConfiguration
 
   constructor(env: EnvironmentLike) {
     this.API = {
@@ -144,51 +119,14 @@ export class Configuration implements ConfigurationContainer {
       buckets,
     }
 
-    this.IAM = {
-      clientID: getString(env.APP_IAM_CLIENT_ID, 'APP_IAM_CLIENT_ID'),
-      authServerURL: getString(env.APP_IAM_SERVER_URL, 'APP_IAM_SERVER_URL'),
-      authServerPermittedURLs: Array.from(
-        new Set(
-          getArray(
-            getString(env.APP_IAM_PERMITTED_SERVER_URLS, 'APP_IAM_PERMITTED_SERVER_URLS'),
-            'APP_IAM_PERMITTED_SERVER_URLS',
-            ';'
-          )
-        )
-      ),
-      authCallbackPath: normalizeURL(
-        getString(env.APP_IAM_AUTH_CALLBACK_PATH, 'APP_IAM_AUTH_CALLBACK_PATH')
-      ),
-      libraryURL: normalizeURL(getString(env.APP_IAM_LIBRARY_URL, 'APP_IAM_LIBRARY_URL')),
-      apiServerURL: Array.from(
-        new Set(
-          getArray(
-            getString(env.APP_API_SERVER_URL, 'APP_API_SERVER_URL'),
-            'APP_API_SERVER_URL',
-            ';'
-          )
-        )
-      ),
-    }
-
     this.email = {
       fromAddress: getString(env.APP_FROM_EMAIL, 'APP_FROM_EMAIL'),
       fromBaseURL: normalizeURL(getString(env.APP_BASE_URL, 'APP_BASE_URL')),
     }
 
-    this.gateway = {
-      cookieDomain: getString(env.APP_GATEWAY_COOKIE_DOMAIN, 'APP_GATEWAY_COOKIE_DOMAIN'),
-    }
-
-    const host = this.email.fromBaseURL.replace(/https{0,1}\:\/\//, '')
+    const host = this.email.fromBaseURL.replace(/https{0,1}\/\//, '')
     const additionalOrigins = [`http://${host}`, `https://${host}`]
     this.server = {
-      storeOnlySSLTransmittedCookies: Boolean(
-        getNumber(
-          env.APP_STORE_ONLY_SSL_TRANSMITTED_COOKIES,
-          'APP_STORE_ONLY_SSL_TRANSMITTED_COOKIES'
-        )
-      ),
       allowedCORSOrigins: Array.from(
         new Set(
           getArray(
@@ -198,18 +136,6 @@ export class Configuration implements ConfigurationContainer {
           ).concat(additionalOrigins)
         )
       ), // get unique values from potentially duplicated ones.
-    }
-
-    this.literatum = {
-      allowedIPAddresses: Array.from(
-        new Set(
-          getArray(
-            getString(env.APP_ALLOWED_IP_ADDRESSES, 'APP_ALLOWED_IP_ADDRESSES'),
-            'APP_ALLOWED_IP_ADDRESSES',
-            ';'
-          )
-        )
-      ),
     }
 
     this.apps = {
@@ -230,19 +156,10 @@ export class Configuration implements ConfigurationContainer {
       baseurl: getString(env.APP_PRESSROOM_BASE_URL, 'APP_PRESSROOM_BASE_URL'),
       apiKey: getString(env.APP_PRESSROOM_APIKEY, 'APP_PRESSROOM_APIKEY'),
     }
-
-    this.shackles = {
-      baseUrl: getString(env.SHACKLES_URL, 'SHACKLES_URL'),
-    }
-
-    this.template = {
-      allowedOwners: getOptionalArray(env.APP_ALLOWED_OWNERS, 'APP_ALLOWED_OWNERS', ';'),
-      allowedProjects: getOptionalArray(env.APP_ALLOWED_PROJECTS, 'APP_ALLOWED_PROJECTS', ';'),
-    }
   }
 
   static fromEnv(envExamplePath: string) {
-    if (existsSync('.env') && isUTF8(readFileSync('.env'))) {
+    if (existsSync('.env')) {
       const dotenvResult = load({
         allowEmptyValues: false,
         sample: envExamplePath,

@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { IndexedRepository } from './IndexedRepository'
 import {
   ClientApplication,
   ClientApplicationQueryCriteria,
 } from '../../Models/ClientApplicationModels'
+import { IndexedRepository } from './IndexedRepository'
 
 /**
  * Manages application persistent storage operations.

@@ -14,41 +14,40 @@
  * limitations under the License.
  */
 
+import { ObjectTypes } from '@manuscripts/json-schema'
 import checksum from 'checksum'
-import { ObjectTypes } from '@manuscripts/manuscripts-json-schema'
+import cryptoRandomString from 'crypto-random-string'
 
-import { User, InvitationToken } from '../../Models/UserModels'
+import { ContainerInvitationRepository } from '../../DataAccess/ContainerInvitationRepository/ContainerInvitationRepository'
+import { IInvitationTokenRepository } from '../../DataAccess/Interfaces/IInvitationTokenRepository'
+import { IUserProfileRepository } from '../../DataAccess/Interfaces/IUserProfileRepository'
+import { IUserRepository } from '../../DataAccess/Interfaces/IUserRepository'
+import { ContainerInvitationLike } from '../../DataAccess/Interfaces/Models'
 import {
-  InvalidCredentialsError,
-  ValidationError,
   ConflictingRecordError,
-  UserRoleError,
+  InvalidCredentialsError,
   MissingContainerError,
   RecordGoneError,
   RoleDoesNotPermitOperationError,
+  UserRoleError,
+  ValidationError,
 } from '../../Errors'
-import { IContainerInvitationService } from './IContainerInvitationService'
-import { IUserRepository } from '../../DataAccess/Interfaces/IUserRepository'
-import { UserActivityEventType } from '../../Models/UserEventModels'
-import { UserActivityTrackingService } from '../UserActivity/UserActivityTrackingService'
 import {
-  ContainerRole,
-  ContainerInvitationResponse,
-  InvitedUserData,
   Container,
+  ContainerInvitationResponse,
+  ContainerRole,
+  InvitedUserData,
 } from '../../Models/ContainerModels'
-import { IContainerService } from '../Container/IContainerService'
+import { UserActivityEventType } from '../../Models/UserEventModels'
+import { InvitationToken, User } from '../../Models/UserModels'
 import { getExpirationTime, timestamp } from '../../Utilities/JWT/LoginTokenPayload'
-import { IInvitationTokenRepository } from '../../DataAccess/Interfaces/IInvitationTokenRepository'
 import { ContainerService } from '../Container/ContainerService'
+import { IContainerService } from '../Container/IContainerService'
 import { EmailService } from '../Email/EmailService'
-import { ContainerInvitationLike } from '../../DataAccess/Interfaces/Models'
-import { IUserProfileRepository } from '../../DataAccess/Interfaces/IUserProfileRepository'
-import { UserService } from '../User/UserService'
-import { ContainerInvitationRepository } from '../../DataAccess/ContainerInvitationRepository/ContainerInvitationRepository'
 import { username as sgUsername } from '../Sync/SyncService'
-
-const cryptoRandomString = require('crypto-random-string')
+import { UserService } from '../User/UserService'
+import { UserActivityTrackingService } from '../UserActivity/UserActivityTrackingService'
+import { IContainerInvitationService } from './IContainerInvitationService'
 
 interface ContainerInvitationDetails {
   invitingUser: User
@@ -130,7 +129,7 @@ export class ContainerInvitationService implements IContainerInvitationService {
       )
 
       const invitationId = `${ObjectTypes.ContainerInvitation}:${invitationTupleHash}`
-      let invitation = await this.containerInvitationRepository.getById(invitationId, userID)
+      const invitation = await this.containerInvitationRepository.getById(invitationId, userID)
 
       const expiry = ContainerInvitationService.invitationExpiryInDays()
       if (invitation) {
@@ -420,7 +419,7 @@ export class ContainerInvitationService implements IContainerInvitationService {
   ): Promise<InvitationToken> {
     await this.resolveInvitationTokenDetails(clientId, containerID, role)
 
-    let invitationToken = await this.invitationTokenRepository.getById(
+    const invitationToken = await this.invitationTokenRepository.getById(
       `InvitationToken|${containerID}+${role}`
     )
 
@@ -465,7 +464,7 @@ export class ContainerInvitationService implements IContainerInvitationService {
 
   public async updateInvitedUserID(userID: string, userEmail: string) {
     const invitations = await this.containerInvitationRepository.getAllByEmail(userEmail)
-    for (let invitation of invitations) {
+    for (const invitation of invitations) {
       await this.containerInvitationRepository.patch(invitation._id, { invitedUserID: userID })
     }
   }
@@ -485,7 +484,7 @@ export class ContainerInvitationService implements IContainerInvitationService {
     let roleToAssign = permittedRole
     let invitationToAccept: ContainerInvitationLike | null = null
 
-    for (let invitation of invitations) {
+    for (const invitation of invitations) {
       if (ContainerService.compareRoles(invitation.role as ContainerRole, roleToAssign) >= 0) {
         roleToAssign = invitation.role as ContainerRole
         invitationToAccept = invitation

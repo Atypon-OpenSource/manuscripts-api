@@ -14,22 +14,21 @@
  * limitations under the License.
  */
 
-import * as HttpStatus from 'http-status-codes'
+import { StatusCodes } from 'http-status-codes'
 import * as supertest from 'supertest'
 
-import { basicLogin, SGCreate, SGGet, SGUpdate, SGDelete } from '../../../../api'
-import { drop, dropBucket, seed, testDatabase } from '../../../../utilities/db'
-import { validBody, validBody2 } from '../../../../data/fixtures/credentialsRequestPayload'
+import { BucketKey } from '../../../../../src/Config/ConfigurationTypes'
+import { SeedOptions } from '../../../../../src/DataAccess/Interfaces/SeedOptions'
 import { DIContainer } from '../../../../../src/DIContainer/DIContainer'
+import { basicLogin, SGCreate, SGDelete, SGGet, SGUpdate } from '../../../../api'
+import { validBody, validBody2 } from '../../../../data/fixtures/credentialsRequestPayload'
 import {
-  ValidContentTypeAcceptJsonHeader,
   authorizationHeader,
+  ValidContentTypeAcceptJsonHeader,
   ValidHeaderWithApplicationKey,
 } from '../../../../data/fixtures/headers'
 import { validProject } from '../../../../data/fixtures/projects'
-import { BucketKey } from '../../../../../src/Config/ConfigurationTypes'
-import { SeedOptions } from '../../../../../src/DataAccess/Interfaces/SeedOptions'
-import _ from 'lodash'
+import { drop, dropBucket, seed, testDatabase } from '../../../../utilities/db'
 
 let db: any = null
 const seedOptions: SeedOptions = { users: true, applications: true }
@@ -62,7 +61,7 @@ describe('SG - CRUD', () => {
       validBody,
       ValidHeaderWithApplicationKey
     )
-    expect(loginResponse.status).toBe(HttpStatus.OK)
+    expect(loginResponse.status).toBe(StatusCodes.OK)
 
     const authHeader = authorizationHeader(loginResponse.body.token)
     const response: supertest.Response = await SGCreate(
@@ -75,7 +74,7 @@ describe('SG - CRUD', () => {
         db: 'project',
       }
     )
-    expect(response.status).toBe(HttpStatus.OK)
+    expect(response.status).toBe(StatusCodes.OK)
     const doc = response.body
     currentRev = doc._rev
     expect(doc).toEqual(expect.objectContaining(project))
@@ -87,7 +86,7 @@ describe('SG - CRUD', () => {
       validBody,
       ValidHeaderWithApplicationKey
     )
-    expect(loginResponse.status).toBe(HttpStatus.OK)
+    expect(loginResponse.status).toBe(StatusCodes.OK)
 
     const authHeader = authorizationHeader(loginResponse.body.token)
     const body = { viewers: ['random'] }
@@ -105,7 +104,7 @@ describe('SG - CRUD', () => {
       }
     )
 
-    expect(response.status).toBe(HttpStatus.OK)
+    expect(response.status).toBe(StatusCodes.OK)
 
     const doc = response.body
     currentRev = doc._rev
@@ -119,7 +118,7 @@ describe('SG - CRUD', () => {
       validBody2,
       ValidHeaderWithApplicationKey
     )
-    expect(loginResponse.status).toBe(HttpStatus.OK)
+    expect(loginResponse.status).toBe(StatusCodes.OK)
 
     const authHeader = authorizationHeader(loginResponse.body.token)
     const body = { viewers: ['random'] }
@@ -137,7 +136,7 @@ describe('SG - CRUD', () => {
       }
     )
 
-    expect(response.status).toBe(HttpStatus.INTERNAL_SERVER_ERROR)
+    expect(response.status).toBe(StatusCodes.INTERNAL_SERVER_ERROR)
   })
 
   test('should fail to patch with a bad revision', async () => {
@@ -145,7 +144,7 @@ describe('SG - CRUD', () => {
       validBody,
       ValidHeaderWithApplicationKey
     )
-    expect(loginResponse.status).toBe(HttpStatus.OK)
+    expect(loginResponse.status).toBe(StatusCodes.OK)
 
     const authHeader = authorizationHeader(loginResponse.body.token)
     const body = { viewers: ['random'] }
@@ -163,7 +162,7 @@ describe('SG - CRUD', () => {
       }
     )
 
-    expect(response.status).toBe(HttpStatus.INTERNAL_SERVER_ERROR)
+    expect(response.status).toBe(StatusCodes.INTERNAL_SERVER_ERROR)
   })
 
   test('should get the project by id', async () => {
@@ -171,7 +170,7 @@ describe('SG - CRUD', () => {
       validBody,
       ValidHeaderWithApplicationKey
     )
-    expect(loginResponse.status).toBe(HttpStatus.OK)
+    expect(loginResponse.status).toBe(StatusCodes.OK)
 
     const authHeader = authorizationHeader(loginResponse.body.token)
     const response: supertest.Response = await SGGet(
@@ -185,7 +184,7 @@ describe('SG - CRUD', () => {
         id: project._id,
       }
     )
-    expect(response.status).toBe(HttpStatus.OK)
+    expect(response.status).toBe(StatusCodes.OK)
 
     const doc = response.body
     const body = { viewers: ['random'] }
@@ -197,7 +196,7 @@ describe('SG - CRUD', () => {
       validBody2,
       ValidHeaderWithApplicationKey
     )
-    expect(loginResponse.status).toBe(HttpStatus.OK)
+    expect(loginResponse.status).toBe(StatusCodes.OK)
 
     const authHeader = authorizationHeader(loginResponse.body.token)
     const response: supertest.Response = await SGGet(
@@ -212,7 +211,7 @@ describe('SG - CRUD', () => {
       }
     )
 
-    expect(response.status).toBe(HttpStatus.INTERNAL_SERVER_ERROR)
+    expect(response.status).toBe(StatusCodes.INTERNAL_SERVER_ERROR)
   })
 
   test('should not delete the project by id if not the owner', async () => {
@@ -220,7 +219,7 @@ describe('SG - CRUD', () => {
       validBody2,
       ValidHeaderWithApplicationKey
     )
-    expect(loginResponse.status).toBe(HttpStatus.OK)
+    expect(loginResponse.status).toBe(StatusCodes.OK)
 
     const authHeader = authorizationHeader(loginResponse.body.token)
     const response: supertest.Response = await SGDelete(
@@ -237,7 +236,7 @@ describe('SG - CRUD', () => {
       }
     )
 
-    expect(response.status).toBe(HttpStatus.INTERNAL_SERVER_ERROR)
+    expect(response.status).toBe(StatusCodes.INTERNAL_SERVER_ERROR)
   })
 
   test('should patch the project by id and add a writer', async () => {
@@ -245,7 +244,7 @@ describe('SG - CRUD', () => {
       validBody,
       ValidHeaderWithApplicationKey
     )
-    expect(loginResponse.status).toBe(HttpStatus.OK)
+    expect(loginResponse.status).toBe(StatusCodes.OK)
 
     const authHeader = authorizationHeader(loginResponse.body.token)
     const body = { writers: ['User_' + validBody2.email] }
@@ -263,7 +262,7 @@ describe('SG - CRUD', () => {
       }
     )
 
-    expect(response.status).toBe(HttpStatus.OK)
+    expect(response.status).toBe(StatusCodes.OK)
 
     const doc = response.body
     currentRev = doc._rev
@@ -275,7 +274,7 @@ describe('SG - CRUD', () => {
       validBody2,
       ValidHeaderWithApplicationKey
     )
-    expect(loginResponse.status).toBe(HttpStatus.OK)
+    expect(loginResponse.status).toBe(StatusCodes.OK)
 
     const authHeader = authorizationHeader(loginResponse.body.token)
     const response: supertest.Response = await SGGet(
@@ -289,7 +288,7 @@ describe('SG - CRUD', () => {
         id: project._id,
       }
     )
-    expect(response.status).toBe(HttpStatus.OK)
+    expect(response.status).toBe(StatusCodes.OK)
 
     const doc = response.body
     expect(doc).toBeDefined()
@@ -300,7 +299,7 @@ describe('SG - CRUD', () => {
       validBody,
       ValidHeaderWithApplicationKey
     )
-    expect(loginResponse.status).toBe(HttpStatus.OK)
+    expect(loginResponse.status).toBe(StatusCodes.OK)
 
     const authHeader = authorizationHeader(loginResponse.body.token)
     const body = { writers: [] }
@@ -318,7 +317,7 @@ describe('SG - CRUD', () => {
       }
     )
 
-    expect(response.status).toBe(HttpStatus.OK)
+    expect(response.status).toBe(StatusCodes.OK)
 
     const doc = response.body
     expect(doc.writers).toEqual(body.writers)
@@ -329,7 +328,7 @@ describe('SG - CRUD', () => {
       validBody,
       ValidHeaderWithApplicationKey
     )
-    expect(loginResponse.status).toBe(HttpStatus.OK)
+    expect(loginResponse.status).toBe(StatusCodes.OK)
 
     const authHeader = authorizationHeader(loginResponse.body.token)
     const response: supertest.Response = await SGDelete(
@@ -346,7 +345,7 @@ describe('SG - CRUD', () => {
       }
     )
 
-    expect(response.status).toBe(HttpStatus.OK)
+    expect(response.status).toBe(StatusCodes.OK)
   })
 
   test('should not get the project by id after removal', async () => {
@@ -354,7 +353,7 @@ describe('SG - CRUD', () => {
       validBody,
       ValidHeaderWithApplicationKey
     )
-    expect(loginResponse.status).toBe(HttpStatus.OK)
+    expect(loginResponse.status).toBe(StatusCodes.OK)
 
     const authHeader = authorizationHeader(loginResponse.body.token)
     const response: supertest.Response = await SGGet(
@@ -369,7 +368,7 @@ describe('SG - CRUD', () => {
       }
     )
 
-    expect(response.status).toBe(HttpStatus.OK)
+    expect(response.status).toBe(StatusCodes.OK)
     expect(response.body).toEqual({})
   })
 
@@ -378,25 +377,23 @@ describe('SG - CRUD', () => {
       validBody,
       ValidHeaderWithApplicationKey
     )
-    expect(loginResponse.status).toBe(HttpStatus.OK)
+    expect(loginResponse.status).toBe(StatusCodes.OK)
 
     const authHeader = authorizationHeader(loginResponse.body.token)
-    const body = project
-
     const response: supertest.Response = await SGUpdate(
       {
         ...ValidContentTypeAcceptJsonHeader,
         ...authHeader,
       },
       { rev: 'random' },
-      body,
+      project,
       {
         db: 'project',
         id: project._id,
       }
     )
 
-    expect(response.status).toBe(HttpStatus.OK)
+    expect(response.status).toBe(StatusCodes.OK)
 
     const doc = response.body
     expect(doc).toEqual(expect.objectContaining(project))

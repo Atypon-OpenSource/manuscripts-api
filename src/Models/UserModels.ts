@@ -16,10 +16,10 @@
 
 import moment from 'moment'
 
-import { UserActivityEventType } from './UserEventModels'
 import { BucketKey } from '../Config/ConfigurationTypes'
-import { ContainerRole } from './ContainerModels'
 import { ValidationError } from '../Errors'
+import { ContainerRole } from './ContainerModels'
+import { UserActivityEventType } from './UserEventModels'
 
 export type IdentifiableUser = { _id: string; email?: string }
 

@@ -16,23 +16,23 @@
 
 import { Request } from 'express'
 
-import { isString } from '../../../util'
-import { IContainerRequestController } from './IContainerRequestController'
-import { BaseController } from '../../BaseController'
-import { ValidationError } from '../../../Errors'
 import { DIContainer } from '../../../DIContainer/DIContainer'
+import { ValidationError } from '../../../Errors'
 import { ContainerRole } from '../../../Models/ContainerModels'
+import { isString } from '../../../util'
+import { BaseController } from '../../BaseController'
 
-export class ContainerRequestController
-  extends BaseController
-  implements IContainerRequestController
-{
+export class ContainerRequestController extends BaseController {
   async create(req: Request): Promise<void> {
     const {
       params: { containerID },
       body: { role },
       user,
     } = req
+
+    if (!user) {
+      throw new ValidationError('No user found', user)
+    }
 
     if (!isString(containerID)) {
       throw new ValidationError('containerID should be string', containerID)
@@ -51,6 +51,10 @@ export class ContainerRequestController
       body: { requestID },
       user,
     } = req
+
+    if (!user) {
+      throw new ValidationError('No user found', user)
+    }
 
     if (!isString(containerID)) {
       throw new ValidationError('containerID should be string', containerID)

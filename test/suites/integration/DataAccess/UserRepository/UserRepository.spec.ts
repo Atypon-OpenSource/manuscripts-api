@@ -86,7 +86,7 @@ describe('UserRepository create', () => {
       name: chance.name()
     }
 
-    await expect(repository.create(newUser, {})).rejects.toThrowError(DatabaseError)
+    await expect(repository.create(newUser, {})).rejects.toThrow(DatabaseError)
   })
 
   test('should fail name is empty', () => {
@@ -95,7 +95,7 @@ describe('UserRepository create', () => {
       email: chance.email(),
       name: ''
     }
-    return expect(repository.create(newDocument, {})).rejects.toThrowError(DatabaseError)
+    return expect(repository.create(newDocument, {})).rejects.toThrow(DatabaseError)
   })
 
   test('should fail name is more than 100 char', () => {
@@ -104,7 +104,7 @@ describe('UserRepository create', () => {
       email: chance.email(),
       name: 'example long name '.repeat(6)
     }
-    return expect(repository.create(newDocument, {})).rejects.toThrowError(DatabaseError)
+    return expect(repository.create(newDocument, {})).rejects.toThrow(DatabaseError)
   })
 
   test('should fail email is empty', () => {
@@ -113,7 +113,7 @@ describe('UserRepository create', () => {
       email: '',
       name: chance.name()
     }
-    return expect(repository.create(newDocument, {})).rejects.toThrowError(DatabaseError)
+    return expect(repository.create(newDocument, {})).rejects.toThrow(DatabaseError)
   })
 
   test('should fail email is invalid', () => {
@@ -122,6 +122,6 @@ describe('UserRepository create', () => {
       email: `example-email@invalid-email`,
       name: chance.name()
     }
-    return expect(repository.create(newDocument, {})).rejects.toThrowError(DatabaseError)
+    return expect(repository.create(newDocument, {})).rejects.toThrow(DatabaseError)
   })
 })

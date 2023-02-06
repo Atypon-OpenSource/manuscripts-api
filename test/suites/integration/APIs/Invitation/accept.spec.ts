@@ -14,35 +14,38 @@
  * limitations under the License.
  */
 
-import * as HttpStatus from 'http-status-codes'
-import * as supertest from 'supertest'
 import checksum from 'checksum'
+import { StatusCodes } from 'http-status-codes'
+import * as supertest from 'supertest'
+
+import { BucketKey } from '../../../../../src/Config/ConfigurationTypes'
+import { SeedOptions } from '../../../../../src/DataAccess/Interfaces/SeedOptions'
+import { DIContainer } from '../../../../../src/DIContainer/DIContainer'
+import { accept, basicLogin } from '../../../../api'
+import { validBody2 } from '../../../../data/fixtures/credentialsRequestPayload'
+import {
+  authorizationHeader,
+  ValidContentTypeAcceptJsonHeader,
+  ValidHeaderWithApplicationKey,
+} from '../../../../data/fixtures/headers'
+import { createProject } from '../../../../data/fixtures/misc'
+import { drop, dropBucket, seed, testDatabase } from '../../../../utilities/db'
+import { TEST_TIMEOUT } from '../../../../utilities/testSetup'
 
 jest.mock('email-templates', () =>
   jest.fn().mockImplementation(() => {
     return {
       send: jest.fn(() => Promise.resolve({})),
-      render: jest.fn(() => Promise.resolve({}))
+      render: jest.fn(() => Promise.resolve({})),
     }
   })
 )
-
-import { TEST_TIMEOUT } from '../../../../utilities/testSetup'
-import { BucketKey } from '../../../../../src/Config/ConfigurationTypes'
-import { drop, dropBucket, seed, testDatabase } from '../../../../utilities/db'
-import { ValidContentTypeAcceptJsonHeader, ValidHeaderWithApplicationKey, authorizationHeader } from '../../../../data/fixtures/headers'
-import { accept, basicLogin } from '../../../../api'
-import { SeedOptions } from '../../../../../src/DataAccess/Interfaces/SeedOptions'
-import { validBody2 } from '../../../../../test/data/fixtures/credentialsRequestPayload'
-import { DIContainer } from '../../../../../src/DIContainer/DIContainer'
-import { createProject } from '../../../../data/fixtures/misc'
-
 
 let db: any = null
 const seedOptions: SeedOptions = {
   users: true,
   invitations: true,
-  projectInvitations: true
+  projectInvitations: true,
 }
 
 beforeAll(async () => {
@@ -68,15 +71,15 @@ describe('InvitationService - accept', () => {
         invitationId: `MPInvitation:${checksum(
           'valid-user@manuscriptsapp.com-valid-google@manuscriptsapp.com',
           { algorithm: 'sha1' }
-        )}`
+        )}`,
       },
       { ...ValidContentTypeAcceptJsonHeader }
     )
 
-    expect(response.status).toBe(HttpStatus.OK)
+    expect(response.status).toBe(StatusCodes.OK)
   })
 
-  test('should create new user and create a collaboration ', async () => {
+  test('should create new user and create a collaboration', async () => {
     const response: supertest.Response = await accept(
       {
         invitationId: `MPInvitation:${checksum(
@@ -84,12 +87,12 @@ describe('InvitationService - accept', () => {
           { algorithm: 'sha1' }
         )}`,
         name: 'Valid System User',
-        password: '12345678'
+        password: '12345678',
       },
       { ...ValidContentTypeAcceptJsonHeader }
     )
 
-    expect(response.status).toBe(HttpStatus.OK)
+    expect(response.status).toBe(StatusCodes.OK)
   })
 })
 
@@ -106,7 +109,7 @@ describe('InvitationService - acceptProjectInvite', () => {
       ValidHeaderWithApplicationKey
     )
 
-    expect(loginResponse.status).toBe(HttpStatus.OK)
+    expect(loginResponse.status).toBe(StatusCodes.OK)
 
     const header = authorizationHeader(loginResponse.body.token)
     await createProject('MPProject:valid-project-id-7')
@@ -116,14 +119,12 @@ describe('InvitationService - acceptProjectInvite', () => {
           'valid-user@manuscriptsapp.com-valid-user-6@manuscriptsapp.com-valid-project-id-7',
           { algorithm: 'sha1' }
         )}`,
-        name: 'Valid System User'
+        name: 'Valid System User',
       },
-      { ...ValidContentTypeAcceptJsonHeader,
-        ...header
-      }
+      { ...ValidContentTypeAcceptJsonHeader, ...header }
     )
 
-    expect(response.status).toBe(HttpStatus.OK)
+    expect(response.status).toBe(StatusCodes.OK)
   })
 
   test('should add the user to the project', async () => {
@@ -132,10 +133,9 @@ describe('InvitationService - acceptProjectInvite', () => {
       ValidHeaderWithApplicationKey
     )
 
-    expect(loginResponse.status).toBe(HttpStatus.OK)
+    expect(loginResponse.status).toBe(StatusCodes.OK)
 
-    const containerInvitationService: any =
-      DIContainer.sharedContainer.containerInvitationService
+    const containerInvitationService: any = DIContainer.sharedContainer.containerInvitationService
     containerInvitationService.emailService.sendContainerInvitationAcceptance = jest.fn(() =>
       Promise.resolve({})
     )
@@ -147,15 +147,15 @@ describe('InvitationService - acceptProjectInvite', () => {
         invitationId: `MPContainerInvitation:${checksum(
           'valid-user@manuscriptsapp.com-valid-user-6@manuscriptsapp.com-valid-project-id-6',
           { algorithm: 'sha1' }
-        )}`
+        )}`,
       },
-      { ...ValidContentTypeAcceptJsonHeader,
-        ...header
-      }
+      { ...ValidContentTypeAcceptJsonHeader, ...header }
     )
 
-    expect(response.status).toBe(HttpStatus.OK)
-    expect(containerInvitationService.emailService.sendContainerInvitationAcceptance).toBeCalled()
+    expect(response.status).toBe(StatusCodes.OK)
+    expect(
+      containerInvitationService.emailService.sendContainerInvitationAcceptance
+    ).toHaveBeenCalled()
     containerInvitationService.emailService.sendContainerInvitationAcceptance.mockClear()
   })
 
@@ -165,10 +165,9 @@ describe('InvitationService - acceptProjectInvite', () => {
       ValidHeaderWithApplicationKey
     )
 
-    expect(loginResponse.status).toBe(HttpStatus.OK)
+    expect(loginResponse.status).toBe(StatusCodes.OK)
 
-    const containerInvitationService: any =
-      DIContainer.sharedContainer.containerInvitationService
+    const containerInvitationService: any = DIContainer.sharedContainer.containerInvitationService
     containerInvitationService.emailService.sendContainerInvitationAcceptance = jest.fn(() =>
       Promise.resolve({})
     )
@@ -184,17 +183,21 @@ describe('InvitationService - acceptProjectInvite', () => {
           'valid-user@manuscriptsapp.com-valid-user-6@manuscriptsapp.com-valid-project-id-6',
           { algorithm: 'sha1' }
         )}`,
-        skipEmail: true
+        skipEmail: true,
       },
       {
         ...ValidContentTypeAcceptJsonHeader,
-        ...header
+        ...header,
       }
     )
 
-    expect(response.status).toBe(HttpStatus.OK)
-    expect(containerInvitationService.emailService.sendContainerInvitationAcceptance).not.toBeCalled()
-    expect(containerInvitationService.emailService.sendOwnerNotificationOfCollaborator).not.toBeCalled()
+    expect(response.status).toBe(StatusCodes.OK)
+    expect(
+      containerInvitationService.emailService.sendContainerInvitationAcceptance
+    ).not.toHaveBeenCalled()
+    expect(
+      containerInvitationService.emailService.sendOwnerNotificationOfCollaborator
+    ).not.toHaveBeenCalled()
     containerInvitationService.emailService.sendContainerInvitationAcceptance.mockClear()
     containerInvitationService.emailService.sendOwnerNotificationOfCollaborator.mockClear()
   })

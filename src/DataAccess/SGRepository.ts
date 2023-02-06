@@ -1,3 +1,4 @@
+/* eslint-disable */
 /*!
  * © 2020 Atypon Systems LLC
  *
@@ -14,18 +15,18 @@
  * limitations under the License.
  */
 
-import * as _ from 'lodash'
+import { Prisma } from '@prisma/client'
 import * as HttpStatus from 'http-status-codes'
+import * as _ from 'lodash'
+import { v4 as uuid_v4 } from 'uuid'
 
-import { ValidationError, DatabaseError, SyncError } from '../Errors'
+import { BucketKey } from '../Config/ConfigurationTypes'
+import { DatabaseError, SyncError,ValidationError } from '../Errors'
+import { timestamp } from '../Utilities/JWT/LoginTokenPayload'
 import { IdentifiableEntity } from './Interfaces/IdentifiableEntity'
 import { KeyValueRepository } from './Interfaces/KeyValueRepository'
-import { BucketKey } from '../Config/ConfigurationTypes'
 import { SQLDatabase } from './SQLDatabase'
-import { timestamp } from '../Utilities/JWT/LoginTokenPayload'
 import { syncAccessControl } from './syncAccessControl'
-import { Prisma } from '@prisma/client'
-import { v4 as uuid_v4 } from 'uuid'
 
 export abstract class SGRepository<
   TEntity extends Partial<IdentifiableEntity>,

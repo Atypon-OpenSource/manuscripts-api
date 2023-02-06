@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 
-import { drop, seed, testDatabase } from '../../../../../utilities/db'
-import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
+import { SeedOptions } from '../../../../../../src/DataAccess/Interfaces/SeedOptions'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
-import { validUser1 } from '../../../../../data/fixtures/UserRepository'
+import { UserActivityEventType } from '../../../../../../src/Models/UserEventModels'
 import { invitationsList } from '../../../../../data/dump/invitation'
 import { projectInvitationsList } from '../../../../../data/dump/projectInvitation'
-import { UserActivityEventType } from '../../../../../../src/Models/UserEventModels'
-import { SeedOptions } from '../../../../../../src/DataAccess/Interfaces/SeedOptions'
+import { validUser1 } from '../../../../../data/fixtures/UserRepository'
+import { drop, seed, testDatabase } from '../../../../../utilities/db'
+import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
 
 jest.setTimeout(TEST_TIMEOUT)
 
 let db: any = null
 const seedOptions: SeedOptions = {
-    userTokens: true, 
-    invitationTokens: true,
-    invitations: true,
-    projectInvitations: true
+  userTokens: true,
+  invitationTokens: true,
+  invitations: true,
+  projectInvitations: true,
 }
-beforeAll(async () => db = await testDatabase(true))
+beforeAll(async () => (db = await testDatabase(true)))
 afterAll(() => db.bucket.disconnect())
 
 describe('Expiration', () => {
@@ -44,11 +44,16 @@ describe('Expiration', () => {
   test('should delete expired userEvents', async () => {
     const expirationService = DIContainer.sharedContainer.expirationService
     const activityTrackingService = DIContainer.sharedContainer.activityTrackingService
-    activityTrackingService.createEvent(validUser1._id, UserActivityEventType.SuccessfulLogin, 'appId', 'deviceId')
+    activityTrackingService.createEvent(
+      validUser1._id,
+      UserActivityEventType.SuccessfulLogin,
+      'appId',
+      'deviceId'
+    )
     await activityTrackingService.awaitCreation()
 
     const userEventRepository = DIContainer.sharedContainer.userEventRepository
-    const userEvent = await userEventRepository.getOne({ userId: validUser1._id }) as any
+    const userEvent = (await userEventRepository.getOne({ userId: validUser1._id })) as any
     expect(userEvent).toBeDefined()
 
     await userEventRepository.touch(userEvent._id, new Date().getTime() + 10000000)
@@ -65,7 +70,7 @@ describe('Expiration', () => {
   test('should delete expired userTokens', async () => {
     const expirationService = DIContainer.sharedContainer.expirationService
     const userTokenRepository = DIContainer.sharedContainer.userTokenRepository
-    const userToken = await userTokenRepository.getOne({}) as any
+    const userToken = (await userTokenRepository.getOne({})) as any
     expect(userToken).toBeDefined()
 
     await userTokenRepository.touch(userToken._id, new Date().getTime() + 10000000)
@@ -82,24 +87,28 @@ describe('Expiration', () => {
   test('should delete expired invitationTokens', async () => {
     const expirationService = DIContainer.sharedContainer.expirationService
     const invitationTokenRepository = DIContainer.sharedContainer.invitationTokenRepository
-    const invitationToken = await invitationTokenRepository.getOne({}) as any
+    const invitationToken = (await invitationTokenRepository.getOne({})) as any
     expect(invitationToken).toBeDefined()
 
     await invitationTokenRepository.touch(invitationToken._id, new Date().getTime() + 10000000)
     await expirationService.clearExpiredDocuments()
-    const invitationTokenAfter = await invitationTokenRepository.getOne({ _id: invitationToken._id })
+    const invitationTokenAfter = await invitationTokenRepository.getOne({
+      _id: invitationToken._id,
+    })
     expect(invitationTokenAfter).toBeDefined()
 
     await invitationTokenRepository.touch(invitationToken._id, 0)
     await expirationService.clearExpiredDocuments()
-    const invitationTokenExpired = await invitationTokenRepository.getOne({ _id: invitationToken._id })
+    const invitationTokenExpired = await invitationTokenRepository.getOne({
+      _id: invitationToken._id,
+    })
     expect(invitationTokenExpired).toBeNull()
   })
 
   test('should delete expired invitations', async () => {
     const expirationService = DIContainer.sharedContainer.expirationService
     const invitationRepository = DIContainer.sharedContainer.invitationRepository
-    const invitation = await invitationRepository.getById(invitationsList[0]._id) as any
+    const invitation = (await invitationRepository.getById(invitationsList[0]._id)) as any
     expect(invitation).toBeDefined()
 
     await invitationRepository.touch(invitation._id, new Date().getTime() + 10000000)
@@ -116,18 +125,26 @@ describe('Expiration', () => {
   test('should delete expired projectInvitations', async () => {
     const expirationService = DIContainer.sharedContainer.expirationService
     const containerInvitationRepository = DIContainer.sharedContainer.containerInvitationRepository
-    const projectInvitation = await containerInvitationRepository.getById(projectInvitationsList[0]._id) as any
+    const projectInvitation = (await containerInvitationRepository.getById(
+      projectInvitationsList[0]._id
+    )) as any
     expect(projectInvitation).toBeDefined()
 
-    await containerInvitationRepository.touch(projectInvitation._id, new Date().getTime() + 10000000)
+    await containerInvitationRepository.touch(
+      projectInvitation._id,
+      new Date().getTime() + 10000000
+    )
     await expirationService.clearExpiredDocuments()
-    const projectInvitationAfter = await containerInvitationRepository.getById(projectInvitation._id)
+    const projectInvitationAfter = await containerInvitationRepository.getById(
+      projectInvitation._id
+    )
     expect(projectInvitationAfter).toBeDefined()
 
     await containerInvitationRepository.touch(projectInvitation._id, 0)
     await expirationService.clearExpiredDocuments()
-    const projectInvitationExpired = await containerInvitationRepository.getById(projectInvitation._id)
+    const projectInvitationExpired = await containerInvitationRepository.getById(
+      projectInvitation._id
+    )
     expect(projectInvitationExpired).toBeNull()
   })
-
 })

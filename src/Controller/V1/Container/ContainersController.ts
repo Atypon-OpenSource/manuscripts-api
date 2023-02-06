@@ -14,26 +14,25 @@
  * limitations under the License.
  */
 
-import { Correction, ObjectTypes, Snapshot } from '@manuscripts/manuscripts-json-schema'
 import { Request } from 'express'
-import { isString } from '../../../util'
-import * as HttpStatus from 'http-status-codes'
-import { IContainersController } from './IContainersController'
-import { authorizationBearerToken } from '../../BaseController'
+import { StatusCodes } from 'http-status-codes'
+import { RSA_JWK } from 'pem-jwk'
+
+import { config } from '../../../Config/Config'
+import { DIContainer } from '../../../DIContainer/DIContainer'
+import { ContainerService } from '../../../DomainServices/Container/ContainerService'
 import {
   IllegalStateError,
   ManuscriptContentParsingError,
   MissingContainerError,
   ValidationError,
 } from '../../../Errors'
-import { DIContainer } from '../../../DIContainer/DIContainer'
-import { ContainerType, Container } from '../../../Models/ContainerModels'
+import { Container, ContainerType } from '../../../Models/ContainerModels'
+import { isString } from '../../../util'
+import { authorizationBearerToken } from '../../BaseController'
 import { ContainedBaseController, getContainerType } from '../../ContainedBaseController'
-import { config } from '../../../Config/Config'
-import { RSA_JWK } from 'pem-jwk'
-import { ContainerService } from '../../../DomainServices/Container/ContainerService'
 
-export class ContainersController extends ContainedBaseController implements IContainersController {
+export class ContainersController extends ContainedBaseController {
   async create(req: Request): Promise<Container> {
     const _id = req.body._id
     const token = authorizationBearerToken(req)
@@ -54,6 +53,10 @@ export class ContainersController extends ContainedBaseController implements ICo
   async delete(req: Request): Promise<void> {
     const { containerID } = req.params
 
+    if (!req.user) {
+      throw new ValidationError('No user found', req.user)
+    }
+
     if (!containerID || !isString(containerID)) {
       throw new ValidationError('container id should be a string', containerID)
     }
@@ -70,6 +73,10 @@ export class ContainersController extends ContainedBaseController implements ICo
   async manageUserRole(req: Request): Promise<void> {
     const { managedUserId, managedUserConnectId, newRole, secret } = req.body
     const { containerID } = req.params
+
+    if (!req.user) {
+      throw new ValidationError('No user found', req.user)
+    }
 
     if (
       !(managedUserId && isString(managedUserId)) &&
@@ -105,6 +112,10 @@ export class ContainersController extends ContainedBaseController implements ICo
     const { containerID } = req.params
     const { user: addingUser } = req
 
+    if (!addingUser) {
+      throw new ValidationError('No user found', addingUser)
+    }
+
     if (!userId || !isString(userId)) {
       throw new ValidationError('User id must be string', userId)
     }
@@ -132,6 +143,10 @@ export class ContainersController extends ContainedBaseController implements ICo
     const { types } = req.body
     const modifiedSince = req.headers['if-modified-since']
 
+    if (!req.user) {
+      throw new ValidationError('No user found', req.user)
+    }
+
     if (!isString(projectId)) {
       throw new ValidationError('projectId should be string', projectId)
     }
@@ -155,7 +170,7 @@ export class ContainersController extends ContainedBaseController implements ICo
       if (modifiedSince && project) {
         const modifiedSinceDate = new Date(modifiedSince)
         if (modifiedSinceDate.getTime() / 1000 >= project.updatedAt) {
-          return { data: null, status: HttpStatus.NOT_MODIFIED }
+          return { data: null, status: StatusCodes.NOT_MODIFIED }
         }
       }
       const data = await DIContainer.sharedContainer.containerService[containerType].loadProject(
@@ -170,7 +185,7 @@ export class ContainersController extends ContainedBaseController implements ICo
         } as any
       )
 
-      return { data, status: HttpStatus.OK }
+      return { data, status: StatusCodes.OK }
     } catch (e) {
       throw new ManuscriptContentParsingError('Failed to make an archive.', e)
     }
@@ -182,14 +197,18 @@ export class ContainersController extends ContainedBaseController implements ICo
    */
   async getArchive(req: Request) {
     const { containerID, manuscriptID } = req.params
-    const { allowOrphanedDocs, onlyIDs } = req.query
+    const { onlyIDs } = req.query
     const { accept: acceptHeader } = req.headers
+
+    if (!req.user) {
+      throw new ValidationError('No user found', req.user)
+    }
 
     if (!isString(containerID)) {
       throw new ValidationError('containerID should be string', containerID)
     }
 
-    let token = authorizationBearerToken(req)
+    const token = authorizationBearerToken(req)
 
     const getAttachments = acceptHeader !== 'application/json'
     const containerType = getContainerType(containerID)
@@ -204,9 +223,9 @@ export class ContainersController extends ContainedBaseController implements ICo
         {
           getAttachments,
           onlyIDs: onlyIDs === 'true',
-          allowOrphanedDocs,
+          allowOrphanedDocs: true,
           includeExt: false,
-        } as any
+        }
       )
     } catch (e) {
       throw new ManuscriptContentParsingError('Failed to make an archive.', e)
@@ -216,12 +235,16 @@ export class ContainersController extends ContainedBaseController implements ICo
   async getAttachment(req: Request) {
     const { id } = req.params
 
+    if (!req.user) {
+      throw new ValidationError('No user found', req.user)
+    }
+
     if (!isString(id)) {
       throw new ValidationError('id should be a string', id)
     }
-    const userID = req.user?._id
+
     return DIContainer.sharedContainer.containerService[ContainerType.project].getAttachment(
-      userID,
+      req.user._id,
       id,
       req.params.attachmentKey
     )
@@ -230,6 +253,10 @@ export class ContainersController extends ContainedBaseController implements ICo
   async getBundle(req: Request, finish: CallableFunction) {
     const { containerID, manuscriptID } = req.params
     const { onlyIDs } = req.query
+
+    if (!req.user) {
+      throw new ValidationError('No user found', req.user)
+    }
 
     if (!isString(containerID)) {
       throw new ValidationError('containerID should be string', containerID)
@@ -249,7 +276,7 @@ export class ContainersController extends ContainedBaseController implements ICo
       throw new ValidationError('manuscriptID should be string', manuscriptID)
     }
 
-    let token = authorizationBearerToken(req)
+    const token = authorizationBearerToken(req)
 
     const getAttachments = true
     const includeExt = false
@@ -268,6 +295,10 @@ export class ContainersController extends ContainedBaseController implements ICo
       }
     )
 
+    if (!archive) {
+      throw new IllegalStateError('', archive)
+    }
+
     await DIContainer.sharedContainer.pressroomService
       .fetchHtml(archive, manuscriptID)
       .then((result) => finish(result))
@@ -279,6 +310,10 @@ export class ContainersController extends ContainedBaseController implements ICo
   async accessToken(req: Request): Promise<any> {
     const { containerID, scope } = req.params
     const user = req.user
+
+    if (!user) {
+      throw new ValidationError('No user found', user)
+    }
 
     if (!isString(containerID)) {
       throw new ValidationError('containerID should be string', containerID)
@@ -318,6 +353,10 @@ export class ContainersController extends ContainedBaseController implements ICo
     const { containerID, manuscriptID } = req.params
     const { user } = req
     const { templateId } = req.body
+
+    if (!user) {
+      throw new ValidationError('No user found', user)
+    }
 
     if (!isString(containerID)) {
       throw new ValidationError('containerID should be string', containerID)
@@ -385,99 +424,5 @@ export class ContainersController extends ContainedBaseController implements ICo
       source,
       target
     )
-  }
-
-  async getCorrectionStatus(req: Request) {
-    const { containerID } = req.params
-    if (!isString(containerID)) {
-      throw new ValidationError('containerID should be string', containerID)
-    }
-    const userID = req.user?._id
-    return DIContainer.sharedContainer.containerService[ContainerType.project].getCorrectionStatus(
-      containerID,
-      userID
-    )
-  }
-
-  async createSnapshot(req: Request) {
-    const { containerID } = req.params
-    const { name } = req.body
-
-    if (!isString(containerID)) {
-      throw new ValidationError('containerID should be string', containerID)
-    }
-    let token = authorizationBearerToken(req)
-
-    if (await this.hasPendingCorrections(req)) {
-      throw new Error('Cannot create a snapshot when there are pending corrections')
-    }
-
-    const getAttachments = true
-    const includeExt = false
-    const allowOrphanedDocs = false
-    const userID = req.user._id
-    const containerType = getContainerType(containerID)
-    const archive = await DIContainer.sharedContainer.containerService[containerType].getArchive(
-      userID,
-      containerID,
-      null,
-      token,
-      {
-        getAttachments,
-        onlyIDs: false,
-        allowOrphanedDocs,
-        includeExt,
-      }
-    )
-    const shacklesToken = await DIContainer.sharedContainer.containerService[
-      containerType
-    ].accessToken(userID, 'shackles', containerID)
-    const res = await DIContainer.sharedContainer.shacklesService.createSnapshot(
-      archive,
-      shacklesToken
-    )
-    return DIContainer.sharedContainer.containerService[containerType].saveSnapshot(
-      res.key,
-      containerID,
-      userID,
-      name
-    )
-  }
-
-  async hasPendingCorrections(req: Request) {
-    const userID = req.user._id
-    const { containerID, manuscriptID } = req.params
-    const containerType = getContainerType(containerID)
-    let token = authorizationBearerToken(req)
-
-    const projectJSON = await DIContainer.sharedContainer.containerService[
-      containerType
-    ].getProject(userID, containerID, manuscriptID, token)
-
-    const snapshots =
-      projectJSON && projectJSON.length
-        ? projectJSON
-            .filter((doc: { objectType: ObjectTypes }) => doc.objectType === ObjectTypes.Snapshot)
-            .sort((a: { createdAt: number }, b: { createdAt: number }) => b.createdAt - a.createdAt)
-        : []
-
-    const latestSnapshot = snapshots.length ? (snapshots[0] as Snapshot) : null
-
-    if (!latestSnapshot) {
-      return false
-    }
-
-    const pendingCorrections = (
-      projectJSON && projectJSON.length
-        ? projectJSON.filter(
-            (doc: Correction) =>
-              doc.objectType === ObjectTypes.Correction &&
-              doc.snapshotID === latestSnapshot._id &&
-              doc.status.label !== 'proposed'
-          )
-        : []
-    ) as Correction[]
-
-    return !!pendingCorrections.length
   }
 }

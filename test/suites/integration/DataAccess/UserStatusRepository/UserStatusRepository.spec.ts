@@ -24,7 +24,7 @@ const chance = new Chance()
 jest.setTimeout(TEST_TIMEOUT)
 
 let db: any = null
-beforeAll(async () => db = await testDatabase())
+beforeAll(async () => (db = await testDatabase()))
 afterAll(() => db.bucket.disconnect())
 
 describe('UserStatusRepository create', () => {
@@ -34,9 +34,11 @@ describe('UserStatusRepository create', () => {
       password: chance.hash(),
       isVerified: true,
       blockUntil: 'abc',
-      createdAt: new Date().getTime()
+      createdAt: new Date().getTime(),
     }
 
-    return expect(DIContainer.sharedContainer.userStatusRepository.create(newStatus, {})).rejects.toThrow()
+    return expect(
+      DIContainer.sharedContainer.userStatusRepository.create(newStatus)
+    ).rejects.toThrow()
   })
 })

@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { SQLRepository } from '../SQLRepository'
-import { IUserTokenRepository } from '../Interfaces/IUserTokenRepository'
 import { UserToken } from '../../Models/UserModels'
+import { IUserTokenRepository } from '../Interfaces/IUserTokenRepository'
 import { UserTokenQueryCriteria } from '../Interfaces/QueryCriteria'
-import { required, maxLength, stringValuedNestedObject } from '../validators'
+import { SQLRepository } from '../SQLRepository'
+import { maxLength, required, stringValuedNestedObject } from '../validators'
 
 /**
  * Manages user token persistent storage operations.

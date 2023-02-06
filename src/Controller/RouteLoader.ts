@@ -17,20 +17,17 @@
 import { Router } from 'express'
 import * as path from 'path'
 
+import { Environment } from '../Config/ConfigurationTypes'
 import { BaseRoute } from './BaseRoute'
 import { AuthRoute } from './V1/Auth/AuthRoute'
-import { RegistrationRoute } from './V1/Registration/RegistrationRoute'
-import { UserRoute } from './V1/User/UserRoute'
-import { InvitationRoute } from './V1/Invitation/InvitationRoute'
-import { ServerStatusRoute } from './V1/ServerStatus/ServerStatusRoute'
 import { ContainerRoute } from './V1/Container/ContainerRoute'
-import { ProjectRoute } from './V1/Project/ProjectRoute'
 import { ContainerRequestRoute } from './V1/ContainerRequest/ContainerRequestRoute'
-import { SubmissionRoute } from './V1/Submission/SubmissionRoute'
-import { TemplatesRoute } from './V1/Templates/TemplatesRoute'
+import { InvitationRoute } from './V1/Invitation/InvitationRoute'
+import { ProjectRoute } from './V1/Project/ProjectRoute'
+import { RegistrationRoute } from './V1/Registration/RegistrationRoute'
+import { ServerStatusRoute } from './V1/ServerStatus/ServerStatusRoute'
 import { SGRoute } from './V1/SG/SGRoute'
-
-import { Environment } from '../Config/ConfigurationTypes'
+import { UserRoute } from './V1/User/UserRoute'
 
 /**
  * Creates routes.
@@ -48,8 +45,6 @@ export function loadRoutes(router: Router) {
     new ContainerRoute(),
     new ProjectRoute(),
     new ContainerRequestRoute(),
-    new SubmissionRoute(),
-    new TemplatesRoute(),
   ]
 
   for (const route of routes) {

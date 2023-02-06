@@ -15,19 +15,17 @@
  */
 
 import { userForRow } from '../../../../src/Models/UserModels'
-import { userRowData, deletdUserRowData } from '../../../data/fixtures/userRowData'
+import { deletdUserRowData, userRowData } from '../../../data/fixtures/userRowData'
 
 describe('User Model', () => {
   test('should create model from row', () => {
-
     const user = userForRow(userRowData)
     expect(user.email).toBe(userRowData.email)
-    expect(user._id).toBe(userRowData._id)
+    expect(user._id).toBe(userRowData.id)
     expect(user.name).toBe(userRowData.name)
   })
 
   test('should create model from deleted user row', () => {
-
     const user = userForRow(deletdUserRowData)
     expect(user.deleteAt).toBe(deletdUserRowData.deleteAt)
   })

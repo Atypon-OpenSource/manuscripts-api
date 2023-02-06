@@ -15,9 +15,10 @@
  */
 
 import * as Joi from 'joi'
+
 import { APP_ID_HEADER_KEY, APP_SECRET_HEADER_KEY } from './V1/Auth/AuthController'
 
-export const emailSchema: Joi.StringSchema = Joi.string().max(100).email({ minDomainAtoms: 2 })
+export const emailSchema: Joi.StringSchema = Joi.string().max(100).email({ minDomainSegments: 2 })
 export const appIdSchema: Joi.StringSchema = Joi.string().max(100).required()
 export const deviceIdSchema: Joi.StringSchema = Joi.string().max(100).required()
 export const appSecretSchema: Joi.StringSchema = Joi.string().required()

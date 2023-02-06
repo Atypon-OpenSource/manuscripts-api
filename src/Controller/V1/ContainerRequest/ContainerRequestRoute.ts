@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-const expressJoiMiddleware = require('express-joi-middleware')
+import { celebrate } from 'celebrate'
 import { NextFunction, Request, Response, Router } from 'express'
-import * as HttpStatus from 'http-status-codes'
+import { StatusCodes } from 'http-status-codes'
 
-import { BaseRoute } from '../../BaseRoute'
-import { createRequestSchema, containerRequestSchema } from './ContainerRequestSchema'
-import { ContainerRequestController } from './ContainerRequestController'
 import { AuthStrategy } from '../../../Auth/Passport/AuthStrategy'
+import { BaseRoute } from '../../BaseRoute'
+import { ContainerRequestController } from './ContainerRequestController'
+import { containerRequestSchema, createRequestSchema } from './ContainerRequestSchema'
 
 export class ContainerRequestRoute extends BaseRoute {
   private containerRequestController = new ContainerRequestController()
@@ -38,36 +38,36 @@ export class ContainerRequestRoute extends BaseRoute {
   public create(router: Router): void {
     router.post(
       `${this.basePath}/:containerID/create`,
-      expressJoiMiddleware(createRequestSchema, {}),
+      celebrate(createRequestSchema, {}),
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           await this.containerRequestController.create(req)
-          res.status(HttpStatus.OK).end()
+          res.status(StatusCodes.OK).end()
         }, next)
       }
     )
 
     router.post(
       `${this.basePath}/:containerID/accept`,
-      expressJoiMiddleware(containerRequestSchema, {}),
+      celebrate(containerRequestSchema, {}),
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           await this.containerRequestController.response(req, true)
-          res.status(HttpStatus.OK).end()
+          res.status(StatusCodes.OK).end()
         }, next)
       }
     )
 
     router.post(
       `${this.basePath}/:containerID/reject`,
-      expressJoiMiddleware(containerRequestSchema, {}),
+      celebrate(containerRequestSchema, {}),
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           await this.containerRequestController.response(req, false)
-          res.status(HttpStatus.OK).end()
+          res.status(StatusCodes.OK).end()
         }, next)
       }
     )

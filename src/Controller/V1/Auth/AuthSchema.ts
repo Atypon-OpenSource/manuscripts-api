@@ -17,13 +17,11 @@
 import * as Joi from 'joi'
 
 import {
-  jsonHeadersSchema,
-  appSecretHeadersSchema,
-  emailSchema,
-  deviceIdSchema,
   appIdHeadersSchema,
+  appSecretHeadersSchema,
+  deviceIdSchema,
+  emailSchema,
 } from '../../BaseSchema'
-import { APP_ID_HEADER_KEY } from './AuthController'
 
 export const credentialsSchema: Joi.SchemaMap = {
   body: Joi.object({
@@ -49,56 +47,6 @@ export const serverToServerTokenAuthSchema: Joi.SchemaMap = {
     connectUserID: Joi.string().required(),
   },
   headers: appSecretHeadersSchema.headers,
-}
-
-export const iamOAuthStartSchema: Joi.SchemaMap = {
-  query: Joi.object({
-    deviceId: deviceIdSchema,
-    [APP_ID_HEADER_KEY]: Joi.string().max(100),
-  }).options({ allowUnknown: true }),
-  headers: Joi.object({
-    [APP_ID_HEADER_KEY]: Joi.string().max(100),
-  }).options({ allowUnknown: true }),
-}
-
-export const iamOAuthCallbackSchema: Joi.SchemaMap = {
-  query: Joi.object({
-    id_token: Joi.string(), // TODO: confirm if id_token should be required
-    state: Joi.string().required(),
-    error: Joi.string(),
-    error_description: Joi.string(),
-  }),
-}
-
-export const backchannelLogoutSchema: Joi.SchemaMap = {
-  query: Joi.object({
-    logout_token: Joi.string().required(),
-  }),
-}
-
-export const forgotPasswordSchema: Joi.SchemaMap = {
-  headers: jsonHeadersSchema.headers,
-  body: Joi.object({
-    email: emailSchema.required(),
-  }),
-}
-
-export const resetPasswordSchema: Joi.SchemaMap = {
-  headers: appIdHeadersSchema.headers,
-  body: Joi.object({
-    password: Joi.string().max(100).required(),
-    token: Joi.string().required(),
-    deviceId: deviceIdSchema,
-  }),
-}
-
-export const changePasswordSchema: Joi.SchemaMap = {
-  headers: jsonHeadersSchema.headers,
-  body: Joi.object({
-    deviceId: deviceIdSchema,
-    currentPassword: Joi.string().max(100).required(),
-    newPassword: Joi.string().max(100).required(),
-  }),
 }
 
 export const authorizationTokenSchema: Joi.SchemaMap = {

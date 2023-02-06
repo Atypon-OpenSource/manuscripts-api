@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { Project } from '@manuscripts/manuscripts-json-schema'
+import { Project } from '@manuscripts/json-schema'
 
+import { PatchProject } from '../../Models/ProjectModels'
 import { IContainerRepository } from './IContainerRepository'
 import { ProjectLike } from './Models'
-import { PatchProject } from '../../Models/ProjectModels'
 
 /**
  * Manages project persistent storage operations.

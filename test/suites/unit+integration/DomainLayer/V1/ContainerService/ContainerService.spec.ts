@@ -16,35 +16,26 @@
 
 import '../../../../../utilities/dbMock'
 
+import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
 import { ContainerService } from '../../../../../../src/DomainServices/Container/ContainerService'
 import { ContainerRole, ContainerType } from '../../../../../../src/Models/ContainerModels'
-import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
-import { InvalidCredentialsError, ValidationError } from '../../../../../../src/Errors'
-import { validProject } from '../../../../../data/fixtures/projects'
-import { log } from '../../../../../../src/Utilities/Logger'
 
 beforeEach(() => {
-  (DIContainer as any)._sharedContainer = null
+  ;(DIContainer as any)._sharedContainer = null
   return DIContainer.init()
 })
 
 describe('ContainerService - compareRoles', () => {
   test('Should return 0 if the roles are equal', () => {
-    expect(
-      ContainerService.compareRoles(ContainerRole.Viewer, ContainerRole.Viewer)
-    ).toBe(0)
+    expect(ContainerService.compareRoles(ContainerRole.Viewer, ContainerRole.Viewer)).toBe(0)
   })
 
   test('Should return 1 if the first role is better', () => {
-    expect(
-      ContainerService.compareRoles(ContainerRole.Owner, ContainerRole.Viewer)
-    ).toBe(1)
+    expect(ContainerService.compareRoles(ContainerRole.Owner, ContainerRole.Viewer)).toBe(1)
   })
 
   test('Should return -1 if the first role is worse', () => {
-    expect(
-      ContainerService.compareRoles(ContainerRole.Writer, ContainerRole.Owner)
-    ).toBe(-1)
+    expect(ContainerService.compareRoles(ContainerRole.Writer, ContainerRole.Owner)).toBe(-1)
   })
 })
 
@@ -53,12 +44,13 @@ describe('ContainerService - getProjectUserRole', () => {
     const containerService = DIContainer.sharedContainer.containerService
 
     expect(
-      containerService[ContainerType.project].getUserRole({
-        _id: 'MPProject:project-id',
-        owners: [],
-        viewers: [],
-        writers: ['User_validId']
-      } as any,
+      containerService[ContainerType.project].getUserRole(
+        {
+          _id: 'MPProject:project-id',
+          owners: [],
+          viewers: [],
+          writers: ['User_validId'],
+        } as any,
         'User_validId'
       )
     ).toBe(ContainerRole.Writer)
@@ -68,12 +60,13 @@ describe('ContainerService - getProjectUserRole', () => {
     const containerService = DIContainer.sharedContainer.containerService
 
     expect(
-      containerService[ContainerType.project].getUserRole({
-        _id: 'MPProject:project-id',
-        owners: [],
-        viewers: ['User_validId'],
-        writers: []
-      } as any,
+      containerService[ContainerType.project].getUserRole(
+        {
+          _id: 'MPProject:project-id',
+          owners: [],
+          viewers: ['User_validId'],
+          writers: [],
+        } as any,
         'User_validId'
       )
     ).toBe(ContainerRole.Viewer)
@@ -83,44 +76,47 @@ describe('ContainerService - getProjectUserRole', () => {
     const containerService = DIContainer.sharedContainer.containerService
 
     expect(
-      containerService[ContainerType.project].getUserRole({
-        _id: 'MPProject:project-id',
-        owners: ['User_validId'],
-        viewers: [],
-        writers: []
-      } as any,
+      containerService[ContainerType.project].getUserRole(
+        {
+          _id: 'MPProject:project-id',
+          owners: ['User_validId'],
+          viewers: [],
+          writers: [],
+        } as any,
         'User_validId'
       )
     ).toBe(ContainerRole.Owner)
   })
 
-  test('Should return owner if the user is owner', () => {
+  test('user should be annotator', () => {
     const containerService = DIContainer.sharedContainer.containerService
 
     expect(
-      containerService[ContainerType.project].getUserRole({
-        _id: 'MPProject:project-id',
-        owners: ['User_validId'],
-        viewers: [],
-        writers: [],
-        annotators: ['User_validId2']
-      } as any,
+      containerService[ContainerType.project].getUserRole(
+        {
+          _id: 'MPProject:project-id',
+          owners: ['User_validId'],
+          viewers: [],
+          writers: [],
+          annotators: ['User_validId2'],
+        } as any,
         'User_validId2'
       )
     ).toBe(ContainerRole.Annotator)
   })
 
-  test('Should return owner if the user is owner', () => {
+  test('user should be editor', () => {
     const containerService = DIContainer.sharedContainer.containerService
 
     expect(
-      containerService[ContainerType.project].getUserRole({
-        _id: 'MPProject:project-id',
-        owners: ['User_validId'],
-        viewers: [],
-        writers: [],
-        editors: ['User_validId2']
-      } as any,
+      containerService[ContainerType.project].getUserRole(
+        {
+          _id: 'MPProject:project-id',
+          owners: ['User_validId'],
+          viewers: [],
+          writers: [],
+          editors: ['User_validId2'],
+        } as any,
         'User_validId2'
       )
     ).toBe(ContainerRole.Editor)
@@ -132,10 +128,13 @@ describe('ContainerService - getProjectUserRole', () => {
         _id: 'MPProject:project-id',
         owners: ['User_validId'],
         viewers: [],
-        writers: []
+        writers: [],
       }
     })
-    let result = await containerService.checkUserContainerAccess('User_validId', 'MPProject:project-id')
+    const result = await containerService.checkUserContainerAccess(
+      'User_validId',
+      'MPProject:project-id'
+    )
     expect(result).toBeTruthy()
   })
 
@@ -146,10 +145,13 @@ describe('ContainerService - getProjectUserRole', () => {
         _id: 'MPProject:project-id',
         owners: ['User_validId'],
         viewers: [],
-        writers: []
+        writers: [],
       }
     })
-    let result = await containerService.checkIfOwnerOrWriter('User_validId', 'MPProject:project-id')
+    const result = await containerService.checkIfOwnerOrWriter(
+      'User_validId',
+      'MPProject:project-id'
+    )
     expect(result).toBeTruthy()
   })
 
@@ -162,13 +164,19 @@ describe('ContainerService - getProjectUserRole', () => {
         viewers: [],
         writers: [],
         editors: ['User_validId-2'],
-        annotators: ['User_validId-3']
+        annotators: ['User_validId-3'],
       }
     })
-    let result = await containerService.checkIfUserCanCreateNote('User_validId-2', 'MPProject:project-id')
+    let result = await containerService.checkIfUserCanCreateNote(
+      'User_validId-2',
+      'MPProject:project-id'
+    )
     expect(result).toBeTruthy()
 
-    result = await containerService.checkIfUserCanCreateNote('User_validId-3', 'MPProject:project-id')
+    result = await containerService.checkIfUserCanCreateNote(
+      'User_validId-3',
+      'MPProject:project-id'
+    )
     expect(result).toBeTruthy()
   })
 
@@ -176,12 +184,13 @@ describe('ContainerService - getProjectUserRole', () => {
     const containerService = DIContainer.sharedContainer.containerService
 
     expect(
-      containerService[ContainerType.project].getUserRole({
-        _id: 'MPProject:project-id',
-        owners: [],
-        viewers: [],
-        writers: []
-      } as any,
+      containerService[ContainerType.project].getUserRole(
+        {
+          _id: 'MPProject:project-id',
+          owners: [],
+          viewers: [],
+          writers: [],
+        } as any,
         'User_validId'
       )
     ).toBeNull()
@@ -198,8 +207,8 @@ describe('ContainerService - isPublic', () => {
         objectType: 'MPProject',
         owners: [],
         viewers: ['*'],
-        writers: ['User_validId']
-      }as any)
+        writers: ['User_validId'],
+      } as any)
     ).toBeTruthy()
   })
 
@@ -212,47 +221,8 @@ describe('ContainerService - isPublic', () => {
         objectType: 'MPProject',
         owners: [],
         viewers: ['User_otherValidId'],
-        writers: ['User_validId']
-      }as any)
+        writers: ['User_validId'],
+      } as any)
     ).toBeFalsy()
-  })
-})
-
-describe('ContainerService - getProject', () => {
-  test('Should fail if token is not provided', async () => {
-    const userService = DIContainer.sharedContainer.userService
-    const containerService: any = DIContainer.sharedContainer.containerService[ContainerType.project]
-    userService.authenticateUser = jest.fn()
-    await expect(containerService.getProject('userId', 'containerId', 'manuscriptId', null)).rejects.toThrow(InvalidCredentialsError)
-  })
-
-  test('should fail if user don\'t have access to project', async () => {
-    const userService = DIContainer.sharedContainer.userService
-    const containerService: any = DIContainer.sharedContainer.containerService[ContainerType.project]
-    userService.authenticateUser = jest.fn()
-    containerService.checkUserContainerAccess = jest.fn(() => { return false })
-    await expect(containerService.getProject('userId', 'containerId', 'manuscriptId', 'token')).rejects.toThrow(ValidationError)
-  })
-
-  test('Should fail if no project resources found', async () => {
-    const userService = DIContainer.sharedContainer.userService
-    const containerService: any = DIContainer.sharedContainer.containerService[ContainerType.project]
-    const projectRepository = DIContainer.sharedContainer.projectRepository
-    userService.authenticateUser = jest.fn()
-    projectRepository.getContainerResources = jest.fn()
-    containerService.checkUserContainerAccess = jest.fn(() => { return true })
-    await expect(containerService.getProject('userId', 'containerId', 'manuscriptId', 'token')).rejects.toThrow(Error)
-  })
-
-  test('Should return true if the project is public', async () => {
-    const userService = DIContainer.sharedContainer.userService
-    const containerService: any = DIContainer.sharedContainer.containerService[ContainerType.project]
-    const projectRepository: any = DIContainer.sharedContainer.projectRepository
-    userService.authenticateUser = jest.fn()
-    projectRepository.getContainerResources = jest.fn(() => [ validProject ])
-    containerService.checkUserContainerAccess = jest.fn(() => { return true })
-    const result = await containerService.getProject('userId', 'containerId', 'manuscriptId', 'token')
-    //log.debug(JSON.stringify(result))
-    expect(result).toBeTruthy()
   })
 })

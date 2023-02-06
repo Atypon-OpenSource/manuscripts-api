@@ -15,7 +15,7 @@
  */
 
 import projectDump from '@manuscripts/examples/data/project-dump.json'
-import { Model, ObjectTypes, Project } from '@manuscripts/manuscripts-json-schema'
+import { Model, ObjectTypes, Project } from '@manuscripts/json-schema'
 
 import { selectActiveResources } from '../../../../../src/Utilities/ContainerUtils/selectActiveResources'
 import projectDump2 from './../../../../data/fixtures/sample/project-dump-2.json'

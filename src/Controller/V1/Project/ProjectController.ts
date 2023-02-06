@@ -14,16 +14,19 @@
  * limitations under the License.
  */
 
-import { Request } from 'express'
-
-import { BaseController, authorizationBearerToken } from '../../BaseController'
-import { IProjectController } from './IProjectController'
-import { ContainerType, Container } from '../../../Models/ContainerModels'
-import { DIContainer } from '../../../DIContainer/DIContainer'
-import { Readable } from 'stream'
-import * as fs from 'fs'
-import getStream from 'get-stream'
+import { manuscriptIDTypes, Model, UserCollaborator } from '@manuscripts/json-schema'
 import decompress from 'decompress'
+import { Request } from 'express'
+import * as fs from 'fs'
+import { remove } from 'fs-extra'
+import getStream from 'get-stream'
+import jwt from 'jsonwebtoken'
+import { Readable } from 'stream'
+import tempy from 'tempy'
+import { v4 as uuidv4 } from 'uuid'
+
+import { DIContainer } from '../../../DIContainer/DIContainer'
+import { ContainerService } from '../../../DomainServices/Container/ContainerService'
 import {
   InvalidCredentialsError,
   MissingManuscriptError,
@@ -33,20 +36,16 @@ import {
   RoleDoesNotPermitOperationError,
   ValidationError,
 } from '../../../Errors'
-import { manuscriptIDTypes, Model, UserCollaborator } from '@manuscripts/manuscripts-json-schema'
-import { remove } from 'fs-extra'
-import jsonwebtoken from 'jsonwebtoken'
-import { ContainerService } from '../../../DomainServices/Container/ContainerService'
+import { Container, ContainerType } from '../../../Models/ContainerModels'
 import { isLoginTokenPayload } from '../../../Utilities/JWT/LoginTokenPayload'
-import { v4 as uuidv4 } from 'uuid'
-import tempy from 'tempy'
+import { authorizationBearerToken, BaseController } from '../../BaseController'
 
-export class ProjectController extends BaseController implements IProjectController {
+export class ProjectController extends BaseController {
   async create(req: Request): Promise<Container> {
     const title = req.body.title
 
     const token = authorizationBearerToken(req)
-    const payload = jsonwebtoken.decode(token)
+    const payload = jwt.decode(token)
 
     if (!isLoginTokenPayload(payload)) {
       throw new InvalidCredentialsError('Unexpected token payload.')
@@ -69,6 +68,10 @@ export class ProjectController extends BaseController implements IProjectControl
     const file = req.file
     const { projectId } = req.params
     const { manuscriptId, templateId } = req.body
+
+    if (!req.user) {
+      throw new ValidationError('No user found', req.user)
+    }
 
     if (!projectId) {
       throw new ValidationError('projectId parameter must be specified', projectId)
@@ -221,12 +224,16 @@ export class ProjectController extends BaseController implements IProjectControl
     const { projectId } = req.params
     const { data } = req.body
 
+    if (!req.user) {
+      throw new ValidationError('No user found', req.user)
+    }
+
     if (!projectId) {
       throw new ValidationError('projectId parameter must be specified', projectId)
     }
 
     const token = authorizationBearerToken(req)
-    const payload = jsonwebtoken.decode(token)
+    const payload = jwt.decode(token)
     if (!isLoginTokenPayload(payload)) {
       throw new InvalidCredentialsError('Unexpected token payload.')
     }
@@ -262,6 +269,11 @@ export class ProjectController extends BaseController implements IProjectControl
   async projectReplace(req: Request): Promise<Model> {
     const { projectId, manuscriptId } = req.params
     const { data } = req.body
+
+    if (!req.user) {
+      throw new ValidationError('No user found', req.user)
+    }
+
     if (!projectId) {
       throw new ValidationError('projectId parameter must be specified', projectId)
     }
@@ -305,7 +317,7 @@ export class ProjectController extends BaseController implements IProjectControl
     }
 
     const token = authorizationBearerToken(req)
-    const payload = jsonwebtoken.decode(token)
+    const payload = jwt.decode(token)
     if (!isLoginTokenPayload(payload)) {
       throw new InvalidCredentialsError('Unexpected token payload.')
     }
@@ -317,6 +329,11 @@ export class ProjectController extends BaseController implements IProjectControl
 
   async deleteModel(req: Request): Promise<void> {
     const { projectId, manuscriptId, modelId } = req.params
+
+    if (!req.user) {
+      throw new ValidationError('No user found', req.user)
+    }
+
     if (!projectId) {
       throw new ValidationError('projectId parameter must be specified', projectId)
     }

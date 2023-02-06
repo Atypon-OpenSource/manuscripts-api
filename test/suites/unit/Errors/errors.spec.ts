@@ -23,9 +23,11 @@ describe('SyncError', () => {
   })
 
   test('All known error types have a more specific "name"', () => {
-    const errors = Object.values(Errors).filter((e: any) => { return typeof e !== 'function' })
+    const errors = Object.values(Errors).filter((e: any) => {
+      return typeof e !== 'function'
+    })
 
     // Expecting the 'name' field to have been overridden with '…Error'.
-    expect(errors.every(e => e.name !== 'Error' && e.name.match(/Error$/) !== null)).toBeTruthy()
+    expect(errors.every((e) => e.name !== 'Error' && e.name.match(/Error$/) !== null)).toBeTruthy()
   })
 })

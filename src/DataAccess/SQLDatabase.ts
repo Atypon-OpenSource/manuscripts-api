@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import { log } from '../Utilities/Logger'
-import { DatabaseConfiguration, BucketKey } from '../Config/ConfigurationTypes'
-import { NoBucketError, InvalidBucketError } from '../Errors'
-import { Index, indices as getIndices } from './DatabaseIndices'
-
 import { Prisma } from '@prisma/client'
+
+import { BucketKey, DatabaseConfiguration } from '../Config/ConfigurationTypes'
+import { InvalidBucketError, NoBucketError } from '../Errors'
+import { log } from '../Utilities/Logger'
+import { Index, indices as getIndices } from './DatabaseIndices'
 import prisma from './prismaClient'
 
 interface SQLBucket {
@@ -154,7 +154,7 @@ class PrismaBucket implements SQLBucket {
 export class SQLDatabase {
   private _bucket: PrismaBucket
 
-  private isLoaded: boolean = false
+  private isLoaded = false
 
   public constructor(readonly configuration: DatabaseConfiguration, readonly bucketKey: BucketKey) {
     if (!configuration.buckets[bucketKey]) {

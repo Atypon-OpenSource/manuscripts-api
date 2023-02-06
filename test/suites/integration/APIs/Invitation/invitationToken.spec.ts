@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as HttpStatus from 'http-status-codes'
+import { StatusCodes } from 'http-status-codes'
 import * as supertest from 'supertest'
 
 import {
@@ -66,7 +66,7 @@ describe('InvitationService - requestInvitationToken', () => {
       ValidHeaderWithApplicationKey
     )
 
-    expect(loginResponse.status).toBe(HttpStatus.OK)
+    expect(loginResponse.status).toBe(StatusCodes.OK)
 
     const header = authorizationHeader(loginResponse.body.token)
     await createProject('MPProject:valid-project-id-2')
@@ -74,7 +74,7 @@ describe('InvitationService - requestInvitationToken', () => {
       containerID: 'MPProject:valid-project-id-2',
       role: 'Writer'
     })
-    expect(response.status).toBe(HttpStatus.OK)
+    expect(response.status).toBe(StatusCodes.OK)
   })
 
   test('should extends invitation token expiry if token already exists ', async () => {
@@ -83,7 +83,7 @@ describe('InvitationService - requestInvitationToken', () => {
       ValidHeaderWithApplicationKey
     )
 
-    expect(loginResponse.status).toBe(HttpStatus.OK)
+    expect(loginResponse.status).toBe(StatusCodes.OK)
 
     const header = authorizationHeader(loginResponse.body.token)
     await createProject('MPProject:valid-project-id-5')
@@ -91,7 +91,7 @@ describe('InvitationService - requestInvitationToken', () => {
       containerID: 'MPProject:valid-project-id-5',
       role: 'Viewer'
     })
-    expect(response.status).toBe(HttpStatus.OK)
+    expect(response.status).toBe(StatusCodes.OK)
   })
 })
 
@@ -108,7 +108,7 @@ describe('InvitationService - refreshProjectInvitationToken', () => {
       ValidHeaderWithApplicationKey
     )
 
-    expect(loginResponse.status).toBe(HttpStatus.OK)
+    expect(loginResponse.status).toBe(StatusCodes.OK)
 
     const header = authorizationHeader(loginResponse.body.token)
     await createProject('MPProject:valid-project-id-5')
@@ -122,6 +122,6 @@ describe('InvitationService - refreshProjectInvitationToken', () => {
         role: 'Viewer'
       }
     )
-    expect(response.status).toBe(HttpStatus.OK)
+    expect(response.status).toBe(StatusCodes.OK)
   })
 })

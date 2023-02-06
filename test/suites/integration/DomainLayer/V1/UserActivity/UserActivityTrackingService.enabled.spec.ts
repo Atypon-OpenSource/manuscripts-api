@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-import { drop, seed, testDatabase, dropBucket } from '../../../../../utilities/db'
-import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
-import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
-import { validUser1, validUser2 } from '../../../../../data/fixtures/UserRepository'
-import { UserActivityEventType } from '../../../../../../src/Models/UserEventModels'
-import { SeedOptions } from '../../../../../../src/DataAccess/Interfaces/SeedOptions'
 import { BucketKey } from '../../../../../../src/Config/ConfigurationTypes'
+import { SeedOptions } from '../../../../../../src/DataAccess/Interfaces/SeedOptions'
+import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
+import { UserActivityEventType } from '../../../../../../src/Models/UserEventModels'
+import { validUser1, validUser2 } from '../../../../../data/fixtures/UserRepository'
+import { drop, dropBucket, seed, testDatabase } from '../../../../../utilities/db'
+import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
 
 jest.setTimeout(TEST_TIMEOUT)
 
 let db: any = null
 const seedOptions: SeedOptions = {}
-beforeAll(async () => db = await testDatabase(true))
+beforeAll(async () => (db = await testDatabase(true)))
 afterAll(() => db.bucket.disconnect())
 
 describe('UserActivityTrackingService', () => {
@@ -38,7 +38,12 @@ describe('UserActivityTrackingService', () => {
 
   test('should create event successfully', async () => {
     const activityTrackingService = DIContainer.sharedContainer.activityTrackingService
-    activityTrackingService.createEvent(validUser1._id, UserActivityEventType.SuccessfulLogin, 'appId', 'deviceId')
+    activityTrackingService.createEvent(
+      validUser1._id,
+      UserActivityEventType.SuccessfulLogin,
+      'appId',
+      'deviceId'
+    )
     await activityTrackingService.awaitCreation()
 
     const eventRepository = DIContainer.sharedContainer.userEventRepository
@@ -52,8 +57,18 @@ describe('UserActivityTrackingService', () => {
 
     await activityTrackingService.awaitCreation()
 
-    activityTrackingService.createEvent(validUser1._id, UserActivityEventType.SuccessfulLogin, 'appId', 'deviceId')
-    activityTrackingService.createEvent(validUser2._id, UserActivityEventType.Logout, 'appId', 'deviceId')
+    activityTrackingService.createEvent(
+      validUser1._id,
+      UserActivityEventType.SuccessfulLogin,
+      'appId',
+      'deviceId'
+    )
+    activityTrackingService.createEvent(
+      validUser2._id,
+      UserActivityEventType.Logout,
+      'appId',
+      'deviceId'
+    )
     await activityTrackingService.awaitCreation()
 
     const eventRepository = DIContainer.sharedContainer.userEventRepository
@@ -66,7 +81,12 @@ describe('UserActivityTrackingService', () => {
 
   test('should fail to create an event because an error occurred', async () => {
     const activityTrackingService = DIContainer.sharedContainer.activityTrackingService
-    activityTrackingService.createEvent(undefined as any, UserActivityEventType.SuccessfulLogin, 'appId', 'deviceId')
+    activityTrackingService.createEvent(
+      undefined as any,
+      UserActivityEventType.SuccessfulLogin,
+      'appId',
+      'deviceId'
+    )
     await activityTrackingService.awaitCreation()
 
     const eventRepository = DIContainer.sharedContainer.userEventRepository
@@ -77,8 +97,18 @@ describe('UserActivityTrackingService', () => {
 
   test('should fail to create an event because an error occurred when other events are creating', async () => {
     const activityTrackingService = DIContainer.sharedContainer.activityTrackingService
-    activityTrackingService.createEvent(validUser1._id, UserActivityEventType.SuccessfulLogin, 'appId', 'deviceId')
-    activityTrackingService.createEvent(undefined as any, UserActivityEventType.SuccessfulLogin, 'appId', 'deviceId')
+    activityTrackingService.createEvent(
+      validUser1._id,
+      UserActivityEventType.SuccessfulLogin,
+      'appId',
+      'deviceId'
+    )
+    activityTrackingService.createEvent(
+      undefined as any,
+      UserActivityEventType.SuccessfulLogin,
+      'appId',
+      'deviceId'
+    )
     await activityTrackingService.awaitCreation()
 
     const eventRepository = DIContainer.sharedContainer.userEventRepository

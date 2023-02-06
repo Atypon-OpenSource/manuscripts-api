@@ -15,6 +15,7 @@
  */
 
 import '../../../../../../test/utilities/dbMock'
+
 import { validUser1 } from '../../../../../data/fixtures/UserRepository'
 
 jest.mock('email-templates', () =>
@@ -22,62 +23,52 @@ jest.mock('email-templates', () =>
     return {
       render: jest.fn((_foo, opts: any) => {
         if (opts && opts.to && opts.to.email === 'fail@manuscripts.io') {
-          return Promise.reject(
-            new Error('fake email-templates.render set to fail.')
-          )
+          return Promise.reject(new Error('fake email-templates.render set to fail.'))
         }
         return Promise.resolve()
-      })
+      }),
     }
   })
 )
 
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
-import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
-import { validUser } from '../../../../../../test/data/fixtures/userServiceUser'
-import { validUserStatus } from '../../../../../../test/data/fixtures/authServiceUser'
-import { validProject } from '../../../../../../test/data/fixtures/projects'
 import {
+  Container,
   ContainerRole,
   ContainerType,
-  Container
 } from '../../../../../../src/Models/ContainerModels'
+import { validUserStatus } from '../../../../../../test/data/fixtures/authServiceUser'
+import { validProject } from '../../../../../../test/data/fixtures/projects'
+import { validUser } from '../../../../../../test/data/fixtures/userServiceUser'
+import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
 
 jest.setTimeout(TEST_TIMEOUT)
 
 beforeEach(() => {
-  (DIContainer as any)._sharedContainer = null
+  ;(DIContainer as any)._sharedContainer = null
   return DIContainer.init()
 })
 
-xdescribe('EmailService - sendEmail', () => {
+describe.skip('EmailService - sendEmail', () => {
   test('should fail due to the AWS send email service', async () => {
     const emailService = DIContainer.sharedContainer.emailService
     const user = { ...validUser1 }
     user.email = 'fail@manuscripts.io'
 
-    return expect(
-      emailService.sendAccountVerification(user, 'derp')
-    ).rejects.toThrowError()
+    return expect(emailService.sendAccountVerification(user, 'derp')).rejects.toThrow()
   })
 
   test('should send email', async () => {
     const emailService = DIContainer.sharedContainer.emailService
 
-    return expect(
-      emailService.sendAccountVerification(validUser1, 'derp')
-    ).resolves.toBeUndefined()
+    return expect(emailService.sendAccountVerification(validUser1, 'derp')).resolves.toBeUndefined()
   })
 
   test('should render email templates', async () => {
     const emailService = DIContainer.sharedContainer.emailService
     emailService.sendMessage = jest.fn(() => Promise.resolve())
 
-    await emailService.sendPasswordResetInstructions(
-      validUser,
-      validUserStatus as any,
-      'derp'
-    )
+    await emailService.sendPasswordResetInstructions(validUser, validUserStatus as any, 'derp')
 
     await emailService.sendAccountVerification(validUser, 'derp')
     await emailService.sendAccountDeletionConfirmation(validUser)

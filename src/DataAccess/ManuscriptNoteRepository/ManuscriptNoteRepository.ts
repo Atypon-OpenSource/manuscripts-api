@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-import { SGRepository } from '../SGRepository'
-import { DatabaseError } from '../../Errors'
 import { Prisma } from '@prisma/client'
+
+import { DatabaseError } from '../../Errors'
+import { SGRepository } from '../SGRepository'
 
 class ManuscriptNoteRepository extends SGRepository<any, any, any, any> {
   public get objectType(): string {
@@ -53,17 +54,16 @@ class ManuscriptNoteRepository extends SGRepository<any, any, any, any> {
       ],
     }
 
-    return this.database.bucket
-      .query(Q)
-      .catch((error: Prisma.PrismaClientKnownRequestError) =>
-        Promise.reject(
-          DatabaseError.fromPrismaError(
-            error,
-            `Error getProductionNotes of type ${this.objectType}`,
-            JSON.stringify(Q)
-          )
+    return this.database.bucket.query(Q).catch((error: Prisma.PrismaClientKnownRequestError) =>
+      // eslint-disable-next-line promise/no-return-wrap
+      Promise.reject(
+        DatabaseError.fromPrismaError(
+          error,
+          `Error getProductionNotes of type ${this.objectType}`,
+          JSON.stringify(Q)
         )
       )
+    )
   }
 }
 

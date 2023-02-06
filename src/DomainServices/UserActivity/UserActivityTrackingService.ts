@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { log } from '../../Utilities/Logger'
-import { UserActivityEvent, UserActivityEventType } from '../../Models/UserEventModels'
-import { IUserEventRepository } from '../../DataAccess/Interfaces/IUserEventRepository'
 import { Environment } from '../../Config/ConfigurationTypes'
+import { IUserEventRepository } from '../../DataAccess/Interfaces/IUserEventRepository'
+import { UserActivityEvent, UserActivityEventType } from '../../Models/UserEventModels'
 import { timestamp } from '../../Utilities/JWT/LoginTokenPayload'
+import { log } from '../../Utilities/Logger'
 
 export class UserActivityTrackingService {
   readonly eventLifetime: number
@@ -72,6 +72,7 @@ export class UserActivityTrackingService {
             log.debug(`Logged user activity event: ${event.userId} - ${event.eventType}`)
           }
           this.creationCount--
+          // eslint-disable-next-line promise/always-return
           if (this.creationCount === 0 && this.awaitCreateResolvers.length > 0) {
             this.awaitCreateResolvers.forEach((r) => r())
             this.awaitCreateResolvers = []

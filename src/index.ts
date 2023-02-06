@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-import 'source-map-support/register'
-const cron = require('node-cron')
+import { schedule } from 'node-cron'
 
 import { config } from './Config/Config'
-import { log } from './Utilities/Logger'
-
-import { DIContainer } from './DIContainer/DIContainer'
 import { ServerStatus } from './Controller/V1/ServerStatus/ServerStatus'
 import { SQLDatabase } from './DataAccess/SQLDatabase'
+import { DIContainer } from './DIContainer/DIContainer'
+import { log } from './Utilities/Logger'
 
 process.on('unhandledRejection', (reason, promise) => {
   log.error(`Unhandled rejection – reason: ${reason}, promise: ${promise}`)
@@ -43,15 +41,17 @@ function main() {
       container.server.bootstrap()
       return container.server.start(config.API.port)
     })
+    // eslint-disable-next-line promise/always-return
     .then(() => {
       log.info(`Manuscripts.io ${ServerStatus.version} started 🚀`)
     })
+    // eslint-disable-next-line promise/always-return
     .then(() => {
-      cron.schedule('0 1 * * *', async () => {
+      schedule('0 1 * * *', async () => {
         log.debug('clearUsersData every day')
         await DIContainer.sharedContainer.userService.clearUsersData()
       })
-      cron.schedule('0 1 * * *', async () => {
+      schedule('0 1 * * *', async () => {
         log.debug('clearExpiredDocuments every day')
         await DIContainer.sharedContainer.expirationService.clearExpiredDocuments()
       })

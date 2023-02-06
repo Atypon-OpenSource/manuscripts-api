@@ -18,9 +18,8 @@ import passport from 'passport'
 import { ExtractJwt, Strategy } from 'passport-jwt'
 
 import { config } from '../../Config/Config'
-import { AuthStrategyTypes } from './AuthStrategy'
 import { DIContainer } from '../../DIContainer/DIContainer'
-import { UserClaim } from '../Interfaces/UserClaim'
+import { AuthStrategyTypes } from './AuthStrategy'
 
 export class JwtAuthStrategy {
   public static use(): void {
@@ -33,17 +32,15 @@ export class JwtAuthStrategy {
 
     passport.use(
       AuthStrategyTypes.jwt,
-      new Strategy(opts, async (jwtPayload: UserClaim, done: Function) => {
-        const idSchema = DIContainer.sharedContainer.userTokenRepository.fullyQualifiedId(
-          jwtPayload.tokenId
-        )
-        const token = await DIContainer.sharedContainer.userTokenRepository.getById(idSchema)
+      new Strategy(opts, async (jwt, done) => {
+        const id = DIContainer.sharedContainer.userTokenRepository.fullyQualifiedId(jwt.tokenId)
+        const token = await DIContainer.sharedContainer.userTokenRepository.getById(id)
 
         if (!token) {
           return done(null, false)
         }
 
-        const user = await DIContainer.sharedContainer.userRepository.getById(jwtPayload.userId)
+        const user = await DIContainer.sharedContainer.userRepository.getById(jwt.userId)
 
         if (!user) {
           return done(null, false)

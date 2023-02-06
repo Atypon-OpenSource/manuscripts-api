@@ -15,23 +15,22 @@
  */
 // @ts-nocheck
 /* istanbul ignore file */
-import * as nodemailer from 'nodemailer'
 import EmailTemplate from 'email-templates'
-
-import { EmailConfiguration } from '../../Config/ConfigurationTypes'
-import { MessageType, templateNameForMessageType } from './MessageTypes'
-import { User, UserStatus } from '../../Models/UserModels'
-import {
-  InvitedUserData,
-  Container,
-  ContainerType,
-  ContainerRole,
-} from '../../Models/ContainerModels'
 import * as htmlToText from 'html-to-text'
-import { URL } from 'url'
-import { config } from '../../Config/Config'
 import { stringify } from 'querystring'
+import { URL } from 'url'
+
+import { config } from '../../Config/Config'
+import { EmailConfiguration } from '../../Config/ConfigurationTypes'
+import {
+  Container,
+  ContainerRole,
+  ContainerType,
+  InvitedUserData,
+} from '../../Models/ContainerModels'
+import { User, UserStatus } from '../../Models/UserModels'
 import { ContainerService } from '../Container/ContainerService'
+import { MessageType, templateNameForMessageType } from './MessageTypes'
 
 interface MessageOptions {
   actionURL: string | null

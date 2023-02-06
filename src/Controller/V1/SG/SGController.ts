@@ -16,16 +16,13 @@
 
 import { Request } from 'express'
 
-import { BaseController, authorizationBearerToken } from '../../BaseController'
-import { DatabaseConfiguration, BucketKey } from '../../../Config/ConfigurationTypes'
 import { config } from '../../../Config/Config'
-import { ISGController } from './ISGController'
+import { BucketKey, DatabaseConfiguration } from '../../../Config/ConfigurationTypes'
 import { DIContainer } from '../../../DIContainer/DIContainer'
 import { InvalidBucketError } from '../../../Errors'
+import { authorizationBearerToken, BaseController } from '../../BaseController'
 
-export class SGController extends BaseController implements ISGController {
-  readonly repoMap: any
-
+export class SGController extends BaseController {
   public constructor(readonly configuration: DatabaseConfiguration = config.DB) {
     super()
   }

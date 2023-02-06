@@ -15,12 +15,13 @@
  */
 
 import { NextFunction } from 'express'
+
 import { TestBaseRoute } from '../../../data/fixtures/BaseRoute'
 
 describe('BaseRoute - runWithErrorHandling', () => {
   test('should execute the logic successfully', async () => {
     const baseRoute: any = new TestBaseRoute()
-    const logic: Function = () => {
+    const logic = () => {
       return Promise.resolve()
     }
     const next: NextFunction = () => {
@@ -32,10 +33,10 @@ describe('BaseRoute - runWithErrorHandling', () => {
 
   test('should execute the logic and failed', async () => {
     const baseRoute: any = new TestBaseRoute()
-    const logic: Function = () => {
+    const logic = async () => {
       throw new TypeError('an error occurred while executing the login')
     }
-    const next: NextFunction = async error => {
+    const next: NextFunction = async (error) => {
       expect(error.message).toBe('an error occurred while executing the login')
     }
     await baseRoute.runWithErrorHandling(logic, next)

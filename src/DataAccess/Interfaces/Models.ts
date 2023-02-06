@@ -15,21 +15,21 @@
  */
 
 import {
+  Collaboration,
+  ContainerInvitation,
+  ContainerRequest,
+  Correction,
   Invitation,
-  Project,
   Library,
   LibraryCollection,
-  ContainerInvitation,
-  Collaboration,
-  UserProfile,
-  ContainerRequest,
-  Submission,
-  ManuscriptNote,
   Manuscript,
-  Correction,
+  ManuscriptNote,
   ManuscriptTemplate,
+  Project,
   Snapshot,
-} from '@manuscripts/manuscripts-json-schema'
+  Submission,
+  UserProfile,
+} from '@manuscripts/json-schema'
 
 export type ProjectLike = Pick<Project, Exclude<keyof Project, 'createdAt' | 'updatedAt'>>
 

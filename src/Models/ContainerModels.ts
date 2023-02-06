@@ -20,11 +20,10 @@ import {
   ObjectTypes,
   Project,
   UserProfile,
-} from '@manuscripts/manuscripts-json-schema'
+} from '@manuscripts/json-schema'
 
-import { LibraryRepository } from '../DataAccess/LibraryRepository/LibraryRepository'
 import { LibraryCollectionRepository } from '../DataAccess/LibraryCollectionRepository/LibraryCollectionRepository'
-
+import { LibraryRepository } from '../DataAccess/LibraryRepository/LibraryRepository'
 import { ProjectRepository } from '../DataAccess/ProjectRepository/ProjectRepository'
 import { ContainerService } from '../DomainServices/Container/ContainerService'
 

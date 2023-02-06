@@ -17,47 +17,50 @@
 import '../../../../../utilities/dbMock'
 jest.mock('../../../../../../src/DomainServices/Sync/SyncService', () => {
   return {
-    GATEWAY_BUCKETS: [ 'data', 'shared' ],
+    GATEWAY_BUCKETS: ['data', 'shared'],
     SyncService: jest.fn(() => ({
       getOrCreateUserStatus: jest.fn(),
       createUserProfile: jest.fn(),
-      createGatewayAdministrator: jest.fn()
-    }))
+      createGatewayAdministrator: jest.fn(),
+    })),
   }
 })
 
-jest.mock('email-templates', () => jest.fn().mockImplementation(() => {
-  return {
-    send: jest.fn(() => Promise.resolve({})),
-    render: jest.fn(() => Promise.resolve({}))
-  }
-}))
+jest.mock('email-templates', () =>
+  jest.fn().mockImplementation(() => {
+    return {
+      send: jest.fn(() => Promise.resolve({})),
+      render: jest.fn(() => Promise.resolve({})),
+    }
+  })
+)
 
-import { userList } from '../../../../../data/dump/user'
+import Chance from 'chance'
+
+import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
 import {
   ConflictingRecordError,
-  NoTokenError,
-  MissingUserStatusError,
-  ValidationError,
-  InvalidCredentialsError,
   ConflictingUnverifiedUserExistsError,
+  DuplicateEmailError,
+  InvalidCredentialsError,
   InvalidServerCredentialsError,
-  MissingUserRecordError,
-  DuplicateEmailError
+  MissingUserStatusError,
+  NoTokenError,
 } from '../../../../../../src/Errors'
-import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
 import { SingleUseTokenType } from '../../../../../../src/Models/SingleUseTokenModels'
-import { userSignupList } from '../../../../../data/fixtures/signupCredentials'
 import { UserActivityEventType } from '../../../../../../src/Models/UserEventModels'
-import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
 import { ConnectSignupCredentials } from '../../../../../../src/Models/UserModels'
-import Chance from 'chance'
+import { userList } from '../../../../../data/dump/user'
+import { validUserStatus } from '../../../../../data/fixtures/authServiceUser'
 import { validBody } from '../../../../../data/fixtures/credentialsRequestPayload'
+import { userSignupList } from '../../../../../data/fixtures/signupCredentials'
+import { validUserProfile } from '../../../../../data/fixtures/UserRepository'
+import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
 
 jest.setTimeout(TEST_TIMEOUT)
 
 beforeEach(() => {
-  (DIContainer as any)._sharedContainer = null
+  ;(DIContainer as any)._sharedContainer = null
   return DIContainer.init(true)
 })
 
@@ -68,55 +71,55 @@ describe('Registration - Signup', () => {
     const credentials = {
       name: 'Valid System User',
       email: 'valid-user@manuscriptsapp.com',
-      token: 'not-valid-token'
+      token: 'not-valid-token',
     }
 
-    return expect(
-        userRegistrationService.signup(credentials)
-    ).rejects.toThrowError(InvalidServerCredentialsError)
+    return expect(userRegistrationService.signup(credentials)).rejects.toThrow(
+      InvalidServerCredentialsError
+    )
   })
 
   test('should fail if user status does not exist', () => {
     const userRegistrationService: any = DIContainer.sharedContainer.userRegistrationService
     userRegistrationService.userRepository = {
-      getOne: async () => Promise.resolve(userList[0])
+      getOne: async () => Promise.resolve(userList[0]),
     }
     userRegistrationService.userStatusRepository = {
       statusForUserId: async () => Promise.resolve(null),
-      fullyQualifiedId: (id: string) => `UserStatus|${id}`
+      fullyQualifiedId: (id: string) => `UserStatus|${id}`,
     }
 
-    return expect(
-      userRegistrationService.signup(userList[0])
-    ).rejects.toThrowError(MissingUserStatusError)
+    return expect(userRegistrationService.signup(userList[0])).rejects.toThrow(
+      MissingUserStatusError
+    )
   })
 
   test('should fail if verified user already exist', () => {
     const userRegistrationService: any = DIContainer.sharedContainer.userRegistrationService
     userRegistrationService.userRepository = {
-      getOne: async () => Promise.resolve(userList[0])
+      getOne: async () => Promise.resolve(userList[0]),
     }
     const userStatus = {
       _id: '9f338224-b0d5-45aa-b02c-21c7e0c3c07a',
       password: '$2a$05$LpEIAuWg7aF4leM9aZaKDO3.7r.6IkkcS4qrj5qMhHZEWzFoZHrv.',
       isVerified: true,
       createdAt: new Date(1518357671676),
-      blockUntil: null
+      blockUntil: null,
     }
     userRegistrationService.userStatusRepository = {
       statusForUserId: async () => Promise.resolve(userStatus),
-      fullyQualifiedId: (id: string) => `UserStatus|${id}`
+      fullyQualifiedId: (id: string) => `UserStatus|${id}`,
     }
 
-    return expect(
-      userRegistrationService.signup(userList[0])
-    ).rejects.toThrowError(ConflictingRecordError)
+    return expect(userRegistrationService.signup(userList[0])).rejects.toThrow(
+      ConflictingRecordError
+    )
   })
 
   test('should fail if not verified user already exist', () => {
     const userRegistrationService: any = DIContainer.sharedContainer.userRegistrationService
     userRegistrationService.userRepository = {
-      getOne: async () => Promise.resolve(userList[3])
+      getOne: async () => Promise.resolve(userList[3]),
     }
 
     const userStatus = {
@@ -124,81 +127,75 @@ describe('Registration - Signup', () => {
       password: '$2a$05$LpEIAuWg7aF4leM9aZaKDO3.7r.6IkkcS4qrj5qMhHZEWzFoZHrv.',
       isVerified: false,
       createdAt: new Date(1518357671676),
-      blockUntil: null
+      blockUntil: null,
     }
     userRegistrationService.userStatusRepository = {
       statusForUserId: async () => Promise.resolve(userStatus),
-      fullyQualifiedId: (id: string) => `UserStatus|${id}`
+      fullyQualifiedId: (id: string) => `UserStatus|${id}`,
     }
-    return expect(
-      userRegistrationService.signup(userList[3])
-    ).rejects.toThrowError(ConflictingUnverifiedUserExistsError)
+    return expect(userRegistrationService.signup(userList[3])).rejects.toThrow(
+      ConflictingUnverifiedUserExistsError
+    )
   })
 
   test('should send email if user not exist and verifyEmailToken does not exist in db', async () => {
-    const userRegistrationService: any =
-      DIContainer.sharedContainer.userRegistrationService
+    const userRegistrationService: any = DIContainer.sharedContainer.userRegistrationService
 
     const ensureTokenExists: any =
       DIContainer.sharedContainer.singleUseTokenRepository.ensureTokenExists
 
     userRegistrationService.userRepository = {
       getOne: async () => Promise.resolve(null),
-      create: async () => Promise.resolve(userList[1])
+      create: async () => Promise.resolve(userList[1]),
     }
 
     userRegistrationService.userEmailRepository = {
-      create: () => Promise.resolve()
+      create: () => Promise.resolve(),
     }
 
     userRegistrationService.emailService = {
-      sendAccountVerification: jest.fn()
+      sendAccountVerification: jest.fn(),
     }
 
     userRegistrationService.singleUseTokenRepository = {
       getOne: async () => Promise.resolve(null),
       create: jest.fn(() => Promise.resolve({ _id: 'foo' })),
       ensureTokenExists: ensureTokenExists,
-      fullyQualifiedId: (id: string) => `SingleUseToken|${id}`
+      fullyQualifiedId: (id: string) => `SingleUseToken|${id}`,
     }
 
     userRegistrationService.userStatusRepository = {
-      create: async () => Promise.resolve(null)
+      create: async () => Promise.resolve(null),
     }
 
     userRegistrationService.userEventRepository = {
-      create: async () => Promise.resolve(null)
+      create: async () => Promise.resolve(null),
     }
 
     await userRegistrationService.signup(userSignupList[2])
 
-    expect(
-      userRegistrationService.emailService.sendAccountVerification
-    ).toBeCalled()
+    expect(userRegistrationService.emailService.sendAccountVerification).toHaveBeenCalled()
 
-    expect(
-      userRegistrationService.singleUseTokenRepository.create
-    ).toBeCalled()
+    expect(userRegistrationService.singleUseTokenRepository.create).toHaveBeenCalled()
   })
 
   test('should send email if user not exist and verifyEmailToken exist in db', async () => {
-    const userRegistrationService: any =
-      DIContainer.sharedContainer.userRegistrationService
+    const userRegistrationService: any = DIContainer.sharedContainer.userRegistrationService
 
     const ensureTokenExists: any =
       DIContainer.sharedContainer.singleUseTokenRepository.ensureTokenExists
 
     userRegistrationService.userRepository = {
       getOne: async () => Promise.resolve(null),
-      create: async () => Promise.resolve(userList[1])
+      create: async () => Promise.resolve(userList[1]),
     }
 
     userRegistrationService.userEmailRepository = {
-      create: () => Promise.resolve()
+      create: () => Promise.resolve(),
     }
 
     userRegistrationService.emailService = {
-      sendAccountVerification: jest.fn()
+      sendAccountVerification: jest.fn(),
     }
 
     const token = {
@@ -206,76 +203,70 @@ describe('Registration - Signup', () => {
       userId: 'bar',
       tokenType: SingleUseTokenType.VerifyEmailToken,
       createdAt: new Date(1900, 1, 1).getTime(),
-      updatedAt: new Date().getTime()
+      updatedAt: new Date().getTime(),
     }
 
     userRegistrationService.singleUseTokenRepository = {
       getOne: () => Promise.resolve(token),
       patch: jest.fn(),
       ensureTokenExists: ensureTokenExists,
-      fullyQualifiedId: (id: string) => `SingleUseToken|${id}`
+      fullyQualifiedId: (id: string) => `SingleUseToken|${id}`,
     }
 
     userRegistrationService.userStatusRepository = {
-      create: async () => Promise.resolve(null)
+      create: async () => Promise.resolve(null),
     }
 
     await userRegistrationService.signup(userSignupList[2])
 
-    expect(userRegistrationService.singleUseTokenRepository.patch).toBeCalled()
-    expect(
-      userRegistrationService.emailService.sendAccountVerification
-    ).toBeCalled()
+    expect(userRegistrationService.singleUseTokenRepository.patch).toHaveBeenCalled()
+    expect(userRegistrationService.emailService.sendAccountVerification).toHaveBeenCalled()
   })
 
-  test('should signup user without sending verification',async () => {
-    const userRegistrationService: any =
-      DIContainer.sharedContainer.userRegistrationService
+  test('should signup user without sending verification', async () => {
+    const userRegistrationService: any = DIContainer.sharedContainer.userRegistrationService
 
     const ensureTokenExists: any =
       DIContainer.sharedContainer.singleUseTokenRepository.ensureTokenExists
 
     userRegistrationService.userRepository = {
       getOne: async () => Promise.resolve(null),
-      create: async () => Promise.resolve(userList[1])
+      create: async () => Promise.resolve(userList[1]),
     }
 
     userRegistrationService.userEmailRepository = {
-      create: () => Promise.resolve()
+      create: () => Promise.resolve(),
     }
 
     userRegistrationService.emailService = {
-      sendAccountVerification: jest.fn()
+      sendAccountVerification: jest.fn(),
     }
 
     userRegistrationService.singleUseTokenRepository = {
       getOne: async () => Promise.resolve(null),
       create: jest.fn(() => Promise.resolve({ _id: 'foo' })),
       ensureTokenExists: ensureTokenExists,
-      fullyQualifiedId: (id: string) => `SingleUseToken|${id}`
+      fullyQualifiedId: (id: string) => `SingleUseToken|${id}`,
     }
 
     userRegistrationService.userStatusRepository = {
-      create: async () => Promise.resolve(null)
+      create: async () => Promise.resolve(null),
     }
 
     userRegistrationService.userEventRepository = {
-      create: async () => Promise.resolve(null)
+      create: async () => Promise.resolve(null),
     }
 
     const credentials = {
       name: 'Valid System User 5',
       email: 'valid-user-5@manuscriptsapp.com',
       password: 'a-hashed-password',
-      token:
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.iyS3EfaK9Kqh2JUbp-nx9fh3YqLZHSGJOJBGX9uwc2Q'
+      token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.iyS3EfaK9Kqh2JUbp-nx9fh3YqLZHSGJOJBGX9uwc2Q',
     }
 
     await userRegistrationService.signup(credentials)
 
-    expect(
-      userRegistrationService.emailService.sendAccountVerification
-    ).not.toBeCalled()
+    expect(userRegistrationService.emailService.sendAccountVerification).not.toHaveBeenCalled()
   })
 })
 
@@ -284,59 +275,70 @@ describe('Registration - verify', () => {
     const userRegistrationService: any = DIContainer.sharedContainer.userRegistrationService
 
     userRegistrationService.singleUseTokenRepository = {
-      getById: async () => null
+      getById: async () => null,
     }
 
-    return expect(
-      userRegistrationService.verify('not-in-db')
-    ).rejects.toThrowError(NoTokenError)
+    return expect(userRegistrationService.verify('not-in-db')).rejects.toThrow(NoTokenError)
   })
 
   test('should fail if the user is not in the db', () => {
     const userRegistrationService: any = DIContainer.sharedContainer.userRegistrationService
 
-    const token = { _id: 'foo', userId: 'bar', tokenType: SingleUseTokenType.VerifyEmailToken, createdAt: new Date(1900, 1, 1).getTime(), updatedAt: new Date().getTime() }
+    const token = {
+      _id: 'foo',
+      userId: 'bar',
+      tokenType: SingleUseTokenType.VerifyEmailToken,
+      createdAt: new Date(1900, 1, 1).getTime(),
+      updatedAt: new Date().getTime(),
+    }
 
     userRegistrationService.singleUseTokenRepository = {
       getById: () => Promise.resolve(token),
-      remove: jest.fn()
+      remove: jest.fn(),
     }
 
     userRegistrationService.userRepository = {
-      getById: async () => null
+      getById: async () => null,
     }
 
-    return expect(
-      userRegistrationService.verify('not-in-db')
-    ).rejects.toThrowError(InvalidCredentialsError)
+    return expect(userRegistrationService.verify('not-in-db')).rejects.toThrow(
+      InvalidCredentialsError
+    )
   })
 
   test('should verify user', async () => {
     const userRegistrationService: any = DIContainer.sharedContainer.userRegistrationService
 
-    const token = { _id: 'foo', userId: 'bar', tokenType: SingleUseTokenType.VerifyEmailToken, createdAt: new Date(1900, 1, 1).getTime(), updatedAt: new Date().getTime() }
+    const token = {
+      _id: 'foo',
+      userId: 'bar',
+      tokenType: SingleUseTokenType.VerifyEmailToken,
+      createdAt: new Date(1900, 1, 1).getTime(),
+      updatedAt: new Date().getTime(),
+    }
 
     userRegistrationService.singleUseTokenRepository = {
       getById: () => Promise.resolve(token),
-      remove: jest.fn()
+      remove: jest.fn(),
     }
     userRegistrationService.userStatusRepository = {
       fullyQualifiedId: (id: string) => `UserStatus|${id}`,
-      patchStatusWithUserId: jest.fn()
+      patchStatusWithUserId: jest.fn(),
     }
     userRegistrationService.userEventRepository = {
-      create: async () => Promise.resolve(null)
+      create: async () => Promise.resolve(null),
     }
     userRegistrationService.userRepository = {
-      getById: async () => Promise.resolve({
-        email: 'bar@foo.com'
-      })
+      getById: async () =>
+        Promise.resolve({
+          email: 'bar@foo.com',
+        }),
     }
 
     await userRegistrationService.verify(token._id)
 
-    expect(userRegistrationService.singleUseTokenRepository.remove).toBeCalled()
-    expect(userRegistrationService.userStatusRepository.patchStatusWithUserId).toBeCalled()
+    expect(userRegistrationService.singleUseTokenRepository.remove).toHaveBeenCalled()
+    expect(userRegistrationService.userStatusRepository.patchStatusWithUserId).toHaveBeenCalled()
   })
 })
 
@@ -346,7 +348,7 @@ describe('Registration - createEvent', () => {
     activityTrackingService.userEventRepository = {
       create: () => {
         return new Promise((_resolve, reject) => reject(new Error('User tracking derp')))
-      }
+      },
     }
 
     return expect(
@@ -360,130 +362,49 @@ describe('Registration - createEvent', () => {
   })
 })
 
-describe('Registration - requestVerificationEmail', () => {
-  test('should fail if user not found', () => {
-    const userRegistrationService: any = DIContainer.sharedContainer.userRegistrationService
-
-    userRegistrationService.userRepository = {
-      getOne: async () => null
-    }
-
-    return expect(userRegistrationService.requestVerificationEmail('foo@bar.com')).rejects.toThrowError(MissingUserRecordError)
-  })
-
-  test('should fail user status not found', () => {
-    const userRegistrationService: any = DIContainer.sharedContainer.userRegistrationService
-
-    userRegistrationService.userRepository = {
-      getOne: async () => ({
-        _id: 'User|foo@bar.com'
-      })
-    }
-
-    userRegistrationService.userStatusRepository = {
-      statusForUserId: async () => null,
-      fullyQualifiedId: (id: string) => `UserStatus|${id}`
-    }
-
-    return expect(
-      userRegistrationService.requestVerificationEmail('foo@bar.com')
-    ).rejects.toThrowError(MissingUserStatusError)
-  })
-
-  test('should fail if user already verified', () => {
-    const userRegistrationService: any = DIContainer.sharedContainer.userRegistrationService
-
-    userRegistrationService.userRepository = {
-      getOne: async () => ({
-        _id: 'User|foo@bar.com'
-      })
-    }
-
-    userRegistrationService.userStatusRepository = {
-      statusForUserId: async () => ({ isVerified: true }),
-      fullyQualifiedId: (id: string) => `UserStatus|${id}`
-    }
-
-    return expect(
-      userRegistrationService.requestVerificationEmail('foo@bar.com')
-    ).rejects.toThrowError(ValidationError)
-  })
-
-  test('should send verification email', async () => {
-    const userRegistrationService: any = DIContainer.sharedContainer.userRegistrationService
-
-    userRegistrationService.userRepository = {
-      getOne: async () => ({
-        _id: 'User|foo@bar.com'
-      })
-    }
-
-    userRegistrationService.userStatusRepository = {
-      statusForUserId: async () => ({ isVerified: false }),
-      fullyQualifiedId: (id: string) => `UserStatus|${id}`
-    }
-
-    userRegistrationService.activityTrackingService.userEventRepository.create = jest.fn(() => Promise.resolve())
-    userRegistrationService.sendAccountVerification = jest.fn()
-
-    await userRegistrationService.requestVerificationEmail('foo@bar.com')
-
-    expect(userRegistrationService.sendAccountVerification).toHaveBeenCalled()
-    expect(userRegistrationService.activityTrackingService.userEventRepository.create).toHaveBeenCalled()
-
-    /*const params: any[] = userRegistrationService.activityTrackingService.userEventRepository.create.mock.calls[0]
-
-    expect(Object.keys(params[1])).toEqual(['expiry'])
-    expect(params[1].expiry).toEqual(userRegistrationService.activityTrackingService.eventLifetime)*/
-  })
-})
-
 describe('Registration - connectSignup', () => {
-
   test('should fail if user already exist', () => {
     const userRegistrationService: any = DIContainer.sharedContainer.userRegistrationService
     userRegistrationService.userRepository = {
-      getOne: async () => Promise.resolve({ connectUserID: 'valid-connectId', ...userList[0] })
+      getOne: async () => Promise.resolve({ connectUserID: 'valid-connectId', ...userList[0] }),
     }
     const chance = new Chance()
     const cred: ConnectSignupCredentials = {
       email: chance.email(),
       name: chance.string(),
-      connectUserID: chance.string()
+      connectUserID: chance.string(),
     }
-    return expect(
-        userRegistrationService.connectSignup(cred)
-    ).rejects.toThrowError(DuplicateEmailError)
+    return expect(userRegistrationService.connectSignup(cred)).rejects.toThrow(DuplicateEmailError)
   })
 
   test('should create user', async () => {
     const userRegistrationService: any = DIContainer.sharedContainer.userRegistrationService
     userRegistrationService.userRepository = {
       getOne: async () => null,
-      create: async () => validBody
+      create: async () => validBody,
     }
     userRegistrationService.userEmailRepository = {
-      create: async () => validBody
+      create: async () => validBody,
     }
 
     userRegistrationService.syncService = {
-      getOrCreateUserStatus: async () => {},
-      createUserProfile: async () => {}
+      getOrCreateUserStatus: async () => validUserStatus,
+      createUserProfile: async () => validUserProfile,
     }
 
     userRegistrationService.activityTrackingService = {
-      createEvent: async () => {}
+      createEvent: async () => Promise.resolve(),
     }
 
     userRegistrationService.userStatusRepository = {
-      create: async () => Promise.resolve({})
+      create: async () => Promise.resolve({}),
     }
 
     const chance = new Chance()
     const cred: ConnectSignupCredentials = {
       email: chance.email(),
       name: chance.string(),
-      connectUserID: chance.string()
+      connectUserID: chance.string(),
     }
     return userRegistrationService.connectSignup(cred)
   })

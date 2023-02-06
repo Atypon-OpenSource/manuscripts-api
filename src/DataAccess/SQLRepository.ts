@@ -1,3 +1,4 @@
+/* eslint-disable */
 /*!
  * © 2020 Atypon Systems LLC
  *
@@ -14,20 +15,18 @@
  * limitations under the License.
  */
 
-import * as _ from 'lodash'
+import { Prisma } from '@prisma/client'
 import { v4 as uuid_v4 } from 'uuid'
 
-import { IdentifiableEntity } from './Interfaces/IdentifiableEntity'
-import { IndexedRepository, ensureValidDocumentType } from './Interfaces/IndexedRepository'
-import { QueryCriteria } from './Interfaces/QueryCriteria'
-import { DatabaseError, NoBucketError, ValidationError } from '../Errors'
-import { QueryOptions } from './Interfaces/QueryOptions'
-import { isString } from '../util'
-import { SQLDatabase } from './SQLDatabase'
 import { BucketKey } from '../Config/ConfigurationTypes'
-
-import { Prisma } from '@prisma/client'
+import { DatabaseError, NoBucketError, ValidationError } from '../Errors'
+import { isString } from '../util'
 import { timestamp } from '../Utilities/JWT/LoginTokenPayload'
+import { IdentifiableEntity } from './Interfaces/IdentifiableEntity'
+import { ensureValidDocumentType, IndexedRepository } from './Interfaces/IndexedRepository'
+import { QueryCriteria } from './Interfaces/QueryCriteria'
+import { QueryOptions } from './Interfaces/QueryOptions'
+import { SQLDatabase } from './SQLDatabase'
 
 /* istanbul ignore next */
 const getPaths = (obj: any, arr: string[] = [], res: string[][] = []): string[][] => {

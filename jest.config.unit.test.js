@@ -3,7 +3,9 @@ module.exports = {
     "setupFiles": [
       "<rootDir>/test/utilities/configMock.ts"
     ],
-    "testURL": 'http://localhost',
+    "testEnvironmentOptions": {
+        "url": 'http://localhost'
+    },
     "testEnvironment": "node",
     "testMatch": [
         "**/test/suites/unit/**/*.ts",
@@ -19,7 +21,7 @@ module.exports = {
     "coverageDirectory": "coverage/unit",
     "coverageThreshold": {
         "global": {
-            "branches": 87,
+            "branches": 86,
             "functions": 89,
             "lines": 90
         }

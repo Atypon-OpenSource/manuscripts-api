@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { ContainerRequest } from '@manuscripts/manuscripts-json-schema'
+import { ContainerRequest } from '@manuscripts/json-schema'
 
-import { SGRepository } from '../SGRepository'
-import { ContainerRequestLike } from '../Interfaces/Models'
 import { PatchContainerRequest } from '../../Models/ContainerModels'
+import { ContainerRequestLike } from '../Interfaces/Models'
+import { SGRepository } from '../SGRepository'
 
 /**
  * Manages tokens persistent storage operations.

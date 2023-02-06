@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-import { IndexedRepository } from './IndexedRepository'
 import {
-  SingleUseToken,
   NewSingleUseToken,
-  UpdateSingleUseToken,
+  SingleUseToken,
   SingleUseTokenType,
+  UpdateSingleUseToken,
 } from '../../Models/SingleUseTokenModels'
-import { SingleUseTokenQueryCriteria } from './QueryCriteria'
 import { User } from '../../Models/UserModels'
+import { IndexedRepository } from './IndexedRepository'
+import { SingleUseTokenQueryCriteria } from './QueryCriteria'
 
 /**
  * Manages user persistent storage operations.

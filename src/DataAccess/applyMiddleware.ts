@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import prisma from './prismaClient'
 import { onUpdate } from '../DomainServices/eventing'
+import prisma from './prismaClient'
 
 export default function applyMiddleware() {
   prisma.$use(async (params: any, next: any) => {

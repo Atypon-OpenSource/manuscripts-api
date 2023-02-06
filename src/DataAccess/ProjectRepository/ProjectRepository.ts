@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import { Project } from '@manuscripts/manuscripts-json-schema'
+import { Project } from '@manuscripts/json-schema'
 
-import { IProjectRepository } from '../Interfaces/IProjectRepository'
-import { ProjectLike } from '../Interfaces/Models'
 import { PatchProject } from '../../Models/ProjectModels'
 import { ContainerRepository } from '../ContainerRepository/ContainerRepository'
+import { IProjectRepository } from '../Interfaces/IProjectRepository'
+import { ProjectLike } from '../Interfaces/Models'
 
 export class ProjectRepository
   extends ContainerRepository<Project, ProjectLike, PatchProject>

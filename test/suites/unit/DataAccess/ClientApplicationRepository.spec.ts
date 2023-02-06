@@ -14,11 +14,18 @@
  * limitations under the License.
  */
 
-import { clientApplicationsFromSplitString, scopeConfigurationsFromSplitString } from '../../../../src/Models/ClientApplicationModels'
+import {
+  clientApplicationsFromSplitString,
+  scopeConfigurationsFromSplitString,
+} from '../../../../src/Models/ClientApplicationModels'
 
 describe('Scope configurations', () => {
   test('should be successfully deserialized from a configuration string', () => {
-    const scopes = scopeConfigurationsFromSplitString('jupyterhub,random-secret,,15;pressroom,random-secret,,15;beacon,random-secret,,15', ';', ',')
+    const scopes = scopeConfigurationsFromSplitString(
+      'jupyterhub,random-secret,,15;pressroom,random-secret,,15;beacon,random-secret,,15',
+      ';',
+      ','
+    )
     expect(scopes.length).toEqual(3)
     expect(scopes[0].name).toEqual('jupyterhub')
     expect(scopes[0].secret).toEqual('random-secret')
@@ -27,7 +34,9 @@ describe('Scope configurations', () => {
   })
 
   test('should fail to be deserialized with an invalid configuration string', () => {
-    return expect(() => { const apps = clientApplicationsFromSplitString('derp', ';', ','); return apps }).toThrow()
+    return expect(() => {
+      return clientApplicationsFromSplitString('derp', ';', ',')
+    }).toThrow()
   })
 })
 
@@ -44,6 +53,8 @@ describe('Client applications', () => {
   })
 
   test('should fail to be deserialized with an invalid configuration string', () => {
-    return expect(() => { const apps = clientApplicationsFromSplitString('derp', ';', ','); return apps }).toThrow()
+    return expect(() => {
+      return clientApplicationsFromSplitString('derp', ';', ',')
+    }).toThrow()
   })
 })

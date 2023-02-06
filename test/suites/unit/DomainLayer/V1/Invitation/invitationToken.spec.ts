@@ -16,183 +16,173 @@
 
 import '../../../../../utilities/dbMock'
 
+import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
 import {
   InvalidCredentialsError,
-  ValidationError,
+  MissingContainerError,
   UserRoleError,
-  MissingContainerError
+  ValidationError,
 } from '../../../../../../src/Errors'
-import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
 import { validProject } from '../../../../../data/fixtures/projects'
 import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
 
 jest.setTimeout(TEST_TIMEOUT)
 
 beforeEach(() => {
-  (DIContainer as any)._sharedContainer = null
+  ;(DIContainer as any)._sharedContainer = null
   return DIContainer.init()
 })
 
 describe('Invitation - requestInvitationToken', () => {
   test('should fail if user does not exist', () => {
-    const containerInvitationService: any =
-      DIContainer.sharedContainer.containerInvitationService
+    const containerInvitationService: any = DIContainer.sharedContainer.containerInvitationService
 
     containerInvitationService.userRepository = {
-      getById: async () => Promise.resolve(null)
+      getById: async () => Promise.resolve(null),
     }
 
     return expect(
       containerInvitationService.requestInvitationToken('foo', 'bar', 'role')
-    ).rejects.toThrowError(InvalidCredentialsError)
+    ).rejects.toThrow(InvalidCredentialsError)
   })
 
   test('should fail if role is not valid', () => {
-    const containerInvitationService: any =
-      DIContainer.sharedContainer.containerInvitationService
-
-    containerInvitationService.userRepository = {
-      getById: async () =>
-        Promise.resolve({
-          email: 'foo@bar.com'
-        })
-    }
-    return expect(
-      containerInvitationService.requestInvitationToken('foo', 'bar', 'role')
-    ).rejects.toThrowError(ValidationError)
-  })
-
-  test('should fail if project does not exist', async () => {
-    const containerInvitationService: any =
-      DIContainer.sharedContainer.containerInvitationService
+    const containerInvitationService: any = DIContainer.sharedContainer.containerInvitationService
 
     containerInvitationService.userRepository = {
       getById: async () =>
         Promise.resolve({
           email: 'foo@bar.com',
-          _id: 'User|foo@bar.com'
-        })
+        }),
+    }
+    return expect(
+      containerInvitationService.requestInvitationToken('foo', 'bar', 'role')
+    ).rejects.toThrow(ValidationError)
+  })
+
+  test('should fail if project does not exist', async () => {
+    const containerInvitationService: any = DIContainer.sharedContainer.containerInvitationService
+
+    containerInvitationService.userRepository = {
+      getById: async () =>
+        Promise.resolve({
+          email: 'foo@bar.com',
+          _id: 'User|foo@bar.com',
+        }),
     }
 
     containerInvitationService.projectService.containerRepository = {
-      getById: async () => Promise.resolve(null)
+      getById: async () => Promise.resolve(null),
     }
 
     return expect(
       containerInvitationService.requestInvitationToken('foo', 'MPProject:bar', 'Writer')
-    ).rejects.toThrowError(MissingContainerError)
+    ).rejects.toThrow(MissingContainerError)
   })
 
   test('should fail if the user requesting invitation token is not a project owner', async () => {
-    const containerInvitationService: any =
-      DIContainer.sharedContainer.containerInvitationService
+    const containerInvitationService: any = DIContainer.sharedContainer.containerInvitationService
 
     containerInvitationService.userRepository = {
       getById: async () =>
         Promise.resolve({
           email: 'foo@bar.com',
-          _id: 'User|foo@bar.com'
-        })
+          _id: 'User|foo@bar.com',
+        }),
     }
 
     containerInvitationService.projectService = {
       getContainer: async () => Promise.resolve(validProject),
-      isOwner: () => false
+      isOwner: () => false,
     }
 
     return expect(
       containerInvitationService.requestInvitationToken('foo', 'MPProject:bar', 'Writer')
-    ).rejects.toThrowError(UserRoleError)
+    ).rejects.toThrow(UserRoleError)
   })
 
   test('should extend the invitation expiry if invitation token already exist', async () => {
-    const containerInvitationService: any =
-      DIContainer.sharedContainer.containerInvitationService
+    const containerInvitationService: any = DIContainer.sharedContainer.containerInvitationService
 
     containerInvitationService.userRepository = {
       getById: async () =>
         Promise.resolve({
           email: 'foo@bar.com',
-          _id: 'User|foo@bar.com'
-        })
+          _id: 'User|foo@bar.com',
+        }),
     }
 
     containerInvitationService.projectService = {
       getContainer: async () => Promise.resolve({ ...validProject, owners: ['User_foo@bar.com'] }),
-      isOwner: () => true
+      isOwner: () => true,
     }
 
     containerInvitationService.invitationTokenRepository = {
       getById: async () => Promise.resolve({}),
-      touch: jest.fn(() => Promise.resolve({ _id: 'InvitationToken|bar' }))
+      touch: jest.fn(() => Promise.resolve({ _id: 'InvitationToken|bar' })),
     }
 
     await containerInvitationService.requestInvitationToken('foo', 'MPProject:bar', 'Writer')
-    expect(containerInvitationService.invitationTokenRepository.touch).toBeCalled()
+    expect(containerInvitationService.invitationTokenRepository.touch).toHaveBeenCalled()
   })
 
   test('should create new invitation token if token does not exist', async () => {
-    const containerInvitationService: any =
-      DIContainer.sharedContainer.containerInvitationService
+    const containerInvitationService: any = DIContainer.sharedContainer.containerInvitationService
 
     containerInvitationService.userRepository = {
       getById: async () =>
         Promise.resolve({
           email: 'foo@bar.com',
-          _id: 'User|foo@bar.com'
-        })
+          _id: 'User|foo@bar.com',
+        }),
     }
 
     containerInvitationService.userProfileRepository = {
       getById: async () =>
         Promise.resolve({
-          _id: 'UserProfile_foo@bar.com'
-        })
+          _id: 'UserProfile_foo@bar.com',
+        }),
     }
 
     containerInvitationService.projectService = {
       getContainer: async () => Promise.resolve({ ...validProject, owners: ['User_foo@bar.com'] }),
-      isOwner: () => true
+      isOwner: () => true,
     }
 
     containerInvitationService.invitationTokenRepository = {
       getById: async () => Promise.resolve(null),
-      create: jest.fn(() => Promise.resolve({ _id: 'InvitationToken|bar' }))
+      create: jest.fn(() => Promise.resolve({ _id: 'InvitationToken|bar' })),
     }
 
     await containerInvitationService.requestInvitationToken('foo', 'MPProject:bar', 'Writer')
-    expect(containerInvitationService.invitationTokenRepository.create).toBeCalled()
+    expect(containerInvitationService.invitationTokenRepository.create).toHaveBeenCalled()
   })
 })
 
 describe('Invitation - refreshInvitationToken', () => {
   test('should fail if invitation token does not exist', async () => {
-    const containerInvitationService: any =
-      DIContainer.sharedContainer.containerInvitationService
+    const containerInvitationService: any = DIContainer.sharedContainer.containerInvitationService
 
-    containerInvitationService.resolveInvitationTokenDetails = async () =>
-      Promise.resolve()
+    containerInvitationService.resolveInvitationTokenDetails = async () => Promise.resolve()
     containerInvitationService.invitationTokenRepository = {
-      getById: async () => Promise.resolve(null)
+      getById: async () => Promise.resolve(null),
     }
 
     return expect(
       containerInvitationService.refreshInvitationToken('foo', 'bar', 'Writer')
-    ).rejects.toThrowError(InvalidCredentialsError)
+    ).rejects.toThrow(InvalidCredentialsError)
   })
 
   test('should refresh invitation token', async () => {
-    const containerInvitationService: any =
-      DIContainer.sharedContainer.containerInvitationService
+    const containerInvitationService: any = DIContainer.sharedContainer.containerInvitationService
 
-    containerInvitationService.resolveInvitationTokenDetails = async () =>
-      Promise.resolve()
+    containerInvitationService.resolveInvitationTokenDetails = async () => Promise.resolve()
     containerInvitationService.invitationTokenRepository = {
       getById: async () => Promise.resolve({}),
-      touch: jest.fn(() => Promise.resolve())
+      touch: jest.fn(() => Promise.resolve()),
     }
 
     await containerInvitationService.refreshInvitationToken('foo', 'bar', 'Writer')
-    expect(containerInvitationService.invitationTokenRepository.touch).toBeCalled()
+    expect(containerInvitationService.invitationTokenRepository.touch).toHaveBeenCalled()
   })
 })

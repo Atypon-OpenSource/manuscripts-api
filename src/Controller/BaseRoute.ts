@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Router, NextFunction } from 'express'
+import { NextFunction, Router } from 'express'
 
 export abstract class BaseRoute {
   /**

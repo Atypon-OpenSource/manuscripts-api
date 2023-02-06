@@ -1,5 +1,5 @@
 /*!
- * © 2020 Atypon Systems LLC
+ * © 2023 Atypon Systems LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,19 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-import { Request } from 'express'
-
-export interface IUserController {
-  /**
-   * Sets the user deleteAt property.
-   * @param req Request express request.
-   */
-  markUserForDeletion(req: Request): Promise<void>
-
-  /**
-   * Sets the user deleteAt property to undefined.
-   * @param req Request express request.
-   */
-  unmarkUserForDeletion(req: Request): Promise<void>
+declare module 'crypto-random-string' {
+  function cryptoRandomString(length: number): string
+  export = cryptoRandomString
 }

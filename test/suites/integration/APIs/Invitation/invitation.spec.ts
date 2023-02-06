@@ -14,47 +14,51 @@
  * limitations under the License.
  */
 
-import * as HttpStatus from 'http-status-codes'
+import checksum from 'checksum'
+import { StatusCodes } from 'http-status-codes'
 import * as supertest from 'supertest'
 
-jest.mock('email-templates', () =>
-  jest.fn().mockImplementation(() => {
-    return {
-      send: jest.fn(() => Promise.resolve({})),
-      render: jest.fn(() => Promise.resolve({}))
-    }
-  })
-)
-
-const emailTemplates = require('email-templates')
-
-import { invite, basicLogin, inviteToContainer } from '../../../../api'
-import { TEST_TIMEOUT } from '../../../../utilities/testSetup'
+import { BucketKey } from '../../../../../src/Config/ConfigurationTypes'
+import { SeedOptions } from '../../../../../src/DataAccess/Interfaces/SeedOptions'
 import { DIContainer } from '../../../../../src/DIContainer/DIContainer'
-import { drop, dropBucket, seed, testDatabase } from '../../../../utilities/db'
+import { basicLogin, invite, inviteToContainer } from '../../../../api'
 import { validBody } from '../../../../data/fixtures/credentialsRequestPayload'
 import {
+  authorizationHeader,
   ValidContentTypeAcceptJsonHeader,
   ValidHeaderWithApplicationKey,
-  authorizationHeader
 } from '../../../../data/fixtures/headers'
 import {
   validInvitation,
   validInvitation2,
   validProjectInvitation,
   validProjectInvitation2,
-  validProjectInvitationWithoutEmail
+  validProjectInvitationWithoutEmail,
 } from '../../../../data/fixtures/invitation'
-import { BucketKey } from '../../../../../src/Config/ConfigurationTypes'
-import { SeedOptions } from '../../../../../src/DataAccess/Interfaces/SeedOptions'
-import { createProjectInvitation, purgeContainerInvitation, createProject } from '../../../../data/fixtures/misc'
-import checksum from 'checksum'
+import {
+  createProject,
+  createProjectInvitation,
+  purgeContainerInvitation,
+} from '../../../../data/fixtures/misc'
+import { drop, dropBucket, seed, testDatabase } from '../../../../utilities/db'
+import { TEST_TIMEOUT } from '../../../../utilities/testSetup'
+
+jest.mock('email-templates', () =>
+  jest.fn().mockImplementation(() => {
+    return {
+      send: jest.fn(() => Promise.resolve({})),
+      render: jest.fn(() => Promise.resolve({})),
+    }
+  })
+)
+
+const emailTemplates = require('email-templates')
 
 let db: any = null
 const seedOptions: SeedOptions = {
   users: true,
   invitations: true,
-  applications: true
+  applications: true,
 }
 
 beforeAll(async () => {
@@ -76,13 +80,11 @@ describe('InvitationService - invite', () => {
     await drop()
     await dropBucket(BucketKey.Project)
     await seed(seedOptions)
-    await DIContainer.sharedContainer.syncService.createUserProfile(
-      {
-        _id: `User|${validBody.email}`,
-        name: 'foobar',
-        email: validBody.email
-      }
-    )
+    await DIContainer.sharedContainer.syncService.createUserProfile({
+      _id: `User|${validBody.email}`,
+      name: 'foobar',
+      email: validBody.email,
+    })
   })
 
   test('should send invitation email', async () => {
@@ -91,23 +93,20 @@ describe('InvitationService - invite', () => {
       ValidHeaderWithApplicationKey
     )
 
-    expect(loginResponse.status).toBe(HttpStatus.OK)
+    expect(loginResponse.status).toBe(StatusCodes.OK)
 
-    const invitationService: any =
-      DIContainer.sharedContainer.invitationService
+    const invitationService: any = DIContainer.sharedContainer.invitationService
 
-    invitationService.emailService.sendInvitation = jest.fn(() =>
-      Promise.resolve({})
-    )
+    invitationService.emailService.sendInvitation = jest.fn(() => Promise.resolve({}))
 
     const header = authorizationHeader(loginResponse.body.token)
     const response: supertest.Response = await invite(validInvitation2, {
       ...ValidContentTypeAcceptJsonHeader,
-      ...header
+      ...header,
     })
 
-    expect(response.status).toBe(HttpStatus.OK)
-    expect(invitationService.emailService.sendInvitation).toBeCalled()
+    expect(response.status).toBe(StatusCodes.OK)
+    expect(invitationService.emailService.sendInvitation).toHaveBeenCalled()
     invitationService.emailService.sendInvitation.mockClear()
   })
 
@@ -117,23 +116,20 @@ describe('InvitationService - invite', () => {
       ValidHeaderWithApplicationKey
     )
 
-    expect(loginResponse.status).toBe(HttpStatus.OK)
+    expect(loginResponse.status).toBe(StatusCodes.OK)
 
-    const invitationService: any =
-      DIContainer.sharedContainer.invitationService
+    const invitationService: any = DIContainer.sharedContainer.invitationService
 
-    invitationService.emailService.sendInvitation = jest.fn(() =>
-      Promise.resolve({})
-    )
+    invitationService.emailService.sendInvitation = jest.fn(() => Promise.resolve({}))
 
     const header = authorizationHeader(loginResponse.body.token)
     const response: supertest.Response = await invite(validInvitation, {
       ...ValidContentTypeAcceptJsonHeader,
-      ...header
+      ...header,
     })
 
-    expect(response.status).toBe(HttpStatus.OK)
-    expect(invitationService.emailService.sendInvitation).toBeCalled()
+    expect(response.status).toBe(StatusCodes.OK)
+    expect(invitationService.emailService.sendInvitation).toHaveBeenCalled()
     invitationService.emailService.sendInvitation.mockClear()
   })
 })
@@ -142,21 +138,21 @@ describe('InvitationService - inviteToContainer', () => {
   beforeEach(async () => {
     await drop()
     await dropBucket(BucketKey.Project)
-    await purgeContainerInvitation(checksum(
-      'valid-user@manuscriptsapp.com-valid-google2@manuscriptsapp.com-MPProject:valid-project-id-2',
-      { algorithm: 'sha1' }
-    ))
+    await purgeContainerInvitation(
+      checksum(
+        'valid-user@manuscriptsapp.com-valid-google2@manuscriptsapp.com-MPProject:valid-project-id-2',
+        { algorithm: 'sha1' }
+      )
+    )
     await seed({
       users: true,
-      applications: true
+      applications: true,
     })
-    await DIContainer.sharedContainer.syncService.createUserProfile(
-      {
-        _id: `User|${validBody.email}`,
-        name: 'foobar',
-        email: validBody.email
-      }
-    )
+    await DIContainer.sharedContainer.syncService.createUserProfile({
+      _id: `User|${validBody.email}`,
+      name: 'foobar',
+      email: validBody.email,
+    })
   })
 
   test('should send invitation email', async () => {
@@ -165,10 +161,9 @@ describe('InvitationService - inviteToContainer', () => {
       ValidHeaderWithApplicationKey
     )
 
-    expect(loginResponse.status).toBe(HttpStatus.OK)
+    expect(loginResponse.status).toBe(StatusCodes.OK)
 
-    const containerInvitationService: any =
-      DIContainer.sharedContainer.containerInvitationService
+    const containerInvitationService: any = DIContainer.sharedContainer.containerInvitationService
 
     containerInvitationService.emailService.sendContainerInvitation = jest.fn(() =>
       Promise.resolve({})
@@ -180,20 +175,20 @@ describe('InvitationService - inviteToContainer', () => {
       validProjectInvitation2,
       {
         ...ValidContentTypeAcceptJsonHeader,
-        ...header
+        ...header,
       },
       {
-        containerID: 'MPProject:valid-project-id-2'
+        containerID: 'MPProject:valid-project-id-2',
       }
     )
 
-    expect(response.status).toBe(HttpStatus.OK)
+    expect(response.status).toBe(StatusCodes.OK)
     expect(response.body).toBeInstanceOf(Array)
     validProjectInvitation2.invitedUsers.forEach((invitedUser, i) => {
       expect(response.body[i][0]).toEqual(invitedUser.email)
-      expect(response.body[i][1]).toMatch(/MPContainerInvitation\:(.)+/)
+      expect(response.body[i][1]).toMatch(/MPContainerInvitation:(.)+/)
     })
-    expect(containerInvitationService.emailService.sendContainerInvitation).toBeCalled()
+    expect(containerInvitationService.emailService.sendContainerInvitation).toHaveBeenCalled()
     containerInvitationService.emailService.sendContainerInvitation.mockClear()
   })
 
@@ -203,13 +198,15 @@ describe('InvitationService - inviteToContainer', () => {
       ValidHeaderWithApplicationKey
     )
 
-    expect(loginResponse.status).toBe(HttpStatus.OK)
-    await createProjectInvitation('MPContainerInvitation:' + checksum(
-      'valid-user@manuscriptsapp.com-valid-google2@manuscriptsapp.com-valid-project-id-2',
-      { algorithm: 'sha1' }
-    ))
-    const containerInvitationService: any =
-      DIContainer.sharedContainer.containerInvitationService
+    expect(loginResponse.status).toBe(StatusCodes.OK)
+    await createProjectInvitation(
+      'MPContainerInvitation:' +
+        checksum(
+          'valid-user@manuscriptsapp.com-valid-google2@manuscriptsapp.com-valid-project-id-2',
+          { algorithm: 'sha1' }
+        )
+    )
+    const containerInvitationService: any = DIContainer.sharedContainer.containerInvitationService
 
     containerInvitationService.emailService.sendContainerInvitation = jest.fn(() =>
       Promise.resolve({})
@@ -221,20 +218,20 @@ describe('InvitationService - inviteToContainer', () => {
       validProjectInvitationWithoutEmail,
       {
         ...ValidContentTypeAcceptJsonHeader,
-        ...header
+        ...header,
       },
       {
-        containerID: 'MPProject:valid-project-id-2'
+        containerID: 'MPProject:valid-project-id-2',
       }
     )
 
-    expect(response.status).toBe(HttpStatus.OK)
+    expect(response.status).toBe(StatusCodes.OK)
     expect(response.body).toBeInstanceOf(Array)
     validProjectInvitationWithoutEmail.invitedUsers.forEach((invitedUser, i) => {
       expect(response.body[i][0]).toEqual(invitedUser.email)
-      expect(response.body[i][1]).toMatch(/MPContainerInvitation\:(.)+/)
+      expect(response.body[i][1]).toMatch(/MPContainerInvitation:(.)+/)
     })
-    expect(containerInvitationService.emailService.sendContainerInvitation).not.toBeCalled()
+    expect(containerInvitationService.emailService.sendContainerInvitation).not.toHaveBeenCalled()
     containerInvitationService.emailService.sendContainerInvitation.mockClear()
   })
 
@@ -243,14 +240,16 @@ describe('InvitationService - inviteToContainer', () => {
       validBody,
       ValidHeaderWithApplicationKey
     )
-    await createProjectInvitation('MPContainerInvitation:' + checksum(
-      'valid-user@manuscriptsapp.com-valid-google@manuscriptsapp.com-valid-project-id-2',
-      { algorithm: 'sha1' }
-    ))
-    expect(loginResponse.status).toBe(HttpStatus.OK)
+    await createProjectInvitation(
+      'MPContainerInvitation:' +
+        checksum(
+          'valid-user@manuscriptsapp.com-valid-google@manuscriptsapp.com-valid-project-id-2',
+          { algorithm: 'sha1' }
+        )
+    )
+    expect(loginResponse.status).toBe(StatusCodes.OK)
 
-    const containerInvitationService: any =
-      DIContainer.sharedContainer.containerInvitationService
+    const containerInvitationService: any = DIContainer.sharedContainer.containerInvitationService
     containerInvitationService.emailService.sendContainerInvitation = jest.fn(() =>
       Promise.resolve({})
     )
@@ -261,15 +260,15 @@ describe('InvitationService - inviteToContainer', () => {
       validProjectInvitation,
       {
         ...ValidContentTypeAcceptJsonHeader,
-        ...header
+        ...header,
       },
       {
-        containerID: 'MPProject:valid-project-id-2'
+        containerID: 'MPProject:valid-project-id-2',
       }
     )
 
-    expect(response.status).toBe(HttpStatus.OK)
-    expect(containerInvitationService.emailService.sendContainerInvitation).toBeCalled()
+    expect(response.status).toBe(StatusCodes.OK)
+    expect(containerInvitationService.emailService.sendContainerInvitation).toHaveBeenCalled()
     containerInvitationService.emailService.sendContainerInvitation.mockClear()
   })
 })

@@ -27,14 +27,6 @@ export class PassportAuth {
     // load required strategies
     JwtAuthStrategy.use()
 
-    passport.serializeUser((user, done) => {
-      done(null, user)
-    })
-
-    passport.deserializeUser((user, done) => {
-      done(null, user)
-    })
-
     // init passport
     app.use(passport.initialize())
   }

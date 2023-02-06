@@ -14,10 +14,16 @@
  * limitations under the License.
  */
 
-import { Chance } from 'chance'
 import '../../../../../utilities/dbMock'
 import '../../../../../utilities/configMock'
 
+import { Chance } from 'chance'
+import fs from 'fs'
+import tempy from 'tempy'
+
+import { ProjectController } from '../../../../../../src/Controller/V1/Project/ProjectController'
+import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
+import { ContainerService } from '../../../../../../src/DomainServices/Container/ContainerService'
 import {
   InvalidCredentialsError,
   MissingManuscriptError,
@@ -27,18 +33,13 @@ import {
   RoleDoesNotPermitOperationError,
   ValidationError,
 } from '../../../../../../src/Errors'
-import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
-import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
-import { ProjectController } from '../../../../../../src/Controller/V1/Project/ProjectController'
-import { authorizationHeader } from '../../../../../data/fixtures/headers'
 import { ContainerType } from '../../../../../../src/Models/ContainerModels'
 import { generateLoginToken } from '../../../../../../src/Utilities/JWT/LoginTokenPayload'
-import tempy from 'tempy'
-import { ContainerService } from '../../../../../../src/DomainServices/Container/ContainerService'
-import fs from 'fs'
 import { validJWTToken } from '../../../../../data/fixtures/authServiceUser'
+import { authorizationHeader } from '../../../../../data/fixtures/headers'
 import { validManuscript1 } from '../../../../../data/fixtures/manuscripts'
-import {validProject} from "../../../../../data/fixtures/projects";
+import { validProject } from '../../../../../data/fixtures/projects'
+import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
 
 jest.setTimeout(TEST_TIMEOUT)
 
@@ -98,9 +99,9 @@ describe('ProjectController', () => {
 
       await expect(controller.create(validProjectCreateReq)).resolves.not.toThrow()
 
-      expect(containerService.createContainer).toBeCalled()
-      expect(containerService.updateContainerTitleAndCollaborators).toBeCalled()
-      expect(containerService.getContainer).toBeCalledWith(testProjectId)
+      expect(containerService.createContainer).toHaveBeenCalled()
+      expect(containerService.updateContainerTitleAndCollaborators).toHaveBeenCalled()
+      expect(containerService.getContainer).toHaveBeenCalledWith(testProjectId)
     })
 
     test('should work without parameters', async () => {
@@ -164,21 +165,21 @@ describe('ProjectController', () => {
       return tempy.write.task('{key: value}', async (tempPath) => {
         const controller: any = new ProjectController()
         controller.extractFiles = jest.fn(async () =>
-            Promise.resolve({'index.manuscript-json': {data: '{}'}})
+          Promise.resolve({ 'index.manuscript-json': { data: '{}' } })
         )
         controller.upsertManuscriptToProject = jest.fn(async () => Promise.resolve())
         ContainerService.isOwner = jest.fn(() => true)
 
         await controller.add({
           headers: authorizationHeader(chance.string()),
-          params: {projectId: 'MPProject:abc'},
-          file: {path: tempPath},
-          user: {_id: 'validUserId'},
+          params: { projectId: 'MPProject:abc' },
+          file: { path: tempPath },
+          user: { _id: 'validUserId' },
           body: {},
         })
 
-        expect(DIContainer.sharedContainer.pressroomService.importJATS).toBeCalled()
-        expect(controller.upsertManuscriptToProject).toBeCalled()
+        expect(DIContainer.sharedContainer.pressroomService.importJATS).toHaveBeenCalled()
+        expect(controller.upsertManuscriptToProject).toHaveBeenCalled()
       })
     })
 
@@ -186,21 +187,21 @@ describe('ProjectController', () => {
       return tempy.write.task('{key: value}', async (tempPath) => {
         const controller: any = new ProjectController()
         controller.extractFiles = jest.fn(async () =>
-            Promise.resolve({'index.manuscript-json': {data: '{}'}})
+          Promise.resolve({ 'index.manuscript-json': { data: '{}' } })
         )
         controller.upsertManuscriptToProject = jest.fn(async () => Promise.resolve())
         ContainerService.isOwner = jest.fn(() => true)
 
         await controller.add({
           headers: authorizationHeader(chance.string()),
-          params: {projectId: 'MPProject:abc'},
-          file: {path: tempPath},
-          user: {_id: 'validUserId'},
-          body: {manuscriptId: 'MPManuscript:foobarbaz'},
+          params: { projectId: 'MPProject:abc' },
+          file: { path: tempPath },
+          user: { _id: 'validUserId' },
+          body: { manuscriptId: 'MPManuscript:foobarbaz' },
         })
 
-        expect(DIContainer.sharedContainer.pressroomService.importJATS).toBeCalled()
-        expect(controller.upsertManuscriptToProject).toBeCalled()
+        expect(DIContainer.sharedContainer.pressroomService.importJATS).toHaveBeenCalled()
+        expect(controller.upsertManuscriptToProject).toHaveBeenCalled()
       })
     })
     test('should fail with validation error without a projectId', () => {
@@ -278,7 +279,7 @@ describe('ProjectController', () => {
         body: { data: jsonData.data },
       })
 
-      expect(containerService.upsertProjectModels).toBeCalled()
+      expect(containerService.upsertProjectModels).toHaveBeenCalled()
     })
 
     test('should fail if manuscriptsID is not provided', async () => {
@@ -383,15 +384,16 @@ describe('ProjectController', () => {
     test('should fail if template not found', async () => {
       const controller: any = new ProjectController()
 
-      DIContainer.sharedContainer.containerService[ContainerType.project].upsertProjectModels = jest.fn(
-        async () => {
+      DIContainer.sharedContainer.containerService[ContainerType.project].upsertProjectModels =
+        jest.fn(async () => {
           return { _id: 'someValue' }
-        }
-      )
+        })
       DIContainer.sharedContainer.manuscriptRepository.create = jest.fn()
       DIContainer.sharedContainer.templateRepository.getById = jest.fn(() => Promise.resolve(null))
       ContainerService.userIdForSync = jest.fn(() => 'User_foo')
-      DIContainer.sharedContainer.pressroomService.validateTemplateId = jest.fn(() => Promise.resolve(false))
+      DIContainer.sharedContainer.pressroomService.validateTemplateId = jest.fn(() =>
+        Promise.resolve(false)
+      )
       const json = {
         data: [
           { _id: 'MPManuscript:abc', objectType: 'MPManuscript' },
@@ -415,9 +417,8 @@ describe('ProjectController', () => {
     test('should not fail if template is found in pressroom', async () => {
       const controller: any = new ProjectController()
 
-      DIContainer.sharedContainer.containerService[ContainerType.project].upsertProjectModels = jest.fn(
-        async () => Promise.resolve()
-      )
+      DIContainer.sharedContainer.containerService[ContainerType.project].upsertProjectModels =
+        jest.fn(async () => Promise.resolve())
       DIContainer.sharedContainer.manuscriptRepository.create = jest.fn()
       ContainerService.userIdForSync = jest.fn(() => 'User_foo')
       DIContainer.sharedContainer.templateRepository.getById = jest.fn(() => Promise.resolve(null))
@@ -440,18 +441,17 @@ describe('ProjectController', () => {
         'templateId'
       )
 
-      expect(DIContainer.sharedContainer.manuscriptRepository.create).toBeCalled()
+      expect(DIContainer.sharedContainer.manuscriptRepository.create).toHaveBeenCalled()
       expect(
         DIContainer.sharedContainer.containerService[ContainerType.project].upsertProjectModels
-      ).toBeCalled()
+      ).toHaveBeenCalled()
     })
 
     test('successfully create a mansucript and all contained resources', async () => {
       const controller: any = new ProjectController()
 
-      DIContainer.sharedContainer.containerService[ContainerType.project].upsertProjectModels = jest.fn(
-        async () => Promise.resolve()
-      )
+      DIContainer.sharedContainer.containerService[ContainerType.project].upsertProjectModels =
+        jest.fn(async () => Promise.resolve())
       DIContainer.sharedContainer.manuscriptRepository.create = jest.fn()
       DIContainer.sharedContainer.pressroomService.validateTemplateId = jest.fn(() =>
         Promise.resolve(false)
@@ -467,18 +467,17 @@ describe('ProjectController', () => {
 
       await controller.upsertManuscriptToProject({ _id: 'MPProject:abc' }, json)
 
-      expect(DIContainer.sharedContainer.manuscriptRepository.create).toBeCalled()
+      expect(DIContainer.sharedContainer.manuscriptRepository.create).toHaveBeenCalled()
       expect(
         DIContainer.sharedContainer.containerService[ContainerType.project].upsertProjectModels
-      ).toBeCalled()
+      ).toHaveBeenCalled()
     })
 
     test('successfully update the manuscript when the manuscriptId is provided and create all contained resources', async () => {
       const controller: any = new ProjectController()
 
-      DIContainer.sharedContainer.containerService[ContainerType.project].upsertProjectModels = jest.fn(
-        async () => Promise.resolve()
-      )
+      DIContainer.sharedContainer.containerService[ContainerType.project].upsertProjectModels =
+        jest.fn(async () => Promise.resolve())
       DIContainer.sharedContainer.manuscriptRepository.patch = jest.fn()
 
       const json = {
@@ -497,10 +496,10 @@ describe('ProjectController', () => {
         'MPManuscript:foo-bar-baz'
       )
 
-      expect(DIContainer.sharedContainer.manuscriptRepository.patch).toBeCalled()
+      expect(DIContainer.sharedContainer.manuscriptRepository.patch).toHaveBeenCalled()
       expect(
         DIContainer.sharedContainer.containerService[ContainerType.project].upsertProjectModels
-      ).toBeCalled()
+      ).toHaveBeenCalled()
     })
   })
 
@@ -508,11 +507,14 @@ describe('ProjectController', () => {
     test('should get collaborators', async () => {
       const controller: any = new ProjectController()
       ContainerService.userIdForSync = jest.fn((id) => id)
-      DIContainer.sharedContainer.containerService[ContainerType.project].checkUserContainerAccess = jest.fn(async() => true)
-      DIContainer.sharedContainer.userCollaboratorRepository.getByContainerId = jest.fn((_id: string) => ["foo"] as any)
+      DIContainer.sharedContainer.containerService[ContainerType.project].checkUserContainerAccess =
+        jest.fn(async () => true)
+      DIContainer.sharedContainer.userCollaboratorRepository.getByContainerId = jest.fn(
+        (_id: string) => ['foo'] as any
+      )
       const collaborators = await controller.collaborators({
         headers: authorizationHeader(validJWTToken),
-        params: { projectId: 'MPProject:abc' }
+        params: { projectId: 'MPProject:abc' },
       })
 
       expect(collaborators.length).toBeGreaterThan(0)
@@ -521,13 +523,16 @@ describe('ProjectController', () => {
     test('should fail projectId must be provided', async () => {
       const controller: any = new ProjectController()
       ContainerService.userIdForSync = jest.fn((id) => id)
-      DIContainer.sharedContainer.containerService[ContainerType.project].checkUserContainerAccess = jest.fn(async() => true)
-      DIContainer.sharedContainer.userCollaboratorRepository.getByContainerId = jest.fn((_id: string) => ["foo"] as any)
+      DIContainer.sharedContainer.containerService[ContainerType.project].checkUserContainerAccess =
+        jest.fn(async () => true)
+      DIContainer.sharedContainer.userCollaboratorRepository.getByContainerId = jest.fn(
+        (_id: string) => ['foo'] as any
+      )
 
       await expect(
         controller.collaborators({
           headers: authorizationHeader(validJWTToken),
-          params: {}
+          params: {},
         })
       ).rejects.toThrow(ValidationError)
     })
@@ -535,8 +540,11 @@ describe('ProjectController', () => {
     test('should fail invalid credentials', async () => {
       const controller: any = new ProjectController()
       ContainerService.userIdForSync = jest.fn((id) => id)
-      DIContainer.sharedContainer.containerService[ContainerType.project].checkUserContainerAccess = jest.fn(async() => true)
-      DIContainer.sharedContainer.userCollaboratorRepository.getByContainerId = jest.fn((_id: string) => ["foo"] as any)
+      DIContainer.sharedContainer.containerService[ContainerType.project].checkUserContainerAccess =
+        jest.fn(async () => true)
+      DIContainer.sharedContainer.userCollaboratorRepository.getByContainerId = jest.fn(
+        (_id: string) => ['foo'] as any
+      )
 
       await expect(
         controller.collaborators({
@@ -549,13 +557,16 @@ describe('ProjectController', () => {
     test('should fail no access', async () => {
       const controller: any = new ProjectController()
       ContainerService.userIdForSync = jest.fn((id) => id)
-      DIContainer.sharedContainer.containerService[ContainerType.project].checkUserContainerAccess = jest.fn(async() => false)
-      DIContainer.sharedContainer.userCollaboratorRepository.getByContainerId = jest.fn((_id: string) => ["foo"] as any)
+      DIContainer.sharedContainer.containerService[ContainerType.project].checkUserContainerAccess =
+        jest.fn(async () => false)
+      DIContainer.sharedContainer.userCollaboratorRepository.getByContainerId = jest.fn(
+        (_id: string) => ['foo'] as any
+      )
 
       await expect(
         controller.collaborators({
           headers: authorizationHeader(validJWTToken),
-          params: { projectId: 'MPProject:abc' }
+          params: { projectId: 'MPProject:abc' },
         })
       ).rejects.toThrow(ValidationError)
     })
@@ -659,8 +670,8 @@ describe('ProjectController', () => {
         },
       }
       await controller.projectReplace(req)
-      expect(projectRepo.removeAllResources).toBeCalled()
-      expect(projectRepo.bulkInsert).toBeCalled()
+      expect(projectRepo.removeAllResources).toHaveBeenCalled()
+      expect(projectRepo.bulkInsert).toHaveBeenCalled()
     })
   })
 
@@ -709,7 +720,7 @@ describe('ProjectController', () => {
       }
       await expect(controller.deleteModel(req)).rejects.toThrow(ValidationError)
     })
-    test('should fail if user doesn\'t have access', async () => {
+    test("should fail if user doesn't have access", async () => {
       const controller: any = new ProjectController()
       const service: any = DIContainer.sharedContainer.containerService[ContainerType.project]
       service.checkIfCanEdit = jest.fn(() => false)
@@ -717,7 +728,7 @@ describe('ProjectController', () => {
         params: {
           projectId: validProject._id,
           manuscriptId: validManuscript1._id,
-          modelId: json.data[2]._id
+          modelId: json.data[2]._id,
         },
         user: {
           _id: 'User_someId',
@@ -735,7 +746,7 @@ describe('ProjectController', () => {
         params: {
           projectId: validProject._id,
           manuscriptId: validManuscript1._id,
-          modelId: json.data[2]._id
+          modelId: json.data[2]._id,
         },
         user: {
           _id: 'User_someId',
@@ -755,7 +766,7 @@ describe('ProjectController', () => {
         params: {
           projectId: validProject._id,
           manuscriptId: validManuscript1._id,
-          modelId: 'MPNull'
+          modelId: 'MPNull',
         },
         user: {
           _id: 'User_someId',
@@ -776,15 +787,14 @@ describe('ProjectController', () => {
         params: {
           projectId: validProject._id,
           manuscriptId: validManuscript1._id,
-          modelId: json.data[2]._id
+          modelId: json.data[2]._id,
         },
         user: {
           _id: 'User_someId',
         },
       }
       await controller.deleteModel(req)
-      expect(projectRepo.removeResource).toBeCalled()
+      expect(projectRepo.removeResource).toHaveBeenCalled()
     })
   })
 })
-

@@ -14,22 +14,18 @@
  * limitations under the License.
  */
 
-const expressJoiMiddleware = require('express-joi-middleware')
+import { celebrate } from 'celebrate'
 import { NextFunction, Request, Response, Router } from 'express'
-import * as HttpStatus from 'http-status-codes'
+import { StatusCodes } from 'http-status-codes'
 
-import { BaseRoute } from '../../BaseRoute'
-import { userSchema } from './UserSchema'
-import { UserController } from './UserController'
 import { AuthStrategy } from '../../../Auth/Passport/AuthStrategy'
+import { BaseRoute } from '../../BaseRoute'
+import { UserController } from './UserController'
+import { userSchema } from './UserSchema'
 
 export class UserRoute extends BaseRoute {
   private userController = new UserController()
 
-  /**
-   * Returns deletion route base path.
-   * @returns string
-   */
   private get basePath(): string {
     return '/user'
   }
@@ -42,7 +38,7 @@ export class UserRoute extends BaseRoute {
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           await this.userController.markUserForDeletion(req)
-          res.status(HttpStatus.OK).end()
+          res.status(StatusCodes.OK).end()
         }, next)
       }
     )
@@ -54,20 +50,20 @@ export class UserRoute extends BaseRoute {
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           await this.userController.unmarkUserForDeletion(req)
-          res.status(HttpStatus.OK).end()
+          res.status(StatusCodes.OK).end()
         }, next)
       }
     )
 
     router.get(
       `${this.basePath}`,
-      expressJoiMiddleware(userSchema, {}),
+      celebrate(userSchema, {}),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           const user = await this.userController.getProfile(req)
-          res.status(HttpStatus.OK).json(user).end()
+          res.status(StatusCodes.OK).json(user).end()
         }, next)
       }
     )

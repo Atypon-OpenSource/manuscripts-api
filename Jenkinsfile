@@ -21,14 +21,14 @@ node("cisanta") {
 
     stage("install") {
         nodejs(nodeJSInstallationName: 'node_16_14_2') {
-            sh (script: "npm ci")
+            sh (script: "yarn install --non-interactive --frozen-lock-file")
         }
     }
 
     stage("lint") {
         nodejs(nodeJSInstallationName: 'node_16_14_2') {
-            sh (script: "npm run build")
-            sh (script: "npm run lint")
+            sh (script: "yarn build")
+            sh (script: "yarn lint")
         }
     }
 
@@ -50,7 +50,7 @@ node("cisanta") {
             withEnv(readFile('.env').split('\n') as List) {
                 sh "env"
                 nodejs(nodeJSInstallationName: 'node_16_14_2') {
-                    sh (script: "npm ci")
+                    sh (script: "yarn install --non-interactive --frozen-lock-file")
                     sh (script: "npx gulp -f docker/utils/Gulpfile.js")
                     dir('docker') {
                         sh (script: "cp ../.env .env")
@@ -72,7 +72,7 @@ fi""")
         },
         'unit_tests': {
             
-            node("cisanta") {
+            nodejs(nodeJSInstallationName: 'node_16_14_2') {
             
                 VARS = checkout(scm:[$class: 'GitSCM', branches: [[name: "${sha1}"]],
                 doGenerateSubmoduleConfigurations: false,
@@ -84,18 +84,15 @@ fi""")
                     url: 'git@github.com:Atypon-OpenSource/manuscripts-api.git']
                 ]])
 
-                sh (script: "npm ci")
+                sh (script: "yarn install --non-interactive --frozen-lock-file")
                 sh (script: "./bin/set-package-json-version.sh")
                 sh (script: "./bin/build-env.js .env.example > .env")
                 withEnv(readFile('.env').split('\n') as List) {
-                    nodejs(nodeJSInstallationName: 'node_16_14_2') {
-                        sh (script: "npm ci")
-                        sh (script: "export NODE_ENV='test' && export APP_TEST_ACTION='test:unit' && npx gulp -f docker/utils/Gulpfile.js")
-                        dir('docker') {
-                            sh (script: "cp ../.env .env")
-                            sh (script: "export APP_TEST_ACTION='test:unit' && docker-compose build --pull")
-                            sh (script: "export APP_TEST_ACTION='test:unit' && docker-compose up --build --abort-on-container-exit test_runner")
-                        }
+                    sh (script: "export NODE_ENV='test' && export APP_TEST_ACTION='test:unit' && npx gulp -f docker/utils/Gulpfile.js")
+                    dir('docker') {
+                        sh (script: "cp ../.env .env")
+                        sh (script: "export APP_TEST_ACTION='test:unit' && docker-compose build --pull")
+                        sh (script: "export APP_TEST_ACTION='test:unit' && docker-compose up --build --abort-on-container-exit test_runner")
                     }
                 }
             }

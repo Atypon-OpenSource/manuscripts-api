@@ -14,34 +14,34 @@
  * limitations under the License.
  */
 
-import * as jsonwebtoken from 'jsonwebtoken'
 import checksum from 'checksum'
+import jwt from 'jsonwebtoken'
 
-import { User, SignupCredentials, ConnectSignupCredentials } from '../../Models/UserModels'
-import { SingleUseTokenType } from '../../Models/SingleUseTokenModels'
-import {
-  ConflictingRecordError,
-  NoTokenError,
-  MissingUserStatusError,
-  InvalidCredentialsError,
-  ValidationError,
-  ConflictingUnverifiedUserExistsError,
-  InvalidServerCredentialsError,
-  DuplicateEmailError,
-  MissingUserRecordError,
-} from '../../Errors'
-import { IUserRegistrationService } from './IUserRegistrationService'
-import { ISyncService } from '../Sync/ISyncService'
+import { config } from '../../Config/Config'
 import { ISingleUseTokenRepository } from '../../DataAccess/Interfaces/ISingleUseTokenRepository'
+import { IUserEmailRepository } from '../../DataAccess/Interfaces/IUserEmailRepository'
 import { IUserRepository } from '../../DataAccess/Interfaces/IUserRepository'
 import { IUserStatusRepository } from '../../DataAccess/Interfaces/IUserStatusRepository'
+import {
+  ConflictingRecordError,
+  ConflictingUnverifiedUserExistsError,
+  DuplicateEmailError,
+  InvalidCredentialsError,
+  InvalidServerCredentialsError,
+  MissingUserRecordError,
+  MissingUserStatusError,
+  NoTokenError,
+  ValidationError,
+} from '../../Errors'
+import { SingleUseTokenType } from '../../Models/SingleUseTokenModels'
 import { UserActivityEventType } from '../../Models/UserEventModels'
-import { UserActivityTrackingService } from '../UserActivity/UserActivityTrackingService'
-import { AuthService } from '../Auth/AuthService'
-import { config } from '../../Config/Config'
+import { ConnectSignupCredentials, SignupCredentials, User } from '../../Models/UserModels'
 import { getExpirationTime } from '../../Utilities/JWT/LoginTokenPayload'
+import { AuthService } from '../Auth/AuthService'
 import { EmailService } from '../Email/EmailService'
-import { IUserEmailRepository } from '../../DataAccess/Interfaces/IUserEmailRepository'
+import { ISyncService } from '../Sync/ISyncService'
+import { UserActivityTrackingService } from '../UserActivity/UserActivityTrackingService'
+import { IUserRegistrationService } from './IUserRegistrationService'
 
 /** Account verification token timeout. */
 const VERIFICATION_TOKEN_TIMEOUT = () => getExpirationTime(24)
@@ -92,7 +92,7 @@ export class UserRegistrationService implements IUserRegistrationService {
     const { token, email, name, password } = credentials
     if (token) {
       try {
-        jsonwebtoken.verify(token, config.auth.serverSecret)
+        jwt.verify(token, config.auth.serverSecret)
       } catch (e) {
         throw new InvalidServerCredentialsError(
           `Invalid token during registration attempt on behalf of user '${email}'`

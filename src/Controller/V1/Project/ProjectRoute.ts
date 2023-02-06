@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-const expressJoiMiddleware = require('express-joi-middleware')
+import { celebrate } from 'celebrate'
 import { NextFunction, Request, Response, Router } from 'express'
-import * as HttpStatus from 'http-status-codes'
+import { StatusCodes } from 'http-status-codes'
 import multer from 'multer'
 
+import { AuthStrategy } from '../../../Auth/Passport/AuthStrategy'
 import { BaseRoute } from '../../BaseRoute'
 import { ProjectController } from './ProjectController'
-import { AuthStrategy } from '../../../Auth/Passport/AuthStrategy'
 import {
   addSchema,
   createSchema,
-  saveProjectSchema,
+  deleteModelSchema,
   projectCollaboratorsSchema,
   replaceProjectSchema,
-  deleteModelSchema,
+  saveProjectSchema,
 } from './ProjectSchema'
 
 export class ProjectRoute extends BaseRoute {
@@ -46,21 +46,21 @@ export class ProjectRoute extends BaseRoute {
   public create(router: Router): void {
     router.post(
       `${this.basePath}`,
-      expressJoiMiddleware(createSchema),
+      celebrate(createSchema),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           const project = await this.projectController.create(req)
 
-          res.status(HttpStatus.OK).send(project)
+          res.status(StatusCodes.OK).send(project)
         }, next)
       }
     )
 
     router.post(
       `${this.basePath}/:projectId`,
-      expressJoiMiddleware(addSchema),
+      celebrate(addSchema),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
       multer({ dest: `/tmp` }).single('file'),
@@ -68,59 +68,59 @@ export class ProjectRoute extends BaseRoute {
         return this.runWithErrorHandling(async () => {
           const manuscript = await this.projectController.add(req)
 
-          res.status(HttpStatus.OK).send(manuscript)
+          res.status(StatusCodes.OK).send(manuscript)
         }, next)
       }
     )
 
     router.post(
       `${this.basePath}/:projectId/save`,
-      expressJoiMiddleware(saveProjectSchema),
+      celebrate(saveProjectSchema),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           const manuscript = await this.projectController.saveProject(req)
-          res.status(HttpStatus.OK).send(manuscript)
+          res.status(StatusCodes.OK).send(manuscript)
         }, next)
       }
     )
 
     router.post(
       `${this.basePath}/:projectId/manuscripts/:manuscriptId/save`,
-      expressJoiMiddleware(replaceProjectSchema),
+      celebrate(replaceProjectSchema),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           const manuscript = await this.projectController.projectReplace(req)
-          res.status(HttpStatus.OK).send(manuscript)
+          res.status(StatusCodes.OK).send(manuscript)
         }, next)
       }
     )
 
     router.get(
       `${this.basePath}/:projectId/collaborators`,
-      expressJoiMiddleware(projectCollaboratorsSchema),
+      celebrate(projectCollaboratorsSchema),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           const collaborators = await this.projectController.collaborators(req)
-          res.status(HttpStatus.OK).send(collaborators)
+          res.status(StatusCodes.OK).send(collaborators)
         }, next)
       }
     )
 
     router.delete(
       `${this.basePath}/:projectId/manuscripts/:manuscriptId/model/:modelId`,
-      expressJoiMiddleware(deleteModelSchema),
+      celebrate(deleteModelSchema),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           await this.projectController.deleteModel(req)
-          res.status(HttpStatus.OK).end()
+          res.status(StatusCodes.OK).end()
         }, next)
       }
     )

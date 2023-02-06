@@ -16,17 +16,16 @@
 
 import '../../../../utilities/dbMock'
 
-import { UserRepository } from '../../../../../src/DataAccess/UserRepository/UserRepository'
-import { UserQueryCriteria } from '../../../../../src/DataAccess/Interfaces/QueryCriteria'
-import { validUser1 } from '../../../../data/fixtures/UserRepository'
-import { SQLDatabase } from '../../../../../src/DataAccess/SQLDatabase'
 import { config } from '../../../../../src/Config/Config'
 import { BucketKey } from '../../../../../src/Config/ConfigurationTypes'
+import { SQLDatabase } from '../../../../../src/DataAccess/SQLDatabase'
+import { UserRepository } from '../../../../../src/DataAccess/UserRepository/UserRepository'
+import { validUser1 } from '../../../../data/fixtures/UserRepository'
 import { TEST_TIMEOUT } from '../../../../utilities/testSetup'
 
 jest.setTimeout(TEST_TIMEOUT)
 
-function testDatabase (): any {
+function testDatabase(): any {
   return new SQLDatabase(config.DB, BucketKey.User)
 }
 
@@ -44,7 +43,7 @@ describe('UserRepository', () => {
 
   test('should build user model from row object', () => {
     const repository = new UserRepository(testDatabase())
-    const user = repository.buildModel(validUser1)
+    const user = repository.buildModel({ id: validUser1._id, ...validUser1 })
 
     expect(user._id).toBe(validUser1._id)
     expect(user.email).toBe(validUser1.email)

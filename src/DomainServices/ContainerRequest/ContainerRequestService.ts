@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-import * as _ from 'lodash'
+import { ObjectTypes } from '@manuscripts/json-schema'
 import checksum from 'checksum'
-import { ObjectTypes } from '@manuscripts/manuscripts-json-schema'
+import * as _ from 'lodash'
 
-import { IContainerRequestService } from './IContainerRequestService'
-import { ContainerRole } from '../../Models/ContainerModels'
-import { ValidationError, UserRoleError, RoleDoesNotPermitOperationError } from '../../Errors'
-import { User } from '../../Models/UserModels'
 import { ContainerRequestRepository } from '../../DataAccess/ContainerRequestRepository/ContainerRequestRepository'
-import { IContainerService } from '../Container/IContainerService'
-import { UserProfileRepository } from '../../DataAccess/UserProfileRepository/UserProfileRepository'
-import { UserService } from '../User/UserService'
-import { EmailService } from '../Email/EmailService'
 import { IUserRepository } from '../../DataAccess/Interfaces/IUserRepository'
 import { ContainerRequestLike } from '../../DataAccess/Interfaces/Models'
+import { UserProfileRepository } from '../../DataAccess/UserProfileRepository/UserProfileRepository'
+import { RoleDoesNotPermitOperationError, UserRoleError, ValidationError } from '../../Errors'
+import { ContainerRole } from '../../Models/ContainerModels'
+import { User } from '../../Models/UserModels'
 import { ContainerService } from '../Container/ContainerService'
+import { IContainerService } from '../Container/IContainerService'
+import { EmailService } from '../Email/EmailService'
+import { UserService } from '../User/UserService'
+import { IContainerRequestService } from './IContainerRequestService'
 
 export class ContainerRequestService implements IContainerRequestService {
   constructor(

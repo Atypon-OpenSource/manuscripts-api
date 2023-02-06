@@ -17,16 +17,15 @@
 import { isScopedTokenPayload } from '../../../../../src/Utilities/JWT/ScopedTokenPayload'
 
 describe('Login', () => {
-
   test('ensures that the isScopedTokenPayload type guard behaves correctly', () => {
     const nullToken = null
     const validToken = {
       aud: 'john',
       containerID: 'MPProject:valid-project-id',
       sub: 'foo',
-      exp: ((new Date()).getTime() / 1000) + 100000, // safely in the future, in seconds.
-      iat: ((new Date()).getTime() / 1000) - 100000, // safely in the past, in seconds.
-      iss: 'atypon.com'
+      exp: new Date().getTime() / 1000 + 100000, // safely in the future, in seconds.
+      iat: new Date().getTime() / 1000 - 100000, // safely in the past, in seconds.
+      iss: 'atypon.com',
     }
     expect(isScopedTokenPayload(nullToken)).toBeFalsy()
     expect(isScopedTokenPayload(validToken)).toBeTruthy()

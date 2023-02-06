@@ -14,66 +14,57 @@
  * limitations under the License.
  */
 
-import * as jsonwebtoken from 'jsonwebtoken'
-import { v4 as uuid_v4 } from 'uuid'
+import { manuscriptIDTypes, ManuscriptNote, Model, ObjectTypes } from '@manuscripts/json-schema'
+import jwt from 'jsonwebtoken'
+import JSZip from 'jszip'
 import * as _ from 'lodash'
+import { v4 as uuid_v4 } from 'uuid'
 
-import { IContainerService, ArchiveOptions } from './IContainerService'
-import { IUserRepository } from '../../DataAccess/Interfaces/IUserRepository'
-import { IUserStatusRepository } from '../../DataAccess/Interfaces/IUserStatusRepository'
-import { UserActivityTrackingService } from '../UserActivity/UserActivityTrackingService'
-import {
-  ContainerRole,
-  Container,
-  ContainerType,
-  ContainerRepository,
-  ContainerObjectType,
-} from '../../Models/ContainerModels'
-import { isLoginTokenPayload, timestamp } from '../../Utilities/JWT/LoginTokenPayload'
-import {
-  InvalidCredentialsError,
-  MissingUserStatusError,
-  UserBlockedError,
-  UserNotVerifiedError,
-  ValidationError,
-  UserRoleError,
-  RecordNotFoundError,
-  InvalidScopeNameError,
-  ConflictingRecordError,
-  MissingContainerError,
-  MissingProductionNoteError,
-  MissingUserRecordError,
-  MissingTemplateError,
-  RoleDoesNotPermitOperationError,
-  ProductionNotesLoadError,
-  ProductionNotesUpdateError,
-  SyncError,
-} from '../../Errors'
-import { isBlocked, User } from '../../Models/UserModels'
-import { UserActivityEventType } from '../../Models/UserEventModels'
-import { IUserService } from '../User/IUserService'
-import { EmailService } from '../Email/EmailService'
-import { ContainerInvitationRepository } from '../../DataAccess/ContainerInvitationRepository/ContainerInvitationRepository'
 import { config } from '../../Config/Config'
 import { ScopedAccessTokenConfiguration } from '../../Config/ConfigurationTypes'
-import { ManuscriptNoteRepository } from '../../DataAccess/ManuscriptNoteRepository/ManuscriptNoteRepository'
-import { UserService } from '../User/UserService'
-import { DIContainer } from '../../DIContainer/DIContainer'
-import { LibraryCollectionRepository } from '../../DataAccess/LibraryCollectionRepository/LibraryCollectionRepository'
-import {
-  ManuscriptNote,
-  ObjectTypes,
-  Snapshot,
-  Model,
-  manuscriptIDTypes,
-} from '@manuscripts/manuscripts-json-schema'
-import { CorrectionRepository } from '../../DataAccess/CorrectionRepository/CorrectionRepository'
+import { ContainerInvitationRepository } from '../../DataAccess/ContainerInvitationRepository/ContainerInvitationRepository'
 import { IManuscriptRepository } from '../../DataAccess/Interfaces/IManuscriptRepository'
-import { SnapshotRepository } from '../../DataAccess/SnapshotRepository/SnapshotRepository'
+import { IUserRepository } from '../../DataAccess/Interfaces/IUserRepository'
+import { IUserStatusRepository } from '../../DataAccess/Interfaces/IUserStatusRepository'
+import { validate } from '../../DataAccess/jsonSchemaValidator'
+import { LibraryCollectionRepository } from '../../DataAccess/LibraryCollectionRepository/LibraryCollectionRepository'
+import { ManuscriptNoteRepository } from '../../DataAccess/ManuscriptNoteRepository/ManuscriptNoteRepository'
 import { TemplateRepository } from '../../DataAccess/TemplateRepository/TemplateRepository'
-
-const JSZip = require('jszip')
-const { validate } = require('../../DataAccess/jsonSchemaValidator')
+import { DIContainer } from '../../DIContainer/DIContainer'
+import {
+  ConflictingRecordError,
+  InvalidCredentialsError,
+  InvalidScopeNameError,
+  MissingContainerError,
+  MissingProductionNoteError,
+  MissingTemplateError,
+  MissingUserRecordError,
+  MissingUserStatusError,
+  ProductionNotesLoadError,
+  ProductionNotesUpdateError,
+  RecordNotFoundError,
+  RoleDoesNotPermitOperationError,
+  SyncError,
+  UserBlockedError,
+  UserNotVerifiedError,
+  UserRoleError,
+  ValidationError,
+} from '../../Errors'
+import {
+  Container,
+  ContainerObjectType,
+  ContainerRepository,
+  ContainerRole,
+  ContainerType,
+} from '../../Models/ContainerModels'
+import { UserActivityEventType } from '../../Models/UserEventModels'
+import { isBlocked, User } from '../../Models/UserModels'
+import { isLoginTokenPayload, timestamp } from '../../Utilities/JWT/LoginTokenPayload'
+import { EmailService } from '../Email/EmailService'
+import { IUserService } from '../User/IUserService'
+import { UserService } from '../User/UserService'
+import { UserActivityTrackingService } from '../UserActivity/UserActivityTrackingService'
+import { ArchiveOptions, IContainerService } from './IContainerService'
 
 export class ContainerService implements IContainerService {
   constructor(
@@ -88,13 +79,11 @@ export class ContainerService implements IContainerService {
     private libraryCollectionRepository: LibraryCollectionRepository,
     private manuscriptRepository: IManuscriptRepository,
     private manuscriptNoteRepository: ManuscriptNoteRepository,
-    private correctionRepository: CorrectionRepository,
-    private snapshotRepository: SnapshotRepository,
     private templateRepository: TemplateRepository
   ) {}
 
   public async createContainer(token: string, _id: string | null): Promise<Container> {
-    const payload = jsonwebtoken.decode(token)
+    const payload = jwt.decode(token)
 
     if (!isLoginTokenPayload(payload)) {
       throw new InvalidCredentialsError('Unexpected token payload.')
@@ -202,7 +191,7 @@ export class ContainerService implements IContainerService {
       containerId
     )
     const syncUserId = ContainerService.userIdForSync(userId)
-    for (let lc of libraryCollections) {
+    for (const lc of libraryCollections) {
       const { owners, writers, viewers, editors, annotators } = this.updatedRoles(lc, userId, role)
       let inherited
 
@@ -505,44 +494,6 @@ export class ContainerService implements IContainerService {
     return this.makeArchive(containerID, manuscriptID, options)
   }
 
-  public async getProject(
-    userID: string,
-    containerID: string,
-    manuscriptID: string,
-    token: string
-  ) {
-    if (!token) {
-      throw new InvalidCredentialsError('Token not supplied.')
-    }
-
-    await this.userService.authenticateUser(token)
-    const canAccess = await this.checkUserContainerAccess(userID, containerID)
-    if (!canAccess) {
-      throw new ValidationError('User must be a contributor in the container', containerID)
-    }
-
-    const projectResources = await this.containerRepository.getContainerResources(
-      containerID,
-      manuscriptID,
-      false
-    )
-
-    if (!projectResources) {
-      throw new Error('Project is empty')
-    }
-
-    return projectResources
-  }
-
-  private rewriteAttachmentFilename(originalName: string, mimeType: string, includeExt: boolean) {
-    const updatedName = originalName.replace(':', '_')
-    if (includeExt) {
-      const [, ext] = mimeType.split('/')
-      return `${updatedName}.${ext}`
-    }
-    return updatedName
-  }
-
   // check getContainerResources & getProjectAttachments for generalization
   private async makeArchive(
     containerID: string,
@@ -565,44 +516,16 @@ export class ContainerService implements IContainerService {
     }
 
     const index = { version: '2.0', data: projectResourcesData }
-    if (!options.getAttachments) {
-      return index
-    }
-
-    const attachments = await this.containerRepository.getContainerAttachments(
-      containerID,
-      manuscriptID
-    )
 
     const zip = new JSZip()
     zip.file('index.manuscript-json', JSON.stringify(index))
 
-    if (attachments) {
-      const data = zip.folder('Data')
-
-      for (const key of attachments.keys()) {
-        for (const attachmentID of Object.keys(attachments.get(key))) {
-          const type = attachments.get(key)[attachmentID].content_type
-
-          const attachment = await this.containerRepository.getAttachmentBody(key, attachmentID)
-
-          // in MPFigure there will be a single attachment indexed as "image"
-          // otherwise will have index corresponding to its actual filename
-          const filename =
-            attachmentID === 'image'
-              ? this.rewriteAttachmentFilename(key, type, options.includeExt)
-              : attachmentID
-
-          data.file(filename, attachment, {
-            binary: true,
-          })
-        }
-      }
+    if (options.getAttachments) {
+      return zip.generateAsync({ type: 'nodebuffer' })
+    } else {
+      // @ts-ignore
+      return zip.file('index.manuscript-json').async('nodebuffer')
     }
-
-    const archive = await zip.generateAsync({ type: 'nodebuffer' })
-
-    return archive
   }
 
   public async getAttachment(userID: string, documentID: string, attachmentID?: string) {
@@ -649,6 +572,7 @@ export class ContainerService implements IContainerService {
   }
 
   public async checkUserContainerAccess(userID: string, containerID: string): Promise<boolean> {
+    // eslint-disable-next-line prefer-const
     let { owners, writers, viewers, editors, annotators } = await this.getContainer(
       containerID,
       ContainerService.userIdForSync(userID)
@@ -720,7 +644,7 @@ export class ContainerService implements IContainerService {
       expiresIn: `${scopeInfo.expiry}m`,
     }
 
-    return jsonwebtoken.sign(payload, scopeInfo.secret, options as any)
+    return jwt.sign(payload, scopeInfo.secret, options as any)
   }
 
   private async notifyForAddingUser(
@@ -892,7 +816,7 @@ export class ContainerService implements IContainerService {
       throw new ConflictingRecordError('Manuscript with the same id exists', manuscript)
     }
 
-    let template = templateId
+    const template = templateId
       ? await this.templateRepository.getById(templateId /*, userID*/)
       : null
     let templateFound: boolean = templateId !== undefined && template !== null
@@ -996,31 +920,6 @@ export class ContainerService implements IContainerService {
   public async updateDocumentSessionId(docId: string) {
     const sessionID = uuid_v4()
     await DIContainer.sharedContainer.projectRepository.patch(docId, { _id: docId, sessionID })
-  }
-
-  public async saveSnapshot(key: string, containerID: string, creator: string, name?: string) {
-    const stamp = timestamp()
-    const doc: Snapshot = {
-      _id: `MPSnapshot:${uuid_v4()}`,
-      objectType: ObjectTypes.Snapshot,
-      s3Id: key,
-      containerID,
-      creator,
-      createdAt: stamp,
-      updatedAt: stamp,
-    }
-    if (name) {
-      doc['name'] = name
-    }
-    return this.snapshotRepository.create(doc, ContainerService.userIdForSync(creator))
-  }
-
-  public async getCorrectionStatus(containerID: string, userId: string) {
-    const canAccess = await this.checkUserContainerAccess(userId, containerID)
-    if (!canAccess) {
-      throw new ValidationError('User must be a contributor in the container', containerID)
-    }
-    return this.correctionRepository.getCorrectionStatus(containerID)
   }
 
   public async getCollaborators(containerID: string, userId: string) {

@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import { Library } from '@manuscripts/manuscripts-json-schema'
+import { Library } from '@manuscripts/json-schema'
 
-import { LibraryLike } from '../Interfaces/Models'
 import { PatchLibrary } from '../../Models/LibraryModels'
-import { ILibraryRepository } from '../Interfaces/ILibraryRepository'
 import { ContainerRepository } from '../ContainerRepository/ContainerRepository'
+import { ILibraryRepository } from '../Interfaces/ILibraryRepository'
+import { LibraryLike } from '../Interfaces/Models'
 
 export class LibraryRepository
   extends ContainerRepository<Library, LibraryLike, PatchLibrary>

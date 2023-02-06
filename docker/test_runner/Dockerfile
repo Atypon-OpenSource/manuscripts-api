@@ -36,9 +36,9 @@ ENV APP_DATABASE_URL="${APP_DATABASE_URL}"
 WORKDIR /usr/src/app
 
 COPY package.json ./
-COPY package-lock.json ./
+COPY yarn.lock ./
 
-RUN npm ci --legacy-peer-deps
+RUN yarn install --non-interactive --frozen-lock-file
 
 COPY ./src ./src
 COPY ./prisma ./prisma
@@ -56,8 +56,8 @@ RUN ./bin/build-env.js .env.example > .env
 
 EXPOSE 3000
 
-RUN npm run attach-prisma
+RUN yarn attach-prisma
 
 RUN printenv
 
-CMD npm run ${APP_TEST_ACTION}
+CMD yarn ${APP_TEST_ACTION}

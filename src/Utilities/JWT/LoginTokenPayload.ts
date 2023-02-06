@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import * as jsonwebtoken from 'jsonwebtoken'
+import jwt from 'jsonwebtoken'
+
 import { config } from '../../Config/Config'
 
 /**
@@ -83,7 +84,7 @@ export const generateLoginToken = (
     fullPayload.expiry = expiryTime
   }
 
-  return jsonwebtoken.sign(fullPayload, config.auth.jwtSecret)
+  return jwt.sign(fullPayload, config.auth.jwtSecret)
 }
 
 export function isLoginTokenPayload(obj: string | object | null): obj is LoginTokenPayload {

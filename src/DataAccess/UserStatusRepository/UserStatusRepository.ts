@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { SQLRepository } from '../SQLRepository'
+import { UpdateUserStatus, UserStatus } from '../../Models/UserModels'
 import { IUserStatusRepository } from '../Interfaces/IUserStatusRepository'
 import { QueryCriteria } from '../Interfaces/QueryCriteria'
-import { UserStatus, UpdateUserStatus } from '../../Models/UserModels'
+import { SQLRepository } from '../SQLRepository'
 import { date, objectValuedObject } from '../validators'
 
 /**

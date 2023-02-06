@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-import { SGRepository } from '../SGRepository'
+import { UserProfile } from '@manuscripts/json-schema'
+
 import { IUserProfileRepository } from '../Interfaces/IUserProfileRepository'
 import { UserProfileLike } from '../Interfaces/Models'
-import { UserProfile } from '@manuscripts/manuscripts-json-schema'
+import { SGRepository } from '../SGRepository'
 
 export class UserProfileRepository
   extends SGRepository<UserProfile, UserProfileLike, UserProfileLike, UserProfileLike>

@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
+import { StatusCodes } from 'http-status-codes'
+import jwt from 'jsonwebtoken'
+
+import { SGRepository } from '../../DataAccess/SGRepository'
 import { DIContainer } from '../../DIContainer/DIContainer'
+import { InvalidCredentialsError } from '../../Errors'
+import { isLoginTokenPayload } from '../../Utilities/JWT/LoginTokenPayload'
 import { ContainerService } from '../Container/ContainerService'
 import { ISGService } from './ISGService'
-import jsonwebtoken from 'jsonwebtoken'
-import { isLoginTokenPayload } from '../../Utilities/JWT/LoginTokenPayload'
-import { InvalidCredentialsError } from '../../Errors'
-import { SGRepository } from '../../DataAccess/SGRepository'
-import * as HttpStatus from 'http-status-codes'
 
 export class SGService implements ISGService {
   readonly repoMap: any
@@ -59,10 +60,11 @@ export class SGService implements ISGService {
     const userId = this.getUserId(token)
     const repo = this.getRepoById(id)
     return repo.patch(id, doc, userId).catch((err: any) => {
-      if (err.statusCode === HttpStatus.BAD_REQUEST) {
+      if (err.statusCode === StatusCodes.BAD_REQUEST) {
         doc._id = id
         return this.create(token, doc)
       }
+      // eslint-disable-next-line promise/no-return-wrap
       return Promise.reject(err)
     })
   }
@@ -74,7 +76,7 @@ export class SGService implements ISGService {
   }
 
   private getUserId(token: string) {
-    const payload = jsonwebtoken.decode(token)
+    const payload = jwt.decode(token)
     if (!isLoginTokenPayload(payload)) {
       throw new InvalidCredentialsError('Unexpected token payload.')
     }

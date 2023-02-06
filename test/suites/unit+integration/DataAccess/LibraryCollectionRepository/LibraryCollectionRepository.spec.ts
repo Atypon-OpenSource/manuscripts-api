@@ -17,15 +17,15 @@
 import { LibraryCollection } from '@manuscripts/manuscripts-json-schema'
 
 import { BucketKey } from '../../../../../src/Config/ConfigurationTypes'
-import { MethodNotAllowedError } from '../../../../../src/Errors'
 import { LibraryCollectionRepository } from '../../../../../src/DataAccess/LibraryCollectionRepository/LibraryCollectionRepository'
+import { MethodNotAllowedError } from '../../../../../src/Errors'
 
-xdescribe('LibraryCollectionRepository - update', () => {
+describe.skip('LibraryCollectionRepository - update', () => {
   test('should not allow the user to use update', () => {
     const repository = new LibraryCollectionRepository(BucketKey.Project, {} as any)
 
-    return expect(
-      repository.update('id', {} as LibraryCollection, {})
-    ).rejects.toThrowError(MethodNotAllowedError)
+    return expect(repository.update('id', {} as LibraryCollection, {})).rejects.toThrow(
+      MethodNotAllowedError
+    )
   })
 })

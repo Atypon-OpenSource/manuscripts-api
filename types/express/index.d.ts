@@ -14,27 +14,15 @@
  * limitations under the License.
  */
 
-/**
- * Represents data passed in "state" param for IAM Auth flows
+/*
+ * This the emit function used in couchbase view map function implementations.
+ * This function should not be ever called, it's add just to simulate the emit function in the view's execution context.
  */
-export interface IAMState {
-  [key: string]: string | null
-  /**
-   * Device ID passed by the client
-   */
-  deviceId: string
-  /**
-   * Uri tracked by the client application to return the user back to the originally requested url, before
-   * OAuth flow was started by the client application
-   */
-  redirectUri: string | null
-  /**
-   * Represents UI theme used by the client application
-   */
-  theme: string | null
 
-  /**
-   * Represents the base url which the api should redirect at
-   */
-  redirectBaseUri: string | null
+import { User as ManuscriptsUser } from '../../src/Models/UserModels'
+
+declare global {
+  namespace Express {
+    interface User extends ManuscriptsUser {}
+  }
 }

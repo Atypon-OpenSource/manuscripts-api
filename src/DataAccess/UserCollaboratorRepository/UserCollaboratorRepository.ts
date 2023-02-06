@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
+import { UserCollaborator } from '@manuscripts/json-schema'
+
 import { SGRepository } from '../SGRepository'
-import { UserCollaborator } from '@manuscripts/manuscripts-json-schema'
 
 export class UserCollaboratorRepository extends SGRepository<
   UserCollaborator,

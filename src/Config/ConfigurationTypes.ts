@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-import { ClientApplication } from '../Models/ClientApplicationModels'
 import { RSA_JWK } from 'pem-jwk'
+
+import { ClientApplication } from '../Models/ClientApplicationModels'
 
 export enum Environment {
   Test = 'test',
@@ -65,24 +66,6 @@ export type AuthConfiguration = {
 }
 
 /**
- * Represents configuration for IAM
- */
-export type IAMConfiguration = {
-  // application's client ID configured on IAM server
-  readonly clientID: string
-  // URL of the IAM server
-  readonly authServerURL: string
-  // Api server path (endpoint) for IAM callback
-  readonly authCallbackPath: string
-  // URL of the library web application
-  readonly libraryURL: string
-  // URL of the Manuscript's api server - ie. current server
-  readonly apiServerURL: string[]
-  // URL of the IAM allowed servers
-  readonly authServerPermittedURLs: string[]
-}
-
-/**
  * Represents email sending configuration.
  */
 export type EmailConfiguration = {
@@ -94,15 +77,7 @@ export type ClientApplicationsConfiguration = {
   readonly knownClientApplications: Array<ClientApplication>
 }
 
-/**
- * Represents [sync_]gateway configuration.
- */
-export type GatewayConfiguration = {
-  readonly cookieDomain: string
-}
-
 export type ServerConfiguration = {
-  readonly storeOnlySSLTransmittedCookies: boolean
   readonly allowedCORSOrigins: ReadonlyArray<string>
 }
 
@@ -110,36 +85,18 @@ export interface EnvironmentLike {
   [key: string]: string | undefined
 }
 
-export interface LiteratumConfiguration {
-  readonly allowedIPAddresses: Array<string>
-}
-
 export interface PressroomConfiguration {
   readonly baseurl: string
   readonly apiKey: string
-}
-
-export interface ShacklesConfiguration {
-  readonly baseUrl: string
-}
-
-export interface TemplateConfiguration {
-  readonly allowedOwners: string[]
-  readonly allowedProjects: string[]
 }
 
 export interface ConfigurationContainer {
   readonly API: APIConfiguration
   readonly DB: DatabaseConfiguration
   readonly auth: AuthConfiguration
-  readonly IAM: IAMConfiguration
   readonly email: EmailConfiguration
-  readonly gateway: GatewayConfiguration
   readonly server: ServerConfiguration
   readonly apps: ClientApplicationsConfiguration
   readonly scopes: ScopedAccessTokenConfiguration[]
   readonly pressroom: PressroomConfiguration
-  readonly shackles: ShacklesConfiguration
-  readonly literatum: LiteratumConfiguration
-  readonly template: TemplateConfiguration
 }
