@@ -21,7 +21,7 @@ node {
 
     stage("Build docker image") {
         sh("""
-            docker build -t ${REGISTRY}/${DOCKER_IMAGE}:${IMG_TAG} -f docker/app/Dockerfile .
+            docker build -f docker/app/Dockerfile .
             """)
     }
 }
