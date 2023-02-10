@@ -1,0 +1,484 @@
+{
+  "data": [
+    {
+      "elementType": "div",
+      "contents": "",
+      "objectType": "MPBibliographyElement",
+      "containedObjectIDs": [
+        "MPBibliographyItem:1185136E-B352-46CB-A4A1-F6DDE1457A2D",
+        "MPBibliographyItem:152D957F-E002-42F3-AB87-71E4980BDD9F",
+        "MPBibliographyItem:7A40557C-5D34-425B-A1A0-2AF963810467",
+        "MPBibliographyItem:89329BB0-F1C5-453F-A00D-424A31788513",
+        "MPBibliographyItem:DD769750-2BAA-4930-AB69-BB259CE321B3"
+      ],
+      "containerID": "MPProject:bibs",
+      "manuscriptID": "MPManuscript:bibsm",
+      "_id": "MPBibliographyElement:44AEC08F-8D40-4C2E-BF1E-8E3485537003"
+    },
+    {
+      "publisher": "American Society for Clinical Investigation",
+      "issue": "12",
+      "DOI": "10.1172/jci18911",
+      "type": "article-journal",
+      "page": "1813-1815",
+      "source": "Crossref",
+      "title": "AIP1: a new player in TNF signaling",
+      "volume": "111",
+      "author": [
+        {
+          "given": "M. Eugenia",
+          "family": "Guicciardi",
+          "sequence": "first",
+          "affiliation": [],
+          "_id": "MPBibliographicName:50E2DB46-B3A8-4607-9038-4ACB7F88DA82",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "given": "Gregory J.",
+          "family": "Gores",
+          "sequence": "additional",
+          "affiliation": [],
+          "_id": "MPBibliographicName:8677D9F7-F99B-4CEC-9D82-0E3AB7E477ED",
+          "objectType": "MPBibliographicName"
+        }
+      ],
+      "container-title": "Journal of Clinical Investigation",
+      "original-title": [],
+      "language": "en",
+      "issued": {
+        "date-parts": [
+          [
+            2003,
+            6,
+            15
+          ]
+        ],
+        "_id": "MPBibliographicDate:BDE50F71-BA00-4388-B02D-DED120C9B814",
+        "objectType": "MPBibliographicDate"
+      },
+      "ISSN": [
+        "0021-9738"
+      ],
+      "container-title-short": "J. Clin. Invest.",
+      "objectType": "MPBibliographyItem",
+      "containerID": "MPProject:bibs",
+      "_id": "MPBibliographyItem:1185136E-B352-46CB-A4A1-F6DDE1457A2D"
+    },
+    {
+      "publisher": "Public Library of Science (PLoS)",
+      "issue": "4",
+      "DOI": "10.1371/journal.pgen.1003450",
+      "type": "article-journal",
+      "page": "e1003450",
+      "source": "Crossref",
+      "title": "Drosophila cyfip Regulates Synaptic Development and Endocytosis by Suppressing Filamentous Actin Assembly",
+      "volume": "9",
+      "author": [
+        {
+          "given": "Lu",
+          "family": "Zhao",
+          "sequence": "first",
+          "affiliation": [],
+          "_id": "MPBibliographicName:F7065B5B-CE97-4968-98DF-EE59AD14F44C",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "given": "Dan",
+          "family": "Wang",
+          "sequence": "additional",
+          "affiliation": [],
+          "_id": "MPBibliographicName:56BE88EE-08AA-4AC0-A6F9-48528DD68C8D",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "given": "Qifu",
+          "family": "Wang",
+          "sequence": "additional",
+          "affiliation": [],
+          "_id": "MPBibliographicName:33E326CC-E0F3-43A3-AD51-1594E3AB3938",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "given": "Avital A.",
+          "family": "Rodal",
+          "sequence": "additional",
+          "affiliation": [],
+          "_id": "MPBibliographicName:B12A5B3B-121B-481E-9E3A-3680787DD61E",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "given": "Yong Q.",
+          "family": "Zhang",
+          "sequence": "additional",
+          "affiliation": [],
+          "_id": "MPBibliographicName:4AFA9795-BC64-4007-B0FD-CA427E2E212A",
+          "objectType": "MPBibliographicName"
+        }
+      ],
+      "container-title": "PLoS Genetics",
+      "original-title": [],
+      "language": "en",
+      "editor": [
+        {
+          "given": "Bingwei",
+          "family": "Lu",
+          "sequence": "first",
+          "affiliation": [],
+          "_id": "MPBibliographicName:5B41272A-2B3E-4ABA-B29B-13FDE06822D7",
+          "objectType": "MPBibliographicName"
+        }
+      ],
+      "issued": {
+        "date-parts": [
+          [
+            2013,
+            4,
+            4
+          ]
+        ],
+        "_id": "MPBibliographicDate:4FAE4845-EC59-471E-90C1-86AEF30F86DB",
+        "objectType": "MPBibliographicDate"
+      },
+      "ISSN": [
+        "1553-7404"
+      ],
+      "container-title-short": "PLoS Genet",
+      "objectType": "MPBibliographyItem",
+      "containerID": "MPProject:bibs",
+      "_id": "MPBibliographyItem:152D957F-E002-42F3-AB87-71E4980BDD9F"
+    },
+    {
+      "publisher": "Elsevier BV",
+      "issue": "6",
+      "DOI": "10.1016/j.cub.2008.02.014",
+      "type": "article-journal",
+      "page": "R259-R261",
+      "source": "Crossref",
+      "title": "Synaptic Endocytosis: Illuminating the Role of Clathrin Assembly",
+      "volume": "18",
+      "author": [
+        {
+          "given": "Avital A.",
+          "family": "Rodal",
+          "sequence": "first",
+          "affiliation": [],
+          "_id": "MPBibliographicName:D592422B-EECC-48FA-B793-8CFAD6E23F9D",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "given": "J. Troy",
+          "family": "Littleton",
+          "sequence": "additional",
+          "affiliation": [],
+          "_id": "MPBibliographicName:F50E0898-7EFA-4802-8D05-778170E5B5D8",
+          "objectType": "MPBibliographicName"
+        }
+      ],
+      "container-title": "Current Biology",
+      "original-title": [],
+      "language": "en",
+      "issued": {
+        "date-parts": [
+          [
+            2008,
+            3
+          ]
+        ],
+        "_id": "MPBibliographicDate:9DDDCB5B-E81F-4E2C-9285-12B8879FE591",
+        "objectType": "MPBibliographicDate"
+      },
+      "ISSN": [
+        "0960-9822"
+      ],
+      "container-title-short": "Current Biology",
+      "objectType": "MPBibliographyItem",
+      "containerID": "MPProject:bibs",
+      "_id": "MPBibliographyItem:7A40557C-5D34-425B-A1A0-2AF963810467"
+    },
+    {
+      "publisher": "American Society for Cell Biology (ASCB)",
+      "issue": "7",
+      "DOI": "10.1091/mbc.e06-02-0135",
+      "type": "article-journal",
+      "page": "2855-2868",
+      "source": "Crossref",
+      "title": "Aip1 and Cofilin Promote Rapid Turnover of Yeast Actin Patches and Cables: A Coordinated Mechanism for Severing and Capping Filaments",
+      "volume": "17",
+      "author": [
+        {
+          "given": "Kyoko",
+          "family": "Okada",
+          "sequence": "first",
+          "affiliation": [
+            {
+              "name": "Department of Biology and Rosenstiel Basic Medical Science Research Center, Brandeis University, Waltham, MA 02454"
+            }
+          ],
+          "_id": "MPBibliographicName:7AA09743-B363-4865-A16A-D85C81F755CA",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "given": "Harini",
+          "family": "Ravi",
+          "sequence": "additional",
+          "affiliation": [
+            {
+              "name": "Department of Biology and Rosenstiel Basic Medical Science Research Center, Brandeis University, Waltham, MA 02454"
+            }
+          ],
+          "_id": "MPBibliographicName:428AB9F4-4D03-4CB6-BCD8-905CAFA6C0C0",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "given": "Ellen M.",
+          "family": "Smith",
+          "sequence": "additional",
+          "affiliation": [
+            {
+              "name": "Department of Biology and Rosenstiel Basic Medical Science Research Center, Brandeis University, Waltham, MA 02454"
+            }
+          ],
+          "_id": "MPBibliographicName:44A10365-0FAF-4EA2-8E58-BD6DA195025A",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "given": "Bruce L.",
+          "family": "Goode",
+          "sequence": "additional",
+          "affiliation": [
+            {
+              "name": "Department of Biology and Rosenstiel Basic Medical Science Research Center, Brandeis University, Waltham, MA 02454"
+            }
+          ],
+          "_id": "MPBibliographicName:4C49595A-F705-49B3-BECE-85357B406E23",
+          "objectType": "MPBibliographicName"
+        }
+      ],
+      "container-title": "Molecular Biology of the Cell",
+      "original-title": [],
+      "language": "en",
+      "editor": [
+        {
+          "given": "David",
+          "family": "Drubin",
+          "sequence": "additional",
+          "affiliation": [],
+          "_id": "MPBibliographicName:1DD9AE1D-B3AB-4DE6-836F-D48235F193A0",
+          "objectType": "MPBibliographicName"
+        }
+      ],
+      "issued": {
+        "date-parts": [
+          [
+            2006,
+            7
+          ]
+        ],
+        "_id": "MPBibliographicDate:33CE6272-83DA-4689-8978-0A5B282F9326",
+        "objectType": "MPBibliographicDate"
+      },
+      "ISSN": [
+        "1059-1524",
+        "1939-4586"
+      ],
+      "container-title-short": "MBoC",
+      "objectType": "MPBibliographyItem",
+      "containerID": "MPProject:bibs",
+      "_id": "MPBibliographyItem:89329BB0-F1C5-453F-A00D-424A31788513"
+    },
+    {
+      "publisher": "American Society for Biochemistry & Molecular Biology (ASBMB)",
+      "issue": "36",
+      "DOI": "10.1074/jbc.m302773200",
+      "type": "article-journal",
+      "page": "34373-34379",
+      "source": "Crossref",
+      "title": "The Structure of Aip1p, a WD Repeat Protein That Regulates Cofilin-mediated Actin Depolymerization",
+      "volume": "278",
+      "author": [
+        {
+          "given": "Walter C.",
+          "family": "Voegtli",
+          "sequence": "first",
+          "affiliation": [],
+          "_id": "MPBibliographicName:404E0701-FB75-4193-B2DF-35D44835F911",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "given": "A. Yarrow",
+          "family": "Madrona",
+          "sequence": "additional",
+          "affiliation": [],
+          "_id": "MPBibliographicName:7025AF48-1729-456D-A3EB-83FB47D5D667",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "given": "David K.",
+          "family": "Wilson",
+          "sequence": "additional",
+          "affiliation": [],
+          "_id": "MPBibliographicName:167E9A05-DCBC-4C12-BBE7-E9712C4983F2",
+          "objectType": "MPBibliographicName"
+        }
+      ],
+      "container-title": "Journal of Biological Chemistry",
+      "original-title": [],
+      "language": "en",
+      "issued": {
+        "date-parts": [
+          [
+            2003,
+            6,
+            14
+          ]
+        ],
+        "_id": "MPBibliographicDate:FE1B706B-6227-42D6-A1F7-3FFCBBB8347B",
+        "objectType": "MPBibliographicDate"
+      },
+      "ISSN": [
+        "0021-9258",
+        "1083-351X"
+      ],
+      "container-title-short": "J. Biol. Chem.",
+      "objectType": "MPBibliographyItem",
+      "containerID": "MPProject:bibs",
+      "_id": "MPBibliographyItem:DD769750-2BAA-4930-AB69-BB259CE321B3"
+    },
+    {
+      "bundled": true,
+      "csl": {
+        "ISSNs": [
+          "00280836"
+        ],
+        "_id": "MPCitationStyle:www-zotero-org-styles-nature",
+        "author-email": "mberkowi@gmu.edu",
+        "author-name": "Michael Berkowitz",
+        "cslIdentifier": "http://www.zotero.org/styles/nature",
+        "defaultLocale": "en-GB",
+        "documentation-URL": "http://www.nature.com/nature/authors/gta/index.html#a5.4",
+        "eISSNs": [
+          "14764687"
+        ],
+        "fields": [
+          "MPResearchField:science",
+          "MPResearchField:generic-base"
+        ],
+        "license": "http://creativecommons.org/licenses/by-sa/3.0/",
+        "objectType": "MPBundle",
+        "self-URL": "http://www.zotero.org/styles/nature",
+        "title": "Nature",
+        "updatedAt": 1410325903,
+        "version": "1.0"
+      },
+      "objectType": "MPBundle",
+      "prototype": "MPBundle:www-zotero-org-styles-nature",
+      "containerID": "MPProject:bibs",
+      "_id": "MPBundle:717BD952-8CBB-49E4-9089-E096BDC1D2C2"
+    },
+    {
+      "objectType": "MPCitation",
+      "containingObject": "MPParagraphElement:10E6338C-0BE3-43F2-AB2F-D93E754259E8",
+      "embeddedCitationItems": [
+        {
+          "_id": "MPCitationItem:18B3D979-4968-402C-80D1-1A3FC1A03B65",
+          "objectType": "MPCitationItem",
+          "bibliographyItem": "MPBibliographyItem:7A40557C-5D34-425B-A1A0-2AF963810467"
+        },
+        {
+          "_id": "MPCitationItem:4CF5E2A6-9ECC-47F7-B50C-0F06CD2AA31E",
+          "objectType": "MPCitationItem",
+          "bibliographyItem": "MPBibliographyItem:152D957F-E002-42F3-AB87-71E4980BDD9F"
+        }
+      ],
+      "containerID": "MPProject:bibs",
+      "manuscriptID": "MPManuscript:bibsm",
+      "_id": "MPCitation:31E42852-8377-4550-8C25-9E602EE657B0"
+    },
+    {
+      "objectType": "MPCitation",
+      "containingObject": "MPParagraphElement:10E6338C-0BE3-43F2-AB2F-D93E754259E8",
+      "embeddedCitationItems": [
+        {
+          "_id": "MPCitationItem:30A8EA49-9238-4624-A0AE-EEE3BC5A7C96",
+          "objectType": "MPCitationItem",
+          "bibliographyItem": "MPBibliographyItem:DD769750-2BAA-4930-AB69-BB259CE321B3"
+        },
+        {
+          "_id": "MPCitationItem:A48BFD03-0DAF-4A82-9155-90F9C400D9E0",
+          "objectType": "MPCitationItem",
+          "bibliographyItem": "MPBibliographyItem:1185136E-B352-46CB-A4A1-F6DDE1457A2D"
+        },
+        {
+          "_id": "MPCitationItem:21AC812A-F3AF-410A-B192-742F8CD65A51",
+          "objectType": "MPCitationItem",
+          "bibliographyItem": "MPBibliographyItem:89329BB0-F1C5-453F-A00D-424A31788513"
+        }
+      ],
+      "containerID": "MPProject:bibs",
+      "manuscriptID": "MPManuscript:bibsm",
+      "_id": "MPCitation:D30D9817-5C61-49BC-8393-F45AE2995F87"
+    },
+    {
+      "objectType": "MPContributor",
+      "priority": 0,
+      "role": "author",
+      "affiliations": [],
+      "bibliographicName": {
+        "_id": "MPBibliographicName:DF88A324-970E-46B0-878D-B0465160D440",
+        "family": "Ydenberg",
+        "given": "Casey",
+        "objectType": "MPBibliographicName"
+      },
+      "userID": "User_ydenberg@gmail.com",
+      "containerID": "MPProject:bibs",
+      "manuscriptID": "MPManuscript:bibsm",
+      "_id": "MPContributor:4B805E24-5128-4F0E-8DF1-8B4FCBAE8037"
+    },
+    {
+      "objectType": "MPManuscript",
+      "title": "Genetic analysis of the actin disassembly system in <i>S. cerevisiae</i>",
+      "bundle": "MPBundle:717BD952-8CBB-49E4-9089-E096BDC1D2C2",
+      "priority": 1,
+      "containerID": "MPProject:bibs",
+      "_id": "MPManuscript:bibsm"
+    },
+    {
+      "elementType": "p",
+      "contents": "<p xmlns=\"http://www.w3.org/1999/xhtml\" id=\"MPParagraphElement:10E6338C-0BE3-43F2-AB2F-D93E754259E8\" class=\"MPElement\" data-object-type=\"MPParagraphElement\">Aip1 genetically interacts with Cofilin in yeast cells <span class=\"citation\" data-reference-id=\"MPCitation:31E42852-8377-4550-8C25-9E602EE657B0\"><sup>1,2</sup></span> and results in F-actin accumulation in S2 cells, suggesting it acts as a disassembly factor in vivo. Api1 consists of two b-propeller domains, each containing an F-actin site <span class=\"citation\" data-reference-id=\"MPCitation:D30D9817-5C61-49BC-8393-F45AE2995F87\"><sup>3–5</sup></span></p>",
+      "placeholderInnerHTML": "",
+      "objectType": "MPParagraphElement",
+      "containerID": "MPProject:bibs",
+      "manuscriptID": "MPManuscript:bibsm",
+      "_id": "MPParagraphElement:10E6338C-0BE3-43F2-AB2F-D93E754259E8"
+    },
+    {
+      "category": "MPSectionCategory:bibliography",
+      "priority": 2,
+      "title": "Bibliography",
+      "path": [
+        "MPSection:1F5802D9-D138-48F9-8E27-D5D34A2031EE"
+      ],
+      "elementIDs": [
+        "MPBibliographyElement:44AEC08F-8D40-4C2E-BF1E-8E3485537003"
+      ],
+      "objectType": "MPSection",
+      "containerID": "MPProject:bibs",
+      "manuscriptID": "MPManuscript:bibsm",
+      "_id": "MPSection:1F5802D9-D138-48F9-8E27-D5D34A2031EE"
+    },
+    {
+      "priority": 1,
+      "title": "Introduction",
+      "path": [
+        "MPSection:7909E1C9-1614-4315-9A39-F121DB9C4074"
+      ],
+      "elementIDs": [
+        "MPParagraphElement:10E6338C-0BE3-43F2-AB2F-D93E754259E8"
+      ],
+      "objectType": "MPSection",
+      "containerID": "MPProject:bibs",
+      "manuscriptID": "MPManuscript:bibsm",
+      "_id": "MPSection:7909E1C9-1614-4315-9A39-F121DB9C4074"
+    }
+  ]
+}

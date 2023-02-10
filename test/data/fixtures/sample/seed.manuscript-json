@@ -23,7 +23,8 @@
     ],
     "articleType": "other",
     "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
-    "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+    "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232",
+    "prototype": "MPManuscriptTemplate:www-zotero-org-styles-nature-genetics-Nature-Genetics-Journal-Publication-Article"
   },
   {
     "_id": "MPKeyword:8EEA0445-31C3-4DBC-973B-0F2FEB1D0070",
@@ -408,18 +409,12 @@
     "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
   },
   {
-    "originalURL": "attachment:77f7fe79-f2a0-4224-b806-23a485b01cff",
+    "src": "attachment:1673100285275-fakeid",
     "attribution": {
       "literal": "Source: World Bank Enterprise Follow-Up Surveys and Bosio et al. (2020)",
       "_id": "MPAttribution:7A92F3D8-D3C6-4A56-B262-0076D41DA209",
       "objectType": "MPAttribution"
     },
-    "externalFileReferences": [
-      {
-        "url": "attachment:77f7fe79-f2a0-4224-b806-23a485b01cff",
-        "kind": "imageRepresentation"
-      }
-    ],
     "containedObjectIDs": [
       "MPParagraphElement:D169E5E6-B52F-4781-97C2-18A356199A11"
     ],
