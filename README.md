@@ -28,7 +28,7 @@ The API will be available at <http://127.0.0.1:3000/>
 
 ```
 ./bin/seed-app.sh
-```
+```dfgdfg
 
 This will create 2 users, 2 projects with a manuscript
 
