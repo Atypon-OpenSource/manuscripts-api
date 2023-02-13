@@ -3,18 +3,13 @@ node {
     REGISTRY="${env.PRIVATE_ARTIFACT_REGISTRY}" // this is set globally on Jenkins
     REFSPEC="+refs/pull/*:refs/remotes/origin/pr/*"
     stage("Checkout") {
-        // keep the original branch name before the checkout step overrides it
-        if (env.GIT_BRANCH) {
-            BRANCH="$GIT_BRANCH"
-            echo "BRANCH: $BRANCH"
-        }
         VARS = checkout scm
         echo "VARS: $VARS"
         DOCKER_IMAGE="manuscripts/api"
         if (VARS.GIT_BRANCH == "origin/master") {
             IMG_TAG=sh(script: "jq .version < package.json | tr -d '\"' ", returnStdout: true).trim()
         } else {
-            IMG_TAG=BRANCH + "-" + VARS.GIT_COMMIT.substring(0,6)
+            IMG_TAG="${params.gbranch}-" + VARS.GIT_COMMIT.substring(0,6)
         }
     }
 
