@@ -1,6 +1,7 @@
 pipeline {
     agent none
     parameters {
+        string(name: 'GIT_BRANCH', defaultValue: 'master')
         booleanParam(name: 'PUBLISH', defaultValue: false)
     }
     stages {
@@ -24,7 +25,7 @@ pipeline {
             environment {
                 REGISTRY = "${env.PRIVATE_ARTIFACT_REGISTRY}"
                 DOCKER_IMAGE = 'manuscripts/api'
-                IMG_TAG = getImgTag(env)
+                IMG_TAG = getImgTag(params.GIT_BRANCH)
             }
             stages {
                 stage('Build docker image') {
@@ -46,12 +47,11 @@ pipeline {
     }
 }
 
-def getImgTag(env) {
-    def branch = env.GIT_LOCAL_BRANCH;
-    def commit = env.GIT_COMMIT;
+def getImgTag(branch) {
     if ('master'.equals(branch)) {
         return sh('jq .version < package.json | tr -d \"').trim();
     } else {
+        def commit = env.GIT_COMMIT
         return branch + '-' + commit.substring(0, 6);
     }
 }
