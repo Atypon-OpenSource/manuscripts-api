@@ -20,13 +20,9 @@ import * as path from 'path'
 import { Environment } from '../Config/ConfigurationTypes'
 import { BaseRoute } from './BaseRoute'
 import { AuthRoute } from './V1/Auth/AuthRoute'
-import { ContainerRoute } from './V1/Container/ContainerRoute'
-import { ContainerRequestRoute } from './V1/ContainerRequest/ContainerRequestRoute'
-import { InvitationRoute } from './V1/Invitation/InvitationRoute'
 import { ProjectRoute } from './V1/Project/ProjectRoute'
 import { RegistrationRoute } from './V1/Registration/RegistrationRoute'
 import { ServerStatusRoute } from './V1/ServerStatus/ServerStatusRoute'
-import { SGRoute } from './V1/SG/SGRoute'
 import { UserRoute } from './V1/User/UserRoute'
 
 /**
@@ -39,12 +35,8 @@ export function loadRoutes(router: Router) {
     new AuthRoute(),
     new RegistrationRoute(),
     new UserRoute(),
-    new InvitationRoute(),
     new ServerStatusRoute(),
-    new SGRoute(),
-    new ContainerRoute(),
     new ProjectRoute(),
-    new ContainerRequestRoute(),
   ]
 
   for (const route of routes) {

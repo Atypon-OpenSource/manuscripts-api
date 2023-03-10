@@ -56,74 +56,6 @@ export async function authorizationToken(
   return supertest(server.app).get(`/api/v1/authorization/${params.scope}`).set(headers).send()
 }
 
-// Containers Invitation
-
-export async function accept(body: any, headers: object): Promise<supertest.Response> {
-  const server: IServer = await createServer()
-  return supertest(server.app).post('/api/v1/invitation/accept').set(headers).send(body)
-}
-
-export async function reject(body: any, headers: object): Promise<supertest.Response> {
-  const server: IServer = await createServer()
-  return supertest(server.app).post('/api/v1/invitation/reject').set(headers).send(body)
-}
-
-export async function uninvite(body: any, headers: object): Promise<supertest.Response> {
-  const server: IServer = await createServer()
-  return supertest(server.app).delete('/api/v1/invitation').set(headers).send(body)
-}
-
-export async function acceptInvitationToken(
-  body: any,
-  headers: object,
-  params: any
-): Promise<supertest.Response> {
-  const server: IServer = await createServer()
-  return supertest(server.app)
-    .post(`/api/v1/invitation/${params.containerType}/access`)
-    .set(headers)
-    .send(body)
-}
-
-export async function requestInvitationToken(
-  headers: object,
-  params: any
-): Promise<supertest.Response> {
-  const server: IServer = await createServer()
-  return supertest(server.app)
-    .get(`/api/v1/invitation/${params.containerID}/${params.role}`)
-    .set(headers)
-    .send()
-}
-
-export async function refreshInvitationToken(
-  headers: object,
-  params: any
-): Promise<supertest.Response> {
-  const server: IServer = await createServer()
-  return supertest(server.app)
-    .post(`/api/v1/invitation/${params.containerID}/${params.role}`)
-    .set(headers)
-    .send()
-}
-
-export async function invite(body: any, headers: object): Promise<supertest.Response> {
-  const server: IServer = await createServer()
-  return supertest(server.app).post('/api/v1/invitation/invite').set(headers).send(body)
-}
-
-export async function inviteToContainer(
-  body: any,
-  headers: object,
-  params: any
-): Promise<supertest.Response> {
-  const server: IServer = await createServer()
-  return supertest(server.app)
-    .post(`/api/v1/invitation/${params.containerID}/invite`)
-    .set(headers)
-    .send(body)
-}
-
 // Registration
 
 export async function signup(body: any, headers: object): Promise<supertest.Response> {
@@ -186,204 +118,6 @@ export async function getRoot(_headers: object): Promise<supertest.Response> {
 export async function notFound(body: any, headers: object): Promise<supertest.Response> {
   const server = await createServer()
   return supertest(server.app).post('/api/v1/not/found').set(headers).send(body)
-}
-
-// Container
-
-export async function create(headers: object, body: any, params: any): Promise<supertest.Response> {
-  const server: IServer = await createServer()
-  return supertest(server.app)
-    .post(`/api/v1/container/${params.containerType}/create`)
-    .set(headers)
-    .send(body)
-}
-
-export async function deleteContainer(headers: object, params: any): Promise<supertest.Response> {
-  const server: IServer = await createServer()
-  return supertest(server.app).delete(`/api/v1/container/${params.containerID}`).set(headers).send()
-}
-
-export async function manageUserRole(
-  headers: object,
-  body: any,
-  params: any
-): Promise<supertest.Response> {
-  const server: IServer = await createServer()
-  return supertest(server.app)
-    .post(`/api/v1/container/${params.containerID}/roles`)
-    .set(headers)
-    .send(body)
-}
-
-export async function addUser(
-  headers: object,
-  body: any,
-  params: any
-): Promise<supertest.Response> {
-  const server: IServer = await createServer()
-  return supertest(server.app)
-    .post(`/api/v1/container/${params.containerID}/addUser`)
-    .set(headers)
-    .send(body)
-}
-
-export async function getArchive(
-  headers: object,
-  body: any,
-  params: any
-): Promise<supertest.Response> {
-  const server: IServer = await createServer()
-  return supertest(server.app)
-    .get(
-      params.manuscriptID
-        ? `/api/v1/container/${params.containerID}/${params.manuscriptID}/archive`
-        : `/api/v1/container/${params.containerID}/archive`
-    )
-    .set(headers)
-    .send(body)
-}
-
-export async function loadProject(
-  headers: object,
-  body: any,
-  params: any
-): Promise<supertest.Response> {
-  const server: IServer = await createServer()
-  return supertest(server.app)
-    .post(
-      params.manuscriptId
-        ? `/api/v1/container/${params.projectId}/${params.manuscriptId}/load`
-        : `/api/v1/container/${params.projectId}/load`
-    )
-    .set(headers)
-    .send(body)
-}
-
-export async function getAttachment(
-  headers: object,
-  body: any,
-  params: any
-): Promise<supertest.Response> {
-  const server: IServer = await createServer()
-  return supertest(server.app)
-    .get(`/api/v1/container/${params.containerType}/attachment/${params.id}`)
-    .set(headers)
-    .send(body)
-}
-
-export async function accessToken(headers: object, params: any): Promise<supertest.Response> {
-  const server: IServer = await createServer()
-  return supertest(server.app)
-    .get(
-      `/api/v1/container/${getContainerType(params.containerID)}/${params.containerID}/${
-        params.scope
-      }`
-    )
-    .set(headers)
-    .send()
-}
-
-export async function pickerBundle(headers: object, params: any): Promise<supertest.Response> {
-  const server: IServer = await createServer()
-  return supertest(server.app)
-    .get(`/api/v1/container/picker-bundle/${params.containerID}/${params.manuscriptID}`)
-    .set(headers)
-    .send()
-}
-
-export async function createManuscript(
-  headers: object,
-  params: any,
-  body?: any
-): Promise<supertest.Response> {
-  const server: IServer = await createServer()
-  return supertest(server.app)
-    .post(
-      `/api/v1/container/projects/${params.containerID}/manuscripts/${
-        params.manuscriptID ? params.manuscriptID : ''
-      }`
-    )
-    .set(headers)
-    .send(body)
-}
-
-export async function getProductionNotes(
-  headers: object,
-  params: any
-): Promise<supertest.Response> {
-  const server: IServer = await createServer()
-  return supertest(server.app)
-    .get(
-      `/api/v1/container/projects/${params.containerID}/manuscripts/${params.manuscriptID}/notes`
-    )
-    .set(headers)
-    .send()
-}
-
-export async function addProductionNote(
-  headers: object,
-  params: any,
-  body: any
-): Promise<supertest.Response> {
-  const server: IServer = await createServer()
-  const url = `/api/v1/container/projects/${params.containerID}/manuscripts/${params.manuscriptID}/notes`
-  return supertest(server.app).post(url).set(headers).send(body)
-}
-// Container Request
-
-export async function createContainerRequest(
-  headers: object,
-  body: any,
-  params: any
-): Promise<supertest.Response> {
-  const server: IServer = await createServer()
-  return supertest(server.app)
-    .post(`/api/v1/request/${params.containerID}/create`)
-    .set(headers)
-    .send(body)
-}
-
-export async function acceptContainerRequest(
-  headers: object,
-  body: any,
-  params: any
-): Promise<supertest.Response> {
-  const server: IServer = await createServer()
-  return supertest(server.app)
-    .post(`/api/v1/request/${params.containerID}/accept`)
-    .set(headers)
-    .send(body)
-}
-
-export async function rejectContainerRequest(
-  headers: object,
-  body: any,
-  params: any
-): Promise<supertest.Response> {
-  const server: IServer = await createServer()
-  return supertest(server.app)
-    .post(`/api/v1/request/${params.containerID}/reject`)
-    .set(headers)
-    .send(body)
-}
-
-// Submission
-
-export async function updateStatus(
-  headers: object,
-  body: object,
-  params: any
-): Promise<supertest.Response> {
-  const server: IServer = await createServer()
-  return supertest(server.app)
-    .post(`/api/v1/submission/status/${params.id}`)
-    .set(headers)
-    .send(body)
-}
-
-export async function fetchTemplates(): Promise<supertest.Response> {
-  const server: IServer = await createServer()
-  return supertest(server.app).get(`/api/v1/publishedTemplates`)
 }
 
 // Project
@@ -449,47 +183,159 @@ export async function importManuscript(
   return req.attach('file', filePath)
 }
 
-export async function SGCreate(
-  headers: object,
-  body: any,
-  params: any
-): Promise<supertest.Response> {
-  const server: IServer = await createServer()
-  return supertest(server.app).post(`/api/v1/sg/${params.db}`).set(headers).send(body)
-}
-
-export async function SGGet(headers: object, query: any, params: any): Promise<supertest.Response> {
+export async function create(headers: object, body: any, params: any): Promise<supertest.Response> {
   const server: IServer = await createServer()
   return supertest(server.app)
-    .get(`/api/v1/sg/${params.db}/${params.id}`)
-    .query(query)
-    .set(headers)
-    .send()
-}
-
-export async function SGDelete(
-  headers: object,
-  query: any,
-  params: any
-): Promise<supertest.Response> {
-  const server: IServer = await createServer()
-  return supertest(server.app)
-    .delete(`/api/v1/sg/${params.db}/${params.id}`)
-    .query(query)
-    .set(headers)
-    .send()
-}
-
-export async function SGUpdate(
-  headers: object,
-  query: any,
-  body: any,
-  params: any
-): Promise<supertest.Response> {
-  const server: IServer = await createServer()
-  return supertest(server.app)
-    .put(`/api/v1/sg/${params.db}/${params.id}`)
-    .query(query)
+    .post(`/api/v1/project/${params.containerType}`)
     .set(headers)
     .send(body)
+}
+
+export async function deleteContainer(headers: object, params: any): Promise<supertest.Response> {
+  const server: IServer = await createServer()
+  return supertest(server.app).delete(`/api/v1/project/${params.containerID}`).set(headers).send()
+}
+
+export async function manageUserRole(
+  headers: object,
+  body: any,
+  params: any
+): Promise<supertest.Response> {
+  const server: IServer = await createServer()
+  return supertest(server.app)
+    .post(`/api/v1/project/${params.containerID}/roles`)
+    .set(headers)
+    .send(body)
+}
+
+export async function addUser(
+  headers: object,
+  body: any,
+  params: any
+): Promise<supertest.Response> {
+  const server: IServer = await createServer()
+  return supertest(server.app)
+    .post(`/api/v1/project/${params.containerID}/addUser`)
+    .set(headers)
+    .send(body)
+}
+
+export async function getArchive(
+  headers: object,
+  body: any,
+  params: any
+): Promise<supertest.Response> {
+  const server: IServer = await createServer()
+  return supertest(server.app)
+    .get(
+      params.manuscriptID
+        ? `/api/v1/project/${params.containerID}/${params.manuscriptID}/archive`
+        : `/api/v1/project/${params.containerID}/archive`
+    )
+    .set(headers)
+    .send(body)
+}
+
+export async function loadProject(
+  headers: object,
+  body: any,
+  params: any
+): Promise<supertest.Response> {
+  const server: IServer = await createServer()
+  return supertest(server.app)
+    .post(
+      params.manuscriptId
+        ? `/api/v1/project/${params.projectId}/${params.manuscriptId}/load`
+        : `/api/v1/project/${params.projectId}/load`
+    )
+    .set(headers)
+    .send(body)
+}
+
+export async function getAttachment(
+  headers: object,
+  body: any,
+  params: any
+): Promise<supertest.Response> {
+  const server: IServer = await createServer()
+  return supertest(server.app)
+    .get(`/api/v1/project/${params.containerType}/attachment/${params.id}`)
+    .set(headers)
+    .send(body)
+}
+
+export async function accessToken(headers: object, params: any): Promise<supertest.Response> {
+  const server: IServer = await createServer()
+  return supertest(server.app)
+    .get(
+      `/api/v1/project/${getContainerType(params.containerID)}/${params.containerID}/${
+        params.scope
+      }`
+    )
+    .set(headers)
+    .send()
+}
+
+export async function pickerBundle(headers: object, params: any): Promise<supertest.Response> {
+  const server: IServer = await createServer()
+  return supertest(server.app)
+    .get(`/api/v1/project/picker-bundle/${params.containerID}/${params.manuscriptID}`)
+    .set(headers)
+    .send()
+}
+
+export async function createManuscript(
+  headers: object,
+  params: any,
+  body?: any
+): Promise<supertest.Response> {
+  const server: IServer = await createServer()
+  return supertest(server.app)
+    .post(
+      `/api/v1/project/projects/${params.containerID}/manuscripts/${
+        params.manuscriptID ? params.manuscriptID : ''
+      }`
+    )
+    .set(headers)
+    .send(body)
+}
+
+export async function getProductionNotes(
+  headers: object,
+  params: any
+): Promise<supertest.Response> {
+  const server: IServer = await createServer()
+  return supertest(server.app)
+    .get(`/api/v1/project/projects/${params.containerID}/manuscripts/${params.manuscriptID}/notes`)
+    .set(headers)
+    .send()
+}
+
+export async function addProductionNote(
+  headers: object,
+  params: any,
+  body: any
+): Promise<supertest.Response> {
+  const server: IServer = await createServer()
+  const url = `/api/v1/project/projects/${params.containerID}/manuscripts/${params.manuscriptID}/notes`
+  return supertest(server.app).post(url).set(headers).send(body)
+}
+
+// Submission
+
+export async function updateStatus(
+  headers: object,
+  body: object,
+  params: any
+): Promise<supertest.Response> {
+  const server: IServer = await createServer()
+  return supertest(server.app)
+    .post(`/api/v1/submission/status/${params.id}`)
+    .set(headers)
+    .send(body)
+}
+
+export async function fetchTemplates(): Promise<supertest.Response> {
+  const server: IServer = await createServer()
+  return supertest(server.app).get(`/api/v1/publishedTemplates`)
 }

@@ -19,7 +19,7 @@ import '../../../../../utilities/configMock'
 
 import { Chance } from 'chance'
 
-import { ContainersController } from '../../../../../../src/Controller/V1/Container/ContainersController'
+import { ProjectController } from '../../../../../../src/Controller/V1/Project/ProjectController'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
 import { UserService } from '../../../../../../src/DomainServices/User/UserService'
 import { ValidationError } from '../../../../../../src/Errors'
@@ -37,7 +37,7 @@ beforeEach(() => {
   return DIContainer.init()
 })
 
-describe('ContainersController - create', () => {
+describe('ProjectController - create', () => {
   test('should call createContainer() with a specified _id', async () => {
     const containerService: any =
       DIContainer.sharedContainer.containerService[ContainerType.project]
@@ -55,7 +55,7 @@ describe('ContainersController - create', () => {
 
     containerService.createContainer = jest.fn(() => {})
 
-    const containersController: ContainersController = new ContainersController()
+    const containersController: ProjectController = new ProjectController()
     await containersController.create(req)
 
     expect(containerService.createContainer).toHaveBeenCalled()
@@ -76,7 +76,7 @@ describe('ContainersController - create', () => {
 
     containerService.createContainer = jest.fn(() => {})
 
-    const containersController: ContainersController = new ContainersController()
+    const containersController: ProjectController = new ProjectController()
     await containersController.create(req)
 
     expect(containerService.createContainer).toHaveBeenCalled()
@@ -97,7 +97,7 @@ describe('ContainersController - create', () => {
 
     containerService.createContainer = jest.fn(() => {})
 
-    const containersController: ContainersController = new ContainersController()
+    const containersController: ProjectController = new ProjectController()
 
     return expect(containersController.create(req)).rejects.toThrow(ValidationError)
   })
@@ -116,7 +116,7 @@ describe('ContainersController - create', () => {
       },
     }
 
-    const containersController: ContainersController = new ContainersController()
+    const containersController: ProjectController = new ProjectController()
     return expect(containersController.create(req)).rejects.toThrow(ValidationError)
   })
 
@@ -136,7 +136,7 @@ describe('ContainersController - create', () => {
 
     containerService.createContainer = jest.fn(() => {})
 
-    const containersController: ContainersController = new ContainersController()
+    const containersController: ProjectController = new ProjectController()
 
     return expect(containersController.create(req)).rejects.toThrow(ValidationError)
   })
@@ -154,7 +154,7 @@ describe('ContainersController - create', () => {
       },
     }
 
-    const containersController: ContainersController = new ContainersController()
+    const containersController: ProjectController = new ProjectController()
     return expect(containersController.create(req)).rejects.toThrow(ValidationError)
   })
 
@@ -172,12 +172,12 @@ describe('ContainersController - create', () => {
       },
     }
 
-    const containersController: ContainersController = new ContainersController()
+    const containersController: ProjectController = new ProjectController()
     return expect(containersController.create(req)).rejects.toThrow(ValidationError)
   })
 })
 
-describe('ContainersController - manageUserRole', () => {
+describe('ProjectController - manageUserRole', () => {
   test('should call manageUserRole()', async () => {
     const containerService: any =
       DIContainer.sharedContainer.containerService[ContainerType.project]
@@ -197,7 +197,7 @@ describe('ContainersController - manageUserRole', () => {
 
     containerService.manageUserRole = jest.fn(() => {})
 
-    const containersController: ContainersController = new ContainersController()
+    const containersController: ProjectController = new ProjectController()
     await containersController.manageUserRole(req)
 
     return expect(containerService.manageUserRole).toHaveBeenCalled()
@@ -218,7 +218,7 @@ describe('ContainersController - manageUserRole', () => {
       user: validUser,
     }
 
-    const containersController: ContainersController = new ContainersController()
+    const containersController: ProjectController = new ProjectController()
     return expect(containersController.manageUserRole(req)).rejects.toThrow(ValidationError)
   })
 
@@ -236,7 +236,7 @@ describe('ContainersController - manageUserRole', () => {
       },
     }
 
-    const containersController: ContainersController = new ContainersController()
+    const containersController: ProjectController = new ProjectController()
     return expect(containersController.manageUserRole(req)).rejects.toThrow(ValidationError)
   })
 
@@ -254,7 +254,7 @@ describe('ContainersController - manageUserRole', () => {
       },
     }
 
-    const containersController: ContainersController = new ContainersController()
+    const containersController: ProjectController = new ProjectController()
     return expect(containersController.manageUserRole(req)).rejects.toThrow(ValidationError)
   })
 
@@ -273,12 +273,12 @@ describe('ContainersController - manageUserRole', () => {
       },
     }
 
-    const containersController: ContainersController = new ContainersController()
+    const containersController: ProjectController = new ProjectController()
     return expect(containersController.manageUserRole(req)).rejects.toThrow(ValidationError)
   })
 })
 
-describe('ContainersController - addUser', () => {
+describe('ProjectController - addUser', () => {
   test('should call addUser()', async () => {
     const containerService: any =
       DIContainer.sharedContainer.containerService[ContainerType.project]
@@ -299,7 +299,7 @@ describe('ContainersController - addUser', () => {
 
     containerService.addContainerUser = jest.fn(() => {})
 
-    const containersController: ContainersController = new ContainersController()
+    const containersController: ProjectController = new ProjectController()
     await containersController.addUser(req)
 
     return expect(containerService.addContainerUser).toHaveBeenCalled()
@@ -320,7 +320,7 @@ describe('ContainersController - addUser', () => {
       user: validUser,
     }
 
-    const containersController: ContainersController = new ContainersController()
+    const containersController: ProjectController = new ProjectController()
     return expect(containersController.addUser(req)).rejects.toThrow(ValidationError)
   })
 
@@ -339,7 +339,7 @@ describe('ContainersController - addUser', () => {
       user: validUser,
     }
 
-    const containersController: ContainersController = new ContainersController()
+    const containersController: ProjectController = new ProjectController()
     return expect(containersController.addUser(req)).rejects.toThrow(ValidationError)
   })
 
@@ -358,12 +358,12 @@ describe('ContainersController - addUser', () => {
       user: validUser,
     }
 
-    const containersController: ContainersController = new ContainersController()
+    const containersController: ProjectController = new ProjectController()
     return expect(containersController.addUser(req)).rejects.toThrow(ValidationError)
   })
 })
 
-describe('ContainersController - delete', () => {
+describe('ProjectController - delete', () => {
   test('should call deleteContainer()', async () => {
     const containerService: any =
       DIContainer.sharedContainer.containerService[ContainerType.project]
@@ -379,7 +379,7 @@ describe('ContainersController - delete', () => {
 
     containerService.deleteContainer = jest.fn(() => {})
 
-    const containersController: ContainersController = new ContainersController()
+    const containersController: ProjectController = new ProjectController()
     await containersController.delete(req)
 
     return expect(containerService.deleteContainer).toHaveBeenCalled()
@@ -394,12 +394,12 @@ describe('ContainersController - delete', () => {
       },
     }
 
-    const containersController: ContainersController = new ContainersController()
+    const containersController: ProjectController = new ProjectController()
     return expect(containersController.delete(req)).rejects.toThrow(ValidationError)
   })
 })
 
-describe('ContainersController - getArchive', () => {
+describe('ProjectController - getArchive', () => {
   test('should fail if the containerID is not a string', () => {
     const chance = new Chance()
     const req: any = {
@@ -412,7 +412,7 @@ describe('ContainersController - getArchive', () => {
       query: {},
     }
 
-    const containersController: ContainersController = new ContainersController()
+    const containersController: ProjectController = new ProjectController()
     return expect(containersController.getArchive(req)).rejects.toThrow(ValidationError)
   })
 
@@ -436,7 +436,7 @@ describe('ContainersController - getArchive', () => {
 
     containerService.getArchive = jest.fn(() => {})
 
-    const containersController: ContainersController = new ContainersController()
+    const containersController: ProjectController = new ProjectController()
     await containersController.getArchive(req)
 
     return expect(containerService.getArchive).toHaveBeenCalled()
@@ -463,7 +463,7 @@ describe('ContainersController - getArchive', () => {
 
     containerService.getArchive = jest.fn(() => {})
 
-    const containersController: ContainersController = new ContainersController()
+    const containersController: ProjectController = new ProjectController()
     await containersController.getArchive(req)
 
     return expect(containerService.getArchive).toHaveBeenCalled()
@@ -493,7 +493,7 @@ describe('ContainerController - loadProject', () => {
     containerService.loadProject = jest.fn(() => Promise.resolve())
     containerService.getContainer = jest.fn(() => Promise.resolve({ _id: 'someId' }))
 
-    const containersController: ContainersController = new ContainersController()
+    const containersController: ProjectController = new ProjectController()
     await containersController.loadProject(req)
 
     return expect(containerService.loadProject).toHaveBeenCalled()
@@ -521,7 +521,7 @@ describe('ContainerController - loadProject', () => {
     containerService.loadProject = jest.fn(() => Promise.resolve())
     containerService.getContainer = jest.fn(() => Promise.resolve({ _id: 'someId' }))
 
-    const containersController: ContainersController = new ContainersController()
+    const containersController: ProjectController = new ProjectController()
     await expect(containersController.loadProject(req)).rejects.toThrow(ValidationError)
   })
   test('should return NOT_MODIFIED', async () => {
@@ -547,7 +547,7 @@ describe('ContainerController - loadProject', () => {
     containerService.loadProject = jest.fn(() => Promise.resolve())
     containerService.getContainer = jest.fn(() => Promise.resolve({ updatedAt: 10 }))
 
-    const containersController: ContainersController = new ContainersController()
+    const containersController: ProjectController = new ProjectController()
     const res = await containersController.loadProject(req)
     expect(res.status).toBe(304)
   })
@@ -568,7 +568,7 @@ describe('ContainerController - accessToken', () => {
       },
     }
 
-    const containersController = new ContainersController()
+    const containersController = new ProjectController()
     return expect(containersController.accessToken(req)).rejects.toThrow(ValidationError)
   })
 
@@ -586,7 +586,7 @@ describe('ContainerController - accessToken', () => {
       },
     }
 
-    const containersController = new ContainersController()
+    const containersController = new ProjectController()
     return expect(containersController.accessToken(req)).rejects.toThrow(ValidationError)
   })
 
@@ -608,7 +608,7 @@ describe('ContainerController - accessToken', () => {
 
     containersService.accessToken = jest.fn(async () => 'asdasd')
 
-    const containersController = new ContainersController()
+    const containersController = new ProjectController()
     await containersController.accessToken(req)
 
     return expect(containersService.accessToken).toHaveBeenCalledWith(
@@ -621,7 +621,7 @@ describe('ContainerController - accessToken', () => {
 
 describe('ContainerController - jwksForAccessScope', () => {
   test('should fail because containerType should be a string', () => {
-    const containersController = new ContainersController()
+    const containersController = new ProjectController()
 
     const req: any = {
       params: {
@@ -634,7 +634,7 @@ describe('ContainerController - jwksForAccessScope', () => {
   })
 
   test('should fail because scope should be a string', () => {
-    const containersController = new ContainersController()
+    const containersController = new ProjectController()
 
     const req: any = {
       params: {
@@ -647,7 +647,7 @@ describe('ContainerController - jwksForAccessScope', () => {
   })
 
   test('should fail if publicKeyJWK is null', () => {
-    const containersController = new ContainersController()
+    const containersController = new ProjectController()
     const containerService: any =
       DIContainer.sharedContainer.containerService[ContainerType.project]
     containerService.findScope = jest.fn(() => Promise.resolve({ publicKeyJWK: null }))
@@ -662,7 +662,7 @@ describe('ContainerController - jwksForAccessScope', () => {
   })
 })
 
-describe('ContainersController - getBundle', () => {
+describe('ProjectController - getBundle', () => {
   test('should fail if the containerID is not a string', () => {
     const chance = new Chance()
     const req: any = {
@@ -675,7 +675,7 @@ describe('ContainersController - getBundle', () => {
       query: {},
     }
 
-    const containersController: ContainersController = new ContainersController()
+    const containersController: ProjectController = new ProjectController()
     const finish = jest.fn()
     return expect(containersController.getBundle(req, finish)).rejects.toThrow(ValidationError)
   })
@@ -698,7 +698,7 @@ describe('ContainersController - getBundle', () => {
       },
     }
 
-    const containersController: ContainersController = new ContainersController()
+    const containersController: ProjectController = new ProjectController()
     const finish = jest.fn()
     return expect(containersController.getBundle(req, finish)).rejects.toThrow(ValidationError)
   })
@@ -722,7 +722,7 @@ describe('ContainersController - getBundle', () => {
       },
     }
 
-    const containersController: ContainersController = new ContainersController()
+    const containersController: ProjectController = new ProjectController()
     const finish = jest.fn()
     return expect(containersController.getBundle(req, finish)).rejects.toThrow(ValidationError)
   })
@@ -753,14 +753,14 @@ describe('ContainersController - getBundle', () => {
       },
     }
 
-    const containersController: ContainersController = new ContainersController()
+    const containersController: ProjectController = new ProjectController()
     const finish = jest.fn()
     await containersController.getBundle(req, finish)
     return expect(finish).toHaveBeenCalled()
   })
 })
 
-describe('ContainersController - getAttachment', () => {
+describe('ProjectController - getAttachment', () => {
   test('should fail if the id is not a string', () => {
     const chance = new Chance()
     const req: any = {
@@ -773,7 +773,7 @@ describe('ContainersController - getAttachment', () => {
       },
     }
 
-    const containersController: ContainersController = new ContainersController()
+    const containersController: ProjectController = new ProjectController()
     return expect(containersController.getAttachment(req)).rejects.toThrow(ValidationError)
   })
 
@@ -810,12 +810,12 @@ describe('ContainersController - getAttachment', () => {
       },
     }
 
-    const containersController: ContainersController = new ContainersController()
+    const containersController: ProjectController = new ProjectController()
     return expect(containersController.getAttachment(req)).resolves.toBeTruthy()
   })
 })
 
-describe('ContainersController - getProductionNotes', () => {
+describe('ProjectController - getProductionNotes', () => {
   test('should fail if containerID is not a string', async () => {
     const chance = new Chance()
     const req: any = {
@@ -823,7 +823,7 @@ describe('ContainersController - getProductionNotes', () => {
         containerID: chance.integer(),
       },
     }
-    const containersController: ContainersController = new ContainersController()
+    const containersController: ProjectController = new ProjectController()
     await expect(containersController.getProductionNotes(req)).rejects.toThrow(ValidationError)
   })
 
@@ -835,7 +835,7 @@ describe('ContainersController - getProductionNotes', () => {
         manuscriptID: chance.integer(),
       },
     }
-    const containersController: ContainersController = new ContainersController()
+    const containersController: ProjectController = new ProjectController()
     await expect(containersController.getProductionNotes(req)).rejects.toThrow(ValidationError)
   })
 
@@ -852,13 +852,13 @@ describe('ContainersController - getProductionNotes', () => {
         _id: chance.string(),
       },
     }
-    const containersController: ContainersController = new ContainersController()
+    const containersController: ProjectController = new ProjectController()
     await containersController.getProductionNotes(req)
     expect(containerService.getProductionNotes).toHaveBeenCalled()
   })
 })
 
-describe('ContainersController - createManuscript', () => {
+describe('ProjectController - createManuscript', () => {
   test('should fail if containerID is not a string', async () => {
     const chance = new Chance()
     const req: any = {
@@ -867,7 +867,7 @@ describe('ContainersController - createManuscript', () => {
       },
       body: {},
     }
-    const containersController: ContainersController = new ContainersController()
+    const containersController: ProjectController = new ProjectController()
     await expect(containersController.createManuscript(req)).rejects.toThrow(ValidationError)
   })
 
@@ -881,7 +881,7 @@ describe('ContainersController - createManuscript', () => {
         templateId: chance.integer(),
       },
     }
-    const containersController: ContainersController = new ContainersController()
+    const containersController: ProjectController = new ProjectController()
     await expect(containersController.createManuscript(req)).rejects.toThrow(ValidationError)
   })
 
@@ -894,7 +894,7 @@ describe('ContainersController - createManuscript', () => {
       },
       body: {},
     }
-    const containersController: ContainersController = new ContainersController()
+    const containersController: ProjectController = new ProjectController()
     await expect(containersController.createManuscript(req)).rejects.toThrow(ValidationError)
   })
 
@@ -912,13 +912,13 @@ describe('ContainersController - createManuscript', () => {
       },
       body: {},
     }
-    const containersController: ContainersController = new ContainersController()
+    const containersController: ProjectController = new ProjectController()
     await containersController.createManuscript(req)
     expect(containerService.createManuscript).toHaveBeenCalled()
   })
 })
 
-describe('ContainersController - addProductionNote', () => {
+describe('ProjectController - addProductionNote', () => {
   test('should fail if containerID is not a string', async () => {
     const chance = new Chance()
     const req: any = {
@@ -934,7 +934,7 @@ describe('ContainersController - addProductionNote', () => {
         _id: chance.string(),
       },
     }
-    const containersController: ContainersController = new ContainersController()
+    const containersController: ProjectController = new ProjectController()
     await expect(containersController.addProductionNote(req)).rejects.toThrow(ValidationError)
   })
 
@@ -954,7 +954,7 @@ describe('ContainersController - addProductionNote', () => {
         _id: chance.string(),
       },
     }
-    const containersController: ContainersController = new ContainersController()
+    const containersController: ProjectController = new ProjectController()
     await expect(containersController.addProductionNote(req)).rejects.toThrow(ValidationError)
   })
 
@@ -974,7 +974,7 @@ describe('ContainersController - addProductionNote', () => {
         _id: chance.string(),
       },
     }
-    const containersController: ContainersController = new ContainersController()
+    const containersController: ProjectController = new ProjectController()
     await expect(containersController.addProductionNote(req)).rejects.toThrow(ValidationError)
   })
 
@@ -997,7 +997,7 @@ describe('ContainersController - addProductionNote', () => {
         _id: 'User_test',
       },
     }
-    const containersController: ContainersController = new ContainersController()
+    const containersController: ProjectController = new ProjectController()
     await containersController.addProductionNote(req)
     expect(containerService.createManuscriptNote).toHaveBeenCalled()
   })
