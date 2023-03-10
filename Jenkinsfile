@@ -49,7 +49,7 @@ pipeline {
 
 def getImgTag(branch) {
     if ('master'.equals(branch)) {
-        return sh('jq .version < package.json | tr -d \"').trim();
+        return sh(script: 'jq .version < package.json | tr -d \\"', returnStdout: true).trim();
     } else {
         def commit = env.GIT_COMMIT
         return branch + '-' + commit.substring(0, 6);
