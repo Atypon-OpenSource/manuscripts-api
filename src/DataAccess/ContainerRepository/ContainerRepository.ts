@@ -16,7 +16,6 @@
 
 import { LibraryCollection, Model } from '@manuscripts/json-schema'
 
-import { selectActiveResources } from '../../Utilities/ContainerUtils/selectActiveResources'
 import { IContainerRepository } from '../Interfaces/IContainerRepository'
 import { IdentifiableEntity } from '../Interfaces/IdentifiableEntity'
 import { SGRepository } from '../SGRepository'
@@ -81,7 +80,6 @@ export abstract class ContainerRepository<
   public async getContainerResources(
     containerId: string,
     manuscriptID: string | null,
-    allowOrphanedDocs?: boolean,
     types?: string[]
   ) {
     const container = await this.getById(containerId)
@@ -94,16 +92,13 @@ export abstract class ContainerRepository<
         (result: any) => ({ ...this.buildModel(result), _id: result.id } as Model)
       )
 
-      const activeResources =
-        containerId.startsWith(`${this.objectType}:`) && !allowOrphanedDocs
-          ? selectActiveResources([container, ...otherDocs])
-          : [container, ...otherDocs]
+      const projectResources = [container, ...otherDocs]
 
       if (types && types.length > 0) {
         const typeSet = new Set(types)
-        return activeResources.filter((doc: Model) => typeSet.has(doc.objectType))
+        return projectResources.filter((doc: Model) => typeSet.has(doc.objectType))
       }
-      return activeResources
+      return projectResources
     }
 
     const Q = {
@@ -174,15 +169,13 @@ export abstract class ContainerRepository<
     const callbackFn = (results: any) => {
       const otherDocs = results.map((result: any) => ({ _id: result.id } as Model))
 
-      const activeResources = containerId.startsWith(`${this.objectType}:`)
-        ? selectActiveResources([container, ...otherDocs])
-        : [container, ...otherDocs]
+      const projectResources = [container, ...otherDocs]
 
       if (types && types.length > 0) {
         const typeSet = new Set(types)
-        return activeResources.filter((doc: Model) => typeSet.has(doc.objectType))
+        return projectResources.filter((doc: Model) => typeSet.has(doc.objectType))
       }
-      return activeResources
+      return projectResources
     }
 
     const Q = {

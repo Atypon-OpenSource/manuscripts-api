@@ -22,7 +22,6 @@ import { User } from '../../Models/UserModels'
 export interface ArchiveOptions {
   getAttachments?: boolean
   onlyIDs?: boolean
-  allowOrphanedDocs?: boolean
   includeExt: boolean | true
   types?: string[]
 }

@@ -456,7 +456,6 @@ export class ContainerService implements IContainerService {
     return await this.containerRepository.getContainerResources(
       containerID,
       manuscriptID,
-      options.allowOrphanedDocs,
       options.types
     )
   }
@@ -505,7 +504,6 @@ export class ContainerService implements IContainerService {
       projectResourcesData = await this.containerRepository.getContainerResources(
         containerID,
         manuscriptID,
-        options.allowOrphanedDocs,
         options.types
       )
     } else {

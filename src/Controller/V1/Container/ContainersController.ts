@@ -179,7 +179,6 @@ export class ContainersController extends ContainedBaseController {
         {
           getAttachments: false,
           onlyIDs: false,
-          allowOrphanedDocs: types && types.length > 0, // To make sure when document that are being asked they are not omitted even if they were not referenced
           includeExt: false,
           types,
         } as any
@@ -223,7 +222,6 @@ export class ContainersController extends ContainedBaseController {
         {
           getAttachments,
           onlyIDs: onlyIDs === 'true',
-          allowOrphanedDocs: true,
           includeExt: false,
         }
       )
@@ -280,7 +278,6 @@ export class ContainersController extends ContainedBaseController {
 
     const getAttachments = true
     const includeExt = false
-    const allowOrphanedDocs = false
     const userID = req.user._id
     const archive = await DIContainer.sharedContainer.containerService[containerType].getArchive(
       userID,
@@ -290,7 +287,6 @@ export class ContainersController extends ContainedBaseController {
       {
         getAttachments,
         onlyIDs: onlyIDs === 'true',
-        allowOrphanedDocs,
         includeExt,
       }
     )
