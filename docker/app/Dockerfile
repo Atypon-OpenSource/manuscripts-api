@@ -22,7 +22,7 @@ COPY tsconfig.json tsconfig.build.json ./
 
 RUN ./bin/build-env.js .env.example > .env
 
-EXPOSE 3000
+EXPOSE 3000 9229
 
 RUN yarn attach-prisma
 RUN yarn build-app

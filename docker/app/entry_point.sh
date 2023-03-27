@@ -4,4 +4,4 @@ set -e
 
 sleep 2
 yarn migrate-prisma-deploy
-node dist/index
+node --inspect=0.0.0.0 --expose-gc dist/index
