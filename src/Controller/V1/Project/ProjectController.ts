@@ -210,13 +210,13 @@ export class ProjectController extends BaseController {
     if (!req.user) {
       throw new ValidationError('No user found', req.user)
     }
-
-    validateParamsType(['projectId', projectId, 'string'])
+    if (!isString(projectId)) {
+      throw new ValidationError('projectId should be string', projectId)
+    }
 
     if (manuscriptId && !isString(manuscriptId)) {
       throw new ValidationError('manuscriptId should be string', manuscriptId)
     }
-
     const containerType = getContainerType(projectId)
 
     const userID = req.user._id
@@ -267,10 +267,8 @@ export class ProjectController extends BaseController {
     ) {
       throw new ValidationError('User id must be string', null)
     }
-
-    if (!containerID || !isString(containerID)) {
-      throw new ValidationError('container id must be string', containerID)
-    }
+    validateRequestParams(req, ['containerID'])
+    validateParamsType({ name: 'container id', type: typeof containerID, value: 'string' })
 
     if (newRole !== null && !isString(newRole)) {
       throw new ValidationError('Role must be string or null', newRole)
@@ -302,10 +300,8 @@ export class ProjectController extends BaseController {
       throw new ValidationError('User id must be string', userId)
     }
 
-    if (!containerID || !isString(containerID)) {
-      throw new ValidationError('container id must be string', containerID)
-    }
-
+    validateRequestParams(req, ['containerID'])
+    validateParamsType({ name: 'container id', type: typeof containerID, value: 'string' })
     if (role !== null && !isString(role)) {
       throw new ValidationError('Role must be string or null', role)
     }
@@ -328,12 +324,11 @@ export class ProjectController extends BaseController {
     if (!user) {
       throw new ValidationError('No user found', user)
     }
-
-    validateParamsType(['containerID', containerID, 'string'])
-
-    if (manuscriptID && !isString(manuscriptID)) {
-      throw new ValidationError('manuscriptID should be string', manuscriptID)
-    }
+    validateRequestParams(req, ['manuscriptID', 'containerID'])
+    validateParamsType(
+      { name: 'containerID', value: containerID, type: typeof 'string' },
+      { name: 'manuscriptId', type: typeof manuscriptID, value: 'string' }
+    )
 
     if (templateId && !isString(templateId)) {
       throw new ValidationError('templateId should be string', templateId)
@@ -352,15 +347,11 @@ export class ProjectController extends BaseController {
     const { containerID, manuscriptID } = req.params
     const { content, target, connectUserID, source } = req.body
     validateParamsType(
-      ['containerID', containerID, 'string'],
-      ['manuscriptID', manuscriptID, 'string'],
-      ['userConnectID', connectUserID, 'string'],
-      ['content', content, 'string']
+      { name: 'containerID', value: containerID, type: typeof 'string' },
+      { name: 'manuscriptID', value: manuscriptID, type: typeof 'string' },
+      { name: 'userConnectID', value: connectUserID, type: typeof 'string' },
+      { name: 'content', value: content, type: typeof 'string' }
     )
-
-    // if (!isString(content)) {
-    //   throw new ValidationError('content should be string', manuscriptID)
-    // }
 
     const containerType = getContainerType(containerID)
     return DIContainer.sharedContainer.containerService[containerType].createManuscriptNote(
@@ -398,8 +389,7 @@ export class ProjectController extends BaseController {
       throw new ValidationError('No user found', req.user)
     }
 
-    validateParamsType(['containerID', containerID, 'string'])
-
+    validateParamsType({ name: 'containerID', value: containerID, type: typeof 'string' })
     const token = authorizationBearerToken(req)
 
     const getAttachments = acceptHeader !== 'application/json'
@@ -437,7 +427,7 @@ export class ProjectController extends BaseController {
       throw new ValidationError('No user found', req.user)
     }
 
-    validateParamsType(['containerID', id, 'string'])
+    validateParamsType({ name: 'containerID', type: typeof id, value: 'string' })
 
     return DIContainer.sharedContainer.containerService[ContainerType.project].getAttachment(
       req.user._id,
@@ -448,8 +438,10 @@ export class ProjectController extends BaseController {
 
   jwksForAccessScope(req: Request): { keys: [RSA_JWK] } {
     const { scope, containerType } = req.params
-    validateParamsType(['containerType', containerType, 'string'])
-    validateParamsType(['scope', scope, 'string'])
+    validateParamsType(
+      { name: 'containerType', type: typeof containerType, value: 'string' },
+      { name: 'scope', type: typeof scope, value: 'string' }
+    )
 
     const s = ContainerService.findScope(scope, config.scopes)
     if (s.publicKeyJWK === null) {
@@ -468,7 +460,7 @@ export class ProjectController extends BaseController {
       throw new ValidationError('No user found', req.user)
     }
 
-    validateParamsType(['containerID', containerID, 'string'])
+    validateParamsType({ name: 'containerID', value: containerID, type: typeof 'string' })
     const containerType = getContainerType(containerID)
 
     // will fail of the user is not a collaborator on the project
@@ -480,7 +472,7 @@ export class ProjectController extends BaseController {
       throw new ValidationError('User must be a contributor in the container', containerID)
     }
 
-    validateParamsType(['manuscriptID', manuscriptID, 'string'])
+    validateParamsType({ name: 'manuscriptID', type: typeof manuscriptID, value: 'string' })
 
     const token = authorizationBearerToken(req)
 
@@ -520,7 +512,10 @@ export class ProjectController extends BaseController {
     if (!user) {
       throw new ValidationError('No user found', user)
     }
-    validateParamsType(['containerID', containerID, 'string'], ['manuscriptID', scope, 'string'])
+    validateParamsType(
+      { name: 'containerID', type: typeof containerID, value: 'string' },
+      { name: 'manuscriptID', type: typeof scope, value: 'string' }
+    )
     const containerType = getContainerType(containerID)
     return DIContainer.sharedContainer.containerService[containerType].accessToken(
       user._id,
@@ -532,8 +527,8 @@ export class ProjectController extends BaseController {
   async getProductionNotes(req: Request) {
     const { containerID, manuscriptID } = req.params
     validateParamsType(
-      ['containerID', containerID, 'string'],
-      ['manuscriptID', manuscriptID, 'string']
+      { name: 'containerID', type: typeof containerID, value: 'string' },
+      { name: 'manuscriptID', type: typeof manuscriptID, value: 'string' }
     )
     const containerType = getContainerType(containerID)
     return DIContainer.sharedContainer.containerService[containerType].getProductionNotes(
@@ -556,9 +551,8 @@ export class ProjectController extends BaseController {
       throw new ValidationError('No user found', req.user)
     }
 
-    if (!containerID || !isString(containerID)) {
-      throw new ValidationError('container id should be a string', containerID)
-    }
+    validateRequestParams(req, ['containerID'])
+    validateParamsType({ name: 'container id', type: typeof containerID, value: 'string' })
 
     const containerType = getContainerType(containerID)
 

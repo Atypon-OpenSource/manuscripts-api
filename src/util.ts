@@ -49,14 +49,6 @@ export function removeEmptyValuesFromObj(o: { [index: string]: any }): { [index:
   return newObj
 }
 
-export function validateParamsType<T>(...params: [string, T, string][]) {
-  for (const [paramName, paramValue, expectedType] of params) {
-    if (typeof paramValue !== expectedType) {
-      throw new ValidationError(`${paramName} should be ${expectedType}`, paramValue)
-    }
-  }
-}
-
 export function validateRequestParams(req: Request, params: string | string[]) {
   const paramNames = Array.isArray(params) ? params : [params]
 
@@ -64,6 +56,20 @@ export function validateRequestParams(req: Request, params: string | string[]) {
     const paramValue = req.params[paramName]
     if (!paramValue) {
       throw new ValidationError(`${paramName} parameter must be specified`, paramValue)
+    }
+  }
+}
+
+interface Param<T> {
+  name: string
+  value: T
+  type: string
+}
+
+export function validateParamsType<T>(...params: Param<T>[]) {
+  for (const { name, value, type } of params) {
+    if (typeof value !== type) {
+      throw new ValidationError(`${name} should be ${type}`, value)
     }
   }
 }

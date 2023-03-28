@@ -50,7 +50,11 @@ export class ProjectRoute extends BaseRoute {
   }
   public create(router: Router): void {
     router.post(
-      `${this.basePath}/:containerType?`,
+      [
+        `${this.basePath}`,
+        `${this.basePath}/:containerType/create`,
+        '/container/:containerType/create',
+      ],
       (req: Request, res: Response, next: NextFunction) => {
         const schemaToUse = !req.params.containerType ? createProjectSchema : createContainerSchema
         celebrate(schemaToUse)(req, res, next)
@@ -66,7 +70,7 @@ export class ProjectRoute extends BaseRoute {
     )
 
     router.post(
-      `${this.basePath}/:projectId/add`,
+      `${this.basePath}/:projectId`,
       celebrate(addSchema),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
@@ -107,7 +111,12 @@ export class ProjectRoute extends BaseRoute {
     )
 
     router.post(
-      [`${this.basePath}/:projectId/load`, `${this.basePath}/:projectId/:manuscriptId/load`],
+      [
+        `${this.basePath}/:projectId/load`,
+        `${this.basePath}/:projectId/:manuscriptId/load`,
+        '/container/:projectId/load',
+        '/container/:projectId/:manuscriptId/load',
+      ],
       celebrate(loadProjectSchema, {}),
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
@@ -124,7 +133,11 @@ export class ProjectRoute extends BaseRoute {
     )
 
     router.post(
-      `${this.basePath}/:containerID/roles`,
+      [
+        `${this.basePath}/:containerID/roles`,
+        '/container/:containerID/roles',
+        '/container/project/:containerID/roles',
+      ],
       celebrate(manageUserRoleSchema, {}),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
@@ -137,7 +150,11 @@ export class ProjectRoute extends BaseRoute {
     )
 
     router.post(
-      `${this.basePath}/:containerID/addUser`,
+      [
+        `${this.basePath}/:containerID/addUser`,
+        '/container/:containerID/addUser',
+        '/container/project/:containerID/addUser',
+      ],
       celebrate(addUserSchema, {}),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
@@ -150,7 +167,10 @@ export class ProjectRoute extends BaseRoute {
     )
 
     router.post(
-      `${this.basePath}/projects/:containerID/manuscripts/:manuscriptID?`,
+      [
+        `${this.basePath}/projects/:containerID/manuscripts/:manuscriptID?`,
+        '/container/projects/:containerID/manuscripts/:manuscriptID?',
+      ],
       celebrate(createManuscriptSchema, {}),
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
@@ -161,7 +181,10 @@ export class ProjectRoute extends BaseRoute {
     )
 
     router.post(
-      `${this.basePath}/projects/:containerID/manuscripts/:manuscriptID/notes`,
+      [
+        `${this.basePath}/projects/:containerID/manuscripts/:manuscriptID/notes`,
+        '/container/projects/:containerID/manuscripts/:manuscriptID/notes',
+      ],
       celebrate(addProductionNoteSchema, {}),
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
@@ -188,6 +211,8 @@ export class ProjectRoute extends BaseRoute {
       [
         `${this.basePath}/:containerID/archive`,
         `${this.basePath}/:containerID/:manuscriptID/archive`,
+        '/container/:containerID/archive',
+        '/container/:containerID/:manuscriptID/archive',
       ],
       celebrate(getArchiveSchema, {}),
       AuthStrategy.JWTAuth,
@@ -201,7 +226,10 @@ export class ProjectRoute extends BaseRoute {
     )
 
     router.get(
-      `${this.basePath}/:containerType/attachment/:id/:attachmentKey?`,
+      [
+        `${this.basePath}/:containerType/attachment/:id/:attachmentKey?`,
+        '/container/:containerType/attachment/:id/:attachmentKey?',
+      ],
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
@@ -212,7 +240,7 @@ export class ProjectRoute extends BaseRoute {
       }
     )
     router.get(
-      `${this.basePath}/:containerType/:scope.jwks`,
+      [`${this.basePath}/:containerType/:scope.jwks`, '/container/:containerType/:scope.jwks'],
       celebrate(accessTokenJWKSchema, {}),
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
@@ -222,7 +250,10 @@ export class ProjectRoute extends BaseRoute {
     )
 
     router.get(
-      `${this.basePath}/picker-bundle/:containerID/:manuscriptID`,
+      [
+        `${this.basePath}/picker-bundle/:containerID/:manuscriptID`,
+        '/container/picker-bundle/:containerID/:manuscriptID',
+      ],
       celebrate(getPickerBuilderSchema, {}),
       AuthStrategy.scopedJWTAuth('file-picker'),
       (req: Request, res: Response, next: NextFunction) => {
@@ -236,7 +267,10 @@ export class ProjectRoute extends BaseRoute {
     )
 
     router.get(
-      `${this.basePath}/:containerType/:containerID/:scope`,
+      [
+        `${this.basePath}/:containerType/:containerID/:scope`,
+        '/container/:containerType/:containerID/:scope',
+      ],
       celebrate(accessTokenSchema, {}),
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
@@ -247,7 +281,10 @@ export class ProjectRoute extends BaseRoute {
     )
 
     router.get(
-      `${this.basePath}/projects/:containerID/manuscripts/:manuscriptID/notes`,
+      [
+        `${this.basePath}/projects/:containerID/manuscripts/:manuscriptID/notes`,
+        '/container/projects/:containerID/manuscripts/:manuscriptID/notes',
+      ],
       celebrate(getProductionNotesSchema, {}),
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
@@ -258,7 +295,12 @@ export class ProjectRoute extends BaseRoute {
     )
 
     router.delete(
-      [`${this.basePath}/:containerID`, `${this.basePath}/:containerType/:containerID`],
+      [
+        `${this.basePath}/:containerID`,
+        `${this.basePath}/:containerType/:containerID`,
+        '/container/:containerID',
+        '/container/:containerType/:containerID',
+      ],
       celebrate(deleteSchema, {}),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
