@@ -21,6 +21,7 @@ import { Chance } from 'chance'
 
 import { ContainersController } from '../../../../../../src/Controller/V1/Container/ContainersController'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
+import { ContainerService } from '../../../../../../src/DomainServices/Container/ContainerService'
 import { UserService } from '../../../../../../src/DomainServices/User/UserService'
 import { ValidationError } from '../../../../../../src/Errors'
 import { ContainerType } from '../../../../../../src/Models/ContainerModels'
@@ -659,6 +660,20 @@ describe('ContainerController - jwksForAccessScope', () => {
     }
 
     expect(() => containersController.jwksForAccessScope(req)).toThrow(ValidationError)
+  })
+
+  test('should return keys', () => {
+    const containersController = new ContainersController()
+    const stFn = jest.fn().mockReturnValue('true')
+    ContainerService.findScope = stFn
+    const req: any = {
+      params: {
+        containerType: '123',
+        scope: 'scope',
+      },
+    }
+    const res = containersController.jwksForAccessScope(req)
+    expect(res).toBeTruthy()
   })
 })
 
