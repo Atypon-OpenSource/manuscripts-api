@@ -68,7 +68,7 @@ export const getArchiveSchema: Joi.SchemaMap = {
   params: Joi.object({
     containerID: Joi.string().required(),
     manuscriptID: Joi.string(),
-  })
+  }),
 }
 
 export const loadProjectSchema: Joi.SchemaMap = {

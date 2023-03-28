@@ -20,6 +20,7 @@ services:
       - postgres
     ports:
       - "<%- app_port %>:<%- app_port %>"
+      - "9229:9229"
     image: app
     build:
       context: ../
