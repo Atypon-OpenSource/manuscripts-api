@@ -16,7 +16,15 @@
 
 import { onUpdate } from '../DomainServices/eventing'
 import prisma from './prismaClient'
-const UPDATE_ACTIONS = ['create', 'createMany', 'update', 'updateMany', 'delete', 'deleteMany', 'upsert']
+const UPDATE_ACTIONS = [
+  'create',
+  'createMany',
+  'update',
+  'updateMany',
+  'delete',
+  'deleteMany',
+  'upsert',
+]
 export default function applyMiddleware() {
   prisma.$use(async (params: any, next: any) => {
     const res = await next(params)

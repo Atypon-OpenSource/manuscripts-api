@@ -187,11 +187,7 @@ export async function syncAccessControl(doc: any, oldDoc: any, userId?: string):
     return !equal(doc, oldDoc)
   }
 
-  if (
-    objectTypeMatches('MPProject') ||
-    objectTypeMatches('MPLibraryCollection') ||
-    objectTypeMatches('MPLibrary')
-  ) {
+  if (objectTypeMatches('MPProject')) {
     if (doc.owners.length === 0) {
       // prettier-ignore
       throw({ forbidden: 'owners cannot be set/updated to be empty' });
@@ -217,13 +213,6 @@ export async function syncAccessControl(doc: any, oldDoc: any, userId?: string):
         requireUser(owners, userId)
       }
 
-      if (
-        (objectTypeMatches('MPLibraryCollection') || objectTypeMatches('MPLibrary')) &&
-        hasMutated('category')
-      ) {
-        throw { forbidden: 'category cannot be mutated' }
-      }
-
       // only do this for non-deleted items for perf.
       const userIds: any = {}
       for (let i = 0; i < allUserIds.length; i++) {
@@ -238,11 +227,7 @@ export async function syncAccessControl(doc: any, oldDoc: any, userId?: string):
     if (oldDoc) {
       await proceedWithWriteAccess(oldDoc, userId)
     } else {
-      if (objectTypeMatches('MPLibraryCollection')) {
-        requireUser([].concat(owners, writers), userId)
-      } else {
-        requireUser(owners, userId)
-      }
+      requireUser(owners, userId)
     }
   } else if (
     objectTypeMatches('MPCollaboration') ||

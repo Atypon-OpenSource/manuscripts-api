@@ -21,6 +21,7 @@ import { RSA_JWK } from 'pem-jwk'
 import { config } from '../../../Config/Config'
 import { DIContainer } from '../../../DIContainer/DIContainer'
 import { ContainerService } from '../../../DomainServices/Container/ContainerService'
+import { ArchiveOptions } from '../../../DomainServices/Container/IContainerService'
 import {
   IllegalStateError,
   ManuscriptContentParsingError,
@@ -30,7 +31,7 @@ import {
 import { Container, ContainerType } from '../../../Models/ContainerModels'
 import { isString } from '../../../util'
 import { authorizationBearerToken } from '../../BaseController'
-import { ContainedBaseController, getContainerType } from '../../ContainedBaseController'
+import { ContainedBaseController } from '../../ContainedBaseController'
 
 export class ContainersController extends ContainedBaseController {
   async create(req: Request): Promise<Container> {
@@ -47,7 +48,7 @@ export class ContainersController extends ContainedBaseController {
       throw new ValidationError('container id should be a string', _id)
     }
 
-    return DIContainer.sharedContainer.containerService[containerType].createContainer(token, _id)
+    return DIContainer.sharedContainer.containerService.createContainer(token, _id)
   }
 
   async delete(req: Request): Promise<void> {
@@ -61,12 +62,7 @@ export class ContainersController extends ContainedBaseController {
       throw new ValidationError('container id should be a string', containerID)
     }
 
-    const containerType = getContainerType(containerID)
-
-    await DIContainer.sharedContainer.containerService[containerType].deleteContainer(
-      containerID,
-      req.user
-    )
+    await DIContainer.sharedContainer.containerService.deleteContainer(containerID, req.user)
   }
 
   // tslint:disable-next-line:cyclomatic-complexity
@@ -97,9 +93,7 @@ export class ContainersController extends ContainedBaseController {
       throw new ValidationError('Secret must be string or undefined.', newRole)
     }
 
-    const containerType = getContainerType(containerID)
-
-    await DIContainer.sharedContainer.containerService[containerType].manageUserRole(
+    await DIContainer.sharedContainer.containerService.manageUserRole(
       req.user,
       containerID,
       { userId: managedUserId, connectUserId: managedUserConnectId },
@@ -128,9 +122,7 @@ export class ContainersController extends ContainedBaseController {
       throw new ValidationError('Role must be string or null', role)
     }
 
-    const containerType = getContainerType(containerID)
-
-    await DIContainer.sharedContainer.containerService[containerType].addContainerUser(
+    await DIContainer.sharedContainer.containerService.addContainerUser(
       containerID,
       role,
       userId,
@@ -155,11 +147,9 @@ export class ContainersController extends ContainedBaseController {
       throw new ValidationError('manuscriptId should be string', manuscriptId)
     }
 
-    const containerType = getContainerType(projectId)
-
     const userID = req.user._id
 
-    const project = await DIContainer.sharedContainer.containerService[containerType].getContainer(
+    const project = await DIContainer.sharedContainer.containerService.getContainer(
       projectId,
       userID
     )
@@ -173,7 +163,7 @@ export class ContainersController extends ContainedBaseController {
           return { data: null, status: StatusCodes.NOT_MODIFIED }
         }
       }
-      const data = await DIContainer.sharedContainer.containerService[containerType].loadProject(
+      const data = await DIContainer.sharedContainer.containerService.loadProject(
         projectId,
         manuscriptId,
         {
@@ -181,7 +171,7 @@ export class ContainersController extends ContainedBaseController {
           onlyIDs: false,
           includeExt: false,
           types,
-        } as any
+        } as ArchiveOptions
       )
 
       return { data, status: StatusCodes.OK }
@@ -210,11 +200,10 @@ export class ContainersController extends ContainedBaseController {
     const token = authorizationBearerToken(req)
 
     const getAttachments = acceptHeader !== 'application/json'
-    const containerType = getContainerType(containerID)
 
     const userID = req.user._id
     try {
-      return DIContainer.sharedContainer.containerService[containerType].getArchive(
+      return DIContainer.sharedContainer.containerService.getArchive(
         userID,
         containerID,
         manuscriptID,
@@ -241,7 +230,7 @@ export class ContainersController extends ContainedBaseController {
       throw new ValidationError('id should be a string', id)
     }
 
-    return DIContainer.sharedContainer.containerService[ContainerType.project].getAttachment(
+    return DIContainer.sharedContainer.containerService.getAttachment(
       req.user._id,
       id,
       req.params.attachmentKey
@@ -259,12 +248,12 @@ export class ContainersController extends ContainedBaseController {
     if (!isString(containerID)) {
       throw new ValidationError('containerID should be string', containerID)
     }
-    const containerType = getContainerType(containerID)
 
     // will fail of the user is not a collaborator on the project
-    const canAccess = await DIContainer.sharedContainer.containerService[
-      containerType
-    ].checkUserContainerAccess(req.user._id, containerID)
+    const canAccess = await DIContainer.sharedContainer.containerService.checkUserContainerAccess(
+      req.user._id,
+      containerID
+    )
 
     if (!canAccess) {
       throw new ValidationError('User must be a contributor in the container', containerID)
@@ -279,7 +268,7 @@ export class ContainersController extends ContainedBaseController {
     const getAttachments = true
     const includeExt = false
     const userID = req.user._id
-    const archive = await DIContainer.sharedContainer.containerService[containerType].getArchive(
+    const archive = await DIContainer.sharedContainer.containerService.getArchive(
       userID,
       containerID,
       null,
@@ -303,7 +292,7 @@ export class ContainersController extends ContainedBaseController {
       })
   }
 
-  async accessToken(req: Request): Promise<any> {
+  async accessToken(req: Request): Promise<string> {
     const { containerID, scope } = req.params
     const user = req.user
 
@@ -319,12 +308,7 @@ export class ContainersController extends ContainedBaseController {
       throw new ValidationError('scope should be string', scope)
     }
 
-    const containerType = getContainerType(containerID)
-    return DIContainer.sharedContainer.containerService[containerType].accessToken(
-      user._id,
-      scope,
-      containerID
-    )
+    return DIContainer.sharedContainer.containerService.accessToken(user._id, scope, containerID)
   }
 
   // Deprecated (moved to .well-known)
@@ -366,8 +350,7 @@ export class ContainersController extends ContainedBaseController {
       throw new ValidationError('templateId should be string', templateId)
     }
 
-    const containerType = getContainerType(containerID)
-    return DIContainer.sharedContainer.containerService[containerType].createManuscript(
+    return DIContainer.sharedContainer.containerService.createManuscript(
       user._id,
       containerID,
       manuscriptID,
@@ -385,8 +368,7 @@ export class ContainersController extends ContainedBaseController {
     if (!isString(manuscriptID)) {
       throw new ValidationError('manuscriptID should be string', manuscriptID)
     }
-    const containerType = getContainerType(containerID)
-    return DIContainer.sharedContainer.containerService[containerType].getProductionNotes(
+    return DIContainer.sharedContainer.containerService.getProductionNotes(
       containerID,
       manuscriptID
     )
@@ -411,8 +393,7 @@ export class ContainersController extends ContainedBaseController {
       throw new ValidationError('content should be string', manuscriptID)
     }
 
-    const containerType = getContainerType(containerID)
-    return DIContainer.sharedContainer.containerService[containerType].createManuscriptNote(
+    return DIContainer.sharedContainer.containerService.createManuscriptNote(
       containerID,
       manuscriptID,
       content,

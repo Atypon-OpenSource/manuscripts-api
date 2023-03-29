@@ -28,7 +28,7 @@ describe('sync access control', () => {
   })
 
   test('Container creation', async () => {
-    const types = ['MPProject', 'MPLibrary', 'MPLibraryCollection']
+    const types = ['MPProject']
     for (const type of types) {
       const validObject = {
         createdAt: 231230131,
@@ -273,17 +273,17 @@ describe('sync access control', () => {
 
   test('MPBibliographyItem', async () => {
     const containerID = {
-      _id: 'MPLibrary:1',
+      _id: 'MPProject:1',
       owners: ['User_bill@example.com'],
     }
 
     const keywordIDs = [
       {
-        _id: 'MPLibraryCollection:a',
+        _id: 'MPProject:a',
         owners: ['User_bill@example.com'],
       },
       {
-        _id: 'MPLibraryCollection:b',
+        _id: 'MPProject:b',
         editors: ['User_bill@example.com'],
       },
     ]

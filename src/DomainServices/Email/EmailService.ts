@@ -213,15 +213,14 @@ export class EmailService {
     to: User,
     invitingUser: User | null,
     container: Container,
-    role: ContainerRole,
-    containerType: ContainerType
+    role: ContainerRole
   ) =>
     this.sendMessage(MessageType.ProjectInvitationAcceptance, to, {
       invitingUser: invitingUser || undefined,
       container,
       role,
       actionURL: `${this.emailConfiguration.fromBaseURL}/${this.containerTypeForURL(
-        containerType
+        ContainerType.project
       )}/${container._id}`,
     })
 
@@ -230,8 +229,7 @@ export class EmailService {
     addedUser: User,
     invitingUser: User | null,
     container: Container,
-    role: ContainerRole,
-    containerType: ContainerType
+    role: ContainerRole
   ) =>
     this.sendMessage(MessageType.ProjectInvitationOwnerNotification, to, {
       invitedUser: addedUser,
@@ -239,7 +237,7 @@ export class EmailService {
       container,
       role,
       actionURL: `${this.emailConfiguration.fromBaseURL}/${this.containerTypeForURL(
-        containerType
+        ContainerType.project
       )}/${container._id}`,
     })
 

@@ -44,7 +44,7 @@ describe('ContainerService - getProjectUserRole', () => {
     const containerService = DIContainer.sharedContainer.containerService
 
     expect(
-      containerService[ContainerType.project].getUserRole(
+      containerService.getUserRole(
         {
           _id: 'MPProject:project-id',
           owners: [],
@@ -60,7 +60,7 @@ describe('ContainerService - getProjectUserRole', () => {
     const containerService = DIContainer.sharedContainer.containerService
 
     expect(
-      containerService[ContainerType.project].getUserRole(
+      containerService.getUserRole(
         {
           _id: 'MPProject:project-id',
           owners: [],
@@ -76,7 +76,7 @@ describe('ContainerService - getProjectUserRole', () => {
     const containerService = DIContainer.sharedContainer.containerService
 
     expect(
-      containerService[ContainerType.project].getUserRole(
+      containerService.getUserRole(
         {
           _id: 'MPProject:project-id',
           owners: ['User_validId'],
@@ -92,7 +92,7 @@ describe('ContainerService - getProjectUserRole', () => {
     const containerService = DIContainer.sharedContainer.containerService
 
     expect(
-      containerService[ContainerType.project].getUserRole(
+      containerService.getUserRole(
         {
           _id: 'MPProject:project-id',
           owners: ['User_validId'],
@@ -109,7 +109,7 @@ describe('ContainerService - getProjectUserRole', () => {
     const containerService = DIContainer.sharedContainer.containerService
 
     expect(
-      containerService[ContainerType.project].getUserRole(
+      containerService.getUserRole(
         {
           _id: 'MPProject:project-id',
           owners: ['User_validId'],
@@ -122,7 +122,7 @@ describe('ContainerService - getProjectUserRole', () => {
     ).toBe(ContainerRole.Editor)
   })
   test('Should return true if user is a contributor|owner', async () => {
-    const containerService = DIContainer.sharedContainer.containerService[ContainerType.project]
+    const containerService = DIContainer.sharedContainer.containerService
     containerService.getContainer = jest.fn().mockImplementationOnce(() => {
       return {
         _id: 'MPProject:project-id',
@@ -139,7 +139,7 @@ describe('ContainerService - getProjectUserRole', () => {
   })
 
   test('Should return true if user is a owner or writer', async () => {
-    const containerService = DIContainer.sharedContainer.containerService[ContainerType.project]
+    const containerService = DIContainer.sharedContainer.containerService
     containerService.getContainer = jest.fn().mockImplementationOnce(() => {
       return {
         _id: 'MPProject:project-id',
@@ -156,7 +156,7 @@ describe('ContainerService - getProjectUserRole', () => {
   })
 
   test('Should return true if user can create manuscript note', async () => {
-    const containerService = DIContainer.sharedContainer.containerService[ContainerType.project]
+    const containerService = DIContainer.sharedContainer.containerService
     containerService.getContainer = jest.fn().mockImplementation(() => {
       return {
         _id: 'MPProject:project-id',
@@ -184,7 +184,7 @@ describe('ContainerService - getProjectUserRole', () => {
     const containerService = DIContainer.sharedContainer.containerService
 
     expect(
-      containerService[ContainerType.project].getUserRole(
+      containerService.getUserRole(
         {
           _id: 'MPProject:project-id',
           owners: [],
@@ -199,7 +199,7 @@ describe('ContainerService - getProjectUserRole', () => {
 
 describe('ContainerService - isPublic', () => {
   test('Should return true if the project is public', () => {
-    const containerService = DIContainer.sharedContainer.containerService[ContainerType.project]
+    const containerService = DIContainer.sharedContainer.containerService
 
     expect(
       containerService.isPublic({
@@ -213,7 +213,7 @@ describe('ContainerService - isPublic', () => {
   })
 
   test('Should return false if the project is not public', () => {
-    const containerService = DIContainer.sharedContainer.containerService[ContainerType.project]
+    const containerService = DIContainer.sharedContainer.containerService
 
     expect(
       containerService.isPublic({

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { LibraryCollection, Model } from '@manuscripts/json-schema'
+import { Model } from '@manuscripts/json-schema'
 
 import { IContainerRepository } from '../Interfaces/IContainerRepository'
 import { IdentifiableEntity } from '../Interfaces/IdentifiableEntity'
@@ -397,39 +397,6 @@ export abstract class ContainerRepository<
   public buildItem = (row: any) => {
     const { _sync, sessionID, containerID, templateID, ...item } = row.projects
     return { ...item, _id: row.id }
-  }
-
-  public getContainedLibraryCollections(containerId: string): Promise<LibraryCollection[]> {
-    const Q = {
-      AND: [
-        {
-          data: {
-            path: ['objectType'],
-            equals: 'MPLibraryCollection',
-          },
-        },
-        {
-          data: {
-            path: ['containerID'],
-            equals: containerId,
-          },
-        },
-        /*{
-          data: {
-            path: ["_deleted"],
-            equals: undefined
-          }
-        }*/
-      ],
-    }
-
-    const callbackFn = (results: any) => {
-      return results.map((row: any) => ({
-        ...this.buildModel(row),
-      }))
-    }
-
-    return this.database.bucket.query(Q).then((res: any) => callbackFn(res))
   }
 
   public async validateReadAccess(doc: any, userId: string): Promise<void> {

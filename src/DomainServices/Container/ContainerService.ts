@@ -27,7 +27,6 @@ import { IManuscriptRepository } from '../../DataAccess/Interfaces/IManuscriptRe
 import { IUserRepository } from '../../DataAccess/Interfaces/IUserRepository'
 import { IUserStatusRepository } from '../../DataAccess/Interfaces/IUserStatusRepository'
 import { validate } from '../../DataAccess/jsonSchemaValidator'
-import { LibraryCollectionRepository } from '../../DataAccess/LibraryCollectionRepository/LibraryCollectionRepository'
 import { ManuscriptNoteRepository } from '../../DataAccess/ManuscriptNoteRepository/ManuscriptNoteRepository'
 import { TemplateRepository } from '../../DataAccess/TemplateRepository/TemplateRepository'
 import { DIContainer } from '../../DIContainer/DIContainer'
@@ -50,13 +49,7 @@ import {
   UserRoleError,
   ValidationError,
 } from '../../Errors'
-import {
-  Container,
-  ContainerObjectType,
-  ContainerRepository,
-  ContainerRole,
-  ContainerType,
-} from '../../Models/ContainerModels'
+import { Container, ContainerRepository, ContainerRole } from '../../Models/ContainerModels'
 import { UserActivityEventType } from '../../Models/UserEventModels'
 import { isBlocked, User } from '../../Models/UserModels'
 import { isLoginTokenPayload, timestamp } from '../../Utilities/JWT/LoginTokenPayload'
@@ -68,7 +61,6 @@ import { ArchiveOptions, IContainerService } from './IContainerService'
 
 export class ContainerService implements IContainerService {
   constructor(
-    private containerType: ContainerType,
     private userRepository: IUserRepository,
     private userService: IUserService,
     private activityTrackingService: UserActivityTrackingService,
@@ -76,7 +68,6 @@ export class ContainerService implements IContainerService {
     private containerRepository: ContainerRepository,
     private containerInvitationRepository: ContainerInvitationRepository,
     private emailService: EmailService,
-    private libraryCollectionRepository: LibraryCollectionRepository,
     private manuscriptRepository: IManuscriptRepository,
     private manuscriptNoteRepository: ManuscriptNoteRepository,
     private templateRepository: TemplateRepository
@@ -182,38 +173,6 @@ export class ContainerService implements IContainerService {
     await this.updateContainerUser(containerId, newRole, managedUserObj)
   }
 
-  private async setUsersRolesInContainedLibraryCollections(
-    containerId: string,
-    userId: string,
-    role: ContainerRole | null
-  ) {
-    const libraryCollections = await this.containerRepository.getContainedLibraryCollections(
-      containerId
-    )
-    const syncUserId = ContainerService.userIdForSync(userId)
-    for (const lc of libraryCollections) {
-      const { owners, writers, viewers, editors, annotators } = this.updatedRoles(lc, userId, role)
-      let inherited
-
-      if (lc.inherited) {
-        inherited = lc.inherited.includes(syncUserId) ? lc.inherited : [...lc.inherited, syncUserId]
-      } else {
-        inherited = [syncUserId]
-      }
-
-      // call it without userId intentionally
-      await this.libraryCollectionRepository.patch(lc._id, {
-        _id: lc._id,
-        owners: owners && owners.map((u) => ContainerService.userIdForSync(u)),
-        writers: writers && writers.map((u) => ContainerService.userIdForSync(u)),
-        viewers: viewers && viewers.map((u) => ContainerService.userIdForSync(u)),
-        editors: editors && editors.map((u) => ContainerService.userIdForSync(u)),
-        annotators: annotators && annotators.map((u) => ContainerService.userIdForSync(u)),
-        inherited,
-      })
-    }
-  }
-
   public async validateManagedUser(
     managedUserId: string,
     newRole: ContainerRole | null
@@ -267,7 +226,6 @@ export class ContainerService implements IContainerService {
         editors,
         annotators
       )
-      await this.setUsersRolesInContainedLibraryCollections(containerID, userId, role)
 
       if (!skipEmail) {
         await this.notifyForAddingUser(container, role, addedUser, addingUser)
@@ -316,7 +274,6 @@ export class ContainerService implements IContainerService {
       editors,
       annotators
     )
-    await this.setUsersRolesInContainedLibraryCollections(containerID, user._id, role)
   }
 
   // tslint:disable-next-line: cyclomatic-complexity
@@ -663,8 +620,7 @@ export class ContainerService implements IContainerService {
       addedUser,
       addingUser,
       container,
-      role,
-      this.containerType
+      role
     )
 
     await this.announceAddedContributorToOwners(addedUser, addingUser, otherOwners, container, role)
@@ -688,8 +644,7 @@ export class ContainerService implements IContainerService {
         addedUser,
         addingUser,
         container,
-        role,
-        this.containerType
+        role
       )
     }
   }
@@ -745,7 +700,7 @@ export class ContainerService implements IContainerService {
       owners: [ownerId],
       writers: [],
       viewers: [],
-      objectType: this.containerObjectType(),
+      objectType: ObjectTypes.Project,
     }
 
     return this.containerRepository.create(newContainer, ownerId)
@@ -777,17 +732,6 @@ export class ContainerService implements IContainerService {
     }
 
     return id.replace('_', '|')
-  }
-
-  private containerObjectType(): ContainerObjectType {
-    switch (this.containerType) {
-      case ContainerType.project:
-        return ObjectTypes.Project
-      case ContainerType.library:
-        return ObjectTypes.Library
-      case ContainerType.libraryCollection:
-        return ObjectTypes.LibraryCollection
-    }
   }
 
   // tslint:disable-next-line:cyclomatic-complexity
