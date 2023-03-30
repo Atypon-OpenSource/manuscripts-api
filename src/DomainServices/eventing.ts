@@ -22,11 +22,7 @@ import { DIContainer } from '../DIContainer/DIContainer'
 export async function onUpdate(doc: any, id: string) {
   if (id.startsWith('MPUserProfile:')) {
     await onUpdateUserProfile()
-  } else if (
-    id.startsWith('MPProject:') ||
-    id.startsWith('MPLibrary:') ||
-    id.startsWith('MPLibraryCollection:')
-  ) {
+  } else if (id.startsWith('MPProject:')) {
     await onUpdateContainer()
   } else {
     return

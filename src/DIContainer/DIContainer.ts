@@ -34,8 +34,6 @@ import { IUserStatusRepository } from '../DataAccess/Interfaces/IUserStatusRepos
 import { IUserTokenRepository } from '../DataAccess/Interfaces/IUserTokenRepository'
 import { InvitationRepository } from '../DataAccess/InvitationRepository/InvitationRepository'
 import { InvitationTokenRepository } from '../DataAccess/InvitationTokenRepository/InvitationTokenRepository'
-import { LibraryCollectionRepository } from '../DataAccess/LibraryCollectionRepository/LibraryCollectionRepository'
-import { LibraryRepository } from '../DataAccess/LibraryRepository/LibraryRepository'
 import { ManuscriptNoteRepository } from '../DataAccess/ManuscriptNoteRepository/ManuscriptNoteRepository'
 import { ManuscriptRepository } from '../DataAccess/ManuscriptRepository/ManuscriptRepository'
 import { ProjectRepository } from '../DataAccess/ProjectRepository/ProjectRepository'
@@ -70,7 +68,6 @@ import { SyncService } from '../DomainServices/Sync/SyncService'
 import { IUserService } from '../DomainServices/User/IUserService'
 import { UserService } from '../DomainServices/User/UserService'
 import { UserActivityTrackingService } from '../DomainServices/UserActivity/UserActivityTrackingService'
-import { ContainerServiceMap, ContainerType } from '../Models/ContainerModels'
 import { IServer } from '../Server/IServer'
 import { Server } from '../Server/Server'
 
@@ -122,11 +119,9 @@ export class DIContainer {
   readonly containerInvitationService: IContainerInvitationService
   readonly invitationService: InvitationService
   readonly projectRepository: ProjectRepository
-  readonly libraryRepository: LibraryRepository
-  readonly libraryCollectionRepository: LibraryCollectionRepository
   readonly userProfileRepository: UserProfileRepository
   readonly userCollaboratorRepository: UserCollaboratorRepository
-  readonly containerService: ContainerServiceMap
+  readonly containerService: ContainerService
   readonly containerRequestService: IContainerRequestService
   readonly containerRequestRepository: ContainerRequestRepository
   readonly pressroomService: IPressroomService
@@ -179,11 +174,6 @@ export class DIContainer {
       this.syncService
     )
     this.projectRepository = new ProjectRepository(BucketKey.Project, this.dataBucket)
-    this.libraryRepository = new LibraryRepository(BucketKey.Project, this.dataBucket)
-    this.libraryCollectionRepository = new LibraryCollectionRepository(
-      BucketKey.Project,
-      this.dataBucket
-    )
     this.invitationRepository = new InvitationRepository(BucketKey.Project, this.dataBucket)
     this.containerInvitationRepository = new ContainerInvitationRepository(
       BucketKey.Project,
@@ -214,57 +204,23 @@ export class DIContainer {
       this.projectRepository,
       this.userCollaboratorRepository
     )
-    this.containerService = {
-      [ContainerType.project]: new ContainerService(
-        ContainerType.project,
-        this.userRepository,
-        this.userService,
-        this.activityTrackingService,
-        this.userStatusRepository,
-        this.projectRepository,
-        this.containerInvitationRepository,
-        this.emailService,
-        this.libraryCollectionRepository,
-        this.manuscriptRepository,
-        this.manuscriptNotesRepository,
-        this.templateRepository
-      ),
-      [ContainerType.library]: new ContainerService(
-        ContainerType.library,
-        this.userRepository,
-        this.userService,
-        this.activityTrackingService,
-        this.userStatusRepository,
-        this.libraryRepository,
-        this.containerInvitationRepository,
-        this.emailService,
-        this.libraryCollectionRepository,
-        this.manuscriptRepository,
-        this.manuscriptNotesRepository,
-        this.templateRepository
-      ),
-      [ContainerType.libraryCollection]: new ContainerService(
-        ContainerType.libraryCollection,
-        this.userRepository,
-        this.userService,
-        this.activityTrackingService,
-        this.userStatusRepository,
-        this.libraryCollectionRepository,
-        this.containerInvitationRepository,
-        this.emailService,
-        this.libraryCollectionRepository,
-        this.manuscriptRepository,
-        this.manuscriptNotesRepository,
-        this.templateRepository
-      ),
-    }
+    this.containerService = new ContainerService(
+      this.userRepository,
+      this.userService,
+      this.activityTrackingService,
+      this.userStatusRepository,
+      this.projectRepository,
+      this.containerInvitationRepository,
+      this.emailService,
+      this.manuscriptRepository,
+      this.manuscriptNotesRepository,
+      this.templateRepository
+    )
     this.containerInvitationService = new ContainerInvitationService(
       this.userRepository,
       this.userProfileRepository,
       this.emailService,
-      this.containerService[ContainerType.project],
-      this.containerService[ContainerType.library],
-      this.containerService[ContainerType.libraryCollection],
+      this.containerService,
       this.containerInvitationRepository,
       this.invitationTokenRepository,
       this.activityTrackingService
@@ -282,9 +238,7 @@ export class DIContainer {
       this.containerRequestRepository,
       this.userProfileRepository,
       this.userRepository,
-      this.containerService[ContainerType.project],
-      this.containerService[ContainerType.library],
-      this.containerService[ContainerType.libraryCollection],
+      this.containerService,
       this.emailService
     )
     this.authService = new AuthService(

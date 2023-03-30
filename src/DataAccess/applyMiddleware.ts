@@ -16,12 +16,20 @@
 
 import { onUpdate } from '../DomainServices/eventing'
 import prisma from './prismaClient'
-
+const UPDATE_ACTIONS = [
+  'create',
+  'createMany',
+  'update',
+  'updateMany',
+  'delete',
+  'deleteMany',
+  'upsert',
+]
 export default function applyMiddleware() {
   prisma.$use(async (params: any, next: any) => {
     const res = await next(params)
     const id = params.args.data?.id || params.args.where?.id
-    if (id) {
+    if (id && UPDATE_ACTIONS.includes(params.action)) {
       await onUpdate((res || {}).data, id)
     }
     return res

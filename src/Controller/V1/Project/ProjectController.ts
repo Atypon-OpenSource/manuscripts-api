@@ -36,7 +36,7 @@ import {
   RoleDoesNotPermitOperationError,
   ValidationError,
 } from '../../../Errors'
-import { Container, ContainerType } from '../../../Models/ContainerModels'
+import { Container } from '../../../Models/ContainerModels'
 import { isLoginTokenPayload } from '../../../Utilities/JWT/LoginTokenPayload'
 import { authorizationBearerToken, BaseController } from '../../BaseController'
 
@@ -53,15 +53,20 @@ export class ProjectController extends BaseController {
 
     const owners = [payload.userId]
 
-    const { _id }: Container = await DIContainer.sharedContainer.containerService[
-      ContainerType.project
-    ].createContainer(token, null)
+    const { _id }: Container = await DIContainer.sharedContainer.containerService.createContainer(
+      token,
+      null
+    )
 
-    await DIContainer.sharedContainer.containerService[
-      ContainerType.project
-    ].updateContainerTitleAndCollaborators(_id, title, owners, undefined, undefined)
+    await DIContainer.sharedContainer.containerService.updateContainerTitleAndCollaborators(
+      _id,
+      title,
+      owners,
+      undefined,
+      undefined
+    )
 
-    return DIContainer.sharedContainer.containerService[ContainerType.project].getContainer(_id)
+    return DIContainer.sharedContainer.containerService.getContainer(_id)
   }
 
   async add(req: Request): Promise<Container> {
@@ -93,9 +98,7 @@ export class ProjectController extends BaseController {
     )
     stream.close()
 
-    const project = await DIContainer.sharedContainer.containerService[
-      ContainerType.project
-    ].getContainer(projectId)
+    const project = await DIContainer.sharedContainer.containerService.getContainer(projectId)
 
     if (!ContainerService.isOwner(project, req.user._id)) {
       throw new RoleDoesNotPermitOperationError(
@@ -213,9 +216,7 @@ export class ProjectController extends BaseController {
       : await DIContainer.sharedContainer.manuscriptRepository.create(manuscriptObject, userID)
 
     // call it without userId because access control has already happened
-    await DIContainer.sharedContainer.containerService[ContainerType.project].upsertProjectModels(
-      docs
-    )
+    await DIContainer.sharedContainer.containerService.upsertProjectModels(docs)
 
     return manuscriptObject
   }
@@ -239,9 +240,10 @@ export class ProjectController extends BaseController {
     }
 
     const userId = ContainerService.userIdForSync(req.user._id)
-    const project = await DIContainer.sharedContainer.containerService[
-      ContainerType.project
-    ].getContainer(projectId, userId)
+    const project = await DIContainer.sharedContainer.containerService.getContainer(
+      projectId,
+      userId
+    )
 
     const manuscriptIdSet: Set<string> = new Set(
       data.map((doc: any) => {
@@ -259,9 +261,7 @@ export class ProjectController extends BaseController {
       }
     }
     // call it without userId because access control has already happened
-    await DIContainer.sharedContainer.containerService[ContainerType.project].upsertProjectModels(
-      data
-    )
+    await DIContainer.sharedContainer.containerService.upsertProjectModels(data)
 
     return project
   }
@@ -283,9 +283,10 @@ export class ProjectController extends BaseController {
     }
 
     const userId = ContainerService.userIdForSync(req.user._id)
-    const canEdit = await DIContainer.sharedContainer.containerService[
-      ContainerType.project
-    ].checkIfCanEdit(userId, projectId)
+    const canEdit = await DIContainer.sharedContainer.containerService.checkIfCanEdit(
+      userId,
+      projectId
+    )
     if (!canEdit) {
       throw new RoleDoesNotPermitOperationError(`permission denied`, userId)
     }
@@ -300,9 +301,11 @@ export class ProjectController extends BaseController {
 
     // prevalidate models, so in the case of
     // validation errors we fail before removing resources
-    const docs = await DIContainer.sharedContainer.containerService[
-      ContainerType.project
-    ].processManuscriptModels(data, projectId, manuscriptId)
+    const docs = await DIContainer.sharedContainer.containerService.processManuscriptModels(
+      data,
+      projectId,
+      manuscriptId
+    )
 
     await DIContainer.sharedContainer.projectRepository.removeAllResources(projectId)
 
@@ -322,9 +325,7 @@ export class ProjectController extends BaseController {
       throw new InvalidCredentialsError('Unexpected token payload.')
     }
     const userId = ContainerService.userIdForSync(payload.userId)
-    return await DIContainer.sharedContainer.containerService[
-      ContainerType.project
-    ].getCollaborators(projectId, userId)
+    return await DIContainer.sharedContainer.containerService.getCollaborators(projectId, userId)
   }
 
   async deleteModel(req: Request): Promise<void> {
@@ -347,9 +348,10 @@ export class ProjectController extends BaseController {
     }
 
     const userId = ContainerService.userIdForSync(req.user._id)
-    const canEdit = await DIContainer.sharedContainer.containerService[
-      ContainerType.project
-    ].checkIfCanEdit(userId, projectId)
+    const canEdit = await DIContainer.sharedContainer.containerService.checkIfCanEdit(
+      userId,
+      projectId
+    )
     if (!canEdit) {
       throw new RoleDoesNotPermitOperationError(`permission denied`, userId)
     }

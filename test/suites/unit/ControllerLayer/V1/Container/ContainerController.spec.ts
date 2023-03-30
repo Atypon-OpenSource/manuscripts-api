@@ -21,9 +21,9 @@ import { Chance } from 'chance'
 
 import { ContainersController } from '../../../../../../src/Controller/V1/Container/ContainersController'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
+import { ContainerService } from '../../../../../../src/DomainServices/Container/ContainerService'
 import { UserService } from '../../../../../../src/DomainServices/User/UserService'
 import { ValidationError } from '../../../../../../src/Errors'
-import { ContainerType } from '../../../../../../src/Models/ContainerModels'
 import { validJWTToken } from '../../../../../data/fixtures/authServiceUser'
 import { authorizationHeader } from '../../../../../data/fixtures/headers'
 import { validProject } from '../../../../../data/fixtures/projects'
@@ -39,8 +39,7 @@ beforeEach(() => {
 
 describe('ContainersController - create', () => {
   test('should call createContainer() with a specified _id', async () => {
-    const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+    const containerService: any = DIContainer.sharedContainer.containerService
 
     const chance = new Chance()
     const req: any = {
@@ -62,8 +61,7 @@ describe('ContainersController - create', () => {
   })
 
   test('should call createContainer()', async () => {
-    const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+    const containerService: any = DIContainer.sharedContainer.containerService
 
     const chance = new Chance()
     const req: any = {
@@ -83,8 +81,7 @@ describe('ContainersController - create', () => {
   })
 
   test('should fail if a wrong containerType set', async () => {
-    const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+    const containerService: any = DIContainer.sharedContainer.containerService
 
     const chance = new Chance()
     const req: any = {
@@ -121,8 +118,7 @@ describe('ContainersController - create', () => {
   })
 
   test('should fail if a non-null _id was passed that is not a string', async () => {
-    const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+    const containerService: any = DIContainer.sharedContainer.containerService
     const chance = new Chance()
     const req: any = {
       headers: authorizationHeader(chance.string()),
@@ -179,8 +175,7 @@ describe('ContainersController - create', () => {
 
 describe('ContainersController - manageUserRole', () => {
   test('should call manageUserRole()', async () => {
-    const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+    const containerService: any = DIContainer.sharedContainer.containerService
     const chance = new Chance()
     const req: any = {
       headers: authorizationHeader(chance.string()),
@@ -280,8 +275,7 @@ describe('ContainersController - manageUserRole', () => {
 
 describe('ContainersController - addUser', () => {
   test('should call addUser()', async () => {
-    const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+    const containerService: any = DIContainer.sharedContainer.containerService
 
     const chance = new Chance()
     const req: any = {
@@ -365,8 +359,7 @@ describe('ContainersController - addUser', () => {
 
 describe('ContainersController - delete', () => {
   test('should call deleteContainer()', async () => {
-    const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+    const containerService: any = DIContainer.sharedContainer.containerService
 
     const chance = new Chance()
     const req: any = {
@@ -417,8 +410,7 @@ describe('ContainersController - getArchive', () => {
   })
 
   test('should call getArchive()', async () => {
-    const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+    const containerService: any = DIContainer.sharedContainer.containerService
     const chance = new Chance()
     const req: any = {
       params: {
@@ -443,8 +435,7 @@ describe('ContainersController - getArchive', () => {
   })
 
   test('should call getArchive() for a specific manuscriptID', async () => {
-    const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+    const containerService: any = DIContainer.sharedContainer.containerService
     const chance = new Chance()
     const req: any = {
       params: {
@@ -472,8 +463,7 @@ describe('ContainersController - getArchive', () => {
 
 describe('ContainerController - loadProject', () => {
   test('should call loadProject()', async () => {
-    const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+    const containerService: any = DIContainer.sharedContainer.containerService
     const chance = new Chance()
     const req: any = {
       params: {
@@ -500,8 +490,7 @@ describe('ContainerController - loadProject', () => {
   })
 
   test('should fail to loadProject if projectId is not provided', async () => {
-    const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+    const containerService: any = DIContainer.sharedContainer.containerService
     const chance = new Chance()
     const req: any = {
       params: {
@@ -525,8 +514,7 @@ describe('ContainerController - loadProject', () => {
     await expect(containersController.loadProject(req)).rejects.toThrow(ValidationError)
   })
   test('should return NOT_MODIFIED', async () => {
-    const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+    const containerService: any = DIContainer.sharedContainer.containerService
     const chance = new Chance()
     const req: any = {
       params: {
@@ -604,7 +592,7 @@ describe('ContainerController - accessToken', () => {
       },
     }
 
-    const containersService = DIContainer.sharedContainer.containerService[ContainerType.project]
+    const containersService = DIContainer.sharedContainer.containerService
 
     containersService.accessToken = jest.fn(async () => 'asdasd')
 
@@ -648,8 +636,7 @@ describe('ContainerController - jwksForAccessScope', () => {
 
   test('should fail if publicKeyJWK is null', () => {
     const containersController = new ContainersController()
-    const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+    const containerService: any = DIContainer.sharedContainer.containerService
     containerService.findScope = jest.fn(() => Promise.resolve({ publicKeyJWK: null }))
     const req: any = {
       params: {
@@ -659,6 +646,20 @@ describe('ContainerController - jwksForAccessScope', () => {
     }
 
     expect(() => containersController.jwksForAccessScope(req)).toThrow(ValidationError)
+  })
+
+  test('should return keys', () => {
+    const containersController = new ContainersController()
+    const stFn = jest.fn().mockReturnValue('true')
+    ContainerService.findScope = stFn
+    const req: any = {
+      params: {
+        containerType: '123',
+        scope: 'scope',
+      },
+    }
+    const res = containersController.jwksForAccessScope(req)
+    expect(res).toBeTruthy()
   })
 })
 
@@ -681,7 +682,7 @@ describe('ContainersController - getBundle', () => {
   })
 
   test('should fail if user is not a collaborator', () => {
-    const containerService = DIContainer.sharedContainer.containerService[ContainerType.project]
+    const containerService = DIContainer.sharedContainer.containerService
     containerService.getContainer = jest.fn(async (): Promise<any> => validProject)
     const chance = new Chance()
     const req: any = {
@@ -704,7 +705,7 @@ describe('ContainersController - getBundle', () => {
   })
 
   test('should fail if the manuscriptID is not a string', () => {
-    const containerService = DIContainer.sharedContainer.containerService[ContainerType.project]
+    const containerService = DIContainer.sharedContainer.containerService
     containerService.getContainer = jest.fn(async (): Promise<any> => validProject)
     const chance = new Chance()
     const req: any = {
@@ -728,8 +729,7 @@ describe('ContainersController - getBundle', () => {
   })
 
   test('should call getBundle', async () => {
-    const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+    const containerService: any = DIContainer.sharedContainer.containerService
     const pressroomService = DIContainer.sharedContainer.pressroomService
 
     containerService.getContainer = jest.fn(async (): Promise<any> => validProject)
@@ -778,8 +778,7 @@ describe('ContainersController - getAttachment', () => {
   })
 
   test('should call getAttachment', () => {
-    const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+    const containerService: any = DIContainer.sharedContainer.containerService
 
     containerService.containerRepository = {
       getById: async () => {
@@ -840,7 +839,7 @@ describe('ContainersController - getProductionNotes', () => {
   })
 
   test('should to call getProductionNotes', async () => {
-    const containerService = DIContainer.sharedContainer.containerService[ContainerType.project]
+    const containerService = DIContainer.sharedContainer.containerService
     containerService.getProductionNotes = jest.fn()
     const chance = new Chance()
     const req: any = {
@@ -871,7 +870,7 @@ describe('ContainersController - createManuscript', () => {
     await expect(containersController.createManuscript(req)).rejects.toThrow(ValidationError)
   })
 
-  test('should fail if containerID is not a string', async () => {
+  test('should fail if containerID is not a string1', async () => {
     const chance = new Chance()
     const req: any = {
       params: {
@@ -899,7 +898,7 @@ describe('ContainersController - createManuscript', () => {
   })
 
   test('should succeed to call createManuscript', async () => {
-    const containerService = DIContainer.sharedContainer.containerService[ContainerType.project]
+    const containerService = DIContainer.sharedContainer.containerService
     containerService.createManuscript = jest.fn()
     const chance = new Chance()
     const req: any = {
@@ -979,7 +978,7 @@ describe('ContainersController - addProductionNote', () => {
   })
 
   test('should to call addProductionNote', async () => {
-    const containerService = DIContainer.sharedContainer.containerService[ContainerType.project]
+    const containerService = DIContainer.sharedContainer.containerService
     UserService.profileID = jest.fn()
     containerService.createManuscriptNote = jest.fn()
     const chance = new Chance()

@@ -19,9 +19,6 @@ import _ from 'lodash'
 import { DIContainer } from '../../../src/DIContainer/DIContainer'
 import { containerRequestList } from '../dump/containerRequest'
 import { invitationsList } from '../dump/invitation'
-import { librariesList } from '../dump/library'
-import { libraryCollectionsList } from '../dump/libraryCollection'
-import { libraryInvitationsList } from '../dump/libraryInvitation'
 import { manuscriptList } from '../dump/manuscriptList'
 import { manuscriptNoteList } from '../dump/manuscriptNotes'
 import { projectsList } from '../dump/project'
@@ -30,19 +27,6 @@ import { projectInvitationsList } from '../dump/projectInvitation'
 export async function createProject(id: string) {
   const project: any = _.clone(projectsList.find((project) => project._id === id))
   await DIContainer.sharedContainer.projectRepository.create(project, project.owners[0])
-}
-
-export async function createLibrary(id: string) {
-  const library: any = _.clone(librariesList.find((library) => library._id === id))
-  await DIContainer.sharedContainer.libraryRepository.create(_.clone(library), library.owners[0])
-}
-
-export async function createLibraryCollection() {
-  const libraryCollection: any = _.clone(libraryCollectionsList[0])
-  await DIContainer.sharedContainer.libraryCollectionRepository.create(
-    _.clone(libraryCollection),
-    libraryCollection.owners[0]
-  )
 }
 
 export async function purgeContainerReq(id: string) {
@@ -66,13 +50,6 @@ export async function createProjectInvitation(id: string) {
     })
   )
   await DIContainer.sharedContainer.containerInvitationRepository.create(_.clone(projectInvitation))
-}
-
-export async function createLibraryInvitation(id: string) {
-  const invitation: any = _.clone(
-    libraryInvitationsList.find((invitation) => invitation._id === id)
-  )
-  await DIContainer.sharedContainer.containerInvitationRepository.create(_.clone(invitation))
 }
 
 export async function createInvitation(id: string) {

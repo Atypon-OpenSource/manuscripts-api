@@ -69,9 +69,6 @@ export const getArchiveSchema: Joi.SchemaMap = {
     containerID: Joi.string().required(),
     manuscriptID: Joi.string(),
   }),
-  query: Joi.object({
-    allowOrphanedDocs: Joi.string(),
-  }),
 }
 
 export const loadProjectSchema: Joi.SchemaMap = {

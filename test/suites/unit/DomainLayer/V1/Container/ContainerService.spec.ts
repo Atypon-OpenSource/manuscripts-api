@@ -68,7 +68,7 @@ const chance = new Chance()
 describe('containerService - createContainer', () => {
   test('should fail if the token is incorrect', () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
 
     const chance = new Chance()
 
@@ -79,7 +79,7 @@ describe('containerService - createContainer', () => {
 
   test('should fail if user does not exist in the DB', () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
 
     containerService.userRepository = {
       getById: async () => Promise.resolve(null),
@@ -92,7 +92,7 @@ describe('containerService - createContainer', () => {
 
   test('should fail if user status does not exist in the DB', () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
 
     containerService.userRepository = {
       getById: async () => Promise.resolve(validUser1),
@@ -110,7 +110,7 @@ describe('containerService - createContainer', () => {
 
   test('should fail if user is blocked', () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
 
     containerService.userRepository = {
       getById: async () => Promise.resolve(validUser1),
@@ -126,7 +126,7 @@ describe('containerService - createContainer', () => {
 
   test('should fail if user is not verified', () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
 
     containerService.userRepository = {
       getById: async () => Promise.resolve(validUser1),
@@ -144,49 +144,7 @@ describe('containerService - createContainer', () => {
 
   test('should create a project', async () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
-
-    containerService.userRepository = {
-      getById: async () => Promise.resolve(validUser1),
-    }
-
-    containerService.userStatusRepository = {
-      statusForUserId: async () => Promise.resolve(validUserStatus),
-      userStatusId: (id: string) => `UserStatus|${id}`,
-    }
-
-    containerService.containerRepository = {
-      create: jest.fn(),
-    }
-
-    await containerService.createContainer(validJWTToken)
-    expect(containerService.containerRepository.create).toHaveBeenCalled()
-  })
-
-  test('should create a library', async () => {
-    const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.library]
-
-    containerService.userRepository = {
-      getById: async () => Promise.resolve(validUser1),
-    }
-
-    containerService.userStatusRepository = {
-      statusForUserId: async () => Promise.resolve(validUserStatus),
-      userStatusId: (id: string) => `UserStatus|${id}`,
-    }
-
-    containerService.containerRepository = {
-      create: jest.fn(),
-    }
-
-    await containerService.createContainer(validJWTToken)
-    expect(containerService.containerRepository.create).toHaveBeenCalled()
-  })
-
-  test('should create a library collection', async () => {
-    const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.libraryCollection]
+      DIContainer.sharedContainer.containerService
 
     containerService.userRepository = {
       getById: async () => Promise.resolve(validUser1),
@@ -207,7 +165,7 @@ describe('containerService - createContainer', () => {
 
   test('should create the project with a specified _id', async () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
 
     containerService.userRepository = {
       getById: async () => Promise.resolve(validUser1),
@@ -230,7 +188,7 @@ describe('containerService - createContainer', () => {
 describe('containerService - deleteContainer', () => {
   test('should fail if container id is invalid', () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
 
     containerService.containerRepository = {
       getById: async () => Promise.resolve(null),
@@ -243,7 +201,7 @@ describe('containerService - deleteContainer', () => {
 
   test('should fail if user is not an owner', () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
 
     containerService.containerRepository = {
       getById: async () => Promise.resolve({ owners: [] }),
@@ -256,7 +214,7 @@ describe('containerService - deleteContainer', () => {
 
   test('should delete a project', async () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
 
     containerService.containerRepository = {
       getById: async () => Promise.resolve({ owners: ['User_123abc123abc'] }),
@@ -271,7 +229,7 @@ describe('containerService - deleteContainer', () => {
 describe('containerService - addContainerUser', () => {
   test('should fail if the project is not in the db', () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
 
     const chance = new Chance()
 
@@ -288,7 +246,7 @@ describe('containerService - addContainerUser', () => {
 
   test('should fail if the added user is not in the database', () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
 
     containerService.containerRepository = {
       getById: async () => Promise.resolve({ _id: 'project', viewers: [] }),
@@ -307,7 +265,7 @@ describe('containerService - addContainerUser', () => {
 
   test('should fail if wrong role assigned', async () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
 
     containerService.containerRepository = {
       getById: async () =>
@@ -327,7 +285,7 @@ describe('containerService - addContainerUser', () => {
 
   test('should update the project owners', async () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
 
     containerService.containerRepository = {
       getById: async () =>
@@ -338,7 +296,6 @@ describe('containerService - addContainerUser', () => {
           viewers: [],
         }),
       patch: jest.fn(),
-      getContainedLibraryCollections: jest.fn(async () => []),
     }
 
     containerService.userRepository = {
@@ -358,7 +315,7 @@ describe('containerService - addContainerUser', () => {
 
   test('should update the project writers', async () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
 
     containerService.containerRepository = {
       getById: async () =>
@@ -369,7 +326,6 @@ describe('containerService - addContainerUser', () => {
           viewers: [],
         }),
       patch: jest.fn(),
-      getContainedLibraryCollections: jest.fn(async () => []),
     }
 
     containerService.userRepository = {
@@ -389,7 +345,7 @@ describe('containerService - addContainerUser', () => {
 
   test('should update the project viewers', async () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
 
     containerService.containerRepository = {
       getById: async () =>
@@ -400,7 +356,6 @@ describe('containerService - addContainerUser', () => {
           writers: [],
         }),
       patch: jest.fn(),
-      getContainedLibraryCollections: jest.fn(async () => []),
     }
 
     containerService.userRepository = {
@@ -418,70 +373,21 @@ describe('containerService - addContainerUser', () => {
     return expect(containerService.containerRepository.patch).toHaveBeenCalled()
   })
 
-  test('should update the library viewers and cascade the changes to related collections', async () => {
-    const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.library]
-
-    containerService.containerRepository = {
-      getById: async () =>
-        Promise.resolve({
-          _id: 'MPLibrary:some-random-id',
-          viewers: [],
-          owners: ['User_some-random-id'],
-          writers: ['User_some-random-id-2'],
-        }),
-      patch: jest.fn(),
-      getContainedLibraryCollections: jest.fn(async () => [
-        {
-          _id: 'MPLibraryCollection:some-random-id',
-          containerID: 'MPLibrary:some-random-id',
-          viewers: [],
-          owners: ['User_some-random-id'],
-          writers: ['User_some-random-id-2'],
-          inherited: ['User_some-random-id', 'User_some-random-id-2'],
-        },
-      ]),
-    }
-
-    containerService.userRepository = {
-      getById: async () => Promise.resolve({ _id: 'User|userId' }),
-    }
-
-    containerService.emailService = {
-      sendContainerInvitationAcceptance: jest.fn(),
-      sendOwnerNotificationOfCollaborator: jest.fn(),
-    }
-
-    containerService.libraryCollectionRepository = {
-      patch: jest.fn(),
-    }
-
-    await containerService.addContainerUser(
-      'MPLibrary:some-random-id',
-      ContainerRole.Viewer,
-      'User|userId',
-      { _id: 'User|userId2' }
-    )
-
-    expect(containerService.containerRepository.patch).toHaveBeenCalled()
-    expect(containerService.libraryCollectionRepository.patch).toHaveBeenCalled()
-  })
-
   test('should fail with InvalidCredentailsError if the user is malformed', async () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
     return expect(containerService.getValidUser('User|foo')).rejects.toThrow(ValidationError)
   })
 
   test('should fail with a TypeError if the value is null', async () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
     return expect(containerService.getValidUser(null)).rejects.toThrow(TypeError)
   })
 
   test('should fail if user id is not started with User_', async () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
 
     containerService.containerRepository = {
       getById: async () => Promise.resolve({ _id: 'project', viewers: [] }),
@@ -500,7 +406,7 @@ describe('containerService - addContainerUser', () => {
 
   test('should return false if the user already exists in the project', async () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
 
     containerService.containerRepository = {
       getById: async () =>
@@ -531,7 +437,7 @@ describe('containerService - addContainerUser', () => {
 
   test('should send email to the added user', async () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
 
     containerService.containerRepository = {
       getById: async () =>
@@ -542,7 +448,6 @@ describe('containerService - addContainerUser', () => {
           viewers: [],
         }),
       patch: jest.fn(),
-      getContainedLibraryCollections: jest.fn(async () => []),
     }
 
     containerService.userRepository = {
@@ -574,7 +479,7 @@ describe('containerService - addContainerUser', () => {
 
   test('should send email to the added user even if the adding user is null', async () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
 
     containerService.containerRepository = {
       getById: async () =>
@@ -585,7 +490,6 @@ describe('containerService - addContainerUser', () => {
           viewers: [],
         }),
       patch: jest.fn(),
-      getContainedLibraryCollections: jest.fn(async () => []),
     }
 
     containerService.userRepository = {
@@ -614,7 +518,7 @@ describe('containerService - addContainerUser', () => {
 
   test('should send email to the added user and to two owners', async () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
 
     containerService.containerRepository = {
       getById: async () =>
@@ -625,7 +529,6 @@ describe('containerService - addContainerUser', () => {
           viewers: [],
         }),
       patch: jest.fn(),
-      getContainedLibraryCollections: jest.fn(async () => []),
     }
 
     containerService.userRepository = {
@@ -648,7 +551,7 @@ describe('containerService - addContainerUser', () => {
 
   test('should send email to the added user and to all other owners of the project', async () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
 
     containerService.containerRepository = {
       getById: async () =>
@@ -659,7 +562,6 @@ describe('containerService - addContainerUser', () => {
           viewers: ['User|userId'],
         }),
       patch: async () => Promise.resolve(),
-      getContainedLibraryCollections: jest.fn(async () => []),
     }
 
     containerService.userRepository = {
@@ -682,7 +584,7 @@ describe('containerService - addContainerUser', () => {
 
   test('should not send email to the added user or any other owners', async () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
 
     containerService.addContainerUser = async (_a: any, _b: any, _c: any) => Promise.resolve(true)
 
@@ -722,7 +624,7 @@ describe('containerService - addContainerUser', () => {
 describe('containerService - manageUserRole', () => {
   test('should fail if the project is not in the db', () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
 
     const chance = new Chance()
 
@@ -741,7 +643,7 @@ describe('containerService - manageUserRole', () => {
 
   test('should fail if the user record is missing in the db', () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
 
     const chance = new Chance()
 
@@ -765,7 +667,7 @@ describe('containerService - manageUserRole', () => {
 
   test('should fail if the user is not an owner', () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
 
     const chance = new Chance()
 
@@ -789,7 +691,7 @@ describe('containerService - manageUserRole', () => {
 
   test('should fail if the managedUser is not in the project', () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
 
     const chance = new Chance()
 
@@ -813,7 +715,7 @@ describe('containerService - manageUserRole', () => {
 
   test('should fail if there is only one owner being managed', () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
 
     const chance = new Chance()
 
@@ -838,7 +740,7 @@ describe('containerService - manageUserRole', () => {
   // FIXME: Needs to fix the * logic
   test.skip('should fail if trying to make project public and the role sent is not viewer', async () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
 
     containerService.userRepository = {
       getById: async () => Promise.resolve(validUser),
@@ -862,7 +764,7 @@ describe('containerService - manageUserRole', () => {
 
   test('should call update project user', async () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
 
     containerService.userRepository = {
       getById: async () => Promise.resolve({ _id: validProject4.writers[0].replace('_', '|') }),
@@ -871,7 +773,6 @@ describe('containerService - manageUserRole', () => {
     containerService.containerRepository = {
       getById: async () => Promise.resolve(validProject4),
       patch: jest.fn(),
-      getContainedLibraryCollections: jest.fn(async () => []),
     }
 
     containerService.updateContainerTitleAndCollaborators = jest.fn()
@@ -888,7 +789,7 @@ describe('containerService - manageUserRole', () => {
 
   test('should call update project user using connectUserID', async () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
 
     containerService.userRepository = {
       getOne: async () => Promise.resolve({ _id: validProject4.writers[0].replace('_', '|') }),
@@ -897,7 +798,6 @@ describe('containerService - manageUserRole', () => {
     containerService.containerRepository = {
       getById: async () => Promise.resolve(validProject4),
       patch: jest.fn(),
-      getContainedLibraryCollections: jest.fn(async () => []),
     }
 
     containerService.updateContainerTitleAndCollaborators = jest.fn()
@@ -914,7 +814,7 @@ describe('containerService - manageUserRole', () => {
 
   test('should call update project user with secret', async () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
 
     containerService.userRepository = {
       getById: async () => Promise.resolve(validUser),
@@ -923,7 +823,6 @@ describe('containerService - manageUserRole', () => {
     containerService.containerRepository = {
       getById: async () => Promise.resolve(validProject4),
       patch: jest.fn(),
-      getContainedLibraryCollections: jest.fn(async () => []),
     }
 
     containerService.updateContainerTitleAndCollaborators = jest.fn()
@@ -943,7 +842,7 @@ describe('containerService - manageUserRole', () => {
 describe('containerService - updateContainerUser', () => {
   test('should fail if the project is not in the db', () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
 
     const chance = new Chance()
 
@@ -961,7 +860,7 @@ describe('containerService - updateContainerUser', () => {
 
   test('should fail if wrong role assigned', async () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
 
     containerService.containerRepository = {
       getById: async () => Promise.resolve(validProject4),
@@ -977,12 +876,11 @@ describe('containerService - updateContainerUser', () => {
 
   test('should update the user from viewer to owner', async () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
 
     containerService.containerRepository = {
       getById: async () => Promise.resolve(validProject4),
       patch: jest.fn(),
-      getContainedLibraryCollections: jest.fn(async () => []),
     }
 
     const newOwners = ['User_valid-user-1@manuscriptsapp.com', 'User_test2']
@@ -1007,12 +905,11 @@ describe('containerService - updateContainerUser', () => {
 
   test('should update the user from owner to viewer', async () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
 
     containerService.containerRepository = {
       getById: async () => Promise.resolve(validProject4),
       patch: jest.fn(),
-      getContainedLibraryCollections: jest.fn(async () => []),
     }
 
     const newOwners = ['User_valid-user-1@manuscriptsapp.com']
@@ -1037,12 +934,11 @@ describe('containerService - updateContainerUser', () => {
 
   test('should update the user from writer to owner', async () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
 
     containerService.containerRepository = {
       getById: async () => Promise.resolve(validProject4),
       patch: jest.fn(),
-      getContainedLibraryCollections: jest.fn(async () => []),
     }
 
     const newOwners = ['User_valid-user-1@manuscriptsapp.com', 'User_test']
@@ -1067,12 +963,11 @@ describe('containerService - updateContainerUser', () => {
 
   test('should update the user from owner to writer', async () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
 
     containerService.containerRepository = {
       getById: async () => Promise.resolve(validProject4),
       patch: jest.fn(),
-      getContainedLibraryCollections: jest.fn(async () => []),
     }
 
     const newOwners = ['User_valid-user-1@manuscriptsapp.com']
@@ -1097,12 +992,11 @@ describe('containerService - updateContainerUser', () => {
 
   test('should update the user from writer to viewer', async () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
 
     containerService.containerRepository = {
       getById: async () => Promise.resolve(validProject4),
       patch: jest.fn(),
-      getContainedLibraryCollections: jest.fn(async () => []),
     }
 
     const newOwners = ['User_valid-user-1@manuscriptsapp.com']
@@ -1126,12 +1020,11 @@ describe('containerService - updateContainerUser', () => {
 
   test('should update the user from viewer to writer', async () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
 
     containerService.containerRepository = {
       getById: async () => Promise.resolve(validProject4),
       patch: jest.fn(),
-      getContainedLibraryCollections: jest.fn(async () => []),
     }
 
     const newOwners = ['User_valid-user-1@manuscriptsapp.com']
@@ -1156,12 +1049,11 @@ describe('containerService - updateContainerUser', () => {
 
   test('should update the user from viewer to annotator', async () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
 
     containerService.containerRepository = {
       getById: async () => Promise.resolve(validProject4),
       patch: jest.fn(),
-      getContainedLibraryCollections: jest.fn(async () => []),
     }
 
     const newOwners = ['User_valid-user-1@manuscriptsapp.com']
@@ -1187,12 +1079,11 @@ describe('containerService - updateContainerUser', () => {
 
   test('should update the user from annotator to editor', async () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
 
     containerService.containerRepository = {
       getById: async () => Promise.resolve(validProject8),
       patch: jest.fn(),
-      getContainedLibraryCollections: jest.fn(async () => []),
     }
 
     const newOwners = ['User_valid-user-1@manuscriptsapp.com']
@@ -1218,12 +1109,11 @@ describe('containerService - updateContainerUser', () => {
 
   test('should update the user from editor to annotator', async () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
 
     containerService.containerRepository = {
       getById: async () => Promise.resolve(validProject8),
       patch: jest.fn(),
-      getContainedLibraryCollections: jest.fn(async () => []),
     }
 
     const newOwners = ['User_valid-user-1@manuscriptsapp.com']
@@ -1249,12 +1139,11 @@ describe('containerService - updateContainerUser', () => {
 
   test('should remove the user if the role in null', async () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
 
     containerService.containerRepository = {
       getById: async () => Promise.resolve(validProject4),
       patch: jest.fn(),
-      getContainedLibraryCollections: jest.fn(async () => []),
     }
 
     containerService.containerInvitationRepository = {
@@ -1284,12 +1173,11 @@ describe('containerService - updateContainerUser', () => {
 
   test('should delete the invitations if the role in null and the user was invited', async () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
 
     containerService.containerRepository = {
       getById: async () => Promise.resolve(validProject4),
       patch: jest.fn(),
-      getContainedLibraryCollections: jest.fn(async () => []),
     }
 
     containerService.containerInvitationRepository = {
@@ -1311,7 +1199,7 @@ describe('containerService - updateContainerUser', () => {
 describe('containerService - getUserRole', () => {
   test('should return owner if the user is an owner', () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
 
     expect(
       containerService.getUserRole(validProject2, 'User|valid-user-1@manuscriptsapp.com')
@@ -1320,21 +1208,21 @@ describe('containerService - getUserRole', () => {
 
   test('should return writer if the user is an writer', () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
 
     expect(containerService.getUserRole(validProject4, 'User|test10')).toBe(ContainerRole.Writer)
   })
 
   test('should return viewer if the user is an viewer', () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
 
     expect(containerService.getUserRole(validProject4, 'User|test2')).toBe(ContainerRole.Viewer)
   })
 
   test('should return editor if the user is an editor', () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
 
     expect(containerService.getUserRole(validProject8, 'User|foo@bar.com')).toBe(
       ContainerRole.Editor
@@ -1343,7 +1231,7 @@ describe('containerService - getUserRole', () => {
 
   test('should return annotator if the user is an annotator', () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
 
     expect(containerService.getUserRole(validProject8, 'User|test2')).toBe(ContainerRole.Annotator)
   })
@@ -1358,7 +1246,7 @@ describe('containerService - getUserRole', () => {
 
   test('should return null if the user is not in the project', () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
 
     expect(containerService.getUserRole(validProject4, 'User|asda')).toBeNull()
   })
@@ -1367,7 +1255,7 @@ describe('containerService - getUserRole', () => {
 describe('containerService - getArchive', () => {
   test('should fail if the project does not exist', () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
     const userService: any = DIContainer.sharedContainer.userService
 
     userService.userProfileRepository = {
@@ -1386,7 +1274,7 @@ describe('containerService - getArchive', () => {
 
   test('should return an object if project is public and attachments are not requested', async () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
     const userService: any = DIContainer.sharedContainer.userService
 
     userService.userProfileRepository = {
@@ -1415,7 +1303,7 @@ describe('containerService - getArchive', () => {
 
   test('should return an object with only IDs if project is public and attachments are not requested', async () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
     const userService: any = DIContainer.sharedContainer.userService
 
     userService.userProfileRepository = {
@@ -1445,7 +1333,7 @@ describe('containerService - getArchive', () => {
 
   test('should fail to return a zip file if project is private and token not supplied', () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
 
     containerService.containerRepository = {
       getById: async () => Promise.resolve(validProject4),
@@ -1460,7 +1348,7 @@ describe('containerService - getArchive', () => {
 
   test('should return a zip file if project is private and the user authenticated', async () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
     const userService: any = DIContainer.sharedContainer.userService
 
     userService.authenticateUser = async () => Promise.resolve()
@@ -1488,7 +1376,7 @@ describe('containerService - getArchive', () => {
 
   test('should return a zip file if project is private, the user authenticated and attachments requested', () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
     const userService: any = DIContainer.sharedContainer.userService
 
     userService.authenticateUser = async () => Promise.resolve()
@@ -1516,7 +1404,7 @@ describe('containerService - getArchive', () => {
 describe('containerService - getAttachment', () => {
   test('should fail if the project cannot be found', () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
 
     containerService.containerRepository = {
       getById: async () => Promise.resolve(null),
@@ -1529,7 +1417,7 @@ describe('containerService - getAttachment', () => {
 
   test('should return a contentType and body', () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
 
     containerService.containerRepository = {
       getById: async (id: string) => {
@@ -1555,7 +1443,7 @@ describe('containerService - getAttachment', () => {
 
   test('should fail to return the file if the project is not public and user not contributor in project', () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
 
     containerService.containerRepository = {
       getById: async (id: string) => {
@@ -1581,7 +1469,7 @@ describe('containerService - getAttachment', () => {
 
   test('should throw MissingContainerError if the project cannot be found', () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
 
     containerService.containerRepository = {
       getById: async (id: string) => {
@@ -1608,7 +1496,7 @@ describe('containerService - getAttachment', () => {
   })
 
   test('should fail if the attachment is not found', () => {
-    const containerService = DIContainer.sharedContainer.containerService[ContainerType.project]
+    const containerService = DIContainer.sharedContainer.containerService
     const containerRepo = DIContainer.sharedContainer.projectRepository
     containerRepo.getById = jest.fn(async (): Promise<any> => {
       return { containerID: 'MPProject:valid-project-id', ...validProject, _attachments: {} }
@@ -1624,7 +1512,7 @@ describe('containerService - getAttachment', () => {
 describe('ContainerService - accessToken', () => {
   test('should return accessToken for specified scope', async () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
 
     containerService.getContainer = () => Promise.resolve({ owners: ['User_test'] })
 
@@ -1640,7 +1528,7 @@ describe('ContainerService - accessToken', () => {
 
   test('should fail if the user is not a contributor in the container', async () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
 
     containerService.getContainer = () => Promise.resolve({ owners: [] })
 
@@ -1651,7 +1539,7 @@ describe('ContainerService - accessToken', () => {
 
   test('should fail if the scope name is invalid', async () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
 
     containerService.getContainer = () => Promise.resolve({ owners: ['User_test'] })
 
@@ -1664,7 +1552,7 @@ describe('ContainerService - accessToken', () => {
 describe('ContainerService - createManuscript', () => {
   test('should fail if user not contributor', async () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
     containerService.getContainer = jest.fn(() => Promise.resolve(validProject))
     const containerID = validNote1.containerID
     const manuscriptID = validNote1.manuscriptID
@@ -1677,7 +1565,7 @@ describe('ContainerService - createManuscript', () => {
 
   test('should fail if manuscript already exists', async () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
     containerService.getContainer = jest.fn(() => Promise.resolve(validProject))
     containerService.manuscriptRepository.getById = jest.fn(() => Promise.resolve({}))
     const containerID = validNote1.containerID
@@ -1691,7 +1579,7 @@ describe('ContainerService - createManuscript', () => {
 
   test('should fail if template not found', async () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
     containerService.getContainer = jest.fn(() => Promise.resolve(validProject))
     containerService.manuscriptRepository.getById = jest.fn(() => Promise.resolve(null))
     containerService.manuscriptRepository.create = jest.fn()
@@ -1710,7 +1598,7 @@ describe('ContainerService - createManuscript', () => {
 
   test('should not fail if template found in pressroom', async () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
     containerService.getContainer = jest.fn(() => Promise.resolve(validProject))
     containerService.manuscriptRepository.getById = jest.fn(() => Promise.resolve(null))
     containerService.manuscriptRepository.create = jest.fn(() => Promise.resolve({}))
@@ -1728,7 +1616,7 @@ describe('ContainerService - createManuscript', () => {
 
   test('should create a manuscript', async () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
     containerService.getContainer = jest.fn(() => Promise.resolve(validProject))
     containerService.templateRepository.getById = jest.fn(() => Promise.resolve(null))
     DIContainer.sharedContainer.pressroomService.validateTemplateId = jest.fn(() =>
@@ -1750,7 +1638,7 @@ describe('ContainerService - createManuscript', () => {
 describe('ContainerService - addProductionNote', () => {
   test('should fail if target is not found', async () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
     containerService.getContainer = jest.fn(() => Promise.resolve(validProject))
     const userRebo: any = DIContainer.sharedContainer.userRepository
     userRebo.getOne = jest.fn(() => {
@@ -1778,7 +1666,7 @@ describe('ContainerService - addProductionNote', () => {
   })
   test('should fail if user does not exists', async () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
     containerService.getContainer = jest.fn(() => Promise.resolve(validProject))
     const userRebo: any = DIContainer.sharedContainer.userRepository
     userRebo.getOne = jest.fn(() => {
@@ -1799,7 +1687,7 @@ describe('ContainerService - addProductionNote', () => {
 
   test('should fail if user not contributor', async () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
     containerService.getContainer = jest.fn(() => Promise.resolve(validProject))
     const userRebo: any = DIContainer.sharedContainer.userRepository
     userRebo.getOne = jest.fn(() => {
@@ -1820,7 +1708,7 @@ describe('ContainerService - addProductionNote', () => {
 
   test('should add note', async () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
     containerService.checkIfUserCanCreateNote = jest.fn(() => true)
     const userRebo: any = DIContainer.sharedContainer.userRepository
     userRebo.getOne = jest.fn(() => {
@@ -1851,7 +1739,7 @@ describe('ContainerService - addProductionNote', () => {
 describe('ContainerService - getProductionNotes', () => {
   test('should return a list of node', async () => {
     const containerService: any =
-      DIContainer.sharedContainer.containerService[ContainerType.project]
+      DIContainer.sharedContainer.containerService
     const repo: any = DIContainer.sharedContainer.manuscriptNotesRepository
     repo.getProductionNotes = jest.fn(() => [validNote1])
     const containerID = validProject._id

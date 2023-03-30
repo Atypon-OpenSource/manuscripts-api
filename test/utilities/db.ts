@@ -25,9 +25,6 @@ import { applicationList } from '../data/dump/applications'
 import { containerRequestList } from '../data/dump/containerRequest'
 import { invitationsList } from '../data/dump/invitation'
 import { invitationTokenList } from '../data/dump/invitationTokens'
-import { librariesList } from '../data/dump/library'
-import { libraryCollectionsList } from '../data/dump/libraryCollection'
-import { libraryInvitationsList } from '../data/dump/libraryInvitation'
 //import { validManuscript, validManuscript1 } from '../data/fixtures/manuscripts'
 import { manuscriptList } from '../data/dump/manuscriptList'
 import { manuscriptNoteList } from '../data/dump/manuscriptNotes'
@@ -85,13 +82,6 @@ async function createProjectInvitations(): Promise<void> {
     )
   }
 }
-
-async function createLibraryInvitations(): Promise<void> {
-  for (const invitation of libraryInvitationsList) {
-    await DIContainer.sharedContainer.containerInvitationRepository.create(_.clone(invitation))
-  }
-}
-
 async function createUserProfiles(): Promise<void> {
   for (const userProfile of userProfileList) {
     await DIContainer.sharedContainer.userProfileRepository.create(_.clone(userProfile))
@@ -107,18 +97,6 @@ async function createUserTokens(): Promise<void> {
 async function createProjects(): Promise<void> {
   for (const project of projectsList) {
     await DIContainer.sharedContainer.projectRepository.create(_.clone(project))
-  }
-}
-
-async function createLibraries(): Promise<void> {
-  for (const library of librariesList) {
-    await DIContainer.sharedContainer.libraryRepository.create(_.clone(library))
-  }
-}
-
-async function createLibraryCollections(): Promise<void> {
-  for (const libraryCollection of libraryCollectionsList) {
-    await DIContainer.sharedContainer.libraryCollectionRepository.create(_.clone(libraryCollection))
   }
 }
 
@@ -199,20 +177,8 @@ export async function seed(options: SeedOptions): Promise<void> {
     storagePromises.push(createProjects())
   }
 
-  if (options.libraries) {
-    storagePromises.push(createLibraries())
-  }
-
-  if (options.libraryCollections) {
-    storagePromises.push(createLibraryCollections())
-  }
-
   if (options.projectInvitations) {
     storagePromises.push(createProjectInvitations())
-  }
-
-  if (options.libraryInvitations) {
-    storagePromises.push(createLibraryInvitations())
   }
 
   if (options.invitationTokens) {
