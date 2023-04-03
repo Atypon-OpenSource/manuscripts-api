@@ -15,13 +15,33 @@
  */
 
 import { Request } from 'express'
-
+import { authorizationBearerToken, BaseController } from '../../BaseController'
 import { DIContainer } from '../../../DIContainer/DIContainer'
 import { ValidationError } from '../../../Errors'
 import { isString } from '../../../util'
-import { BaseController } from '../../BaseController'
+// import { BaseController } from '../../BaseController'
 
 export class RegistrationController extends BaseController {
+  async signup(req: Request): Promise<void> {
+    const { email, password, name } = req.body
+
+    if (!isString(email) || !isString(password) || !isString(name)) {
+      throw new ValidationError('email, password, name should be strings.', req.body)
+    }
+
+    const token = req.headers.authorization ? authorizationBearerToken(req) : undefined
+
+    const credentials = {
+      password,
+      name,
+      email: email.toLowerCase(),
+      isVerified: false,
+      createdAt: new Date().getTime(),
+      token,
+    }
+
+    return DIContainer.sharedContainer.userRegistrationService.signup(credentials)
+  }
   async connectSignup(req: Request): Promise<void> {
     const { email, name, connectUserID } = req.body
 

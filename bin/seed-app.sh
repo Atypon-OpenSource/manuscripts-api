@@ -1,6 +1,6 @@
 #!/bin/bash
 
-users=(alice bob)
+users=(alice bob bob2)
 
 emails=("${users[@]/%/@example.com}")
 
