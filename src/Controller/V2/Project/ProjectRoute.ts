@@ -247,7 +247,11 @@ export class ProjectRoute extends BaseRoute {
     )
 
     router.delete(
-      [`${this.basePath}/:containerId`, '/container/:containerId', 'container/project/:containerId'],
+      [
+        `${this.basePath}/:containerId`,
+        '/container/:containerId',
+        'container/project/:containerId',
+      ],
       celebrate(deleteSchema, {}),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,

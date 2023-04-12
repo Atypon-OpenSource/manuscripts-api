@@ -486,10 +486,7 @@ export class ProjectController extends BaseController {
       { name: 'projectId', value: projectId, type: 'string' },
       { name: 'manuscriptId', value: manuscriptId, type: 'string' }
     )
-    return DIContainer.sharedContainer.containerService.getProductionNotes(
-      projectId,
-      manuscriptId
-    )
+    return DIContainer.sharedContainer.containerService.getProductionNotes(projectId, manuscriptId)
   }
   async deleteModel(req: Request): Promise<void> {
     const { projectId, manuscriptId, modelId } = req.params
