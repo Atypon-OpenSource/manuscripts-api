@@ -87,8 +87,7 @@ describe('ProjectController', () => {
     }
 
     test('should call the service successfully', async () => {
-      const containerService: any =
-        DIContainer.sharedContainer.containerService
+      const containerService: any = DIContainer.sharedContainer.containerService
 
       const controller: any = new ProjectController()
 
@@ -105,8 +104,7 @@ describe('ProjectController', () => {
 
     test('should work without parameters', async () => {
       const controller: any = new ProjectController()
-      const containerService: any =
-        DIContainer.sharedContainer.containerService
+      const containerService: any = DIContainer.sharedContainer.containerService
       containerService.createContainer = jest.fn(async () => ({ id: testProjectId }))
       containerService.updateContainerTitleAndCollaborators = jest.fn()
       containerService.getContainer = jest.fn()
@@ -383,10 +381,9 @@ describe('ProjectController', () => {
     test('should fail if template not found', async () => {
       const controller: any = new ProjectController()
 
-      DIContainer.sharedContainer.containerService.upsertProjectModels =
-        jest.fn(async () => {
-          return { _id: 'someValue' }
-        })
+      DIContainer.sharedContainer.containerService.upsertProjectModels = jest.fn(async () => {
+        return { _id: 'someValue' }
+      })
       DIContainer.sharedContainer.manuscriptRepository.create = jest.fn()
       DIContainer.sharedContainer.templateRepository.getById = jest.fn(() => Promise.resolve(null))
       ContainerService.userIdForSync = jest.fn(() => 'User_foo')
@@ -416,8 +413,9 @@ describe('ProjectController', () => {
     test('should not fail if template is found in pressroom', async () => {
       const controller: any = new ProjectController()
 
-      DIContainer.sharedContainer.containerService.upsertProjectModels =
-        jest.fn(async () => Promise.resolve())
+      DIContainer.sharedContainer.containerService.upsertProjectModels = jest.fn(async () =>
+        Promise.resolve()
+      )
       DIContainer.sharedContainer.manuscriptRepository.create = jest.fn()
       ContainerService.userIdForSync = jest.fn(() => 'User_foo')
       DIContainer.sharedContainer.templateRepository.getById = jest.fn(() => Promise.resolve(null))
@@ -441,16 +439,15 @@ describe('ProjectController', () => {
       )
 
       expect(DIContainer.sharedContainer.manuscriptRepository.create).toHaveBeenCalled()
-      expect(
-        DIContainer.sharedContainer.containerService.upsertProjectModels
-      ).toHaveBeenCalled()
+      expect(DIContainer.sharedContainer.containerService.upsertProjectModels).toHaveBeenCalled()
     })
 
     test('successfully create a mansucript and all contained resources', async () => {
       const controller: any = new ProjectController()
 
-      DIContainer.sharedContainer.containerService.upsertProjectModels =
-        jest.fn(async () => Promise.resolve())
+      DIContainer.sharedContainer.containerService.upsertProjectModels = jest.fn(async () =>
+        Promise.resolve()
+      )
       DIContainer.sharedContainer.manuscriptRepository.create = jest.fn()
       DIContainer.sharedContainer.pressroomService.validateTemplateId = jest.fn(() =>
         Promise.resolve(false)
@@ -467,16 +464,15 @@ describe('ProjectController', () => {
       await controller.upsertManuscriptToProject({ _id: 'MPProject:abc' }, json)
 
       expect(DIContainer.sharedContainer.manuscriptRepository.create).toHaveBeenCalled()
-      expect(
-        DIContainer.sharedContainer.containerService.upsertProjectModels
-      ).toHaveBeenCalled()
+      expect(DIContainer.sharedContainer.containerService.upsertProjectModels).toHaveBeenCalled()
     })
 
     test('successfully update the manuscript when the manuscriptId is provided and create all contained resources', async () => {
       const controller: any = new ProjectController()
 
-      DIContainer.sharedContainer.containerService.upsertProjectModels =
-        jest.fn(async () => Promise.resolve())
+      DIContainer.sharedContainer.containerService.upsertProjectModels = jest.fn(async () =>
+        Promise.resolve()
+      )
       DIContainer.sharedContainer.manuscriptRepository.patch = jest.fn()
 
       const json = {
@@ -496,9 +492,7 @@ describe('ProjectController', () => {
       )
 
       expect(DIContainer.sharedContainer.manuscriptRepository.patch).toHaveBeenCalled()
-      expect(
-        DIContainer.sharedContainer.containerService.upsertProjectModels
-      ).toHaveBeenCalled()
+      expect(DIContainer.sharedContainer.containerService.upsertProjectModels).toHaveBeenCalled()
     })
   })
 
@@ -506,8 +500,9 @@ describe('ProjectController', () => {
     test('should get collaborators', async () => {
       const controller: any = new ProjectController()
       ContainerService.userIdForSync = jest.fn((id) => id)
-      DIContainer.sharedContainer.containerService.checkUserContainerAccess =
-        jest.fn(async () => true)
+      DIContainer.sharedContainer.containerService.checkUserContainerAccess = jest.fn(
+        async () => true
+      )
       DIContainer.sharedContainer.userCollaboratorRepository.getByContainerId = jest.fn(
         (_id: string) => ['foo'] as any
       )
@@ -522,8 +517,9 @@ describe('ProjectController', () => {
     test('should fail projectId must be provided', async () => {
       const controller: any = new ProjectController()
       ContainerService.userIdForSync = jest.fn((id) => id)
-      DIContainer.sharedContainer.containerService.checkUserContainerAccess =
-        jest.fn(async () => true)
+      DIContainer.sharedContainer.containerService.checkUserContainerAccess = jest.fn(
+        async () => true
+      )
       DIContainer.sharedContainer.userCollaboratorRepository.getByContainerId = jest.fn(
         (_id: string) => ['foo'] as any
       )
@@ -539,8 +535,9 @@ describe('ProjectController', () => {
     test('should fail invalid credentials', async () => {
       const controller: any = new ProjectController()
       ContainerService.userIdForSync = jest.fn((id) => id)
-      DIContainer.sharedContainer.containerService.checkUserContainerAccess =
-        jest.fn(async () => true)
+      DIContainer.sharedContainer.containerService.checkUserContainerAccess = jest.fn(
+        async () => true
+      )
       DIContainer.sharedContainer.userCollaboratorRepository.getByContainerId = jest.fn(
         (_id: string) => ['foo'] as any
       )
@@ -556,8 +553,9 @@ describe('ProjectController', () => {
     test('should fail no access', async () => {
       const controller: any = new ProjectController()
       ContainerService.userIdForSync = jest.fn((id) => id)
-      DIContainer.sharedContainer.containerService.checkUserContainerAccess =
-        jest.fn(async () => false)
+      DIContainer.sharedContainer.containerService.checkUserContainerAccess = jest.fn(
+        async () => false
+      )
       DIContainer.sharedContainer.userCollaboratorRepository.getByContainerId = jest.fn(
         (_id: string) => ['foo'] as any
       )

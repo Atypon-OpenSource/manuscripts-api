@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 
+import { Request } from 'express'
+
+import { ValidationError } from './Errors'
 export function isString(value: any): value is string {
   return typeof value === 'string'
 }
@@ -43,4 +46,36 @@ export function removeEmptyValuesFromObj(o: { [index: string]: any }): { [index:
     }
   })
   return newObj
+}
+export function validateRequestParams(req: Request, params: string | string[]) {
+  const paramNames = Array.isArray(params) ? params : [params]
+
+  for (const paramName of paramNames) {
+    const paramValue = req.params[paramName]
+    if (!paramValue) {
+      throw new ValidationError(`${paramName} parameter must be specified`, paramValue)
+    }
+  }
+}
+
+interface Param<T> {
+  name: string
+  value: T
+  type: string
+}
+
+export function validateParamsType<T>(...params: Param<T>[]): void {
+  for (const { name, value, type } of params) {
+    if (typeof value !== type) {
+      throw new ValidationError(`${name} should be ${type}`, value)
+    }
+  }
+}
+
+export function validateRequestOptionalParams(...params: [unknown, string][]): void {
+  for (const [paramValue, paramName] of params) {
+    if (paramValue && typeof paramValue !== 'string') {
+      throw new ValidationError(`${paramName} should be a string`, paramValue)
+    }
+  }
 }
