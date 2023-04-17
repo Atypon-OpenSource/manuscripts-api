@@ -620,16 +620,16 @@ export class ProjectController extends BaseController {
     }
   }
   async validateManuscriptReferences(data: any[]): Promise<void> {
-    const manuscriptIds: Set<string> = new Set(
+    const manuscriptIdSet: Set<string> = new Set(
       data.map((doc: any) => {
-        return doc.manuscriptId ? doc.manuscriptId : 'undefined'
+        return doc.manuscriptID ? doc.manuscriptID : 'undefined'
       })
     )
-    manuscriptIds.delete('undefined')
-    if (manuscriptIds.size > 1) {
-      throw new ValidationError(`contains multiple manuscriptIds`, data)
-    } else if (manuscriptIds.size === 1) {
-      const [first] = manuscriptIds
+    manuscriptIdSet.delete('undefined')
+    if (manuscriptIdSet.size > 1) {
+      throw new ValidationError(`contains multiple manuscriptIDs`, data)
+    } else if (manuscriptIdSet.size === 1) {
+      const [first] = manuscriptIdSet
       const manuscript = await DIContainer.sharedContainer.manuscriptRepository.getById(first)
       if (!manuscript) {
         throw new RecordNotFoundError(`referenced manuscript not found`)
