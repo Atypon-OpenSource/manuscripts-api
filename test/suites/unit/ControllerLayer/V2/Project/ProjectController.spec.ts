@@ -56,7 +56,6 @@ import { validManuscript1 } from '../../../../../data/fixtures/manuscripts'
 import { validProject } from '../../../../../data/fixtures/projects'
 import { validUser } from '../../../../../data/fixtures/userServiceUser'
 import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
-import {ContainersController} from "../../../../../../src/Controller/V1/Container/ContainersController";
 
 jest.setTimeout(TEST_TIMEOUT)
 
@@ -68,16 +67,6 @@ describe('ProjectController', () => {
   beforeEach(async () => {
     ;(DIContainer as any)._sharedContainer = null
     await DIContainer.init()
-
-    DIContainer.sharedContainer.userService.profile = async (): Promise<any> => ({ userID: 'foo' })
-    DIContainer.sharedContainer.pressroomService.importJATS = jest.fn(
-      async (): Promise<any> => Promise.resolve()
-    )
-
-    const containerService: any = DIContainer.sharedContainer.containerService
-    containerService.createContainer = jest.fn(async (): Promise<any> => ({ id: testProjectId }))
-    containerService.updateContainer = jest.fn(async (): Promise<any> => Promise.resolve())
-    containerService.getContainer = jest.fn(async (): Promise<any> => Promise.resolve())
   })
   describe('create', () => {
     const validProjectCreateReq = {
@@ -134,9 +123,68 @@ describe('ProjectController', () => {
         ValidationError
       )
     })
+    it('should work without projectId', async () => {
+      const controller = new ProjectController()
+      const containerService = DIContainer.sharedContainer.containerService
+
+      // @ts-ignore
+      containerService.createContainer = jest.fn(async () => ({ _id: 'container456' }))
+      containerService.updateContainerTitleAndCollaborators = jest.fn()
+      // @ts-ignore
+      containerService.getContainer = jest.fn(async () => ({
+        _id: 'container456',
+        title: 'My new container',
+        owners: ['bar'],
+      }))
+
+      const req = {
+        headers: authorizationHeader(
+          generateLoginToken(
+            {
+              tokenId: 'foo',
+              userId: 'bar',
+              appId: 'foobar',
+              email: 'foo@bar.com',
+              userProfileId: 'foo',
+            },
+            null
+          )
+        ),
+        body: {
+          title: 'My new container',
+          owners: ['User_test@example.com'],
+        },
+      }
+
+      // @ts-ignore
+      await expect(controller.create(req)).resolves.not.toThrow()
+
+      expect(containerService.createContainer).toHaveBeenCalledWith(expect.any(String), null)
+      expect(containerService.updateContainerTitleAndCollaborators).toHaveBeenCalledWith(
+        'container456',
+        'My new container',
+        ['bar'],
+        undefined,
+        undefined
+      )
+      expect(containerService.getContainer).toHaveBeenCalledWith('container456')
+    })
   })
 
   describe('add', () => {
+    beforeEach(async () => {
+      DIContainer.sharedContainer.userService.profile = async (): Promise<any> => ({
+        userID: 'foo',
+      })
+      DIContainer.sharedContainer.pressroomService.importJATS = jest.fn(
+        async (): Promise<any> => Promise.resolve()
+      )
+
+      const containerService: any = DIContainer.sharedContainer.containerService
+      containerService.createContainer = jest.fn(async (): Promise<any> => ({ id: testProjectId }))
+      containerService.updateContainer = jest.fn(async (): Promise<any> => Promise.resolve())
+      containerService.getContainer = jest.fn(async (): Promise<any> => Promise.resolve())
+    })
     test('should fail not owner', () => {
       return tempy.write.task('{key: value}', async (tempPath) => {
         const controller: any = new ProjectController()
@@ -275,6 +323,19 @@ describe('ProjectController', () => {
   })
 
   describe('saveProject', () => {
+    beforeEach(async () => {
+      DIContainer.sharedContainer.userService.profile = async (): Promise<any> => ({
+        userID: 'foo',
+      })
+      DIContainer.sharedContainer.pressroomService.importJATS = jest.fn(
+        async (): Promise<any> => Promise.resolve()
+      )
+
+      const containerService: any = DIContainer.sharedContainer.containerService
+      containerService.createContainer = jest.fn(async (): Promise<any> => ({ id: testProjectId }))
+      containerService.updateContainer = jest.fn(async (): Promise<any> => Promise.resolve())
+      containerService.getContainer = jest.fn(async (): Promise<any> => Promise.resolve())
+    })
     test('should call upsertProjectModels', async () => {
       const controller: any = new ProjectController()
       const containerService = DIContainer.sharedContainer.containerService
@@ -1098,7 +1159,7 @@ describe('ProjectController', () => {
     })
   })
 
-  describe('ContainerController - loadProject', () => {
+  describe('ProjectController - loadProject', () => {
     test('should call loadProject()', async () => {
       const containerService: any = DIContainer.sharedContainer.containerService
       const chance = new Chance()
@@ -1178,7 +1239,7 @@ describe('ProjectController', () => {
     })
   })
 
-  describe('ContainerController - accessToken', () => {
+  describe('ProjectController - accessToken', () => {
     test('should fail if containerId is not string', async () => {
       const req: any = {
         params: {
@@ -1244,7 +1305,7 @@ describe('ProjectController', () => {
     })
   })
 
-  describe('ContainerController - jwksForAccessScope', () => {
+  describe('ProjectController - jwksForAccessScope', () => {
     test('should fail because containerType should be a string', () => {
       const projectController = new ProjectController()
 
@@ -1446,8 +1507,8 @@ describe('ProjectController', () => {
         },
       }
 
-      const containersController: ContainersController = new ContainersController()
-      return expect(containersController.getAttachment(req)).resolves.toBeTruthy()
+      const projectController: ProjectController = new ProjectController()
+      return expect(projectController.getAttachment(req)).resolves.toBeTruthy()
     })
   })
 
