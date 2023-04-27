@@ -11,7 +11,7 @@
     "run": "node dist/index",
     "build": "run-s generate-prisma build-app build-validator",
     "build-app": "tsc --project tsconfig.build.json",
-    "build-validator": "build-validator-function.js",
+    "build-validator": "./build-validator-function.js",
     "generate-prisma": "prisma generate",
     "migrate-prisma": "prisma migrate dev --name init",
     "migrate-prisma-deploy": "prisma migrate deploy",
