@@ -23,19 +23,14 @@ import { BaseRoute } from '../../BaseRoute'
 import { ProjectController } from './ProjectController'
 import {
   accessTokenSchema,
-  addProductionNoteSchema,
   addUserSchema,
   createManuscriptSchema,
   createProjectSchema,
-  deleteModelSchema,
   deleteSchema,
   getArchiveSchema,
-  getPickerBuilderSchema,
-  getProductionNotesSchema,
   loadProjectSchema,
   manageUserRoleSchema,
   projectCollaboratorsSchema,
-  replaceProjectSchema,
   saveProjectSchema,
 } from './ProjectSchema'
 export class ProjectRoute extends BaseRoute {
@@ -46,7 +41,7 @@ export class ProjectRoute extends BaseRoute {
   }
   public create(router: Router): void {
     router.post(
-      `${this.basePath}/:projectId?`,
+      `${this.basePath}/:projectID?`,
       celebrate(createProjectSchema),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
@@ -58,7 +53,7 @@ export class ProjectRoute extends BaseRoute {
       }
     )
     router.put(
-      `${this.basePath}/:projectId`,
+      `${this.basePath}/:projectID`,
       celebrate(saveProjectSchema),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
@@ -70,21 +65,8 @@ export class ProjectRoute extends BaseRoute {
       }
     )
 
-    router.post(
-      `${this.basePath}/:projectId/manuscripts/:manuscriptId/replace`,
-      celebrate(replaceProjectSchema),
-      AuthStrategy.JsonHeadersValidation,
-      AuthStrategy.JWTAuth,
-      (req: Request, res: Response, next: NextFunction) => {
-        return this.runWithErrorHandling(async () => {
-          const manuscript = await this.projectController.projectReplace(req)
-          res.status(StatusCodes.OK).send(manuscript)
-        }, next)
-      }
-    )
-
     router.get(
-      [`${this.basePath}/:projectId`, `${this.basePath}/:projectId/manuscript/:manuscriptId`],
+      [`${this.basePath}/:projectID`, `${this.basePath}/:projectID/manuscript/:manuscriptID`],
       celebrate(loadProjectSchema, {}),
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
@@ -101,11 +83,7 @@ export class ProjectRoute extends BaseRoute {
     )
 
     router.post(
-      [
-        `${this.basePath}/:containerId/roles`,
-        '/container/:containerId/roles',
-        '/container/project/:containerId/roles',
-      ],
+      `${this.basePath}/:projectID/roles`,
       celebrate(manageUserRoleSchema, {}),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
@@ -118,7 +96,7 @@ export class ProjectRoute extends BaseRoute {
     )
 
     router.post(
-      `${this.basePath}/:projectId/users`,
+      `${this.basePath}/:projectID/users`,
       celebrate(addUserSchema, {}),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
@@ -131,7 +109,7 @@ export class ProjectRoute extends BaseRoute {
     )
 
     router.post(
-      `${this.basePath}/:projectId/manuscript/:manuscriptId`,
+      `${this.basePath}/:projectID/manuscript/:manuscriptID?`,
       celebrate(createManuscriptSchema, {}),
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
@@ -141,20 +119,8 @@ export class ProjectRoute extends BaseRoute {
       }
     )
 
-    router.post(
-      `${this.basePath}/:projectId/manuscript/:manuscriptId/notes`,
-
-      celebrate(addProductionNoteSchema, {}),
-      AuthStrategy.JWTAuth,
-      (req: Request, res: Response, next: NextFunction) => {
-        return this.runWithErrorHandling(async () => {
-          res.send(await this.projectController.addProductionNote(req))
-        }, next)
-      }
-    )
-
     router.get(
-      `${this.basePath}/:projectId/collaborators`,
+      `${this.basePath}/:projectID/collaborators`,
       celebrate(projectCollaboratorsSchema),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
@@ -168,8 +134,8 @@ export class ProjectRoute extends BaseRoute {
 
     router.get(
       [
-        `${this.basePath}/:projectId/archive`,
-        `${this.basePath}/:projectId/manuscript/:manuscriptId/archive`,
+        `${this.basePath}/:projectID/archive`,
+        `${this.basePath}/:projectID/manuscript/:manuscriptID/archive`,
       ],
       celebrate(getArchiveSchema, {}),
       AuthStrategy.JWTAuth,
@@ -183,21 +149,7 @@ export class ProjectRoute extends BaseRoute {
     )
 
     router.get(
-      [
-        `${this.basePath}/attachment/:id/:attachmentKey?`,
-        '/container/attachment/:id/:attachmentKey?',
-      ],
-      AuthStrategy.JWTAuth,
-      (req: Request, res: Response, next: NextFunction) => {
-        return this.runWithErrorHandling(async () => {
-          const attachment = await this.projectController.getAttachment(req)
-          res.set('Content-Type', attachment.contentType)
-          res.status(StatusCodes.OK).send(attachment.body)
-        }, next)
-      }
-    )
-    router.get(
-      [`${this.basePath}/:containerType/:scope.jwks`, '/container/:containerType/:scope.jwks'],
+      `${this.basePath}/:scope.jwks`,
       celebrate(accessTokenSchema, {}),
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
@@ -207,24 +159,7 @@ export class ProjectRoute extends BaseRoute {
     )
 
     router.get(
-      [
-        `${this.basePath}/picker-bundle/:containerId/:manuscriptId`,
-        '/container/picker-bundle/:containerId/:manuscriptId',
-      ],
-      celebrate(getPickerBuilderSchema, {}),
-      AuthStrategy.scopedJWTAuth('file-picker'),
-      (req: Request, res: Response, next: NextFunction) => {
-        return this.runWithErrorHandling(async () => {
-          await this.projectController.getBundle(req, (zipFile: any) => {
-            res.set('Content-Type', 'application/zip')
-            res.status(StatusCodes.OK).send(zipFile)
-          })
-        }, next)
-      }
-    )
-
-    router.get(
-      [`${this.basePath}/:containerId/:scope`, '/container/:containerId/:scope'],
+      `${this.basePath}/:projectID/:scope`,
       celebrate(accessTokenSchema, {}),
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
@@ -234,42 +169,14 @@ export class ProjectRoute extends BaseRoute {
       }
     )
 
-    router.get(
-      `${this.basePath}/projects/:projectId/manuscript/:manuscriptID/notes`,
-
-      celebrate(getProductionNotesSchema, {}),
-      AuthStrategy.JWTAuth,
-      (req: Request, res: Response, next: NextFunction) => {
-        return this.runWithErrorHandling(async () => {
-          res.send(await this.projectController.getProductionNotes(req))
-        }, next)
-      }
-    )
-
     router.delete(
-      [
-        `${this.basePath}/:containerId`,
-        '/container/:containerId',
-        'container/project/:containerId',
-      ],
+      `${this.basePath}/:projectID`,
       celebrate(deleteSchema, {}),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           await this.projectController.delete(req)
-          res.status(StatusCodes.OK).end()
-        }, next)
-      }
-    )
-    router.delete(
-      `${this.basePath}/:projectId/manuscripts/:manuscriptId/model/:modelId`,
-      celebrate(deleteModelSchema),
-      AuthStrategy.JsonHeadersValidation,
-      AuthStrategy.JWTAuth,
-      (req: Request, res: Response, next: NextFunction) => {
-        return this.runWithErrorHandling(async () => {
-          await this.projectController.deleteModel(req)
           res.status(StatusCodes.OK).end()
         }, next)
       }

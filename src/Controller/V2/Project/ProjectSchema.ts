@@ -38,26 +38,7 @@ export const saveProjectSchema: Joi.SchemaMap = {
     'content-type': Joi.string().required(),
   }).options({ allowUnknown: true }),
   params: Joi.object({
-    projectId: Joi.string().required(),
-  }),
-  body: Joi.object({
-    data: Joi.array().items(
-      allowUnknownObjectsSchema.object({
-        _id: Joi.string().required(),
-        objectType: Joi.string().required(),
-      })
-    ),
-  }),
-}
-
-export const replaceProjectSchema: Joi.SchemaMap = {
-  headers: Joi.object({
-    accept: appJsonAndCharset,
-    'content-type': Joi.string().required(),
-  }).options({ allowUnknown: true }),
-  params: Joi.object({
-    projectId: Joi.string().required(),
-    manuscriptId: Joi.string().required(),
+    projectID: Joi.string().required(),
   }),
   body: Joi.object({
     data: Joi.array().items(
@@ -73,17 +54,8 @@ export const projectCollaboratorsSchema: Joi.SchemaMap = {
   headers: Joi.object({
     accept: appJsonAndCharset,
   }).options({ allowUnknown: true }),
-}
-
-export const deleteModelSchema: Joi.SchemaMap = {
-  headers: Joi.object({
-    accept: appJsonAndCharset,
-    'content-type': Joi.string().required(),
-  }).options({ allowUnknown: true }),
   params: Joi.object({
-    projectId: Joi.string().required(),
-    manuscriptId: Joi.string().required(),
-    modelId: Joi.string().required(),
+    projectID: Joi.string().required(),
   }),
 }
 
@@ -91,6 +63,9 @@ export const deleteSchema: Joi.SchemaMap = {
   headers: Joi.object({
     accept: appJsonAndCharset,
   }).options({ allowUnknown: true }),
+  params: Joi.object({
+    projectID: Joi.string().required(),
+  }),
 }
 
 export const manageUserRoleSchema: Joi.SchemaMap = {
@@ -98,13 +73,11 @@ export const manageUserRoleSchema: Joi.SchemaMap = {
     accept: appJsonAndCharset,
   }).options({ allowUnknown: true }),
   body: Joi.object({
-    managedUserId: Joi.string(),
-    managedUserConnectId: Joi.string(),
-    newRole: Joi.string().allow(null),
-    secret: Joi.string(),
+    userID: Joi.string().required(),
+    role: Joi.string().allow(null),
   }),
   params: Joi.object({
-    containerId: Joi.string().required(),
+    projectID: Joi.string().required(),
   }),
 }
 
@@ -113,11 +86,11 @@ export const addUserSchema: Joi.SchemaMap = {
     accept: appJsonAndCharset,
   }).options({ allowUnknown: true }),
   body: Joi.object({
-    userId: Joi.string().required(),
+    userID: Joi.string().required(),
     role: Joi.string().required(),
   }),
   params: Joi.object({
-    projectId: Joi.string().required(),
+    projectID: Joi.string().required(),
   }),
 }
 
@@ -126,8 +99,8 @@ export const getArchiveSchema: Joi.SchemaMap = {
     accept: appJsonAndCharset,
   }).options({ allowUnknown: true }),
   params: Joi.object({
-    projectId: Joi.string().required(),
-    manuscriptId: Joi.string(),
+    projectID: Joi.string().required(),
+    manuscriptID: Joi.string(),
   }),
 }
 
@@ -137,57 +110,27 @@ export const loadProjectSchema: Joi.SchemaMap = {
     'if-modified-since': Joi.date(),
   }).options({ allowUnknown: true }),
   params: Joi.object({
-    projectId: Joi.string().required(),
-    manuscriptId: Joi.string(),
+    projectID: Joi.string().required(),
+    manuscriptID: Joi.string(),
   }),
   body: Joi.object({
     types: Joi.array().items(Joi.string()),
   }),
 }
 
-export const getPickerBuilderSchema: Joi.SchemaMap = {
-  headers: Joi.object({
-    accept: appJsonAndCharset,
-  }).options({ allowUnknown: true }),
-  params: Joi.object({
-    containerId: Joi.string().required(),
-    manuscriptId: Joi.string().required(),
-  }),
-}
-
 export const accessTokenSchema: Joi.SchemaMap = {
   params: Joi.object({
-    containerId: Joi.string().required(),
+    projectID: Joi.string().required(),
     scope: Joi.string().required(),
   }),
 }
 
 export const createManuscriptSchema: Joi.SchemaMap = {
   params: Joi.object({
-    projectId: Joi.string().required(),
-    manuscriptId: Joi.string(),
+    projectID: Joi.string().required(),
+    manuscriptID: Joi.string(),
   }),
   body: Joi.object({
-    templateId: Joi.string(),
-  }),
-}
-
-export const getProductionNotesSchema: Joi.SchemaMap = {
-  params: Joi.object({
-    projectId: Joi.string().required(),
-    manuscriptId: Joi.string().required(),
-  }),
-}
-
-export const addProductionNoteSchema: Joi.SchemaMap = {
-  params: Joi.object({
-    projectId: Joi.string().required(),
-    manuscriptId: Joi.string().required(),
-  }),
-  body: Joi.object({
-    content: Joi.string().required(),
-    connectUserId: Joi.string().required(),
-    source: Joi.string().required().valid('EDITOR', 'EMAIL', 'DASHBOARD'),
-    target: Joi.string(),
+    templateID: Joi.string(),
   }),
 }

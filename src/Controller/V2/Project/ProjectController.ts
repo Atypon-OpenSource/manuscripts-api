@@ -56,7 +56,7 @@ import { authorizationBearerToken, BaseController } from '../../BaseController'
 export class ProjectController extends BaseController {
   async create(req: Request): Promise<Container> {
     const title = req.body.title
-    const projectId = req.params && req.params.projectId ? req.params.projectId : null
+    const projectID = req.params && req.params.projectID ? req.params.projectID : null
     const token = authorizationBearerToken(req)
     const payload = jwt.decode(token)
 
@@ -68,7 +68,7 @@ export class ProjectController extends BaseController {
 
     const { _id }: Container = await DIContainer.sharedContainer.containerService.createContainer(
       token,
-      projectId
+      projectID
     )
 
     await DIContainer.sharedContainer.containerService.updateContainerTitleAndCollaborators(
@@ -84,15 +84,15 @@ export class ProjectController extends BaseController {
 
   async add(req: Request): Promise<Container> {
     const file = req.file
-    const { projectId } = req.params
-    const { manuscriptId, templateId } = req.body
+    const { projectID } = req.params
+    const { manuscriptID, templateID } = req.body
 
     if (!req.user) {
       throw new ValidationError('No user found', req.user)
     }
-    validateRequestParams(req, ['projectId'])
+    validateRequestParams(req, ['projectID'])
     if (!file?.path) {
-      throw new ValidationError('no file found, please upload a JATS XML file to import', projectId)
+      throw new ValidationError('no file found, please upload a JATS XML file to import', projectID)
     }
 
     const token = authorizationBearerToken(req)
@@ -107,7 +107,7 @@ export class ProjectController extends BaseController {
     )
     stream.close()
 
-    const project = await DIContainer.sharedContainer.containerService.getContainer(projectId)
+    const project = await DIContainer.sharedContainer.containerService.getContainer(projectID)
 
     if (!ContainerService.isOwner(project, req.user._id)) {
       throw new RoleDoesNotPermitOperationError(
@@ -131,8 +131,8 @@ export class ProjectController extends BaseController {
       json,
       unzipRoot,
       req.user._id,
-      manuscriptId,
-      templateId
+      manuscriptID,
+      templateID
     )
 
     await remove(file.path)
@@ -141,13 +141,13 @@ export class ProjectController extends BaseController {
   }
 
   async saveProject(req: Request): Promise<Container> {
-    const { projectId } = req.params
+    const { projectID } = req.params
     const { data } = req.body
 
     if (!req.user) {
       throw new ValidationError('No user found', req.user)
     }
-    validateRequestParams(req, ['projectId'])
+    validateRequestParams(req, ['projectID'])
 
     const token = authorizationBearerToken(req)
     const payload = jwt.decode(token)
@@ -155,56 +155,56 @@ export class ProjectController extends BaseController {
       throw new InvalidCredentialsError('Unexpected token payload.')
     }
 
-    const userId = ContainerService.userIdForSync(req.user._id)
+    const userID = ContainerService.userIdForSync(req.user._id)
     const project = await DIContainer.sharedContainer.containerService.getContainer(
-      projectId,
-      userId
+      projectID,
+      userID
     )
     await this.validateManuscriptReferences(data)
-    // call it without userId because access control has already happened
+    // call it without userID because access control has already happened
     await DIContainer.sharedContainer.containerService.upsertProjectModels(data)
     return project
   }
   async projectReplace(req: Request): Promise<Model> {
-    const { projectId, manuscriptId } = req.params
+    const { projectID, manuscriptID } = req.params
     const { data } = req.body
-    validateRequestParams(req, ['projectId', 'manuscriptId'])
+    validateRequestParams(req, ['projectID', 'manuscriptID'])
     if (!req.user) {
       throw new ValidationError('No user found', req.user)
     }
-    const userId = ContainerService.userIdForSync(req.user._id)
+    const userID = ContainerService.userIdForSync(req.user._id)
 
-    await this.validateUserPermissions(userId, projectId)
-    await this.validateManuscriptExists(userId, manuscriptId)
+    await this.validateUserPermissions(userID, projectID)
+    await this.validateManuscriptExists(userID, manuscriptID)
     // prevalidate models, so in the case of
     // validation errors we fail before removing resources
     const docs = await DIContainer.sharedContainer.containerService.processManuscriptModels(
       data,
-      projectId,
-      manuscriptId
+      projectID,
+      manuscriptID
     )
 
-    await DIContainer.sharedContainer.projectRepository.removeAllResources(projectId)
+    await DIContainer.sharedContainer.projectRepository.removeAllResources(projectID)
 
     return await DIContainer.sharedContainer.projectRepository.bulkInsert(docs)
   }
 
   async loadProject(req: Request) {
-    const { projectId, manuscriptId } = req.params
+    const { projectID, manuscriptID } = req.params
     const { types } = req.body
     const modifiedSince = req.headers['if-modified-since']
 
     if (!req.user) {
       throw new ValidationError('No user found', req.user)
     }
-    validateRequestParams(req, ['projectId'])
-    validateRequestOptionalParams([req.body.manuscriptId, 'manuscriptId'])
+    validateRequestParams(req, ['projectID'])
+    validateRequestOptionalParams([req.body.manuscriptID, 'manuscriptID'])
 
-    const userId = req.user._id
+    const userID = req.user._id
 
     const project = await DIContainer.sharedContainer.containerService.getContainer(
-      projectId,
-      userId
+      projectID,
+      userID
     )
     if (!project) {
       throw new MissingContainerError(project)
@@ -217,8 +217,8 @@ export class ProjectController extends BaseController {
         }
       }
       const data = await DIContainer.sharedContainer.containerService.loadProject(
-        projectId,
-        manuscriptId,
+        projectID,
+        manuscriptID,
         {
           getAttachments: false,
           onlyIDs: false,
@@ -234,120 +234,113 @@ export class ProjectController extends BaseController {
   }
 
   async manageUserRole(req: Request): Promise<void> {
-    const { managedUserId, managedUserConnectId, newRole, secret } = req.body
-    const { containerId } = req.params
+    const { userID, role } = req.body
+    const { projectID } = req.params
 
     if (!req.user) {
       throw new ValidationError('No user found', req.user)
     }
-    validateRequestOptionalParams(
-      [managedUserId, 'managedUserId'],
-      [managedUserConnectId, 'managedUserConnectId'],
-      [secret, 'secret']
-    )
-    validateRequestParams(req, ['containerId'])
-    validateParamsType({ name: 'container id', value: containerId, type: 'string' })
+    validateRequestOptionalParams([userID, 'userID'])
+    validateRequestParams(req, ['projectID'])
+    validateParamsType({ name: 'project id', value: projectID, type: 'string' })
 
-    if (newRole !== null && !isString(newRole)) {
-      throw new ValidationError('Role must be string or null', newRole)
+    if (role !== null && !isString(role)) {
+      throw new ValidationError('Role must be string or null', role)
     }
 
     await DIContainer.sharedContainer.containerService.manageUserRole(
       req.user,
-      containerId,
-      { userId: managedUserId, connectUserId: managedUserConnectId },
-      newRole
+      projectID,
+      { connectUserID: userID },
+      role
     )
   }
   async addUser(req: Request): Promise<void> {
-    const { userId, role } = req.body
-    const { projectId } = req.params
+    const { userID, role } = req.body
+    const { projectID } = req.params
     const { user: addingUser } = req
 
     if (!addingUser) {
       throw new ValidationError('No user found', addingUser)
     }
 
-    if (!userId || !isString(userId)) {
-      throw new ValidationError('User id must be string', userId)
+    if (!userID || !isString(userID)) {
+      throw new ValidationError('User id must be string', userID)
     }
 
-    validateRequestParams(req, ['projectId'])
-    validateParamsType({ name: 'project id', value: projectId, type: 'string' })
+    validateRequestParams(req, ['projectID'])
+    validateParamsType({ name: 'project id', value: projectID, type: 'string' })
     if (role !== null && !isString(role)) {
       throw new ValidationError('Role must be string or null', role)
     }
 
     await DIContainer.sharedContainer.containerService.addContainerUser(
-      projectId,
+      projectID,
       role,
-      userId,
+      userID,
       addingUser
     )
   }
 
   async createManuscript(req: Request) {
-    const { projectId, manuscriptId } = req.params
+    const { projectID, manuscriptID } = req.params
     const { user } = req
-    const { templateId } = req.body
+    const { templateID } = req.body
 
     if (!user) {
       throw new ValidationError('No user found', user)
     }
-    validateRequestParams(req, ['manuscriptId', 'projectId'])
-    validateParamsType(
-      { name: 'projectId', value: projectId, type: 'string' },
-      { name: 'manuscriptId', value: manuscriptId, type: 'string' }
-    )
+    validateRequestParams(req, ['projectID'])
+    validateParamsType({ name: 'projectID', value: projectID, type: 'string' })
 
-    validateRequestOptionalParams([templateId, 'templateId'])
+    validateRequestOptionalParams([templateID, 'templateID'], [manuscriptID, 'manuscriptID'])
 
     return DIContainer.sharedContainer.containerService.createManuscript(
       user._id,
-      projectId,
-      manuscriptId,
-      templateId
+      projectID,
+      manuscriptID,
+      templateID
     )
   }
 
   async addProductionNote(req: Request) {
-    const { projectId, manuscriptId } = req.params
-    const { content, target, connectUserId, source } = req.body
+    const { projectID, manuscriptID } = req.params
+    const { content, target, connectuserID, source } = req.body
     validateParamsType(
-      { name: 'projectId', value: projectId, type: 'string' },
-      { name: 'manuscriptId', value: manuscriptId, type: 'string' },
-      { name: 'connectUserId', value: connectUserId, type: 'string' },
+      { name: 'projectID', value: projectID, type: 'string' },
+      { name: 'manuscriptID', value: manuscriptID, type: 'string' },
+      { name: 'connectuserID', value: connectuserID, type: 'string' },
       { name: 'content', value: content, type: 'string' }
     )
     return DIContainer.sharedContainer.containerService.createManuscriptNote(
-      projectId,
-      manuscriptId,
+      projectID,
+      manuscriptID,
       content,
-      connectUserId,
+      connectuserID,
       source,
       target
     )
   }
 
   async collaborators(req: Request): Promise<UserCollaborator[]> {
-    const { projectId } = req.params
+    const { projectID } = req.params
 
-    validateRequestParams(req, ['projectId'])
+    validateRequestParams(req, ['projectID'])
 
     const token = authorizationBearerToken(req)
     const payload = jwt.decode(token)
     if (!isLoginTokenPayload(payload)) {
       throw new InvalidCredentialsError('Unexpected token payload.')
     }
-    const userId = ContainerService.userIdForSync(payload.userId)
-    return await DIContainer.sharedContainer.containerService.getCollaborators(projectId, userId)
+    const userID = ContainerService.userIdForSync(payload.userId)
+    return await DIContainer.sharedContainer.containerService.getCollaborators(projectID, userID)
   }
   /**
    * Get container archive.
    * @param req Request express request.
    */
   async getArchive(req: Request) {
-    const { projectId, manuscriptId } = req.params
+    const { projectID, manuscriptID } = req.params
     const { onlyIDs } = req.query
     const { accept: acceptHeader } = req.headers
 
@@ -355,18 +348,18 @@ export class ProjectController extends BaseController {
       throw new ValidationError('No user found', req.user)
     }
 
-    validateParamsType({ name: 'projectId', value: projectId, type: 'string' })
-    validateRequestOptionalParams([projectId, 'projectId'])
+    validateParamsType({ name: 'projectID', value: projectID, type: 'string' })
+    validateRequestOptionalParams([projectID, 'projectID'])
     const token = authorizationBearerToken(req)
 
     const getAttachments = acceptHeader !== 'application/json'
 
-    const userId = req.user._id
+    const userID = req.user._id
     try {
       return DIContainer.sharedContainer.containerService.getArchive(
-        userId,
-        projectId,
-        manuscriptId,
+        userID,
+        projectID,
+        manuscriptID,
         token,
         {
           getAttachments,
@@ -418,33 +411,33 @@ export class ProjectController extends BaseController {
   }
 
   async getBundle(req: Request, finish: CallableFunction) {
-    const { containerId, manuscriptId } = req.params
+    const { containerID, manuscriptID } = req.params
     const { onlyIDs } = req.query
 
     if (!req.user) {
       throw new ValidationError('No user found', req.user)
     }
 
-    validateParamsType({ name: 'containerId', value: containerId, type: 'string' })
+    validateParamsType({ name: 'containerID', value: containerID, type: 'string' })
     // will fail of the user is not a collaborator on the project
     const canAccess = await DIContainer.sharedContainer.containerService.checkUserContainerAccess(
       req.user._id,
-      containerId
+      containerID
     )
 
     if (!canAccess) {
-      throw new ValidationError('User must be a contributor in the container', containerId)
+      throw new ValidationError('User must be a contributor in the container', containerID)
     }
 
-    validateParamsType({ name: 'manuscriptId', value: manuscriptId, type: 'string' })
+    validateParamsType({ name: 'manuscriptID', value: manuscriptID, type: 'string' })
     const token = authorizationBearerToken(req)
 
     const getAttachments = true
     const includeExt = false
-    const userId = req.user._id
+    const userID = req.user._id
     const archive = await DIContainer.sharedContainer.containerService.getArchive(
-      userId,
-      containerId,
+      userID,
+      containerID,
       null,
       token,
       {
@@ -459,7 +452,7 @@ export class ProjectController extends BaseController {
     }
 
     await DIContainer.sharedContainer.pressroomService
-      .fetchHtml(archive, manuscriptId)
+      .fetchHtml(archive, manuscriptID)
       .then((result) => finish(result))
       .catch((reason) => {
         throw new IllegalStateError('Failed to fetch html bundle.', reason)
@@ -467,67 +460,67 @@ export class ProjectController extends BaseController {
   }
 
   async accessToken(req: Request): Promise<any> {
-    const { containerId, scope } = req.params
+    const { containerID, scope } = req.params
     const user = req.user
 
     if (!user) {
       throw new ValidationError('No user found', user)
     }
     validateParamsType(
-      { name: 'containerId', value: containerId, type: 'string' },
+      { name: 'containerID', value: containerID, type: 'string' },
       { name: 'scope', value: scope, type: 'string' }
     )
-    return DIContainer.sharedContainer.containerService.accessToken(user._id, scope, containerId)
+    return DIContainer.sharedContainer.containerService.accessToken(user._id, scope, containerID)
   }
 
   async getProductionNotes(req: Request) {
-    const { projectId, manuscriptId } = req.params
+    const { projectID, manuscriptID } = req.params
     validateParamsType(
-      { name: 'projectId', value: projectId, type: 'string' },
-      { name: 'manuscriptId', value: manuscriptId, type: 'string' }
+      { name: 'projectID', value: projectID, type: 'string' },
+      { name: 'manuscriptID', value: manuscriptID, type: 'string' }
     )
-    return DIContainer.sharedContainer.containerService.getProductionNotes(projectId, manuscriptId)
+    return DIContainer.sharedContainer.containerService.getProductionNotes(projectID, manuscriptID)
   }
   async deleteModel(req: Request): Promise<void> {
-    const { projectId, manuscriptId, modelId } = req.params
+    const { projectID, manuscriptID, modelID } = req.params
     if (!req.user) {
       throw new ValidationError('No user found', req.user)
     }
-    validateRequestParams(req, ['projectId', 'manuscriptId', 'modelId'])
-    const userId = ContainerService.userIdForSync(req.user._id)
-    await this.validateUserPermissions(userId, projectId)
-    await this.validateManuscriptExists(userId, manuscriptId)
-    await this.validateModelExists(projectId, modelId)
-    return await DIContainer.sharedContainer.projectRepository.removeResource(modelId)
+    validateRequestParams(req, ['projectID', 'manuscriptID', 'modelID'])
+    const userID = ContainerService.userIdForSync(req.user._id)
+    await this.validateUserPermissions(userID, projectID)
+    await this.validateManuscriptExists(userID, manuscriptID)
+    await this.validateModelExists(projectID, modelID)
+    return await DIContainer.sharedContainer.projectRepository.removeResource(modelID)
   }
   async delete(req: Request): Promise<void> {
-    const { containerId } = req.params
+    const { containerID } = req.params
 
     if (!req.user) {
       throw new ValidationError('No user found', req.user)
     }
 
-    validateRequestParams(req, ['containerId'])
-    validateParamsType({ name: 'container id', value: containerId, type: 'string' })
+    validateRequestParams(req, ['containerID'])
+    validateParamsType({ name: 'container id', value: containerID, type: 'string' })
 
-    await DIContainer.sharedContainer.containerService.deleteContainer(containerId, req.user)
+    await DIContainer.sharedContainer.containerService.deleteContainer(containerID, req.user)
   }
 
   async upsertManuscriptToProject(
     project: Container,
     json: any,
     unzipRoot: string | null,
-    userId: string,
-    manuscriptId?: string,
-    templateId?: string
+    userID: string,
+    manuscriptID?: string,
+    templateID?: string
   ): Promise<Container> {
-    const userID = ContainerService.userIdForSync(userId)
+    const userID = ContainerService.userIdForSync(userID)
     let manuscriptObject = json.data.find((model: Model) => model.objectType === 'MPManuscript')
-    if (manuscriptId) {
-      manuscriptObject._id = manuscriptId
+    if (manuscriptID) {
+      manuscriptObject._id = manuscriptID
     }
 
-    const sessionId = uuidv4()
+    const sessionID = uuidv4()
     const createdAt = Math.round(Date.now() / 1000)
     const docs = json.data
       .filter((model: Model) => model.objectType !== 'MPManuscript')
@@ -536,12 +529,12 @@ export class ProjectController extends BaseController {
           ...model,
           createdAt,
           updatedAt: createdAt,
-          sessionId,
-          containerId: project._id,
+          sessionID,
+          containerID: project._id,
         }
 
         if (manuscriptIDTypes.has(doc.objectType)) {
-          doc.manuscriptId = manuscriptObject._id
+          doc.manuscriptID = manuscriptObject._id
         }
 
         return doc
@@ -550,35 +543,35 @@ export class ProjectController extends BaseController {
     if (unzipRoot) {
       await remove(unzipRoot)
     }
-    const template = templateId
-      ? await DIContainer.sharedContainer.templateRepository.getById(templateId)
+    const template = templateID
+      ? await DIContainer.sharedContainer.templateRepository.getById(templateID)
       : null
 
-    let templateFound: boolean = templateId !== undefined && template !== null
+    let templateFound: boolean = templateID !== undefined && template !== null
 
-    if (!templateFound && templateId) {
+    if (!templateFound && templateID) {
       templateFound = await DIContainer.sharedContainer.pressroomService.validateTemplateId(
-        templateId
+        templateID
       )
     }
 
-    if (!templateFound && templateId) {
-      throw new MissingTemplateError(templateId)
+    if (!templateFound && templateID) {
+      throw new MissingTemplateError(templateID)
     }
 
     manuscriptObject = {
       ...manuscriptObject,
       createdAt,
       updatedAt: createdAt,
-      sessionId,
-      containerId: project._id,
+      sessionID,
+      containerID: project._id,
     }
 
     if (templateFound) {
-      manuscriptObject['prototype'] = templateId
+      manuscriptObject['prototype'] = templateID
     }
 
-    manuscriptId
+    manuscriptID
       ? await DIContainer.sharedContainer.manuscriptRepository.patch(
           manuscriptObject._id,
           manuscriptObject,
@@ -586,50 +579,50 @@ export class ProjectController extends BaseController {
         )
       : await DIContainer.sharedContainer.manuscriptRepository.create(manuscriptObject, userID)
 
-    // call it without userId because access control has already happened
+    // call it without userID because access control has already happened
     await DIContainer.sharedContainer.containerService.upsertProjectModels(docs)
 
     return manuscriptObject
   }
 
-  async validateUserPermissions(userId: string, projectId: string) {
+  async validateUserPermissions(userID: string, projectID: string) {
     const canEdit = await DIContainer.sharedContainer.containerService.checkIfCanEdit(
-      userId,
-      projectId
+      userID,
+      projectID
     )
     if (!canEdit) {
-      throw new RoleDoesNotPermitOperationError(`permission denied`, userId)
+      throw new RoleDoesNotPermitOperationError(`permission denied`, userID)
     }
   }
-  async validateManuscriptExists(userId: string, manuscriptId: string) {
+  async validateManuscriptExists(userID: string, manuscriptID: string) {
     const manuscriptsObj = DIContainer.sharedContainer.manuscriptRepository.getById(
-      manuscriptId,
-      userId
+      manuscriptID,
+      userID
     )
     if (!manuscriptsObj) {
-      throw new MissingManuscriptError(manuscriptId)
+      throw new MissingManuscriptError(manuscriptID)
     }
   }
-  async validateModelExists(projectId: string, modelId: string) {
+  async validateModelExists(projectID: string, modelID: string) {
     const modelExists = DIContainer.sharedContainer.projectRepository.resourceExists(
-      projectId,
-      modelId
+      projectID,
+      modelID
     )
     if (!modelExists) {
-      throw new MissingModelError(modelId)
+      throw new MissingModelError(modelID)
     }
   }
   async validateManuscriptReferences(data: any[]): Promise<void> {
-    const manuscriptIdSet: Set<string> = new Set(
+    const manuscriptIDSet: Set<string> = new Set(
       data.map((doc: any) => {
         return doc.manuscriptID ? doc.manuscriptID : 'undefined'
       })
     )
-    manuscriptIdSet.delete('undefined')
-    if (manuscriptIdSet.size > 1) {
+    manuscriptIDSet.delete('undefined')
+    if (manuscriptIDSet.size > 1) {
       throw new ValidationError(`contains multiple manuscriptIDs`, data)
-    } else if (manuscriptIdSet.size === 1) {
-      const [first] = manuscriptIdSet
+    } else if (manuscriptIDSet.size === 1) {
+      const [first] = manuscriptIDSet
       const manuscript = await DIContainer.sharedContainer.manuscriptRepository.getById(first)
       if (!manuscript) {
         throw new RecordNotFoundError(`referenced manuscript not found`)
