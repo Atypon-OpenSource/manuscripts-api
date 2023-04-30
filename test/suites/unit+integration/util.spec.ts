@@ -14,12 +14,7 @@
  * limitations under the License.
  */
 
-import {
-  removeEmptyValuesFromObj,
-  validateParamsType,
-  validateRequestOptionalParams,
-  validateRequestParams,
-} from '../../../src/util'
+import { removeEmptyValuesFromObj } from '../../../src/util'
 
 describe('removeEmptyValuesFromObj', () => {
   test('should remove key with undefined value in object', () => {
@@ -56,87 +51,5 @@ describe('removeEmptyValuesFromObj', () => {
     }
     const newObj = removeEmptyValuesFromObj(obj)
     expect(newObj['key2']).toBe('foo')
-  })
-})
-
-describe('validateRequestParams', () => {
-  test('should throw an error if the parameter is not specified', () => {
-    const req = {
-      params: {},
-    }
-
-    expect(() => {
-      // @ts-ignore
-      validateRequestParams(req, 'id')
-    }).toThrow('id parameter must be specified')
-  })
-
-  test('should not throw an error if the parameter is specified', () => {
-    const req = {
-      params: {
-        id: '123',
-      },
-    }
-    // @ts-ignore
-
-    expect(() => {
-      // @ts-ignore
-      validateRequestParams(req, 'id')
-    }).not.toThrow()
-  })
-
-  test('should not throw an error if multiple parameters are specified', () => {
-    const req = {
-      params: {
-        id: '123',
-        name: 'John',
-      },
-    }
-    expect(() => {
-      // @ts-ignore
-      validateRequestParams(req, ['id', 'name'])
-    }).not.toThrow()
-  })
-})
-
-describe('validateParamsType', () => {
-  test('should throw an error if the parameter has an incorrect type', () => {
-    expect(() => {
-      validateParamsType({ name: 'id', value: '123', type: 'number' })
-    }).toThrow('id should be number')
-  })
-
-  test('should not throw an error if the parameter has a correct type', () => {
-    expect(() => {
-      validateParamsType({ name: 'id', value: 123, type: 'number' })
-    }).not.toThrow()
-  })
-})
-describe('validateRequestOptionalParams', () => {
-  test('should throw an error if the parameter is not a string', () => {
-    expect(() => {
-      validateRequestOptionalParams([1, 'id'])
-    }).toThrow('id should be a string')
-  })
-
-  test('should not throw an error if the parameter is undefined', () => {
-    expect(() => {
-      validateRequestOptionalParams([undefined, 'id'])
-    }).not.toThrow()
-  })
-
-  test('should not throw an error if the parameter is a string', () => {
-    expect(() => {
-      validateRequestOptionalParams(['123', 'id'])
-    }).not.toThrow()
-  })
-
-  test('should validate multiple parameters correctly', () => {
-    expect(() => {
-      validateRequestOptionalParams([undefined, 'id'], ['test', 'name'])
-    }).not.toThrow()
-    expect(() => {
-      validateRequestOptionalParams([1, 'id'], ['test', 'name'])
-    }).toThrow('id should be a string')
   })
 })

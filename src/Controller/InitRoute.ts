@@ -14,29 +14,32 @@
  * limitations under the License.
  */
 
-import { Router } from 'express'
+import express, { Router } from 'express'
+import path from 'path'
 
-import { BaseRoute } from '../BaseRoute'
-import { registerRoutes } from '../RouteRegisterer'
-import { AuthRoute } from '../V1/Auth/AuthRoute'
-import { RegistrationRoute } from '../V1/Registration/RegistrationRoute'
-import { ServerStatusRoute } from '../V1/ServerStatus/ServerStatusRoute'
-import { UserRoute } from '../V1/User/UserRoute'
-import { ProjectRoute } from './Project/ProjectRoute'
+import { BaseRoute } from './BaseRoute'
 
 /**
  * Creates routes.
  * router Express router.
  */
-export function loadRoutes(router: Router) {
-  // push all routes
-  const routes: BaseRoute[] = [
-    new AuthRoute(),
-    new RegistrationRoute(),
-    new UserRoute(),
-    new ServerStatusRoute(),
-    new ProjectRoute(),
-  ]
-
+export function initRoute(routes: BaseRoute[]): express.Router {
+  const router: express.Router = express.Router()
   registerRoutes(routes, router)
+  return router
+}
+function registerRoutes(routes: any[], router: Router): void {
+  for (const route of routes) {
+    route.create(router)
+  }
+
+  if (process.env.NODE_ENV !== 'production') {
+    router.get(`/spec.json`, (_req, res) => {
+      res.sendFile(path.join(__dirname, '..', '..', 'doc', 'spec.json'))
+    })
+
+    router.get(`/docs`, (_req, res) => {
+      res.sendFile(path.join(__dirname, '..', '..', 'doc', 'index.html'))
+    })
+  }
 }

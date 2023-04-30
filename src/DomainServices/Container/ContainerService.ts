@@ -148,14 +148,11 @@ export class ContainerService implements IContainerService {
   public async manageUserRole(
     user: User,
     containerId: string,
-    managedUser: { userId: string; connectUserId: string },
+    managedUser: { connectUserId: string },
     newRole: ContainerRole | null
   ): Promise<void> {
     const container = await this.getContainer(containerId)
-
-    const managedUserObj = managedUser.userId
-      ? await this.userRepository.getById(ContainerService.userIdForDatabase(managedUser.userId))
-      : await this.userRepository.getOne({ connectUserID: managedUser.connectUserId })
+    const managedUserObj = await this.userRepository.getOne({ connectUserID: managedUser.connectUserId })
 
     if (!managedUserObj) {
       throw new ValidationError('Invalid managed user id', managedUser)

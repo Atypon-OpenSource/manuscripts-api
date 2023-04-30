@@ -22,8 +22,9 @@ import * as path from 'path'
 import { PassportAuth } from '../Auth/Passport/Passport'
 import { config } from '../Config/Config'
 import { Environment } from '../Config/ConfigurationTypes'
-import { loadRoutes as loadRoutesV1 } from '../Controller/V1/RouteLoader'
-import { loadRoutes as loadRoutesV2 } from '../Controller/V2/RouteLoader'
+import { initRoute } from '../Controller/InitRoute'
+import { routes as routesV1 } from '../Controller/V1/Routes'
+import { routes as routesV2 } from '../Controller/V2/Routes'
 import { SQLDatabase } from '../DataAccess/SQLDatabase'
 import { ForbiddenOriginError, IllegalStateError, isStatusCoded } from '../Errors'
 import { log } from '../Utilities/Logger'
@@ -94,18 +95,15 @@ export class Server implements IServer {
   }
 
   private loadRoutes() {
-    const routerV1: express.Router = express.Router()
-    const routerV2: express.Router = express.Router()
-
-    loadRoutesV1(routerV1)
-    loadRoutesV2(routerV2)
+    const routerV1 = initRoute(routesV1)
+    const routerV2 = initRoute(routesV2)
 
     // use router middleware
     this.app.use('/api/v1', routerV1)
     this.app.use('/api/v2', routerV2)
 
     this.app.get('/', (_req, res: express.Response) => {
-      return res.redirect('/api/v1/app/version')
+      return res.redirect('/api/v2/app/version')
     })
 
     this.app.get(`/.well-known/jwks.json`, (_req: express.Request, res: express.Response) => {
