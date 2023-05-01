@@ -21,10 +21,12 @@ import { ServerStatusRoute } from '../V1/ServerStatus/ServerStatusRoute'
 import { UserRoute } from '../V1/User/UserRoute'
 import { ProjectRoute } from './Project/ProjectRoute'
 
-export const routes: BaseRoute[] = [
-  new AuthRoute(),
-  new RegistrationRoute(),
-  new UserRoute(),
-  new ServerStatusRoute(),
-  new ProjectRoute(),
-]
+export function getRoutes(): BaseRoute[] {
+  return [
+    new AuthRoute(),
+    new RegistrationRoute(),
+    new UserRoute(),
+    new ServerStatusRoute(),
+    new ProjectRoute(),
+  ];
+}

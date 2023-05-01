@@ -59,6 +59,7 @@ import { IContainerInvitationService } from '../DomainServices/Invitation/IConta
 import { InvitationService } from '../DomainServices/Invitation/InvitationService'
 import { IPressroomService } from '../DomainServices/Pressroom/IPressroomService'
 import { PressroomService } from '../DomainServices/Pressroom/PressroomService'
+import { ProjectService } from '../DomainServices/ProjectService'
 import { IUserRegistrationService } from '../DomainServices/Registration/IUserRegistrationService'
 import { UserRegistrationService } from '../DomainServices/Registration/UserRegistrationService'
 import { ISGService } from '../DomainServices/SG/ISGService'
@@ -122,6 +123,7 @@ export class DIContainer {
   readonly userProfileRepository: UserProfileRepository
   readonly userCollaboratorRepository: UserCollaboratorRepository
   readonly containerService: ContainerService
+  readonly projectService: ProjectService
   readonly containerRequestService: IContainerRequestService
   readonly containerRequestRepository: ContainerRequestRepository
   readonly pressroomService: IPressroomService
@@ -215,6 +217,12 @@ export class DIContainer {
       this.manuscriptRepository,
       this.manuscriptNotesRepository,
       this.templateRepository
+    )
+    this.projectService = new ProjectService(
+      this.projectRepository,
+      this.manuscriptRepository,
+      this.templateRepository,
+      this.userRepository
     )
     this.containerInvitationService = new ContainerInvitationService(
       this.userRepository,

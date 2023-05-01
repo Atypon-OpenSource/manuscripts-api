@@ -22,9 +22,9 @@ import * as path from 'path'
 import { PassportAuth } from '../Auth/Passport/Passport'
 import { config } from '../Config/Config'
 import { Environment } from '../Config/ConfigurationTypes'
-import { initRoute } from '../Controller/InitRoute'
-import { routes as routesV1 } from '../Controller/V1/Routes'
-import { routes as routesV2 } from '../Controller/V2/Routes'
+import { initRouter } from '../Controller/InitRouter'
+import { getRoutes as getRoutesV1 } from '../Controller/V1/Routes'
+import { getRoutes as getRoutesV2 } from '../Controller/V2/Routes'
 import { SQLDatabase } from '../DataAccess/SQLDatabase'
 import { ForbiddenOriginError, IllegalStateError, isStatusCoded } from '../Errors'
 import { log } from '../Utilities/Logger'
@@ -95,8 +95,8 @@ export class Server implements IServer {
   }
 
   private loadRoutes() {
-    const routerV1 = initRoute(routesV1)
-    const routerV2 = initRoute(routesV2)
+    const routerV1 = initRouter(getRoutesV1())
+    const routerV2 = initRouter(getRoutesV2())
 
     // use router middleware
     this.app.use('/api/v1', routerV1)

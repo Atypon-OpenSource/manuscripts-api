@@ -24,14 +24,16 @@ import { ServerStatusRoute } from './ServerStatus/ServerStatusRoute'
 import { SGRoute } from './SG/SGRoute'
 import { UserRoute } from './User/UserRoute'
 
-export const routes: BaseRoute[] = [
-  new AuthRoute(),
-  new RegistrationRoute(),
-  new UserRoute(),
-  new InvitationRoute(),
-  new ServerStatusRoute(),
-  new SGRoute(),
-  new ContainerRoute(),
-  new ProjectRoute(),
-  new ContainerRequestRoute(),
-]
+export function getRoutes(): BaseRoute[] {
+  return [
+    new AuthRoute(),
+    new RegistrationRoute(),
+    new UserRoute(),
+    new InvitationRoute(),
+    new ServerStatusRoute(),
+    new SGRoute(),
+    new ContainerRoute(),
+    new ProjectRoute(),
+    new ContainerRequestRoute(),
+  ];
+}

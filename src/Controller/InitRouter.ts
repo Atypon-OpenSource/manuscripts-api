@@ -23,12 +23,8 @@ import { BaseRoute } from './BaseRoute'
  * Creates routes.
  * router Express router.
  */
-export function initRoute(routes: BaseRoute[]): express.Router {
+export function initRouter(routes: BaseRoute[]): express.Router {
   const router: express.Router = express.Router()
-  registerRoutes(routes, router)
-  return router
-}
-function registerRoutes(routes: any[], router: Router): void {
   for (const route of routes) {
     route.create(router)
   }
@@ -42,4 +38,5 @@ function registerRoutes(routes: any[], router: Router): void {
       res.sendFile(path.join(__dirname, '..', '..', 'doc', 'index.html'))
     })
   }
+  return router
 }

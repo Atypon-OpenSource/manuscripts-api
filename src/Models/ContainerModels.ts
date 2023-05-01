@@ -27,6 +27,14 @@ export enum ContainerRole {
   Annotator = 'Annotator',
 }
 
+export enum ProjectUserRole {
+  Owner = 'Owner',
+  Writer = 'Writer',
+  Viewer = 'Viewer',
+  Editor = 'Editor',
+  Annotator = 'Annotator',
+}
+
 export interface InvitedUserData {
   email: string
   name?: string
