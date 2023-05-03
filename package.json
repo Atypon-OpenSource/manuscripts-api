@@ -67,6 +67,8 @@
     "passport-jwt": "^4.0.1",
     "pem-jwk": "^2.0.0",
     "prisma": "^4.8.1",
+    "prom-client": "^14.2.0",
+    "prometheus-api-metrics": "^3.2.2",
     "qs": "^6.11.0",
     "source-map-support": "^0.5.21",
     "tempy": "^1.0.0",
