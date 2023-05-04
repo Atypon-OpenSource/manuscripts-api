@@ -30,7 +30,7 @@ pipeline {
             stages {
                 stage('Build docker image') {
                     steps {
-                        sh 'docker build -t ${REGISTRY}/${DOCKER_IMAGE}:${IMG_TAG} -f docker/app/Dockerfile .'
+                        sh 'docker build -t ${REGISTRY}/${DOCKER_IMAGE}:${IMG_TAG} .'
                     }
                 }
                 stage('Publish docker image') {
