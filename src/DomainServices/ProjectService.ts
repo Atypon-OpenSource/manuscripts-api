@@ -32,8 +32,17 @@ import {
   ValidationError,
 } from '../Errors'
 import { ContainerRepository, ProjectUserRole } from '../Models/ContainerModels'
-import { User } from '../Models/UserModels'
 import { ArchiveOptions } from './Container/IContainerService'
+
+export enum ProjectPermission {
+  READ,
+  UPDATE,
+  DELETE,
+  UPDATE_ROLES,
+  CREATE_MANUSCRIPT,
+}
+
+const EMPTY_PERMISSIONS = new Set<ProjectPermission>()
 
 export class ProjectService {
   constructor(
@@ -43,20 +52,19 @@ export class ProjectService {
     private userRepository: IUserRepository
   ) {}
 
-  public async createProject(owner: User, id?: string, title?: string): Promise<Project> {
+  public async createProject(userID: string, id?: string, title?: string): Promise<Project> {
     const containerID = id || uuid_v4()
-    const ownerID = owner._id
 
     const newContainer: any = {
       _id: containerID,
       objectType: ObjectTypes.Project,
       title: title,
-      owners: [ownerID],
+      owners: [userID],
       writers: [],
       viewers: [],
     }
 
-    return await this.containerRepository.create(newContainer, ownerID)
+    return await this.containerRepository.create(newContainer)
   }
 
   public async createManuscript(projectID: string, manuscriptID?: string, templateId?: string) {
@@ -219,6 +227,35 @@ export class ProjectService {
     }
 
     return jwt.sign(payload, scopeInfo.secret, options)
+  }
+
+  public async getPermissions(
+    projectID: string,
+    userID: string
+  ): Promise<ReadonlySet<ProjectPermission>> {
+    const project = await this.getProject(projectID)
+    if (project.owners.includes(userID)) {
+      return new Set([
+        ProjectPermission.READ,
+        ProjectPermission.UPDATE,
+        ProjectPermission.DELETE,
+        ProjectPermission.UPDATE_ROLES,
+        ProjectPermission.CREATE_MANUSCRIPT,
+      ])
+    } else if (project.viewers.includes(userID)) {
+      return new Set([ProjectPermission.READ])
+    } else if (project.writers.includes(userID)) {
+      return new Set([
+        ProjectPermission.READ,
+        ProjectPermission.UPDATE,
+        ProjectPermission.CREATE_MANUSCRIPT,
+      ])
+    } else if (project.editors?.includes(userID)) {
+      return new Set([ProjectPermission.READ, ProjectPermission.UPDATE])
+    } else if (project.annotators?.includes(userID)) {
+      return new Set([ProjectPermission.READ, ProjectPermission.UPDATE])
+    }
+    return EMPTY_PERMISSIONS
   }
 
   public static isOnlyOwner(project: Project, userID: string): boolean {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import express, { Router } from 'express'
+import express from 'express'
 import path from 'path'
 
 import { BaseRoute } from './BaseRoute'

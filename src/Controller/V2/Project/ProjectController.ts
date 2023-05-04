@@ -18,7 +18,8 @@ import { Manuscript, Model, Project, UserCollaborator } from '@manuscripts/json-
 import { Request } from 'express'
 
 import { DIContainer } from '../../../DIContainer/DIContainer'
-import { MissingContainerError, ValidationError } from '../../../Errors'
+import { ProjectPermission } from '../../../DomainServices/ProjectService'
+import { RoleDoesNotPermitOperationError, ValidationError } from '../../../Errors'
 import { BaseController } from '../../BaseController'
 
 export class ProjectController extends BaseController {
@@ -33,7 +34,7 @@ export class ProjectController extends BaseController {
 
     //todo check access
 
-    return await DIContainer.sharedContainer.projectService.createProject(user, projectID, title)
+    return await DIContainer.sharedContainer.projectService.createProject(user._id, projectID, title)
   }
 
   async updateProject(req: Request): Promise<void> {
@@ -48,8 +49,12 @@ export class ProjectController extends BaseController {
       throw new ValidationError('projectId parameter must be specified', projectId)
     }
 
-    //todo check access
+    const permissions = await this.getPermissions(projectId, user._id)
+    if (!permissions.has(ProjectPermission.UPDATE)) {
+      throw new RoleDoesNotPermitOperationError(`Access denied`, user._id)
+    }
 
+    //todo validate and check fine-grained access
     await DIContainer.sharedContainer.projectService.updateProject(projectId, data)
   }
 
@@ -60,10 +65,8 @@ export class ProjectController extends BaseController {
     if (!modifiedSince) {
       return false
     }
+
     const project = await DIContainer.sharedContainer.projectService.getProject(projectId)
-    if (!project) {
-      throw new MissingContainerError(project)
-    }
 
     return new Date(modifiedSince).getTime() / 1000 >= project.updatedAt
   }
@@ -80,7 +83,10 @@ export class ProjectController extends BaseController {
       throw new ValidationError('projectId should be string', projectId)
     }
 
-    //todo check access
+    const permissions = await this.getPermissions(projectId, user._id)
+    if (!permissions.has(ProjectPermission.READ)) {
+      throw new RoleDoesNotPermitOperationError(`Access denied`, user._id)
+    }
 
     let models = await DIContainer.sharedContainer.projectService.getProjectModels(projectId)
 
@@ -109,7 +115,10 @@ export class ProjectController extends BaseController {
       throw new ValidationError('Role must be string or null', role)
     }
 
-    //todo check access
+    const permissions = await this.getPermissions(projectId, user._id)
+    if (!permissions.has(ProjectPermission.UPDATE_ROLES)) {
+      throw new RoleDoesNotPermitOperationError(`Access denied`, user._id)
+    }
 
     await DIContainer.sharedContainer.projectService.updateUserRole(projectId, userId, role)
   }
@@ -126,7 +135,10 @@ export class ProjectController extends BaseController {
       throw new ValidationError('projectId must be string', projectId)
     }
 
-    //todo check access
+    const permissions = await this.getPermissions(projectId, user._id)
+    if (!permissions.has(ProjectPermission.CREATE_MANUSCRIPT)) {
+      throw new RoleDoesNotPermitOperationError(`Access denied`, user._id)
+    }
 
     return await DIContainer.sharedContainer.projectService.createManuscript(
       projectId,
@@ -146,7 +158,10 @@ export class ProjectController extends BaseController {
       throw new ValidationError('projectId must be string', projectId)
     }
 
-    //todo check access
+    const permissions = await this.getPermissions(projectId, user._id)
+    if (!permissions.has(ProjectPermission.READ)) {
+      throw new RoleDoesNotPermitOperationError(`Access denied`, user._id)
+    }
 
     return await DIContainer.sharedContainer.userService.getCollaborators(projectId)
   }
@@ -165,6 +180,11 @@ export class ProjectController extends BaseController {
     }
     if (manuscriptId) {
       throw new ValidationError('manuscriptId should be string', manuscriptId)
+    }
+
+    const permissions = await this.getPermissions(projectId, user._id)
+    if (!permissions.has(ProjectPermission.READ)) {
+      throw new RoleDoesNotPermitOperationError(`Access denied`, user._id)
     }
 
     const options = {
@@ -194,7 +214,10 @@ export class ProjectController extends BaseController {
       throw new ValidationError('scope must be string', scope)
     }
 
-    // todo check access
+    const permissions = await this.getPermissions(projectId, user._id)
+    if (!permissions.has(ProjectPermission.READ)) {
+      throw new RoleDoesNotPermitOperationError(`Access denied`, user._id)
+    }
 
     return DIContainer.sharedContainer.projectService.generateAccessToken(
       projectId,
@@ -214,8 +237,15 @@ export class ProjectController extends BaseController {
       throw new ValidationError('projectId must be string', projectId)
     }
 
-    //todo check access
+    const permissions = await this.getPermissions(projectId, user._id)
+    if (!permissions.has(ProjectPermission.DELETE)) {
+      throw new RoleDoesNotPermitOperationError(`Access denied`, user._id)
+    }
 
     await DIContainer.sharedContainer.projectService.deleteProject(projectId)
+  }
+
+  async getPermissions(projectID: string, userID: string): Promise<ReadonlySet<ProjectPermission>> {
+    return DIContainer.sharedContainer.projectService.getPermissions(projectID, userID)
   }
 }
