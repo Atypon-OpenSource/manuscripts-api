@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
+import { validate } from '@manuscripts/json-schema'
+
 import { Container } from '../Models/ContainerModels'
-import { equal, validate } from './jsonSchemaValidator'
+import deepEqual from 'deep-equal'
 import prisma from './prismaClient'
 
 enum AccessType {
@@ -181,10 +183,10 @@ export async function syncAccessControl(doc: any, oldDoc: any, userId?: string):
     if (key) {
       const objA = doc[key]
       const objB = oldDoc[key]
-      return !equal(objA, objB)
+      return !deepEqual(objA, objB)
     }
 
-    return !equal(doc, oldDoc)
+    return !deepEqual(doc, oldDoc)
   }
 
   if (objectTypeMatches('MPProject')) {

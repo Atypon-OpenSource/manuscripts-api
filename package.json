@@ -1,6 +1,6 @@
 {
   "name": "@manuscripts/api",
-  "version": "1.2.1",
+  "version": "1.3.0",
   "description": "Manuscripts API server",
   "license": "Apache-2.0",
   "main": "dist/index",
@@ -9,9 +9,8 @@
     "dev": "ts-node --transpile-only --files src",
     "start": "run-s build run",
     "run": "node dist/index",
-    "build": "run-s generate-prisma build-app build-validator",
+    "build": "run-s generate-prisma build-app",
     "build-app": "tsc --project tsconfig.build.json",
-    "build-validator": "./build-validator-function.js",
     "generate-prisma": "prisma generate",
     "migrate-prisma": "prisma migrate dev --name init",
     "migrate-prisma-deploy": "prisma migrate deploy",
@@ -29,7 +28,7 @@
     "lint"
   ],
   "dependencies": {
-    "@manuscripts/json-schema": "^1.0.0",
+    "@manuscripts/json-schema": "^2.0.0",
     "@prisma/client": "^4.8.1",
     "bcrypt": "^5.1.0",
     "checksum": "^1.0.0",
@@ -37,6 +36,7 @@
     "cors": "^2.8.5",
     "crypto-random-string": "^1.0.0",
     "decompress": "^4.2.1",
+    "deep-equal": "^2.2.0",
     "dotenv-safe": "^8.2.0",
     "email-templates": "^10.0.1",
     "express": "^4.18.2",
@@ -84,6 +84,7 @@
     "@types/cookie": "^0.5.1",
     "@types/cors": "^2.8.13",
     "@types/decompress": "^4.2.4",
+    "@types/deep-equal": "^1.0.1",
     "@types/deep-freeze": "^0.1.2",
     "@types/dotenv-safe": "^8.1.2",
     "@types/email-templates": "^10.0.1",
