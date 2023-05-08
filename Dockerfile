@@ -10,7 +10,6 @@ RUN yarn install --non-interactive --frozen-lock-file
 
 COPY ./src ./src
 COPY ./prisma ./prisma
-COPY ./build-validator-function.js ./build-validator-function.js
 COPY ./emails ./emails
 COPY ./build ./build
 COPY ./types ./types
