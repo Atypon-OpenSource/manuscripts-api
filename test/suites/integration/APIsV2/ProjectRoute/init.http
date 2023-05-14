@@ -1,0 +1,34 @@
+### Connect signup
+POST http://{{host}}/api/v1/registration/connect/signup
+manuscripts-app-secret: {{manuscripts-app-secret}}
+content-Type: application/json
+manuscripts-app-id: {{manuscripts-app-id}}
+Accept: application/json
+Content-Type: application/json
+
+{
+  "email": "${{testEmail}}",
+  "name": "{{testName}}",
+  "connectUserID": "{{testConnectUserId}}"
+}
+### Generate Manuscript token
+POST http://{{host}}/api/v1/auth/token/test-connect-id
+manuscripts-app-secret: {{manuscripts-app-secret}}
+content-Type: application/json
+manuscripts-app-id: {{manuscripts-app-id}}
+Accept: application/json
+Content-Type: application/json
+
+{
+"deviceId": "something"
+}
+
+> {%
+    client.global.set("manuscript_token",response.body.token)
+ %}
+
+
+
+
+
+
