@@ -572,7 +572,7 @@ describe('ProjectController', () => {
     const json = {
       data: [
         { _id: 'MPManuscript:abc', objectType: 'MPManuscript' },
-        { _id: 'MPCitation:abc', objectType: 'MPCitation' },
+        { _id: 'MPCitation:abc', objectType: 'MPCitation', embeddedCitationItems: [] },
         { _id: 'MPMPAuxiliaryObjectReference:abc', objectType: 'MPAuxiliaryObjectReference' },
       ],
     }
