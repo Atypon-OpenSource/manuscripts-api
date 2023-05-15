@@ -18,6 +18,7 @@ import cors from 'cors'
 import express from 'express'
 import logger from 'morgan'
 import * as path from 'path'
+import apiMetrics from 'prometheus-api-metrics'
 
 import { PassportAuth } from '../Auth/Passport/Passport'
 import { config } from '../Config/Config'
@@ -29,6 +30,7 @@ import { SQLDatabase } from '../DataAccess/SQLDatabase'
 import { ForbiddenOriginError, IllegalStateError, isStatusCoded } from '../Errors'
 import { log } from '../Utilities/Logger'
 import { IServer } from './IServer'
+import { configurePromClientRegistry } from './PromClientRegistryConfig'
 
 /**
  * The server.
@@ -90,6 +92,9 @@ export class Server implements IServer {
 
     this.app.use(express.json({ limit: '50mb' }))
     this.app.use(express.urlencoded({ extended: true, limit: '50mb' }))
+
+    this.app.use(apiMetrics())
+    configurePromClientRegistry()
 
     PassportAuth.init(this.app)
   }

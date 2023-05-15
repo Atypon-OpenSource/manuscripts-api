@@ -14,7 +14,13 @@
  * limitations under the License.
  */
 
-import { manuscriptIDTypes, ManuscriptNote, Model, ObjectTypes } from '@manuscripts/json-schema'
+import {
+  manuscriptIDTypes,
+  ManuscriptNote,
+  Model,
+  ObjectTypes,
+  validate,
+} from '@manuscripts/json-schema'
 import jwt from 'jsonwebtoken'
 import JSZip from 'jszip'
 import * as _ from 'lodash'
@@ -26,7 +32,6 @@ import { ContainerInvitationRepository } from '../../DataAccess/ContainerInvitat
 import { IManuscriptRepository } from '../../DataAccess/Interfaces/IManuscriptRepository'
 import { IUserRepository } from '../../DataAccess/Interfaces/IUserRepository'
 import { IUserStatusRepository } from '../../DataAccess/Interfaces/IUserStatusRepository'
-import { validate } from '../../DataAccess/jsonSchemaValidator'
 import { ManuscriptNoteRepository } from '../../DataAccess/ManuscriptNoteRepository/ManuscriptNoteRepository'
 import { TemplateRepository } from '../../DataAccess/TemplateRepository/TemplateRepository'
 import { DIContainer } from '../../DIContainer/DIContainer'
