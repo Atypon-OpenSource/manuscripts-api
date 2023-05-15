@@ -25,7 +25,7 @@ const allowUnknownObjectsSchema = Joi.defaults((schema) =>
 export const createProjectSchema: Joi.SchemaMap = {
   headers: jsonHeadersSchema.headers,
   params: Joi.object({
-    projectId: Joi.string(),
+    projectID: Joi.string(),
   }),
   body: Joi.object({
     title: Joi.string(),
@@ -41,7 +41,7 @@ export const saveProjectSchema: Joi.SchemaMap = {
     'content-type': Joi.string().required(),
   }).options({ allowUnknown: true }),
   params: Joi.object({
-    projectId: Joi.string().required(),
+    projectID: Joi.string().required(),
   }),
   body: Joi.object({
     data: Joi.array().items(
@@ -58,7 +58,7 @@ export const projectCollaboratorsSchema: Joi.SchemaMap = {
     accept: appJsonAndCharset,
   }).options({ allowUnknown: true }),
   params: Joi.object({
-    projectId: Joi.string().required(),
+    projectID: Joi.string().required(),
   }),
 }
 
@@ -67,33 +67,19 @@ export const deleteSchema: Joi.SchemaMap = {
     accept: appJsonAndCharset,
   }).options({ allowUnknown: true }),
   params: Joi.object({
-    projectId: Joi.string().required(),
+    projectID: Joi.string().required(),
   }),
 }
-
-export const manageUserRoleSchema: Joi.SchemaMap = {
-  headers: Joi.object({
-    accept: appJsonAndCharset,
-  }).options({ allowUnknown: true }),
-  body: Joi.object({
-    userId: Joi.string().required(),
-    role: Joi.string().allow(null),
-  }),
-  params: Joi.object({
-    projectId: Joi.string().required(),
-  }),
-}
-
 export const addUserSchema: Joi.SchemaMap = {
   headers: Joi.object({
     accept: appJsonAndCharset,
   }).options({ allowUnknown: true }),
   body: Joi.object({
-    userId: Joi.string().required(),
+    userID: Joi.string().required(),
     role: Joi.string().required(),
   }),
   params: Joi.object({
-    projectId: Joi.string().required(),
+    projectID: Joi.string().required(),
   }),
 }
 
@@ -102,8 +88,11 @@ export const getArchiveSchema: Joi.SchemaMap = {
     accept: appJsonAndCharset,
   }).options({ allowUnknown: true }),
   params: Joi.object({
-    projectId: Joi.string().required(),
-    manuscriptId: Joi.string(),
+    projectID: Joi.string().required(),
+    manuscriptID: Joi.string(),
+  }),
+  query: Joi.object({
+    onlyIDs: Joi.boolean(),
   }),
 }
 
@@ -113,8 +102,8 @@ export const loadProjectSchema: Joi.SchemaMap = {
     'if-modified-since': Joi.date(),
   }).options({ allowUnknown: true }),
   params: Joi.object({
-    projectId: Joi.string().required(),
-    manuscriptId: Joi.string(),
+    projectID: Joi.string().required(),
+    manuscriptID: Joi.string(),
   }),
   body: Joi.object({
     types: Joi.array().items(Joi.string()),
@@ -123,17 +112,17 @@ export const loadProjectSchema: Joi.SchemaMap = {
 
 export const accessTokenSchema: Joi.SchemaMap = {
   params: Joi.object({
-    projectId: Joi.string().required(),
+    projectID: Joi.string().required(),
     scope: Joi.string().required(),
   }),
 }
 
 export const createManuscriptSchema: Joi.SchemaMap = {
   params: Joi.object({
-    projectId: Joi.string().required(),
-    manuscriptId: Joi.string(),
+    projectID: Joi.string().required(),
+    manuscriptID: Joi.string(),
   }),
   body: Joi.object({
-    templateId: Joi.string(),
+    templateID: Joi.string(),
   }),
 }

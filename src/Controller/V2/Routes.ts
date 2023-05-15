@@ -28,5 +28,5 @@ export function getRoutes(): BaseRoute[] {
     new UserRoute(),
     new ServerStatusRoute(),
     new ProjectRoute(),
-  ];
+  ]
 }

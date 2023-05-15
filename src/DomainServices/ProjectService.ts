@@ -67,7 +67,7 @@ export class ProjectService {
     return await this.containerRepository.create(newContainer)
   }
 
-  public async createManuscript(projectID: string, manuscriptID?: string, templateId?: string) {
+  public async createManuscript(projectID: string, manuscriptID?: string, templateID?: string) {
     if (manuscriptID) {
       const manuscript = await this.manuscriptRepository.getById(manuscriptID)
       if (manuscript) {
@@ -77,10 +77,10 @@ export class ProjectService {
       manuscriptID = uuid_v4()
     }
 
-    if (templateId) {
-      const template = await this.templateRepository.getById(templateId)
+    if (templateID) {
+      const template = await this.templateRepository.getById(templateID)
       if (!template) {
-        throw new MissingTemplateError(templateId)
+        throw new MissingTemplateError(templateID)
       }
     }
 
@@ -88,7 +88,7 @@ export class ProjectService {
       _id: manuscriptID,
       objectType: ObjectTypes.Manuscript,
       containerID: projectID,
-      prototype: templateId,
+      prototype: templateID,
     })
   }
 

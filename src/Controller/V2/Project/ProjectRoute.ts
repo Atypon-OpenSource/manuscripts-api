@@ -41,7 +41,7 @@ export class ProjectRoute extends BaseRoute {
   }
   public create(router: Router): void {
     router.post(
-      `${this.basePath}/:projectId?`,
+      `${this.basePath}/:projectID?`,
       celebrate(createProjectSchema),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
@@ -53,7 +53,7 @@ export class ProjectRoute extends BaseRoute {
       }
     )
     router.put(
-      `${this.basePath}/:projectId`,
+      `${this.basePath}/:projectID`,
       celebrate(saveProjectSchema),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
@@ -66,7 +66,7 @@ export class ProjectRoute extends BaseRoute {
     )
 
     router.get(
-      [`${this.basePath}/:projectId`, `${this.basePath}/:projectId/manuscript/:manuscriptId?`],
+      [`${this.basePath}/:projectID`, `${this.basePath}/:projectID/manuscript/:manuscriptID?`],
       celebrate(loadProjectSchema, {}),
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
@@ -83,7 +83,7 @@ export class ProjectRoute extends BaseRoute {
     )
 
     router.post(
-      `${this.basePath}/:projectId/users`,
+      `${this.basePath}/:projectID/users`,
       celebrate(addUserSchema, {}),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
@@ -96,7 +96,7 @@ export class ProjectRoute extends BaseRoute {
     )
 
     router.post(
-      `${this.basePath}/:projectId/manuscript/:manuscriptId?`,
+      `${this.basePath}/:projectID/manuscript/:manuscriptID?`,
       celebrate(createManuscriptSchema, {}),
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
@@ -108,7 +108,7 @@ export class ProjectRoute extends BaseRoute {
     )
 
     router.get(
-      `${this.basePath}/:projectId/collaborators`,
+      `${this.basePath}/:projectID/collaborators`,
       celebrate(projectCollaboratorsSchema),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
@@ -122,8 +122,8 @@ export class ProjectRoute extends BaseRoute {
 
     router.get(
       [
-        `${this.basePath}/:projectId/archive`,
-        `${this.basePath}/:projectId/manuscript/:manuscriptId/archive`,
+        `${this.basePath}/:projectID/archive`,
+        `${this.basePath}/:projectID/manuscript/:manuscriptID/archive`,
       ],
       celebrate(getArchiveSchema, {}),
       AuthStrategy.JWTAuth,
@@ -137,7 +137,7 @@ export class ProjectRoute extends BaseRoute {
     )
 
     router.get(
-      `${this.basePath}/:projectId/:scope`,
+      `${this.basePath}/:projectID/:scope`,
       celebrate(accessTokenSchema, {}),
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
@@ -148,7 +148,7 @@ export class ProjectRoute extends BaseRoute {
     )
 
     router.delete(
-      `${this.basePath}/:projectId`,
+      `${this.basePath}/:projectID`,
       celebrate(deleteSchema, {}),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
