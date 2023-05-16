@@ -96,7 +96,7 @@ export class ContainersController extends ContainedBaseController {
     await DIContainer.sharedContainer.containerService.manageUserRole(
       req.user,
       containerID,
-      { connectUserId: managedUserConnectId },
+      { userId: managedUserId, connectUserId: managedUserConnectId },
       newRole
     )
   }
