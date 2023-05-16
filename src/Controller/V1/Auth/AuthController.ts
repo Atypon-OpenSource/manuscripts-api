@@ -125,8 +125,6 @@ export class AuthController extends BaseController {
       algorithm: scopeInfo.publicKeyPEM === null ? 'HS256' : 'RS256',
       keyid: scopeInfo.identifier,
       expiresIn: `${scopeInfo.expiry}m`,
-      allowInsecureKeySizes: true,
-
     })
   }
 }
