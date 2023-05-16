@@ -15,12 +15,22 @@
  */
 
 import { celebrate } from 'celebrate'
-import { NextFunction, Request, Response, Router } from 'express'
-import { StatusCodes } from 'http-status-codes'
+import { Router } from 'express'
 
 import { AuthStrategy } from '../../../Auth/Passport/AuthStrategy'
 import { BaseRoute } from '../../BaseRoute'
 import { ProjectController } from './ProjectController'
+import {
+  createManuscriptHandler,
+  createProjectHandler,
+  deleteProjectHandler,
+  generateAccessTokenHandler,
+  getArchiveHandler,
+  getCollaboratorsHandler,
+  getProjectModelsHandler,
+  updateProjectHandler,
+  updateUserRoleHandler,
+} from './ProjectRouteHandlers'
 import {
   accessTokenSchema,
   addUserSchema,
@@ -34,6 +44,7 @@ import {
 } from './ProjectSchema'
 
 export class ProjectRoute extends BaseRoute {
+  // @ts-ignore
   private projectController = new ProjectController()
 
   private get basePath(): string {
@@ -45,41 +56,21 @@ export class ProjectRoute extends BaseRoute {
       celebrate(createProjectSchema),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
-      (req: Request, res: Response, next: NextFunction) => {
-        return this.runWithErrorHandling(async () => {
-          const project = await this.projectController.createProject(req)
-          res.status(StatusCodes.OK).send(project)
-        }, next)
-      }
+      createProjectHandler.bind(this)
     )
     router.put(
       `${this.basePath}/:projectID`,
       celebrate(saveProjectSchema),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
-      (req: Request, res: Response, next: NextFunction) => {
-        return this.runWithErrorHandling(async () => {
-          const manuscript = await this.projectController.updateProject(req)
-          res.status(StatusCodes.OK).send(manuscript)
-        }, next)
-      }
+      updateProjectHandler.bind(this)
     )
 
     router.get(
       [`${this.basePath}/:projectID`, `${this.basePath}/:projectID/manuscript/:manuscriptID?`],
       celebrate(loadProjectSchema, {}),
       AuthStrategy.JWTAuth,
-      (req: Request, res: Response, next: NextFunction) => {
-        return this.runWithErrorHandling(async () => {
-          if (await this.projectController.isProjectCacheValid(req)) {
-            res.status(StatusCodes.NOT_MODIFIED).end()
-          } else {
-            const models = await this.projectController.getProjectModels(req)
-            res.set('Content-Type', 'application/json')
-            res.status(StatusCodes.OK).send(models)
-          }
-        }, next)
-      }
+      getProjectModelsHandler.bind(this)
     )
 
     router.post(
@@ -87,24 +78,14 @@ export class ProjectRoute extends BaseRoute {
       celebrate(addUserSchema, {}),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
-      (req: Request, res: Response, next: NextFunction) => {
-        return this.runWithErrorHandling(async () => {
-          await this.projectController.updateUserRole(req)
-          res.status(StatusCodes.NO_CONTENT).end()
-        }, next)
-      }
+      updateUserRoleHandler.bind(this)
     )
 
     router.post(
       `${this.basePath}/:projectID/manuscript/:manuscriptID?`,
       celebrate(createManuscriptSchema, {}),
       AuthStrategy.JWTAuth,
-      (req: Request, res: Response, next: NextFunction) => {
-        return this.runWithErrorHandling(async () => {
-          const manuscript = await this.projectController.createManuscript(req)
-          res.status(StatusCodes.OK).send(manuscript)
-        }, next)
-      }
+      createManuscriptHandler.bind(this)
     )
 
     router.get(
@@ -112,12 +93,7 @@ export class ProjectRoute extends BaseRoute {
       celebrate(projectCollaboratorsSchema),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
-      (req: Request, res: Response, next: NextFunction) => {
-        return this.runWithErrorHandling(async () => {
-          const collaborators = await this.projectController.getCollaborators(req)
-          res.status(StatusCodes.OK).send(collaborators)
-        }, next)
-      }
+      getCollaboratorsHandler.bind(this)
     )
 
     router.get(
@@ -127,24 +103,14 @@ export class ProjectRoute extends BaseRoute {
       ],
       celebrate(getArchiveSchema, {}),
       AuthStrategy.JWTAuth,
-      (req: Request, res: Response, next: NextFunction) => {
-        return this.runWithErrorHandling(async () => {
-          const archive = await this.projectController.getArchive(req)
-          res.set('Content-Type', 'application/zip')
-          res.status(StatusCodes.OK).send(Buffer.from(archive))
-        }, next)
-      }
+      getArchiveHandler.bind(this)
     )
 
     router.get(
       `${this.basePath}/:projectID/:scope`,
       celebrate(accessTokenSchema, {}),
       AuthStrategy.JWTAuth,
-      (req: Request, res: Response, next: NextFunction) => {
-        return this.runWithErrorHandling(async () => {
-          res.send(await this.projectController.generateAccessToken(req))
-        }, next)
-      }
+      generateAccessTokenHandler.bind(this)
     )
 
     router.delete(
@@ -152,12 +118,7 @@ export class ProjectRoute extends BaseRoute {
       celebrate(deleteSchema, {}),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
-      (req: Request, res: Response, next: NextFunction) => {
-        return this.runWithErrorHandling(async () => {
-          await this.projectController.deleteProject(req)
-          res.status(StatusCodes.OK).end()
-        }, next)
-      }
+      deleteProjectHandler.bind(this)
     )
   }
 }
