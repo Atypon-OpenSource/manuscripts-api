@@ -16,9 +16,9 @@
 
 import cors from 'cors'
 import express from 'express'
+import promBundle from 'express-prom-bundle'
 import logger from 'morgan'
 import * as path from 'path'
-import apiMetrics from 'prometheus-api-metrics'
 
 import { PassportAuth } from '../Auth/Passport/Passport'
 import { config } from '../Config/Config'
@@ -91,7 +91,8 @@ export class Server implements IServer {
     this.app.use(express.json({ limit: '50mb' }))
     this.app.use(express.urlencoded({ extended: true, limit: '50mb' }))
 
-    this.app.use(apiMetrics())
+    const metricsMiddleware = promBundle({ promClient: { collectDefaultMetrics: {} } })
+    this.app.use(metricsMiddleware)
     configurePromClientRegistry()
 
     PassportAuth.init(this.app)
