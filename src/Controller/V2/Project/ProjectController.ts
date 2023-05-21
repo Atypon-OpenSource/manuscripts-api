@@ -23,11 +23,7 @@ import { ProjectUserRole } from '../../../Models/ContainerModels'
 import { BaseController } from '../../BaseController'
 
 export class ProjectController extends BaseController {
-  async createProject(
-    title: string,
-    projectID: string | undefined,
-    user: Express.User
-  ): Promise<Project> {
+  async createProject(title: string, user: Express.User, projectID?: string): Promise<Project> {
     //todo check access
     return await DIContainer.sharedContainer.projectService.createProject(
       user._id,
@@ -36,7 +32,7 @@ export class ProjectController extends BaseController {
     )
   }
 
-  async updateProject(projectID: string, data: any, user: Express.User): Promise<void> {
+  async updateProject(data: any, user: Express.User, projectID: string): Promise<void> {
     const permissions = await this.getPermissions(projectID, user._id)
     if (!permissions.has(ProjectPermission.UPDATE)) {
       throw new RoleDoesNotPermitOperationError(`Access denied`, user._id)
@@ -58,7 +54,7 @@ export class ProjectController extends BaseController {
     return new Date(modifiedSince).getTime() / 1000 >= project.updatedAt
   }
 
-  async getProjectModels(projectID: string, types: any, user: Express.User): Promise<Model[]> {
+  async getProjectModels(types: any, user: Express.User, projectID: string): Promise<Model[]> {
     const permissions = await this.getPermissions(projectID, user._id)
     if (!permissions.has(ProjectPermission.READ)) {
       throw new RoleDoesNotPermitOperationError(`Access denied`, user._id)
@@ -74,10 +70,10 @@ export class ProjectController extends BaseController {
   }
 
   async updateUserRole(
-    projectID: string,
     userID: string,
     role: ProjectUserRole,
-    user: Express.User
+    user: Express.User,
+    projectID: string
   ): Promise<void> {
     const permissions = await this.getPermissions(projectID, user._id)
     if (!permissions.has(ProjectPermission.UPDATE_ROLES)) {
@@ -88,10 +84,10 @@ export class ProjectController extends BaseController {
   }
 
   async createManuscript(
+    user: Express.User,
     projectID: string,
-    manuscriptID: string | undefined,
-    templateID: string | undefined,
-    user: Express.User
+    manuscriptID?: string,
+    templateID?: string
   ): Promise<Manuscript> {
     const permissions = await this.getPermissions(projectID, user._id)
     if (!permissions.has(ProjectPermission.CREATE_MANUSCRIPT)) {
@@ -105,7 +101,7 @@ export class ProjectController extends BaseController {
     )
   }
 
-  async getCollaborators(projectID: string, user: Express.User): Promise<UserCollaborator[]> {
+  async getCollaborators(user: Express.User, projectID: string): Promise<UserCollaborator[]> {
     const permissions = await this.getPermissions(projectID, user._id)
     if (!permissions.has(ProjectPermission.READ)) {
       throw new RoleDoesNotPermitOperationError(`Access denied`, user._id)
@@ -115,11 +111,11 @@ export class ProjectController extends BaseController {
   }
 
   async getArchive(
-    projectID: string,
-    manuscriptID: string,
     onlyIDs: any,
     accept: any,
-    user: Express.User
+    user: Express.User,
+    projectID: string,
+    manuscriptID?: string
   ) {
     const permissions = await this.getPermissions(projectID, user._id)
     if (!permissions.has(ProjectPermission.READ)) {
@@ -139,7 +135,7 @@ export class ProjectController extends BaseController {
     )
   }
 
-  async generateAccessToken(projectID: string, scope: string, user: Express.User): Promise<string> {
+  async generateAccessToken(scope: string, user: Express.User, projectID: string): Promise<string> {
     const permissions = await this.getPermissions(projectID, user._id)
     if (!permissions.has(ProjectPermission.READ)) {
       throw new RoleDoesNotPermitOperationError(`Access denied`, user._id)

@@ -35,5 +35,5 @@ export function getRoutes(): BaseRoute[] {
     new ContainerRoute(),
     new ProjectRoute(),
     new ContainerRequestRoute(),
-  ];
+  ]
 }

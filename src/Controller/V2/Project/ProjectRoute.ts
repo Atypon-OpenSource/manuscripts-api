@@ -21,6 +21,7 @@ import { StatusCodes } from 'http-status-codes'
 import { AuthStrategy } from '../../../Auth/Passport/AuthStrategy'
 import { ValidationError } from '../../../Errors'
 import { ProjectUserRole } from '../../../Models/ContainerModels'
+import { isString } from '../../../util'
 import { BaseRoute } from '../../BaseRoute'
 import { ProjectController } from './ProjectController'
 import {
@@ -156,7 +157,7 @@ export class ProjectRoute extends BaseRoute {
     if (!user) {
       throw new ValidationError('No user found', user)
     }
-    const project = await this.projectController.createProject(title, projectID, user)
+    const project = await this.projectController.createProject(title, user, projectID)
     res.status(StatusCodes.OK).send(project)
   }
   private async updateProjectHandler(req: Request, res: Response) {
@@ -170,14 +171,14 @@ export class ProjectRoute extends BaseRoute {
     if (!projectID) {
       throw new ValidationError('projectID parameter must be specified', projectID)
     }
-    const manuscript = await this.projectController.updateProject(projectID, data, user)
+    const manuscript = await this.projectController.updateProject(data, user, projectID)
     res.status(StatusCodes.OK).send(manuscript)
   }
   private async getProjectModelsHandler(req: Request, res: Response) {
     const modifiedSince = req.headers['if-modified-since']
     const { projectID } = req.params
     if (!projectID) {
-      throw new ValidationError('projectID should be string', projectID)
+      throw new ValidationError('projectID parameter must be specified', projectID)
     }
     if (await this.projectController.isProjectCacheValid(projectID, modifiedSince)) {
       res.status(StatusCodes.NOT_MODIFIED).end()
@@ -187,7 +188,7 @@ export class ProjectRoute extends BaseRoute {
         throw new ValidationError('No user found', user)
       }
       const { types } = req.body
-      const models = await this.projectController.getProjectModels(projectID, types, user)
+      const models = await this.projectController.getProjectModels(types, user, projectID)
       res.set('Content-Type', 'application/json')
       res.status(StatusCodes.OK).send(models)
     }
@@ -201,10 +202,10 @@ export class ProjectRoute extends BaseRoute {
       throw new ValidationError('No user found', user)
     }
     if (!projectID) {
-      throw new ValidationError('projectID must be string', projectID)
+      throw new ValidationError('projectID parameter must be specified', projectID)
     }
     if (!userID) {
-      throw new ValidationError('userID must be string', userID)
+      throw new ValidationError('userID parameter must be specified', userID)
     }
     if (!role) {
       throw new ValidationError('Role must be string or null', role)
@@ -214,7 +215,7 @@ export class ProjectRoute extends BaseRoute {
     if (!validRoles.includes(role)) {
       throw new ValidationError('Invalid role', role)
     }
-    await this.projectController.updateUserRole(projectID, userID, role, user)
+    await this.projectController.updateUserRole(userID, role, user, projectID)
     res.status(StatusCodes.NO_CONTENT).end()
   }
   private async createManuscriptHandler(req: Request, res: Response) {
@@ -226,14 +227,14 @@ export class ProjectRoute extends BaseRoute {
       throw new ValidationError('No user found', user)
     }
     if (!projectID) {
-      throw new ValidationError('projectID must be string', projectID)
+      throw new ValidationError('projectID parameter must be specified', projectID)
     }
 
     const manuscript = await this.projectController.createManuscript(
+      user,
       projectID,
       manuscriptID,
-      templateID,
-      user
+      templateID
     )
     res.status(StatusCodes.OK).send(manuscript)
   }
@@ -245,9 +246,9 @@ export class ProjectRoute extends BaseRoute {
       throw new ValidationError('No user found', user)
     }
     if (!projectID) {
-      throw new ValidationError('projectID must be string', projectID)
+      throw new ValidationError('projectID parameter must be specified', projectID)
     }
-    const collaborators = await this.projectController.getCollaborators(projectID, user)
+    const collaborators = await this.projectController.getCollaborators(user, projectID)
     res.status(StatusCodes.OK).send(collaborators)
   }
   private async getArchiveHandler(req: Request, res: Response) {
@@ -260,18 +261,18 @@ export class ProjectRoute extends BaseRoute {
       throw new ValidationError('No user found', user)
     }
     if (!projectID) {
-      throw new ValidationError('projectID must be string', projectID)
+      throw new ValidationError('projectID parameter must be specified', projectID)
     }
-    if (manuscriptID) {
-      throw new ValidationError('manuscriptID should be string', manuscriptID)
+    if (manuscriptID && !isString(manuscriptID)) {
+      throw new ValidationError('manuscriptID parameter must be specified', manuscriptID)
     }
 
     const archive = await this.projectController.getArchive(
-      projectID,
-      manuscriptID,
       onlyIDs,
       accept,
-      user
+      user,
+      projectID,
+      manuscriptID
     )
     res.set('Content-Type', 'application/zip')
     res.status(StatusCodes.OK).send(Buffer.from(archive))
@@ -284,12 +285,12 @@ export class ProjectRoute extends BaseRoute {
       throw new ValidationError('No user found', user)
     }
     if (!projectID) {
-      throw new ValidationError('projectID must be string', projectID)
+      throw new ValidationError('projectID parameter must be specified', projectID)
     }
     if (!scope) {
-      throw new ValidationError('scope must be string', scope)
+      throw new ValidationError('scope parameter must be specified', scope)
     }
-    res.send(await this.projectController.generateAccessToken(projectID, scope, user))
+    res.send(await this.projectController.generateAccessToken(scope, user, projectID))
   }
   private async deleteProjectHandler(req: Request, res: Response) {
     const { projectID } = req.params
@@ -299,7 +300,7 @@ export class ProjectRoute extends BaseRoute {
       throw new ValidationError('No user found', req.user)
     }
     if (!projectID) {
-      throw new ValidationError('projectID must be string', projectID)
+      throw new ValidationError('projectID parameter must be specified', projectID)
     }
     await this.projectController.deleteProject(projectID, user)
     res.status(StatusCodes.OK).end()

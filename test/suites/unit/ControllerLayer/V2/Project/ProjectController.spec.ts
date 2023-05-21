@@ -16,21 +16,24 @@
 import { ProjectController } from '../../../../../../src/Controller/V2/Project/ProjectController'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
 import { ProjectPermission } from '../../../../../../src/DomainServices/ProjectService'
-import { RoleDoesNotPermitOperationError, ValidationError } from '../../../../../../src/Errors'
+import { RoleDoesNotPermitOperationError } from '../../../../../../src/Errors'
+import { ProjectUserRole } from '../../../../../../src/Models/ContainerModels'
+import { validUser } from '../../../../../data/fixtures/userServiceUser'
 beforeEach(() => {
   ;(DIContainer as any)._sharedContainer = null
   return DIContainer.init()
 })
 
-// @ts-ignore
-const mockRequest = (body, params, user, headers, query?) => ({
-  body,
-  params,
-  user,
-  headers,
-  query,
-})
-
+const title = 'Test Project'
+const projectID = 'some_project_id'
+const user = validUser as Express.User
+const userID = user._id
+const role = ProjectUserRole.Owner
+const manuscriptID = 'some_manuscript_id'
+const templateID = 'some_template_id'
+const onlyIDs = 'true'
+const accept = 'application/json'
+const scope = 'test'
 describe('ProjectController', () => {
   let controller: ProjectController
 
@@ -38,198 +41,95 @@ describe('ProjectController', () => {
     controller = new ProjectController()
   })
   describe('createProject', () => {
-    it('should throw an error if user is not found', async () => {
-      const req = mockRequest({ title: 'Test Project' }, { projectID: '123' }, null, {})
-      // @ts-ignore
-      await expect(controller.createProject(req)).rejects.toThrow('No user found')
-    })
     it('should call projectService.createProject with correct parameters', async () => {
-      const req = mockRequest({ title: 'Test Project' }, { projectID: '123' }, { _id: 'user1' }, {})
       const mockProject = { _id: '123', title: 'Test Project', owners: ['user1'] }
 
       DIContainer.sharedContainer.projectService.createProject = jest
         .fn()
         .mockResolvedValue(mockProject)
 
-      // @ts-ignore
-      const project = await controller.createProject(req)
+      const project = await controller.createProject(title, user, projectID)
 
       expect(DIContainer.sharedContainer.projectService.createProject).toHaveBeenCalledWith(
-        'user1',
-        '123',
-        'Test Project'
+        userID,
+        projectID,
+        title
       )
       expect(project).toEqual(mockProject)
     })
     it('should not throw an error if projectID is missing', async () => {
-      const req = mockRequest({ title: 'Project Title' }, {}, { _id: 'some_user_id' }, {})
-
-      // @ts-ignore
-      await expect(controller.createProject(req)).resolves.not.toThrow()
+      await expect(controller.createProject(title, user)).resolves.not.toThrow()
     })
     it('should throw an error if ProjectService.createProject fails', async () => {
-      const req = mockRequest(
-        { title: 'Project Title' },
-        { projectID: 'some_project_id' },
-        { _id: 'some_user_id' },
-        {}
-      )
-
       DIContainer.sharedContainer.projectService.createProject = jest
         .fn()
         .mockRejectedValue(new Error('Test Error'))
 
-      // @ts-ignore
-      await expect(controller.createProject(req)).rejects.toThrow('Test Error')
+      await expect(controller.createProject(title, user, projectID)).rejects.toThrow('Test Error')
     })
   })
   describe('updateProject', () => {
-    it('should throw an error if user is missing', async () => {
-      const req = mockRequest({ data: 'some_data' }, { projectID: 'some_project_id' }, {}, {})
-      // @ts-ignore
-      await expect(controller.updateProject(req)).rejects.toThrow('Access denied')
-    })
-
-    it('should throw an error if projectID is missing', async () => {
-      const req = mockRequest({ data: 'some_data' }, {}, { _id: 'some_user_id' }, {})
-
-      // @ts-ignore
-      await expect(controller.updateProject(req)).rejects.toThrow(
-        'Validation error: projectID parameter must be specified'
-      )
-    })
-
     it('should throw an error if user does not have UPDATE permission', async () => {
-      const req = mockRequest(
-        { data: 'some_data' },
-        { projectID: 'some_project_id' },
-        { _id: 'some_user_id' },
-        {}
-      )
-
       controller.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.READ]))
-
-      // @ts-ignore
-      await expect(controller.updateProject(req)).rejects.toThrow('Access denied')
+      await expect(controller.updateProject({}, user, projectID)).rejects.toThrow('Access denied')
     })
 
     it('should throw an error if ProjectService.updateProject fails', async () => {
-      const req = mockRequest(
-        { data: 'some_data' },
-        { projectID: 'some_project_id' },
-        { _id: 'some_user_id' },
-        {}
-      )
-
       controller.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.UPDATE]))
-
       DIContainer.sharedContainer.projectService.updateProject = jest
         .fn()
         .mockRejectedValue(new Error('Test Error'))
-
-      // @ts-ignore
-      await expect(controller.updateProject(req)).rejects.toThrow('Test Error')
+      await expect(controller.updateProject({}, user, projectID)).rejects.toThrow('Test Error')
     })
 
     it('should not throw an error when operation is successful', async () => {
-      const req = mockRequest(
-        { data: 'some_data' },
-        { projectID: 'some_project_id' },
-        { _id: 'some_user_id' },
-        {}
-      )
-
       controller.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.UPDATE]))
 
-      // @ts-ignore
-      DIContainer.sharedContainer.projectService.updateProject = jest.fn().mockResolvedValue()
-
-      // @ts-ignore
-      await expect(controller.updateProject(req)).resolves.not.toThrow()
+      DIContainer.sharedContainer.projectService.updateProject = jest.fn().mockResolvedValue({})
+      await expect(controller.updateProject({}, user, projectID)).resolves.not.toThrow()
     })
   })
   describe('isProjectCachceValid', () => {
     it('should return false if "if-modified-since" header is missing', async () => {
-      const req = mockRequest({}, { projectID: 'some_project_id' }, {}, {})
-
-      // @ts-ignore
-      const result = await controller.isProjectCacheValid(req)
+      const result = await controller.isProjectCacheValid(projectID, undefined)
       expect(result).toBe(false)
     })
 
     it('should return false if project was updated after the "if-modified-since" header', async () => {
-      const req = mockRequest(
-        {},
-        { projectID: 'some_project_id' },
-        {},
-        { 'if-modified-since': new Date('2023-01-01').toISOString() }
-      )
-
       DIContainer.sharedContainer.projectService.getProject = jest.fn().mockResolvedValue({
         updatedAt: new Date('2023-01-02').getTime() / 1000,
       })
-
-      // @ts-ignore
-      const result = await controller.isProjectCacheValid(req)
+      const result = await controller.isProjectCacheValid(
+        projectID,
+        new Date('2023-01-01').toISOString()
+      )
       expect(result).toBe(false)
     })
 
     it('should return true if project was not updated after the "if-modified-since" header', async () => {
-      const req = mockRequest(
-        {},
-        { projectID: 'some_project_id' },
-        {},
-        { 'if-modified-since': new Date('2023-01-02').toISOString() }
-      )
-
       DIContainer.sharedContainer.projectService.getProject = jest.fn().mockResolvedValue({
         updatedAt: new Date('2023-01-01').getTime() / 1000,
       })
 
-      // @ts-ignore
-      const result = await controller.isProjectCacheValid(req)
+      const result = await controller.isProjectCacheValid(
+        projectID,
+        new Date('2023-01-02').toISOString()
+      )
       expect(result).toBe(true)
     })
   })
   describe('getProjectModels', () => {
-    it('should throw error if user is missing', async () => {
-      const req = mockRequest(
-        { types: ['type1', 'type2'] },
-        { projectID: 'some_project_id' },
-        null,
-        {}
-      )
-
-      // @ts-ignore
-      await expect(controller.getProjectModels(req)).rejects.toThrow(ValidationError)
-    })
-
-    it('should throw error if projectID is missing', async () => {
-      const req = mockRequest({ types: ['type1', 'type2'] }, {}, { _id: 'some_user_id' }, {})
-
-      // @ts-ignore
-      await expect(controller.getProjectModels(req)).rejects.toThrow(ValidationError)
-    })
-
     it('should throw error if user lacks READ permission', async () => {
-      const req = mockRequest(
-        { types: ['type1', 'type2'] },
-        { projectID: 'some_project_id' },
-        { _id: 'some_user_id' },
-        {}
-      )
+      const types = ['type1', 'type2']
 
       controller.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.UPDATE]))
 
-      // @ts-ignore
-      await expect(controller.getProjectModels(req)).rejects.toThrow(
+      await expect(controller.getProjectModels(types, user, projectID)).rejects.toThrow(
         RoleDoesNotPermitOperationError
       )
     })
 
     it('should return all models if no types are specified', async () => {
-      const req = mockRequest({}, { projectID: 'some_project_id' }, { _id: 'some_user_id' }, {})
-
       const mockModels = [{ objectType: 'type1' }, { objectType: 'type2' }, { objectType: 'type3' }]
 
       DIContainer.sharedContainer.projectService.getProjectModels = jest
@@ -237,254 +137,104 @@ describe('ProjectController', () => {
         .mockResolvedValue(mockModels)
       controller.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.READ]))
 
-      // @ts-ignore
-      const result = await controller.getProjectModels(req)
+      const result = await controller.getProjectModels({}, user, projectID)
       expect(result).toEqual(mockModels)
     })
 
     it('should return models of specified types', async () => {
-      const req = mockRequest(
-        { types: ['type1', 'type3'] },
-        { projectID: 'some_project_id' },
-        { _id: 'some_user_id' },
-        {}
-      )
-
       const mockModels = [{ objectType: 'type1' }, { objectType: 'type2' }, { objectType: 'type3' }]
+      const types = ['type1', 'type3']
 
       DIContainer.sharedContainer.projectService.getProjectModels = jest
         .fn()
         .mockResolvedValue(mockModels)
       controller.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.READ]))
 
-      // @ts-ignore
-      const result = await controller.getProjectModels(req)
+      const result = await controller.getProjectModels(types, user, projectID)
       expect(result).toEqual([{ objectType: 'type1' }, { objectType: 'type3' }])
     })
   })
   describe('updateUserRole', () => {
-    it('should throw error if user is missing', async () => {
-      const req = mockRequest(
-        { userID: 'some_user_id', role: 'some_role' },
-        { projectID: 'some_project_id' },
-        null,
-        {}
-      )
-
-      // @ts-ignore
-      await expect(controller.updateUserRole(req)).rejects.toThrow(ValidationError)
-    })
-
-    it('should throw error if projectID is missing', async () => {
-      const req = mockRequest({ role: 'some_role' }, {}, { _id: 'some_user_id' }, {})
-
-      // @ts-ignore
-      await expect(controller.updateUserRole(req)).rejects.toThrow(ValidationError)
-    })
-
-    it('should throw error if userID is missing', async () => {
-      const req = mockRequest(
-        { role: 'some_role' },
-        { projectID: 'some_project_id' },
-        { _id: 'some_user_id' },
-        {}
-      )
-
-      // @ts-ignore
-      await expect(controller.updateUserRole(req)).rejects.toThrow(ValidationError)
-    })
-
-    it('should throw error if role is missing', async () => {
-      const req = mockRequest(
-        { userID: 'some_user_id' },
-        { projectID: 'some_project_id' },
-        { _id: 'some_user_id' },
-        {}
-      )
-
-      // @ts-ignore
-      await expect(controller.updateUserRole(req)).rejects.toThrow(ValidationError)
-    })
-
     it('should throw error if user lacks UPDATE_ROLES permission', async () => {
-      const req = mockRequest(
-        { userID: 'some_user_id', role: 'some_role' },
-        { projectID: 'some_project_id' },
-        { _id: 'some_user_id' },
-        {}
-      )
-
       controller.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.READ]))
 
-      // @ts-ignore
-      await expect(controller.updateUserRole(req)).rejects.toThrow(RoleDoesNotPermitOperationError)
-    })
-
-    it('should call projectService.updateUserRole with correct params', async () => {
-      const req = mockRequest(
-        { userID: 'some_user_id', role: 'some_role' },
-        { projectID: 'some_project_id' },
-        { _id: 'some_user_id' },
-        {}
-      )
-
-      // @ts-ignore
-      DIContainer.sharedContainer.projectService.updateUserRole = jest.fn().mockResolvedValue()
-      controller.getPermissions = jest
-        .fn()
-        .mockResolvedValue(new Set([ProjectPermission.UPDATE_ROLES]))
-
-      // @ts-ignore
-      await controller.updateUserRole(req)
-      expect(DIContainer.sharedContainer.projectService.updateUserRole).toHaveBeenCalledWith(
-        'some_project_id',
-        'some_user_id',
-        'some_role'
-      )
-    })
-  })
-  describe('createManuscript', () => {
-    it('should throw error if user is missing', async () => {
-      const req = mockRequest(
-        { templateID: 'template_id' },
-        { projectID: 'project_id', manuscriptID: 'manuscript_id' },
-        null,
-        {}
-      )
-
-      // @ts-ignore
-      await expect(controller.createManuscript(req)).rejects.toThrow(ValidationError)
-    })
-
-    it('should throw error if projectID is missing', async () => {
-      const req = mockRequest(
-        { templateID: 'template_id' },
-        { manuscriptID: 'manuscript_id' },
-        { _id: 'some_user_id' },
-        {}
-      )
-
-      // @ts-ignore
-      await expect(controller.createManuscript(req)).rejects.toThrow(ValidationError)
-    })
-
-    it('should throw error if user lacks CREATE_MANUSCRIPT permission', async () => {
-      const req = mockRequest(
-        { templateID: 'template_id' },
-        { projectID: 'project_id', manuscriptID: 'manuscript_id' },
-        { _id: 'some_user_id' },
-        {}
-      )
-
-      controller.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.READ]))
-
-      // @ts-ignore
-      await expect(controller.createManuscript(req)).rejects.toThrow(
+      await expect(controller.updateUserRole(userID, role, user, projectID)).rejects.toThrow(
         RoleDoesNotPermitOperationError
       )
     })
 
-    it('should call projectService.createManuscript with correct params', async () => {
-      const req = mockRequest(
-        { templateID: 'template_id' },
-        { projectID: 'project_id', manuscriptID: 'manuscript_id' },
-        { _id: 'some_user_id' },
-        {}
-      )
+    it('should call projectService.updateUserRole with correct params', async () => {
+      DIContainer.sharedContainer.projectService.updateUserRole = jest.fn().mockResolvedValue({})
+      controller.getPermissions = jest
+        .fn()
+        .mockResolvedValue(new Set([ProjectPermission.UPDATE_ROLES]))
 
+      await controller.updateUserRole(userID, role, user, projectID)
+      expect(DIContainer.sharedContainer.projectService.updateUserRole).toHaveBeenCalledWith(
+        projectID,
+        userID,
+        role
+      )
+    })
+  })
+  describe('createManuscript', () => {
+    it('should throw error if user lacks CREATE_MANUSCRIPT permission', async () => {
+      controller.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.READ]))
+
+      await expect(
+        controller.createManuscript(user, projectID, manuscriptID, templateID)
+      ).rejects.toThrow(RoleDoesNotPermitOperationError)
+    })
+
+    it('should call projectService.createManuscript with correct params', async () => {
       DIContainer.sharedContainer.projectService.createManuscript = jest.fn().mockResolvedValue({})
       controller.getPermissions = jest
         .fn()
         .mockResolvedValue(new Set([ProjectPermission.CREATE_MANUSCRIPT]))
 
-      // @ts-ignore
-      await controller.createManuscript(req)
+      await controller.createManuscript(user, projectID, manuscriptID, templateID)
       expect(DIContainer.sharedContainer.projectService.createManuscript).toHaveBeenCalledWith(
-        'project_id',
-        'manuscript_id',
-        'template_id'
+        projectID,
+        manuscriptID,
+        templateID
       )
     })
   })
   describe('getCollaborators', () => {
-    it('should throw error if user is missing', async () => {
-      const req = mockRequest({}, { projectID: 'project_id' }, null, {})
-
-      // @ts-ignore
-      await expect(controller.getCollaborators(req)).rejects.toThrow(ValidationError)
-    })
-
-    it('should throw error if projectID is missing', async () => {
-      const req = mockRequest({}, {}, { _id: 'some_user_id' }, {})
-
-      // @ts-ignore
-      await expect(controller.getCollaborators(req)).rejects.toThrow(ValidationError)
-    })
-
     it('should throw error if user lacks READ permission', async () => {
-      const req = mockRequest({}, { projectID: 'project_id' }, { _id: 'some_user_id' }, {})
-
       controller.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.UPDATE]))
 
-      // @ts-ignore
-      await expect(controller.getCollaborators(req)).rejects.toThrow(
+      await expect(controller.getCollaborators(user, projectID)).rejects.toThrow(
         RoleDoesNotPermitOperationError
       )
     })
 
     it('should call userService.getCollaborators with correct params', async () => {
-      const req = mockRequest({}, { projectID: 'project_id' }, { _id: 'some_user_id' }, {})
-
       DIContainer.sharedContainer.userService.getCollaborators = jest.fn().mockResolvedValue([])
       controller.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.READ]))
 
-      // @ts-ignore
-      await controller.getCollaborators(req)
+      await controller.getCollaborators(user, projectID)
       expect(DIContainer.sharedContainer.userService.getCollaborators).toHaveBeenCalledWith(
-        'project_id'
+        projectID
       )
     })
   })
   describe('getArchive', () => {
-    it('should throw error if user is missing', async () => {
-      const req = mockRequest({}, { projectID: 'project_id' }, null, {}, {})
-
-      // @ts-ignore
-      await expect(controller.getArchive(req)).rejects.toThrow(ValidationError)
-    })
-
-    it('should throw error if projectID is missing', async () => {
-      const req = mockRequest({}, {}, { _id: 'some_user_id' }, {}, {})
-
-      // @ts-ignore
-      await expect(controller.getArchive(req)).rejects.toThrow(ValidationError)
-    })
-
     it('should throw error if user lacks READ permission', async () => {
-      const req = mockRequest({}, { projectID: 'project_id' }, { _id: 'some_user_id' }, {}, {})
-
       controller.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.UPDATE]))
 
-      // @ts-ignore
-      await expect(controller.getArchive(req)).rejects.toThrow(RoleDoesNotPermitOperationError)
+      await expect(controller.getArchive(onlyIDs, accept, user, projectID)).rejects.toThrow(
+        RoleDoesNotPermitOperationError
+      )
     })
 
     it('should call projectService.makeArchive with correct params', async () => {
-      const req = mockRequest(
-        {},
-        { projectID: 'project_id' },
-        { _id: 'some_user_id' },
-        { accept: 'application/json' },
-        { onlyIDs: 'true' }
-      )
-
       DIContainer.sharedContainer.projectService.makeArchive = jest.fn().mockResolvedValue([])
       controller.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.READ]))
 
-      // @ts-ignore
-      await controller.getArchive(req)
+      await controller.getArchive(onlyIDs, accept, user, projectID)
       expect(DIContainer.sharedContainer.projectService.makeArchive).toHaveBeenCalledWith(
-        'project_id',
+        projectID,
         undefined,
         {
           getAttachments: false,
@@ -495,100 +245,44 @@ describe('ProjectController', () => {
     })
   })
   describe('generateAccessToken', () => {
-    it('should throw error if user is missing', async () => {
-      const req = mockRequest({}, { projectID: 'project_id', scope: 'scope' }, null, {})
-
-      // @ts-ignore
-      await expect(controller.generateAccessToken(req)).rejects.toThrow(ValidationError)
-    })
-
-    it('should throw error if projectID is missing', async () => {
-      const req = mockRequest({}, { scope: 'scope' }, { _id: 'user_id' }, {})
-
-      // @ts-ignore
-      await expect(controller.generateAccessToken(req)).rejects.toThrow(ValidationError)
-    })
-
-    it('should throw error if scope is missing', async () => {
-      const req = mockRequest({}, { projectID: 'project_id' }, { _id: 'user_id' }, {})
-
-      // @ts-ignore
-      await expect(controller.generateAccessToken(req)).rejects.toThrow(ValidationError)
-    })
-
     it('should throw error if user lacks READ permission', async () => {
-      const req = mockRequest(
-        {},
-        { projectID: 'project_id', scope: 'scope' },
-        { _id: 'user_id' },
-        {}
-      )
-
       controller.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.UPDATE]))
 
-      // @ts-ignore
-      await expect(controller.generateAccessToken(req)).rejects.toThrow(
+      await expect(controller.generateAccessToken(scope, user, projectID)).rejects.toThrow(
         RoleDoesNotPermitOperationError
       )
     })
 
     it('should call projectService.generateAccessToken with correct params', async () => {
-      const req = mockRequest(
-        {},
-        { projectID: 'project_id', scope: 'scope' },
-        { _id: 'user_id' },
-        {}
-      )
-
       DIContainer.sharedContainer.projectService.generateAccessToken = jest
         .fn()
         .mockResolvedValue('access_token')
       controller.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.READ]))
 
-      // @ts-ignore
-      await controller.generateAccessToken(req)
+      await controller.generateAccessToken(scope, user, projectID)
       expect(DIContainer.sharedContainer.projectService.generateAccessToken).toHaveBeenCalledWith(
-        'project_id',
-        'user_id',
-        'scope'
+        projectID,
+        userID,
+        scope
       )
     })
   })
   describe('deleteProject', () => {
-    it('should throw error if user is missing', async () => {
-      const req = mockRequest({}, { projectID: 'project_id' }, null, {})
-
-      // @ts-ignore
-      await expect(controller.deleteProject(req)).rejects.toThrow(ValidationError)
-    })
-
-    it('should throw error if projectID is missing', async () => {
-      const req = mockRequest({}, {}, { _id: 'user_id' }, {})
-
-      // @ts-ignore
-      await expect(controller.deleteProject(req)).rejects.toThrow(ValidationError)
-    })
-
     it('should throw error if user lacks DELETE permission', async () => {
-      const req = mockRequest({}, { projectID: 'project_id' }, { _id: 'user_id' }, {})
-
       controller.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.READ]))
 
-      // @ts-ignore
-      await expect(controller.deleteProject(req)).rejects.toThrow(RoleDoesNotPermitOperationError)
+      await expect(controller.deleteProject(projectID, user)).rejects.toThrow(
+        RoleDoesNotPermitOperationError
+      )
     })
 
     it('should call projectService.deleteProject with correct params', async () => {
-      const req = mockRequest({}, { projectID: 'project_id' }, { _id: 'user_id' }, {})
-
-      // @ts-ignore
-      DIContainer.sharedContainer.projectService.deleteProject = jest.fn().mockResolvedValue()
+      DIContainer.sharedContainer.projectService.deleteProject = jest.fn().mockResolvedValue({})
       controller.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.DELETE]))
 
-      // @ts-ignore
-      await controller.deleteProject(req)
+      await controller.deleteProject(projectID, user)
       expect(DIContainer.sharedContainer.projectService.deleteProject).toHaveBeenCalledWith(
-        'project_id'
+        projectID
       )
     })
   })
@@ -598,10 +292,10 @@ describe('ProjectController', () => {
         .fn()
         .mockResolvedValue(new Set())
 
-      await controller.getPermissions('project_id', 'user_id')
+      await controller.getPermissions(projectID, userID)
       expect(DIContainer.sharedContainer.projectService.getPermissions).toHaveBeenCalledWith(
-        'project_id',
-        'user_id'
+        projectID,
+        userID
       )
     })
 
@@ -611,7 +305,7 @@ describe('ProjectController', () => {
         .fn()
         .mockResolvedValue(permissions)
 
-      const result = await controller.getPermissions('project_id', 'user_id')
+      const result = await controller.getPermissions(projectID, userID)
       expect(result).toEqual(permissions)
     })
   })
