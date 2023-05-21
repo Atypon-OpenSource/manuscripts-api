@@ -29,7 +29,6 @@ export enum Environment {
  */
 export type APIConfiguration = {
   readonly port: number
-  readonly oauthStateEncryptionKey: string
   readonly hostname: string
 }
 
