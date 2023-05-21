@@ -15,22 +15,14 @@
  */
 
 import { celebrate } from 'celebrate'
-import { Router } from 'express'
+import { NextFunction, Request, Response, Router } from 'express'
+import { StatusCodes } from 'http-status-codes'
 
 import { AuthStrategy } from '../../../Auth/Passport/AuthStrategy'
+import { ValidationError } from '../../../Errors'
+import { ProjectUserRole } from '../../../Models/ContainerModels'
 import { BaseRoute } from '../../BaseRoute'
 import { ProjectController } from './ProjectController'
-import {
-  createManuscriptHandler,
-  createProjectHandler,
-  deleteProjectHandler,
-  generateAccessTokenHandler,
-  getArchiveHandler,
-  getCollaboratorsHandler,
-  getProjectModelsHandler,
-  updateProjectHandler,
-  updateUserRoleHandler,
-} from './ProjectRouteHandlers'
 import {
   accessTokenSchema,
   addUserSchema,
@@ -56,21 +48,33 @@ export class ProjectRoute extends BaseRoute {
       celebrate(createProjectSchema),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
-      createProjectHandler.bind(this)
+      (req: Request, res: Response, next: NextFunction) => {
+        return this.runWithErrorHandling(async () => {
+          await this.createProjectHandler(req, res)
+        }, next)
+      }
     )
     router.put(
       `${this.basePath}/:projectID`,
       celebrate(saveProjectSchema),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
-      updateProjectHandler.bind(this)
+      (req: Request, res: Response, next: NextFunction) => {
+        return this.runWithErrorHandling(async () => {
+          await this.updateProjectHandler(req, res)
+        }, next)
+      }
     )
 
     router.get(
       [`${this.basePath}/:projectID`, `${this.basePath}/:projectID/manuscript/:manuscriptID?`],
       celebrate(loadProjectSchema, {}),
       AuthStrategy.JWTAuth,
-      getProjectModelsHandler.bind(this)
+      (req: Request, res: Response, next: NextFunction) => {
+        return this.runWithErrorHandling(async () => {
+          await this.getProjectModelsHandler(req, res)
+        }, next)
+      }
     )
 
     router.post(
@@ -78,14 +82,22 @@ export class ProjectRoute extends BaseRoute {
       celebrate(addUserSchema, {}),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
-      updateUserRoleHandler.bind(this)
+      (req: Request, res: Response, next: NextFunction) => {
+        return this.runWithErrorHandling(async () => {
+          await this.updateUserRoleHandler(req, res)
+        }, next)
+      }
     )
 
     router.post(
       `${this.basePath}/:projectID/manuscript/:manuscriptID?`,
       celebrate(createManuscriptSchema, {}),
       AuthStrategy.JWTAuth,
-      createManuscriptHandler.bind(this)
+      (req: Request, res: Response, next: NextFunction) => {
+        return this.runWithErrorHandling(async () => {
+          await this.createManuscriptHandler(req, res)
+        }, next)
+      }
     )
 
     router.get(
@@ -93,7 +105,11 @@ export class ProjectRoute extends BaseRoute {
       celebrate(projectCollaboratorsSchema),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
-      getCollaboratorsHandler.bind(this)
+      (req: Request, res: Response, next: NextFunction) => {
+        return this.runWithErrorHandling(async () => {
+          await this.getCollaboratorsHandler(req, res)
+        }, next)
+      }
     )
 
     router.get(
@@ -103,14 +119,22 @@ export class ProjectRoute extends BaseRoute {
       ],
       celebrate(getArchiveSchema, {}),
       AuthStrategy.JWTAuth,
-      getArchiveHandler.bind(this)
+      (req: Request, res: Response, next: NextFunction) => {
+        return this.runWithErrorHandling(async () => {
+          await this.getArchiveHandler(req, res)
+        }, next)
+      }
     )
 
     router.get(
       `${this.basePath}/:projectID/:scope`,
       celebrate(accessTokenSchema, {}),
       AuthStrategy.JWTAuth,
-      generateAccessTokenHandler.bind(this)
+      (req: Request, res: Response, next: NextFunction) => {
+        return this.runWithErrorHandling(async () => {
+          await this.generateAccessTokenHandler(req, res)
+        }, next)
+      }
     )
 
     router.delete(
@@ -118,7 +142,166 @@ export class ProjectRoute extends BaseRoute {
       celebrate(deleteSchema, {}),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
-      deleteProjectHandler.bind(this)
+      (req: Request, res: Response, next: NextFunction) => {
+        return this.runWithErrorHandling(async () => {
+          await this.deleteProjectHandler(req, res)
+        }, next)
+      }
     )
+  }
+  private async createProjectHandler(req: Request, res: Response) {
+    const { title } = req.body
+    const { projectID } = req.params
+    const { user } = req
+    if (!user) {
+      throw new ValidationError('No user found', user)
+    }
+    const project = await this.projectController.createProject(title, projectID, user)
+    res.status(StatusCodes.OK).send(project)
+  }
+  private async updateProjectHandler(req: Request, res: Response) {
+    const { projectID } = req.params
+    const { data } = req.body
+    const { user } = req
+
+    if (!user) {
+      throw new ValidationError('No user found', user)
+    }
+    if (!projectID) {
+      throw new ValidationError('projectID parameter must be specified', projectID)
+    }
+    const manuscript = await this.projectController.updateProject(projectID, data, user)
+    res.status(StatusCodes.OK).send(manuscript)
+  }
+  private async getProjectModelsHandler(req: Request, res: Response) {
+    const modifiedSince = req.headers['if-modified-since']
+    const { projectID } = req.params
+    if (!projectID) {
+      throw new ValidationError('projectID should be string', projectID)
+    }
+    if (await this.projectController.isProjectCacheValid(projectID, modifiedSince)) {
+      res.status(StatusCodes.NOT_MODIFIED).end()
+    } else {
+      const { user } = req
+      if (!user) {
+        throw new ValidationError('No user found', user)
+      }
+      const { types } = req.body
+      const models = await this.projectController.getProjectModels(projectID, types, user)
+      res.set('Content-Type', 'application/json')
+      res.status(StatusCodes.OK).send(models)
+    }
+  }
+  private async updateUserRoleHandler(req: Request, res: Response) {
+    const { userID, role } = req.body
+    const { projectID } = req.params
+    const { user } = req
+
+    if (!user) {
+      throw new ValidationError('No user found', user)
+    }
+    if (!projectID) {
+      throw new ValidationError('projectID must be string', projectID)
+    }
+    if (!userID) {
+      throw new ValidationError('userID must be string', userID)
+    }
+    if (!role) {
+      throw new ValidationError('Role must be string or null', role)
+    }
+    const validRoles = Object.keys(ProjectUserRole) as (keyof typeof ProjectUserRole)[]
+
+    if (!validRoles.includes(role)) {
+      throw new ValidationError('Invalid role', role)
+    }
+    await this.projectController.updateUserRole(projectID, userID, role, user)
+    res.status(StatusCodes.NO_CONTENT).end()
+  }
+  private async createManuscriptHandler(req: Request, res: Response) {
+    const { projectID, manuscriptID } = req.params
+    const { templateID } = req.body
+    const { user } = req
+
+    if (!user) {
+      throw new ValidationError('No user found', user)
+    }
+    if (!projectID) {
+      throw new ValidationError('projectID must be string', projectID)
+    }
+
+    const manuscript = await this.projectController.createManuscript(
+      projectID,
+      manuscriptID,
+      templateID,
+      user
+    )
+    res.status(StatusCodes.OK).send(manuscript)
+  }
+  private async getCollaboratorsHandler(req: Request, res: Response) {
+    const { projectID } = req.params
+    const { user } = req
+
+    if (!user) {
+      throw new ValidationError('No user found', user)
+    }
+    if (!projectID) {
+      throw new ValidationError('projectID must be string', projectID)
+    }
+    const collaborators = await this.projectController.getCollaborators(projectID, user)
+    res.status(StatusCodes.OK).send(collaborators)
+  }
+  private async getArchiveHandler(req: Request, res: Response) {
+    const { projectID, manuscriptID } = req.params
+    const { onlyIDs } = req.query
+    const { accept } = req.headers
+    const { user } = req
+
+    if (!user) {
+      throw new ValidationError('No user found', user)
+    }
+    if (!projectID) {
+      throw new ValidationError('projectID must be string', projectID)
+    }
+    if (manuscriptID) {
+      throw new ValidationError('manuscriptID should be string', manuscriptID)
+    }
+
+    const archive = await this.projectController.getArchive(
+      projectID,
+      manuscriptID,
+      onlyIDs,
+      accept,
+      user
+    )
+    res.set('Content-Type', 'application/zip')
+    res.status(StatusCodes.OK).send(Buffer.from(archive))
+  }
+  private async generateAccessTokenHandler(req: Request, res: Response) {
+    const { projectID, scope } = req.params
+    const { user } = req
+
+    if (!user) {
+      throw new ValidationError('No user found', user)
+    }
+    if (!projectID) {
+      throw new ValidationError('projectID must be string', projectID)
+    }
+    if (!scope) {
+      throw new ValidationError('scope must be string', scope)
+    }
+    res.send(await this.projectController.generateAccessToken(projectID, scope, user))
+  }
+  private async deleteProjectHandler(req: Request, res: Response) {
+    const { projectID } = req.params
+    const { user } = req
+
+    if (!user) {
+      throw new ValidationError('No user found', req.user)
+    }
+    if (!projectID) {
+      throw new ValidationError('projectID must be string', projectID)
+    }
+    await this.projectController.deleteProject(projectID, user)
+    res.status(StatusCodes.OK).end()
   }
 }
