@@ -17,6 +17,8 @@ import { promises as fs } from 'fs'
 import client from 'prom-client'
 import { parse, SemVer } from 'semver'
 
+import { ServerStatus } from '../Controller/V1/ServerStatus/ServerStatus'
+
 const appMetricMap = {
   name: 'app_version',
   packageName: 'app_version',
@@ -47,7 +49,7 @@ function register(
 }
 
 export async function configurePromClientRegistry(): Promise<void> {
-  const appVersion: SemVer | null = parse(process.env.npm_package_version, {})
+  const appVersion: SemVer | null = parse(ServerStatus.version, {})
   if (appVersion) {
     register(appMetricMap, appVersion)
   }
