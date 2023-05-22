@@ -19,9 +19,9 @@ import { ProjectPermission } from '../../../../../../src/DomainServices/ProjectS
 import { RoleDoesNotPermitOperationError } from '../../../../../../src/Errors'
 import { ProjectUserRole } from '../../../../../../src/Models/ContainerModels'
 import { validUser } from '../../../../../data/fixtures/userServiceUser'
-beforeEach(() => {
+beforeEach(async () => {
   ;(DIContainer as any)._sharedContainer = null
-  return DIContainer.init()
+  await DIContainer.init()
 })
 
 const title = 'Test Project'
