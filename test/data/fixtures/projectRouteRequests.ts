@@ -15,7 +15,7 @@
  */
 import { validUser } from './userServiceUser'
 
-export const validCreateProjectReq = {
+export const validProjectRouteRequest = {
   data: {
     test: 'random',
   },
@@ -37,21 +37,21 @@ export const validCreateProjectReq = {
     onlyIDs: 'true',
   },
 }
-export const requestWithInvalidRole = {
+export const projectRouteRequestWithInvalidRole = {
   data: {
     test: 'random',
   },
   body: {
     templateID: 'template_id',
-    title: 'test_title',
+    title: 'random',
     types: ['type1', 'type2'],
     role: 'writer',
     userID: 'user_id',
   },
   params: {
     projectID: 'project_id',
-
     manuscriptID: 'manuscript_id',
+    scope: 'random',
   },
   user: validUser,
   headers: { 'if-modified-since': new Date('2022-01-01').toISOString() },
@@ -59,11 +59,21 @@ export const requestWithInvalidRole = {
     onlyIDs: 'true',
   },
 }
-export const createProjectReqWithoutUser = {
-  body: { templateID: 'template_id', title: 'random', role: 'Writer', userID: 'user_id' },
+export const projectRouteRequestWithoutUser = {
+  data: {
+    test: 'random',
+  },
+  body: {
+    templateID: 'template_id',
+    title: 'random',
+    types: ['type1', 'type2'],
+    role: 'Writer',
+    userID: 'user_id',
+  },
   params: {
     projectID: 'project_id',
     manuscriptID: 'manuscript_id',
+    scope: 'random',
   },
   user: null,
   headers: { 'if-modified-since': new Date('2022-01-01').toISOString() },
@@ -71,8 +81,17 @@ export const createProjectReqWithoutUser = {
     onlyIDs: 'true',
   },
 }
-export const createProjectReqWithoutProjectID = {
-  body: { templateID: 'template_id', title: 'random', role: 'Writer', userID: 'user_id' },
+export const projectRouteRequestWithoutProjectID = {
+  data: {
+    test: 'random',
+  },
+  body: {
+    templateID: 'template_id',
+    title: 'random',
+    types: ['type1', 'type2'],
+    role: 'Writer',
+    userID: 'user_id',
+  },
   params: {
     manuscriptID: 'manuscript_id',
     scope: 'random',
@@ -83,11 +102,20 @@ export const createProjectReqWithoutProjectID = {
     onlyIDs: 'true',
   },
 }
-export const createProjectReqWithoutScope = {
-  body: { templateID: 'template_id', title: 'random', role: 'Writer', userID: 'user_id' },
+export const projectRouteRequestWithoutScope = {
+  data: {
+    test: 'random',
+  },
+  body: {
+    templateID: 'template_id',
+    title: 'random',
+    types: ['type1', 'type2'],
+    role: 'Writer',
+    userID: 'user_id',
+  },
   params: {
-    manuscriptID: 'manuscript_id',
     projectID: 'project_id',
+    manuscriptID: 'manuscript_id',
   },
   user: validUser,
   headers: { 'if-modified-since': new Date('2022-01-01').toISOString() },
@@ -95,8 +123,17 @@ export const createProjectReqWithoutScope = {
     onlyIDs: 'true',
   },
 }
-export const createProjectReqWithoutManuscriptID = {
-  body: { templateID: 'template_id', title: 'random', role: 'Writer', userID: 'user_id' },
+export const projectRouteRequestWithoutManuscriptID = {
+  data: {
+    test: 'random',
+  },
+  body: {
+    templateID: 'template_id',
+    title: 'random',
+    types: ['type1', 'type2'],
+    role: 'Writer',
+    userID: 'user_id',
+  },
   params: {
     projectID: 'project_id',
     scope: 'random',
@@ -107,21 +144,45 @@ export const createProjectReqWithoutManuscriptID = {
     onlyIDs: 'true',
   },
 }
-export const requestWithoutRole = {
-  body: { templateID: 'template_id', title: 'random', userID: 'user_id' },
+export const projectRouteRequestWithoutRole = {
+  data: {
+    test: 'random',
+  },
+  body: {
+    templateID: 'template_id',
+    title: 'random',
+    types: ['type1', 'type2'],
+    userID: 'user_id',
+  },
   params: {
     projectID: 'project_id',
     manuscriptID: 'manuscript_id',
+    scope: 'random',
   },
   user: validUser,
   headers: { 'if-modified-since': new Date('2022-01-01').toISOString() },
+  query: {
+    onlyIDs: 'true',
+  },
 }
-export const requestWithoutUserID = {
-  body: { templateID: 'template_id', title: 'random', role: 'Writer' },
+export const projectRouteRequestWithoutUserID = {
+  data: {
+    test: 'random',
+  },
+  body: {
+    templateID: 'template_id',
+    title: 'random',
+    types: ['type1', 'type2'],
+    role: 'Writer',
+  },
   params: {
     projectID: 'project_id',
     manuscriptID: 'manuscript_id',
+    scope: 'random',
   },
   user: validUser,
   headers: { 'if-modified-since': new Date('2022-01-01').toISOString() },
+  query: {
+    onlyIDs: 'true',
+  },
 }

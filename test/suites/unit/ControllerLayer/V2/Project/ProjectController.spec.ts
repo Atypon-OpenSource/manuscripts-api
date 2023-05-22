@@ -13,26 +13,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import '../../../../../utilities/dbMock'
+import '../../../../../utilities/configMock'
+
 import { ProjectController } from '../../../../../../src/Controller/V2/Project/ProjectController'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
-import { ProjectPermission } from '../../../../../../src/DomainServices/ProjectService'
+import {
+  ProjectPermission,
+  ProjectService,
+} from '../../../../../../src/DomainServices/ProjectService'
 import { RoleDoesNotPermitOperationError } from '../../../../../../src/Errors'
 import { ProjectUserRole } from '../../../../../../src/Models/ContainerModels'
+import { ValidHeaderWithApplicationKey } from '../../../../../data/fixtures/headers'
+import { validManuscript } from '../../../../../data/fixtures/manuscripts'
+import { validProject } from '../../../../../data/fixtures/projects'
 import { validUser } from '../../../../../data/fixtures/userServiceUser'
-beforeEach(() => {
+import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
+
+jest.setTimeout(TEST_TIMEOUT)
+
+let projectService: ProjectService
+beforeEach(async () => {
   ;(DIContainer as any)._sharedContainer = null
-  return DIContainer.init()
+  await DIContainer.init()
+  projectService = DIContainer.sharedContainer.projectService
 })
 
-const title = 'Test Project'
-const projectID = 'some_project_id'
+const projectTitle = validManuscript.title
+const projectID = validProject._id
 const user = validUser as Express.User
 const userID = user._id
 const role = ProjectUserRole.Owner
-const manuscriptID = 'some_manuscript_id'
+const manuscriptID = validManuscript._id
 const templateID = 'some_template_id'
 const onlyIDs = 'true'
-const accept = 'application/json'
+const accept = ValidHeaderWithApplicationKey['Accept']
 const scope = 'test'
 describe('ProjectController', () => {
   let controller: ProjectController
@@ -42,30 +57,24 @@ describe('ProjectController', () => {
   })
   describe('createProject', () => {
     it('should call projectService.createProject with correct parameters', async () => {
-      const mockProject = { _id: '123', title: 'Test Project', owners: ['user1'] }
+      const mockProject = { _id: '123', projectTitle: 'Test Project', owners: ['user1'] }
 
-      DIContainer.sharedContainer.projectService.createProject = jest
-        .fn()
-        .mockResolvedValue(mockProject)
+      projectService.createProject = jest.fn().mockResolvedValue(mockProject)
 
-      const project = await controller.createProject(title, user, projectID)
+      const project = await controller.createProject(projectTitle, user, projectID)
 
-      expect(DIContainer.sharedContainer.projectService.createProject).toHaveBeenCalledWith(
-        userID,
-        projectID,
-        title
-      )
+      expect(projectService.createProject).toHaveBeenCalledWith(userID, projectID, projectTitle)
       expect(project).toEqual(mockProject)
     })
     it('should not throw an error if projectID is missing', async () => {
-      await expect(controller.createProject(title, user)).resolves.not.toThrow()
+      await expect(controller.createProject(projectTitle, user)).resolves.not.toThrow()
     })
     it('should throw an error if ProjectService.createProject fails', async () => {
-      DIContainer.sharedContainer.projectService.createProject = jest
-        .fn()
-        .mockRejectedValue(new Error('Test Error'))
+      projectService.createProject = jest.fn().mockRejectedValue(new Error('Test Error'))
 
-      await expect(controller.createProject(title, user, projectID)).rejects.toThrow('Test Error')
+      await expect(controller.createProject(projectTitle, user, projectID)).rejects.toThrow(
+        'Test Error'
+      )
     })
   })
   describe('updateProject', () => {
@@ -76,16 +85,14 @@ describe('ProjectController', () => {
 
     it('should throw an error if ProjectService.updateProject fails', async () => {
       controller.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.UPDATE]))
-      DIContainer.sharedContainer.projectService.updateProject = jest
-        .fn()
-        .mockRejectedValue(new Error('Test Error'))
+      projectService.updateProject = jest.fn().mockRejectedValue(new Error('Test Error'))
       await expect(controller.updateProject({}, user, projectID)).rejects.toThrow('Test Error')
     })
 
     it('should not throw an error when operation is successful', async () => {
       controller.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.UPDATE]))
 
-      DIContainer.sharedContainer.projectService.updateProject = jest.fn().mockResolvedValue({})
+      projectService.updateProject = jest.fn().mockResolvedValue({})
       await expect(controller.updateProject({}, user, projectID)).resolves.not.toThrow()
     })
   })
@@ -96,7 +103,7 @@ describe('ProjectController', () => {
     })
 
     it('should return false if project was updated after the "if-modified-since" header', async () => {
-      DIContainer.sharedContainer.projectService.getProject = jest.fn().mockResolvedValue({
+      projectService.getProject = jest.fn().mockResolvedValue({
         updatedAt: new Date('2023-01-02').getTime() / 1000,
       })
       const result = await controller.isProjectCacheValid(
@@ -107,7 +114,7 @@ describe('ProjectController', () => {
     })
 
     it('should return true if project was not updated after the "if-modified-since" header', async () => {
-      DIContainer.sharedContainer.projectService.getProject = jest.fn().mockResolvedValue({
+      projectService.getProject = jest.fn().mockResolvedValue({
         updatedAt: new Date('2023-01-01').getTime() / 1000,
       })
 
@@ -132,9 +139,7 @@ describe('ProjectController', () => {
     it('should return all models if no types are specified', async () => {
       const mockModels = [{ objectType: 'type1' }, { objectType: 'type2' }, { objectType: 'type3' }]
 
-      DIContainer.sharedContainer.projectService.getProjectModels = jest
-        .fn()
-        .mockResolvedValue(mockModels)
+      projectService.getProjectModels = jest.fn().mockResolvedValue(mockModels)
       controller.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.READ]))
 
       const result = await controller.getProjectModels({}, user, projectID)
@@ -145,9 +150,7 @@ describe('ProjectController', () => {
       const mockModels = [{ objectType: 'type1' }, { objectType: 'type2' }, { objectType: 'type3' }]
       const types = ['type1', 'type3']
 
-      DIContainer.sharedContainer.projectService.getProjectModels = jest
-        .fn()
-        .mockResolvedValue(mockModels)
+      projectService.getProjectModels = jest.fn().mockResolvedValue(mockModels)
       controller.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.READ]))
 
       const result = await controller.getProjectModels(types, user, projectID)
@@ -164,17 +167,13 @@ describe('ProjectController', () => {
     })
 
     it('should call projectService.updateUserRole with correct params', async () => {
-      DIContainer.sharedContainer.projectService.updateUserRole = jest.fn().mockResolvedValue({})
+      projectService.updateUserRole = jest.fn().mockResolvedValue({})
       controller.getPermissions = jest
         .fn()
         .mockResolvedValue(new Set([ProjectPermission.UPDATE_ROLES]))
 
       await controller.updateUserRole(userID, role, user, projectID)
-      expect(DIContainer.sharedContainer.projectService.updateUserRole).toHaveBeenCalledWith(
-        projectID,
-        userID,
-        role
-      )
+      expect(projectService.updateUserRole).toHaveBeenCalledWith(projectID, userID, role)
     })
   })
   describe('createManuscript', () => {
@@ -187,13 +186,13 @@ describe('ProjectController', () => {
     })
 
     it('should call projectService.createManuscript with correct params', async () => {
-      DIContainer.sharedContainer.projectService.createManuscript = jest.fn().mockResolvedValue({})
+      projectService.createManuscript = jest.fn().mockResolvedValue({})
       controller.getPermissions = jest
         .fn()
         .mockResolvedValue(new Set([ProjectPermission.CREATE_MANUSCRIPT]))
 
       await controller.createManuscript(user, projectID, manuscriptID, templateID)
-      expect(DIContainer.sharedContainer.projectService.createManuscript).toHaveBeenCalledWith(
+      expect(projectService.createManuscript).toHaveBeenCalledWith(
         projectID,
         manuscriptID,
         templateID
@@ -229,19 +228,15 @@ describe('ProjectController', () => {
     })
 
     it('should call projectService.makeArchive with correct params', async () => {
-      DIContainer.sharedContainer.projectService.makeArchive = jest.fn().mockResolvedValue([])
+      projectService.makeArchive = jest.fn().mockResolvedValue([])
       controller.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.READ]))
 
       await controller.getArchive(onlyIDs, accept, user, projectID)
-      expect(DIContainer.sharedContainer.projectService.makeArchive).toHaveBeenCalledWith(
-        projectID,
-        undefined,
-        {
-          getAttachments: false,
-          onlyIDs: true,
-          includeExt: true,
-        }
-      )
+      expect(projectService.makeArchive).toHaveBeenCalledWith(projectID, undefined, {
+        getAttachments: false,
+        onlyIDs: true,
+        includeExt: true,
+      })
     })
   })
   describe('generateAccessToken', () => {
@@ -254,17 +249,11 @@ describe('ProjectController', () => {
     })
 
     it('should call projectService.generateAccessToken with correct params', async () => {
-      DIContainer.sharedContainer.projectService.generateAccessToken = jest
-        .fn()
-        .mockResolvedValue('access_token')
+      projectService.generateAccessToken = jest.fn().mockResolvedValue('access_token')
       controller.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.READ]))
 
       await controller.generateAccessToken(scope, user, projectID)
-      expect(DIContainer.sharedContainer.projectService.generateAccessToken).toHaveBeenCalledWith(
-        projectID,
-        userID,
-        scope
-      )
+      expect(projectService.generateAccessToken).toHaveBeenCalledWith(projectID, userID, scope)
     })
   })
   describe('deleteProject', () => {
@@ -277,33 +266,24 @@ describe('ProjectController', () => {
     })
 
     it('should call projectService.deleteProject with correct params', async () => {
-      DIContainer.sharedContainer.projectService.deleteProject = jest.fn().mockResolvedValue({})
+      projectService.deleteProject = jest.fn().mockResolvedValue({})
       controller.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.DELETE]))
 
       await controller.deleteProject(projectID, user)
-      expect(DIContainer.sharedContainer.projectService.deleteProject).toHaveBeenCalledWith(
-        projectID
-      )
+      expect(projectService.deleteProject).toHaveBeenCalledWith(projectID)
     })
   })
   describe('getPermissions', () => {
     it('should call projectService.getPermissions with correct params', async () => {
-      DIContainer.sharedContainer.projectService.getPermissions = jest
-        .fn()
-        .mockResolvedValue(new Set())
+      projectService.getPermissions = jest.fn().mockResolvedValue(new Set())
 
       await controller.getPermissions(projectID, userID)
-      expect(DIContainer.sharedContainer.projectService.getPermissions).toHaveBeenCalledWith(
-        projectID,
-        userID
-      )
+      expect(projectService.getPermissions).toHaveBeenCalledWith(projectID, userID)
     })
 
     it('should return the permissions set received from projectService', async () => {
       const permissions = new Set([ProjectPermission.READ, ProjectPermission.UPDATE])
-      DIContainer.sharedContainer.projectService.getPermissions = jest
-        .fn()
-        .mockResolvedValue(permissions)
+      projectService.getPermissions = jest.fn().mockResolvedValue(permissions)
 
       const result = await controller.getPermissions(projectID, userID)
       expect(result).toEqual(permissions)

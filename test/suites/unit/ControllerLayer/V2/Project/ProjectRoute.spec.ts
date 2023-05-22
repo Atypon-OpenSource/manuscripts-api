@@ -13,53 +13,65 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import '../../../../../utilities/dbMock'
+import '../../../../../utilities/configMock'
+
 import { StatusCodes } from 'http-status-codes'
 
 import { ProjectRoute } from '../../../../../../src/Controller/V2/Project/ProjectRoute'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
-import { ProjectPermission } from '../../../../../../src/DomainServices/ProjectService'
+import {
+  ProjectPermission,
+  ProjectService,
+} from '../../../../../../src/DomainServices/ProjectService'
 import { RoleDoesNotPermitOperationError, ValidationError } from '../../../../../../src/Errors'
 import {
-  createProjectReqWithoutManuscriptID,
-  createProjectReqWithoutProjectID,
-  createProjectReqWithoutScope,
-  createProjectReqWithoutUser,
-  requestWithInvalidRole,
-  requestWithoutRole,
-  requestWithoutUserID,
-  validCreateProjectReq,
+  projectRouteRequestWithInvalidRole,
+  projectRouteRequestWithoutManuscriptID,
+  projectRouteRequestWithoutProjectID,
+  projectRouteRequestWithoutRole,
+  projectRouteRequestWithoutScope,
+  projectRouteRequestWithoutUser,
+  projectRouteRequestWithoutUserID,
+  validProjectRouteRequest,
 } from '../../../../../data/fixtures/projectRouteRequests'
-beforeEach(() => {
-  ;(DIContainer as any)._sharedContainer = null
-  return DIContainer.init()
-})
-const validMockProject = { _id: '123', title: 'Test Project', owners: ['user1'] }
-describe('ProjectRoute', () => {
-  let projectRoute: ProjectRoute
+import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
+jest.setTimeout(TEST_TIMEOUT)
 
-  let res: {
+let projectService: ProjectService
+beforeEach(async () => {
+  ;(DIContainer as any)._sharedContainer = null
+  await DIContainer.init()
+  projectService = DIContainer.sharedContainer.projectService
+})
+
+describe('ProjectRoute', () => {
+  const validMockProject: { _id: string; title: string; owners: string[] } = {
+    _id: '123',
+    title: 'Test Project',
+    owners: ['user1'],
+  }
+  let projectRoute: ProjectRoute
+  const res: {
     status: jest.Mock
     set: jest.Mock
     send: jest.Mock
     end: jest.Mock
+  } = {
+    status: jest.fn().mockReturnThis(),
+    set: jest.fn().mockReturnThis(),
+    send: jest.fn().mockReturnThis(),
+    end: jest.fn().mockReturnThis(),
   }
   beforeEach(() => {
     projectRoute = new ProjectRoute()
-    res = {
-      status: jest.fn().mockReturnThis(),
-      set: jest.fn().mockReturnThis(),
-      send: jest.fn().mockReturnThis(),
-      end: jest.fn().mockReturnThis(),
-    }
   })
   describe('createProjectHandler', () => {
     it('should create a project and send the project object in the response', async () => {
-      DIContainer.sharedContainer.projectService.createProject = jest
-        .fn()
-        .mockResolvedValue(validMockProject)
+      projectService.createProject = jest.fn().mockResolvedValue(validMockProject)
 
       // @ts-ignore
-      await projectRoute.createProjectHandler(validCreateProjectReq, res)
+      await projectRoute.createProjectHandler(validProjectRouteRequest, res)
 
       expect(res.status).toHaveBeenCalledWith(StatusCodes.OK)
       expect(res.send).toHaveBeenCalledWith(validMockProject)
@@ -67,146 +79,138 @@ describe('ProjectRoute', () => {
     it('should throw an error if user is not found', async () => {
       await expect(
         // @ts-ignore
-        projectRoute.createProjectHandler(createProjectReqWithoutUser, res)
+        projectRoute.createProjectHandler(projectRouteRequestWithoutUser, res)
       ).rejects.toThrow('Validation error: No user found')
     })
     it('should not throw an error if projectID is missing', async () => {
-      DIContainer.sharedContainer.projectService.createProject = jest
-        .fn()
-        .mockResolvedValue(validMockProject)
+      const projectService: any = DIContainer.sharedContainer.projectService
+
+      projectService.createProject = jest.fn().mockResolvedValue(validMockProject)
 
       await expect(
         // @ts-ignore
-        projectRoute.createProjectHandler(createProjectReqWithoutProjectID, res)
+        projectRoute.createProjectHandler(projectRouteRequestWithoutProjectID, res)
       ).resolves.not.toThrow()
       expect(res.status).toHaveBeenCalledWith(StatusCodes.OK)
     })
     it('should throw an error if ProjectService.createProject fails', async () => {
-      DIContainer.sharedContainer.projectService.createProject = jest
-        .fn()
-        .mockRejectedValue(new Error('Test Error'))
+      projectService.createProject = jest.fn().mockRejectedValue(new Error('Test Error'))
 
-      // @ts-ignore
-      await expect(projectRoute.createProjectHandler(validCreateProjectReq, res)).rejects.toThrow(
-        'Test Error'
-      )
+      await expect(
+        // @ts-ignore
+        projectRoute.createProjectHandler(validProjectRouteRequest, res)
+      ).rejects.toThrow('Test Error')
     })
   })
   describe('updateProjectHandler', () => {
     it('should throw an error if user is missing', async () => {
       await expect(
         // @ts-ignore
-        projectRoute.updateProjectHandler(createProjectReqWithoutUser, res)
+        projectRoute.updateProjectHandler(projectRouteRequestWithoutUser, res)
       ).rejects.toThrow('Validation error: No user found')
     })
     it('should throw an error if projectID is missing', async () => {
       await expect(
         // @ts-ignore
-        projectRoute.updateProjectHandler(createProjectReqWithoutProjectID, res)
+        projectRoute.updateProjectHandler(projectRouteRequestWithoutProjectID, res)
       ).rejects.toThrow('Validation error: projectID parameter must be specified')
     })
     it('should throw an error if user does not have UPDATE permission', async () => {
-      DIContainer.sharedContainer.projectService.getPermissions = jest
-        .fn()
-        .mockResolvedValue(new Set([ProjectPermission.READ]))
+      projectService.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.READ]))
 
-      // @ts-ignore
-      await expect(projectRoute.updateProjectHandler(validCreateProjectReq, res)).rejects.toThrow(
-        RoleDoesNotPermitOperationError
-      )
+      await expect(
+        // @ts-ignore
+
+        projectRoute.updateProjectHandler(validProjectRouteRequest, res)
+      ).rejects.toThrow(RoleDoesNotPermitOperationError)
     })
     it('should throw an error if ProjectService.updateProject fails', async () => {
-      DIContainer.sharedContainer.projectService.getPermissions = jest
+      projectService.getPermissions = jest
         .fn()
         .mockResolvedValue(new Set([ProjectPermission.UPDATE]))
-      DIContainer.sharedContainer.projectService.updateProject = jest
-        .fn()
-        .mockRejectedValue(new Error('Test Error'))
+      projectService.updateProject = jest.fn().mockRejectedValue(new Error('Test Error'))
 
-      // @ts-ignore
-      await expect(projectRoute.updateProjectHandler(validCreateProjectReq, res)).rejects.toThrow(
-        'Test Error'
-      )
+      await expect(
+        // @ts-ignore
+
+        projectRoute.updateProjectHandler(validProjectRouteRequest, res)
+      ).rejects.toThrow('Test Error')
     })
 
     it('should not throw an error when operation is successful', async () => {
-      DIContainer.sharedContainer.projectService.getPermissions = jest
+      projectService.getPermissions = jest
         .fn()
         .mockResolvedValue(new Set([ProjectPermission.UPDATE]))
-      DIContainer.sharedContainer.projectService.updateProject = jest.fn().mockResolvedValue({})
+      projectService.updateProject = jest.fn().mockResolvedValue({})
       await expect(
         // @ts-ignore
-        projectRoute.updateProjectHandler(validCreateProjectReq, res)
+        projectRoute.updateProjectHandler(validProjectRouteRequest, res)
       ).resolves.not.toThrow()
     })
     it('should send correct status when operation is successful', async () => {
-      DIContainer.sharedContainer.projectService.getPermissions = jest
+      projectService.getPermissions = jest
         .fn()
         .mockResolvedValue(new Set([ProjectPermission.UPDATE]))
-      DIContainer.sharedContainer.projectService.updateProject = jest.fn().mockResolvedValue({})
+      projectService.updateProject = jest.fn().mockResolvedValue({})
       await expect(
         // @ts-ignore
-        projectRoute.updateProjectHandler(validCreateProjectReq, res)
+        projectRoute.updateProjectHandler(validProjectRouteRequest, res)
       ).resolves.not.toThrow()
       expect(res.status).toHaveBeenCalledWith(StatusCodes.OK)
     })
   })
   describe('getProjectModelsHandler', () => {
     it('should throw an error if user is missing and cache is not valid', async () => {
-      DIContainer.sharedContainer.projectService.getProject = jest.fn().mockResolvedValue({
+      projectService.getProject = jest.fn().mockResolvedValue({
         updatedAt: new Date('2023-01-01').getTime() / 1000,
       })
       await expect(
         // @ts-ignore
-        projectRoute.getProjectModelsHandler(createProjectReqWithoutUser, res)
+        projectRoute.getProjectModelsHandler(projectRouteRequestWithoutUser, res)
       ).rejects.toThrow('Validation error: No user found')
     })
 
     it('should throw an error if projectID is missing', async () => {
       await expect(
         // @ts-ignore
-        projectRoute.getProjectModelsHandler(createProjectReqWithoutProjectID, res)
+        projectRoute.getProjectModelsHandler(projectRouteRequestWithoutProjectID, res)
       ).rejects.toThrow('Validation error: projectID parameter must be specified')
     })
     it('should return NOT_MODIFIED status if project cache is valid', async () => {
-      DIContainer.sharedContainer.projectService.getProject = jest.fn().mockResolvedValue({
+      projectService.getProject = jest.fn().mockResolvedValue({
         updatedAt: new Date('2021-01-01').getTime() / 1000,
       })
 
       // @ts-ignore
-      await projectRoute.getProjectModelsHandler(validCreateProjectReq, res)
+      await projectRoute.getProjectModelsHandler(validProjectRouteRequest, res)
       expect(res.status).toHaveBeenCalledWith(StatusCodes.NOT_MODIFIED)
       expect(res.end).toHaveBeenCalled()
     })
     it('should return project models if cache is not valid', async () => {
       const mockModels = [{ id: 'model1' }, { id: 'model2' }]
 
-      DIContainer.sharedContainer.projectService.getProject = jest.fn().mockResolvedValue({
+      projectService.getProject = jest.fn().mockResolvedValue({
         updatedAt: new Date('2023-01-01').getTime() / 1000,
       })
-      DIContainer.sharedContainer.projectService.getPermissions = jest
-        .fn()
-        .mockResolvedValue(new Set([ProjectPermission.READ]))
+      projectService.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.READ]))
 
-      DIContainer.sharedContainer.projectService.getProjectModels = jest
-        .fn()
-        .mockResolvedValue(mockModels)
+      projectService.getProjectModels = jest.fn().mockResolvedValue(mockModels)
       // @ts-ignore
-      await projectRoute.getProjectModelsHandler(validCreateProjectReq, res)
+      await projectRoute.getProjectModelsHandler(validProjectRouteRequest, res)
       expect(res.set).toHaveBeenCalledWith('Content-Type', 'application/json')
       expect(res.status).toHaveBeenCalledWith(StatusCodes.OK)
     })
     it('should throw an error if user does not have READ permission and cache is not valid', async () => {
-      DIContainer.sharedContainer.projectService.getProject = jest.fn().mockResolvedValue({
+      projectService.getProject = jest.fn().mockResolvedValue({
         updatedAt: new Date('2023-01-01').getTime() / 1000,
       })
-      DIContainer.sharedContainer.projectService.getPermissions = jest
+      projectService.getPermissions = jest
         .fn()
         .mockResolvedValue(new Set([ProjectPermission.UPDATE]))
 
       await expect(
         // @ts-ignore
-        projectRoute.getProjectModelsHandler(validCreateProjectReq, res)
+        projectRoute.getProjectModelsHandler(validProjectRouteRequest, res)
       ).rejects.toThrow(RoleDoesNotPermitOperationError)
     })
   })
@@ -214,69 +218,65 @@ describe('ProjectRoute', () => {
     it('should throw error if user is missing', async () => {
       await expect(
         // @ts-ignore
-        projectRoute.updateUserRoleHandler(createProjectReqWithoutUser, res)
+        projectRoute.updateUserRoleHandler(projectRouteRequestWithoutUser, res)
       ).rejects.toThrow(ValidationError)
     })
     it('should throw an error if projectID is missing', async () => {
       await expect(
         // @ts-ignore
-        projectRoute.updateUserRoleHandler(createProjectReqWithoutProjectID, res)
+        projectRoute.updateUserRoleHandler(projectRouteRequestWithoutProjectID, res)
       ).rejects.toThrow('Validation error: projectID parameter must be specified')
     })
     it('should throw an error if userID is missing', async () => {
       await expect(
         // @ts-ignore
-        projectRoute.updateUserRoleHandler(requestWithoutUserID, res)
+        projectRoute.updateUserRoleHandler(projectRouteRequestWithoutUserID, res)
       ).rejects.toThrow('Validation error: userID parameter must be specified')
     })
     it('should throw an error if user does not have READ permission', async () => {
-      DIContainer.sharedContainer.projectService.getProject = jest.fn().mockResolvedValue({
+      projectService.getProject = jest.fn().mockResolvedValue({
         updatedAt: new Date('2023-01-01').getTime() / 1000,
       })
-      DIContainer.sharedContainer.projectService.getPermissions = jest
+      projectService.getPermissions = jest
         .fn()
         .mockResolvedValue(new Set([ProjectPermission.UPDATE]))
 
       await expect(
         // @ts-ignore
-        projectRoute.updateUserRoleHandler(validCreateProjectReq, res)
+        projectRoute.updateUserRoleHandler(validProjectRouteRequest, res)
       ).rejects.toThrow(RoleDoesNotPermitOperationError)
     })
     it('should throw an error if role is invalid', async () => {
       await expect(
         // @ts-ignore
-        projectRoute.updateUserRoleHandler(requestWithInvalidRole, res)
+        projectRoute.updateUserRoleHandler(projectRouteRequestWithInvalidRole, res)
       ).rejects.toThrow('Validation error: Invalid role')
     })
     it('should call projectService.updateUserRole with correct params', async () => {
-      DIContainer.sharedContainer.projectService.updateUserRole = jest.fn().mockResolvedValue({})
-      DIContainer.sharedContainer.projectService.getPermissions = jest
+      projectService.updateUserRole = jest.fn().mockResolvedValue({})
+      projectService.getPermissions = jest
         .fn()
         .mockResolvedValue(new Set([ProjectPermission.UPDATE_ROLES]))
 
       // @ts-ignore
-      await projectRoute.updateUserRoleHandler(validCreateProjectReq, res)
+      await projectRoute.updateUserRoleHandler(validProjectRouteRequest, res)
 
-      expect(DIContainer.sharedContainer.projectService.updateUserRole).toHaveBeenCalledWith(
-        'project_id',
-        'user_id',
-        'Writer'
-      )
+      expect(projectService.updateUserRole).toHaveBeenCalledWith('project_id', 'user_id', 'Writer')
     })
     it('should send correct status when operation is successful', async () => {
-      DIContainer.sharedContainer.projectService.updateUserRole = jest.fn().mockResolvedValue({})
-      DIContainer.sharedContainer.projectService.getPermissions = jest
+      projectService.updateUserRole = jest.fn().mockResolvedValue({})
+      projectService.getPermissions = jest
         .fn()
         .mockResolvedValue(new Set([ProjectPermission.UPDATE_ROLES]))
 
       // @ts-ignore
-      await projectRoute.updateUserRoleHandler(validCreateProjectReq, res)
+      await projectRoute.updateUserRoleHandler(validProjectRouteRequest, res)
       expect(res.status).toHaveBeenCalledWith(StatusCodes.NO_CONTENT)
     })
     it('should throw an error if Role is missing', async () => {
       await expect(
         // @ts-ignore
-        projectRoute.updateUserRoleHandler(requestWithoutRole, res)
+        projectRoute.updateUserRoleHandler(projectRouteRequestWithoutRole, res)
       ).rejects.toThrow('Validation error: Role must be string or null')
     })
   })
@@ -284,47 +284,45 @@ describe('ProjectRoute', () => {
     it('should throw error if user is missing', async () => {
       await expect(
         // @ts-ignore
-        projectRoute.createManuscriptHandler(createProjectReqWithoutUser, res)
+        projectRoute.createManuscriptHandler(projectRouteRequestWithoutUser, res)
       ).rejects.toThrow('Validation error: No user found')
     })
 
     it('should throw error if projectID is missing', async () => {
       await expect(
         // @ts-ignore
-        projectRoute.createManuscriptHandler(createProjectReqWithoutProjectID)
+        projectRoute.createManuscriptHandler(projectRouteRequestWithoutProjectID)
       ).rejects.toThrow('Validation error: projectID parameter must be specified')
     })
 
     it('should throw error if user lacks CREATE_MANUSCRIPT permission', async () => {
-      DIContainer.sharedContainer.projectService.getPermissions = jest
-        .fn()
-        .mockResolvedValue(new Set([ProjectPermission.READ]))
+      projectService.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.READ]))
       // @ts-ignore
-      await expect(projectRoute.createManuscriptHandler(validCreateProjectReq)).rejects.toThrow(
+      await expect(projectRoute.createManuscriptHandler(validProjectRouteRequest)).rejects.toThrow(
         RoleDoesNotPermitOperationError
       )
     })
 
     it('should call projectService.createManuscript with correct params', async () => {
-      DIContainer.sharedContainer.projectService.createManuscript = jest.fn().mockResolvedValue({})
-      DIContainer.sharedContainer.projectService.getPermissions = jest
+      projectService.createManuscript = jest.fn().mockResolvedValue({})
+      projectService.getPermissions = jest
         .fn()
         .mockResolvedValue(new Set([ProjectPermission.CREATE_MANUSCRIPT]))
       // @ts-ignore
-      await projectRoute.createManuscriptHandler(validCreateProjectReq, res)
-      expect(DIContainer.sharedContainer.projectService.createManuscript).toHaveBeenCalledWith(
+      await projectRoute.createManuscriptHandler(validProjectRouteRequest, res)
+      expect(projectService.createManuscript).toHaveBeenCalledWith(
         'project_id',
         'manuscript_id',
         'template_id'
       )
     })
     it('should send correct status when operation is successful', async () => {
-      DIContainer.sharedContainer.projectService.createManuscript = jest.fn().mockResolvedValue({})
-      DIContainer.sharedContainer.projectService.getPermissions = jest
+      projectService.createManuscript = jest.fn().mockResolvedValue({})
+      projectService.getPermissions = jest
         .fn()
         .mockResolvedValue(new Set([ProjectPermission.CREATE_MANUSCRIPT]))
       // @ts-ignore
-      await projectRoute.createManuscriptHandler(validCreateProjectReq, res)
+      await projectRoute.createManuscriptHandler(validProjectRouteRequest, res)
       expect(res.status).toHaveBeenCalledWith(StatusCodes.OK)
     })
   })
@@ -332,47 +330,43 @@ describe('ProjectRoute', () => {
     it('should throw error if user is missing', async () => {
       await expect(
         // @ts-ignore
-        projectRoute.getCollaboratorsHandler(createProjectReqWithoutUser, res)
+        projectRoute.getCollaboratorsHandler(projectRouteRequestWithoutUser, res)
       ).rejects.toThrow('Validation error: No user found')
     })
 
     it('should throw error if projectID is missing', async () => {
       await expect(
         // @ts-ignore
-        projectRoute.getCollaboratorsHandler(createProjectReqWithoutProjectID)
+        projectRoute.getCollaboratorsHandler(projectRouteRequestWithoutProjectID)
       ).rejects.toThrow('Validation error: projectID parameter must be specified')
     })
 
     it('should throw error if user lacks READ permission', async () => {
-      DIContainer.sharedContainer.projectService.getPermissions = jest
+      projectService.getPermissions = jest
         .fn()
         .mockResolvedValue(new Set([ProjectPermission.UPDATE]))
       // @ts-ignore
-      await expect(projectRoute.getCollaboratorsHandler(validCreateProjectReq)).rejects.toThrow(
+      await expect(projectRoute.getCollaboratorsHandler(validProjectRouteRequest)).rejects.toThrow(
         RoleDoesNotPermitOperationError
       )
     })
 
     it('should call userService.getCollaborators with correct params', async () => {
-      DIContainer.sharedContainer.projectService.getPermissions = jest
-        .fn()
-        .mockResolvedValue(new Set([ProjectPermission.READ]))
+      projectService.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.READ]))
       DIContainer.sharedContainer.userService.getCollaborators = jest.fn().mockResolvedValue([])
 
       // @ts-ignore
-      await projectRoute.getCollaboratorsHandler(validCreateProjectReq, res)
+      await projectRoute.getCollaboratorsHandler(validProjectRouteRequest, res)
       expect(DIContainer.sharedContainer.userService.getCollaborators).toHaveBeenCalledWith(
         'project_id'
       )
     })
     it('should send correct status when operation is successful', async () => {
-      DIContainer.sharedContainer.projectService.getPermissions = jest
-        .fn()
-        .mockResolvedValue(new Set([ProjectPermission.READ]))
+      projectService.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.READ]))
       DIContainer.sharedContainer.userService.getCollaborators = jest.fn().mockResolvedValue([])
 
       // @ts-ignore
-      await projectRoute.getCollaboratorsHandler(validCreateProjectReq, res)
+      await projectRoute.getCollaboratorsHandler(validProjectRouteRequest, res)
       expect(res.status).toHaveBeenCalledWith(StatusCodes.OK)
     })
   })
@@ -380,62 +374,52 @@ describe('ProjectRoute', () => {
     it('should throw error if user is missing', async () => {
       await expect(
         // @ts-ignore
-        projectRoute.getArchiveHandler(createProjectReqWithoutUser, res)
+        projectRoute.getArchiveHandler(projectRouteRequestWithoutUser, res)
       ).rejects.toThrow('Validation error: No user found')
     })
 
     it('should throw error if projectID is missing', async () => {
       await expect(
         // @ts-ignore
-        projectRoute.getArchiveHandler(createProjectReqWithoutProjectID)
+        projectRoute.getArchiveHandler(projectRouteRequestWithoutProjectID)
       ).rejects.toThrow('Validation error: projectID parameter must be specified')
     })
     it('should not throw error if manuscriptID is missing', async () => {
-      DIContainer.sharedContainer.projectService.makeArchive = jest.fn().mockResolvedValue([])
-      DIContainer.sharedContainer.projectService.getPermissions = jest
-        .fn()
-        .mockResolvedValue(new Set([ProjectPermission.READ]))
+      projectService.makeArchive = jest.fn().mockResolvedValue([])
+      projectService.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.READ]))
       await expect(
         // @ts-ignore
-        projectRoute.getArchiveHandler(createProjectReqWithoutManuscriptID, res)
+        projectRoute.getArchiveHandler(projectRouteRequestWithoutManuscriptID, res)
       ).resolves.not.toThrow()
     })
 
     it('should throw error if user lacks READ permission', async () => {
-      DIContainer.sharedContainer.projectService.getPermissions = jest
+      projectService.getPermissions = jest
         .fn()
         .mockResolvedValue(new Set([ProjectPermission.UPDATE]))
       // @ts-ignore
-      await expect(projectRoute.getArchiveHandler(validCreateProjectReq)).rejects.toThrow(
+      await expect(projectRoute.getArchiveHandler(validProjectRouteRequest)).rejects.toThrow(
         RoleDoesNotPermitOperationError
       )
     })
 
     it('should call projectService.makeArchive with correct params', async () => {
-      DIContainer.sharedContainer.projectService.makeArchive = jest.fn().mockResolvedValue([])
-      DIContainer.sharedContainer.projectService.getPermissions = jest
-        .fn()
-        .mockResolvedValue(new Set([ProjectPermission.READ]))
+      projectService.makeArchive = jest.fn().mockResolvedValue([])
+      projectService.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.READ]))
       // @ts-ignore
-      await projectRoute.getArchiveHandler(validCreateProjectReq, res)
+      await projectRoute.getArchiveHandler(validProjectRouteRequest, res)
 
-      expect(DIContainer.sharedContainer.projectService.makeArchive).toHaveBeenCalledWith(
-        'project_id',
-        'manuscript_id',
-        {
-          getAttachments: true,
-          onlyIDs: true,
-          includeExt: true,
-        }
-      )
+      expect(projectService.makeArchive).toHaveBeenCalledWith('project_id', 'manuscript_id', {
+        getAttachments: true,
+        onlyIDs: true,
+        includeExt: true,
+      })
     })
     it('should send correct status when operation is successful', async () => {
-      DIContainer.sharedContainer.projectService.makeArchive = jest.fn().mockResolvedValue([])
-      DIContainer.sharedContainer.projectService.getPermissions = jest
-        .fn()
-        .mockResolvedValue(new Set([ProjectPermission.READ]))
+      projectService.makeArchive = jest.fn().mockResolvedValue([])
+      projectService.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.READ]))
       // @ts-ignore
-      await projectRoute.getArchiveHandler(validCreateProjectReq, res)
+      await projectRoute.getArchiveHandler(validProjectRouteRequest, res)
       expect(res.status).toHaveBeenCalledWith(StatusCodes.OK)
     })
   })
@@ -443,58 +427,50 @@ describe('ProjectRoute', () => {
     it('should throw error if user is missing', async () => {
       await expect(
         // @ts-ignore
-        projectRoute.generateAccessTokenHandler(createProjectReqWithoutUser, res)
+        projectRoute.generateAccessTokenHandler(projectRouteRequestWithoutUser, res)
       ).rejects.toThrow('Validation error: No user found')
     })
 
     it('should throw error if projectID is missing', async () => {
       await expect(
         // @ts-ignore
-        projectRoute.generateAccessTokenHandler(createProjectReqWithoutProjectID, res)
+        projectRoute.generateAccessTokenHandler(projectRouteRequestWithoutProjectID, res)
       ).rejects.toThrow('Validation error: projectID parameter must be specified')
     })
 
     it('should throw error if scope is missing', async () => {
       await expect(
         // @ts-ignore
-        projectRoute.generateAccessTokenHandler(createProjectReqWithoutScope, res)
+        projectRoute.generateAccessTokenHandler(projectRouteRequestWithoutScope, res)
       ).rejects.toThrow('Validation error: scope parameter must be specified')
     })
 
     it('should throw error if user lacks READ permission', async () => {
-      DIContainer.sharedContainer.projectService.getPermissions = jest
+      projectService.getPermissions = jest
         .fn()
         .mockResolvedValue(new Set([ProjectPermission.UPDATE]))
       await expect(
         // @ts-ignore
-        projectRoute.generateAccessTokenHandler(validCreateProjectReq, res)
+        projectRoute.generateAccessTokenHandler(validProjectRouteRequest, res)
       ).rejects.toThrow(RoleDoesNotPermitOperationError)
     })
 
     it('should call projectService.generateAccessToken with correct params', async () => {
-      DIContainer.sharedContainer.projectService.generateAccessToken = jest
-        .fn()
-        .mockResolvedValue('access_token')
-      DIContainer.sharedContainer.projectService.getPermissions = jest
-        .fn()
-        .mockResolvedValue(new Set([ProjectPermission.READ]))
+      projectService.generateAccessToken = jest.fn().mockResolvedValue('access_token')
+      projectService.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.READ]))
       // @ts-ignore
-      await projectRoute.generateAccessTokenHandler(validCreateProjectReq, res)
-      expect(DIContainer.sharedContainer.projectService.generateAccessToken).toHaveBeenCalledWith(
+      await projectRoute.generateAccessTokenHandler(validProjectRouteRequest, res)
+      expect(projectService.generateAccessToken).toHaveBeenCalledWith(
         'project_id',
         'User|9f338224-b0d5-45aa-b02c-21c7e0c3c07b',
         'random'
       )
     })
     it('should send correct status when operation is successful', async () => {
-      DIContainer.sharedContainer.projectService.generateAccessToken = jest
-        .fn()
-        .mockResolvedValue('123')
-      DIContainer.sharedContainer.projectService.getPermissions = jest
-        .fn()
-        .mockResolvedValue(new Set([ProjectPermission.READ]))
+      projectService.generateAccessToken = jest.fn().mockResolvedValue('123')
+      projectService.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.READ]))
       // @ts-ignore
-      await projectRoute.generateAccessTokenHandler(validCreateProjectReq, res)
+      await projectRoute.generateAccessTokenHandler(validProjectRouteRequest, res)
       // @ts-ignore
       expect(res.send).toHaveBeenCalledWith('123')
     })
@@ -503,45 +479,43 @@ describe('ProjectRoute', () => {
     it('should throw error if user is missing', async () => {
       await expect(
         // @ts-ignore
-        projectRoute.deleteProjectHandler(createProjectReqWithoutUser, res)
+        projectRoute.deleteProjectHandler(projectRouteRequestWithoutUser, res)
       ).rejects.toThrow('Validation error: No user found')
     })
 
     it('should throw error if projectID is missing', async () => {
       await expect(
         // @ts-ignore
-        projectRoute.deleteProjectHandler(createProjectReqWithoutProjectID, res)
+        projectRoute.deleteProjectHandler(projectRouteRequestWithoutProjectID, res)
       ).rejects.toThrow('Validation error: projectID parameter must be specified')
     })
 
     it('should throw error if user lacks DELETE permission', async () => {
-      DIContainer.sharedContainer.projectService.getPermissions = jest
+      projectService.getPermissions = jest
         .fn()
         .mockResolvedValue(new Set([ProjectPermission.UPDATE]))
       await expect(
         // @ts-ignore
-        projectRoute.deleteProjectHandler(validCreateProjectReq, res)
+        projectRoute.deleteProjectHandler(validProjectRouteRequest, res)
       ).rejects.toThrow(RoleDoesNotPermitOperationError)
     })
 
     it('should call projectService.deleteProject with correct params', async () => {
-      DIContainer.sharedContainer.projectService.deleteProject = jest.fn().mockResolvedValue({})
-      DIContainer.sharedContainer.projectService.getPermissions = jest
+      projectService.deleteProject = jest.fn().mockResolvedValue({})
+      projectService.getPermissions = jest
         .fn()
         .mockResolvedValue(new Set([ProjectPermission.DELETE]))
       // @ts-ignore
-      await projectRoute.deleteProjectHandler(validCreateProjectReq, res)
-      expect(DIContainer.sharedContainer.projectService.deleteProject).toHaveBeenCalledWith(
-        'project_id'
-      )
+      await projectRoute.deleteProjectHandler(validProjectRouteRequest, res)
+      expect(projectService.deleteProject).toHaveBeenCalledWith('project_id')
     })
     it('should send correct status when operation is successful', async () => {
-      DIContainer.sharedContainer.projectService.getProject = jest.fn().mockResolvedValue({})
-      DIContainer.sharedContainer.projectService.getPermissions = jest
+      projectService.getProject = jest.fn().mockResolvedValue({})
+      projectService.getPermissions = jest
         .fn()
         .mockResolvedValue(new Set([ProjectPermission.DELETE]))
       // @ts-ignore
-      await projectRoute.deleteProjectHandler(validCreateProjectReq, res)
+      await projectRoute.deleteProjectHandler(validProjectRouteRequest, res)
       expect(res.status).toHaveBeenCalledWith(StatusCodes.OK)
     })
   })
