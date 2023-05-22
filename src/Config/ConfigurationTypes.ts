@@ -29,7 +29,6 @@ export enum Environment {
  */
 export type APIConfiguration = {
   readonly port: number
-  readonly oauthStateEncryptionKey: string
   readonly hostname: string
 }
 
@@ -61,7 +60,6 @@ export type AuthConfiguration = {
   readonly jwtSecret: string
   readonly skipVerification: boolean
   readonly hashSaltRounds: number
-  readonly serverSecret: string
   readonly enableNonConnectAuth: boolean
 }
 

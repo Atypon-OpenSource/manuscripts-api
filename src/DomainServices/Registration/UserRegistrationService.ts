@@ -92,7 +92,7 @@ export class UserRegistrationService implements IUserRegistrationService {
     const { token, email, name, password } = credentials
     if (token) {
       try {
-        jwt.verify(token, config.auth.serverSecret)
+        jwt.verify(token, config.auth.jwtSecret)
       } catch (e) {
         throw new InvalidServerCredentialsError(
           `Invalid token during registration attempt on behalf of user '${email}'`

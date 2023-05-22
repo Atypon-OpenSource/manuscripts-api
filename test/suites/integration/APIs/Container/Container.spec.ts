@@ -24,7 +24,7 @@ import { config } from '../../../../../src/Config/Config'
 import { BucketKey } from '../../../../../src/Config/ConfigurationTypes'
 import { SeedOptions } from '../../../../../src/DataAccess/Interfaces/SeedOptions'
 import { DIContainer } from '../../../../../src/DIContainer/DIContainer'
-import { ContainerRole, ContainerType } from '../../../../../src/Models/ContainerModels'
+import { ContainerRole } from '../../../../../src/Models/ContainerModels'
 import {
   accessToken,
   addProductionNote,
@@ -372,7 +372,7 @@ describe('containerService - manageUserRole', () => {
       {
         managedUserId: 'User|valid-user-6@manuscriptsapp.com',
         newRole: ContainerRole.Viewer,
-        secret: config.auth.serverSecret,
+        secret: config.auth.jwtSecret,
       },
       {
         containerID: 'MPProject:valid-project-id-4',

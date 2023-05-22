@@ -237,7 +237,7 @@ export class UserService implements IUserService {
     } else {
       try {
         // Server secret based authentication
-        jwt.verify(token, config.auth.serverSecret)
+        jwt.verify(token, config.auth.jwtSecret)
       } catch (e) {
         throw new InvalidCredentialsError('Unexpected token payload.')
       }

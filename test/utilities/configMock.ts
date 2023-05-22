@@ -21,25 +21,17 @@ jest.mock('../../src/Config/Config', () => {
     DB: {
       buckets: {
         user: 'manuscripts_user',
-        data: 'bkt',
         project: 'pro',
       },
-      username: 'Administrator',
-      password: '123456',
-      bucketAdminPassword: 'zuippadui',
-      uri: 'couchbase://couchbase/',
-      bucketOptions: {},
     },
     API: {
       port: 3000,
-      oauthStateEncryptionKey: 'key-12345',
       hostname: 'https://api-server.atypon.com',
     },
     auth: {
-      jwtSecret: '123456',
+      jwtSecret: '123456789',
       skipVerification: false,
       hashSaltRounds: 3,
-      serverSecret: '123456789',
       enableNonConnectAuth: true,
     },
     email: {

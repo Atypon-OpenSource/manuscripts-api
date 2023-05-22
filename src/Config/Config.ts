@@ -86,10 +86,6 @@ export class Configuration implements ConfigurationContainer {
   constructor(env: EnvironmentLike) {
     this.API = {
       port: Number(env.APP_PORT),
-      oauthStateEncryptionKey: getString(
-        env.APP_OAUTH_STATE_ENCRYPTION_KEY,
-        'APP_OAUTH_STATE_ENCRYPTION_KEY'
-      ),
       hostname: getString(env.APP_HOSTNAME_PUBLIC, 'APP_HOSTNAME_PUBLIC'),
     }
 
@@ -104,7 +100,6 @@ export class Configuration implements ConfigurationContainer {
       hashSaltRounds:
         getNumber(env.APP_HASH_SALT_ROUNDS, 'APP_HASH_SALT_ROUNDS', true) ||
         (env.NODE_ENV === Environment.Production ? 10 : 3),
-      serverSecret: getString(env.APP_SERVER_SECRET, 'APP_SERVER_SECRET'),
       enableNonConnectAuth: Boolean(
         getNumber(env.APP_ENABLE_NON_CONNECT_AUTH, 'APP_ENABLE_NON_CONNECT_AUTH')
       ),

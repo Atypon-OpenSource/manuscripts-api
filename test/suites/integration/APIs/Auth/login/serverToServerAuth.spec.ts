@@ -73,7 +73,7 @@ describe('Server to Server token Auth - POST api/v1/auth/token', () => {
         ...ValidHeaderWithApplicationKey,
         authorization: `Bearer ${jsonwebtoken.sign(
           { email: validEmailBody.email },
-          config.auth.serverSecret
+          config.auth.jwtSecret
         )}`,
       },
       {
