@@ -24,12 +24,6 @@ const metricsMap = [
     help: 'The @manuscripts/json-schema version by package.json',
     labelNames: ['version', 'major', 'minor', 'patch'],
   },
-  {
-    name: 'transformer_version_info',
-    packageName: 'examples',
-    help: 'The @manuscripts/examples version by package.json',
-    labelNames: ['version', 'major', 'minor', 'patch'],
-  },
 ]
 export async function configurePromClientRegistry(): Promise<void> {
   for (const metric of metricsMap) {
