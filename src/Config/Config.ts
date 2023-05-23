@@ -101,7 +101,7 @@ export class Configuration implements ConfigurationContainer {
         getNumber(env.APP_HASH_SALT_ROUNDS, 'APP_HASH_SALT_ROUNDS', true) ||
         (env.NODE_ENV === Environment.Production ? 10 : 3),
       enableNonConnectAuth: Boolean(
-        getNumber(env.APP_ENABLE_NON_CONNECT_AUTH, 'APP_ENABLE_NON_CONNECT_AUTH')
+        getNumber(env.APP_ENABLE_NON_CONNECT_AUTH, 'APP_ENABLE_NON_CONNECT_AUTH', true)
       ),
     }
 
