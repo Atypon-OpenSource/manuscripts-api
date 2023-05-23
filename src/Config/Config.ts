@@ -24,7 +24,6 @@ import {
   scopeConfigurationsFromSplitString,
 } from '../Models/ClientApplicationModels'
 import { isNumber, isString } from '../util'
-import { log } from '../Utilities/Logger'
 import {
   APIConfiguration,
   AuthConfiguration,
@@ -154,7 +153,7 @@ export class Configuration implements ConfigurationContainer {
   }
 
   static fromEnv(envExamplePath: string) {
-    if (existsSync('.env')) {
+    if (existsSync(envExamplePath)) {
       const dotenvResult = load({
         allowEmptyValues: false,
         sample: envExamplePath,
@@ -164,8 +163,6 @@ export class Configuration implements ConfigurationContainer {
       if (dotenvResult && dotenvResult.error) {
         throw dotenvResult.error
       }
-    } else {
-      log.error('.env is missing or is not a UTF8 encoded text file.')
     }
 
     return process.env // load() call above loads .env file into process.env
