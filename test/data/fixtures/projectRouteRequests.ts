@@ -13,23 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { ObjectTypes } from '@manuscripts/json-schema'
+
+import { ContainerRole } from '../../../src/Models/ContainerModels'
+import { templates } from '../dump/templates'
+import { validManuscript } from './manuscripts'
+import { validProject } from './projects'
 import { validUser } from './userServiceUser'
 
 export const validProjectRouteRequest = {
-  data: {
-    test: 'random',
-  },
+  data: [
+    {
+      _id: validProject._id,
+      objectType: ObjectTypes.Project,
+      createdAt: 20,
+      updatedAt: 21,
+    },
+  ],
   body: {
-    templateID: 'template_id',
-    title: 'random',
-    types: ['type1', 'type2'],
-    role: 'Writer',
-    userID: 'user_id',
+    templateID: templates[0]._id,
+    title: 'pressroom',
+    types: [ObjectTypes.ManuscriptNote, ObjectTypes.BibliographicName],
+    role: ContainerRole.Writer,
+    userID: validUser._id,
   },
   params: {
-    projectID: 'project_id',
-    manuscriptID: 'manuscript_id',
-    scope: 'random',
+    projectID: validProject._id,
+    manuscriptID: validManuscript._id,
+    scope: 'pressroom',
   },
   user: validUser,
   headers: { 'if-modified-since': new Date('2022-01-01').toISOString() },
@@ -38,20 +49,25 @@ export const validProjectRouteRequest = {
   },
 }
 export const projectRouteRequestWithInvalidRole = {
-  data: {
-    test: 'random',
-  },
+  data: [
+    {
+      _id: validProject._id,
+      objectType: ObjectTypes.Project,
+      createdAt: 20,
+      updatedAt: 21,
+    },
+  ],
   body: {
-    templateID: 'template_id',
-    title: 'random',
-    types: ['type1', 'type2'],
-    role: 'writer',
-    userID: 'user_id',
+    templateID: templates[0]._id,
+    title: 'pressroom',
+    types: [ObjectTypes.ManuscriptNote, ObjectTypes.BibliographicName],
+    role: 'random',
+    userID: validUser._id,
   },
   params: {
-    projectID: 'project_id',
-    manuscriptID: 'manuscript_id',
-    scope: 'random',
+    projectID: validProject._id,
+    manuscriptID: validManuscript._id,
+    scope: 'pressroom',
   },
   user: validUser,
   headers: { 'if-modified-since': new Date('2022-01-01').toISOString() },
@@ -60,20 +76,25 @@ export const projectRouteRequestWithInvalidRole = {
   },
 }
 export const projectRouteRequestWithoutUser = {
-  data: {
-    test: 'random',
-  },
+  data: [
+    {
+      _id: validProject._id,
+      objectType: ObjectTypes.Project,
+      createdAt: 20,
+      updatedAt: 21,
+    },
+  ],
   body: {
-    templateID: 'template_id',
-    title: 'random',
-    types: ['type1', 'type2'],
-    role: 'Writer',
-    userID: 'user_id',
+    templateID: templates[0]._id,
+    title: 'pressroom',
+    types: [ObjectTypes.ManuscriptNote, ObjectTypes.BibliographicName],
+    role: ContainerRole.Writer,
+    userID: validUser._id,
   },
   params: {
-    projectID: 'project_id',
-    manuscriptID: 'manuscript_id',
-    scope: 'random',
+    projectID: validProject._id,
+    manuscriptID: validManuscript._id,
+    scope: 'pressroom',
   },
   user: null,
   headers: { 'if-modified-since': new Date('2022-01-01').toISOString() },
@@ -82,19 +103,24 @@ export const projectRouteRequestWithoutUser = {
   },
 }
 export const projectRouteRequestWithoutProjectID = {
-  data: {
-    test: 'random',
-  },
+  data: [
+    {
+      _id: validProject._id,
+      objectType: ObjectTypes.Project,
+      createdAt: 20,
+      updatedAt: 21,
+    },
+  ],
   body: {
-    templateID: 'template_id',
-    title: 'random',
-    types: ['type1', 'type2'],
-    role: 'Writer',
-    userID: 'user_id',
+    templateID: templates[0]._id,
+    title: 'pressroom',
+    types: [ObjectTypes.ManuscriptNote, ObjectTypes.BibliographicName],
+    role: ContainerRole.Writer,
+    userID: validUser._id,
   },
   params: {
-    manuscriptID: 'manuscript_id',
-    scope: 'random',
+    manuscriptID: validManuscript._id,
+    scope: 'pressroom',
   },
   user: validUser,
   headers: { 'if-modified-since': new Date('2022-01-01').toISOString() },
@@ -103,19 +129,24 @@ export const projectRouteRequestWithoutProjectID = {
   },
 }
 export const projectRouteRequestWithoutScope = {
-  data: {
-    test: 'random',
-  },
+  data: [
+    {
+      _id: validProject._id,
+      objectType: ObjectTypes.Project,
+      createdAt: 20,
+      updatedAt: 21,
+    },
+  ],
   body: {
-    templateID: 'template_id',
-    title: 'random',
-    types: ['type1', 'type2'],
-    role: 'Writer',
-    userID: 'user_id',
+    templateID: templates[0]._id,
+    title: 'pressroom',
+    types: [ObjectTypes.ManuscriptNote, ObjectTypes.BibliographicName],
+    role: ContainerRole.Writer,
+    userID: validUser._id,
   },
   params: {
-    projectID: 'project_id',
-    manuscriptID: 'manuscript_id',
+    projectID: validProject._id,
+    manuscriptID: validManuscript._id,
   },
   user: validUser,
   headers: { 'if-modified-since': new Date('2022-01-01').toISOString() },
@@ -124,19 +155,24 @@ export const projectRouteRequestWithoutScope = {
   },
 }
 export const projectRouteRequestWithoutManuscriptID = {
-  data: {
-    test: 'random',
-  },
+  data: [
+    {
+      _id: validProject._id,
+      objectType: ObjectTypes.Project,
+      createdAt: 20,
+      updatedAt: 21,
+    },
+  ],
   body: {
-    templateID: 'template_id',
-    title: 'random',
-    types: ['type1', 'type2'],
-    role: 'Writer',
-    userID: 'user_id',
+    templateID: templates[0]._id,
+    title: 'pressroom',
+    types: [ObjectTypes.ManuscriptNote, ObjectTypes.BibliographicName],
+    role: ContainerRole.Writer,
+    userID: validUser._id,
   },
   params: {
-    projectID: 'project_id',
-    scope: 'random',
+    projectID: validProject._id,
+    scope: 'pressroom',
   },
   user: validUser,
   headers: { 'if-modified-since': new Date('2022-01-01').toISOString() },
@@ -145,19 +181,24 @@ export const projectRouteRequestWithoutManuscriptID = {
   },
 }
 export const projectRouteRequestWithoutRole = {
-  data: {
-    test: 'random',
-  },
+  data: [
+    {
+      _id: validProject._id,
+      objectType: ObjectTypes.Project,
+      createdAt: 20,
+      updatedAt: 21,
+    },
+  ],
   body: {
-    templateID: 'template_id',
-    title: 'random',
-    types: ['type1', 'type2'],
-    userID: 'user_id',
+    templateID: templates[0]._id,
+    title: 'pressroom',
+    types: [ObjectTypes.ManuscriptNote, ObjectTypes.BibliographicName],
+    userID: validUser._id,
   },
   params: {
-    projectID: 'project_id',
-    manuscriptID: 'manuscript_id',
-    scope: 'random',
+    projectID: validProject._id,
+    manuscriptID: validManuscript._id,
+    scope: 'pressroom',
   },
   user: validUser,
   headers: { 'if-modified-since': new Date('2022-01-01').toISOString() },
@@ -166,19 +207,24 @@ export const projectRouteRequestWithoutRole = {
   },
 }
 export const projectRouteRequestWithoutUserID = {
-  data: {
-    test: 'random',
-  },
+  data: [
+    {
+      _id: validProject._id,
+      objectType: ObjectTypes.Project,
+      createdAt: 20,
+      updatedAt: 21,
+    },
+  ],
   body: {
-    templateID: 'template_id',
-    title: 'random',
-    types: ['type1', 'type2'],
-    role: 'Writer',
+    templateID: templates[0]._id,
+    title: 'pressroom',
+    types: [ObjectTypes.ManuscriptNote, ObjectTypes.BibliographicName],
+    role: ContainerRole.Writer,
   },
   params: {
-    projectID: 'project_id',
-    manuscriptID: 'manuscript_id',
-    scope: 'random',
+    projectID: validProject._id,
+    manuscriptID: validManuscript._id,
+    scope: 'pressroom',
   },
   user: validUser,
   headers: { 'if-modified-since': new Date('2022-01-01').toISOString() },

@@ -32,7 +32,7 @@ export class ProjectController extends BaseController {
     )
   }
 
-  async updateProject(data: any, user: Express.User, projectID: string): Promise<void> {
+  async updateProject(data: Model[], user: Express.User, projectID: string): Promise<void> {
     const permissions = await this.getPermissions(projectID, user._id)
     if (!permissions.has(ProjectPermission.UPDATE)) {
       throw new RoleDoesNotPermitOperationError(`Access denied`, user._id)

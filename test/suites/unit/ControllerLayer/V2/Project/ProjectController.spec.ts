@@ -16,6 +16,8 @@
 import '../../../../../utilities/dbMock'
 import '../../../../../utilities/configMock'
 
+import { Model, ObjectTypes } from '@manuscripts/json-schema'
+
 import { ProjectController } from '../../../../../../src/Controller/V2/Project/ProjectController'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
 import {
@@ -24,6 +26,7 @@ import {
 } from '../../../../../../src/DomainServices/ProjectService'
 import { RoleDoesNotPermitOperationError } from '../../../../../../src/Errors'
 import { ProjectUserRole } from '../../../../../../src/Models/ContainerModels'
+import { templates } from '../../../../../data/dump/templates'
 import { ValidHeaderWithApplicationKey } from '../../../../../data/fixtures/headers'
 import { validManuscript } from '../../../../../data/fixtures/manuscripts'
 import { validProject } from '../../../../../data/fixtures/projects'
@@ -38,20 +41,30 @@ beforeEach(async () => {
   await DIContainer.init()
   projectService = DIContainer.sharedContainer.projectService
 })
+afterEach(() => {
+  jest.clearAllMocks()
+})
 
-const projectTitle = validManuscript.title
-const projectID = validProject._id
-const user = validUser as Express.User
-const userID = user._id
-const role = ProjectUserRole.Owner
-const manuscriptID = validManuscript._id
-const templateID = 'some_template_id'
-const onlyIDs = 'true'
-const accept = ValidHeaderWithApplicationKey['Accept']
-const scope = 'test'
 describe('ProjectController', () => {
   let controller: ProjectController
-
+  const projectTitle = 'random_project_title'
+  const projectID = validProject._id
+  const user = validUser as Express.User
+  const userID = user._id
+  const role = ProjectUserRole.Owner
+  const manuscriptID = validManuscript._id
+  const templateID = templates[0]._id
+  const onlyIDs = 'true'
+  const accept = ValidHeaderWithApplicationKey['Accept']
+  const scope = 'pressroom'
+  const data: Model[] = [
+    {
+      _id: validProject._id,
+      objectType: ObjectTypes.Project,
+      createdAt: 20 / 12 / 2020,
+      updatedAt: 21 / 12 / 2020,
+    },
+  ]
   beforeEach(() => {
     controller = new ProjectController()
   })
@@ -80,20 +93,20 @@ describe('ProjectController', () => {
   describe('updateProject', () => {
     it('should throw an error if user does not have UPDATE permission', async () => {
       controller.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.READ]))
-      await expect(controller.updateProject({}, user, projectID)).rejects.toThrow('Access denied')
+      await expect(controller.updateProject(data, user, projectID)).rejects.toThrow('Access denied')
     })
 
     it('should throw an error if ProjectService.updateProject fails', async () => {
       controller.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.UPDATE]))
       projectService.updateProject = jest.fn().mockRejectedValue(new Error('Test Error'))
-      await expect(controller.updateProject({}, user, projectID)).rejects.toThrow('Test Error')
+      await expect(controller.updateProject(data, user, projectID)).rejects.toThrow('Test Error')
     })
 
     it('should not throw an error when operation is successful', async () => {
       controller.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.UPDATE]))
 
       projectService.updateProject = jest.fn().mockResolvedValue({})
-      await expect(controller.updateProject({}, user, projectID)).resolves.not.toThrow()
+      await expect(controller.updateProject(data, user, projectID)).resolves.not.toThrow()
     })
   })
   describe('isProjectCachceValid', () => {

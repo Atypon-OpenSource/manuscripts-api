@@ -25,6 +25,9 @@ import {
   ProjectService,
 } from '../../../../../../src/DomainServices/ProjectService'
 import { RoleDoesNotPermitOperationError, ValidationError } from '../../../../../../src/Errors'
+import { ContainerRole } from '../../../../../../src/Models/ContainerModels'
+import { templates } from '../../../../../data/dump/templates'
+import { validManuscript } from '../../../../../data/fixtures/manuscripts'
 import {
   projectRouteRequestWithInvalidRole,
   projectRouteRequestWithoutManuscriptID,
@@ -35,6 +38,8 @@ import {
   projectRouteRequestWithoutUserID,
   validProjectRouteRequest,
 } from '../../../../../data/fixtures/projectRouteRequests'
+import { validProject } from '../../../../../data/fixtures/projects'
+import { validUser } from '../../../../../data/fixtures/userServiceUser'
 import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
 jest.setTimeout(TEST_TIMEOUT)
 
@@ -44,14 +49,17 @@ beforeEach(async () => {
   await DIContainer.init()
   projectService = DIContainer.sharedContainer.projectService
 })
+afterEach(() => {
+  jest.clearAllMocks()
+})
 
 describe('ProjectRoute', () => {
+  let projectRoute: ProjectRoute
   const validMockProject: { _id: string; title: string; owners: string[] } = {
     _id: '123',
     title: 'Test Project',
     owners: ['user1'],
   }
-  let projectRoute: ProjectRoute
   const res: {
     status: jest.Mock
     set: jest.Mock
@@ -261,7 +269,11 @@ describe('ProjectRoute', () => {
       // @ts-ignore
       await projectRoute.updateUserRoleHandler(validProjectRouteRequest, res)
 
-      expect(projectService.updateUserRole).toHaveBeenCalledWith('project_id', 'user_id', 'Writer')
+      expect(projectService.updateUserRole).toHaveBeenCalledWith(
+        validProject._id,
+        validUser._id,
+        ContainerRole.Writer
+      )
     })
     it('should send correct status when operation is successful', async () => {
       projectService.updateUserRole = jest.fn().mockResolvedValue({})
@@ -311,9 +323,9 @@ describe('ProjectRoute', () => {
       // @ts-ignore
       await projectRoute.createManuscriptHandler(validProjectRouteRequest, res)
       expect(projectService.createManuscript).toHaveBeenCalledWith(
-        'project_id',
-        'manuscript_id',
-        'template_id'
+        validProject._id,
+        validManuscript._id,
+        templates[0]._id
       )
     })
     it('should send correct status when operation is successful', async () => {
@@ -358,7 +370,7 @@ describe('ProjectRoute', () => {
       // @ts-ignore
       await projectRoute.getCollaboratorsHandler(validProjectRouteRequest, res)
       expect(DIContainer.sharedContainer.userService.getCollaborators).toHaveBeenCalledWith(
-        'project_id'
+        validProject._id
       )
     })
     it('should send correct status when operation is successful', async () => {
@@ -409,11 +421,15 @@ describe('ProjectRoute', () => {
       // @ts-ignore
       await projectRoute.getArchiveHandler(validProjectRouteRequest, res)
 
-      expect(projectService.makeArchive).toHaveBeenCalledWith('project_id', 'manuscript_id', {
-        getAttachments: true,
-        onlyIDs: true,
-        includeExt: true,
-      })
+      expect(projectService.makeArchive).toHaveBeenCalledWith(
+        validProject._id,
+        validManuscript._id,
+        {
+          getAttachments: true,
+          onlyIDs: true,
+          includeExt: true,
+        }
+      )
     })
     it('should send correct status when operation is successful', async () => {
       projectService.makeArchive = jest.fn().mockResolvedValue([])
@@ -461,9 +477,9 @@ describe('ProjectRoute', () => {
       // @ts-ignore
       await projectRoute.generateAccessTokenHandler(validProjectRouteRequest, res)
       expect(projectService.generateAccessToken).toHaveBeenCalledWith(
-        'project_id',
-        'User|9f338224-b0d5-45aa-b02c-21c7e0c3c07b',
-        'random'
+        validProject._id,
+        validUser._id,
+        validProjectRouteRequest.params.scope
       )
     })
     it('should send correct status when operation is successful', async () => {
@@ -507,7 +523,7 @@ describe('ProjectRoute', () => {
         .mockResolvedValue(new Set([ProjectPermission.DELETE]))
       // @ts-ignore
       await projectRoute.deleteProjectHandler(validProjectRouteRequest, res)
-      expect(projectService.deleteProject).toHaveBeenCalledWith('project_id')
+      expect(projectService.deleteProject).toHaveBeenCalledWith(validProject._id)
     })
     it('should send correct status when operation is successful', async () => {
       projectService.getProject = jest.fn().mockResolvedValue({})
