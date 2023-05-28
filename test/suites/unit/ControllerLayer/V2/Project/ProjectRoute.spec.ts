@@ -88,7 +88,7 @@ describe('ProjectRoute', () => {
       await expect(
         // @ts-ignore
         projectRoute.createProjectHandler(projectRouteRequestWithoutUser, res)
-      ).rejects.toThrow('Validation error: No user found')
+      ).rejects.toThrow(new ValidationError('No user found', null))
     })
     it('should not throw an error if projectID is missing', async () => {
       const projectService: any = DIContainer.sharedContainer.projectService
@@ -115,13 +115,13 @@ describe('ProjectRoute', () => {
       await expect(
         // @ts-ignore
         projectRoute.updateProjectHandler(projectRouteRequestWithoutUser, res)
-      ).rejects.toThrow('Validation error: No user found')
+      ).rejects.toThrow(new ValidationError('No user found', null))
     })
     it('should throw an error if projectID is missing', async () => {
       await expect(
         // @ts-ignore
         projectRoute.updateProjectHandler(projectRouteRequestWithoutProjectID, res)
-      ).rejects.toThrow('Validation error: projectID parameter must be specified')
+      ).rejects.toThrow(new ValidationError('projectID parameter must be specified', null))
     })
     it('should throw an error if user does not have UPDATE permission', async () => {
       projectService.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.READ]))
@@ -130,7 +130,9 @@ describe('ProjectRoute', () => {
         // @ts-ignore
 
         projectRoute.updateProjectHandler(validProjectRouteRequest, res)
-      ).rejects.toThrow(RoleDoesNotPermitOperationError)
+      ).rejects.toThrow(
+        new RoleDoesNotPermitOperationError('Access denied', validProjectRouteRequest.user._id)
+      )
     })
     it('should throw an error if ProjectService.updateProject fails', async () => {
       projectService.getPermissions = jest
@@ -175,14 +177,14 @@ describe('ProjectRoute', () => {
       await expect(
         // @ts-ignore
         projectRoute.getProjectModelsHandler(projectRouteRequestWithoutUser, res)
-      ).rejects.toThrow('Validation error: No user found')
+      ).rejects.toThrow(new ValidationError('No user found', null))
     })
 
     it('should throw an error if projectID is missing', async () => {
       await expect(
         // @ts-ignore
         projectRoute.getProjectModelsHandler(projectRouteRequestWithoutProjectID, res)
-      ).rejects.toThrow('Validation error: projectID parameter must be specified')
+      ).rejects.toThrow(new ValidationError('projectID parameter must be specified', null))
     })
     it('should return NOT_MODIFIED status if project cache is valid', async () => {
       projectService.getProject = jest.fn().mockResolvedValue({
@@ -219,7 +221,9 @@ describe('ProjectRoute', () => {
       await expect(
         // @ts-ignore
         projectRoute.getProjectModelsHandler(validProjectRouteRequest, res)
-      ).rejects.toThrow(RoleDoesNotPermitOperationError)
+      ).rejects.toThrow(
+        new RoleDoesNotPermitOperationError('Access denied', validProjectRouteRequest.user._id)
+      )
     })
   })
   describe('updateUserRoleHandler', () => {
@@ -227,19 +231,19 @@ describe('ProjectRoute', () => {
       await expect(
         // @ts-ignore
         projectRoute.updateUserRoleHandler(projectRouteRequestWithoutUser, res)
-      ).rejects.toThrow(ValidationError)
+      ).rejects.toThrow(new ValidationError('No user found', null))
     })
     it('should throw an error if projectID is missing', async () => {
       await expect(
         // @ts-ignore
         projectRoute.updateUserRoleHandler(projectRouteRequestWithoutProjectID, res)
-      ).rejects.toThrow('Validation error: projectID parameter must be specified')
+      ).rejects.toThrow(new ValidationError('projectID parameter must be specified', null))
     })
     it('should throw an error if userID is missing', async () => {
       await expect(
         // @ts-ignore
         projectRoute.updateUserRoleHandler(projectRouteRequestWithoutUserID, res)
-      ).rejects.toThrow('Validation error: userID parameter must be specified')
+      ).rejects.toThrow(new ValidationError('userID parameter must be specified', null))
     })
     it('should throw an error if user does not have READ permission', async () => {
       projectService.getProject = jest.fn().mockResolvedValue({
@@ -252,13 +256,17 @@ describe('ProjectRoute', () => {
       await expect(
         // @ts-ignore
         projectRoute.updateUserRoleHandler(validProjectRouteRequest, res)
-      ).rejects.toThrow(RoleDoesNotPermitOperationError)
+      ).rejects.toThrow(
+        new RoleDoesNotPermitOperationError('Access denied', validProjectRouteRequest.user._id)
+      )
     })
     it('should throw an error if role is invalid', async () => {
       await expect(
         // @ts-ignore
         projectRoute.updateUserRoleHandler(projectRouteRequestWithInvalidRole, res)
-      ).rejects.toThrow('Validation error: Invalid role')
+      ).rejects.toThrow(
+        new ValidationError('Invalid role', projectRouteRequestWithInvalidRole.body.role)
+      )
     })
     it('should call projectService.updateUserRole with correct params', async () => {
       projectService.updateUserRole = jest.fn().mockResolvedValue({})
@@ -289,7 +297,7 @@ describe('ProjectRoute', () => {
       await expect(
         // @ts-ignore
         projectRoute.updateUserRoleHandler(projectRouteRequestWithoutRole, res)
-      ).rejects.toThrow('Validation error: Role must be string or null')
+      ).rejects.toThrow(new ValidationError('Role must be string or null', null))
     })
   })
   describe('createManuscriptHandler', () => {
@@ -297,21 +305,21 @@ describe('ProjectRoute', () => {
       await expect(
         // @ts-ignore
         projectRoute.createManuscriptHandler(projectRouteRequestWithoutUser, res)
-      ).rejects.toThrow('Validation error: No user found')
+      ).rejects.toThrow(new ValidationError('No user found', null))
     })
 
     it('should throw error if projectID is missing', async () => {
       await expect(
         // @ts-ignore
         projectRoute.createManuscriptHandler(projectRouteRequestWithoutProjectID)
-      ).rejects.toThrow('Validation error: projectID parameter must be specified')
+      ).rejects.toThrow(new ValidationError('projectID parameter must be specified', null))
     })
 
     it('should throw error if user lacks CREATE_MANUSCRIPT permission', async () => {
       projectService.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.READ]))
       // @ts-ignore
       await expect(projectRoute.createManuscriptHandler(validProjectRouteRequest)).rejects.toThrow(
-        RoleDoesNotPermitOperationError
+        new RoleDoesNotPermitOperationError('Access denied', validProjectRouteRequest.user._id)
       )
     })
 
@@ -343,14 +351,14 @@ describe('ProjectRoute', () => {
       await expect(
         // @ts-ignore
         projectRoute.getCollaboratorsHandler(projectRouteRequestWithoutUser, res)
-      ).rejects.toThrow('Validation error: No user found')
+      ).rejects.toThrow(new ValidationError('No user found', null))
     })
 
     it('should throw error if projectID is missing', async () => {
       await expect(
         // @ts-ignore
         projectRoute.getCollaboratorsHandler(projectRouteRequestWithoutProjectID)
-      ).rejects.toThrow('Validation error: projectID parameter must be specified')
+      ).rejects.toThrow(new ValidationError('projectID parameter must be specified', null))
     })
 
     it('should throw error if user lacks READ permission', async () => {
@@ -359,7 +367,7 @@ describe('ProjectRoute', () => {
         .mockResolvedValue(new Set([ProjectPermission.UPDATE]))
       // @ts-ignore
       await expect(projectRoute.getCollaboratorsHandler(validProjectRouteRequest)).rejects.toThrow(
-        RoleDoesNotPermitOperationError
+        new RoleDoesNotPermitOperationError('Access denied', validProjectRouteRequest.user._id)
       )
     })
 
@@ -387,14 +395,14 @@ describe('ProjectRoute', () => {
       await expect(
         // @ts-ignore
         projectRoute.getArchiveHandler(projectRouteRequestWithoutUser, res)
-      ).rejects.toThrow('Validation error: No user found')
+      ).rejects.toThrow(new ValidationError('No user found', null))
     })
 
     it('should throw error if projectID is missing', async () => {
       await expect(
         // @ts-ignore
         projectRoute.getArchiveHandler(projectRouteRequestWithoutProjectID)
-      ).rejects.toThrow('Validation error: projectID parameter must be specified')
+      ).rejects.toThrow(new ValidationError('projectID parameter must be specified', null))
     })
     it('should not throw error if manuscriptID is missing', async () => {
       projectService.makeArchive = jest.fn().mockResolvedValue([])
@@ -411,7 +419,7 @@ describe('ProjectRoute', () => {
         .mockResolvedValue(new Set([ProjectPermission.UPDATE]))
       // @ts-ignore
       await expect(projectRoute.getArchiveHandler(validProjectRouteRequest)).rejects.toThrow(
-        RoleDoesNotPermitOperationError
+        new RoleDoesNotPermitOperationError('Access denied', validProjectRouteRequest.user._id)
       )
     })
 
@@ -444,21 +452,21 @@ describe('ProjectRoute', () => {
       await expect(
         // @ts-ignore
         projectRoute.generateAccessTokenHandler(projectRouteRequestWithoutUser, res)
-      ).rejects.toThrow('Validation error: No user found')
+      ).rejects.toThrow(new ValidationError('No user found', null))
     })
 
     it('should throw error if projectID is missing', async () => {
       await expect(
         // @ts-ignore
         projectRoute.generateAccessTokenHandler(projectRouteRequestWithoutProjectID, res)
-      ).rejects.toThrow('Validation error: projectID parameter must be specified')
+      ).rejects.toThrow(new ValidationError('projectID parameter must be specified', null))
     })
 
     it('should throw error if scope is missing', async () => {
       await expect(
         // @ts-ignore
         projectRoute.generateAccessTokenHandler(projectRouteRequestWithoutScope, res)
-      ).rejects.toThrow('Validation error: scope parameter must be specified')
+      ).rejects.toThrow(new ValidationError('scope parameter must be specified', null))
     })
 
     it('should throw error if user lacks READ permission', async () => {
@@ -468,7 +476,9 @@ describe('ProjectRoute', () => {
       await expect(
         // @ts-ignore
         projectRoute.generateAccessTokenHandler(validProjectRouteRequest, res)
-      ).rejects.toThrow(RoleDoesNotPermitOperationError)
+      ).rejects.toThrow(
+        new RoleDoesNotPermitOperationError('Access denied', validProjectRouteRequest.user._id)
+      )
     })
 
     it('should call projectService.generateAccessToken with correct params', async () => {
@@ -496,14 +506,14 @@ describe('ProjectRoute', () => {
       await expect(
         // @ts-ignore
         projectRoute.deleteProjectHandler(projectRouteRequestWithoutUser, res)
-      ).rejects.toThrow('Validation error: No user found')
+      ).rejects.toThrow(new ValidationError('No user found', null))
     })
 
     it('should throw error if projectID is missing', async () => {
       await expect(
         // @ts-ignore
         projectRoute.deleteProjectHandler(projectRouteRequestWithoutProjectID, res)
-      ).rejects.toThrow('Validation error: projectID parameter must be specified')
+      ).rejects.toThrow(new ValidationError('projectID parameter must be specified', null))
     })
 
     it('should throw error if user lacks DELETE permission', async () => {
@@ -513,7 +523,9 @@ describe('ProjectRoute', () => {
       await expect(
         // @ts-ignore
         projectRoute.deleteProjectHandler(validProjectRouteRequest, res)
-      ).rejects.toThrow(RoleDoesNotPermitOperationError)
+      ).rejects.toThrow(
+        new RoleDoesNotPermitOperationError('Access denied', validProjectRouteRequest.user._id)
+      )
     })
 
     it('should call projectService.deleteProject with correct params', async () => {

@@ -93,7 +93,9 @@ describe('ProjectController', () => {
   describe('updateProject', () => {
     it('should throw an error if user does not have UPDATE permission', async () => {
       controller.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.READ]))
-      await expect(controller.updateProject(data, user, projectID)).rejects.toThrow('Access denied')
+      await expect(controller.updateProject(data, user, projectID)).rejects.toThrow(
+        new RoleDoesNotPermitOperationError('Access denied', user._id)
+      )
     })
 
     it('should throw an error if ProjectService.updateProject fails', async () => {
@@ -145,7 +147,7 @@ describe('ProjectController', () => {
       controller.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.UPDATE]))
 
       await expect(controller.getProjectModels(types, user, projectID)).rejects.toThrow(
-        RoleDoesNotPermitOperationError
+        new RoleDoesNotPermitOperationError('Access denied', user._id)
       )
     })
 
@@ -175,7 +177,7 @@ describe('ProjectController', () => {
       controller.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.READ]))
 
       await expect(controller.updateUserRole(userID, role, user, projectID)).rejects.toThrow(
-        RoleDoesNotPermitOperationError
+        new RoleDoesNotPermitOperationError('Access denied', user._id)
       )
     })
 
@@ -195,7 +197,7 @@ describe('ProjectController', () => {
 
       await expect(
         controller.createManuscript(user, projectID, manuscriptID, templateID)
-      ).rejects.toThrow(RoleDoesNotPermitOperationError)
+      ).rejects.toThrow(new RoleDoesNotPermitOperationError('Access denied', user._id))
     })
 
     it('should call projectService.createManuscript with correct params', async () => {
@@ -217,7 +219,7 @@ describe('ProjectController', () => {
       controller.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.UPDATE]))
 
       await expect(controller.getCollaborators(user, projectID)).rejects.toThrow(
-        RoleDoesNotPermitOperationError
+        new RoleDoesNotPermitOperationError('Access denied', user._id)
       )
     })
 
@@ -236,7 +238,7 @@ describe('ProjectController', () => {
       controller.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.UPDATE]))
 
       await expect(controller.getArchive(onlyIDs, accept, user, projectID)).rejects.toThrow(
-        RoleDoesNotPermitOperationError
+        new RoleDoesNotPermitOperationError('Access denied', user._id)
       )
     })
 
@@ -257,7 +259,7 @@ describe('ProjectController', () => {
       controller.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.UPDATE]))
 
       await expect(controller.generateAccessToken(scope, user, projectID)).rejects.toThrow(
-        RoleDoesNotPermitOperationError
+        new RoleDoesNotPermitOperationError('Access denied', user._id)
       )
     })
 
@@ -274,7 +276,7 @@ describe('ProjectController', () => {
       controller.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.READ]))
 
       await expect(controller.deleteProject(projectID, user)).rejects.toThrow(
-        RoleDoesNotPermitOperationError
+        new RoleDoesNotPermitOperationError('Access denied', user._id)
       )
     })
 
