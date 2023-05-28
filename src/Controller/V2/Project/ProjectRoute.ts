@@ -274,7 +274,11 @@ export class ProjectRoute extends BaseRoute {
       projectID,
       manuscriptID
     )
-    res.set('Content-Type', 'application/zip')
+    if (accept !== 'application/json') {
+      res.set('Content-Type', 'application/zip')
+    } else {
+      res.set('Content-Type', 'application/json')
+    }
     res.status(StatusCodes.OK).send(Buffer.from(archive))
   }
   private async generateAccessTokenHandler(req: Request, res: Response) {

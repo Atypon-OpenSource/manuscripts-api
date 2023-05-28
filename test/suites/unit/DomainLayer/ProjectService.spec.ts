@@ -32,11 +32,13 @@ import {
   InvalidScopeNameError,
   MissingContainerError,
   MissingTemplateError,
+  UserRoleError,
+  ValidationError,
 } from '../../../../src/Errors'
 import { ProjectUserRole } from '../../../../src/Models/ContainerModels'
 import { templates } from '../../../data/dump/templates'
 import { validManuscript, validManuscript1 } from '../../../data/fixtures/manuscripts'
-import { validProject } from '../../../data/fixtures/projects'
+import { validProject, validProject2, validProject5 } from '../../../data/fixtures/projects'
 import { validUser2 } from '../../../data/fixtures/UserRepository'
 import { validUser } from '../../../data/fixtures/userServiceUser'
 import { TEST_TIMEOUT } from '../../../utilities/testSetup'
@@ -62,6 +64,7 @@ afterEach(() => {
   jest.clearAllMocks()
 })
 jest.mock('uuid')
+const JSZip = require('jszip')
 
 describe('projectService', () => {
   const projectID = validProject._id
@@ -91,7 +94,7 @@ describe('projectService', () => {
     })
   })
   describe('createManuscript', () => {
-    it('should create a new manuscript with a generated ID if manuscriptID and template are not provided', async () => {
+    it('should create a new manuscript with a generated ID if neither manuscriptID nor template are provided', async () => {
       manuscriptRepository.create = jest.fn().mockResolvedValue({})
       manuscriptRepository.getById = jest.fn().mockResolvedValue(null)
       await projectService.createManuscript(projectID)
@@ -126,7 +129,7 @@ describe('projectService', () => {
       manuscriptRepository.getById = jest.fn().mockResolvedValue(existingManuscript)
       manuscriptRepository.create = jest.fn().mockResolvedValue({})
       await expect(projectService.createManuscript(projectID, manuscriptID)).rejects.toThrow(
-        ConflictingRecordError
+        new ConflictingRecordError('Manuscript with the same id exists', existingManuscript)
       )
 
       expect(manuscriptRepository.getById).toHaveBeenCalledWith(manuscriptID)
@@ -158,7 +161,7 @@ describe('projectService', () => {
       manuscriptRepository.create = jest.fn().mockResolvedValue(null)
       await expect(
         projectService.createManuscript(projectID, undefined, templateID)
-      ).rejects.toThrow(MissingTemplateError)
+      ).rejects.toThrow(new MissingTemplateError(templateID))
       expect(manuscriptRepository.getById).not.toHaveBeenCalled()
       expect(templateRepository.getById).toHaveBeenCalledWith(templateID)
       expect(manuscriptRepository.create).not.toHaveBeenCalled()
@@ -168,7 +171,9 @@ describe('projectService', () => {
   describe('getProject', () => {
     it('should throw an error if the project does not exist', async () => {
       containerRepository.getById = jest.fn().mockResolvedValue(null)
-      await expect(projectService.getProject(projectID)).rejects.toThrow(MissingContainerError)
+      await expect(projectService.getProject(projectID)).rejects.toThrow(
+        new MissingContainerError('null')
+      )
     })
     it('should return a project if the project exists', async () => {
       containerRepository.getById = jest.fn().mockResolvedValue(validProject)
@@ -189,20 +194,22 @@ describe('projectService', () => {
       ]
       // @ts-ignore
       await expect(projectService.updateProject(projectID, models)).rejects.toThrow(
-        'Validation error: problem with containerID'
+        new ValidationError('problem with containerID', models)
       )
     })
     it('should throw an error if data contains multiple manuscriptIDs', async () => {
+      const containerID1 = validProject5._id
+      const containerID2 = validProject2._id
       const models = [
         {
-          containerID: '321',
+          containerID: containerID1,
           manuscriptID: manuscriptID,
           objectType: ObjectTypes.Project,
           createdAt: 20,
           updatedAt: 21,
         },
         {
-          containerID: '123',
+          containerID: containerID2,
           manuscriptID: validManuscript1._id,
           objectType: ObjectTypes.Project,
           createdAt: 20,
@@ -211,7 +218,7 @@ describe('projectService', () => {
       ]
       // @ts-ignore
       await expect(projectService.updateProject(projectID, models)).rejects.toThrow(
-        'Validation error: contains multiple manuscriptIDs'
+        new ValidationError('contains multiple manuscriptIDs', models)
       )
     })
     it('should throw an error if manuscript does not exist', async () => {
@@ -234,7 +241,7 @@ describe('projectService', () => {
       manuscriptRepository.getById = jest.fn().mockResolvedValue(null)
       // @ts-ignore
       await expect(projectService.updateProject(projectID, models)).rejects.toThrow(
-        "Validation error: manuscript doesn't exist"
+        new ValidationError("manuscript doesn't exist", models)
       )
     })
     it('should throw an error if manuscript does not belong to project', async () => {
@@ -257,20 +264,21 @@ describe('projectService', () => {
       manuscriptRepository.getById = jest.fn().mockResolvedValue({ containerID: manuscriptID })
       // @ts-ignore
       await expect(projectService.updateProject(projectID, models)).rejects.toThrow(
-        "Validation error: manuscript doesn't belong to project"
+        new ValidationError("manuscript doesn't belong to project", models)
       )
     })
     it('should update project if manuscript belongs to project, manuscript exists, no multiple manuscriptIDs and a valid containerID', async () => {
+      const containerID = validProject5._id
       const models = [
         {
-          containerID: '321',
+          containerID: containerID,
           manuscriptID: manuscriptID,
           objectType: ObjectTypes.Project,
           createdAt: 20,
           updatedAt: 21,
         },
         {
-          containerID: '123',
+          containerID: containerID,
           manuscriptID: manuscriptID,
           objectType: ObjectTypes.Project,
           createdAt: 20,
@@ -289,21 +297,21 @@ describe('projectService', () => {
       userReposoitory.getOne = jest.fn().mockResolvedValue(null)
       await expect(
         projectService.updateUserRole(projectID, userID, ProjectUserRole.Writer)
-      ).rejects.toThrow('Validation error: Invalid user id')
+      ).rejects.toThrow(new ValidationError('Invalid user id', null))
     })
     it('should throw an error if user is * and new role is Writer', async () => {
       projectService.getProject = jest.fn().mockResolvedValue(validProject)
       userReposoitory.getOne = jest.fn().mockResolvedValue({ _id: '*' })
       await expect(
         projectService.updateUserRole(projectID, userID, ProjectUserRole.Writer)
-      ).rejects.toThrow('Validation error: User can not be owner or writer')
+      ).rejects.toThrow(new ValidationError('User can not be owner or writer', '*'))
     })
     it('should throw an error if user is * and new role is Owner', async () => {
       projectService.getProject = jest.fn().mockResolvedValue(validProject)
       userReposoitory.getOne = jest.fn().mockResolvedValue({ _id: '*' })
       await expect(
         projectService.updateUserRole(projectID, userID, ProjectUserRole.Owner)
-      ).rejects.toThrow('Validation error: User can not be owner or writer')
+      ).rejects.toThrow(new ValidationError('User can not be owner or writer', '*'))
     })
     it('should throw an error if user is the only Owner', async () => {
       const project = {
@@ -317,7 +325,7 @@ describe('projectService', () => {
       userReposoitory.getOne = jest.fn().mockResolvedValue(validUser)
       await expect(
         projectService.updateUserRole(projectID, userID, ProjectUserRole.Owner)
-      ).rejects.toThrow('User is the only owner')
+      ).rejects.toThrow(new UserRoleError('User is the only owner', ProjectUserRole.Owner))
     })
     it('should update user role successfully', async () => {
       const project = {
@@ -398,7 +406,7 @@ describe('projectService', () => {
         ])
       )
     })
-    it('should return read permission when user is not owner but is viewer', async () => {
+    it('should return READ permission for non-owner viewers', async () => {
       const project = validProject
       project.owners = []
       project.viewers = [userID]
@@ -407,7 +415,7 @@ describe('projectService', () => {
       const permissions = await projectService.getPermissions(projectID, userID)
       expect(permissions).toEqual(new Set([ProjectPermission.READ]))
     })
-    it('should return read, write, createManuscript permissions when user is not owner and is not viewer', async () => {
+    it('should return READ, UPDATE, and CREATE_MANUSCRIPT permissions for non-owner writers', async () => {
       const project = validProject
       project.owners = []
       project.viewers = []
@@ -422,7 +430,7 @@ describe('projectService', () => {
         ])
       )
     })
-    it('should give read and update permissions when user is not owner, not writer, is not viewer and project has editors and user is one of them', async () => {
+    it('should give READ and UPDATE permissions for project editors', async () => {
       const project = validProject
       project.owners = []
       project.viewers = []
@@ -432,7 +440,7 @@ describe('projectService', () => {
       const permissions = await projectService.getPermissions(projectID, userID)
       expect(permissions).toEqual(new Set([ProjectPermission.READ, ProjectPermission.UPDATE]))
     })
-    it('should give read and update permissions when user is not owner, not writer, is not viewer and project has annotators and user is one of them', async () => {
+    it('should give READ and UPDATE permissions for project annotators', async () => {
       const project = validProject
       project.owners = []
       project.viewers = []
@@ -442,7 +450,7 @@ describe('projectService', () => {
       const permissions = await projectService.getPermissions(projectID, userID)
       expect(permissions).toEqual(new Set([ProjectPermission.READ, ProjectPermission.UPDATE]))
     })
-    it('should return empty permissions when user is not owner, not writer, is not viewer and project does not have annotators or editors', async () => {
+    it('should return empty permissions for users who are not owners, writers, or viewers, and the project has no annotators or editors', async () => {
       const project = validProject
       project.owners = []
       project.viewers = []
@@ -454,5 +462,62 @@ describe('projectService', () => {
       expect(permissions).toEqual(new Set<ProjectPermission>())
     })
   })
-  //todo test projectService.makeArchive
+  describe('makeArchive', () => {
+    it('should generate an archive with index.manuscript-json file', async () => {
+      containerRepository.getContainerResources = jest.fn().mockResolvedValue(validProject)
+      const result = await projectService.makeArchive(projectID, undefined, {
+        getAttachments: true,
+        includeExt: true,
+      })
+      const zip = await JSZip.loadAsync(result)
+      expect(Object.keys(zip.files).length).toBe(1)
+      const content = await zip.files['index.manuscript-json'].async('text')
+      const json = JSON.parse(content)
+      expect(json.data._id).toBe(projectID)
+      expect(result).toBeInstanceOf(Buffer)
+    })
+    it('should return only index.manuscript.json when getAttachments option is false', async () => {
+      containerRepository.getContainerResources = jest.fn().mockResolvedValue(validProject)
+      const result = await projectService.makeArchive(projectID, undefined, {
+        getAttachments: false,
+        includeExt: true,
+      })
+
+      expect(result).toBeInstanceOf(Buffer)
+      const expectedResult = Buffer.from(JSON.stringify({ version: '2.0', data: validProject }))
+      expect(result).toEqual(expectedResult)
+    })
+
+    it('should generate an archive with only resource IDs when onlyIDs option is true', async () => {
+      const resourceIDs = ['resource1', 'resource2']
+      containerRepository.getContainerResourcesIDs = jest.fn().mockResolvedValue(resourceIDs)
+
+      const result = await projectService.makeArchive(projectID, undefined, {
+        onlyIDs: true,
+        includeExt: true,
+        getAttachments: true,
+      })
+
+      const zip = await JSZip.loadAsync(result)
+      const indexFile = await zip.file('index.manuscript-json').async('string')
+      const index = JSON.parse(indexFile)
+
+      expect(index.version).toBe('2.0')
+      expect(index.data).toEqual(resourceIDs)
+    })
+
+    it('should return an archive with only index.manuscript-json file when no resources exist', async () => {
+      const resources: any[] = []
+      containerRepository.getContainerResources = jest.fn().mockResolvedValue(resources)
+      const result = await projectService.makeArchive(projectID, undefined, {
+        getAttachments: true,
+        includeExt: true,
+      })
+      const zip = await JSZip.loadAsync(result)
+      const files = Object.keys(zip.files)
+
+      expect(files.length).toBe(1)
+      expect(files[0]).toBe('index.manuscript-json')
+    })
+  })
 })
