@@ -124,7 +124,6 @@ export class AuthController extends BaseController {
     return jwt.sign(payload, scopeInfo.secret, {
       algorithm: scopeInfo.publicKeyPEM === null ? 'HS256' : 'RS256',
       keyid: scopeInfo.identifier,
-      allowInsecureKeySizes: true,
       expiresIn: `${scopeInfo.expiry}m`,
     })
   }
