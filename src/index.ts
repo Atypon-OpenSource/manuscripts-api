@@ -35,6 +35,7 @@ function main() {
   log.debug('Initializing Manuscripts.io container…')
   SQLDatabase.ensureDBExtensions()
     .then(() => {
+      log.info('DIContainer.init')
       return DIContainer.init(true)
     })
     .catch((error) => {
@@ -42,6 +43,7 @@ function main() {
       return DIContainer.init(true)
     })
     .then(async () => {
+      log.info('starttttt')
       const container = DIContainer.sharedContainer
       container.server.bootstrap()
       return container.server.start(config.API.port)
