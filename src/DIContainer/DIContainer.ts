@@ -275,14 +275,25 @@ export class DIContainer {
     if (DIContainer._sharedContainer !== null) {
       throw new ContainerReinitializationError()
     }
+
+    log.info('2222')
+
     const userBucket = new SQLDatabase(config.DB, BucketKey.User)
+
+    log.info('3333')
+
 
     // no loading of database models needed from this bucket (no Ottoman models are mapped there).
     const dataBucket = new SQLDatabase(config.DB, BucketKey.Project)
 
+    log.info('4444')
+
     // do NOT parallelise these. Deferred PRIMARY index creation appears buggy in CB.
     await userBucket.loadDatabaseModels()
     await dataBucket.loadDatabaseModels()
+
+    log.info('5555')
+
 
     log.info('2222')
 
