@@ -31,6 +31,7 @@ process.on('unhandledRejection', (reason, promise) => {
 log.info('33333')
 
 function main() {
+  log.info('beginning main')
   log.debug('Initializing Manuscripts.io container…')
   SQLDatabase.ensureDBExtensions()
     .then(() => {
@@ -66,6 +67,8 @@ function main() {
     })
 }
 
-log.info('45456y45')
+log.info('before main')
 
 main()
+
+log.info('after main')
