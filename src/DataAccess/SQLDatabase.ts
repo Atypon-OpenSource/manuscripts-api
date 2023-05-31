@@ -218,16 +218,6 @@ export class SQLDatabase {
   }
 
   static ensureDBExtensions(): Promise<boolean> {
-    return prisma
-      .$executeRawUnsafe(`CREATE EXTENSION btree_gin`)
-      .then(() => {
-        return true
-      })
-      .catch((error: any) => {
-        if (error.code !== 'P2010') {
-          throw new Error(`ensureDBExtensions error ${error}`)
-        }
-        return false
-      })
+    return Promise.resolve(true)
   }
 }
