@@ -183,13 +183,19 @@ export class SQLDatabase {
       return
     }
 
+    log.info('loadDatabaseModels 1')
+
     await this.buildIndices(getIndices(this.bucketKey))
+
+    log.info('loadDatabaseModels 2')
 
     this.isLoaded = true
 
     await prisma.$connect().catch(function (err: any) {
       log.error(`An error occurred while connecting to db`, err)
     })
+
+    log.info('loadDatabaseModels 3')
 
     this._bucket = new PrismaBucket(this.bucketKey)
     return Promise.resolve()
@@ -200,6 +206,7 @@ export class SQLDatabase {
   }
 
   public createIndex(_indexCreateStatement: string): Promise<boolean> {
+    log.info('createIndex 1')
     return prisma
       .$executeRawUnsafe(`${_indexCreateStatement}`)
       .then(() => {
