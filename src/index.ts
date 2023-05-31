@@ -22,9 +22,13 @@ import { SQLDatabase } from './DataAccess/SQLDatabase'
 import { DIContainer } from './DIContainer/DIContainer'
 import { log } from './Utilities/Logger'
 
+log.info('tesdfffgdfgd')
+
 process.on('unhandledRejection', (reason, promise) => {
   log.error(`Unhandled rejection – reason: ${reason}, promise: ${promise}`)
 })
+
+log.info('33333')
 
 function main() {
   log.debug('Initializing Manuscripts.io container…')
@@ -61,5 +65,7 @@ function main() {
       process.exit(-1)
     })
 }
+
+log.info('45456y45')
 
 main()
