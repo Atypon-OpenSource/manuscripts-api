@@ -70,6 +70,7 @@ import { UserService } from '../DomainServices/User/UserService'
 import { UserActivityTrackingService } from '../DomainServices/UserActivity/UserActivityTrackingService'
 import { IServer } from '../Server/IServer'
 import { Server } from '../Server/Server'
+import {log} from "../Utilities/Logger";
 
 export class UninitializedContainerError extends Error {
   constructor() {
@@ -270,6 +271,7 @@ export class DIContainer {
    * The server is then retrieved from the container and bootstrapped.
    */
   static async init(enableActivityTracking = false) {
+    log.info('11111')
     if (DIContainer._sharedContainer !== null) {
       throw new ContainerReinitializationError()
     }
@@ -282,6 +284,8 @@ export class DIContainer {
     await userBucket.loadDatabaseModels()
     await dataBucket.loadDatabaseModels()
 
+    log.info('2222')
+
     applyMiddleware()
 
     DIContainer._sharedContainer = new DIContainer(userBucket, dataBucket, enableActivityTracking)
@@ -289,6 +293,8 @@ export class DIContainer {
     await DIContainer._sharedContainer.applicationRepository.ensureApplicationsExist(
       (config.apps && config.apps.knownClientApplications) || []
     )
+
+    log.info('3333')
 
     return DIContainer._sharedContainer
   }
