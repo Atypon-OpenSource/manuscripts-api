@@ -173,11 +173,11 @@ export class Configuration implements ConfigurationContainer {
       log.error('.env is missing or is not a UTF8 encoded text file.')
     }
 
-    log.info('testing')
-    log.info(process.env['APP_DATABASE_URL'] || '<empty>')
     return process.env // load() call above loads .env file into process.env
   }
 }
 
 const env = Configuration.fromEnv(path.join(__dirname, `../../.env`))
+log.info('testing2233334')
 export const config = new Configuration(env)
+log.info('testing222')
