@@ -206,16 +206,21 @@ export class SQLDatabase {
   }
 
   public createIndex(_indexCreateStatement: string): Promise<boolean> {
-    log.info('createIndex 1')
-    return prisma
-      .$executeRawUnsafe(`${_indexCreateStatement}`)
-      .then(() => {
-        return true
-      })
-      .catch((error: any) => {
-        log.error(`An error occurred while ${_indexCreateStatement}`, error)
-        return false
-      })
+    try {
+      log.info(_indexCreateStatement)
+      return prisma
+        .$executeRawUnsafe(`${_indexCreateStatement}`)
+        .then(() => {
+          return true
+        })
+        .catch((error: any) => {
+          log.error(`An error occurred while ${_indexCreateStatement}`, error)
+          return false
+        })
+    } catch (e) {
+      log.error(e)
+      throw e
+    }
   }
 
   public async buildIndices(indexingArray: Index[]): Promise<void> {
