@@ -173,6 +173,8 @@ export class Configuration implements ConfigurationContainer {
       log.error('.env is missing or is not a UTF8 encoded text file.')
     }
 
+    log.info('testing')
+    log.info(process.env['APP_DATABASE_URL'] || '<empty>')
     return process.env // load() call above loads .env file into process.env
   }
 }
