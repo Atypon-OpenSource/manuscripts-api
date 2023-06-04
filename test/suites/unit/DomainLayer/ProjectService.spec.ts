@@ -38,7 +38,7 @@ import {
 import { ProjectUserRole } from '../../../../src/Models/ContainerModels'
 import { templates } from '../../../data/dump/templates'
 import { validManuscript, validManuscript1 } from '../../../data/fixtures/manuscripts'
-import { validProject, validProject2, validProject5 } from '../../../data/fixtures/projects'
+import { validProject, validProject2 } from '../../../data/fixtures/projects'
 import { validUser2 } from '../../../data/fixtures/UserRepository'
 import { validUser } from '../../../data/fixtures/userServiceUser'
 import { TEST_TIMEOUT } from '../../../utilities/testSetup'
@@ -186,7 +186,7 @@ describe('projectService', () => {
     it('should throw an error if invalid containerID', async () => {
       const models = [
         {
-          containerID: projectID,
+          containerID: validProject2._id,
           objectType: ObjectTypes.Project,
           createdAt: 20,
           updatedAt: 21,
@@ -198,18 +198,16 @@ describe('projectService', () => {
       )
     })
     it('should throw an error if data contains multiple manuscriptIDs', async () => {
-      const containerID1 = validProject5._id
-      const containerID2 = validProject2._id
       const models = [
         {
-          containerID: containerID1,
+          containerID: projectID,
           manuscriptID: manuscriptID,
           objectType: ObjectTypes.Project,
           createdAt: 20,
           updatedAt: 21,
         },
         {
-          containerID: containerID2,
+          containerID: projectID,
           manuscriptID: validManuscript1._id,
           objectType: ObjectTypes.Project,
           createdAt: 20,
@@ -224,14 +222,14 @@ describe('projectService', () => {
     it('should throw an error if manuscript does not exist', async () => {
       const models = [
         {
-          containerID: '321',
+          containerID: projectID,
           manuscriptID: manuscriptID,
           objectType: ObjectTypes.Project,
           createdAt: 20,
           updatedAt: 21,
         },
         {
-          containerID: '123',
+          containerID: projectID,
           manuscriptID: manuscriptID,
           objectType: ObjectTypes.Project,
           createdAt: 20,
@@ -247,14 +245,14 @@ describe('projectService', () => {
     it('should throw an error if manuscript does not belong to project', async () => {
       const models = [
         {
-          containerID: '321',
+          containerID: projectID,
           manuscriptID: manuscriptID,
           objectType: ObjectTypes.Project,
           createdAt: 20,
           updatedAt: 21,
         },
         {
-          containerID: '123',
+          containerID: projectID,
           manuscriptID: manuscriptID,
           objectType: ObjectTypes.Project,
           createdAt: 20,
@@ -268,17 +266,16 @@ describe('projectService', () => {
       )
     })
     it('should update project if manuscript belongs to project, manuscript exists, no multiple manuscriptIDs and a valid containerID', async () => {
-      const containerID = validProject5._id
       const models = [
         {
-          containerID: containerID,
+          containerID: projectID,
           manuscriptID: manuscriptID,
           objectType: ObjectTypes.Project,
           createdAt: 20,
           updatedAt: 21,
         },
         {
-          containerID: containerID,
+          containerID: projectID,
           manuscriptID: manuscriptID,
           objectType: ObjectTypes.Project,
           createdAt: 20,

@@ -263,7 +263,7 @@ export class ProjectService {
   }
 
   private validateContainerIDs(projectID: string, models: any[]) {
-    if (!models.every((m) => m.containerID !== projectID)) {
+    if (!models.every((m) => m.containerID === projectID)) {
       throw new ValidationError(`problem with containerID`, models)
     }
   }

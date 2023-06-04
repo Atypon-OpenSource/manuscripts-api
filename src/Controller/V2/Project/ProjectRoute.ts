@@ -51,7 +51,7 @@ export class ProjectRoute extends BaseRoute {
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
-          await this.createProjectHandler(req, res)
+          await this.createProject(req, res)
         }, next)
       }
     )
@@ -62,7 +62,7 @@ export class ProjectRoute extends BaseRoute {
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
-          await this.updateProjectHandler(req, res)
+          await this.updateProject(req, res)
         }, next)
       }
     )
@@ -73,7 +73,7 @@ export class ProjectRoute extends BaseRoute {
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
-          await this.getProjectModelsHandler(req, res)
+          await this.getProjectModels(req, res)
         }, next)
       }
     )
@@ -85,7 +85,7 @@ export class ProjectRoute extends BaseRoute {
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
-          await this.updateUserRoleHandler(req, res)
+          await this.updateUserRole(req, res)
         }, next)
       }
     )
@@ -96,7 +96,7 @@ export class ProjectRoute extends BaseRoute {
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
-          await this.createManuscriptHandler(req, res)
+          await this.createManuscript(req, res)
         }, next)
       }
     )
@@ -108,7 +108,7 @@ export class ProjectRoute extends BaseRoute {
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
-          await this.getCollaboratorsHandler(req, res)
+          await this.getCollaborators(req, res)
         }, next)
       }
     )
@@ -122,7 +122,7 @@ export class ProjectRoute extends BaseRoute {
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
-          await this.getArchiveHandler(req, res)
+          await this.getArchive(req, res)
         }, next)
       }
     )
@@ -133,7 +133,7 @@ export class ProjectRoute extends BaseRoute {
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
-          await this.generateAccessTokenHandler(req, res)
+          await this.generateAccessToken(req, res)
         }, next)
       }
     )
@@ -145,12 +145,12 @@ export class ProjectRoute extends BaseRoute {
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
-          await this.deleteProjectHandler(req, res)
+          await this.deleteProject(req, res)
         }, next)
       }
     )
   }
-  private async createProjectHandler(req: Request, res: Response) {
+  private async createProject(req: Request, res: Response) {
     const { title } = req.body
     const { projectID } = req.params
     const { user } = req
@@ -160,7 +160,7 @@ export class ProjectRoute extends BaseRoute {
     const project = await this.projectController.createProject(title, user, projectID)
     res.status(StatusCodes.OK).send(project)
   }
-  private async updateProjectHandler(req: Request, res: Response) {
+  private async updateProject(req: Request, res: Response) {
     const { projectID } = req.params
     const { data } = req.body
     const { user } = req
@@ -174,7 +174,7 @@ export class ProjectRoute extends BaseRoute {
     const manuscript = await this.projectController.updateProject(data, user, projectID)
     res.status(StatusCodes.OK).send(manuscript)
   }
-  private async getProjectModelsHandler(req: Request, res: Response) {
+  private async getProjectModels(req: Request, res: Response) {
     const modifiedSince = req.headers['if-modified-since']
     const { projectID } = req.params
     if (!projectID) {
@@ -193,7 +193,7 @@ export class ProjectRoute extends BaseRoute {
       res.status(StatusCodes.OK).send(models)
     }
   }
-  private async updateUserRoleHandler(req: Request, res: Response) {
+  private async updateUserRole(req: Request, res: Response) {
     const { userID, role } = req.body
     const { projectID } = req.params
     const { user } = req
@@ -218,7 +218,7 @@ export class ProjectRoute extends BaseRoute {
     await this.projectController.updateUserRole(userID, role, user, projectID)
     res.status(StatusCodes.NO_CONTENT).end()
   }
-  private async createManuscriptHandler(req: Request, res: Response) {
+  private async createManuscript(req: Request, res: Response) {
     const { projectID, manuscriptID } = req.params
     const { templateID } = req.body
     const { user } = req
@@ -238,7 +238,7 @@ export class ProjectRoute extends BaseRoute {
     )
     res.status(StatusCodes.OK).send(manuscript)
   }
-  private async getCollaboratorsHandler(req: Request, res: Response) {
+  private async getCollaborators(req: Request, res: Response) {
     const { projectID } = req.params
     const { user } = req
 
@@ -251,7 +251,7 @@ export class ProjectRoute extends BaseRoute {
     const collaborators = await this.projectController.getCollaborators(user, projectID)
     res.status(StatusCodes.OK).send(collaborators)
   }
-  private async getArchiveHandler(req: Request, res: Response) {
+  private async getArchive(req: Request, res: Response) {
     const { projectID, manuscriptID } = req.params
     const { onlyIDs } = req.query
     const { accept } = req.headers
@@ -281,7 +281,7 @@ export class ProjectRoute extends BaseRoute {
     }
     res.status(StatusCodes.OK).send(Buffer.from(archive))
   }
-  private async generateAccessTokenHandler(req: Request, res: Response) {
+  private async generateAccessToken(req: Request, res: Response) {
     const { projectID, scope } = req.params
     const { user } = req
 
@@ -296,7 +296,7 @@ export class ProjectRoute extends BaseRoute {
     }
     res.send(await this.projectController.generateAccessToken(scope, user, projectID))
   }
-  private async deleteProjectHandler(req: Request, res: Response) {
+  private async deleteProject(req: Request, res: Response) {
     const { projectID } = req.params
     const { user } = req
 
