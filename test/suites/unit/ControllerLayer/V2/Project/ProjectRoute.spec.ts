@@ -32,10 +32,7 @@ import {
   projectRouteRequestWithInvalidRole,
   projectRouteRequestWithoutManuscriptID,
   projectRouteRequestWithoutProjectID,
-  projectRouteRequestWithoutRole,
-  projectRouteRequestWithoutScope,
   projectRouteRequestWithoutUser,
-  projectRouteRequestWithoutUserID,
   validProjectRouteRequest,
 } from '../../../../../data/fixtures/projectRouteRequests'
 import { validProject } from '../../../../../data/fixtures/projects'
@@ -117,12 +114,6 @@ describe('ProjectRoute', () => {
         projectRoute.updateProject(projectRouteRequestWithoutUser, res)
       ).rejects.toThrow(new ValidationError('No user found', null))
     })
-    it('should throw an error if projectID is missing', async () => {
-      await expect(
-        // @ts-ignore
-        projectRoute.updateProject(projectRouteRequestWithoutProjectID, res)
-      ).rejects.toThrow(new ValidationError('projectID parameter must be specified', null))
-    })
     it('should throw an error if user does not have UPDATE permission', async () => {
       projectService.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.READ]))
 
@@ -180,12 +171,6 @@ describe('ProjectRoute', () => {
       ).rejects.toThrow(new ValidationError('No user found', null))
     })
 
-    it('should throw an error if projectID is missing', async () => {
-      await expect(
-        // @ts-ignore
-        projectRoute.getProjectModels(projectRouteRequestWithoutProjectID, res)
-      ).rejects.toThrow(new ValidationError('projectID parameter must be specified', null))
-    })
     it('should return NOT_MODIFIED status if project cache is valid', async () => {
       projectService.getProject = jest.fn().mockResolvedValue({
         updatedAt: new Date('2021-01-01').getTime() / 1000,
@@ -233,18 +218,7 @@ describe('ProjectRoute', () => {
         projectRoute.updateUserRole(projectRouteRequestWithoutUser, res)
       ).rejects.toThrow(new ValidationError('No user found', null))
     })
-    it('should throw an error if projectID is missing', async () => {
-      await expect(
-        // @ts-ignore
-        projectRoute.updateUserRole(projectRouteRequestWithoutProjectID, res)
-      ).rejects.toThrow(new ValidationError('projectID parameter must be specified', null))
-    })
-    it('should throw an error if userID is missing', async () => {
-      await expect(
-        // @ts-ignore
-        projectRoute.updateUserRole(projectRouteRequestWithoutUserID, res)
-      ).rejects.toThrow(new ValidationError('userID parameter must be specified', null))
-    })
+
     it('should throw an error if user does not have READ permission', async () => {
       projectService.getProject = jest.fn().mockResolvedValue({
         updatedAt: new Date('2023-01-01').getTime() / 1000,
@@ -293,12 +267,6 @@ describe('ProjectRoute', () => {
       await projectRoute.updateUserRole(validProjectRouteRequest, res)
       expect(res.status).toHaveBeenCalledWith(StatusCodes.NO_CONTENT)
     })
-    it('should throw an error if Role is missing', async () => {
-      await expect(
-        // @ts-ignore
-        projectRoute.updateUserRole(projectRouteRequestWithoutRole, res)
-      ).rejects.toThrow(new ValidationError('Role must be string or null', null))
-    })
   })
   describe('createManuscript', () => {
     it('should throw error if user is missing', async () => {
@@ -306,13 +274,6 @@ describe('ProjectRoute', () => {
         // @ts-ignore
         projectRoute.createManuscript(projectRouteRequestWithoutUser, res)
       ).rejects.toThrow(new ValidationError('No user found', null))
-    })
-
-    it('should throw error if projectID is missing', async () => {
-      await expect(
-        // @ts-ignore
-        projectRoute.createManuscript(projectRouteRequestWithoutProjectID)
-      ).rejects.toThrow(new ValidationError('projectID parameter must be specified', null))
     })
 
     it('should throw error if user lacks CREATE_MANUSCRIPT permission', async () => {
@@ -354,13 +315,6 @@ describe('ProjectRoute', () => {
       ).rejects.toThrow(new ValidationError('No user found', null))
     })
 
-    it('should throw error if projectID is missing', async () => {
-      await expect(
-        // @ts-ignore
-        projectRoute.getCollaborators(projectRouteRequestWithoutProjectID)
-      ).rejects.toThrow(new ValidationError('projectID parameter must be specified', null))
-    })
-
     it('should throw error if user lacks READ permission', async () => {
       projectService.getPermissions = jest
         .fn()
@@ -398,12 +352,6 @@ describe('ProjectRoute', () => {
       ).rejects.toThrow(new ValidationError('No user found', null))
     })
 
-    it('should throw error if projectID is missing', async () => {
-      await expect(
-        // @ts-ignore
-        projectRoute.getArchive(projectRouteRequestWithoutProjectID)
-      ).rejects.toThrow(new ValidationError('projectID parameter must be specified', null))
-    })
     it('should not throw error if manuscriptID is missing', async () => {
       projectService.makeArchive = jest.fn().mockResolvedValue([])
       projectService.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.READ]))
@@ -455,20 +403,6 @@ describe('ProjectRoute', () => {
       ).rejects.toThrow(new ValidationError('No user found', null))
     })
 
-    it('should throw error if projectID is missing', async () => {
-      await expect(
-        // @ts-ignore
-        projectRoute.generateAccessToken(projectRouteRequestWithoutProjectID, res)
-      ).rejects.toThrow(new ValidationError('projectID parameter must be specified', null))
-    })
-
-    it('should throw error if scope is missing', async () => {
-      await expect(
-        // @ts-ignore
-        projectRoute.generateAccessToken(projectRouteRequestWithoutScope, res)
-      ).rejects.toThrow(new ValidationError('scope parameter must be specified', null))
-    })
-
     it('should throw error if user lacks READ permission', async () => {
       projectService.getPermissions = jest
         .fn()
@@ -507,13 +441,6 @@ describe('ProjectRoute', () => {
         // @ts-ignore
         projectRoute.deleteProject(projectRouteRequestWithoutUser, res)
       ).rejects.toThrow(new ValidationError('No user found', null))
-    })
-
-    it('should throw error if projectID is missing', async () => {
-      await expect(
-        // @ts-ignore
-        projectRoute.deleteProject(projectRouteRequestWithoutProjectID, res)
-      ).rejects.toThrow(new ValidationError('projectID parameter must be specified', null))
     })
 
     it('should throw error if user lacks DELETE permission', async () => {

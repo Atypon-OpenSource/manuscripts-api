@@ -128,32 +128,7 @@ export const projectRouteRequestWithoutProjectID = {
     onlyIDs: 'true',
   },
 }
-export const projectRouteRequestWithoutScope = {
-  data: [
-    {
-      _id: validProject._id,
-      objectType: ObjectTypes.Project,
-      createdAt: 20,
-      updatedAt: 21,
-    },
-  ],
-  body: {
-    templateID: templates[0]._id,
-    title: 'pressroom',
-    types: [ObjectTypes.ManuscriptNote, ObjectTypes.BibliographicName],
-    role: ContainerRole.Writer,
-    userID: validUser._id,
-  },
-  params: {
-    projectID: validProject._id,
-    manuscriptID: validManuscript._id,
-  },
-  user: validUser,
-  headers: { 'if-modified-since': new Date('2022-01-01').toISOString() },
-  query: {
-    onlyIDs: 'true',
-  },
-}
+new Date('2022-01-01').toISOString()
 export const projectRouteRequestWithoutManuscriptID = {
   data: [
     {
@@ -180,55 +155,4 @@ export const projectRouteRequestWithoutManuscriptID = {
     onlyIDs: 'true',
   },
 }
-export const projectRouteRequestWithoutRole = {
-  data: [
-    {
-      _id: validProject._id,
-      objectType: ObjectTypes.Project,
-      createdAt: 20,
-      updatedAt: 21,
-    },
-  ],
-  body: {
-    templateID: templates[0]._id,
-    title: 'pressroom',
-    types: [ObjectTypes.ManuscriptNote, ObjectTypes.BibliographicName],
-    userID: validUser._id,
-  },
-  params: {
-    projectID: validProject._id,
-    manuscriptID: validManuscript._id,
-    scope: 'pressroom',
-  },
-  user: validUser,
-  headers: { 'if-modified-since': new Date('2022-01-01').toISOString() },
-  query: {
-    onlyIDs: 'true',
-  },
-}
-export const projectRouteRequestWithoutUserID = {
-  data: [
-    {
-      _id: validProject._id,
-      objectType: ObjectTypes.Project,
-      createdAt: 20,
-      updatedAt: 21,
-    },
-  ],
-  body: {
-    templateID: templates[0]._id,
-    title: 'pressroom',
-    types: [ObjectTypes.ManuscriptNote, ObjectTypes.BibliographicName],
-    role: ContainerRole.Writer,
-  },
-  params: {
-    projectID: validProject._id,
-    manuscriptID: validManuscript._id,
-    scope: 'pressroom',
-  },
-  user: validUser,
-  headers: { 'if-modified-since': new Date('2022-01-01').toISOString() },
-  query: {
-    onlyIDs: 'true',
-  },
-}
+new Date('2022-01-01').toISOString()
