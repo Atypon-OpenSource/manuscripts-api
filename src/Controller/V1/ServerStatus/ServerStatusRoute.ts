@@ -42,7 +42,7 @@ export class ServerStatusRoute extends BaseRoute {
     )
     router.get(`${this.basePath}/alive`, async (_req, res: Response) => {
       await DIContainer.sharedContainer.userBucket.ensureAlive()
-      res.redirect('/api/v1/app/version')
+      res.redirect('../version')
     })
   }
 }
