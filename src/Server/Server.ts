@@ -23,7 +23,9 @@ import apiMetrics from 'prometheus-api-metrics'
 import { PassportAuth } from '../Auth/Passport/Passport'
 import { config } from '../Config/Config'
 import { Environment } from '../Config/ConfigurationTypes'
-import { loadRoutes } from '../Controller/RouteLoader'
+import { initRouter } from '../Controller/InitRouter'
+import { getRoutes as getRoutesV1 } from '../Controller/V1/Routes'
+import { getRoutes as getRoutesV2 } from '../Controller/V2/Routes'
 import { SQLDatabase } from '../DataAccess/SQLDatabase'
 import { ForbiddenOriginError, IllegalStateError, isStatusCoded } from '../Errors'
 import { log } from '../Utilities/Logger'
@@ -98,15 +100,15 @@ export class Server implements IServer {
   }
 
   private loadRoutes() {
-    const router: express.Router = express.Router()
-
-    loadRoutes(router)
+    const routerV1 = initRouter(getRoutesV1())
+    const routerV2 = initRouter(getRoutesV2())
 
     // use router middleware
-    this.app.use('/api/v1', router)
+    this.app.use('/api/v1', routerV1)
+    this.app.use('/api/v2', routerV2)
 
     this.app.get('/', (_req, res: express.Response) => {
-      return res.redirect('/api/v1/app/version')
+      return res.redirect('/api/v2/app/version')
     })
 
     this.app.get(`/.well-known/jwks.json`, (_req: express.Request, res: express.Response) => {

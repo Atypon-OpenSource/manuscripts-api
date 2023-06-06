@@ -1,5 +1,5 @@
 /*!
- * © 2020 Atypon Systems LLC
+ * © 2023 Atypon Systems LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,13 +14,19 @@
  * limitations under the License.
  */
 
-import { validApplication } from './applications'
+import { BaseRoute } from '../BaseRoute'
+import { AuthRoute } from '../V1/Auth/AuthRoute'
+import { RegistrationRoute } from '../V1/Registration/RegistrationRoute'
+import { ServerStatusRoute } from '../V1/ServerStatus/ServerStatusRoute'
+import { UserRoute } from '../V1/User/UserRoute'
+import { ProjectRoute } from './Project/ProjectRoute'
 
-export const validIAMOAuthStartRequest = {
-  query: {
-    deviceId: 'Device Id Example',
-  },
-  headers: {
-    'manuscripts-app-id': validApplication._id,
-  },
+export function getRoutes(): BaseRoute[] {
+  return [
+    new AuthRoute(),
+    new RegistrationRoute(),
+    new UserRoute(),
+    new ServerStatusRoute(),
+    new ProjectRoute(),
+  ]
 }
