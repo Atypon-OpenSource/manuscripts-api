@@ -86,6 +86,10 @@ export class Configuration implements ConfigurationContainer {
   constructor(env: EnvironmentLike) {
     this.API = {
       port: Number(env.APP_PORT),
+      oauthStateEncryptionKey: getString(
+        env.APP_OAUTH_STATE_ENCRYPTION_KEY,
+        'APP_OAUTH_STATE_ENCRYPTION_KEY'
+      ),
       hostname: getString(env.APP_HOSTNAME_PUBLIC, 'APP_HOSTNAME_PUBLIC'),
     }
 

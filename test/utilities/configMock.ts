@@ -32,6 +32,7 @@ jest.mock('../../src/Config/Config', () => {
     },
     API: {
       port: 3000,
+      oauthStateEncryptionKey: 'key-12345',
       hostname: 'https://api-server.atypon.com',
     },
     auth: {
