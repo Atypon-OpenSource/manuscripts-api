@@ -39,7 +39,7 @@ pipeline {
                         expression { params.PUBLISH == true }
                     }
                     steps {
-                        sh 'docker push ${REGISTRY}/${NAME}:${TAG} --all-tags'
+                        sh 'docker push --all-tags ${REGISTRY}/${NAME}:${TAG}'
                     }
                 }
             }
