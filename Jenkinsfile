@@ -24,13 +24,14 @@ pipeline {
             agent any
             environment {
                 REGISTRY = "${env.PRIVATE_ARTIFACT_REGISTRY}"
-                DOCKER_IMAGE = 'manuscripts/api'
-                IMG_TAG = getImgTag(params.GIT_BRANCH)
+                NAME = 'manuscripts/api'
+                TAG = getImageTag(params.GIT_BRANCH)
+                GROUP_TAG = getImageGroupTag(params.GIT_BRANCH)
             }
             stages {
                 stage('Build docker image') {
                     steps {
-                        sh 'docker build -t ${REGISTRY}/${DOCKER_IMAGE}:${IMG_TAG} .'
+                        sh 'docker build -t ${REGISTRY}/${NAME}:${TAG} -t ${REGISTRY}/${NAME}:${GROUP_TAG} .'
                     }
                 }
                 stage('Publish docker image') {
@@ -38,8 +39,7 @@ pipeline {
                         expression { params.PUBLISH == true }
                     }
                     steps {
-                        sh 'docker push ${REGISTRY}/${DOCKER_IMAGE}:${IMG_TAG}'
-                        sh 'docker push ${REGISTRY}/${DOCKER_IMAGE}'
+                        sh 'docker push ${REGISTRY}/${NAME}:${TAG} --all-tags'
                     }
                 }
             }
@@ -47,11 +47,19 @@ pipeline {
     }
 }
 
-def getImgTag(branch) {
+def getImageTag(branch) {
     if ('master'.equals(branch)) {
         return sh(script: 'jq .version < package.json | tr -d \\"', returnStdout: true).trim();
     } else {
         def commit = env.GIT_COMMIT
-        return branch + '-' + commit.substring(0, 6);
+        return commit.substring(0, 9);
+    }
+}
+
+def getImageGroupTag(branch) {
+    if ('master'.equals(branch)) {
+        return 'latest';
+    } else {
+        return branch;
     }
 }
