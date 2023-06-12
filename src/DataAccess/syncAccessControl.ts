@@ -15,9 +15,9 @@
  */
 
 import { validate } from '@manuscripts/json-schema'
+import deepEqual from 'deep-equal'
 
 import { Container } from '../Models/ContainerModels'
-import deepEqual from 'deep-equal'
 import prisma from './prismaClient'
 
 enum AccessType {

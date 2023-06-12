@@ -217,6 +217,24 @@ describe('ContainersController - manageUserRole', () => {
     return expect(containersController.manageUserRole(req)).rejects.toThrow(ValidationError)
   })
 
+  test('manageUserRole should fail if user not prvided', () => {
+    const chance = new Chance()
+    const req: any = {
+      headers: authorizationHeader(chance.string()),
+      body: {
+        managedUserId: chance.string(),
+        newRole: chance.string(),
+      },
+      params: {
+        containerID: 123,
+        containerType: 'project',
+      },
+    }
+
+    const containersController: ContainersController = new ContainersController()
+    return expect(containersController.manageUserRole(req)).rejects.toThrow(ValidationError)
+  })
+
   test('manageUserRole should fail if containerId is not a string', () => {
     const chance = new Chance()
     const req: any = {
@@ -229,6 +247,7 @@ describe('ContainersController - manageUserRole', () => {
         containerID: 123,
         containerType: 'project',
       },
+      user: validUser,
     }
 
     const containersController: ContainersController = new ContainersController()
@@ -247,6 +266,7 @@ describe('ContainersController - manageUserRole', () => {
         containerID: 'MPProject:foo',
         containerType: 'project',
       },
+      user: validUser,
     }
 
     const containersController: ContainersController = new ContainersController()
@@ -266,6 +286,7 @@ describe('ContainersController - manageUserRole', () => {
         containerID: 'MPProject:foo',
         containerType: 'project',
       },
+      user: validUser,
     }
 
     const containersController: ContainersController = new ContainersController()
@@ -297,6 +318,24 @@ describe('ContainersController - addUser', () => {
     await containersController.addUser(req)
 
     return expect(containerService.addContainerUser).toHaveBeenCalled()
+  })
+
+  test('addUser should fail if user not provided', () => {
+    const chance = new Chance()
+    const req: any = {
+      headers: authorizationHeader(chance.string()),
+      body: {
+        userId: chance.integer(),
+        role: chance.string(),
+      },
+      params: {
+        containerID: 'MPProject:foo',
+        containerType: 'project',
+      },
+    }
+
+    const containersController: ContainersController = new ContainersController()
+    return expect(containersController.addUser(req)).rejects.toThrow(ValidationError)
   })
 
   test('addUser should fail if userId is not a string', () => {
@@ -378,6 +417,19 @@ describe('ContainersController - delete', () => {
     return expect(containerService.deleteContainer).toHaveBeenCalled()
   })
 
+  test('delete should fail if user not provided', () => {
+    const chance = new Chance()
+    const req: any = {
+      headers: authorizationHeader(chance.string()),
+      params: {
+        containerID: chance.integer(),
+      },
+    }
+
+    const containersController: ContainersController = new ContainersController()
+    return expect(containersController.delete(req)).rejects.toThrow(ValidationError)
+  })
+
   test('delete should fail if containerID is not a string', () => {
     const chance = new Chance()
     const req: any = {
@@ -385,6 +437,7 @@ describe('ContainersController - delete', () => {
       params: {
         containerID: chance.integer(),
       },
+      user: validUser,
     }
 
     const containersController: ContainersController = new ContainersController()
