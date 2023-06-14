@@ -174,6 +174,7 @@ export class ProjectService {
       writers: project.writers.filter((u) => u !== userID),
       viewers: project.viewers.filter((u) => u !== userID),
       editors: project.editors ? project.editors.filter((u) => u !== userID) : [],
+      proofers: project.proofers ? project.proofers.filter((u) => u !== userID) : [],
       annotators: project.annotators ? project.annotators.filter((u) => u !== userID) : [],
     }
 
@@ -189,6 +190,9 @@ export class ProjectService {
         break
       case ProjectUserRole.Editor:
         updated.editors.push(userID)
+        break
+      case ProjectUserRole.Proofer:
+        updated.proofers.push(userID)
         break
       case ProjectUserRole.Annotator:
         updated.annotators.push(userID)
@@ -253,6 +257,8 @@ export class ProjectService {
     } else if (project.editors?.includes(userID)) {
       return new Set([ProjectPermission.READ, ProjectPermission.UPDATE])
     } else if (project.annotators?.includes(userID)) {
+      return new Set([ProjectPermission.READ, ProjectPermission.UPDATE])
+    } else if (project.proofers?.includes(userID)) {
       return new Set([ProjectPermission.READ, ProjectPermission.UPDATE])
     }
     return EMPTY_PERMISSIONS
