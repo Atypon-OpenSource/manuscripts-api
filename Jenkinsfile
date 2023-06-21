@@ -23,15 +23,14 @@ pipeline {
         stage ('Docker') {
             agent any
             environment {
-                REGISTRY = "${env.PRIVATE_ARTIFACT_REGISTRY}"
-                NAME = 'manuscripts/api'
+                NAME = "${env.PRIVATE_ARTIFACT_REGISTRY}/manuscripts/api"
                 TAG = getImageTag(params.GIT_BRANCH)
                 GROUP_TAG = getImageGroupTag(params.GIT_BRANCH)
             }
             stages {
                 stage('Build docker image') {
                     steps {
-                        sh 'docker build -t ${REGISTRY}/${NAME}:${TAG} -t ${REGISTRY}/${NAME}:${GROUP_TAG} .'
+                        sh 'docker build -t ${NAME}:${TAG} -t ${NAME}:${GROUP_TAG} .'
                     }
                 }
                 stage('Publish docker image') {
@@ -39,8 +38,8 @@ pipeline {
                         expression { params.PUBLISH == true }
                     }
                     steps {
-                        sh 'docker push ${REGISTRY}/${NAME}:${TAG}'
-                        sh 'docker push ${REGISTRY}/${NAME}:${GROUP_TAG}'
+                        sh 'docker push ${NAME}:${TAG}'
+                        sh 'docker push ${NAME}:${GROUP_TAG}'
                     }
                 }
             }
