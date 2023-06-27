@@ -32,6 +32,7 @@ import {
   ValidationError,
 } from '../Errors'
 import { ContainerRepository, ProjectUserRole } from '../Models/ContainerModels'
+import { ContainerService } from './Container/ContainerService'
 import { ArchiveOptions } from './Container/IContainerService'
 
 export enum ProjectPermission {
@@ -163,18 +164,26 @@ export class ProjectService {
     if (user._id === '*' && (role === 'Owner' || role === 'Writer')) {
       throw new ValidationError('User can not be owner or writer', user._id)
     }
+    const userIdForSync = ContainerService.userIdForSync(userID)
 
-    if (ProjectService.isOnlyOwner(project, user._id)) {
+    if (
+      ProjectService.isOnlyOwner(project, user._id) ||
+      ProjectService.isOnlyOwner(project, userIdForSync)
+    ) {
       throw new UserRoleError('User is the only owner', role)
     }
 
     const updated = {
       _id: projectID,
-      owners: project.owners.filter((u) => u !== userID),
-      writers: project.writers.filter((u) => u !== userID),
-      viewers: project.viewers.filter((u) => u !== userID),
-      editors: project.editors ? project.editors.filter((u) => u !== userID) : [],
-      annotators: project.annotators ? project.annotators.filter((u) => u !== userID) : [],
+      owners: project.owners.filter((u) => u !== userID && u !== userIdForSync),
+      writers: project.writers.filter((u) => u !== userID && u !== userIdForSync),
+      viewers: project.viewers.filter((u) => u !== userID && u !== userIdForSync),
+      editors: project.editors
+        ? project.editors.filter((u) => u !== userID && u !== userIdForSync)
+        : [],
+      annotators: project.annotators
+        ? project.annotators.filter((u) => u !== userID && u !== userIdForSync)
+        : [],
     }
 
     switch (role) {
@@ -233,8 +242,9 @@ export class ProjectService {
     projectID: string,
     userID: string
   ): Promise<ReadonlySet<ProjectPermission>> {
+    const userIdForSync = ContainerService.userIdForSync(userID)
     const project = await this.getProject(projectID)
-    if (project.owners.includes(userID)) {
+    if (project.owners.includes(userID) || project.owners.includes(userIdForSync)) {
       return new Set([
         ProjectPermission.READ,
         ProjectPermission.UPDATE,
@@ -242,17 +252,20 @@ export class ProjectService {
         ProjectPermission.UPDATE_ROLES,
         ProjectPermission.CREATE_MANUSCRIPT,
       ])
-    } else if (project.viewers.includes(userID)) {
+    } else if (project.viewers.includes(userID) || project.viewers.includes(userIdForSync)) {
       return new Set([ProjectPermission.READ])
-    } else if (project.writers.includes(userID)) {
+    } else if (project.writers.includes(userID) || project.writers.includes(userIdForSync)) {
       return new Set([
         ProjectPermission.READ,
         ProjectPermission.UPDATE,
         ProjectPermission.CREATE_MANUSCRIPT,
       ])
-    } else if (project.editors?.includes(userID)) {
+    } else if (project.editors?.includes(userID) || project.editors?.includes(userIdForSync)) {
       return new Set([ProjectPermission.READ, ProjectPermission.UPDATE])
-    } else if (project.annotators?.includes(userID)) {
+    } else if (
+      project.annotators?.includes(userID) ||
+      project.annotators?.includes(userIdForSync)
+    ) {
       return new Set([ProjectPermission.READ, ProjectPermission.UPDATE])
     }
     return EMPTY_PERMISSIONS
