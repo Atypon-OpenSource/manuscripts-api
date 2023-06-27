@@ -175,14 +175,14 @@ export class ProjectService {
 
     const updated = {
       _id: projectID,
-      owners: project.owners.filter((u) => u !== userID || u !== userIdForSync),
-      writers: project.writers.filter((u) => u !== userID || u !== userIdForSync),
-      viewers: project.viewers.filter((u) => u !== userID || u !== userIdForSync),
+      owners: project.owners.filter((u) => u !== userID && u !== userIdForSync),
+      writers: project.writers.filter((u) => u !== userID && u !== userIdForSync),
+      viewers: project.viewers.filter((u) => u !== userID && u !== userIdForSync),
       editors: project.editors
-        ? project.editors.filter((u) => u !== userID || u !== userIdForSync)
+        ? project.editors.filter((u) => u !== userID && u !== userIdForSync)
         : [],
       annotators: project.annotators
-        ? project.annotators.filter((u) => u !== userID || u !== userIdForSync)
+        ? project.annotators.filter((u) => u !== userID && u !== userIdForSync)
         : [],
     }
 
