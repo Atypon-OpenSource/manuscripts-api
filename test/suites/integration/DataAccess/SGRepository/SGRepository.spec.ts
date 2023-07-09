@@ -83,7 +83,6 @@ describe('SGRepository update', () => {
     const projectInvitationUpdatedData = {
       ...validProjectInvitationObject,
       role: 'Writer',
-      _rev: beforeUpdate._rev,
     }
 
     await repository.update(projectInvitationUpdatedData as ContainerInvitation)
