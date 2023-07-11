@@ -32,6 +32,9 @@ import { syncAccessControl } from '../../../../src/DataAccess/syncAccessControl'
 
 describe('sync access control', () => {
   test('random objects', async () => {
+    await expect(syncAccessControl({ _deleted: true }, { _deleted: true })).rejects.toEqual({
+      forbidden: 'deleted document cannot be mutated',
+    })
     await expect(syncAccessControl({}, null)).rejects.toEqual({ forbidden: 'missing _id' })
     await expect(syncAccessControl({ objectType: 'foo', _id: 'bar' }, null)).rejects.toEqual({
       forbidden: '_id must have objectType as prefix',
