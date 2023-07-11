@@ -26,9 +26,8 @@ userTokensList.push({
   hasExpiry: false,
   deviceId: 'deviceId',
   appId: 'manuscripts',
-  iamSessionID: 'random-session-id',
   token:
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbklkIjoiOWYzMzgyMjQtYjBkNS00NWFhLWIwMmMtMjFjN2UwYzNjMDdhK2RldmljZUlkIiwidXNlcklkIjoiOWYzMzgyMjQtYjBkNS00NWFhLWIwMmMtMjFjN2UwYzNjMDdhIiwiYXBwSWQiOiI5YTkwOTBkOS02Zjk1LTQyMGMtYjkwMy01NDNmMzJiNTE0MGYiLCJpYXQiOjE1MjEzNzIwMzF9._NIY3-b9m1zfj-lZR1fzeoyNJSUcazv-_Ih8bZhEvfU'
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbklkIjoiOWYzMzgyMjQtYjBkNS00NWFhLWIwMmMtMjFjN2UwYzNjMDdhK2RldmljZUlkIiwidXNlcklkIjoiOWYzMzgyMjQtYjBkNS00NWFhLWIwMmMtMjFjN2UwYzNjMDdhIiwiYXBwSWQiOiI5YTkwOTBkOS02Zjk1LTQyMGMtYjkwMy01NDNmMzJiNTE0MGYiLCJpYXQiOjE1MjEzNzIwMzF9._NIY3-b9m1zfj-lZR1fzeoyNJSUcazv-_Ih8bZhEvfU',
 })
 
 userTokensList.push({
@@ -37,7 +36,6 @@ userTokensList.push({
   hasExpiry: false,
   deviceId: 'deviceId',
   appId: 'manuscripts',
-  iamSessionID: 'random-session-id-2',
   token:
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbklkIjoiOWYzMzgyMjQtYjBkNS00NWFhLWIwMmMtMjFjN2UwYzNjMDdhK2RldmljZUlkIiwidXNlcklkIjoiOWYzMzgyMjQtYjBkNS00NWFhLWIwMmMtMjFjN2UwYzNjMDdhIiwiYXBwSWQiOiI5YTkwOTBkOS02Zjk1LTQyMGMtYjkwMy01NDNmMzJiNTE0MGYiLCJpYXQiOjE1MjEzNzIwMzF9._NIY3-b9m1zfj-lZR1fzeoyNJSUcazv-_Ih8bZhEvfU'
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbklkIjoiOWYzMzgyMjQtYjBkNS00NWFhLWIwMmMtMjFjN2UwYzNjMDdhK2RldmljZUlkIiwidXNlcklkIjoiOWYzMzgyMjQtYjBkNS00NWFhLWIwMmMtMjFjN2UwYzNjMDdhIiwiYXBwSWQiOiI5YTkwOTBkOS02Zjk1LTQyMGMtYjkwMy01NDNmMzJiNTE0MGYiLCJpYXQiOjE1MjEzNzIwMzF9._NIY3-b9m1zfj-lZR1fzeoyNJSUcazv-_Ih8bZhEvfU',
 })

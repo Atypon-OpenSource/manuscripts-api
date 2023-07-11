@@ -66,9 +66,6 @@ export class UserTokenRepository
           required(val, 'token')
         },
       },
-      iamSessionID: {
-        type: 'string',
-      },
       credentials: {
         type: 'Mixed',
         validator: (val: object) => {

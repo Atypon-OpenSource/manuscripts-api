@@ -212,7 +212,6 @@ describe('sync access control', () => {
       pattern: [1, 1],
       createdAt: 1515417692.476143,
       name: 'dotted',
-      sessionID: '4D17753C-AF51-4262-9FBD-88D8EC7E8495',
       priority: 1,
     }
 
@@ -259,7 +258,6 @@ describe('sync access control', () => {
       createdAt: 1515417692.477127,
       updatedAt: 1515494608.363229,
       _id: 'MPCitationAlert:15326C7B-836D-4D6C-81EB-7E6CA6153E9B',
-      sessionID: '4D17753C-AF51-4262-9FBD-88D8EC7E8498',
       userID: 'User_foobar@manuscriptsapp.com',
       sourceDOI: '10.1007/978-981-13-0341-8_10',
       targetDOI: '10.1176/appi.psychotherapy.71101',
@@ -282,7 +280,6 @@ describe('sync access control', () => {
       createdAt: 1515417692.477127,
       updatedAt: 1515494608.363229,
       _id: 'MPMutedCitationAlert:15326C7B-836D-4D6C-81EB-7E6CA6153E9B',
-      sessionID: '4D17753C-AF51-4262-9FBD-88D8EC7E8498',
       userID: 'User_foobar@manuscriptsapp.com',
       targetDOI: '10.1176/appi.psychotherapy.71101',
     }
@@ -331,7 +328,6 @@ describe('sync access control', () => {
           timestamp: 1515494608.363229,
         },
       ],
-      sessionID: '40dc16f1-adbd-4410-af1c-2eddd6bfa63e',
       createdAt: 1515417692.477127,
       updatedAt: 1515494608.363229,
     }
@@ -419,7 +415,6 @@ describe('sync access control', () => {
           timestamp: 1515494608.363229,
         },
       ],
-      sessionID: '40dc16f1-adbd-4410-af1c-2eddd6bfa63e',
       createdAt: 1515417692.477127,
       updatedAt: 1515494608.363229,
       source: 'EMAIL',
@@ -475,7 +470,6 @@ describe('sync access control', () => {
       _id: 'MPManuscript:foobar',
       objectType: 'MPManuscript',
       containerID: 'MPProject:test',
-      sessionID: '40dc16f1-adbd-4410-af1c-2eddd6bfa63e',
       createdAt: 1515417692.477127,
       updatedAt: 1515494608.363229,
     }
@@ -498,7 +492,6 @@ describe('sync access control', () => {
         _id: 'MPBibliographicName:foobar',
         objectType: 'MPBibliographicName',
       },
-      sessionID: '40dc16f1-adbd-4410-af1c-2eddd6bfa63e',
       createdAt: 1515417692.477127,
       updatedAt: 1515494608.363229,
     }

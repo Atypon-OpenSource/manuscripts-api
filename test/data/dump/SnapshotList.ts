@@ -22,5 +22,4 @@ snapshotList.push({
   _id: 'MPSnapshot:valid-snapshot-id-1',
   objectType: 'MPSnapshot',
   containerID: 'MPProject:valid-project-id',
-  sessionID: 'test'
 })
