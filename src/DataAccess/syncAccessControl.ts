@@ -257,13 +257,6 @@ export async function syncAccessControl(doc: any, oldDoc: any, userId?: string):
       const userID = doc.userID
       requireUser([userID], userId)
     }
-  } else if (objectTypeMatches('MPBibliographyItem')) {
-    if (doc.keywordIDs) {
-      for (let i = 0; i < doc.keywordIDs.length; i++) {
-        const keywordID = doc.keywordIDs[i]
-        await proceedWithRejectAccess(keywordID, userId)
-      }
-    }
   } else if (
     objectTypeMatches('MPCorrection') ||
     objectTypeMatches('MPCommentAnnotation') ||
