@@ -253,7 +253,7 @@ describe('SGRepository - patch', () => {
 
   test('failing to patch a document should throw', () => {
     const projectRepository: any = DIContainer.sharedContainer.projectRepository
-    projectRepository.getById = async (_id: string) => Promise.resolve({ ...projec })
+    projectRepository.getById = async (_id: string) => Promise.resolve({ ...project })
     const errorObj = new Error('database derp')
     projectRepository.database.bucket.replace.mockImplementationOnce((_document: any) =>
       Promise.reject(errorObj)
