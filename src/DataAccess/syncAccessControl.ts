@@ -118,6 +118,11 @@ export async function proceedWithContributeAccess(doc: any, userId: string | und
 
 export async function syncAccessControl(doc: any, oldDoc: any, userId?: string): Promise<void> {
   let errorMessage
+
+  if (oldDoc && oldDoc._deleted && doc._deleted) {
+    throw { forbidden: 'deleted document cannot be mutated' }
+  }
+
   if (!doc._id) {
     throw { forbidden: 'missing _id' }
   }
@@ -128,14 +133,14 @@ export async function syncAccessControl(doc: any, oldDoc: any, userId?: string):
 
   const isAllowedToUndelete = !!doc.containerID
 
-  if (!isAllowedToUndelete) {
+  if (oldDoc && oldDoc._deleted && !isAllowedToUndelete) {
     errorMessage = validate(doc)
 
     if (errorMessage) {
       // prettier-ignore
       throw({ forbidden: errorMessage });
     }
-  } else {
+  } else if (!doc._deleted || isAllowedToUndelete) {
     // check that the update isn't mutating objectType
     if (oldDoc && oldDoc.objectType !== doc.objectType) {
       // prettier-ignore
@@ -198,25 +203,27 @@ export async function syncAccessControl(doc: any, oldDoc: any, userId?: string):
 
     const allUserIds = [].concat(owners, writers, viewers, annotators, editors)
 
-    // if there have been changes, we need to be ensure we are the owner
-    if (
-      hasMutated('owners') ||
-      hasMutated('writers') ||
-      hasMutated('viewers') ||
-      hasMutated('annotators') ||
-      hasMutated('editors')
-    ) {
-      requireUser(owners, userId)
-    }
-
-    // only do this for non-deleted items for perf.
-    const userIds: any = {}
-    for (let i = 0; i < allUserIds.length; i++) {
-      if (allUserIds[i] in userIds) {
-        // prettier-ignore
-        throw({ forbidden: 'duplicate userId:' + allUserIds[i] });
+    if (!doc._deleted) {
+      // if there have been changes, we need to be ensure we are the owner
+      if (
+        hasMutated('owners') ||
+        hasMutated('writers') ||
+        hasMutated('viewers') ||
+        hasMutated('annotators') ||
+        hasMutated('editors')
+      ) {
+        requireUser(owners, userId)
       }
-      userIds[allUserIds[i]] = true
+
+      // only do this for non-deleted items for perf.
+      const userIds: any = {}
+      for (let i = 0; i < allUserIds.length; i++) {
+        if (allUserIds[i] in userIds) {
+          // prettier-ignore
+          throw({ forbidden: 'duplicate userId:' + allUserIds[i] });
+        }
+        userIds[allUserIds[i]] = true
+      }
     }
 
     if (oldDoc) {
