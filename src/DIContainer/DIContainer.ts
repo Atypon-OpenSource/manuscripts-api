@@ -49,6 +49,7 @@ import { UserStatusRepository } from '../DataAccess/UserStatusRepository/UserSta
 import { UserTokenRepository } from '../DataAccess/UserTokenRepository/UserTokenRepository'
 import { AuthService } from '../DomainServices/Auth/AuthService'
 import { IAuthService } from '../DomainServices/Auth/IAuthService'
+import { ConfigService } from '../DomainServices/ConfigService'
 import { ContainerService } from '../DomainServices/Container/ContainerService'
 import { ContainerRequestService } from '../DomainServices/ContainerRequest/ContainerRequestService'
 import { IContainerRequestService } from '../DomainServices/ContainerRequest/IContainerRequestService'
@@ -124,6 +125,7 @@ export class DIContainer {
   readonly userCollaboratorRepository: UserCollaboratorRepository
   readonly containerService: ContainerService
   readonly projectService: ProjectService
+  readonly configService: ConfigService
   readonly containerRequestService: IContainerRequestService
   readonly containerRequestRepository: ContainerRequestRepository
   readonly pressroomService: IPressroomService
@@ -265,6 +267,7 @@ export class DIContainer {
       this.containerInvitationRepository
     )
     this.pressroomService = new PressroomService(config.pressroom.baseurl, config.pressroom.apiKey)
+    this.configService = new ConfigService()
   }
 
   /**
