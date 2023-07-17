@@ -50,31 +50,37 @@ export class ConfigService {
         }
       }
     } catch (error) {
-      log.error('Error occurred while reading directory:', error)
+      log.error('Error while reading directory:', error)
       throw error
     }
   }
 
   async loadConfigData(directoryPath: string, fileName?: string): Promise<any> {
-    const fullKey = fileName ? path.join(directoryPath, fileName) : directoryPath
+    const fullKey = fileName ? path.resolve(directoryPath, fileName) : path.resolve(directoryPath)
+
+    if (fileName) {
+      if (!this._configData[fullKey]) {
+        await this.loadFile(fullKey)
+        this.loadData(directoryPath).catch((error) => {
+          log.error('Error while reading directory in background:', error)
+        })
+      }
+
+      if (!this._configData[fullKey]) {
+        log.error('file not found?')
+        return null
+      }
+      return this._configData[fullKey]
+    }
 
     if (!this._configData[fullKey]) {
       await this.loadData(directoryPath)
     }
 
-    if (fileName) {
-      if (!this._configData[fullKey]) {
-        log.error('Error reading file')
-        return null
-      }
-      return this._configData[fullKey]
-    }
-    const resolvedFilePath = path.resolve(directoryPath)
+    const resolvedDirectoryPath = path.resolve(directoryPath)
 
-    const dirData = Object.keys(this._configData)
-      .filter((key) => key.startsWith(resolvedFilePath))
+    return Object.keys(this._configData)
+      .filter((key) => key.startsWith(resolvedDirectoryPath))
       .reduce<{ [key: string]: any }>((res, key) => ((res[key] = this._configData[key]), res), {})
-
-    return dirData
   }
 }
