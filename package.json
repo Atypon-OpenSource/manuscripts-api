@@ -1,6 +1,6 @@
 {
   "name": "@manuscripts/api",
-  "version": "1.4.3",
+  "version": "1.4.2",
   "description": "Manuscripts API server",
   "license": "Apache-2.0",
   "main": "dist/index",
@@ -9,8 +9,7 @@
     "dev": "ts-node --transpile-only --files src",
     "start": "run-s build run",
     "run": "node dist/index",
-    "build": "run-s generate-prisma build-app build-config",
-    "build-config": "config/scripts/build.sh",
+    "build": "run-s generate-prisma build-app",
     "build-app": "tsc --project tsconfig.build.json",
     "generate-prisma": "prisma generate",
     "migrate-prisma": "prisma migrate dev --name init",
@@ -73,15 +72,10 @@
     "winston": "^3.8.2"
   },
   "devDependencies": {
-    "citeproc": "^2.4.62",
     "@babel/core": "^7.20.5",
     "@babel/preset-env": "^7.20.2",
     "@babel/preset-typescript": "^7.18.6",
     "@jest-mock/express": "^2.0.1",
-    "fontoxpath": "^3.28.2",
-    "slimdom-sax-parser": "^1.5.3",
-    "slimdom": "^4.1.0",
-    "better-sqlite3": "^8.0.1",
     "@manuscripts/eslint-config": "^0.5.1",
     "@types/bcrypt": "^5.0.0",
     "@types/body-parser": "^1.19.2",
