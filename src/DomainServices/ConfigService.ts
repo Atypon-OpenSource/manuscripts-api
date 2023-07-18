@@ -18,60 +18,78 @@ import path from 'path'
 
 import { log } from '../Utilities/Logger'
 
-export class ConfigService {
-  private _configData: { [index: string]: any }
+interface IConfigData {
+  [index: string]: any
+}
 
-  get configData(): { [key: string]: any } {
+export class ConfigService {
+  private _configData: IConfigData = {}
+
+  get configData(): IConfigData {
     return this._configData
   }
 
-  constructor() {
-    this._configData = {}
-  }
-
   private async loadFile(filePath: string): Promise<void> {
-    const fileContent = await fs.promises.readFile(filePath, 'utf8')
-    this._configData[filePath] = JSON.parse(fileContent)
+    try {
+      const fileContent = await fs.promises.readFile(filePath, 'utf8')
+      this._configData[filePath] = JSON.parse(fileContent)
+    } catch (error) {
+      log.error(`Error occurred while reading file: ${filePath}`)
+    }
   }
 
-  private async loadData(directoryPath: string): Promise<void> {
-    const files = await fs.promises.readdir(directoryPath)
-    for (const file of files) {
-      const filePath = path.join(directoryPath, file)
-      const stats = await fs.promises.stat(filePath)
-      if (stats.isFile() && path.extname(file) === '.json') {
+  private async loadFilesInDirectory(directoryPath: string): Promise<void> {
+    try {
+      const files = await fs.promises.readdir(directoryPath)
+      const jsonFiles = files.filter((file) => path.extname(file) === '.json')
+
+      for (const file of jsonFiles) {
+        const filePath = path.join(directoryPath, file)
         await this.loadFile(filePath)
       }
+    } catch (error) {
+      log.error('Error occurred while reading directory:', error)
     }
   }
 
-  async loadConfigData(directoryPath: string, fileName?: string, id?: string): Promise<any> {
-    const fullKey = fileName ? path.resolve(directoryPath, fileName) : path.resolve(directoryPath)
+  private getResolvedKey(directoryPath: string, fileName?: string): string {
+    return fileName ? path.resolve(directoryPath, fileName) : path.resolve(directoryPath)
+  }
 
-    if (fileName) {
-      if (!this._configData[fullKey]) {
+  private async loadConfigDataIfNotInCache(fullKey: string, directoryPath: string): Promise<void> {
+    if (!this._configData[fullKey]) {
+      if (fullKey.includes('.json')) {
         await this.loadFile(fullKey)
-        this.loadData(directoryPath).catch((error) => {
-          log.error('Error while reading directory in background:', error)
+        this.loadFilesInDirectory(directoryPath).catch(() => {
+          log.error('Error while reading directory in background')
         })
+      } else {
+        await this.loadFilesInDirectory(directoryPath)
       }
-
-      if (!this._configData[fullKey]) {
-        log.error('file not found?')
-        return null
-      }
-      const data = this._configData[fullKey]
-      return id ? data.find((item: any) => item._id === id) : data
     }
+  }
+
+  async loadConfigData(
+    directoryPath: string,
+    fileName?: string,
+    id?: string
+  ): Promise<IConfigData | null> {
+    const fullKey = this.getResolvedKey(directoryPath, fileName)
+
+    await this.loadConfigDataIfNotInCache(fullKey, directoryPath)
 
     if (!this._configData[fullKey]) {
-      await this.loadData(directoryPath)
+      log.error(`Error occured while reading file ${fullKey}`)
+      return null
     }
 
-    const resolvedDirectoryPath = path.resolve(directoryPath)
+    if (id) {
+      const data = this._configData[fullKey]
+      return data.find((item: any) => item._id === id) || null
+    }
 
     return Object.keys(this._configData)
-      .filter((key) => key.startsWith(resolvedDirectoryPath))
-      .reduce<{ [key: string]: any }>((res, key) => ((res[key] = this._configData[key]), res), {})
+      .filter((key) => key.startsWith(fullKey))
+      .reduce<IConfigData>((res, key) => ((res[key] = this._configData[key]), res), {})
   }
 }

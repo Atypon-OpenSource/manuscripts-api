@@ -72,7 +72,7 @@ export class ConfigRoute extends BaseRoute {
     } else {
       data = await this.configController.getSharedData()
     }
-    data ? res.status(StatusCodes.OK).send(data) : res.status(StatusCodes.NO_CONTENT)
+    data ? res.status(StatusCodes.OK).send(data) : res.status(StatusCodes.BAD_REQUEST).send()
   }
   private async getLocales(req: Request, res: Response) {
     let data
@@ -82,7 +82,7 @@ export class ConfigRoute extends BaseRoute {
     } else {
       data = await this.configController.getLocales('locales.json')
     }
-    data ? res.status(StatusCodes.OK).send(data) : res.status(StatusCodes.NO_CONTENT)
+    data ? res.status(StatusCodes.OK).send(data) : res.status(StatusCodes.BAD_REQUEST).send()
   }
   private async getStyles(req: Request, res: Response) {
     let data
@@ -92,6 +92,6 @@ export class ConfigRoute extends BaseRoute {
     } else {
       data = await this.configController.getStyles()
     }
-    data ? res.status(StatusCodes.OK).send(data) : res.status(StatusCodes.NO_CONTENT)
+    data ? res.status(StatusCodes.OK).send(data) : res.status(StatusCodes.BAD_REQUEST).send()
   }
 }
