@@ -30,32 +30,22 @@ export class ConfigService {
   }
 
   private async loadFile(filePath: string): Promise<void> {
-    try {
-      const fileContent = await fs.promises.readFile(filePath, 'utf8')
-      this._configData[filePath] = JSON.parse(fileContent)
-    } catch (error) {
-      log.error(`Error occurred while reading file: ${filePath}`, error)
-      throw error
-    }
+    const fileContent = await fs.promises.readFile(filePath, 'utf8')
+    this._configData[filePath] = JSON.parse(fileContent)
   }
 
   private async loadData(directoryPath: string): Promise<void> {
-    try {
-      const files = await fs.promises.readdir(directoryPath)
-      for (const file of files) {
-        const filePath = path.join(directoryPath, file)
-        const stats = await fs.promises.stat(filePath)
-        if (stats.isFile() && path.extname(file) === '.json') {
-          await this.loadFile(filePath)
-        }
+    const files = await fs.promises.readdir(directoryPath)
+    for (const file of files) {
+      const filePath = path.join(directoryPath, file)
+      const stats = await fs.promises.stat(filePath)
+      if (stats.isFile() && path.extname(file) === '.json') {
+        await this.loadFile(filePath)
       }
-    } catch (error) {
-      log.error('Error while reading directory:', error)
-      throw error
     }
   }
 
-  async loadConfigData(directoryPath: string, fileName?: string): Promise<any> {
+  async loadConfigData(directoryPath: string, fileName?: string, id?: string): Promise<any> {
     const fullKey = fileName ? path.resolve(directoryPath, fileName) : path.resolve(directoryPath)
 
     if (fileName) {
@@ -70,7 +60,8 @@ export class ConfigService {
         log.error('file not found?')
         return null
       }
-      return this._configData[fullKey]
+      const data = this._configData[fullKey]
+      return id ? data.find((item: any) => item._id === id) : data
     }
 
     if (!this._configData[fullKey]) {

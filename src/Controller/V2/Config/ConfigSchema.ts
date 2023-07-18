@@ -18,9 +18,16 @@ import Joi from 'joi'
 
 import { jsonHeadersSchema } from '../../BaseSchema'
 
-export const configSchema: Joi.SchemaMap = {
+export const defaultSchema: Joi.SchemaMap = {
   headers: jsonHeadersSchema.headers,
   params: Joi.object({
     fileName: Joi.string(),
+  }),
+}
+export const sharedSchema: Joi.SchemaMap = {
+  headers: jsonHeadersSchema.headers,
+  params: Joi.object({
+    fileName: Joi.string(),
+    id: Joi.string(),
   }),
 }

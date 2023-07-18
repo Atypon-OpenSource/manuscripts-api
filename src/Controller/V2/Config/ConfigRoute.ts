@@ -20,7 +20,7 @@ import { StatusCodes } from 'http-status-codes'
 import { AuthStrategy } from '../../../Auth/Passport/AuthStrategy'
 import { BaseRoute } from '../../BaseRoute'
 import { ConfigController } from './ConfigController'
-import { configSchema } from './ConfigSchema'
+import { defaultSchema, sharedSchema } from './ConfigSchema'
 
 export class ConfigRoute extends BaseRoute {
   private get basePath(): string {
@@ -30,8 +30,8 @@ export class ConfigRoute extends BaseRoute {
 
   public create(router: Router): void {
     router.get(
-      `${this.basePath}/shared/:fileName?`,
-      celebrate(configSchema),
+      `${this.basePath}/shared/:fileName?/:id?`,
+      celebrate(sharedSchema),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
@@ -42,7 +42,7 @@ export class ConfigRoute extends BaseRoute {
     )
     router.get(
       `${this.basePath}/locales/:fileName?`,
-      celebrate(configSchema),
+      celebrate(defaultSchema),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
@@ -53,7 +53,7 @@ export class ConfigRoute extends BaseRoute {
     )
     router.get(
       `${this.basePath}/styles/:fileName?`,
-      celebrate(configSchema),
+      celebrate(defaultSchema),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
@@ -66,12 +66,13 @@ export class ConfigRoute extends BaseRoute {
   private async getSharedData(req: Request, res: Response) {
     let data
     const fileName = req.params.fileName
+    const id = req.params.id
     if (fileName) {
-      data = await this.configController.getSharedData(fileName)
+      data = await this.configController.getSharedData(fileName, id)
     } else {
       data = await this.configController.getSharedData()
     }
-    res.status(StatusCodes.OK).send(data)
+    data ? res.status(StatusCodes.OK).send(data) : res.status(StatusCodes.NO_CONTENT)
   }
   private async getLocales(req: Request, res: Response) {
     let data
@@ -81,7 +82,7 @@ export class ConfigRoute extends BaseRoute {
     } else {
       data = await this.configController.getLocales('locales.json')
     }
-    res.status(StatusCodes.OK).send(data)
+    data ? res.status(StatusCodes.OK).send(data) : res.status(StatusCodes.NO_CONTENT)
   }
   private async getStyles(req: Request, res: Response) {
     let data
@@ -91,6 +92,6 @@ export class ConfigRoute extends BaseRoute {
     } else {
       data = await this.configController.getStyles()
     }
-    res.status(StatusCodes.OK).send(data)
+    data ? res.status(StatusCodes.OK).send(data) : res.status(StatusCodes.NO_CONTENT)
   }
 }
