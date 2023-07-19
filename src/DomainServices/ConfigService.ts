@@ -72,7 +72,7 @@ export class ConfigService {
   async loadConfigData(
     directoryPath: string,
     fileName?: string,
-    id?: string
+    ids?: string[]
   ): Promise<IConfigData | null> {
     const fullKey = this.getResolvedKey(directoryPath, fileName)
 
@@ -83,9 +83,9 @@ export class ConfigService {
       return null
     }
 
-    if (id) {
+    if (ids) {
       const data = this._configData[fullKey]
-      return data.find((item: any) => item._id === id) || null
+      return data.filter((item: any) => ids.includes(item._id))
     }
 
     return Object.keys(this._configData)

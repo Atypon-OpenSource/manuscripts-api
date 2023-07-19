@@ -30,7 +30,7 @@ export class ConfigRoute extends BaseRoute {
 
   public create(router: Router): void {
     router.get(
-      `${this.basePath}/shared/:fileName?/:id?`,
+      `${this.basePath}/shared/:fileName?`,
       celebrate(sharedSchema),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
@@ -66,9 +66,9 @@ export class ConfigRoute extends BaseRoute {
   private async getSharedData(req: Request, res: Response) {
     let data
     const fileName = req.params.fileName
-    const id = req.params.id
+    const { ids } = req.query
     if (fileName) {
-      data = await this.configController.getSharedData(fileName, id)
+      data = await this.configController.getSharedData(fileName, ids)
     } else {
       data = await this.configController.getSharedData()
     }

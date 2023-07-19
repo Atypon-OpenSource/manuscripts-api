@@ -28,6 +28,8 @@ export const sharedSchema: Joi.SchemaMap = {
   headers: jsonHeadersSchema.headers,
   params: Joi.object({
     fileName: Joi.string(),
-    id: Joi.string(),
+  }),
+  query: Joi.object({
+    ids: Joi.alternatives().try(Joi.string(), Joi.array().items(Joi.string())),
   }),
 }
