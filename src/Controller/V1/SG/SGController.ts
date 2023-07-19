@@ -58,9 +58,7 @@ export class SGController extends BaseController {
     }
 
     const id = req.params.id
-    const rev = req.query.rev
     const body = req.body
-    body._rev = rev
 
     const token = authorizationBearerToken(req)
     return DIContainer.sharedContainer.sgService.update(token, id, body)

@@ -70,7 +70,6 @@ const arrayIndexesObj = {
       { fields: ['writers'] },
       { fields: ['viewers'] },
     ],
-    [ObjectTypes.BibliographyItem]: [{ fields: ['keywordIDs'] }],
   } as any,
 } as any
 

@@ -395,7 +395,7 @@ export abstract class ContainerRepository<
   }
 
   public buildItem = (row: any) => {
-    const { _sync, sessionID, containerID, templateID, ...item } = row.projects
+    const { _sync, containerID, templateID, ...item } = row.projects
     return { ...item, _id: row.id }
   }
 
