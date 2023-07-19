@@ -22,7 +22,7 @@ const sharedPath = __dirname + '/../../../../dist/config/shared/'
 const stylesPath = __dirname + '/../../../../dist/config/csl/styles/'
 
 export class ConfigController extends BaseController {
-  private async getData(path: string, fileName?: string, ids?: string[]) {
+  private async getData(path: string, fileName?: string, ids?: string[] | string) {
     if (fileName) {
       fileName = fileName.endsWith('.json') ? fileName : fileName + '.json'
       return await DIContainer.sharedContainer.configService.loadConfigData(path, fileName, ids)

@@ -72,20 +72,21 @@ export class ConfigService {
   async loadConfigData(
     directoryPath: string,
     fileName?: string,
-    ids?: string[]
+    ids?: string[] | string
   ): Promise<IConfigData | null> {
     const fullKey = this.getResolvedKey(directoryPath, fileName)
 
     await this.loadConfigDataIfNotInCache(fullKey, directoryPath)
 
-    if (!this._configData[fullKey]) {
+    if (!this._configData[fullKey] && fileName) {
       log.error(`Error occured while reading file ${fullKey}`)
       return null
     }
 
     if (ids) {
+      const idsArray = Array.isArray(ids) ? ids : [ids]
       const data = this._configData[fullKey]
-      return data.filter((item: any) => ids.includes(item._id))
+      return data.filter((item: any) => idsArray.includes(item._id))
     }
 
     return Object.keys(this._configData)
