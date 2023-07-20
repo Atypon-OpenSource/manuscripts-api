@@ -63,7 +63,7 @@ async function proceedWithAccess(doc: any, userId: string | undefined, accessTyp
   const writers = container.writers
   const viewers = container.viewers || []
   const annotators = container.annotators || []
-  const proofers = container.proofer || []
+  const proofers = container.proofers || []
   const editors = container.editors || []
 
   switch (accessType) {
