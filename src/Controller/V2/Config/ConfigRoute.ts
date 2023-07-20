@@ -72,7 +72,13 @@ export class ConfigRoute extends BaseRoute {
     } else {
       data = await this.configController.getSharedData()
     }
-    data ? res.status(StatusCodes.OK).send(data) : res.status(StatusCodes.BAD_REQUEST).send()
+    if (!data) {
+      res.status(StatusCodes.NOT_FOUND).send('File not found')
+    } else if (ids && Array.isArray(data) && data.length === 0) {
+      res.status(StatusCodes.NOT_FOUND).send('No matching IDs were found')
+    } else {
+      res.status(StatusCodes.OK).send(data)
+    }
   }
   private async getLocales(req: Request, res: Response) {
     let data
@@ -82,7 +88,9 @@ export class ConfigRoute extends BaseRoute {
     } else {
       data = await this.configController.getLocales('locales.json')
     }
-    data ? res.status(StatusCodes.OK).send(data) : res.status(StatusCodes.BAD_REQUEST).send()
+    data
+      ? res.status(StatusCodes.OK).send(data)
+      : res.status(StatusCodes.NOT_FOUND).send('File not found')
   }
   private async getStyles(req: Request, res: Response) {
     let data
@@ -92,6 +100,8 @@ export class ConfigRoute extends BaseRoute {
     } else {
       data = await this.configController.getStyles()
     }
-    data ? res.status(StatusCodes.OK).send(data) : res.status(StatusCodes.BAD_REQUEST).send()
+    data
+      ? res.status(StatusCodes.OK).send(data)
+      : res.status(StatusCodes.NOT_FOUND).send('File not found')
   }
 }
