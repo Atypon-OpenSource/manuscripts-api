@@ -36,9 +36,6 @@ export const sgPutSchema: Joi.SchemaMap = {
     id: Joi.string().required(),
     db: Joi.string().required(),
   }),
-  query: Joi.object({
-    rev: Joi.string().required(),
-  }),
 }
 
 export const sgDeleteSchema: Joi.SchemaMap = {

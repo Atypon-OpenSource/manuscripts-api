@@ -24,8 +24,6 @@ import {
   ManuscriptNote,
   ManuscriptTemplate,
   Project,
-  Snapshot,
-  Submission,
   UserProfile,
 } from '@manuscripts/json-schema'
 
@@ -53,8 +51,6 @@ export type ContainerRequestLike = Pick<
   Exclude<keyof ContainerRequest, 'createdAt' | 'updatedAt'>
 >
 
-export type SubmissionLike = Pick<Submission, Exclude<keyof Submission, 'createdAt' | 'updatedAt'>>
-
 export type ManuscriptNoteLike = Pick<
   ManuscriptNote,
   Exclude<keyof ManuscriptNote, 'createdAt' | 'updatedAt'>
@@ -68,8 +64,6 @@ export type ManuscriptTemplateLike = Pick<
   ManuscriptTemplate,
   Exclude<keyof ManuscriptTemplate, 'createdAt' | 'updatedAt'>
 >
-
-export type SnapshotLike = Pick<Snapshot, Exclude<keyof Snapshot, 'createdAt' | 'updatedAt'>>
 
 export type PrismaModelLike = {
   id: string

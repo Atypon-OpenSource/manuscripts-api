@@ -44,10 +44,6 @@ export interface LoginTokenPayload {
    */
   appId: string
   /**
-   * Session id.
-   */
-  iamSessionID?: string
-  /**
    * Token expiry
    */
   expiry?: number

@@ -22,5 +22,4 @@ export interface PatchProject {
   viewers?: string[]
   editors?: string[]
   annotators?: string[]
-  sessionID?: string
 }

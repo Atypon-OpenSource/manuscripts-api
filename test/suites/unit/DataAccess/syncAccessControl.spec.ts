@@ -32,9 +32,6 @@ import { syncAccessControl } from '../../../../src/DataAccess/syncAccessControl'
 
 describe('sync access control', () => {
   test('random objects', async () => {
-    await expect(syncAccessControl({ _deleted: true }, { _deleted: true })).rejects.toEqual({
-      forbidden: 'deleted document cannot be mutated',
-    })
     await expect(syncAccessControl({}, null)).rejects.toEqual({ forbidden: 'missing _id' })
     await expect(syncAccessControl({ objectType: 'foo', _id: 'bar' }, null)).rejects.toEqual({
       forbidden: '_id must have objectType as prefix',
@@ -64,7 +61,9 @@ describe('sync access control', () => {
         _id: type + ':foo',
       }
 
-      await expect(syncAccessControl({ ...validObject }, null, validObject.owners[0])).resolves.not.toThrow()
+      await expect(
+        syncAccessControl({ ...validObject }, null, validObject.owners[0])
+      ).resolves.not.toThrow()
       await expect(syncAccessControl({ ...validObject }, null)).rejects.toEqual({
         forbidden: 'user does not have access',
       })
@@ -102,7 +101,9 @@ describe('sync access control', () => {
       nightMode: true,
     }
 
-    await expect(syncAccessControl({ ...validObject }, null, 'User_foo@bar.com')).resolves.not.toThrow()
+    await expect(
+      syncAccessControl({ ...validObject }, null, 'User_foo@bar.com')
+    ).resolves.not.toThrow()
     await expect(syncAccessControl({ ...validObject }, null)).rejects.toEqual({
       forbidden: 'user does not have access',
     })
@@ -134,7 +135,9 @@ describe('sync access control', () => {
       objectType: 'MPInvitation',
     }
 
-    await expect(syncAccessControl({ ...validObject }, null, 'User_foo@bar.com')).resolves.not.toThrow()
+    await expect(
+      syncAccessControl({ ...validObject }, null, 'User_foo@bar.com')
+    ).resolves.not.toThrow()
     await expect(syncAccessControl({ ...validObject }, null)).resolves.not.toThrow()
   })
 
@@ -168,7 +171,9 @@ describe('sync access control', () => {
       objectType: 'MPContainerInvitation',
     }
 
-    await expect(syncAccessControl({ ...validObject }, null, 'User_foo@bar.com')).resolves.not.toThrow()
+    await expect(
+      syncAccessControl({ ...validObject }, null, 'User_foo@bar.com')
+    ).resolves.not.toThrow()
     await expect(syncAccessControl({ ...validObject }, null)).resolves.not.toThrow()
   })
 
@@ -182,7 +187,9 @@ describe('sync access control', () => {
       updatedAt: 231230131,
     }
 
-    await expect(syncAccessControl({ ...validObject }, null, validObject.invitingUserID)).resolves.not.toThrow()
+    await expect(
+      syncAccessControl({ ...validObject }, null, validObject.invitingUserID)
+    ).resolves.not.toThrow()
     await expect(syncAccessControl({ ...validObject }, null)).rejects.toEqual({
       forbidden: 'user does not have access',
     })
@@ -195,7 +202,6 @@ describe('sync access control', () => {
     const validObject = {
       updatedAt: 1515494608.245375,
       objectType: 'MPBorderStyle',
-      _rev: '1-cf3758c6a77c031dcd8f617087c7493d',
       _id: 'MPBorderStyle:15326C7B-836D-4D6C-81EB-7E6CA6153E9A',
       containerID: 'MPProject:test',
       manuscriptID: 'MPManuscript:zorb',
@@ -203,7 +209,6 @@ describe('sync access control', () => {
       pattern: [1, 1],
       createdAt: 1515417692.476143,
       name: 'dotted',
-      sessionID: '4D17753C-AF51-4262-9FBD-88D8EC7E8495',
       priority: 1,
     }
 
@@ -239,7 +244,9 @@ describe('sync access control', () => {
       updatedAt: 1454537867.959872,
     }
 
-    await expect(syncAccessControl({ ...validObject }, null, validObject.userID)).resolves.not.toThrow()
+    await expect(
+      syncAccessControl({ ...validObject }, null, validObject.userID)
+    ).resolves.not.toThrow()
   })
 
   test('MPCitationAlert', async () => {
@@ -247,15 +254,15 @@ describe('sync access control', () => {
       objectType: 'MPCitationAlert',
       createdAt: 1515417692.477127,
       updatedAt: 1515494608.363229,
-      _rev: '1-cf3758c6a77c031dcd8f617087c7493d',
       _id: 'MPCitationAlert:15326C7B-836D-4D6C-81EB-7E6CA6153E9B',
-      sessionID: '4D17753C-AF51-4262-9FBD-88D8EC7E8498',
       userID: 'User_foobar@manuscriptsapp.com',
       sourceDOI: '10.1007/978-981-13-0341-8_10',
       targetDOI: '10.1176/appi.psychotherapy.71101',
     }
 
-    await expect(syncAccessControl({ ...validObject }, null, validObject.userID)).resolves.not.toThrow()
+    await expect(
+      syncAccessControl({ ...validObject }, null, validObject.userID)
+    ).resolves.not.toThrow()
     await expect(
       syncAccessControl({ ...validObject }, { ...validObject, isRead: true })
     ).rejects.toEqual({ forbidden: 'user does not have access' })
@@ -269,14 +276,14 @@ describe('sync access control', () => {
       objectType: 'MPMutedCitationAlert',
       createdAt: 1515417692.477127,
       updatedAt: 1515494608.363229,
-      _rev: '1-cf3758c6a77c031dcd8f617087c7493d',
       _id: 'MPMutedCitationAlert:15326C7B-836D-4D6C-81EB-7E6CA6153E9B',
-      sessionID: '4D17753C-AF51-4262-9FBD-88D8EC7E8498',
       userID: 'User_foobar@manuscriptsapp.com',
       targetDOI: '10.1176/appi.psychotherapy.71101',
     }
 
-    await expect(syncAccessControl({ ...validObject }, null, validObject.userID)).resolves.not.toThrow()
+    await expect(
+      syncAccessControl({ ...validObject }, null, validObject.userID)
+    ).resolves.not.toThrow()
     await expect(syncAccessControl({ ...validObject }, null)).rejects.toEqual({
       forbidden: 'user does not have access',
     })
@@ -294,7 +301,9 @@ describe('sync access control', () => {
       title: 'Test Article',
     }
 
-    await expect(syncAccessControl({ ...validObject }, null, 'User_bill@example.com')).resolves.not.toThrow()
+    await expect(
+      syncAccessControl({ ...validObject }, null, 'User_bill@example.com')
+    ).resolves.not.toThrow()
     await expect(syncAccessControl({ ...validObject }, null)).rejects.toEqual({
       forbidden: 'user does not have access',
     })
@@ -316,12 +325,13 @@ describe('sync access control', () => {
           timestamp: 1515494608.363229,
         },
       ],
-      sessionID: '40dc16f1-adbd-4410-af1c-2eddd6bfa63e',
       createdAt: 1515417692.477127,
       updatedAt: 1515494608.363229,
     }
 
-    await expect(syncAccessControl({ ...validObject }, null, 'User_bill@example.com')).resolves.not.toThrow()
+    await expect(
+      syncAccessControl({ ...validObject }, null, 'User_bill@example.com')
+    ).resolves.not.toThrow()
     await expect(syncAccessControl({ ...validObject }, null)).rejects.toEqual({
       forbidden: 'user does not have access',
     })
@@ -402,13 +412,14 @@ describe('sync access control', () => {
           timestamp: 1515494608.363229,
         },
       ],
-      sessionID: '40dc16f1-adbd-4410-af1c-2eddd6bfa63e',
       createdAt: 1515417692.477127,
       updatedAt: 1515494608.363229,
       source: 'EMAIL',
     }
 
-    await expect(syncAccessControl({ ...validObject }, null, 'User_bill@example.com')).resolves.not.toThrow()
+    await expect(
+      syncAccessControl({ ...validObject }, null, 'User_bill@example.com')
+    ).resolves.not.toThrow()
     await expect(syncAccessControl({ ...validObject }, null)).rejects.toEqual({
       forbidden: 'user does not have access',
     })
@@ -456,12 +467,13 @@ describe('sync access control', () => {
       _id: 'MPManuscript:foobar',
       objectType: 'MPManuscript',
       containerID: 'MPProject:test',
-      sessionID: '40dc16f1-adbd-4410-af1c-2eddd6bfa63e',
       createdAt: 1515417692.477127,
       updatedAt: 1515494608.363229,
     }
 
-    await expect(syncAccessControl({ ...validObject }, null, 'User_bill@example.com')).resolves.not.toThrow()
+    await expect(
+      syncAccessControl({ ...validObject }, null, 'User_bill@example.com')
+    ).resolves.not.toThrow()
     await expect(syncAccessControl({ ...validObject }, null)).rejects.toEqual({
       forbidden: 'user does not have access',
     })
@@ -477,12 +489,13 @@ describe('sync access control', () => {
         _id: 'MPBibliographicName:foobar',
         objectType: 'MPBibliographicName',
       },
-      sessionID: '40dc16f1-adbd-4410-af1c-2eddd6bfa63e',
       createdAt: 1515417692.477127,
       updatedAt: 1515494608.363229,
     }
 
-    await expect(syncAccessControl({ ...validObject }, null, 'User_bill@example.com')).resolves.not.toThrow()
+    await expect(
+      syncAccessControl({ ...validObject }, null, 'User_bill@example.com')
+    ).resolves.not.toThrow()
     await expect(syncAccessControl({ ...validObject }, null)).rejects.toEqual({
       forbidden: 'user does not have access',
     })
