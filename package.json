@@ -11,6 +11,7 @@
     "run": "node dist/index",
     "build": "run-s generate-prisma build-app",
     "build-app": "tsc --project tsconfig.build.json",
+    "build-config": "config/scripts/build.sh",
     "generate-prisma": "prisma generate",
     "migrate-prisma": "prisma migrate dev --name init",
     "migrate-prisma-deploy": "prisma migrate deploy",
@@ -75,6 +76,8 @@
     "@babel/core": "^7.20.5",
     "@babel/preset-env": "^7.20.2",
     "@babel/preset-typescript": "^7.18.6",
+    "better-sqlite3": "^8.0.1",
+    "citeproc": "^2.4.62",
     "@jest-mock/express": "^2.0.1",
     "@manuscripts/eslint-config": "^0.5.1",
     "@types/bcrypt": "^5.0.0",
@@ -139,6 +142,9 @@
     "supertest": "^6.3.3",
     "ts-node": "^10.9.1",
     "tsc-watch": "^6.0.0",
-    "typescript": "4.9.4"
+    "typescript": "4.9.4",
+    "slimdom": "^4.1.0",
+    "slimdom-sax-parser": "^1.5.3",
+    "fontoxpath": "^3.28.2"
   }
 }

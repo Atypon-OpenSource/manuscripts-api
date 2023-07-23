@@ -19,6 +19,7 @@ pipeline {
                 sh 'yarn install --non-interactive --frozen-lockfile'
                 sh 'yarn test:unit'
                 sh 'yarn build'
+                sh 'yarn build-config'
             }
         }
         stage ('Docker') {
