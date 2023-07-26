@@ -1,0 +1,454 @@
+[
+  {
+    "_id": "MPSectionCategory:abbreviations",
+    "name": "Abbreviations",
+    "desc": "List of abbreviations referred to in your manuscript.",
+    "objectType": "MPSectionCategory",
+    "titles": [
+      "List of abbreviations",
+      "Abbreviations"
+    ],
+    "singular": true,
+    
+    "priority": 100,
+    "uniqueInScope": true
+  },
+  {
+    "_id": "MPSectionCategory:abstract",
+    "name": "Abstract",
+    "desc": "A short summary of your work.",
+    "objectType": "MPSectionCategory",
+    "titles": [
+      "abstract",
+      "summary",
+      "lead-in"
+    ],
+    
+    "priority": 110,
+    "uniqueInScope": true,
+    "pageBreakStyle": 2,
+    "groupIDs": ["MPSectionCategory:abstracts"]
+  },
+  {
+    "_id": "MPSectionCategory:acknowledgement",
+    "name": "Acknowledgments",
+    "desc": "Acknowledge individuals and organizations that were important in making your work possible.",
+    "objectType": "MPSectionCategory",
+    "titles": [
+      "acknowledgement",
+      "acknowledgements"
+    ],
+    
+    "priority": 130,
+    "uniqueInScope": true,
+    "groupIDs": ["MPSectionCategory:backmatter"]
+  },
+  {
+    "_id": "MPSectionCategory:appendices",
+    "name": "Appendices",
+    "desc": "List of additional matters at the end of a book or document.",
+    "objectType": "MPSectionCategory",
+    "titles": [
+      "Appendices",
+      "appendix",
+      "additionalInformation",
+      "additional information"
+    ],
+    "singular": true,
+    
+    "priority": 140,
+    "uniqueInScope": true
+  },
+  {
+    "_id": "MPSectionCategory:author-contributions",
+    "name": "Author contributions",
+    "desc": "An account of the author contributions towards this work.",
+    "objectType": "MPSectionCategory",
+    "titles": [
+      "Author contributions",
+      "authorContributions"
+    ],
+    
+    "priority": 150,
+    "uniqueInScope": true
+  },
+  {
+    "_id": "MPSectionCategory:availability",
+    "name": "Availability",
+    "desc": "Availability of data and other resources.",
+    "objectType": "MPSectionCategory",
+    "titles": [
+      "availability"
+    ],
+    
+    "priority": 160,
+    "uniqueInScope": true,
+    "groupIDs": ["MPSectionCategory:backmatter"]
+  },
+  {
+    "_id": "MPSectionCategory:bibliography",
+    "name": "Bibliography",
+    "desc": "References cited in your manuscript.",
+    "objectType": "MPSectionCategory",
+    "titles": [
+      "bibliography",
+      "references"
+    ],
+    "singular": true,
+    
+    "priority": 180,
+    "uniqueInScope": true
+  },
+  {
+    "_id": "MPSectionCategory:competing-interests",
+    "name": "Competing Interests",
+    "desc": "Competing interests (financial etc).",
+    "objectType": "MPSectionCategory",
+    "titles": [
+      "Competing interests",
+      "Competing financial interests",
+      "competingInterests"
+    ],
+    "singular": true,
+    
+    "priority": 200,
+    "uniqueInScope": true,
+    "groupIDs": ["MPSectionCategory:backmatter"]
+  },
+  {
+    "_id": "MPSectionCategory:conclusions",
+    "name": "Conclusions",
+    "desc": "Summarise and draw conclusions.",
+    "objectType": "MPSectionCategory",
+    "titles": [
+      "conclusion",
+      "conclusions"
+    ],
+    
+    "priority": 210,
+    "uniqueInScope": true,
+    "groupIDs": ["MPSectionCategory:body"]
+  },
+  {
+    "_id": "MPSectionCategory:con",
+    "name": "Contributed-by information",
+    "desc": "A section to indicate a contributed-by information that the authors may have included in their manuscript.",
+    "objectType": "MPSectionCategory",
+    "singular": true,
+    
+    "priority": 220,
+    "uniqueInScope": true,
+    "supplementary": true,
+    "titles": [
+      "Contributed-by information"
+    ],
+    "groupIDs": ["MPSectionCategory:backmatter"]
+  },
+  {
+    "_id": "MPSectionCategory:deceased",
+    "name": "Deceased",
+    "desc": "A section to indicate something about a deceased statement related to an author who may have passed since the writing of the manuscript.",
+    "objectType": "MPSectionCategory",
+    "singular": true,
+    
+    "priority": 230,
+    "uniqueInScope": true,
+    "supplementary": true,
+    "titles": [
+      "Deceased"
+    ]
+  },
+  {
+    "_id": "MPSectionCategory:discussion",
+    "name": "Discussion",
+    "desc": "Interpret your data and draw conclusions.",
+    "objectType": "MPSectionCategory",
+    "titles": [
+      "discussion",
+      "discussion and results"
+    ],
+    
+    "priority": 240,
+    "uniqueInScope": true,
+    "groupIDs": ["MPSectionCategory:body"]
+  },
+  {
+    "_id": "MPSectionCategory:equal",
+    "name": "Equal",
+    "desc": "A section to indicate something about a contributed equally statement that the authors may have included in their manuscript.",
+    "objectType": "MPSectionCategory",
+    "singular": true,
+    
+    "priority": 250,
+    "uniqueInScope": true,
+    "supplementary": true,
+    "titles": [
+      "Equal"
+    ]
+  },
+  {
+    "_id": "MPSectionCategory:ethics-statement",
+    "name": "Ethics Statement",
+    "desc": "Statement regarding following relevant ethical guidelines.",
+    "objectType": "MPSectionCategory",
+    "titles": [
+      "Ethics Statement",
+      "ethicsStatement"
+    ],
+    "singular": true,
+    
+    "priority": 260,
+    "uniqueInScope": true,
+    "groupIDs": ["MPSectionCategory:backmatter"]
+  },
+  {
+    "_id": "MPSectionCategory:financial-disclosure",
+    "name": "Financial Disclosure",
+    "desc": "A section to indicate the source of funding for the manuscript.",
+    "objectType": "MPSectionCategory",
+    "singular": true,
+    
+    "priority": 270,
+    "uniqueInScope": true,
+    "supplementary": true,
+    "titles": [
+      "Financial disclosure",
+      "financialDisclosure"
+    ],
+    "groupIDs": ["MPSectionCategory:backmatter"]
+  },
+  {
+    "_id": "MPSectionCategory:abstract-graphical",
+    "name": "Graphical Abstract",
+    "desc": "A visual summary of your work.",
+    "objectType": "MPSectionCategory",
+    "singular": true,
+    
+    "priority": 280,
+    "uniqueInScope": true,
+    "supplementary": true,
+    "titles": [
+      "Graphical abstract"
+    ],
+    "groupIDs": ["MPSectionCategory:abstracts"]
+  },
+  {
+    "_id": "MPSectionCategory:introduction",
+    "name": "Introduction",
+    "desc": "Establish what is currently known of your topic, then identify the focus of your work.",
+    "objectType": "MPSectionCategory",
+    "titles": [
+      "introduction",
+      "background"
+    ],
+    
+    "priority": 290,
+    "uniqueInScope": true,
+    "groupIDs": ["MPSectionCategory:body"]
+  },
+  {
+    "_id": "MPSectionCategory:keywords",
+    "name": "Keywords",
+    "desc": "List of keywords relevant to the manuscript.",
+    "objectType": "MPSectionCategory",
+    "titles": [
+      "Keywords",
+      "List of keywords"
+    ],
+    
+    "priority": 300,
+    "uniqueInScope": true
+  },
+  {
+    "_id": "MPSectionCategory:list-of-figures",
+    "name": "List of Figures",
+    "desc": "List of figures included in your manuscript.",
+    "objectType": "MPSectionCategory",
+    "titles": [
+      "List of figures",
+      "figures",
+      "listOfFigures"
+    ],
+    "singular": true,
+    
+    "priority": 310,
+    "uniqueInScope": true
+  },
+  {
+    "_id": "MPSectionCategory:list-of-tables",
+    "name": "List of Tables",
+    "desc": "List of tables included in your manuscript.",
+    "objectType": "MPSectionCategory",
+    "titles": [
+      "List of tables",
+      "tables"
+    ],
+    "singular": true,
+    
+    "priority": 320,
+    "uniqueInScope": true
+  },
+  {
+    "_id": "MPSectionCategory:materials-method",
+    "name": "Materials & Methods",
+    "desc": "Describe what you did in a a way that others can follow to duplicate your work.",
+    "objectType": "MPSectionCategory",
+    "titles": [
+      "method",
+      "methods",
+      "materials & methods",
+      "materials and method",
+      "materials and methods",
+      "materials & methods"
+    ],
+    
+    "priority": 330,
+    "uniqueInScope": true,
+    "groupIDs": ["MPSectionCategory:body"]
+  },
+  {
+    "_id": "MPSectionCategory:present-address",
+    "name": "Present Address",
+    "desc": "A section that indicate something about a present address statement that the authors may have included in their manuscript.",
+    "objectType": "MPSectionCategory",
+    "singular": true,
+    
+    "priority": 340,
+    "uniqueInScope": true,
+    "supplementary": true,
+    "titles": [
+      "Present address",
+      "presentAddress"
+    ]
+  },
+  {
+    "_id": "MPSectionCategory:presented-at",
+    "name": "Presented at",
+    "desc": "A section that indicate something about a presented at statement that the authors may have included in their manuscript.",
+    "objectType": "MPSectionCategory",
+    "singular": true,
+    
+    "priority": 350,
+    "uniqueInScope": true,
+    "supplementary": true,
+    "titles": [
+      "Presented at"
+    ]
+  },
+  {
+    "_id": "MPSectionCategory:previously-at",
+    "name": "Previously at",
+    "desc": "A section that indicate something about a previously at statement that the authors may have included in their manuscript.",
+    "objectType": "MPSectionCategory",
+    "singular": true,
+    
+    "priority": 360,
+    "uniqueInScope": true,
+    "supplementary": true,
+    "titles": [
+      "Previously at"
+    ]
+  },
+  {
+    "_id": "MPSectionCategory:results",
+    "name": "Results",
+    "desc": "Describe the results of your work and include a summary of data found in your tables and figures.",
+    "objectType": "MPSectionCategory",
+    "titles": [
+      "results",
+      "results and discussion"
+    ],
+    
+    "priority": 370,
+    "uniqueInScope": true,
+    "groupIDs": ["MPSectionCategory:body"]
+  },
+  {
+    "_id": "MPSectionCategory:review",
+    "name": "Review",
+    "desc": "The body of a review article",
+    "objectType": "MPSectionCategory",
+    "titles": [
+      "review"
+    ],
+    
+    "priority": 380,
+    "uniqueInScope": true,
+    "groupIDs": ["MPSectionCategory:body"]
+  },
+  {
+    "_id": "MPSectionCategory:section",
+    "name": "Section",
+    "desc": "A part or a subdivision such as chapter, in a book or a thesis.",
+    "objectType": "MPSectionCategory",
+    "titles": [
+      "section"
+    ],
+    "singular": true,
+    
+    "priority": 390,
+    "uniqueInScope": true,
+    "groupIDs": ["MPSectionCategory:body"]
+  },
+  {
+    "_id": "MPSectionCategory:subsection",
+    "name": "Subsection",
+    "desc": "A division of a section.",
+    "objectType": "MPSectionCategory",
+    "titles": [
+      "subsection"
+    ],
+    "singular": true,
+    
+    "priority": 400,
+    "uniqueInScope": true,
+    "groupIDs": ["MPSectionCategory:body"]
+  },
+  {
+    "_id": "MPSectionCategory:supplementary-material",
+    "name": "Supplementary Material",
+    "desc": "A section that indicate something about a supplementary material statement that the authors may have included in their manuscript.",
+    "objectType": "MPSectionCategory",
+    "singular": true,
+    
+    "priority": 410,
+    "uniqueInScope": true,
+    "supplementary": true,
+    "titles": [
+      "Supplementary material",
+      "supplementaryMaterial"
+    ],
+    "groupIDs": ["MPSectionCategory:backmatter"]
+
+  },
+  {
+    "_id": "MPSectionCategory:supported-by",
+    "name": "Supported by",
+    "desc": "A section that indicate something about a supported by statement that the authors may have included in their manuscript.",
+    "objectType": "MPSectionCategory",
+    "singular": true,
+    
+    "priority": 420,
+    "uniqueInScope": true,
+    "supplementary": true,
+    "titles": [
+      "Supported by"
+    ],
+    "groupIDs": ["MPSectionCategory:backmatter"]
+
+  },
+  {
+    "_id": "MPSectionCategory:toc",
+    "name": "Table of Contents",
+    "desc": "The contents usually includes the headings of top level sections, and often includes second-level and occasionally even third-level headings.",
+    "objectType": "MPSectionCategory",
+    "titles": [
+      "Table of Contents",
+      "TOC",
+      "Contents"
+    ],
+    
+    "priority": 430,
+    "uniqueInScope": true
+  }
+]

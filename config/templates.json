@@ -1,0 +1,99 @@
+[
+  {
+    "_id": "MPManuscriptTemplate:www-zotero-org-styles-nature-genetics-Nature-Genetics-Journal-Publication",
+    "bundle": "MPBundle:www-zotero-org-styles-nature-genetics",
+    "category": "MPManuscriptCategory:research-article",
+    "createdAt": 1433095330.891146,
+    "desc": "Nature Genetics publishes the very highest quality research in genet- ics. It encompasses genetic and functional genomic studies on human traits and on other model organisms, including mouse, fly, nematode and yeast. Current emphasis is on the genetic basis for common and complex diseases and on the functional mechanism, architecture and evolution of gene networks, studied by experimental perturbation.",
+    "objectType": "MPManuscriptTemplate",
+    "priority": 116,
+    "publisher": "MPPublisher:nature",
+    "title": "Nature Genetics Journal Publication",
+    "updatedAt": 1433095363.40453
+  },
+  {
+    "_id": "MPManuscriptTemplate:www-zotero-org-styles-bmc-biology-BMC-Biology-Journal-Publication",
+    "bundle": "MPBundle:www-zotero-org-styles-bmc-biology",
+    "category": "MPManuscriptCategory:research-article",
+    "createdAt": 1433095331.46582,
+    "desc": "BMC Biology is the flagship biology journal of the BMC series, publishing peer-reviewed research and methodology articles of special importance and broad interest in any area of biology, as well as commissioned reviews, opinion pieces, comment and Q&As on topics of special or topical interest.",
+    "objectType": "MPManuscriptTemplate",
+    "priority": 929,
+    "publisher": "MPPublisher:bmc",
+    "title": "BMC Biology Journal Publication",
+    "updatedAt": 1433095363.404758
+  },
+  {
+    "_id": "MPManuscriptTemplate:www-zotero-org-styles-nature-genetics-Nature-Genetics-Journal-Publication-Article",
+    "aim": "Nature Genetics publishes the very highest quality research in genet- ics. It encompasses genetic and functional genomic studies on human traits and on other model organisms, including mouse, fly, nematode and yeast. Current emphasis is on the genetic basis for common and complex diseases and on the functional mechanism, architecture and evolution of gene networks, studied by experimental perturbation.",
+    "bundle": "MPBundle:www-zotero-org-styles-nature-genetics",
+    "category": "MPManuscriptCategory:research-article",
+    "createdAt": 1433095333.219065,
+    "desc": "An Article is a substantial novel research study, with a complex story often involving several techniques or approaches.",
+    "objectType": "MPManuscriptTemplate",
+    "parent": "Nature Genetics Journal Publication",
+    "title": "Article",
+    "updatedAt": 1433095363.405134
+  },
+  {
+    "_id": "MPManuscriptTemplate:www-zotero-org-styles-bmc-biology-BMC-Biology-Journal-Publication-Editorial",
+    "aim": "BMC Biology is the flagship biology journal of the BMC series, publishing peer-reviewed research and methodology articles of special importance and broad interest in any area of biology, as well as commissioned reviews, opinion pieces, comment and Q&As on topics of special or topical interest.",
+    "bundle": "MPBundle:www-zotero-org-styles-bmc-biology",
+    "category": "MPManuscriptCategory:research-article",
+    "createdAt": 1433095334.478636,
+    "desc": "Editorials cover relevant issues, changes or news regarding the journal and its editorial management or policies. They are normally written by members of the staff and Editorial Board.",
+    "objectType": "MPManuscriptTemplate",
+    "parent": "BMC Biology Journal Publication",
+    "title": "Editorial",
+    "updatedAt": 1433095363.405281
+  },
+  {
+    "_id": "MPManuscriptTemplate:MPBundle:www-zotero-org-styles-harvard1-cambridge_university_press_journal_publication",
+    "createdAt": 1439123042.550768,
+    "licenses": [
+      "MPLicense:cc-by",
+      "MPLicense:cc-by-nc-nd",
+      "MPLicense:cc-by-nc-sa"
+    ],
+    "objectType": "MPManuscriptTemplate",
+    "publisher": "MPPublisher:cup",
+    "title": "Cambridge University Press Journal Publication",
+    "updatedAt": 1439123085.200659
+  },
+  {
+    "_id": "MPManuscriptTemplate:MPManuscriptTemplate:MPBundle:www-zotero-org-styles-harvard1-cambridge_university_press_journal_publication-MPBundle:www-zotero-org-styles-chicago-author-date-health_economics,_policy_and_law",
+    "ISSNs": [
+      "1744-1331"
+    ],
+    "aim": "International trends highlight the confluence of economics, politics and legal considerations in the health policy process. Health Economics, Policy and Law serves as a forum for scholarship on health policy issues from these perspectives, and is of use to academics, policy makers and health care managers and professionals. HEPL is international in scope, publishes both theoretical and applied work, and contains articles on all aspects of health policy. Considerable emphasis is placed on rigorous conceptual development and analysis, and on the presentation of empirical evidence that is relevant to the policy process.\n",
+    "authorInstructionsURL": "http://journals.cambridge.org/images/fileUpload/documents/HEP_ifc.pdf",
+    "bodyFontSize": 12,
+    "bodyLineSpacing": 2,
+    "createdAt": 1439238297.254911,
+    "eISSNs": [
+      "1744-134X"
+    ],
+    "figureElementFileLayout": 4,
+    "notes": "Manuscripts should be clearly typed in double spacing and should have a left-hand margin of at least 25 mm/1 inch and a right-hand margin of at least 40mm/1.5 inches. Type size should be no smaller than 12 points. Footnotes should be numbered consecutively (in superscript) within the text and listed in a separate section at the end of the article before the References. Tables and Figures. Each table and figure should be on a separate sheet, numbered and collected together at the end of the article, after the References. Their place in the text should be indicated by a space and the words ‘Table X (Figure X) about here’. Tables should be clearly laid out and designed to fit into a space 190 x 120mm. Vertical lines between columns should be omitted, and horizontal lines limited to the top and bottom of the table, with an additional line below the column headings. Totals and percentages should be labeled, and units identified. Figures should not contain more detail than can be clearly shown in a space 190 x 120mm.",
+    "objectType": "MPManuscriptTemplate",
+    "parent": "MPManuscriptTemplate:MPBundle:www-zotero-org-styles-harvard1-cambridge_university_press_journal_publication",
+    "preferredDialect": "en-GB",
+    "publisher": "MPPublisher:cup",
+    "sourceURL": "http://journals.cambridge.org/action/displayJournal?jid=HEP",
+    "tableElementFileLayout": 4,
+    "title": "Health Economics, Policy and Law",
+    "updatedAt": 1439238561.0898
+  },
+  {
+    "_id": "MPManuscriptTemplate:MPManuscriptTemplate:MPManuscriptTemplate:MPBundle:www-zotero-org-styles-harvard1-cambridge_university_press_journal_publication-MPBundle:www-zotero-org-styles-chicago-author-date-health_economics,_policy_and_law-MPBundle:www-zotero-org-styles-chicago-author-date-review_article_health_economics,_policy_and_law",
+    "bundle": "MPBundle:www-zotero-org-styles-chicago-author-date",
+    "createdAt": 1439238773.006457,
+    "desc": "Review articles will feature a discussion of two or three books on a related theme.",
+    "maxWordCountRequirement": "MPMaximumManuscriptWordCountRequirement:3E311688-E661-494A-894E-B576DE5B2BFC",
+    "objectType": "MPManuscriptTemplate",
+    "parent": "MPManuscriptTemplate:MPManuscriptTemplate:MPBundle:www-zotero-org-styles-harvard1-cambridge_university_press_journal_publication-MPBundle:www-zotero-org-styles-chicago-author-date-health_economics,_policy_and_law",
+    "publisher": "MPPublisher:cup",
+    "title": "Review Article Health Economics, Policy and Law",
+    "updatedAt": 1439238807.234061
+  }
+]
