@@ -73,8 +73,6 @@ import { UserActivityTrackingService } from '../DomainServices/UserActivity/User
 import { IServer } from '../Server/IServer'
 import { Server } from '../Server/Server'
 
-const configPath = __dirname + '/../../config/'
-
 export class UninitializedContainerError extends Error {
   constructor() {
     super()
@@ -269,7 +267,7 @@ export class DIContainer {
       this.containerInvitationRepository
     )
     this.pressroomService = new PressroomService(config.pressroom.baseurl, config.pressroom.apiKey)
-    this.configService = new ConfigService(configPath)
+    this.configService = new ConfigService(config.data.path)
   }
 
   /**

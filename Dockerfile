@@ -13,6 +13,7 @@ COPY ./prisma ./prisma
 COPY ./emails ./emails
 COPY ./build ./build
 COPY ./types ./types
+COPY ./config ./config
 
 COPY tsconfig.json tsconfig.build.json ./
 

@@ -90,6 +90,9 @@ export interface PressroomConfiguration {
   readonly apiKey: string
 }
 
+export interface DataConfiguration {
+  readonly path: string
+}
 export interface ConfigurationContainer {
   readonly API: APIConfiguration
   readonly DB: DatabaseConfiguration
@@ -99,4 +102,5 @@ export interface ConfigurationContainer {
   readonly apps: ClientApplicationsConfiguration
   readonly scopes: ScopedAccessTokenConfiguration[]
   readonly pressroom: PressroomConfiguration
+  readonly data: DataConfiguration
 }
