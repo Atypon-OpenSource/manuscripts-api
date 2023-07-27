@@ -15,82 +15,74 @@
  */
 import fs from 'fs'
 import path from 'path'
+import { promisify } from 'util'
 
 import { log } from '../Utilities/Logger'
 
-interface IConfigData {
-  [index: string]: any
+// Convert fs.readFile into Promise version to use with async/await
+const readFile = promisify(fs.readFile)
+
+interface Cache {
+  [id: string]: any[]
 }
 
 export class ConfigService {
-  private _configData: IConfigData = {}
+  private fileCache: Cache = {}
+  private dataCache: Cache = {}
 
-  get configData(): IConfigData {
-    return this._configData
+  constructor(private directoryPath: string) {
+    ;(async () => {
+      try {
+        await this.loadFiles()
+      } catch (error) {
+        log.error(`Error loading files: ${error}`)
+      }
+    })()
   }
 
-  private async loadFile(filePath: string): Promise<void> {
+  private async loadFiles() {
     try {
-      const fileContent = await fs.promises.readFile(filePath, 'utf8')
-      this._configData[filePath] = JSON.parse(fileContent)
-    } catch (error) {
-      log.error(`Error occurred while reading file: ${filePath}`)
-    }
-  }
-
-  private async loadFilesInDirectory(directoryPath: string): Promise<void> {
-    try {
-      const files = await fs.promises.readdir(directoryPath)
-      const jsonFiles = files.filter((file) => path.extname(file) === '.json')
-
-      for (const file of jsonFiles) {
-        const filePath = path.join(directoryPath, file)
-        await this.loadFile(filePath)
+      const filenames = fs.readdirSync(this.directoryPath)
+      const jsonFilenames = filenames.filter((filename) => path.extname(filename) === '.json')
+      for (const filename of jsonFilenames) {
+        const filePath = path.join(this.directoryPath, filename)
+        this.fileCache[filename] = await this.loadFile(filePath)
       }
     } catch (error) {
       log.error('Error occurred while reading directory:', error)
     }
   }
-
-  private getResolvedKey(directoryPath: string, fileName?: string): string {
-    return fileName ? path.resolve(directoryPath, fileName) : path.resolve(directoryPath)
+  private async loadFile(filePath: string) {
+    try {
+      const data = await readFile(filePath, 'utf-8')
+      return JSON.parse(data)
+    } catch (error) {
+      log.error(`Error occurred while reading file: ${filePath}`)
+    }
+  }
+  public getData(ids: string | string[], fileName: string) {
+    if (!ids) {
+      log.info('file Cached')
+      return this.fileCache[fileName]
+    }
+    if (Array.isArray(ids)) {
+      return ids.map((singleId) => this.retrieve(singleId, fileName))
+    } else {
+      return this.retrieve(ids, fileName)
+    }
   }
 
-  private async loadConfigDataIfNotInCache(fullKey: string, directoryPath: string): Promise<void> {
-    if (!this._configData[fullKey]) {
-      if (fullKey.includes('.json')) {
-        await this.loadFile(fullKey)
-        this.loadFilesInDirectory(directoryPath).catch(() => {
-          log.error('Error while reading directory in background')
-        })
-      } else {
-        await this.loadFilesInDirectory(directoryPath)
+  private retrieve(id: string, fileName: string) {
+    if (!this.dataCache[id]) {
+      if (this.fileCache[fileName]) {
+        const data: any = this.fileCache[fileName]
+        const item = data[id] ? data[id] : data.find((item: any) => item._id === id)
+
+        if (item) {
+          this.dataCache[id] = item
+        }
       }
     }
-  }
-
-  async loadConfigData(
-    directoryPath: string,
-    fileName?: string,
-    ids?: string[] | string
-  ): Promise<IConfigData | null> {
-    const fullKey = this.getResolvedKey(directoryPath, fileName)
-
-    await this.loadConfigDataIfNotInCache(fullKey, directoryPath)
-
-    if (!this._configData[fullKey] && fileName) {
-      log.error(`Error occured while reading file ${fullKey}`)
-      return null
-    }
-
-    if (ids) {
-      const idsArray = Array.isArray(ids) ? ids : [ids]
-      const data = this._configData[fullKey]
-      return data.filter((item: any) => idsArray.includes(item._id))
-    }
-
-    return Object.keys(this._configData)
-      .filter((key) => key.startsWith(fullKey))
-      .reduce<IConfigData>((res, key) => ((res[key] = this._configData[key]), res), {})
+    return this.dataCache[id]
   }
 }

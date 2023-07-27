@@ -17,28 +17,9 @@
 import { DIContainer } from '../../../DIContainer/DIContainer'
 import { BaseController } from '../../BaseController'
 
-const localesPath = __dirname + '/../../../../dist/config/csl/locales/'
-const sharedPath = __dirname + '/../../../../dist/config/shared/'
-const stylesPath = __dirname + '/../../../../dist/config/csl/styles/'
-
 export class ConfigController extends BaseController {
-  private async getData(path: string, fileName?: string, ids?: string[] | string) {
-    if (fileName) {
-      fileName = fileName.endsWith('.json') ? fileName : fileName + '.json'
-      return await DIContainer.sharedContainer.configService.loadConfigData(path, fileName, ids)
-    }
-    return await DIContainer.sharedContainer.configService.loadConfigData(path)
-  }
-
-  async getSharedData(fileName?: string, ids?: any) {
-    return this.getData(sharedPath, fileName, ids)
-  }
-
-  async getLocales(fileName?: string) {
-    return this.getData(localesPath, fileName)
-  }
-
-  async getStyles(fileName?: string) {
-    return this.getData(stylesPath, fileName)
+  async getData(fileName: string, ids?: any) {
+    fileName = fileName.endsWith('.json') ? fileName : fileName + '.json'
+    return DIContainer.sharedContainer.configService.getData(ids, fileName)
   }
 }

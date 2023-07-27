@@ -20,16 +20,11 @@ import { jsonHeadersSchema } from '../../BaseSchema'
 
 export const defaultSchema: Joi.SchemaMap = {
   headers: jsonHeadersSchema.headers,
-  params: Joi.object({
-    fileName: Joi.string(),
-  }),
-}
-export const sharedSchema: Joi.SchemaMap = {
-  headers: jsonHeadersSchema.headers,
-  params: Joi.object({
-    fileName: Joi.string(),
-  }),
   query: Joi.object({
     ids: Joi.alternatives().try(Joi.string(), Joi.array().items(Joi.string())),
   }),
+}
+
+export const sectionsSchema: Joi.SchemaMap = {
+  headers: jsonHeadersSchema.headers,
 }
