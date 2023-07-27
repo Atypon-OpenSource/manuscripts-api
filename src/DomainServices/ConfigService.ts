@@ -19,7 +19,6 @@ import { promisify } from 'util'
 
 import { log } from '../Utilities/Logger'
 
-// Convert fs.readFile into Promise version to use with async/await
 const readFile = promisify(fs.readFile)
 
 interface Cache {
@@ -31,13 +30,7 @@ export class ConfigService {
   private dataCache: Cache = {}
 
   constructor(private directoryPath: string) {
-    ;(async () => {
-      try {
-        await this.loadFiles()
-      } catch (error) {
-        log.error(`Error loading files: ${error}`)
-      }
-    })()
+    this.loadFiles().catch((error) => log.error(`Error loading files: ${error}`))
   }
 
   private async loadFiles() {
@@ -50,21 +43,29 @@ export class ConfigService {
       }
     } catch (error) {
       log.error('Error occurred while reading directory:', error)
+      throw error
     }
   }
+
   private async loadFile(filePath: string) {
     try {
       const data = await readFile(filePath, 'utf-8')
       return JSON.parse(data)
     } catch (error) {
       log.error(`Error occurred while reading file: ${filePath}`)
+      throw error
     }
   }
+
   public getData(ids: string | string[], fileName: string) {
+    if (!this.fileCache[fileName]) {
+      throw new Error(`File ${fileName} not found in cache.`)
+    }
+
     if (!ids) {
-      log.info('file Cached')
       return this.fileCache[fileName]
     }
+
     if (Array.isArray(ids)) {
       return ids.map((singleId) => this.retrieve(singleId, fileName))
     } else {
@@ -73,16 +74,17 @@ export class ConfigService {
   }
 
   private retrieve(id: string, fileName: string) {
-    if (!this.dataCache[id]) {
-      if (this.fileCache[fileName]) {
-        const data: any = this.fileCache[fileName]
-        const item = data[id] ? data[id] : data.find((item: any) => item._id === id)
+    if (!this.dataCache[id] && this.fileCache[fileName]) {
+      const data: any = this.fileCache[fileName]
+      const item = data[id] ? data[id] : data.find((item: any) => item._id === id)
 
-        if (item) {
-          this.dataCache[id] = item
-        }
+      if (item) {
+        this.dataCache[id] = item
+      } else {
+        throw new Error(`Item with id ${id} not found in file ${fileName}.`)
       }
     }
+
     return this.dataCache[id]
   }
 }
