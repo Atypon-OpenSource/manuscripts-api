@@ -76,7 +76,12 @@ export class ConfigService {
   private retrieve(id: string, fileName: string) {
     if (!this.dataCache[id] && this.fileCache[fileName]) {
       const data: any = this.fileCache[fileName]
-      const item = data[id] ? data[id] : data.find((item: any) => item._id === id)
+      let item
+      if (Array.isArray(data)) {
+        item = data.find((item: any) => item._id === id)
+      } else {
+        item = data[id]
+      }
 
       if (item) {
         this.dataCache[id] = item

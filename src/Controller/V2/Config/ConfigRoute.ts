@@ -52,7 +52,7 @@ export class ConfigRoute extends BaseRoute {
   private async getData(req: Request, res: Response, fileName: string) {
     const { ids } = req.query
     const data = await this.configController.getData(fileName, ids)
-    if (!data) {
+    if (!data || data.length === 0) {
       res.status(StatusCodes.NOT_FOUND).send('No data found')
     } else {
       res.set('Content-Type', 'application/json')
