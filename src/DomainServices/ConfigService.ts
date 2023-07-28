@@ -85,11 +85,32 @@ export class ConfigService {
 
       if (item) {
         this.dataCache[id] = item
+        this.preloadDataCache(data).catch((error) =>
+          log.error(`Error preloading data cache: ${error}`)
+        )
       } else {
         throw new Error(`Item with id ${id} not found in file ${fileName}.`)
       }
     }
 
     return this.dataCache[id]
+  }
+
+  private async preloadDataCache(data: any) {
+    if (Array.isArray(data)) {
+      data.forEach((item: any) => {
+        if (item._id && !this.dataCache[item._id]) {
+          this.dataCache[item._id] = item
+          log.info(`cached ${item._id}`)
+        }
+      })
+    } else {
+      for (const id in data) {
+        if (!this.dataCache[id]) {
+          this.dataCache[id] = data[id]
+          log.info(`cached ${id}`)
+        }
+      }
+    }
   }
 }
