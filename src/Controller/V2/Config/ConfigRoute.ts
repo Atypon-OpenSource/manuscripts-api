@@ -20,14 +20,14 @@ import { StatusCodes } from 'http-status-codes'
 import { AuthStrategy } from '../../../Auth/Passport/AuthStrategy'
 import { BaseRoute } from '../../BaseRoute'
 import { ConfigController } from './ConfigController'
-import { defaultSchema, sectionsSchema } from './ConfigSchema'
+import { bundleSchema, configSchema, defaultSchema, templateSchema } from './ConfigSchema'
 
 const routes = [
-  { path: '/templates', schema: defaultSchema, fileName: 'templates' },
-  { path: '/bundles', schema: defaultSchema, fileName: 'bundles' },
-  { path: '/csl/styles', schema: defaultSchema, fileName: 'styles' },
-  { path: '/csl/locales', schema: defaultSchema, fileName: 'locales' },
-  { path: '/section-categories', schema: sectionsSchema, fileName: 'section-categories' },
+  { path: '/templates', schema: templateSchema },
+  { path: '/bundles', schema: bundleSchema },
+  { path: '/csl/styles', schema: defaultSchema },
+  { path: '/csl/locales', schema: defaultSchema },
+  { path: '/config', schema: configSchema },
 ]
 
 export class ConfigRoute extends BaseRoute {
@@ -42,16 +42,16 @@ export class ConfigRoute extends BaseRoute {
         AuthStrategy.JWTAuth,
         (req: Request, res: Response, next: NextFunction) => {
           return this.runWithErrorHandling(async () => {
-            await this.getData(req, res, route.fileName)
+            await this.getDocument(req, res)
           }, next)
         }
       )
     }
   }
 
-  private async getData(req: Request, res: Response, fileName: string) {
-    const { ids } = req.query
-    const data = await this.configController.getData(fileName, ids)
+  private async getDocument(req: Request, res: Response) {
+    const id = req.query.id as string
+    const data = await this.configController.getDocument(id)
     if (!data || data.length === 0) {
       res.status(StatusCodes.NOT_FOUND).send('No data found')
     } else {

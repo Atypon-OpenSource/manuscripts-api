@@ -1,95 +1,16 @@
 [
   {
-    "_id": "MPBundle:www-zotero-org-styles-nature-genetics",
-    "csl": {
-      "ISSNs": [
-        "10614036"
-      ],
-      "_id": "MPCitationStyle:www-zotero-org-styles-nature-genetics",
-      "cslIdentifier": "http://www.zotero.org/styles/nature-genetics",
-      "defaultLocale": "en-GB",
-      "documentation-URL": "http://www.nature.com/ng/pdf/gta.pdf",
-      "eISSNs": [
-        "15461718"
-      ],
-      "fields": [
-        "MPResearchField:biology",
-        "MPResearchField:medicine"
-      ],
-      "independent-parent-URL": "http://www.zotero.org/styles/nature",
-      "license": "http://creativecommons.org/licenses/by-sa/3.0/",
-      "self-URL": "http://www.zotero.org/styles/nature-genetics",
-      "title": "Nature Genetics",
-      "updatedAt": 1402916400,
-      "version": "1.0"
-    },
+    "_id": "MPBundle:www-zotero-org-styles-american-medical-association",
     "objectType": "MPBundle",
-    "scimago": {
-      "H": 376,
-      "I": "10614036",
-      "R": 19.919,
-      "c": "United Kingdom",
-      "c3Y": 21819,
-      "cib3Y": 609,
-      "d3Y": 857,
-      "dY": 283,
-      "muC2Y": 36.77,
-      "muR": 26.99,
-      "rY": 7639,
-      "t": "Nature Genetics"
+    "csl": {
+      "_id": "MPCitationStyle:www-zotero-org-styles-american-medical-association"
     }
   },
   {
     "_id": "MPBundle:www-zotero-org-styles-chicago-author-date",
-    "csl": {
-      "_id": "MPCitationStyle:www-zotero-org-styles-chicago-author-date",
-      "author-email": "julian.onions@gmail.com",
-      "author-name": "Julian Onions",
-      "cslIdentifier": "http://www.zotero.org/styles/chicago-author-date",
-      "documentation-URL": "http://www.chicagomanualofstyle.org/tools_citationguide.html",
-      "fields": [
-        "MPResearchField:generic-base"
-      ],
-      "license": "http://creativecommons.org/licenses/by-sa/3.0/",
-      "self-URL": "http://www.zotero.org/styles/chicago-author-date",
-      "summary": "The author-date variant of the Chicago style",
-      "title": "Chicago Manual of Style 16th edition (author-date)",
-      "updatedAt": 1440571105,
-      "version": "1.0"
-    },
-    "objectType": "MPBundle"
-  },
-  {
-    "_id": "MPBundle:www-zotero-org-styles-bmc-biology",
-    "csl": {
-      "_id": "MPCitationStyle:www-zotero-org-styles-bmc-biology",
-      "cslIdentifier": "http://www.zotero.org/styles/bmc-biology",
-      "defaultLocale": "en-US",
-      "documentation-URL": "http://www.springer.com/cda/content/document/cda_downloaddocument/manuscript-guidelines-1.0.pdf",
-      "eISSNs": [
-        "17417007"
-      ],
-      "independent-parent-URL": "http://www.zotero.org/styles/springer-vancouver-brackets",
-      "license": "http://creativecommons.org/licenses/by-sa/3.0/",
-      "self-URL": "http://www.zotero.org/styles/bmc-biology",
-      "title": "BMC Biology",
-      "updatedAt": 1400151600,
-      "version": "1.0"
-    },
     "objectType": "MPBundle",
-    "scimago": {
-      "H": 43,
-      "I": "17417007",
-      "R": 3.105,
-      "c": "United Kingdom",
-      "c3Y": 1400,
-      "cib3Y": 227,
-      "d3Y": 304,
-      "dY": 92,
-      "muC2Y": 6.2,
-      "muR": 37.21,
-      "rY": 3423,
-      "t": "BMC Biology"
+    "csl": {
+      "_id": "MPCitationStyle:www-zotero-org-styles-chicago-author-date"
     }
   }
 ]

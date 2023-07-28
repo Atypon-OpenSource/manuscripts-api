@@ -18,13 +18,28 @@ import Joi from 'joi'
 
 import { jsonHeadersSchema } from '../../BaseSchema'
 
+export const configSchema: Joi.SchemaMap = {
+  headers: jsonHeadersSchema.headers,
+}
+
 export const defaultSchema: Joi.SchemaMap = {
   headers: jsonHeadersSchema.headers,
   query: Joi.object({
-    ids: Joi.alternatives().try(Joi.string(), Joi.array().items(Joi.string())),
+    id: Joi.string(),
   }),
 }
 
-export const sectionsSchema: Joi.SchemaMap = {
+export const templateSchema: Joi.SchemaMap = {
   headers: jsonHeadersSchema.headers,
+  query: Joi.object({
+    id: Joi.string()
+  }),
 }
+
+export const bundleSchema: Joi.SchemaMap = {
+  headers: jsonHeadersSchema.headers,
+  query: Joi.object({
+    id: Joi.string().regex(/^MPBundle:.+$/),
+  }),
+}
+

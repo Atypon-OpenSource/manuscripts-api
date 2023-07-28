@@ -18,8 +18,7 @@ import { DIContainer } from '../../../DIContainer/DIContainer'
 import { BaseController } from '../../BaseController'
 
 export class ConfigController extends BaseController {
-  async getData(fileName: string, ids?: any) {
-    fileName = fileName.endsWith('.json') ? fileName : fileName + '.json'
-    return DIContainer.sharedContainer.configService.getData(ids, fileName)
+  public async getDocument(id: string) {
+    return DIContainer.sharedContainer.configService.getDocument(id)
   }
 }

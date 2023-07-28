@@ -13,104 +13,76 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import fs from 'fs'
+import { promises as fs } from 'fs'
 import path from 'path'
-import { promisify } from 'util'
 
-import { log } from '../Utilities/Logger'
-
-const readFile = promisify(fs.readFile)
-
-interface Cache {
-  [id: string]: any[]
+interface Model {
+  _id: string
 }
 
 export class ConfigService {
-  private fileCache: Cache = {}
-  private dataCache: Cache = {}
+  private store: Promise<Map<string, string>>
 
-  constructor(private directoryPath: string) {
-    this.loadFiles().catch((error) => log.error(`Error loading files: ${error}`))
+  constructor(root: string) {
+    this.store = this.init(root)
   }
 
-  private async loadFiles() {
-    try {
-      const filenames = fs.readdirSync(this.directoryPath)
-      const jsonFilenames = filenames.filter((filename) => path.extname(filename) === '.json')
-      for (const filename of jsonFilenames) {
-        const filePath = path.join(this.directoryPath, filename)
-        this.fileCache[filename] = await this.loadFile(filePath)
-      }
-    } catch (error) {
-      log.error('Error occurred while reading directory:', error)
-      throw error
-    }
+  private async init(root: string) {
+    const bundles = await this.initBundles(root)
+    const templates = await this.initTemplates(root)
+    const categories = await this.initSectionCategories(root)
+    const styles = await this.initCslStyles(root)
+    const locales = await this.initCslLocales(root)
+    return new Map<string, string>([...bundles, ...templates, ...categories, ...styles, ...locales])
   }
 
-  private async loadFile(filePath: string) {
-    try {
-      const data = await readFile(filePath, 'utf-8')
-      return JSON.parse(data)
-    } catch (error) {
-      log.error(`Error occurred while reading file: ${filePath}`)
-      throw error
-    }
+  private async initBundles(root: string) {
+    const models: Model[] = JSON.parse(await fs.readFile(path.join(root, 'bundles.json'), 'utf-8'))
+    return this.index(models)
   }
 
-  public getData(ids: string | string[], fileName: string) {
-    if (!this.fileCache[fileName]) {
-      throw new Error(`File ${fileName} not found in cache.`)
-    }
-
-    if (!ids) {
-      return this.fileCache[fileName]
-    }
-
-    if (Array.isArray(ids)) {
-      return ids.map((singleId) => this.retrieve(singleId, fileName))
-    } else {
-      return this.retrieve(ids, fileName)
-    }
+  private async initTemplates(root: string) {
+    const models: Model[] = JSON.parse(await fs.readFile(path.join(root, 'templates.json'), 'utf-8'))
+    return this.index(models)
   }
 
-  private retrieve(id: string, fileName: string) {
-    if (!this.dataCache[id] && this.fileCache[fileName]) {
-      const data: any = this.fileCache[fileName]
-      let item
-      if (Array.isArray(data)) {
-        item = data.find((item: any) => item._id === id)
-      } else {
-        item = data[id]
-      }
-
-      if (item) {
-        this.dataCache[id] = item
-        this.preloadDataCache(data).catch((error) =>
-          log.error(`Error preloading data cache: ${error}`)
-        )
-      } else {
-        throw new Error(`Item with id ${id} not found in file ${fileName}.`)
-      }
-    }
-
-    return this.dataCache[id]
+  private async initSectionCategories(root: string) {
+    const data = await fs.readFile(path.join(root, 'section-categories.json'), 'utf-8')
+    return new Map<string, string>().set('section-categories', data)
   }
 
-  private async preloadDataCache(data: any) {
-    if (Array.isArray(data)) {
-      data.forEach((item: any) => {
-        if (item._id && !this.dataCache[item._id]) {
-          this.dataCache[item._id] = item
-          log.info(`cached ${item._id}`)
-        }
-      })
-    } else {
-      for (const id in data) {
-        if (!this.dataCache[id]) {
-          this.dataCache[id] = data[id]
-          log.info(`cached ${id}`)
-        }
-      }
+  private async initCslStyles(root: string) {
+    const styles = new Map<string, string>()
+    const dir = path.join(root, 'csl', 'styles')
+    const files = await fs.readdir(dir)
+    for (const file of files) {
+      const id = file.slice(0, -4)
+      const data = await fs.readFile(path.join(dir, file), 'utf-8')
+      styles.set(id, data)
     }
+    return styles
+  }
+
+  private async initCslLocales(root: string) {
+    const locales = new Map<string, string>()
+    const dir = path.join(root, 'csl', 'locales')
+    const files = await fs.readdir(dir)
+    for (const file of files) {
+      const id = file.slice(8, -4)
+      const data = await fs.readFile(path.join(dir, file), 'utf-8')
+      locales.set(id, data)
+    }
+    return locales
+  }
+
+  private index(models: Model[]) {
+    const index = new Map<string, string>()
+    models.forEach((v) => index.set(v._id, JSON.stringify(v)))
+    return index
+  }
+
+  public async getDocument(id: string) {
+    const data = await this.store
+    return data.get(id)
   }
 }
