@@ -9,7 +9,6 @@
       "Abbreviations"
     ],
     "singular": true,
-    
     "priority": 100,
     "uniqueInScope": true
   },
@@ -23,7 +22,6 @@
       "summary",
       "lead-in"
     ],
-    
     "priority": 110,
     "uniqueInScope": true,
     "pageBreakStyle": 2,
@@ -38,7 +36,6 @@
       "acknowledgement",
       "acknowledgements"
     ],
-    
     "priority": 130,
     "uniqueInScope": true,
     "groupIDs": ["MPSectionCategory:backmatter"]
@@ -55,7 +52,6 @@
       "additional information"
     ],
     "singular": true,
-    
     "priority": 140,
     "uniqueInScope": true
   },
@@ -68,7 +64,6 @@
       "Author contributions",
       "authorContributions"
     ],
-    
     "priority": 150,
     "uniqueInScope": true
   },
@@ -80,7 +75,6 @@
     "titles": [
       "availability"
     ],
-    
     "priority": 160,
     "uniqueInScope": true,
     "groupIDs": ["MPSectionCategory:backmatter"]
@@ -95,22 +89,22 @@
       "references"
     ],
     "singular": true,
-    
     "priority": 180,
     "uniqueInScope": true
   },
   {
     "_id": "MPSectionCategory:competing-interests",
-    "name": "Competing Interests",
-    "desc": "Competing interests (financial etc).",
+    "name": "COI Statement",
+    "desc": "Conflict of Interest Statement",
     "objectType": "MPSectionCategory",
     "titles": [
+      "Conflict of Interest Statement",
+      "Conflict of Interest",
       "Competing interests",
       "Competing financial interests",
       "competingInterests"
     ],
     "singular": true,
-    
     "priority": 200,
     "uniqueInScope": true,
     "groupIDs": ["MPSectionCategory:backmatter"]
@@ -124,7 +118,6 @@
       "conclusion",
       "conclusions"
     ],
-    
     "priority": 210,
     "uniqueInScope": true,
     "groupIDs": ["MPSectionCategory:body"]
@@ -135,7 +128,6 @@
     "desc": "A section to indicate a contributed-by information that the authors may have included in their manuscript.",
     "objectType": "MPSectionCategory",
     "singular": true,
-    
     "priority": 220,
     "uniqueInScope": true,
     "supplementary": true,
@@ -150,7 +142,6 @@
     "desc": "A section to indicate something about a deceased statement related to an author who may have passed since the writing of the manuscript.",
     "objectType": "MPSectionCategory",
     "singular": true,
-    
     "priority": 230,
     "uniqueInScope": true,
     "supplementary": true,
@@ -167,7 +158,6 @@
       "discussion",
       "discussion and results"
     ],
-    
     "priority": 240,
     "uniqueInScope": true,
     "groupIDs": ["MPSectionCategory:body"]
@@ -178,7 +168,6 @@
     "desc": "A section to indicate something about a contributed equally statement that the authors may have included in their manuscript.",
     "objectType": "MPSectionCategory",
     "singular": true,
-    
     "priority": 250,
     "uniqueInScope": true,
     "supplementary": true,
@@ -196,7 +185,6 @@
       "ethicsStatement"
     ],
     "singular": true,
-    
     "priority": 260,
     "uniqueInScope": true,
     "groupIDs": ["MPSectionCategory:backmatter"]
@@ -207,7 +195,6 @@
     "desc": "A section to indicate the source of funding for the manuscript.",
     "objectType": "MPSectionCategory",
     "singular": true,
-    
     "priority": 270,
     "uniqueInScope": true,
     "supplementary": true,
@@ -223,7 +210,6 @@
     "desc": "A visual summary of your work.",
     "objectType": "MPSectionCategory",
     "singular": true,
-    
     "priority": 280,
     "uniqueInScope": true,
     "supplementary": true,
@@ -241,7 +227,6 @@
       "introduction",
       "background"
     ],
-    
     "priority": 290,
     "uniqueInScope": true,
     "groupIDs": ["MPSectionCategory:body"]
@@ -255,7 +240,6 @@
       "Keywords",
       "List of keywords"
     ],
-    
     "priority": 300,
     "uniqueInScope": true
   },
@@ -270,7 +254,6 @@
       "listOfFigures"
     ],
     "singular": true,
-    
     "priority": 310,
     "uniqueInScope": true
   },
@@ -284,7 +267,6 @@
       "tables"
     ],
     "singular": true,
-    
     "priority": 320,
     "uniqueInScope": true
   },
@@ -301,7 +283,6 @@
       "materials and methods",
       "materials & methods"
     ],
-    
     "priority": 330,
     "uniqueInScope": true,
     "groupIDs": ["MPSectionCategory:body"]
@@ -312,7 +293,6 @@
     "desc": "A section that indicate something about a present address statement that the authors may have included in their manuscript.",
     "objectType": "MPSectionCategory",
     "singular": true,
-    
     "priority": 340,
     "uniqueInScope": true,
     "supplementary": true,
@@ -327,7 +307,6 @@
     "desc": "A section that indicate something about a presented at statement that the authors may have included in their manuscript.",
     "objectType": "MPSectionCategory",
     "singular": true,
-    
     "priority": 350,
     "uniqueInScope": true,
     "supplementary": true,
@@ -341,7 +320,6 @@
     "desc": "A section that indicate something about a previously at statement that the authors may have included in their manuscript.",
     "objectType": "MPSectionCategory",
     "singular": true,
-    
     "priority": 360,
     "uniqueInScope": true,
     "supplementary": true,
@@ -358,7 +336,6 @@
       "results",
       "results and discussion"
     ],
-    
     "priority": 370,
     "uniqueInScope": true,
     "groupIDs": ["MPSectionCategory:body"]
@@ -371,7 +348,6 @@
     "titles": [
       "review"
     ],
-    
     "priority": 380,
     "uniqueInScope": true,
     "groupIDs": ["MPSectionCategory:body"]
@@ -385,7 +361,6 @@
       "section"
     ],
     "singular": true,
-    
     "priority": 390,
     "uniqueInScope": true,
     "groupIDs": ["MPSectionCategory:body"]
@@ -399,7 +374,6 @@
       "subsection"
     ],
     "singular": true,
-    
     "priority": 400,
     "uniqueInScope": true,
     "groupIDs": ["MPSectionCategory:body"]
@@ -410,7 +384,6 @@
     "desc": "A section that indicate something about a supplementary material statement that the authors may have included in their manuscript.",
     "objectType": "MPSectionCategory",
     "singular": true,
-    
     "priority": 410,
     "uniqueInScope": true,
     "supplementary": true,
@@ -427,7 +400,6 @@
     "desc": "A section that indicate something about a supported by statement that the authors may have included in their manuscript.",
     "objectType": "MPSectionCategory",
     "singular": true,
-    
     "priority": 420,
     "uniqueInScope": true,
     "supplementary": true,
@@ -447,7 +419,6 @@
       "TOC",
       "Contents"
     ],
-    
     "priority": 430,
     "uniqueInScope": true
   }
