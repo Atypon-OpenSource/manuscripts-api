@@ -90,9 +90,6 @@ jest.mock('../../src/Config/Config', () => {
       baseurl: 'https://pressroom-js-dev.manuscripts.io',
       apiKey: 'something-random',
     },
-    data: {
-      path: __dirname + '/../../config',
-    },
   }
 
   const Environment = {
