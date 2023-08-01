@@ -16,30 +16,40 @@
 
 import Joi from 'joi'
 
-import { jsonHeadersSchema } from '../../BaseSchema'
+import { appJsonAndCharset } from '../../BaseSchema'
 
 export const configSchema: Joi.SchemaMap = {
-  headers: jsonHeadersSchema.headers,
+  headers: Joi.object({
+    accept: appJsonAndCharset,
+  }).options({ allowUnknown: true }),
+  query: Joi.object({
+    id: Joi.string(),
+  }),
 }
 
 export const defaultSchema: Joi.SchemaMap = {
-  headers: jsonHeadersSchema.headers,
+  headers: Joi.object({
+    accept: appJsonAndCharset,
+  }).options({ allowUnknown: true }),
   query: Joi.object({
     id: Joi.string(),
   }),
 }
 
 export const templateSchema: Joi.SchemaMap = {
-  headers: jsonHeadersSchema.headers,
+  headers: Joi.object({
+    accept: appJsonAndCharset,
+  }).options({ allowUnknown: true }),
   query: Joi.object({
-    id: Joi.string()
+    id: Joi.string(),
   }),
 }
 
 export const bundleSchema: Joi.SchemaMap = {
-  headers: jsonHeadersSchema.headers,
+  headers: Joi.object({
+    accept: appJsonAndCharset,
+  }).options({ allowUnknown: true }),
   query: Joi.object({
     id: Joi.string().regex(/^MPBundle:.+$/),
   }),
 }
-
