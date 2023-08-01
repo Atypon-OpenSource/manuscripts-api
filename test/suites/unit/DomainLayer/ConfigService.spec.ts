@@ -16,29 +16,70 @@
 import '../../../utilities/dbMock.ts'
 import '../../../utilities/configMock.ts'
 
+import fs from 'fs'
+import path from 'path'
+
 import { DIContainer } from '../../../../src/DIContainer/DIContainer'
 import { ConfigService } from '../../../../src/DomainServices/ConfigService'
-import { TEST_TIMEOUT } from '../../../utilities/testSetup'
+import { sectionCategories } from '../../../data/fixtures/section-categories'
 
 let configService: ConfigService
-
 beforeEach(async () => {
+  // @ts-ignore
+  jest.spyOn(fs.promises, 'readFile').mockImplementation((path) => {
+    const filePath = path.toString()
+    if (filePath.includes('bundles.json')) {
+      return Promise.resolve(JSON.stringify([{ _id: 'bundle1' }, { _id: 'bundle2' }]))
+    }
+    if (filePath.includes('templates.json')) {
+      return Promise.resolve(JSON.stringify([{ _id: 'template1' }, { _id: 'template2' }]))
+    }
+    if (filePath.includes('section-categories.json')) {
+      return Promise.resolve(JSON.stringify(sectionCategories))
+    }
+    if (filePath.includes('csl/styles')) {
+      return Promise.resolve('"styleData"')
+    }
+    if (filePath.includes('csl/locales')) {
+      return Promise.resolve('"localeData"')
+    }
+  })
+  // @ts-ignore
+  jest.spyOn(fs.promises, 'readdir').mockImplementation((path) => {
+    const filePath = path.toString()
+
+    if (filePath.includes('csl/styles')) {
+      return Promise.resolve(['style1.csl', 'style2.csl'])
+    }
+    if (filePath.includes('csl/locales')) {
+      return Promise.resolve(['locales-en-US.xml'])
+    }
+  })
+  jest.spyOn(path, 'join').mockImplementation((...args) => args.join('/'))
   ;(DIContainer as any)._sharedContainer = null
   await DIContainer.init()
   configService = DIContainer.sharedContainer.configService
 })
-afterEach(() => {
-  jest.clearAllMocks()
-})
-jest.setTimeout(TEST_TIMEOUT)
 
 describe('ConfigService', () => {
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
   describe('init', () => {
     it('should correctly initialize the store', async () => {
       const store = await configService['store']
-      expect(store.size).toEqual(10)
+      expect(store.get('bundle1')).toEqual('{"_id":"bundle1"}')
+      expect(store.get('bundle2')).toEqual('{"_id":"bundle2"}')
+      expect(store.get('template1')).toEqual('{"_id":"template1"}')
+      expect(store.get('template2')).toEqual('{"_id":"template2"}')
+      expect(store.get('section-categories')).toEqual(JSON.stringify(sectionCategories))
+      expect(store.get('style1')).toEqual('"styleData"')
+      expect(store.get('style2')).toEqual('"styleData"')
+      expect(store.get('en-US')).toEqual('"localeData"')
     })
   })
+
   describe('index', () => {
     it('should create the correct index map', async () => {
       const models = [{ _id: 'model1' }, { _id: 'model2' }]
@@ -50,21 +91,13 @@ describe('ConfigService', () => {
   })
   describe('getDocument', () => {
     it('should return the correct data', async () => {
-      const data = await configService.getDocument(
-        'MPBundle:www-zotero-org-styles-american-medical-association'
-      )
-      expect(data).toEqual(
-        JSON.stringify({
-          _id: 'MPBundle:www-zotero-org-styles-american-medical-association',
-          objectType: 'MPBundle',
-          csl: { _id: 'MPCitationStyle:www-zotero-org-styles-american-medical-association' },
-        })
-      )
+      const store = await configService['store']
+      expect(store.get('section-categories')).toEqual(JSON.stringify(sectionCategories))
     })
 
     it('should return undefined for a non-existing ID', async () => {
-      const data = await configService.getDocument('non-existing-id')
-      expect(data).toBeUndefined()
+      const store = await configService['store']
+      expect(store.get('non-existing-id')).toBeUndefined()
     })
   })
 })
