@@ -7,11 +7,11 @@ emails=("${users[@]/%/@example.com}")
 # create two users
   user="bob2"
   email="bob@example.com"
-  token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbklkIjoiZThlMzZkMzJlNjUwZDdkM2QyNTA1NmFlMmE4NGJiNmFjMTQyOTJjMyIsInVzZXJJZCI6IlVzZXJ8ZjEzMDJkY2YtYTg4YS00MzYzLTk1YWItYjMwMDQ2M2ViOGI5IiwidXNlclByb2ZpbGVJZCI6Ik1QVXNlclByb2ZpbGU6ZmNlYTBjZTQ0YmQ4MzY3OTI4Y2I5NjE2N2QyMDUxN2FmMWZlOTRiMCIsImFwcElkIjoiaW8ubWFudXNjcmlwdHMiLCJlbWFpbCI6ImJvYjJAZXhhbXBsZS5jb20iLCJhdWQiOiJodHRwOi8vMC4wLjAuMDo4MDgwIiwiaXNzIjoiMTI3LjAuMC4xIiwiaWF0IjoxNjgxNzM0Nzc0fQ.Fu9gPINdeKm5jvXNWPhLK013VlJgjr1U8-p8vwpB1M4"
+  token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbklkIjoiY2I3MTk1YTg0OGUzNDg3ZGYwMGNkMWIyZTYzZWJiNDVkZjNiYjVmNCIsInVzZXJJZCI6IlVzZXJ8ZjEzMDJkY2YtYTg4YS00MzYzLTk1YWItYjMwMDQ2M2ViOGI5IiwidXNlclByb2ZpbGVJZCI6Ik1QVXNlclByb2ZpbGU6ZmNlYTBjZTQ0YmQ4MzY3OTI4Y2I5NjE2N2QyMDUxN2FmMWZlOTRiMCIsImFwcElkIjoiaW8ubWFudXNjcmlwdHMiLCJlbWFpbCI6ImJvYjJAZXhhbXBsZS5jb20iLCJhdWQiOiJodHRwOi8vMC4wLjAuMDo4MDgwIiwiaXNzIjoiMTI3LjAuMC4xIiwiaWF0IjoxNjgxNzM0NzM0fQ.3EeBviRgPhaHg4_VKPxWR3Aj5-ohedzDIMtFv3xE7KU"
 
   echo -e "Token \"$token\" created\n"
 
-  curl -X "DELETE" "http://localhost:3000/api/v1/container/MPProject:bibs" \
+  curl -X "DELETE" "http://localhost:3000/api/v1/container/MPProject:lost-keywords" \
   --fail \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
@@ -26,20 +26,20 @@ emails=("${users[@]/%/@example.com}")
   -H 'manuscripts-app-id: io.manuscripts' \
   -H 'manuscripts-app-secret: Valid secret' \
   -H "Authorization: Bearer $token" \
-  --data-binary "{\"_id\":\"MPProject:bibs\"}" && \
-  echo -e "\"MPProject:bibs\" created\n"
+  --data-binary "{\"_id\":\"MPProject:lost-keywords\"}" && \
+  echo -e "\"MPProject:lost-keywords\" created\n"
 
-  curl  -X "POST" "http://localhost:3000/api/v1/container/projects/MPProject:bibs/manuscripts/MPManuscript:bibsm" \
+  curl  -X "POST" "http://localhost:3000/api/v1/container/projects/MPProject:lost-keywords/manuscripts/MPManuscript:lost-kwds" \
   --fail \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -H 'manuscripts-app-id: io.manuscripts' \
   -H 'manuscripts-app-secret: Valid secret' \
   -H "Authorization: Bearer $token" && \
-  echo -e "\"MPManuscript:bibsm\" created\n"
+  echo -e "\"MPManuscript:lost-kwds\" created\n"
 
   parent_path=$(pwd)
-  zip_path="test/data/fixtures/sample/seed-bibs.manuscript-json"
+  zip_path="test/data/fixtures/sample/keyword-lost.manuscript-json"
   # user_specific_zip_path="test/data/fixtures/sample/$user.manuscript-json"
   file_path="$parent_path/$zip_path"
   # user_specific_file_path="$parent_path/$user_specific_zip_path"
@@ -57,7 +57,7 @@ emails=("${users[@]/%/@example.com}")
 
   echo -e "@$file_path"
 
-  curl "http://localhost:3000/api/v1/project/MPProject:bibs/save" \
+  curl "http://localhost:3000/api/v1/project/MPProject:lost-keywords/save" \
   --fail \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json, */*' \
@@ -68,5 +68,5 @@ emails=("${users[@]/%/@example.com}")
 
   # # rm $user_specific_file_path
 
-  echo -e "Project\"MPProject:bibs\" seeded with a manuscript\n"
+  echo -e "Project\"MPProject:lost-keywords\" seeded with a manuscript\n"
 

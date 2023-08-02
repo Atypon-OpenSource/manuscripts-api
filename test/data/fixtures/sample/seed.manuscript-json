@@ -27,6 +27,23 @@
     "prototype": "MPManuscriptTemplate:www-zotero-org-styles-nature-genetics-Nature-Genetics-Journal-Publication-Article"
   },
   {
+    "_id": "MPSection:BBABF2BF-1DB6-4C38-AE6E-3B4007921EFB",
+    "path": [
+        "MPSection:BBABF2BF-1DB6-4C38-AE6E-3B4007921EFB"
+    ],
+    "title": "Keywords",
+    "category": "MPSectionCategory:keywords",
+    "priority": 1,
+    "createdAt": 1690304766,
+    "updatedAt": 1690304766,
+    "elementIDs": [
+        "MPKeywordsElement:71EDDABD-BE7B-412A-99DC-EDBAD9C3F54B"
+    ],
+    "objectType": "MPSection",
+    "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+    "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+  },
+  {
     "_id": "MPKeyword:8EEA0445-31C3-4DBC-973B-0F2FEB1D0070",
     "objectType": "MPKeyword",
     "name": "Small and Medium Enterprises",
@@ -68,6 +85,16 @@
     "name": "L23",
     "priority": 5,
     "containedGroup": "MPKeywordGroup:C1E04658-8174-4A32-B776-579B76C94179",
+    "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
+    "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
+  },
+  {
+    "_id": "MPKeywordsElement:71EDDABD-BE7B-412A-99DC-EDBAD9C3F54B",
+    "contents": "<div></div>",
+    "createdAt": 1690304766,
+    "updatedAt": 1690304766,
+    "objectType": "MPKeywordsElement",
+    "elementType": "div",
     "containerID": "MPProject:B81D5F33-6338-420C-AAEC-CF0CF33E675C",
     "manuscriptID": "MPManuscript:9E0BEDBC-1084-4AA1-AB82-10ACFAE02232"
   },
@@ -193,7 +220,7 @@
   },
   {
     "category": "MPSectionCategory:abstract",
-    "priority": 1,
+    "priority": 2,
     "title": "Abstract",
     "path": ["MPSection:22E9E3DF-650C-4126-9F7B-FC17941BF573"],
     "elementIDs": ["MPParagraphElement:54244AEC-9D75-4B71-B2E2-3F862A99D7C7"],

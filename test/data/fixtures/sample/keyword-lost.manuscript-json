@@ -1,0 +1,3812 @@
+{
+  "data": [
+    {
+      "_id": "MPProject:lost-keywords",
+      "_rev": "1-71db841e-8a76-49d8-9dfd-b129135545e3",
+      "title": "LW Project",
+      "owners": [
+        "User_710f118a-7e89-4b2e-a6a2-d225313918a6"
+      ],
+      "viewers": [],
+      "writers": [],
+      "createdAt": 1689588181.588,
+      "updatedAt": 1689588181.588,
+      "_revisions": {
+        "ids": [
+          "1-71db841e-8a76-49d8-9dfd-b129135545e3",
+          "0-b7d5cb3e-1eb4-48da-8231-2325213eb441"
+        ]
+      },
+      "objectType": "MPProject"
+    },
+    {
+      "_id": "MPSupplement:80D8F189-7705-40D8-9703-C918147C6272",
+      "MIME": "application/pdf",
+      "href": "attachment:56090ab7-385e-4748-8732-ec0f3bdb9f78",
+      "title": "supporting information",
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-7b224d99-ad68-419c-bd44-0383b67c5e18"
+        ]
+      },
+      "objectType": "MPSupplement",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPAuxiliaryObjectReference:4EDB199D-451E-4A0C-9C54-FFB0F8F8A54E",
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-35cb5a2d-739f-4ba1-87bb-8559fcaee649"
+        ]
+      },
+      "objectType": "MPAuxiliaryObjectReference",
+      "containerID": "MPProject:lost-keywords",
+      "referencedObject": "MPTableElement:E3FF6DD4-AC1E-4D13-83A0-B06EA6D3257C"
+    },
+    {
+      "_id": "MPManuscript:lost-kwds",
+      "title": "LW5 TEST DOCUMENT full – 2 refs 2 tables 4 figures 1 equation 2 supplements",
+      "createdAt": 1689589036,
+      "prototype": "MPManuscriptTemplate:www-zotero-org-styles-nature-genetics-Nature-Genetics-Journal-Publication",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "wordCount": 3538,
+      "_revisions": {
+        "ids": [
+          "0-bfeba3ec-2624-46dd-b189-3db24dc3e96f"
+        ]
+      },
+      "keywordIDs": [
+        "MPKeyword:1696CD6C-03B5-48B0-B113-A90A1BBA06C8",
+        "MPKeyword:59AE2163-5012-4FCA-9233-425D12BC9E04",
+        "MPKeyword:35FEE364-9722-4221-A6C2-CAA4079E39CD",
+        "MPKeyword:D361F22C-F7EC-4A7A-9816-71A555CE41F5",
+        "MPKeyword:7D2FA804-E35F-4DD2-BE78-895C655BDC93"
+      ],
+      "objectType": "MPManuscript",
+      "tableCount": 2,
+      "articleType": "other",
+      "containerID": "MPProject:lost-keywords",
+      "figureCount": 4,
+      "equationCount": 1,
+      "genericCounts": [
+        {
+          "count": 0,
+          "countType": "box"
+        }
+      ],
+      "referencesCount": 2
+    },
+    {
+      "_id": "MPKeyword:1696CD6C-03B5-48B0-B113-A90A1BBA06C8",
+      "name": "suicide attempters",
+      "priority": 1,
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-48511abd-aa21-4899-8797-d4f8002b87d2"
+        ]
+      },
+      "objectType": "MPKeyword",
+      "containerID": "MPProject:lost-keywords",
+      "containedGroup": "MPKeywordGroup:47F4DF3D-C3BC-4134-B250-9B2323139E45"
+    },
+    {
+      "_id": "MPKeyword:59AE2163-5012-4FCA-9233-425D12BC9E04",
+      "name": "schizophrenia",
+      "priority": 2,
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-134d9309-2818-407d-95dc-f0152a0cba94"
+        ]
+      },
+      "objectType": "MPKeyword",
+      "containerID": "MPProject:lost-keywords",
+      "containedGroup": "MPKeywordGroup:5C0DAE92-69E4-491A-B6F3-2E6CA82E1B58"
+    },
+    {
+      "_id": "MPKeyword:35FEE364-9722-4221-A6C2-CAA4079E39CD",
+      "name": "DβH",
+      "priority": 3,
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-525b7fcf-4592-4403-96b4-c0ea99a90a64"
+        ]
+      },
+      "objectType": "MPKeyword",
+      "containerID": "MPProject:lost-keywords",
+      "containedGroup": "MPKeywordGroup:5C0DAE92-69E4-491A-B6F3-2E6CA82E1B58"
+    },
+    {
+      "_id": "MPKeyword:D361F22C-F7EC-4A7A-9816-71A555CE41F5",
+      "name": "attention",
+      "priority": 4,
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-882f0b0f-c903-4014-b723-a1098ef20569"
+        ]
+      },
+      "objectType": "MPKeyword",
+      "containerID": "MPProject:lost-keywords",
+      "containedGroup": "MPKeywordGroup:5C0DAE92-69E4-491A-B6F3-2E6CA82E1B58"
+    },
+    {
+      "_id": "MPKeyword:7D2FA804-E35F-4DD2-BE78-895C655BDC93",
+      "name": "polymorphism",
+      "priority": 5,
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-7f669c56-411c-45e0-908d-4637cf732a86"
+        ]
+      },
+      "objectType": "MPKeyword",
+      "containerID": "MPProject:lost-keywords",
+      "containedGroup": "MPKeywordGroup:5C0DAE92-69E4-491A-B6F3-2E6CA82E1B58"
+    },
+    {
+      "_id": "MPAffiliation:48B3D0DA-A9CD-46DF-BFEC-C1972701FA61",
+      "country": "China",
+      "priority": 0,
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-401e76f3-eb09-4560-95ad-1ee30681f649"
+        ]
+      },
+      "department": "Research Center of Biological Psychiatry",
+      "objectType": "MPAffiliation",
+      "containerID": "MPProject:lost-keywords",
+      "institution": "The Affiliated Guangji Hospital of Soochow University",
+      "addressLine1": "Suzhou, Jiangsu",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPAffiliation:7DE0F641-EB11-4D0C-A119-AC5EA7F591B1",
+      "country": "China",
+      "priority": 1,
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-9df407d9-e478-4c7e-8952-78b36b3aad72"
+        ]
+      },
+      "objectType": "MPAffiliation",
+      "containerID": "MPProject:lost-keywords",
+      "institution": "",
+      "addressLine1": "Mental Health Center of Yanqing District",
+      "addressLine2": "Beijing",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPKeywordGroup:5C0DAE92-69E4-491A-B6F3-2E6CA82E1B58",
+      "type": "author",
+      "title": "KEYWORDS: ",
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-c65a68c7-7719-4f29-8336-596622ab6eb3"
+        ]
+      },
+      "objectType": "MPKeywordGroup",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPContributor:7B3B963A-8A6D-4EFD-AA74-3CC102A4608E",
+      "role": "author",
+      "priority": 2,
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-c8c9382c-c764-4e7c-b67b-2ad036364b3f"
+        ]
+      },
+      "objectType": "MPContributor",
+      "containerID": "MPProject:lost-keywords",
+      "affiliations": [
+        "MPAffiliation:48B3D0DA-A9CD-46DF-BFEC-C1972701FA61"
+      ],
+      "manuscriptID": "MPManuscript:lost-kwds",
+      "bibliographicName": {
+        "_id": "MPBibliographicName:2956520B-F817-4D93-8F0E-C9943A2321CC",
+        "given": "Zhen Hua",
+        "family": "Zhu",
+        "objectType": "MPBibliographicName"
+      }
+    },
+    {
+      "_id": "MPCorresponding:A5E45283-E91D-42E5-AAA5-1EEAB567C326",
+      "label": "*",
+      "contents": "To whom correspondence should be addressed: Li Hui, PhD, Research Center of Biological Psychiatry, The Affiliated Guangji Hospital of Soochow University, No. 11 Guangqian Road, Suzhou 215137, Jiangsu Province, China, Tel: +86 51265794237; Fax: +86 51265794237, Email: huili004100@126.com.",
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-6455d9b6-59d9-4a38-8002-862018e9eaf5"
+        ]
+      },
+      "objectType": "MPCorresponding",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPSupplement:4D6684D6-4C6B-418A-8036-020DA64F6C99",
+      "MIME": "image/png",
+      "href": "attachment:7d82f9fe-78ea-47d4-aaa2-c26b196f9163",
+      "title": "figure s1",
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-3d824f9b-ed31-4071-bc8c-df87ff5b40f9"
+        ]
+      },
+      "objectType": "MPSupplement",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPParagraphElement:5D429311-9632-4108-8A62-1D05BBEEAFC1",
+      "contents": "<p xmlns=\"http://www.w3.org/1999/xhtml\" id=\"MPParagraphElement:5D429311-9632-4108-8A62-1D05BBEEAFC1\" class=\"MPElement\" data-object-type=\"MPParagraphElement\">This polymorphism was detected in 114 suicide attempters and 617 non-suicide attempters with chronic schizophrenia. Cognitive performance was assessed by the Repeatable Battery for the Assessment of Neuropsychological Status (RBANS).</p>",
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-0f357d55-c264-4420-89bf-d793bf41de05"
+        ]
+      },
+      "objectType": "MPParagraphElement",
+      "containerID": "MPProject:lost-keywords",
+      "elementType": "p",
+      "manuscriptID": "MPManuscript:lost-kwds",
+      "placeholderInnerHTML": ""
+    },
+    {
+      "_id": "MPParagraphElement:2A65B901-D5D1-453E-9C03-6F3474AB0B95",
+      "contents": "<p xmlns=\"http://www.w3.org/1999/xhtml\" id=\"MPParagraphElement:2A65B901-D5D1-453E-9C03-6F3474AB0B95\" class=\"MPElement\" data-object-type=\"MPParagraphElement\"><i>DβH</i> 5’-Ins/Del polymorphism was not a risk locus of suicide attempters, but it was implicated in attention regulation in suicide attempters with chronic schizophrenia.</p>",
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-4a57cfe2-9a07-4fe8-9c9f-e671dc423d5e"
+        ]
+      },
+      "objectType": "MPParagraphElement",
+      "containerID": "MPProject:lost-keywords",
+      "elementType": "p",
+      "manuscriptID": "MPManuscript:lost-kwds",
+      "placeholderInnerHTML": ""
+    },
+    {
+      "_id": "MPSection:DF0F9D73-918A-4E43-9938-CB2074730971",
+      "path": [
+        "MPSection:DF0F9D73-918A-4E43-9938-CB2074730971"
+      ],
+      "title": "INTRODUCTION",
+      "category": "MPSectionCategory:introduction",
+      "priority": 3,
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-adb9136b-c359-4b07-9451-fb12263bc9ee"
+        ]
+      },
+      "elementIDs": [
+        "MPParagraphElement:E69B2390-9A27-4497-857B-045EBBAAFC83",
+        "MPParagraphElement:56B0ACDC-485B-4A44-B4AB-1169EF88A809",
+        "MPParagraphElement:C0F67999-4C82-4530-9E21-A53C90F39F3A",
+        "MPParagraphElement:521D99A4-BA67-42D7-B9E9-1DA89A355BDF"
+      ],
+      "objectType": "MPSection",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPSection:312E35A8-5E0B-4881-933A-90C3C8847D24",
+      "path": [
+        "MPSection:312E35A8-5E0B-4881-933A-90C3C8847D24"
+      ],
+      "title": "METHODS",
+      "category": "MPSectionCategory:materials-method",
+      "priority": 4,
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-13888cb7-533a-41b3-b793-81dff70be342"
+        ]
+      },
+      "elementIDs": [],
+      "objectType": "MPSection",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPJournal:68F6AA75-A4AF-49BA-AA46-B0A7CBDCE197",
+      "ISSNs": [
+        {
+          "ISSN": ""
+        }
+      ],
+      "title": "Lean Workflow test journal 8",
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-bca4fff5-94fd-4851-8eeb-6b70140f2484"
+        ]
+      },
+      "objectType": "MPJournal",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds",
+      "publisherName": "Atypon Lean Production Workflow",
+      "abbreviatedTitles": [
+        {
+          "abbrevType": "pubmed",
+          "abbreviatedTitle": "Lean Workflow test journal 8"
+        }
+      ],
+      "journalIdentifiers": [
+        {
+          "journalID": "lw8",
+          "journalIDType": "publisher-id"
+        },
+        {
+          "journalID": "Lean Workflow test journal 8",
+          "journalIDType": "nlm-ta"
+        }
+      ]
+    },
+    {
+      "_id": "MPSection:5C24101B-885E-4D05-AD13-2CEAD67D12AC",
+      "path": [
+        "MPSection:5C24101B-885E-4D05-AD13-2CEAD67D12AC"
+      ],
+      "title": "Abstract",
+      "category": "MPSectionCategory:abstract",
+      "priority": 1,
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-6da745c0-85d4-4153-a4cf-a97943fc5deb"
+        ]
+      },
+      "elementIDs": [
+        "MPParagraphElement:CC04E058-4494-44CA-93EB-96292E01EED9",
+        "MPParagraphElement:933743B7-8827-4325-B9CF-9CB2A77A32B2",
+        "MPParagraphElement:5D429311-9632-4108-8A62-1D05BBEEAFC1",
+        "MPParagraphElement:AE3B95FC-4DCA-4C37-9A31-CB0210E14B76",
+        "MPParagraphElement:2A65B901-D5D1-453E-9C03-6F3474AB0B95"
+      ],
+      "objectType": "MPSection",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPParagraphElement:CC04E058-4494-44CA-93EB-96292E01EED9",
+      "contents": "<p xmlns=\"http://www.w3.org/1999/xhtml\" id=\"MPParagraphElement:CC04E058-4494-44CA-93EB-96292E01EED9\" class=\"MPElement\" data-object-type=\"MPParagraphElement\">Patients with schizophrenia are at a higher risk for suicide compared with the general population. Dopamine-beta-hydroxylase (DβH) plays a key role in the conversion of dopamine to norepinephrine, which is related to suicidal behavior and cognitive regulation.</p>",
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-922d92cb-a043-4431-b8fc-f97f5fcdcc7e"
+        ]
+      },
+      "objectType": "MPParagraphElement",
+      "containerID": "MPProject:lost-keywords",
+      "elementType": "p",
+      "manuscriptID": "MPManuscript:lost-kwds",
+      "placeholderInnerHTML": ""
+    },
+    {
+      "_id": "MPParagraphElement:933743B7-8827-4325-B9CF-9CB2A77A32B2",
+      "contents": "<p xmlns=\"http://www.w3.org/1999/xhtml\" id=\"MPParagraphElement:933743B7-8827-4325-B9CF-9CB2A77A32B2\" class=\"MPElement\" data-object-type=\"MPParagraphElement\">To examine whether there is the effect of <i>DβH</i> 5’<i>-</i>insertion/deletion (Ins/Del) polymorphism on cognitive performance in suicide attempters with chronic schizophrenia.</p>",
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-3166d7c3-1877-41a9-8e71-424a761312d3"
+        ]
+      },
+      "objectType": "MPParagraphElement",
+      "containerID": "MPProject:lost-keywords",
+      "elementType": "p",
+      "manuscriptID": "MPManuscript:lost-kwds",
+      "placeholderInnerHTML": ""
+    },
+    {
+      "_id": "MPContributor:91533A3D-F698-4236-97F6-A90A50E310AA",
+      "role": "author",
+      "priority": 1,
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-fe70934b-8f9c-421a-bbee-ade0e13b059c"
+        ]
+      },
+      "objectType": "MPContributor",
+      "containerID": "MPProject:lost-keywords",
+      "affiliations": [
+        "MPAffiliation:7DE0F641-EB11-4D0C-A119-AC5EA7F591B1"
+      ],
+      "manuscriptID": "MPManuscript:lost-kwds",
+      "bibliographicName": {
+        "_id": "MPBibliographicName:51C096F8-7C00-45D7-A7AA-F7A6AC0E00DF",
+        "given": "Wei Ming",
+        "family": "Hu",
+        "objectType": "MPBibliographicName"
+      }
+    },
+    {
+      "_id": "MPParagraphElement:E69B2390-9A27-4497-857B-045EBBAAFC83",
+      "contents": "<p xmlns=\"http://www.w3.org/1999/xhtml\" id=\"MPParagraphElement:E69B2390-9A27-4497-857B-045EBBAAFC83\" class=\"MPElement\" data-object-type=\"MPParagraphElement\">Patients with schizophrenia are at a higher risk for suicide compared with the general population. Suicide is an important cause of schizophrenic mortality (<span class=\"citation\" data-reference-id=\"MPCitation:8875F604-8443-484E-A7E5-5618D0E33D97\">Hor and Taylor, 2010</span>). The lifetime prevalence of completed suicide is ranging from 10% to15% in schizophrenia, which is about 8.5-20 times higher than in the general population (<span class=\"citation\" data-reference-id=\"MPCitation:6EBB8272-5C2E-4F84-B829-EAF7E1D122C7\">Caldwell and Gottesman, 1992</span>). The risk factors of suicide in schizophrenia are nearly similar to those in the general population. However, other risk factors of suicide may be specific to schizophrenia including decreased negative symptom, increased positive symptom, mental disintegration fear, higher premorbid IQ, and non-compliance with antipsychotics. Moreover, several studies examining the correlation of cognitive performance with suicidal risk in patients with schizophrenia have reported inconsistent findings. For example, higher cognitive function is found to increase suicidal risk in patients with schizophrenia. In contrast, other studies have indicated that suicide risk is not associated with cognitive performance in patients with schizophrenia. Therefore, the impact of cognitive function on suicidal risk in patients with schizophrenia still needs to be fully understood. In addition, both familial and twins studies found that genetic factors have been involved in suicide attempts, and are associated with cognitive function. These studies have provided evidence that genetic mutations may influence suicide attempts and cognitive regulation in patients with chronic schizophrenia (see <span class=\"cross-reference\" data-reference-id=\"MPAuxiliaryObjectReference:EF9C057D-28D7-42D8-9BAF-6F2AADA372D2\"><span class=\"kind elementIndex\"><b>Figure 1</b></span></span>).</p>",
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-0a9202dd-8cd6-49cf-bfea-53a5d4b6d275"
+        ]
+      },
+      "objectType": "MPParagraphElement",
+      "containerID": "MPProject:lost-keywords",
+      "elementType": "p",
+      "manuscriptID": "MPManuscript:lost-kwds",
+      "placeholderInnerHTML": ""
+    },
+    {
+      "_id": "MPSection:4A66ECB6-DAFB-4163-9A64-B16B90B80B8C",
+      "path": [
+        "MPSection:312E35A8-5E0B-4881-933A-90C3C8847D24",
+        "MPSection:4A66ECB6-DAFB-4163-9A64-B16B90B80B8C"
+      ],
+      "title": "Subjects",
+      "priority": 5,
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-f0acbad0-06a4-46c9-881b-210777fcad86"
+        ]
+      },
+      "elementIDs": [
+        "MPParagraphElement:AAB62846-0E35-4E45-879B-F455A8718F59",
+        "MPParagraphElement:745179DB-086E-45AE-98DD-824DAD9DD2A9",
+        "MPEquationElement:6E2F6EA4-9367-46B9-8F4F-9381CBE973E4",
+        "MPTableElement:880CE176-55DC-45EC-B038-B2809757D8DD"
+      ],
+      "objectType": "MPSection",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPParagraphElement:AAB62846-0E35-4E45-879B-F455A8718F59",
+      "contents": "<p xmlns=\"http://www.w3.org/1999/xhtml\" id=\"MPParagraphElement:AAB62846-0E35-4E45-879B-F455A8718F59\" class=\"MPElement\" data-object-type=\"MPParagraphElement\">731 patients with chronic schizophrenia (male = 615, female=116) were enrolled from Beijing HuiLongGuan Hospital. The following inclusion criteria were applied: (a) 19-73 years of age; (b) DSM–IV diagnosis of schizophrenia; (c) length of illness longer than of two years; (d) receiving a stable dose of oral antipsychotics for more than one year; and (e) provided signed informed consent. Oral antipsychotics mainly included clozapine, perphenazine, risperidone, sulpiride, haloperidol and chlorpromazine. The mean dose of antipsychotics (as chlorpromazine equivalents) was 457.1 mg/days.</p>",
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-102905db-7cac-4388-b750-5f0b42d5fbe2"
+        ]
+      },
+      "objectType": "MPParagraphElement",
+      "containerID": "MPProject:lost-keywords",
+      "elementType": "p",
+      "manuscriptID": "MPManuscript:lost-kwds",
+      "placeholderInnerHTML": ""
+    },
+    {
+      "_id": "MPTableElement:880CE176-55DC-45EC-B038-B2809757D8DD",
+      "title": "PHQ-9 Item Mean Scores per Profile (N = 499)",
+      "caption": "",
+      "createdAt": 1689589036,
+      "listingID": "MPListing:FCD6E377-F7E7-4FC6-B926-7466AAF6B788",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-c627743c-0fb3-47c0-8640-a6a5ff4fc120"
+        ]
+      },
+      "objectType": "MPTableElement",
+      "containerID": "MPProject:lost-keywords",
+      "elementType": "table",
+      "manuscriptID": "MPManuscript:lost-kwds",
+      "suppressFooter": true,
+      "containedObjectID": "MPTable:B864F210-C75A-48E0-B8FA-5362A315B132"
+    },
+    {
+      "_id": "MPFigureElement:F04D184B-96DB-4B66-B01D-E58F752A7E35",
+      "label": "Fig. 2",
+      "caption": "<p class=\"caption-description\" data-placeholder-text=\"Caption...\" contenteditable=\"true\">Time series of the model inputs at the different plots used for model simulations (N13, S16, S19 and S22): soil water potential (<i>ψ</i><sub>soil</sub>, black dashed lines), nighttime trunk water potential (<i>ψ</i><sub>trunk</sub>) of larch (red) and spruce (blue) and nighttime air temperature (<i>T</i><sub>air</sub>, grey). Periods used for model simulations (i.e. from DOY 80 to 300) are denoted by a white background.</p>",
+      "createdAt": 1689589036,
+      "listingID": "MPListing:0CCE4D64-BBD7-4C48-A9E9-65365DAB5DC2",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-36f7c270-182c-414d-8cfa-90e31e486969"
+        ]
+      },
+      "objectType": "MPFigureElement",
+      "containerID": "MPProject:lost-keywords",
+      "elementType": "figure",
+      "manuscriptID": "MPManuscript:lost-kwds",
+      "containedObjectIDs": [
+        "MPFigure:97C718F1-3606-48A0-9B4E-E9E50CFF0E40"
+      ]
+    },
+    {
+      "_id": "MPParagraphElement:B93F0C32-0F79-4A15-AC2E-14FFB0C6217C",
+      "contents": "<p xmlns=\"http://www.w3.org/1999/xhtml\" id=\"MPParagraphElement:B93F0C32-0F79-4A15-AC2E-14FFB0C6217C\" class=\"MPElement\" data-object-type=\"MPParagraphElement\">Based on the World Health Organization (WHO) report, the outcome-based term \"fatal suicide behavior\" or \"completed suicide\" was proposed for the actions of suicide that caused death, and \"non-fatal suicidal behavior\" was for the actions of suicide that did not lead to death. Such actions were called \"attempted suicide\". Hence, suicide attempt was defined as an intentionally self-destructive action that performed some intent to die, but not causing death in this study. During the interview, each patient was asked about the following details information: the attempts number, the method and date of each suicide attempt. \"In your entire life, did you ever attempt suicide?\" was asked. Afterwards, each patient was asked to say “yes” or “no”. The suicide attempts history was confirmed by the information of medical records or subject (s) relatives.</p>",
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-03bdbbd6-6b92-4b1b-9b2c-f482e537c564"
+        ]
+      },
+      "objectType": "MPParagraphElement",
+      "containerID": "MPProject:lost-keywords",
+      "elementType": "p",
+      "manuscriptID": "MPManuscript:lost-kwds",
+      "placeholderInnerHTML": ""
+    },
+    {
+      "_id": "MPParagraphElement:C3A4797A-A04C-4653-9BA6-BABDFEDF7C33",
+      "contents": "<p xmlns=\"http://www.w3.org/1999/xhtml\" id=\"MPParagraphElement:C3A4797A-A04C-4653-9BA6-BABDFEDF7C33\" class=\"MPElement\" data-object-type=\"MPParagraphElement\">Cognition was assessed using the Repeatable Battery for the Assessment of Neuropsychological Status (RBANS, Form A). The detailed contents and assessing process of RBANS have been reported in previous studies of our research group.</p>",
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-1dbe6697-8a76-4a3c-89c4-a4d11e6fc396"
+        ]
+      },
+      "objectType": "MPParagraphElement",
+      "containerID": "MPProject:lost-keywords",
+      "elementType": "p",
+      "manuscriptID": "MPManuscript:lost-kwds",
+      "placeholderInnerHTML": ""
+    },
+    {
+      "_id": "MPFigureElement:0FE305BF-A401-448B-833C-4D79E46EA45D",
+      "label": "Fig. 3",
+      "caption": "<p class=\"caption-description\" data-placeholder-text=\"Caption...\" contenteditable=\"true\">Observed (points and dotted lines) and simulated (solid lines) cumulative relative tracheid production (CPr) of larch (red) and spruce (blue) at the low (1300-1600 m) and high elevation (1900-2200 m) plots, for the period 2009–2013. Light grey background denotes the data used for model calibration (low elevation plots on the period 2009-2010, panels <b>a</b> and <b>c</b>). Model simulations correspond to the model scenario MS5–T<sub>air</sub>+ψ<sub>trunk</sub>. Detailed observations and simulations per plot are available elsewhere).</p>",
+      "createdAt": 1689589036,
+      "listingID": "MPListing:DD5585BC-F17F-4908-83BE-913C907AF1B5",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-2ced2c71-05d1-4942-9a02-25bc17148d3a"
+        ]
+      },
+      "objectType": "MPFigureElement",
+      "containerID": "MPProject:lost-keywords",
+      "elementType": "figure",
+      "manuscriptID": "MPManuscript:lost-kwds",
+      "containedObjectIDs": [
+        "MPFigure:AE17E018-D688-4787-9D3B-9790B85E20B0"
+      ]
+    },
+    {
+      "_id": "MPTable:B864F210-C75A-48E0-B8FA-5362A315B132",
+      "contents": "<table xmlns=\"http://www.w3.org/1999/xhtml\" id=\"MPTableElement:880CE176-55DC-45EC-B038-B2809757D8DD\" class=\"MPElement\" data-contained-object-id=\"MPTable:B864F210-C75A-48E0-B8FA-5362A315B132\"><colgroup><col width=\"12.12%\" /><col width=\"2.08%\" /><col width=\"19.58%\" /><col width=\"26.32%\" /><col width=\"18.57%\" /><col width=\"21.33%\" /></colgroup><thead style=\"display: table-header-group;\"><tr><th data-placeholder-text=\"Data\" valign=\"middle\" align=\"center\" scope=\"col\" style=\"border-top: solid 0.50pt\">PHQ Items</th><th data-placeholder-text=\"Data\" class=\"placeholder\" valign=\"middle\" align=\"left\" scope=\"col\" style=\"border-top: solid 0.50pt\"></th><th colspan=\"4\" data-placeholder-text=\"Data\" valign=\"middle\" align=\"center\" scope=\"colgroup\" style=\"border-top: solid 0.50pt\">Profiles of Depression from LPA Model</th></tr><tr><th data-placeholder-text=\"Data\" class=\"placeholder\" valign=\"middle\" align=\"left\" scope=\"col\" style=\"border-bottom: solid 0.50pt\"></th><th data-placeholder-text=\"Data\" class=\"placeholder\" valign=\"middle\" align=\"left\" scope=\"col\" style=\"border-bottom: solid 0.50pt\"></th><th data-placeholder-text=\"Data\" valign=\"middle\" align=\"center\" scope=\"col\" style=\"border-bottom: solid 0.50pt\">1 - Mild depression<br />(n=104, 20.8%)</th><th data-placeholder-text=\"Data\" valign=\"middle\" align=\"center\" scope=\"col\" style=\"border-bottom: solid 0.50pt\">2 - Moderate/ somatization<br />(n=183, 36.7%)</th><th data-placeholder-text=\"Data\" valign=\"middle\" align=\"justify\" scope=\"col\" style=\"border-bottom: solid 0.50pt\">3 - Moderate/<br />negative self-view<br />(n=72, 14.4%)</th><th data-placeholder-text=\"Data\" valign=\"middle\" align=\"center\" scope=\"col\" style=\"border-bottom: solid 0.50pt\">4 - Severe depression<br />(n=140, 28.1%)</th></tr></thead><tbody><tr><td data-placeholder-text=\"Data\" valign=\"middle\" align=\"center\" scope=\"row\" style=\"border-top: solid 0.50pt\">1</td><td data-placeholder-text=\"Data\" class=\"placeholder\" valign=\"middle\" align=\"left\" style=\"border-top: solid 0.50pt\"></td><td data-placeholder-text=\"Data\" valign=\"middle\" align=\"center\" style=\"border-top: solid 0.50pt\">1.71</td><td data-placeholder-text=\"Data\" valign=\"middle\" align=\"center\" style=\"border-top: solid 0.50pt\">2.09</td><td data-placeholder-text=\"Data\" valign=\"middle\" align=\"center\" style=\"border-top: solid 0.50pt\">2.00</td><td data-placeholder-text=\"Data\" valign=\"middle\" align=\"center\" style=\"border-top: solid 0.50pt\">2.59</td></tr><tr><td data-placeholder-text=\"Data\" valign=\"middle\" align=\"center\" scope=\"row\">2</td><td data-placeholder-text=\"Data\" class=\"placeholder\" valign=\"middle\" align=\"left\"></td><td data-placeholder-text=\"Data\" valign=\"middle\" align=\"center\">1.90</td><td data-placeholder-text=\"Data\" valign=\"middle\" align=\"center\">1.96</td><td data-placeholder-text=\"Data\" valign=\"middle\" align=\"center\">2.04</td><td data-placeholder-text=\"Data\" valign=\"middle\" align=\"center\">2.59</td></tr><tr><td data-placeholder-text=\"Data\" valign=\"middle\" align=\"center\" scope=\"row\">3</td><td data-placeholder-text=\"Data\" class=\"placeholder\" valign=\"middle\" align=\"left\"></td><td data-placeholder-text=\"Data\" valign=\"middle\" align=\"center\">2.00</td><td data-placeholder-text=\"Data\" valign=\"middle\" align=\"center\">2.30</td><td data-placeholder-text=\"Data\" valign=\"middle\" align=\"center\">2.12</td><td data-placeholder-text=\"Data\" valign=\"middle\" align=\"center\">2.70</td></tr><tr><td data-placeholder-text=\"Data\" valign=\"middle\" align=\"center\" scope=\"row\">4</td><td data-placeholder-text=\"Data\" class=\"placeholder\" valign=\"middle\" align=\"left\"></td><td data-placeholder-text=\"Data\" valign=\"middle\" align=\"center\">0.89</td><td data-placeholder-text=\"Data\" valign=\"middle\" align=\"center\">3.00</td><td data-placeholder-text=\"Data\" valign=\"middle\" align=\"center\">2.00</td><td data-placeholder-text=\"Data\" valign=\"middle\" align=\"center\">3.00</td></tr><tr><td data-placeholder-text=\"Data\" valign=\"middle\" align=\"center\" scope=\"row\">5</td><td data-placeholder-text=\"Data\" class=\"placeholder\" valign=\"middle\" align=\"left\"></td><td data-placeholder-text=\"Data\" valign=\"middle\" align=\"center\">1.71</td><td data-placeholder-text=\"Data\" valign=\"middle\" align=\"center\">2.01</td><td data-placeholder-text=\"Data\" valign=\"middle\" align=\"center\">1.86</td><td data-placeholder-text=\"Data\" valign=\"middle\" align=\"center\">2.44</td></tr><tr><td data-placeholder-text=\"Data\" valign=\"middle\" align=\"center\" scope=\"row\">6</td><td data-placeholder-text=\"Data\" class=\"placeholder\" valign=\"middle\" align=\"left\"></td><td data-placeholder-text=\"Data\" valign=\"middle\" align=\"center\">1.71</td><td data-placeholder-text=\"Data\" valign=\"middle\" align=\"center\">1.53</td><td data-placeholder-text=\"Data\" valign=\"middle\" align=\"center\">1.83</td><td data-placeholder-text=\"Data\" valign=\"middle\" align=\"center\">2.55</td></tr><tr><td data-placeholder-text=\"Data\" valign=\"middle\" align=\"center\" scope=\"row\">7</td><td data-placeholder-text=\"Data\" class=\"placeholder\" valign=\"middle\" align=\"left\"></td><td data-placeholder-text=\"Data\" valign=\"middle\" align=\"center\">1.29</td><td data-placeholder-text=\"Data\" valign=\"middle\" align=\"center\">1.74</td><td data-placeholder-text=\"Data\" valign=\"middle\" align=\"center\">1.72</td><td data-placeholder-text=\"Data\" valign=\"middle\" align=\"center\">2.34</td></tr><tr><td data-placeholder-text=\"Data\" valign=\"middle\" align=\"center\" scope=\"row\">8</td><td data-placeholder-text=\"Data\" class=\"placeholder\" valign=\"middle\" align=\"left\"></td><td data-placeholder-text=\"Data\" valign=\"middle\" align=\"center\">1.29</td><td data-placeholder-text=\"Data\" valign=\"middle\" align=\"center\">1.29</td><td data-placeholder-text=\"Data\" valign=\"middle\" align=\"center\">1.38</td><td data-placeholder-text=\"Data\" valign=\"middle\" align=\"center\">2.16</td></tr><tr><td data-placeholder-text=\"Data\" valign=\"middle\" align=\"center\" scope=\"row\">9</td><td data-placeholder-text=\"Data\" class=\"placeholder\" valign=\"middle\" align=\"left\"></td><td data-placeholder-text=\"Data\" valign=\"middle\" align=\"center\">0.46</td><td data-placeholder-text=\"Data\" valign=\"middle\" align=\"center\">0.31</td><td data-placeholder-text=\"Data\" valign=\"middle\" align=\"center\">0.48</td><td data-placeholder-text=\"Data\" valign=\"middle\" align=\"center\">0.97</td></tr><tr><td data-placeholder-text=\"Data\" valign=\"middle\" align=\"center\" scope=\"row\" style=\"border-bottom: solid 0.50pt\">Total</td><td data-placeholder-text=\"Data\" class=\"placeholder\" valign=\"middle\" align=\"left\" style=\"border-bottom: solid 0.50pt\"></td><td data-placeholder-text=\"Data\" valign=\"top\" align=\"center\" style=\"border-bottom: solid 0.50pt\">12.96</td><td data-placeholder-text=\"Data\" valign=\"top\" align=\"center\" style=\"border-bottom: solid 0.50pt\">15.95</td><td data-placeholder-text=\"Data\" valign=\"top\" align=\"center\" style=\"border-bottom: solid 0.50pt\">15.42</td><td data-placeholder-text=\"Data\" valign=\"top\" align=\"center\" style=\"border-bottom: solid 0.50pt\">21.49</td></tr></tbody><tfoot style=\"display: none;\"><tr><td data-placeholder-text=\"Data\" class=\"placeholder\"></td></tr></tfoot></table>",
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-3685db5f-8185-44d4-b08f-d0d04d9c3f6e"
+        ]
+      },
+      "objectType": "MPTable",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPSection:E28AE502-08F3-4B21-B3C9-E90E7553D7D9",
+      "path": [
+        "MPSection:312E35A8-5E0B-4881-933A-90C3C8847D24",
+        "MPSection:4A66ECB6-DAFB-4163-9A64-B16B90B80B8C",
+        "MPSection:E28AE502-08F3-4B21-B3C9-E90E7553D7D9"
+      ],
+      "title": "Eq. 1",
+      "priority": 6,
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-ef905f15-6cae-46d3-81da-991726fa5b37"
+        ]
+      },
+      "elementIDs": [],
+      "objectType": "MPSection",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPSection:501EBF47-A266-4780-A577-91198B3845BB",
+      "path": [
+        "MPSection:312E35A8-5E0B-4881-933A-90C3C8847D24",
+        "MPSection:4A66ECB6-DAFB-4163-9A64-B16B90B80B8C",
+        "MPSection:E28AE502-08F3-4B21-B3C9-E90E7553D7D9",
+        "MPSection:501EBF47-A266-4780-A577-91198B3845BB"
+      ],
+      "title": "Clinical and neuropsychological assessment",
+      "priority": 7,
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-ec30cd23-ab30-4fc4-ad0c-86ba544a2082"
+        ]
+      },
+      "elementIDs": [
+        "MPParagraphElement:92F13BA9-5DD9-4FBA-995A-9CECACD6A104",
+        "MPFigureElement:F04D184B-96DB-4B66-B01D-E58F752A7E35",
+        "MPParagraphElement:B93F0C32-0F79-4A15-AC2E-14FFB0C6217C",
+        "MPParagraphElement:C3A4797A-A04C-4653-9BA6-BABDFEDF7C33"
+      ],
+      "objectType": "MPSection",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPParagraphElement:E7157BE4-C959-4058-8A83-01757A7CF080",
+      "contents": "<p xmlns=\"http://www.w3.org/1999/xhtml\" id=\"MPParagraphElement:E7157BE4-C959-4058-8A83-01757A7CF080\" class=\"MPElement\" data-object-type=\"MPParagraphElement\">The genotype of <i>DβH</i> 5’-Ins/Del was identified by the same method as reported in our previous study. Two independent investigators who were blinded to the clinical information of subjects confirmed the genotype of this polymorphism. If the assignments of genotype that they confirmed were inconsistent, these samples would further be repeated (see <span class=\"cross-reference\" data-reference-id=\"MPAuxiliaryObjectReference:92EF91A2-4ACE-4719-839C-DA32A3E45591\"><span class=\"kind elementIndex\"><b>Figure 3</b></span></span>).</p>",
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-9dd15b5e-866a-40ed-8d15-6e060118089e"
+        ]
+      },
+      "objectType": "MPParagraphElement",
+      "containerID": "MPProject:lost-keywords",
+      "elementType": "p",
+      "manuscriptID": "MPManuscript:lost-kwds",
+      "placeholderInnerHTML": ""
+    },
+    {
+      "_id": "MPContributorRole:41380F41-03F7-4604-B79B-A5D7899E9741",
+      "uri": "https://dictionary.casrai.org/Contributor_Roles/Data_curation",
+      "desc": "Management activities to annotate (produce metadata), scrub data and maintain research data (including software code, where it is necessary for interpreting the data itself) for initial use and later re-use.",
+      "name": "Data curation",
+      "bundled": true,
+      "createdAt": 1689589036,
+      "prototype": "MPContributorRole:credit-data-curation",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-8d8f0980-0a8f-4722-b025-e69e4efa68a9"
+        ]
+      },
+      "objectType": "MPContributorRole",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPParagraphElement:C38D1AD8-F7E1-4EBC-A7CE-89C45713CADA",
+      "contents": "<p xmlns=\"http://www.w3.org/1999/xhtml\" id=\"MPParagraphElement:C38D1AD8-F7E1-4EBC-A7CE-89C45713CADA\" class=\"MPElement\" data-object-type=\"MPParagraphElement\">The Hardy–Weinberg equilibrium (HWE) for the genotype distributions of this polymorphism was examined using the program of HWSIM. The frequencies of this polymorphism allele and genotype were compared between suicide attempters and non-attempters with chronic schizophrenia by Chi Squared (χ<sup>2</sup>) tests. The differences of the groups were compared by χ<sup>2</sup> for categorical variables, and one-way analysis of variance (ANOVA) for continuous variables. Fisher’s least significant difference procedure performed post-hoc comparisons between the sub-groups. When ANOVA identified the differences in RBANS scores based on genotype grouping in each research group, the effects of demographic and clinical characters were examined by adding them to the analysis model as covariates.</p>",
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-3520f354-416d-473a-aaeb-fca62b6c52de"
+        ]
+      },
+      "objectType": "MPParagraphElement",
+      "containerID": "MPProject:lost-keywords",
+      "elementType": "p",
+      "manuscriptID": "MPManuscript:lost-kwds",
+      "placeholderInnerHTML": ""
+    },
+    {
+      "_id": "MPParagraphElement:60EF49FB-8079-4766-8525-CF1DAEBEC8EE",
+      "contents": "<p xmlns=\"http://www.w3.org/1999/xhtml\" id=\"MPParagraphElement:60EF49FB-8079-4766-8525-CF1DAEBEC8EE\" class=\"MPElement\" data-object-type=\"MPParagraphElement\">The sample power was calculated by Quanto software that has been reported in previous study, with the frequencies of known risk allele, and the suicide attempt prevalence of 9.2% in schizophrenia, and examining dominant, recessive, and log additive models. The significance levels were set at 0.05.</p>",
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-a6fe45f7-ee66-4558-a6f8-d4db25addb65"
+        ]
+      },
+      "objectType": "MPParagraphElement",
+      "containerID": "MPProject:lost-keywords",
+      "elementType": "p",
+      "manuscriptID": "MPManuscript:lost-kwds",
+      "placeholderInnerHTML": ""
+    },
+    {
+      "_id": "MPListing:FCD6E377-F7E7-4FC6-B926-7466AAF6B788",
+      "contents": "",
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-cb7895e0-6f5f-43f7-967d-7ad540ab101a"
+        ]
+      },
+      "objectType": "MPListing",
+      "containerID": "MPProject:lost-keywords",
+      "languageKey": "null",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPListing:0CCE4D64-BBD7-4C48-A9E9-65365DAB5DC2",
+      "contents": "",
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-b2913e96-d86a-4617-b86f-1e18b93f2030"
+        ]
+      },
+      "objectType": "MPListing",
+      "containerID": "MPProject:lost-keywords",
+      "languageKey": "null",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPSection:77FB6FFA-506E-49C6-82C3-BD5CD3D304DE",
+      "path": [
+        "MPSection:77FB6FFA-506E-49C6-82C3-BD5CD3D304DE"
+      ],
+      "title": "",
+      "priority": 2,
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-1728684e-280d-4088-add1-e4cc7cbe9b1f"
+        ]
+      },
+      "elementIDs": [
+        "MPFigureElement:13AC1FED-31D2-47D5-9D60-3A8A7E7F1F41"
+      ],
+      "objectType": "MPSection",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPFigure:AE17E018-D688-4787-9D3B-9790B85E20B0",
+      "src": "attachment:a8c02ca2-5e9d-46f2-908a-474874955c8f",
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-0804666b-d65b-4265-8ec0-e1bb15ccd84e"
+        ]
+      },
+      "objectType": "MPFigure",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPSection:DDF40764-AFEA-4F7A-ABEE-D2B7A6CD4E12",
+      "path": [
+        "MPSection:312E35A8-5E0B-4881-933A-90C3C8847D24",
+        "MPSection:DDF40764-AFEA-4F7A-ABEE-D2B7A6CD4E12"
+      ],
+      "title": "Statistical analysis",
+      "priority": 9,
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-c40df7f2-5ae5-46ca-8571-2309b2b2c2ab"
+        ]
+      },
+      "elementIDs": [
+        "MPParagraphElement:C38D1AD8-F7E1-4EBC-A7CE-89C45713CADA",
+        "MPParagraphElement:87B38B60-7CD1-4C3C-97ED-0112ACD680AF",
+        "MPFigureElement:D5DD6051-69DE-44DE-B5E8-978DCE6A2830",
+        "MPParagraphElement:60EF49FB-8079-4766-8525-CF1DAEBEC8EE"
+      ],
+      "objectType": "MPSection",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPListing:956F7781-7A95-4B02-BD9D-41A3EB68F690",
+      "contents": "",
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-1d62885e-8e77-4fa3-9421-b38035ed3f70"
+        ]
+      },
+      "objectType": "MPListing",
+      "containerID": "MPProject:lost-keywords",
+      "languageKey": "null",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPTableElement:E3FF6DD4-AC1E-4D13-83A0-B06EA6D3257C",
+      "title": "Multinomial logistic regression in Mplus, LPA three-step approach results (N = 499)",
+      "caption": "",
+      "createdAt": 1689589036,
+      "listingID": "MPListing:14BB19AE-FB35-48E4-9B6D-C8B4712764C1",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-a727ac79-4ff9-4ddf-a9d6-34bbfd51fd04"
+        ]
+      },
+      "objectType": "MPTableElement",
+      "containerID": "MPProject:lost-keywords",
+      "elementType": "table",
+      "manuscriptID": "MPManuscript:lost-kwds",
+      "suppressFooter": true,
+      "containedObjectID": "MPTable:F83678B4-1301-4A9C-BFEF-DA3E0F5BC8CA"
+    },
+    {
+      "_id": "MPParagraphElement:00CFC79C-504D-4A24-978A-DD38ACF39927",
+      "contents": "<p xmlns=\"http://www.w3.org/1999/xhtml\" id=\"MPParagraphElement:00CFC79C-504D-4A24-978A-DD38ACF39927\" class=\"MPElement\" data-object-type=\"MPParagraphElement\">This sample had 0.78-0.99 statistical power to detect this polymorphism associated with suicide attempts in chronic schizophrenia through three models, with a genetic effect of 2.0 (a=0.05, two-tailed test).</p>",
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-f312b890-400a-407b-9108-9f88e01dafd9"
+        ]
+      },
+      "objectType": "MPParagraphElement",
+      "containerID": "MPProject:lost-keywords",
+      "elementType": "p",
+      "manuscriptID": "MPManuscript:lost-kwds",
+      "placeholderInnerHTML": ""
+    },
+    {
+      "_id": "MPParagraphElement:6BC09B97-3462-49A0-ADFF-85C4C41C4913",
+      "contents": "<p xmlns=\"http://www.w3.org/1999/xhtml\" id=\"MPParagraphElement:6BC09B97-3462-49A0-ADFF-85C4C41C4913\" class=\"MPElement\" data-object-type=\"MPParagraphElement\">This study found no significant differences in all cognitive domains between both groups, which was consistent with the findings of two previous studies. However, higher cognitive function may increase the suicide risk in patients with schizophrenia. Another study also indicated that individuals with higher executive performance were more likely to perform the plan of their suicide. We still could not provide a reasonable explanation for these inconsistent findings of cognitive performance in suicide attempts with schizophrenia. Several factors including age, sex, education, body mass index, smoking status, age of onset, age of the first hospitalization, duration of illness, antipsychotic information, genetic background and the difference in cognitive assessment instruments may be responsible for these discrepancies, which deserves future investigation.</p>",
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-c914f7b8-c3b1-4c6f-8850-577388fdbffb"
+        ]
+      },
+      "objectType": "MPParagraphElement",
+      "containerID": "MPProject:lost-keywords",
+      "elementType": "p",
+      "manuscriptID": "MPManuscript:lost-kwds",
+      "placeholderInnerHTML": ""
+    },
+    {
+      "_id": "MPParagraphElement:92F13BA9-5DD9-4FBA-995A-9CECACD6A104",
+      "contents": "<p xmlns=\"http://www.w3.org/1999/xhtml\" id=\"MPParagraphElement:92F13BA9-5DD9-4FBA-995A-9CECACD6A104\" class=\"MPElement\" data-object-type=\"MPParagraphElement\">A detailed questionnaire included the social-demographic and clinical information, which was obtained from each patient and their available medical records (see <span class=\"cross-reference\" data-reference-id=\"MPAuxiliaryObjectReference:FA91C34F-7197-474C-A2F9-49C028941621\"><span class=\"kind elementIndex\"><b>Figure 2</b></span></span>).</p>",
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-aef908e2-0ae2-4ca4-9c1b-3152994a682d"
+        ]
+      },
+      "objectType": "MPParagraphElement",
+      "containerID": "MPProject:lost-keywords",
+      "elementType": "p",
+      "manuscriptID": "MPManuscript:lost-kwds",
+      "placeholderInnerHTML": ""
+    },
+    {
+      "_id": "MPFigure:97C718F1-3606-48A0-9B4E-E9E50CFF0E40",
+      "src": "attachment:ff02fdea-6a92-4259-83e8-bb94f6f7dac5",
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-d78dd3ef-9eea-46ba-8b61-7be4fb8768bc"
+        ]
+      },
+      "objectType": "MPFigure",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPSection:D5F9913B-F43D-4107-BE7A-9B56363210CB",
+      "path": [
+        "MPSection:312E35A8-5E0B-4881-933A-90C3C8847D24",
+        "MPSection:D5F9913B-F43D-4107-BE7A-9B56363210CB"
+      ],
+      "title": "Genotyping",
+      "priority": 8,
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-d859dd3b-e7fa-435e-bd9b-3e5394cf4e21"
+        ]
+      },
+      "elementIDs": [
+        "MPParagraphElement:E7157BE4-C959-4058-8A83-01757A7CF080",
+        "MPFigureElement:0FE305BF-A401-448B-833C-4D79E46EA45D"
+      ],
+      "objectType": "MPSection",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPListing:DD5585BC-F17F-4908-83BE-913C907AF1B5",
+      "contents": "",
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-d6981d13-17b9-495a-8b3d-71020a2a04e1"
+        ]
+      },
+      "objectType": "MPListing",
+      "containerID": "MPProject:lost-keywords",
+      "languageKey": "null",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPFigure:8F732497-F5CE-4C5A-95F7-B9A861B93A65",
+      "src": "attachment:e475714d-0369-48ec-9056-bd4d2c8783a2",
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-245c22fb-06de-426b-9d0b-9c5ace7c98b5"
+        ]
+      },
+      "objectType": "MPFigure",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPParagraphElement:AD04AE72-6F16-48D9-9AB1-5AB89C8D458B",
+      "contents": "<p xmlns=\"http://www.w3.org/1999/xhtml\" id=\"MPParagraphElement:AD04AE72-6F16-48D9-9AB1-5AB89C8D458B\" class=\"MPElement\" data-object-type=\"MPParagraphElement\">The comparisons of demographic, clinical and DβH polymorphism data between suicide attempters and non-attempters with chronic schizophrenia are summarized in the ether. Two groups differed significantly in the duration of illness (F=4.86, p&lt;0.05). The distributions of <i>DβH</i> 5’-Ins/Del genotypes were consistent with HWE in suicide attempters group or suicide non-attempters group (both, p&gt;0.05). A significant difference in <i>DβH</i> allele distribution was found between two groups (χ<sup>2</sup>=3.92, df=1, p&lt;0.05), but no difference in <i>DβH</i> genotype distribution (χ<sup>2</sup>=4.60, df=2, p=0.10). After controlling for age and sex, there were no significant differences in <i>DβH</i> allele and genotype distributions between two groups (both, p&gt;0.05).</p>",
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-5998bfa7-f547-4507-af34-e41bdf2d507c"
+        ]
+      },
+      "objectType": "MPParagraphElement",
+      "containerID": "MPProject:lost-keywords",
+      "elementType": "p",
+      "manuscriptID": "MPManuscript:lost-kwds",
+      "placeholderInnerHTML": ""
+    },
+    {
+      "_id": "MPSection:DC0C2E4E-42F0-4D7F-BA8A-324B9395D5E1",
+      "path": [
+        "MPSection:DC0C2E4E-42F0-4D7F-BA8A-324B9395D5E1"
+      ],
+      "title": "RESULTS",
+      "category": "MPSectionCategory:results",
+      "priority": 10,
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-e7629aa6-e4df-4eba-b911-a4e3422ae7cb"
+        ]
+      },
+      "elementIDs": [
+        "MPParagraphElement:AD04AE72-6F16-48D9-9AB1-5AB89C8D458B",
+        "MPParagraphElement:6053D2ED-5923-4E6D-9635-CF51C29A8ADA",
+        "MPTableElement:E3FF6DD4-AC1E-4D13-83A0-B06EA6D3257C",
+        "MPParagraphElement:12FC78F8-75A8-4458-B302-5025A218F02E",
+        "MPParagraphElement:00CFC79C-504D-4A24-978A-DD38ACF39927"
+      ],
+      "objectType": "MPSection",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPTable:F83678B4-1301-4A9C-BFEF-DA3E0F5BC8CA",
+      "contents": "<table xmlns=\"http://www.w3.org/1999/xhtml\" id=\"MPTableElement:E3FF6DD4-AC1E-4D13-83A0-B06EA6D3257C\" class=\"MPElement\" data-contained-object-id=\"MPTable:F83678B4-1301-4A9C-BFEF-DA3E0F5BC8CA\"><colgroup><col width=\"20.1%\" /><col width=\"39.25%\" /><col width=\"19.66%\" /><col width=\"9.02%\" /><col width=\"11.97%\" /></colgroup><thead style=\"display: table-header-group;\"><tr><th data-placeholder-text=\"Data\" valign=\"bottom\" align=\"justify\" scope=\"col\" style=\"border-top: solid 0.50pt; border-bottom: solid 0.50pt\">Variable</th><th data-placeholder-text=\"Data\" valign=\"bottom\" align=\"justify\" scope=\"col\" style=\"border-top: solid 0.50pt; border-bottom: solid 0.50pt\">Profile</th><th data-placeholder-text=\"Data\" valign=\"top\" align=\"justify\" scope=\"col\" style=\"border-top: solid 0.50pt; border-bottom: solid 0.50pt\">M ± SD, n (%)</th><th data-placeholder-text=\"Data\" valign=\"bottom\" align=\"center\" scope=\"col\" style=\"border-top: solid 0.50pt; border-bottom: solid 0.50pt\">OR</th><th data-placeholder-text=\"Data\" valign=\"bottom\" align=\"justify\" scope=\"col\" style=\"border-top: solid 0.50pt; border-bottom: solid 0.50pt\">P-Value</th></tr></thead><tbody><tr><td data-placeholder-text=\"Data\" valign=\"bottom\" align=\"justify\" scope=\"row\" style=\"border-top: solid 0.50pt\">Age</td><td data-placeholder-text=\"Data\" valign=\"bottom\" align=\"justify\" style=\"border-top: solid 0.50pt\">1 - Mild depression</td><td data-placeholder-text=\"Data\" valign=\"top\" align=\"right\" style=\"border-top: solid 0.50pt\">38.89 ± 10.31</td><td data-placeholder-text=\"Data\" valign=\"bottom\" align=\"center\" style=\"border-top: solid 0.50pt\"><i>ref.</i></td><td data-placeholder-text=\"Data\" valign=\"bottom\" align=\"right\" style=\"border-top: solid 0.50pt\">-</td></tr><tr><td data-placeholder-text=\"Data\" class=\"placeholder\" valign=\"bottom\" align=\"left\" scope=\"row\"></td><td data-placeholder-text=\"Data\" valign=\"bottom\" align=\"justify\">2 - Moderate/somatization</td><td data-placeholder-text=\"Data\" valign=\"top\" align=\"right\">39.18 ± 11.21</td><td data-placeholder-text=\"Data\" valign=\"bottom\" align=\"center\">.997</td><td data-placeholder-text=\"Data\" valign=\"bottom\" align=\"right\">.849</td></tr><tr><td data-placeholder-text=\"Data\" class=\"placeholder\" valign=\"bottom\" align=\"left\" scope=\"row\"></td><td data-placeholder-text=\"Data\" valign=\"bottom\" align=\"justify\">3 - Moderate/negative self-view</td><td data-placeholder-text=\"Data\" valign=\"top\" align=\"right\">38.83 ± 9.79</td><td data-placeholder-text=\"Data\" valign=\"bottom\" align=\"center\">.997</td><td data-placeholder-text=\"Data\" valign=\"bottom\" align=\"right\">.891</td></tr><tr><td data-placeholder-text=\"Data\" class=\"placeholder\" valign=\"bottom\" align=\"left\" scope=\"row\"></td><td data-placeholder-text=\"Data\" valign=\"bottom\" align=\"justify\">4 - Severe depression</td><td data-placeholder-text=\"Data\" valign=\"top\" align=\"right\">39.21 ± 9.75</td><td data-placeholder-text=\"Data\" valign=\"bottom\" align=\"center\">.999</td><td data-placeholder-text=\"Data\" valign=\"bottom\" align=\"right\">.986</td></tr><tr><td data-placeholder-text=\"Data\" class=\"placeholder\" valign=\"bottom\" align=\"left\" scope=\"col\"></td><td data-placeholder-text=\"Data\" class=\"placeholder\" valign=\"bottom\" align=\"left\"></td><td data-placeholder-text=\"Data\" class=\"placeholder\" valign=\"top\" align=\"left\"></td><td data-placeholder-text=\"Data\" class=\"placeholder\" valign=\"bottom\" align=\"left\"></td><td data-placeholder-text=\"Data\" class=\"placeholder\" valign=\"bottom\" align=\"left\"></td></tr><tr><td data-placeholder-text=\"Data\" valign=\"bottom\" align=\"justify\" scope=\"col\">Gender, <i>female</i></td><td data-placeholder-text=\"Data\" class=\"placeholder\" valign=\"bottom\" align=\"left\"></td><td data-placeholder-text=\"Data\" class=\"placeholder\" valign=\"top\" align=\"left\"></td><td data-placeholder-text=\"Data\" class=\"placeholder\" valign=\"bottom\" align=\"left\"></td><td data-placeholder-text=\"Data\" class=\"placeholder\" valign=\"bottom\" align=\"left\"></td></tr><tr><td data-placeholder-text=\"Data\" class=\"placeholder\" valign=\"bottom\" align=\"left\" scope=\"row\"></td><td data-placeholder-text=\"Data\" valign=\"bottom\" align=\"justify\">1 - Mild depression</td><td data-placeholder-text=\"Data\" valign=\"top\" align=\"right\">63 (87.5%)</td><td data-placeholder-text=\"Data\" valign=\"bottom\" align=\"center\"><i>ref.</i></td><td data-placeholder-text=\"Data\" valign=\"bottom\" align=\"right\">-</td></tr><tr><td data-placeholder-text=\"Data\" class=\"placeholder\" valign=\"bottom\" align=\"left\" scope=\"row\"></td><td data-placeholder-text=\"Data\" valign=\"bottom\" align=\"justify\">2 - Moderate/somatization</td><td data-placeholder-text=\"Data\" valign=\"top\" align=\"right\">94 (90.4%)</td><td data-placeholder-text=\"Data\" valign=\"bottom\" align=\"center\">.839</td><td data-placeholder-text=\"Data\" valign=\"bottom\" align=\"right\">.682</td></tr><tr><td data-placeholder-text=\"Data\" class=\"placeholder\" valign=\"bottom\" align=\"left\" scope=\"row\"></td><td data-placeholder-text=\"Data\" valign=\"bottom\" align=\"justify\">3 - Moderate/negative self-view</td><td data-placeholder-text=\"Data\" valign=\"top\" align=\"right\">168 (91.8%)</td><td data-placeholder-text=\"Data\" valign=\"bottom\" align=\"center\">1.343</td><td data-placeholder-text=\"Data\" valign=\"bottom\" align=\"right\">.545</td></tr><tr><td data-placeholder-text=\"Data\" class=\"placeholder\" valign=\"bottom\" align=\"left\" scope=\"row\"></td><td data-placeholder-text=\"Data\" valign=\"bottom\" align=\"justify\">4 - Severe depression</td><td data-placeholder-text=\"Data\" valign=\"top\" align=\"right\">134 (95.7%)</td><td data-placeholder-text=\"Data\" valign=\"bottom\" align=\"center\">.421</td><td data-placeholder-text=\"Data\" valign=\"bottom\" align=\"right\">.105</td></tr><tr><td data-placeholder-text=\"Data\" class=\"placeholder\" valign=\"bottom\" align=\"left\" scope=\"col\"></td><td data-placeholder-text=\"Data\" class=\"placeholder\" valign=\"bottom\" align=\"left\"></td><td data-placeholder-text=\"Data\" class=\"placeholder\" valign=\"top\" align=\"left\"></td><td data-placeholder-text=\"Data\" class=\"placeholder\" valign=\"bottom\" align=\"left\"></td><td data-placeholder-text=\"Data\" class=\"placeholder\" valign=\"bottom\" align=\"left\"></td></tr><tr><td data-placeholder-text=\"Data\" valign=\"bottom\" align=\"justify\" scope=\"row\">Married, <i>yes</i></td><td data-placeholder-text=\"Data\" valign=\"bottom\" align=\"justify\">1 - Mild depression</td><td data-placeholder-text=\"Data\" valign=\"top\" align=\"right\">49 (68.1%)</td><td data-placeholder-text=\"Data\" valign=\"bottom\" align=\"center\"><i>ref.</i></td><td data-placeholder-text=\"Data\" valign=\"bottom\" align=\"right\">-</td></tr><tr><td data-placeholder-text=\"Data\" class=\"placeholder\" valign=\"bottom\" align=\"left\" scope=\"row\"></td><td data-placeholder-text=\"Data\" valign=\"bottom\" align=\"justify\">2 - Moderate/somatization</td><td data-placeholder-text=\"Data\" valign=\"top\" align=\"right\">75 (74.3%)</td><td data-placeholder-text=\"Data\" valign=\"bottom\" align=\"center\">.739</td><td data-placeholder-text=\"Data\" valign=\"bottom\" align=\"right\">.373</td></tr><tr><td data-placeholder-text=\"Data\" class=\"placeholder\" valign=\"bottom\" align=\"left\" scope=\"row\"></td><td data-placeholder-text=\"Data\" valign=\"bottom\" align=\"justify\">3 - Moderate/negative self-view</td><td data-placeholder-text=\"Data\" valign=\"top\" align=\"right\">123 (67.2%)</td><td data-placeholder-text=\"Data\" valign=\"bottom\" align=\"center\">1.039</td><td data-placeholder-text=\"Data\" valign=\"bottom\" align=\"right\">.897</td></tr><tr><td data-placeholder-text=\"Data\" class=\"placeholder\" valign=\"bottom\" align=\"left\" scope=\"row\"></td><td data-placeholder-text=\"Data\" valign=\"bottom\" align=\"justify\">4 - Severe depression</td><td data-placeholder-text=\"Data\" valign=\"top\" align=\"right\">105 (75.0%)</td><td data-placeholder-text=\"Data\" valign=\"bottom\" align=\"center\">.710</td><td data-placeholder-text=\"Data\" valign=\"bottom\" align=\"right\">.284</td></tr><tr><td data-placeholder-text=\"Data\" class=\"placeholder\" valign=\"bottom\" align=\"left\" scope=\"col\"></td><td data-placeholder-text=\"Data\" class=\"placeholder\" valign=\"bottom\" align=\"left\"></td><td data-placeholder-text=\"Data\" class=\"placeholder\" valign=\"top\" align=\"left\"></td><td data-placeholder-text=\"Data\" class=\"placeholder\" valign=\"bottom\" align=\"left\"></td><td data-placeholder-text=\"Data\" class=\"placeholder\" valign=\"bottom\" align=\"left\"></td></tr><tr><td data-placeholder-text=\"Data\" valign=\"bottom\" align=\"justify\" scope=\"row\">GAD 7</td><td data-placeholder-text=\"Data\" valign=\"bottom\" align=\"justify\">1 - Mild depression</td><td data-placeholder-text=\"Data\" valign=\"top\" align=\"right\">10.54 ± 5.23</td><td data-placeholder-text=\"Data\" valign=\"bottom\" align=\"center\"><i>ref.</i></td><td data-placeholder-text=\"Data\" valign=\"bottom\" align=\"right\">-</td></tr><tr><td data-placeholder-text=\"Data\" class=\"placeholder\" valign=\"bottom\" align=\"left\" scope=\"row\"></td><td data-placeholder-text=\"Data\" valign=\"bottom\" align=\"justify\">2 - Moderate/somatization</td><td data-placeholder-text=\"Data\" valign=\"top\" align=\"right\">11.80 ± 4.06</td><td data-placeholder-text=\"Data\" valign=\"bottom\" align=\"center\">1.065</td><td data-placeholder-text=\"Data\" valign=\"bottom\" align=\"right\">.069</td></tr><tr><td data-placeholder-text=\"Data\" class=\"placeholder\" valign=\"bottom\" align=\"left\" scope=\"row\"></td><td data-placeholder-text=\"Data\" valign=\"bottom\" align=\"justify\">3 - Moderate/negative self-view</td><td data-placeholder-text=\"Data\" valign=\"top\" align=\"right\">12.21 ± 4.17</td><td data-placeholder-text=\"Data\" valign=\"bottom\" align=\"center\">1.088</td><td data-placeholder-text=\"Data\" valign=\"bottom\" align=\"right\">.008</td></tr><tr><td data-placeholder-text=\"Data\" class=\"placeholder\" valign=\"bottom\" align=\"left\" scope=\"row\" style=\"border-bottom: solid 0.50pt\"></td><td data-placeholder-text=\"Data\" valign=\"bottom\" align=\"justify\" style=\"border-bottom: solid 0.50pt\">4 - Severe depression</td><td data-placeholder-text=\"Data\" valign=\"top\" align=\"right\" style=\"border-bottom: solid 0.50pt\">15.65 ± 3.99</td><td data-placeholder-text=\"Data\" valign=\"bottom\" align=\"center\" style=\"border-bottom: solid 0.50pt\">1.329</td><td data-placeholder-text=\"Data\" valign=\"bottom\" align=\"right\" style=\"border-bottom: solid 0.50pt\">&lt; .001</td></tr></tbody><tfoot style=\"display: none;\"><tr><td data-placeholder-text=\"Data\" class=\"placeholder\"></td></tr></tfoot></table>",
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-6960306c-bd7b-4bb4-8c1b-11e2341b3108"
+        ]
+      },
+      "objectType": "MPTable",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPParagraphElement:6053D2ED-5923-4E6D-9635-CF51C29A8ADA",
+      "contents": "<p xmlns=\"http://www.w3.org/1999/xhtml\" id=\"MPParagraphElement:6053D2ED-5923-4E6D-9635-CF51C29A8ADA\" class=\"MPElement\" data-object-type=\"MPParagraphElement\">The RBANS data was available for 87 suicide attempters and 449 non-suicide attempters with chronic schizophrenia. The RBANS total and subscores in suicide attempters versus non-attempters with chronic schizophrenia grouped by DβH 5’-Ins/Del genotype are summarized in the ether. There were no significant differences in RBANS scores between two groups (all, p&gt;0.05). The interaction role between DβH genotype and diagnosis did not influence RBANS scores in all patients (all, p&gt;0.05). However, there were significant differences in attention and semantic fluency scores among three groups (all patients with Del/Del, all patients with Ins/Del and all patients with Ins/Ins) (F=3.96, p=0.02; F=3.98, p=0.02). Further analysis found that the comparisons of RBANS scores were still not difference between two groups (all, p&gt;0.05) as well as no effect of genotype x diagnosis on RBANS scores in all patients (all, p&gt;0.05) after adjusting for the confounding variables. However, there was a significant difference in attention score among genotype grouping in suicide attempters (F=3.73, p=0.03) as well as this difference also was found in non-suicide attempters (F=3.00, p=0.04) after adjusting for the confounding variables (see <span class=\"cross-reference\" data-reference-id=\"MPAuxiliaryObjectReference:4EDB199D-451E-4A0C-9C54-FFB0F8F8A54E\"><span class=\"kind elementIndex\"><b>Table 2</b></span></span>).</p>",
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-9406ca27-3341-4296-812c-e1421ce719d5"
+        ]
+      },
+      "objectType": "MPParagraphElement",
+      "containerID": "MPProject:lost-keywords",
+      "elementType": "p",
+      "manuscriptID": "MPManuscript:lost-kwds",
+      "placeholderInnerHTML": ""
+    },
+    {
+      "_id": "MPListing:14BB19AE-FB35-48E4-9B6D-C8B4712764C1",
+      "contents": "",
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-b3d35be5-a525-4304-bc37-6ee9265f6c04"
+        ]
+      },
+      "objectType": "MPListing",
+      "containerID": "MPProject:lost-keywords",
+      "languageKey": "null",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPParagraphElement:C584D7B6-EDC4-4A8C-BCA5-D2AD3A61B7BC",
+      "contents": "<p xmlns=\"http://www.w3.org/1999/xhtml\" id=\"MPParagraphElement:C584D7B6-EDC4-4A8C-BCA5-D2AD3A61B7BC\" class=\"MPElement\" data-object-type=\"MPParagraphElement\">Interestingly, this study also found that <i>DβH</i> 5’-Ins/Del polymorphism was related to attention function in suicide attempters with chronic schizophrenia. The underlying mechanism responsible for <i>DβH</i> 5’-Ins/Del polymorphism influenced on attention function could reflect the variables of <i>DβH</i> transcriptional activity and alter the balance of DA and NE in the relevant brain regions. This mechanism was consistent with poorer cognitive function in elderly women and patients with chronic schizophrenia. A study has found that the interaction between <i>DβH</i> 5’-Ins/Del polymorphism and the variants of monoamine oxidase A significantly influenced attention performance for the expression of negative face in the young Han population. Previous studies also indicated the effect of <i>DβH</i> 5’-1021C/T polymorphism on attention bias for the expression of neural face and sustained attention in the healthy subjects. The other variants in <i>DβH</i> gene also were reported to influence attention deficits in children ADHD. DβH was in charge of conversion of DA to NE that also was closely associated with the regulation of attention function. These findings further supported that <i>DβH</i> 5’-Ins/Del polymorphism might be involved in the regulation of attention in the suicide attempters with chronic schizophrenia.</p>",
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-74af7216-0b8f-457f-9922-76f902866c9f"
+        ]
+      },
+      "objectType": "MPParagraphElement",
+      "containerID": "MPProject:lost-keywords",
+      "elementType": "p",
+      "manuscriptID": "MPManuscript:lost-kwds",
+      "placeholderInnerHTML": ""
+    },
+    {
+      "_id": "MPParagraphElement:71F0A044-3CE3-4A2D-9C0A-B79FD1990FCF",
+      "contents": "<p xmlns=\"http://www.w3.org/1999/xhtml\" id=\"MPParagraphElement:71F0A044-3CE3-4A2D-9C0A-B79FD1990FCF\" class=\"MPElement\" data-object-type=\"MPParagraphElement\">This study indicated that <i>DβH</i> 5’-Ins/Del polymorphism might not influence suicide attempts in chronic schizophrenia, and cognitive function in suicide attempters is similar to that in non-suicide attempters with chronic schizophrenia. However, this polymorphism might contribute to the regulation of attention in suicide attempters with chronic schizophrenia. Moreover, these findings remain preliminary, which need to be replicated in the larger and matched sample of the different ethnicities (see Supplementing Information).</p>",
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-ce22a576-2b1e-4449-abc3-25c365d54d61"
+        ]
+      },
+      "objectType": "MPParagraphElement",
+      "containerID": "MPProject:lost-keywords",
+      "elementType": "p",
+      "manuscriptID": "MPManuscript:lost-kwds",
+      "placeholderInnerHTML": ""
+    },
+    {
+      "_id": "MPBibliographyElement:E30A1B66-18D4-45B8-ADB7-99D6D2AA9CD2",
+      "contents": "",
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-d8cdf1f4-ce62-4f48-a0a1-bd74157aab6b"
+        ]
+      },
+      "objectType": "MPBibliographyElement",
+      "containerID": "MPProject:lost-keywords",
+      "elementType": "div",
+      "manuscriptID": "MPManuscript:lost-kwds",
+      "containedObjectIDs": [
+        "MPBibliographyItem:4294B210-C9FB-45A4-8FCC-69060FFAF9BB",
+        "MPBibliographyItem:FC0831F6-9470-46ED-ABEF-F22F0DA93038"
+      ]
+    },
+    {
+      "_id": "MPCitation:6EBB8272-5C2E-4F84-B829-EAF7E1D122C7",
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-26a2e265-462c-4d04-93c4-2ccd726f1971"
+        ]
+      },
+      "objectType": "MPCitation",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds",
+      "embeddedCitationItems": [
+        {
+          "_id": "MPCitationItem:415C50CA-CEC8-4B18-B829-7AA9C745AC6C",
+          "objectType": "MPCitationItem",
+          "bibliographyItem": "MPBibliographyItem:4294B210-C9FB-45A4-8FCC-69060FFAF9BB"
+        }
+      ]
+    },
+    {
+      "_id": "MPParagraphElement:87B38B60-7CD1-4C3C-97ED-0112ACD680AF",
+      "contents": "<p xmlns=\"http://www.w3.org/1999/xhtml\" id=\"MPParagraphElement:87B38B60-7CD1-4C3C-97ED-0112ACD680AF\" class=\"MPElement\" data-object-type=\"MPParagraphElement\">For the main models, analyses of covariance (ANCOVA) were constructed. The <i>DβH</i> 5’-Ins/Del genotypes were considered as the independent variables, and RBANS scores, including RBANS total score, 5 subscale scores, and 12 subtests scores were considered as the dependent variables. Age, sex, education, age of the first hospitalization, age of onset, duration of illness, daily antipsychotic doses, and duration of current antipsychotics were considered as covariates.The main effects of genotype, diagnosis, and genotype x diagnosis were tested in each model. Stepwise multivariate analysis was further used to investigate the impacts of the variables on RBANS scores. SPSS 17.0 was performed for the statistical analysis (see <span class=\"cross-reference\" data-reference-id=\"MPAuxiliaryObjectReference:78F1F3A3-3DDA-473D-BE8F-A4CDBBFD2AD8\"><span class=\"kind elementIndex\"><b>Figure 4</b></span></span>).</p>",
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-7a044fa0-4a0b-4c5d-8f21-cbb938f9ec96"
+        ]
+      },
+      "objectType": "MPParagraphElement",
+      "containerID": "MPProject:lost-keywords",
+      "elementType": "p",
+      "manuscriptID": "MPManuscript:lost-kwds",
+      "placeholderInnerHTML": ""
+    },
+    {
+      "_id": "MPParagraphElement:12FC78F8-75A8-4458-B302-5025A218F02E",
+      "contents": "<p xmlns=\"http://www.w3.org/1999/xhtml\" id=\"MPParagraphElement:12FC78F8-75A8-4458-B302-5025A218F02E\" class=\"MPElement\" data-object-type=\"MPParagraphElement\">Stepwise multivariate regression analysis identified that the variables including genotype of this polymorphism (β=5.74, t=-2.62, p=0.01), and sex ((β=25.74, t=5.17, p&lt;0.001) were independently related to attention score in suicide attempters with chronic schizophrenia, with R<sup>2</sup>=34.9. The variables including sex (β=7.13, t=2.82, p=0.01), education (β=0.61, t=3.76, p&lt;0.001), age of the first hospitalization (β=0.66, t=5.06, p&lt;0.001), and daily antipsychotic dose (β=0.003, t=1.98, p=0.05) contributed to attention score in non-suicide attempters with chronic schizophrenia, with R<sup>2</sup>=14.3.</p>",
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-e6ade42b-0650-4ac5-8642-cf52b6d356d8"
+        ]
+      },
+      "objectType": "MPParagraphElement",
+      "containerID": "MPProject:lost-keywords",
+      "elementType": "p",
+      "manuscriptID": "MPManuscript:lost-kwds",
+      "placeholderInnerHTML": ""
+    },
+    {
+      "_id": "MPSection:9F6978AD-C434-4EF4-BC8C-EE0BBDB736D9",
+      "path": [
+        "MPSection:9F6978AD-C434-4EF4-BC8C-EE0BBDB736D9"
+      ],
+      "title": "DISCUSSION",
+      "category": "MPSectionCategory:discussion",
+      "priority": 11,
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-f4adb207-0891-4026-a083-8c9ed4379c08"
+        ]
+      },
+      "elementIDs": [
+        "MPParagraphElement:3E91C89A-8E15-40FB-A9CF-A5B547819980",
+        "MPParagraphElement:012FFD9E-705F-4B10-9FEA-FAB67432AFD5",
+        "MPParagraphElement:6BC09B97-3462-49A0-ADFF-85C4C41C4913",
+        "MPParagraphElement:C584D7B6-EDC4-4A8C-BCA5-D2AD3A61B7BC",
+        "MPParagraphElement:F9A941B2-F52E-4F0E-A022-D0E1A39E3B83"
+      ],
+      "objectType": "MPSection",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPParagraphElement:012FFD9E-705F-4B10-9FEA-FAB67432AFD5",
+      "contents": "<p xmlns=\"http://www.w3.org/1999/xhtml\" id=\"MPParagraphElement:012FFD9E-705F-4B10-9FEA-FAB67432AFD5\" class=\"MPElement\" data-object-type=\"MPParagraphElement\">Our finding showed that <i>DβH</i> 5’-Ins/Del polymorphism might not directly contribute to suicide attempts in patients with chronic schizophrenia. This finding was consistent with a study reporting that this polymorphism did not play a role in suicide attempts with chronic schizophrenia in the European population. Another study has reported that <i>DβH</i> rs2519152 polymorphism was not related to suicide attempts in subjects with psychiatric disorders. Any one of these <i>DβH</i> polymorphisms, such as rs1611115, rs1108580, rs2519152 and rs129882 was not significantly associated with suicidal behavior in alcohol-dependent patients. However, the <i>DβH</i> haplotype including <i>DβH</i> 5'-del allele was reported to influence suicide attempts in chronic schizophrenia. Also, a study supported a significant relationship between <i>DβH</i> haplotype (including rs1611115, rs1108580, rs2519152 and rs129882) and suicidal behavior in alcohol-dependent patients. These results suggested that further studies investigating <i>DβH</i> haplotype associated with suicide attempts in chronic schizophrenia are warranted.</p>",
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-43a0d85e-73c1-4c49-916f-bbefc28e6bbf"
+        ]
+      },
+      "objectType": "MPParagraphElement",
+      "containerID": "MPProject:lost-keywords",
+      "elementType": "p",
+      "manuscriptID": "MPManuscript:lost-kwds",
+      "placeholderInnerHTML": ""
+    },
+    {
+      "_id": "MPSection:49A85CF9-36DC-4FC7-9815-9A809BA7868D",
+      "path": [
+        "MPSection:49A85CF9-36DC-4FC7-9815-9A809BA7868D"
+      ],
+      "title": "Sources of Funding",
+      "category": "MPSectionCategory:financial-disclosure",
+      "priority": 14,
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-a025304a-8831-45d5-92ec-c88ef137a557"
+        ]
+      },
+      "elementIDs": [
+        "MPParagraphElement:30F40B52-5319-4147-BD1C-6F2C55D7207D"
+      ],
+      "objectType": "MPSection",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPParagraphElement:07CF6387-03FB-462F-BEF3-34FEFDECC4EA",
+      "contents": "<p xmlns=\"http://www.w3.org/1999/xhtml\" id=\"MPParagraphElement:07CF6387-03FB-462F-BEF3-34FEFDECC4EA\" class=\"MPElement\" data-object-type=\"MPParagraphElement\">We should like to thank Dr. Da Chun Chen, Zhi Ren Wang, Jia Li, Song Chen, and Gui Gang Yang for all of their hark work and significant contributions toward this work.</p>",
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-ec22a335-efa3-46e9-858a-e52b4e5d8d33"
+        ]
+      },
+      "objectType": "MPParagraphElement",
+      "containerID": "MPProject:lost-keywords",
+      "elementType": "p",
+      "manuscriptID": "MPManuscript:lost-kwds",
+      "placeholderInnerHTML": ""
+    },
+    {
+      "_id": "MPParagraphElement:F9A941B2-F52E-4F0E-A022-D0E1A39E3B83",
+      "contents": "<p xmlns=\"http://www.w3.org/1999/xhtml\" id=\"MPParagraphElement:F9A941B2-F52E-4F0E-A022-D0E1A39E3B83\" class=\"MPElement\" data-object-type=\"MPParagraphElement\">This study had several limitations. Firstly, due to limited resources, it was very difficult for us to recruit a large sample of suicide attempters with chronic schizophrenia, which may cause the bias of our findings in the statistical analysis. Hence, our findings need to be replicated in a larger and matched sample. Secondly, only a functional single nucleotide (<i>DβH</i> 5'-Ins/Del) polymorphism was tested. Further studies will investigate other <i>DβH</i> functional polymorphisms and haplotypes whether all of which were involved in cognitive regulation, and were associated with suicide attempts in chronic schizophrenia. Finally, although we performed quality controls, genotype misclassification was still possible. These factors related to cognitive performance and suicide behavior in chronic schizophrenia should be considered in future studies.</p>",
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-06b3d92f-6a5d-4d82-927d-49f7bf5e2ab7"
+        ]
+      },
+      "objectType": "MPParagraphElement",
+      "containerID": "MPProject:lost-keywords",
+      "elementType": "p",
+      "manuscriptID": "MPManuscript:lost-kwds",
+      "placeholderInnerHTML": ""
+    },
+    {
+      "_id": "MPParagraphElement:F673E43C-BFD2-4B8E-8E3B-85CCB1285712",
+      "contents": "<p xmlns=\"http://www.w3.org/1999/xhtml\" id=\"MPParagraphElement:F673E43C-BFD2-4B8E-8E3B-85CCB1285712\" class=\"MPElement\" data-object-type=\"MPParagraphElement\">No conflicts of interest have been declared.</p>",
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-d5f5530a-0bd1-496c-9b8d-4be1285a3bd0"
+        ]
+      },
+      "objectType": "MPParagraphElement",
+      "containerID": "MPProject:lost-keywords",
+      "elementType": "p",
+      "manuscriptID": "MPManuscript:lost-kwds",
+      "placeholderInnerHTML": ""
+    },
+    {
+      "_id": "MPSection:D01055B1-F98B-4474-B3B6-BBCF049695E7",
+      "path": [
+        "MPSection:D01055B1-F98B-4474-B3B6-BBCF049695E7"
+      ],
+      "title": "Acknowledgments",
+      "category": "MPSectionCategory:acknowledgement",
+      "priority": 15,
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-594639ef-fa06-4c82-b024-d970b7a4f372"
+        ]
+      },
+      "elementIDs": [
+        "MPParagraphElement:07CF6387-03FB-462F-BEF3-34FEFDECC4EA"
+      ],
+      "objectType": "MPSection",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPSection:FA3EC027-339C-426C-A289-3EA4B2620883",
+      "path": [
+        "MPSection:FA3EC027-339C-426C-A289-3EA4B2620883"
+      ],
+      "title": "REFERENCES",
+      "category": "MPSectionCategory:bibliography",
+      "priority": 16,
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-ba7f649e-021e-4284-965d-41eb66467dd5"
+        ]
+      },
+      "elementIDs": [
+        "MPBibliographyElement:E30A1B66-18D4-45B8-ADB7-99D6D2AA9CD2"
+      ],
+      "objectType": "MPSection",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPAuxiliaryObjectReference:EF9C057D-28D7-42D8-9BAF-6F2AADA372D2",
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-ddbf822c-24c3-4ea2-b2ff-5d24c5e0b121"
+        ]
+      },
+      "objectType": "MPAuxiliaryObjectReference",
+      "containerID": "MPProject:lost-keywords",
+      "referencedObject": "MPFigureElement:13AC1FED-31D2-47D5-9D60-3A8A7E7F1F41"
+    },
+    {
+      "_id": "MPAuxiliaryObjectReference:92EF91A2-4ACE-4719-839C-DA32A3E45591",
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-8e8175cb-226d-45b9-bd86-ec6731429710"
+        ]
+      },
+      "objectType": "MPAuxiliaryObjectReference",
+      "containerID": "MPProject:lost-keywords",
+      "referencedObject": "MPFigureElement:0FE305BF-A401-448B-833C-4D79E46EA45D"
+    },
+    {
+      "_id": "MPElementsOrder:4D0C0D85-D30E-4A4C-BA7D-E1BE090BB1E4",
+      "elements": [
+        "MPFigureElement:13AC1FED-31D2-47D5-9D60-3A8A7E7F1F41",
+        "MPFigureElement:F04D184B-96DB-4B66-B01D-E58F752A7E35",
+        "MPFigureElement:0FE305BF-A401-448B-833C-4D79E46EA45D",
+        "MPFigureElement:D5DD6051-69DE-44DE-B5E8-978DCE6A2830"
+      ],
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-528db04c-92fd-48d1-83f7-a837b21a9e20"
+        ]
+      },
+      "objectType": "MPElementsOrder",
+      "containerID": "MPProject:lost-keywords",
+      "elementType": "MPFigureElement",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPContributorRole:9836CC40-35C8-4717-8623-6759D6F0CA06",
+      "uri": "https://dictionary.casrai.org/Contributor_Roles/Formal_analysis",
+      "desc": "Application of statistical, mathematical, computational, or other formal techniques to analyze or synthesize study data.",
+      "name": "Formal analysis",
+      "bundled": true,
+      "createdAt": 1689589036,
+      "prototype": "MPContributorRole:credit-formal-analysis",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-630eee0a-0dc8-47dd-9ae8-ccf1b26ba6c1"
+        ]
+      },
+      "objectType": "MPContributorRole",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPParagraphElement:3E91C89A-8E15-40FB-A9CF-A5B547819980",
+      "contents": "<p xmlns=\"http://www.w3.org/1999/xhtml\" id=\"MPParagraphElement:3E91C89A-8E15-40FB-A9CF-A5B547819980\" class=\"MPElement\" data-object-type=\"MPParagraphElement\">To our knowledge, it is the first study to investigate the relationships among <i>DβH</i> 5’-Ins/Del polymorphism, cognition and suicide attempts in chronic schizophrenia. We found that this polymorphism was significantly associated with attention function in suicide attempters with chronic schizophrenia. However, this polymorphism was not a risk genetic locus for suicide attempts in chronic schizophrenia and there were no significant differences in cognitive function between two groups (see Figure S1).</p>",
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-68c053ed-61b4-4f91-867d-13e0426baa7a"
+        ]
+      },
+      "objectType": "MPParagraphElement",
+      "containerID": "MPProject:lost-keywords",
+      "elementType": "p",
+      "manuscriptID": "MPManuscript:lost-kwds",
+      "placeholderInnerHTML": ""
+    },
+    {
+      "_id": "MPSection:6A4DC74E-0EAF-400B-8811-F2D965E9C34C",
+      "path": [
+        "MPSection:6A4DC74E-0EAF-400B-8811-F2D965E9C34C"
+      ],
+      "title": "Conflict of Interest",
+      "category": "MPSectionCategory:competing-interests",
+      "priority": 13,
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-f6c3ee5d-9c73-43c9-9552-c6ba60107d96"
+        ]
+      },
+      "elementIDs": [
+        "MPParagraphElement:F673E43C-BFD2-4B8E-8E3B-85CCB1285712"
+      ],
+      "objectType": "MPSection",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPBibliographyItem:4294B210-C9FB-45A4-8FCC-69060FFAF9BB",
+      "page": "479-493",
+      "type": "article-journal",
+      "issue": "4",
+      "title": "Schizophrenia-a high-risk factor for suicide: clues to risk reduction.",
+      "author": [
+        {
+          "_id": "MPBibliographicName:7B576D63-0AB3-42E6-A3D2-4724547870B8",
+          "given": "C.B.",
+          "family": "Caldwell",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:BC103A4F-AFDB-4590-A4C2-BC01572DDEEC",
+          "given": "I.I.",
+          "family": "Gottesman",
+          "objectType": "MPBibliographicName"
+        }
+      ],
+      "issued": {
+        "_id": "MPBibliographicDate:DDE2387E-1E85-4716-B1BA-A77408FC1BDE",
+        "date-parts": [
+          [
+            "1992"
+          ]
+        ],
+        "objectType": "MPBibliographicDate"
+      },
+      "volume": "22",
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-832f4039-356d-4268-b9c1-83d8963d1a16"
+        ]
+      },
+      "objectType": "MPBibliographyItem",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds",
+      "container-title": "Suicide Life Threat Behav."
+    },
+    {
+      "_id": "MPAuxiliaryObjectReference:B3487603-5D95-4E9A-8275-DD5B5A7B3AFE",
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-a17e59d4-e09e-4485-a45c-030ef1ddf041"
+        ]
+      },
+      "objectType": "MPAuxiliaryObjectReference",
+      "containerID": "MPProject:lost-keywords",
+      "referencedObject": "MPTableElement:880CE176-55DC-45EC-B038-B2809757D8DD"
+    },
+    {
+      "_id": "MPAuxiliaryObjectReference:78F1F3A3-3DDA-473D-BE8F-A4CDBBFD2AD8",
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-c7b4a9e7-b8a5-4e6d-82a5-b37df2753012"
+        ]
+      },
+      "objectType": "MPAuxiliaryObjectReference",
+      "containerID": "MPProject:lost-keywords",
+      "referencedObject": "MPFigureElement:D5DD6051-69DE-44DE-B5E8-978DCE6A2830"
+    },
+    {
+      "_id": "MPCommentAnnotation:DAB3BF13-CF6B-44C0-B27D-4F56FC33211A",
+      "target": "MPParagraphElement:3E91C89A-8E15-40FB-A9CF-A5B547819980",
+      "contents": "No figure matches the in-text citation \"Figure S1\". Please supply a legend and figure or delete the citation.",
+      "selector": {
+        "to": 663,
+        "from": 663
+      },
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-77fc604d-9d19-4fd5-88f0-457955941a4e"
+        ]
+      },
+      "objectType": "MPCommentAnnotation",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds",
+      "contributions": [
+        {
+          "_id": "MPContribution:AD438D54-47DF-48E8-873E-AC8C7881F7FF",
+          "profileID": "MPUserProfile:0000000000000000000000000000000000000001",
+          "timestamp": 1689588186,
+          "objectType": "MPContribution"
+        }
+      ],
+      "annotationColor": "rgb(250, 224, 150)"
+    },
+    {
+      "_id": "MPContributorRole:71F12128-1A9A-4A10-AB13-58422D7AB71A",
+      "uri": "https://dictionary.casrai.org/Contributor_Roles/Investigation",
+      "desc": "Conducting a research and investigation process, specifically performing the experiments, or data/evidence collection.",
+      "name": "Investigation",
+      "bundled": true,
+      "createdAt": 1689589036,
+      "prototype": "MPContributorRole:credit-investigation",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-33ed3106-da74-4007-ad62-1077d3fa6f40"
+        ]
+      },
+      "objectType": "MPContributorRole",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPContributorRole:E81962EF-12D8-4D21-9DB0-7CB998E92127",
+      "uri": "https://dictionary.casrai.org/Contributor_Roles/Software",
+      "desc": "Programming, software development; designing computer programs; implementation of the computer code and supporting algorithms; testing of existing code components.",
+      "name": "Software",
+      "bundled": true,
+      "createdAt": 1689589036,
+      "prototype": "MPContributorRole:credit-software",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-851d34d4-3cc5-442d-85ff-6397472cc827"
+        ]
+      },
+      "objectType": "MPContributorRole",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPSection:B86DDA23-4290-4A46-B12E-84135141FCC6",
+      "path": [
+        "MPSection:B86DDA23-4290-4A46-B12E-84135141FCC6"
+      ],
+      "title": "CONCLUSIONS",
+      "category": "MPSectionCategory:conclusions",
+      "priority": 12,
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-315f3c04-5bce-48c1-b747-9fcf69a1b493"
+        ]
+      },
+      "elementIDs": [
+        "MPParagraphElement:71F0A044-3CE3-4A2D-9C0A-B79FD1990FCF"
+      ],
+      "objectType": "MPSection",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPParagraphElement:30F40B52-5319-4147-BD1C-6F2C55D7207D",
+      "contents": "<p xmlns=\"http://www.w3.org/1999/xhtml\" id=\"MPParagraphElement:30F40B52-5319-4147-BD1C-6F2C55D7207D\" class=\"MPElement\" data-object-type=\"MPParagraphElement\">This work was supported by the National Natural Science Foundation of China (81771439), Jiangsu Provincial Key Research and Development Program (BE2020661 and BE2018662), Jiangsu Provincial Health Commission Science Research Program (QNRC2016228, H2019056 and LGY2018010), Jiangsu Provincial Six Talent Peaks Project (WSN-165), Suzhou Municipal Health Commission Science Research Program (SZYJTD201715, LCZX201820, Kjxw2018048 and Gwzx201801), Suzhou Municipal Sci-Tech Bureau Program (SZS201722, SS201706, SYS2019113 and SS2019009), and CAS Key Laboratory of Mental Health, Institute of Psychology (KLMH2019K03).</p>",
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-6dfb3c67-6050-42ba-968b-b0655be16346"
+        ]
+      },
+      "objectType": "MPParagraphElement",
+      "containerID": "MPProject:lost-keywords",
+      "elementType": "p",
+      "manuscriptID": "MPManuscript:lost-kwds",
+      "placeholderInnerHTML": ""
+    },
+    {
+      "_id": "MPCitation:8875F604-8443-484E-A7E5-5618D0E33D97",
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-85307223-2700-43c6-b51d-1729ac6fa22e"
+        ]
+      },
+      "objectType": "MPCitation",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds",
+      "embeddedCitationItems": [
+        {
+          "_id": "MPCitationItem:BCE8F06F-4537-444B-B346-450BAB0E8A88",
+          "objectType": "MPCitationItem",
+          "bibliographyItem": "MPBibliographyItem:FC0831F6-9470-46ED-ABEF-F22F0DA93038"
+        }
+      ]
+    },
+    {
+      "_id": "MPAuxiliaryObjectReference:FA91C34F-7197-474C-A2F9-49C028941621",
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-ae08d429-e1d7-4bbc-a091-b1bb3342936c"
+        ]
+      },
+      "objectType": "MPAuxiliaryObjectReference",
+      "containerID": "MPProject:lost-keywords",
+      "referencedObject": "MPFigureElement:F04D184B-96DB-4B66-B01D-E58F752A7E35"
+    },
+    {
+      "_id": "MPElementsOrder:B7A123A6-9DD3-402D-B0F7-9513B5ADBC88",
+      "elements": [
+        "MPTableElement:880CE176-55DC-45EC-B038-B2809757D8DD",
+        "MPTableElement:E3FF6DD4-AC1E-4D13-83A0-B06EA6D3257C"
+      ],
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-6073c76b-c101-40f5-9da0-ea919d50d69c"
+        ]
+      },
+      "objectType": "MPElementsOrder",
+      "containerID": "MPProject:lost-keywords",
+      "elementType": "MPTableElement",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPContributorRole:F49A7E3D-6723-4F17-8B9B-3DB8CC5C5D7E",
+      "uri": "https://dictionary.casrai.org/Contributor_Roles/Funding_acquisition",
+      "desc": "Acquisition of the financial support for the project leading to this publication.",
+      "name": "Funding acquisition",
+      "bundled": true,
+      "createdAt": 1689589036,
+      "prototype": "MPContributorRole:credit-funding-acquisition",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-1b08105f-a64c-452d-9838-c06cd6a0a719"
+        ]
+      },
+      "objectType": "MPContributorRole",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPContributorRole:81E75055-EC4E-49E7-98AA-D9D61DDC5DDD",
+      "uri": "https://dictionary.casrai.org/Contributor_Roles/Methodology",
+      "desc": "Development or design of methodology; creation of models.",
+      "name": "Methodology",
+      "bundled": true,
+      "createdAt": 1689589036,
+      "prototype": "MPContributorRole:credit-methodology",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-47b6088f-ef96-4602-aca9-eb9952994dfb"
+        ]
+      },
+      "objectType": "MPContributorRole",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPContributorRole:64C22921-F56D-4470-A774-AEAF60A97FA1",
+      "uri": "https://dictionary.casrai.org/Contributor_Roles/Writing_%E2%80%93_original_draft",
+      "desc": "Preparation, creation and/or presentation of the published work, specifically writing the initial draft (including substantive translation).",
+      "name": "Writing – original draft",
+      "bundled": true,
+      "createdAt": 1689589036,
+      "prototype": "MPContributorRole:credit-writing-original-draft",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-6604f2df-24b7-4e69-8bc0-711132dc12a9"
+        ]
+      },
+      "objectType": "MPContributorRole",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPStatusLabel:5D486CFE-E429-4E3B-A5EA-3293447E38D6",
+      "name": "To Do",
+      "bundled": true,
+      "priority": 1,
+      "createdAt": 1689589036,
+      "prototype": "MPStatusLabel:todo",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-e7f83a69-1141-4251-9377-e0980edff41b"
+        ]
+      },
+      "objectType": "MPStatusLabel",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "DOI": "https://doi.org/10.1177/1359786810385490",
+      "_id": "MPBibliographyItem:FC0831F6-9470-46ED-ABEF-F22F0DA93038",
+      "page": "81-90",
+      "type": "article-journal",
+      "issue": "4",
+      "title": "Suicide and schizophrenia: a systematic review of rates and risk factors.",
+      "author": [
+        {
+          "_id": "MPBibliographicName:FAAF50DC-66DF-4C9B-BD54-806F07B26F7D",
+          "given": "K.",
+          "family": "Hor",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:62354E42-9E70-4060-B012-035926A79CC8",
+          "given": "M.",
+          "family": "Taylor",
+          "objectType": "MPBibliographicName"
+        }
+      ],
+      "issued": {
+        "_id": "MPBibliographicDate:85FCAF26-C1F2-4CF8-8E9D-6D55F04D3342",
+        "date-parts": [
+          [
+            "2010"
+          ]
+        ],
+        "objectType": "MPBibliographicDate"
+      },
+      "volume": "24",
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-cc432b94-3271-4bba-94a5-a9024d9395e9"
+        ]
+      },
+      "objectType": "MPBibliographyItem",
+      "supplement": "Suppl",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds",
+      "container-title": "J Psychopharmacol."
+    },
+    {
+      "_id": "MPElementsOrder:C978C62C-40F6-4DFE-8A10-F15F818E8225",
+      "elements": [
+        "MPEquationElement:6E2F6EA4-9367-46B9-8F4F-9381CBE973E4"
+      ],
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-f5c4870f-8e68-4260-b723-0102569d8a6e"
+        ]
+      },
+      "objectType": "MPElementsOrder",
+      "containerID": "MPProject:lost-keywords",
+      "elementType": "MPEquationElement",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPContributorRole:7F85E207-7ABE-4AC8-AE2A-77A08126E806",
+      "uri": "https://dictionary.casrai.org/Contributor_Roles/Conceptualization",
+      "desc": "Ideas; formulation or evolution of overarching research goals and aims.",
+      "name": "Conceptualization",
+      "bundled": true,
+      "createdAt": 1689589036,
+      "prototype": "MPContributorRole:credit-conceptualization",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-05ca4a81-2848-4e4d-903e-7ed5f4215c4e"
+        ]
+      },
+      "objectType": "MPContributorRole",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPCommentAnnotation:617E58BA-38A1-4EA6-8945-CC09957DC1CC",
+      "target": "MPManuscript:lost-kwds",
+      "contents": "No table matches the in-text citation \"tables 4\". Please supply the missing table or delete the citation.",
+      "selector": {
+        "to": 42,
+        "from": 42
+      },
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-924dce5c-5d85-46f1-9091-debf09936665"
+        ]
+      },
+      "objectType": "MPCommentAnnotation",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds",
+      "contributions": [
+        {
+          "_id": "MPContribution:90BA9AFF-3197-41A6-9AE4-0F6871C77E74",
+          "profileID": "MPUserProfile:0000000000000000000000000000000000000001",
+          "timestamp": 1689588186,
+          "objectType": "MPContribution"
+        }
+      ],
+      "annotationColor": "rgb(250, 224, 150)"
+    },
+    {
+      "_id": "MPContributorRole:2EDD99B3-3612-48A3-BB2D-B52E65117EA0",
+      "uri": "https://dictionary.casrai.org/Contributor_Roles/Resources",
+      "desc": "Provision of study materials, reagents, materials, patients, laboratory samples, animals, instrumentation, computing resources, or other analysis tools.",
+      "name": "Resources",
+      "bundled": true,
+      "createdAt": 1689589036,
+      "prototype": "MPContributorRole:credit-resources",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-0231d2a3-b7e3-406b-87ca-9a74a7d13ca7"
+        ]
+      },
+      "objectType": "MPContributorRole",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPContributorRole:216030DF-A294-4822-AC0F-89E6552A230C",
+      "uri": "https://dictionary.casrai.org/Contributor_Roles/Visualization",
+      "desc": "Preparation, creation and/or presentation of the published work, specifically visualization/data presentation.",
+      "name": "Visualization",
+      "bundled": true,
+      "createdAt": 1689589036,
+      "prototype": "MPContributorRole:credit-visualization",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-e768c2da-a956-4b10-9df5-ca435ab4d490"
+        ]
+      },
+      "objectType": "MPContributorRole",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPPageLayout:038D82AA-D0E5-4DB4-AD2C-345410789C39",
+      "bundled": true,
+      "pageSize": "a4",
+      "createdAt": 1689589036,
+      "prototype": "MPPageLayout:defaultA4",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "topMargin": 20,
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-36f49f9f-552d-476f-b943-04fdf080aff7"
+        ]
+      },
+      "leftMargin": 20,
+      "objectType": "MPPageLayout",
+      "containerID": "MPProject:lost-keywords",
+      "rightMargin": 20,
+      "bottomMargin": 20,
+      "displayUnits": "mm",
+      "manuscriptID": "MPManuscript:lost-kwds",
+      "defaultParagraphStyle": "MPParagraphStyle:bodyText",
+      "embeddedNumberingStyle": {
+        "_id": "MPNumberingStyle:CB6FF724-7F91-454A-9A3C-30293471E039",
+        "prefix": "[",
+        "suffix": "]",
+        "priority": 99,
+        "objectType": "MPNumberingStyle",
+        "startIndex": 1,
+        "numberingScheme": "decimal"
+      },
+      "mirrorPagesHorizontally": true,
+      "beginChaptersOnRightHandPages": true
+    },
+    {
+      "_id": "MPBorderStyle:DED5D277-1F36-4DF5-ADAF-918085F80FA8",
+      "name": "dashed",
+      "title": "Dashed",
+      "bundled": true,
+      "pattern": [
+        2,
+        2
+      ],
+      "priority": 20,
+      "createdAt": 1689589036,
+      "prototype": "MPBorderStyle:E28AA90C-4379-434F-AF58-E2D8C8ED1EB4",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-86fbb651-74cb-4b48-981c-952b1ac2eca3"
+        ]
+      },
+      "objectType": "MPBorderStyle",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPContributorRole:BE06EBCE-AADA-41EA-86C4-240CC1DDE0DB",
+      "uri": "https://dictionary.casrai.org/Contributor_Roles/Project_administration",
+      "desc": "Management and coordination responsibility for the research activity planning and execution.",
+      "name": "Project administration",
+      "bundled": true,
+      "createdAt": 1689589036,
+      "prototype": "MPContributorRole:credit-project-administration",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-31a6c1df-4240-456a-be2a-074d0bec2ecf"
+        ]
+      },
+      "objectType": "MPContributorRole",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPContributorRole:1D93665C-AA54-49A7-AAD4-DDC437FFC860",
+      "uri": "https://dictionary.casrai.org/Contributor_Roles/Validation",
+      "desc": "Verification, whether as a part of the activity or separate, of the overall replication/reproducibility of results/experiments and other research outputs.",
+      "name": "Validation",
+      "bundled": true,
+      "createdAt": 1689589036,
+      "prototype": "MPContributorRole:credit-validation",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-f8c7cf5a-272a-4e55-ad70-8254b9154db1"
+        ]
+      },
+      "objectType": "MPContributorRole",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPStatusLabel:D49EBBFA-AE96-4783-842E-75F91AEA01B7",
+      "name": "Doing",
+      "bundled": true,
+      "priority": 2,
+      "createdAt": 1689589036,
+      "prototype": "MPStatusLabel:doing",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-4209d1e0-acf9-4387-bc73-42489c205457"
+        ]
+      },
+      "objectType": "MPStatusLabel",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPBorderStyle:3976622B-59E7-4F64-AF2F-873CA1D61016",
+      "name": "dotted",
+      "title": "Dotted",
+      "bundled": true,
+      "pattern": [
+        1,
+        1
+      ],
+      "priority": 30,
+      "createdAt": 1689589036,
+      "prototype": "MPBorderStyle:00FD8810-B85D-4FC5-8C23-8022A36E07BD",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-3bcb7ae6-7030-4b1a-97cb-92399f873eed"
+        ]
+      },
+      "objectType": "MPBorderStyle",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPColor:2C532FA9-2D1E-4048-A8F7-CA4A5A0DAFD1",
+      "name": "blue",
+      "title": "Blue",
+      "value": "#1A9BC7",
+      "bundled": true,
+      "priority": 120,
+      "createdAt": 1689589036,
+      "prototype": "MPColor:blue",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-cb15bf1e-faa1-47ec-a7f6-44f0133b337f"
+        ]
+      },
+      "objectType": "MPColor",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPColor:1ECF96DF-FA4B-4FED-B5BD-479B3703620C",
+      "name": "green",
+      "title": "Green",
+      "value": "#8DD439",
+      "bundled": true,
+      "priority": 180,
+      "createdAt": 1689589036,
+      "prototype": "MPColor:green",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-87fe0d1a-173f-4dbd-b0a4-f87ae4f5cc16"
+        ]
+      },
+      "objectType": "MPColor",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPColorScheme:03766755-C9DC-4F07-B86B-381EDA0B602A",
+      "name": "Manuscripts tags colour scheme",
+      "colors": [
+        "MPColor:lightblue",
+        "MPColor:orange",
+        "MPColor:purple",
+        "MPColor:teagreen",
+        "MPColor:pink",
+        "MPColor:darkpink",
+        "MPColor:green",
+        "MPColor:blue",
+        "MPColor:lightgray",
+        "MPColor:yellow",
+        "MPColor:red"
+      ],
+      "bundled": true,
+      "createdAt": 1689589036,
+      "prototype": "MPColorScheme:tags",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-89a73caa-6224-4bf3-9cae-41b62f1e197e"
+        ]
+      },
+      "objectType": "MPColorScheme",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPParagraphStyle:5F0DCCB3-1A4F-4CB7-A5EF-20285763F491",
+      "kind": "title",
+      "name": "manuscriptTitle",
+      "title": "Manuscript Title",
+      "bundled": true,
+      "priority": 19,
+      "alignment": "left",
+      "createdAt": 1689589036,
+      "nextStyle": "MPParagraphStyle:bodyText",
+      "partOfTOC": false,
+      "prototype": "MPParagraphStyle:manuscriptTitle",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-93cce4b2-2f96-4788-8793-5900a763abdd"
+        ]
+      },
+      "headIndent": 0,
+      "objectType": "MPParagraphStyle",
+      "tailIndent": 0,
+      "topSpacing": 10,
+      "containerID": "MPProject:lost-keywords",
+      "lineSpacing": 1.5,
+      "textStyling": {
+        "_id": "MPTextStyling:BBA06E82-F724-419F-A81E-1886644AA4B9",
+        "bold": true,
+        "color": "MPColor:black",
+        "italic": false,
+        "fontSize": 20,
+        "fontFamily": "Charter",
+        "objectType": "MPTextStyling"
+      },
+      "manuscriptID": "MPManuscript:lost-kwds",
+      "bottomSpacing": 10,
+      "firstLineIndent": 0,
+      "preferredXHTMLElement": "h1"
+    },
+    {
+      "_id": "MPParagraphStyle:F0591480-8ECD-4063-87CA-C1F8ADD46A5D",
+      "kind": "heading",
+      "name": "heading5",
+      "title": "Subsubsubsubsection Heading",
+      "bundled": true,
+      "priority": 24,
+      "alignment": "left",
+      "createdAt": 1689589036,
+      "nextStyle": "MPParagraphStyle:bodyText",
+      "partOfTOC": false,
+      "prototype": "MPParagraphStyle:H5",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-9abd9d41-12b5-4726-b528-45a58ca23667"
+        ]
+      },
+      "headIndent": 0,
+      "objectType": "MPParagraphStyle",
+      "tailIndent": 0,
+      "topSpacing": 8,
+      "containerID": "MPProject:lost-keywords",
+      "lineSpacing": 1.5,
+      "textStyling": {
+        "_id": "MPTextStyling:6094A8B5-2751-489F-B4A5-699E54B57DC3",
+        "bold": true,
+        "color": "MPColor:black",
+        "italic": false,
+        "fontSize": 12,
+        "fontFamily": "Charter",
+        "objectType": "MPTextStyling"
+      },
+      "manuscriptID": "MPManuscript:lost-kwds",
+      "bottomSpacing": 5,
+      "firstLineIndent": 0,
+      "preferredXHTMLElement": "h5"
+    },
+    {
+      "_id": "MPContributorRole:C7C46B0E-A712-4E95-979C-4DC63E9F27EB",
+      "uri": "https://dictionary.casrai.org/Contributor_Roles/Supervision",
+      "desc": "Oversight and leadership responsibility for the research activity planning and execution, including mentorship external to the core team.",
+      "name": "Supervision",
+      "bundled": true,
+      "createdAt": 1689589036,
+      "prototype": "MPContributorRole:credit-supervision",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-13aa0747-1474-45df-b471-0c799b3875f2"
+        ]
+      },
+      "objectType": "MPContributorRole",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPStatusLabel:FB32E453-BA11-4FAB-9F9E-829E2F15B50A",
+      "name": "Completed",
+      "bundled": true,
+      "priority": 3,
+      "createdAt": 1689589036,
+      "prototype": "MPStatusLabel:completed",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-81679bf5-85b6-4123-9553-c7419a8cddff"
+        ]
+      },
+      "objectType": "MPStatusLabel",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPBorderStyle:25E9601C-0D42-4DDA-9DD2-296D6607379E",
+      "name": "solid",
+      "title": "Solid",
+      "bundled": true,
+      "priority": 10,
+      "createdAt": 1689589036,
+      "prototype": "MPBorderStyle:EBBB68B9-16A9-4EA2-8817-43755FF1B7A1",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-3396dd2e-6bea-4531-bf86-35be660db73e"
+        ]
+      },
+      "objectType": "MPBorderStyle",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPColor:F88D9405-5CEF-432D-B8AE-7BF7E81AB6D3",
+      "name": "black",
+      "title": "Black",
+      "value": "#000000",
+      "bundled": true,
+      "priority": 10,
+      "createdAt": 1689589036,
+      "prototype": "MPColor:black",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-33ee7b7b-cbd4-42f2-8b5f-a58be16b51de"
+        ]
+      },
+      "objectType": "MPColor",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPColor:EF4DC72F-F101-4F7A-8C9A-07D6B321D363",
+      "name": "lightblue",
+      "title": "Light Blue",
+      "value": "#ddf3fa",
+      "bundled": true,
+      "priority": 110,
+      "createdAt": 1689589036,
+      "prototype": "MPColor:lightblue",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-3f5bc16b-0ad6-4ffc-80ff-0233e21e462f"
+        ]
+      },
+      "objectType": "MPColor",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPColor:E731C412-35F3-4909-B442-2F70A383B476",
+      "name": "teagreen",
+      "title": "Tea Green",
+      "value": "#D5FFC4",
+      "bundled": true,
+      "priority": 150,
+      "createdAt": 1689589036,
+      "prototype": "MPColor:teagreen",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-666b6ef8-8d1f-45c2-b9b0-35711dd24c5d"
+        ]
+      },
+      "objectType": "MPColor",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPColorScheme:8AC4CAD2-E374-431A-B2DF-F7469C42BB08",
+      "name": "Manuscripts default colour scheme",
+      "colors": [
+        "MPColor:black",
+        "MPColor:gray",
+        "MPColor:verylightgray",
+        "MPColor:verylightblue",
+        "MPColor:white",
+        "MPColor:red",
+        "MPColor:lightblue",
+        "MPColor:orange",
+        "MPColor:purple",
+        "MPColor:teagreen",
+        "MPColor:pink",
+        "MPColor:darkpink",
+        "MPColor:green",
+        "MPColor:blue",
+        "MPColor:lightgray",
+        "MPColor:yellow"
+      ],
+      "bundled": true,
+      "createdAt": 1689589036,
+      "prototype": "MPColorScheme:default",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-f1b6639c-de07-4804-adfb-76528cefb152"
+        ]
+      },
+      "objectType": "MPColorScheme",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPParagraphStyle:183EDDF1-9365-48A2-B951-280221BC4172",
+      "kind": "heading",
+      "name": "heading2",
+      "title": "Subsection Heading",
+      "bundled": true,
+      "priority": 21,
+      "alignment": "left",
+      "createdAt": 1689589036,
+      "nextStyle": "MPParagraphStyle:bodyText",
+      "partOfTOC": true,
+      "prototype": "MPParagraphStyle:H2",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-0ae57cab-ae7f-4491-8df3-89471b332255"
+        ]
+      },
+      "headIndent": 0,
+      "objectType": "MPParagraphStyle",
+      "tailIndent": 0,
+      "topSpacing": 8,
+      "containerID": "MPProject:lost-keywords",
+      "lineSpacing": 1.5,
+      "textStyling": {
+        "_id": "MPTextStyling:0A37ACFF-1D8A-4068-ABD0-0594C99C8EE0",
+        "bold": true,
+        "color": "MPColor:black",
+        "italic": false,
+        "fontSize": 14,
+        "fontFamily": "Charter",
+        "objectType": "MPTextStyling"
+      },
+      "manuscriptID": "MPManuscript:lost-kwds",
+      "bottomSpacing": 5,
+      "firstLineIndent": 0,
+      "preferredXHTMLElement": "h2"
+    },
+    {
+      "_id": "MPFigureStyle:3E37CB01-70F2-4D28-BB2B-AF011CA554CF",
+      "name": "default",
+      "title": "Default",
+      "bundled": true,
+      "priority": 10,
+      "createdAt": 1689589036,
+      "prototype": "MPFigureStyle:default",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-e2636775-f2ee-483b-bc47-c2b863b4689c"
+        ]
+      },
+      "objectType": "MPFigureStyle",
+      "containerID": "MPProject:lost-keywords",
+      "innerBorder": {
+        "_id": "MPBorder:0FFF4CDC-9D5C-4B7D-A606-F0374354FB7F",
+        "color": "MPColor:black",
+        "style": "MPBorderStyle:EBBB68B9-16A9-4EA2-8817-43755FF1B7A1",
+        "width": 0,
+        "objectType": "MPBorder"
+      },
+      "outerBorder": {
+        "_id": "MPBorder:0FFF4CDC-9D5C-4B7D-A606-F0374354FB7F",
+        "width": 0,
+        "objectType": "MPBorder"
+      },
+      "manuscriptID": "MPManuscript:lost-kwds",
+      "captionPosition": "below",
+      "preferredXHTMLElement": "figure"
+    },
+    {
+      "_id": "MPContributorRole:0925DD05-5C24-4CE1-B231-1DE7641E859B",
+      "uri": "https://dictionary.casrai.org/Contributor_Roles/Writing_%E2%80%93_review_%26_editing",
+      "desc": "Preparation, creation and/or presentation of the published work by those from the original research group, specifically critical review, commentary or revision – including pre- or post-publication stages.",
+      "name": "Writing – review & editing",
+      "bundled": true,
+      "createdAt": 1689589036,
+      "prototype": "MPContributorRole:credit-writing-review-editing",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-12f02b63-431c-46a9-beca-36b2a07dca07"
+        ]
+      },
+      "objectType": "MPContributorRole",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPBorderStyle:335F8B45-4AC4-4C5A-ACF1-30A6E2D2A38E",
+      "name": "double",
+      "title": "Double Lines",
+      "bundled": true,
+      "priority": 40,
+      "createdAt": 1689589036,
+      "prototype": "MPBorderStyle:16583262-A260-4E35-A508-3F960F70074F",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-62239817-8eb0-4c97-b529-68c87f6a02e1"
+        ]
+      },
+      "objectType": "MPBorderStyle",
+      "containerID": "MPProject:lost-keywords",
+      "doubleLines": true,
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPColor:4BBDAF52-0ED5-4E66-9AAF-8ABFDB8BC9F3",
+      "name": "verylightblue",
+      "title": "Very Light Blue",
+      "value": "#f0f0ff",
+      "bundled": true,
+      "priority": 50,
+      "createdAt": 1689589036,
+      "prototype": "MPColor:verylightblue",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-250ff13f-db4b-4d74-97f7-a6bfced75353"
+        ]
+      },
+      "objectType": "MPColor",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPColor:A4BF88D8-2C7E-4E57-8C45-CE3EB0987EEA",
+      "name": "orange",
+      "title": "Orange",
+      "value": "#FE8F1F",
+      "bundled": true,
+      "priority": 130,
+      "createdAt": 1689589036,
+      "prototype": "MPColor:orange",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-d0846239-c74c-4061-b0db-12737e8032c3"
+        ]
+      },
+      "objectType": "MPColor",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPParagraphStyle:DA0222AF-6AB3-41C0-B9C5-C844D768334C",
+      "kind": "heading",
+      "name": "heading3",
+      "title": "Subsubsection Heading",
+      "bundled": true,
+      "priority": 22,
+      "alignment": "left",
+      "createdAt": 1689589036,
+      "nextStyle": "MPParagraphStyle:bodyText",
+      "partOfTOC": false,
+      "prototype": "MPParagraphStyle:H3",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-fd95acf7-838b-46a0-a6a9-e241cba834a5"
+        ]
+      },
+      "headIndent": 0,
+      "objectType": "MPParagraphStyle",
+      "tailIndent": 0,
+      "topSpacing": 8,
+      "containerID": "MPProject:lost-keywords",
+      "lineSpacing": 1.5,
+      "textStyling": {
+        "_id": "MPTextStyling:055123F5-3704-49FE-B59B-D801598C67C4",
+        "bold": true,
+        "color": "MPColor:black",
+        "italic": false,
+        "fontSize": 12,
+        "fontFamily": "Charter",
+        "objectType": "MPTextStyling"
+      },
+      "manuscriptID": "MPManuscript:lost-kwds",
+      "bottomSpacing": 5,
+      "firstLineIndent": 0,
+      "preferredXHTMLElement": "h3"
+    },
+    {
+      "_id": "MPParagraphStyle:BB46AF61-8014-4E2A-BEA3-2998DF51263B",
+      "kind": "title",
+      "name": "contributorList",
+      "title": "Author List",
+      "bundled": true,
+      "priority": 20,
+      "alignment": "left",
+      "createdAt": 1689589036,
+      "nextStyle": "MPParagraphStyle:bodyText",
+      "partOfTOC": false,
+      "prototype": "MPParagraphStyle:contributorList",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-e8780d6e-37e6-4f26-8e5d-7c4dd97c997b"
+        ]
+      },
+      "headIndent": 0,
+      "objectType": "MPParagraphStyle",
+      "tailIndent": 0,
+      "topSpacing": 10,
+      "containerID": "MPProject:lost-keywords",
+      "lineSpacing": 1.5,
+      "textStyling": {
+        "_id": "MPTextStyling:E430B8EE-411D-4218-82E3-C30269D1803A",
+        "bold": false,
+        "color": "MPColor:black",
+        "italic": false,
+        "fontSize": 12,
+        "fontFamily": "Charter",
+        "objectType": "MPTextStyling"
+      },
+      "manuscriptID": "MPManuscript:lost-kwds",
+      "bottomSpacing": 10,
+      "firstLineIndent": 0,
+      "preferredXHTMLElement": "p"
+    },
+    {
+      "_id": "MPFigureLayout:DE4C6D1B-40B9-479E-ACB5-E1142F9C370C",
+      "name": "two_figures_stacked",
+      "rows": 2,
+      "title": "Two Figures Stacked",
+      "bundled": true,
+      "columns": 1,
+      "priority": 25,
+      "createdAt": 1689589036,
+      "prototype": "MPFigureLayout:two_figures_stacked",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-ea89490b-0cb7-4deb-beb3-b11898c444ea"
+        ]
+      },
+      "objectType": "MPFigureLayout",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPFigureLayout:A828F3E3-149D-490B-86DB-026B31D61B75",
+      "name": "three_figures_stacked",
+      "rows": 3,
+      "title": "Three Figures Stacked",
+      "bundled": true,
+      "columns": 1,
+      "priority": 35,
+      "createdAt": 1689589036,
+      "prototype": "MPFigureLayout:three_figures_stacked",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-45da156b-1b84-41eb-b743-107dce78ee87"
+        ]
+      },
+      "objectType": "MPFigureLayout",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPFigureLayout:CCE48FA2-5FD3-4920-BE6E-E85B77448248",
+      "name": "2_by_3",
+      "rows": 3,
+      "title": "Six Figures (2×3)",
+      "bundled": true,
+      "columns": 2,
+      "priority": 65,
+      "createdAt": 1689589036,
+      "prototype": "MPFigureLayout:2_by_3",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-723d60cf-5d20-49dc-8723-e2b1db2def12"
+        ]
+      },
+      "objectType": "MPFigureLayout",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPColor:382FFA4F-957F-4BDA-A301-92BCF49ABBF6",
+      "name": "gray",
+      "title": "Gray",
+      "value": "#b0b0b0",
+      "bundled": true,
+      "priority": 20,
+      "createdAt": 1689589036,
+      "prototype": "MPColor:gray",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-07f81040-fb2b-4a20-a9a0-06a238d4bc53"
+        ]
+      },
+      "objectType": "MPColor",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPColor:594DAC69-380A-4023-930A-CB82B55661D2",
+      "name": "verylightgray",
+      "title": "Very Light Gray",
+      "value": "#f4f4f4",
+      "bundled": true,
+      "priority": 40,
+      "createdAt": 1689589036,
+      "prototype": "MPColor:verylightgray",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-d70333e1-9f16-4984-99c1-2f0b4b673d02"
+        ]
+      },
+      "objectType": "MPColor",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPColor:34F9FC70-591F-4827-A143-7A1C8B3EFF80",
+      "name": "white",
+      "title": "White",
+      "value": "#ffffff",
+      "bundled": true,
+      "priority": 100,
+      "createdAt": 1689589036,
+      "prototype": "MPColor:white",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-b96cf9d8-a00f-4395-b93a-16ad95072263"
+        ]
+      },
+      "objectType": "MPColor",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPColor:E42BC6AF-318C-4297-8841-A93AF06E8BD0",
+      "name": "pink",
+      "title": "Pink",
+      "value": "#F5C1B7",
+      "bundled": true,
+      "priority": 160,
+      "createdAt": 1689589036,
+      "prototype": "MPColor:pink",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-0b3f67dd-5d50-43e6-a7ca-aacdb1cca9f1"
+        ]
+      },
+      "objectType": "MPColor",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPColor:4D73F783-5D7E-4632-A22E-98A3D75A8136",
+      "name": "red",
+      "title": "Red",
+      "value": "#F35143",
+      "bundled": true,
+      "priority": 200,
+      "createdAt": 1689589036,
+      "prototype": "MPColor:red",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-16807c2f-097a-4c76-a3e5-e0700c374873"
+        ]
+      },
+      "objectType": "MPColor",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPParagraphStyle:98EA5B60-B916-4BCE-8452-AA1C990834A5",
+      "kind": "heading",
+      "name": "heading4",
+      "title": "Subsubsubsection Heading",
+      "bundled": true,
+      "priority": 23,
+      "alignment": "left",
+      "createdAt": 1689589036,
+      "nextStyle": "MPParagraphStyle:bodyText",
+      "partOfTOC": false,
+      "prototype": "MPParagraphStyle:H4",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-88045cc2-8b3b-4fe2-8963-f6972f2f6d3b"
+        ]
+      },
+      "headIndent": 0,
+      "objectType": "MPParagraphStyle",
+      "tailIndent": 0,
+      "topSpacing": 8,
+      "containerID": "MPProject:lost-keywords",
+      "lineSpacing": 1.5,
+      "textStyling": {
+        "_id": "MPTextStyling:A3F0EF28-7A3F-4208-9205-5BD3FF8C1066",
+        "bold": true,
+        "color": "MPColor:black",
+        "italic": false,
+        "fontSize": 12,
+        "fontFamily": "Charter",
+        "objectType": "MPTextStyling"
+      },
+      "manuscriptID": "MPManuscript:lost-kwds",
+      "bottomSpacing": 5,
+      "firstLineIndent": 0,
+      "preferredXHTMLElement": "h4"
+    },
+    {
+      "_id": "MPTableStyle:DF8A1CC7-71CC-4EA2-8D0A-DFD7F9B671E8",
+      "name": "default",
+      "title": "Default Table Style",
+      "bundled": true,
+      "priority": 10,
+      "createdAt": 1689589036,
+      "prototype": "MPTableStyle:default",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-6468669f-2f98-482e-9921-81c6654fd0ec"
+        ]
+      },
+      "objectType": "MPTableStyle",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds",
+      "footerTopBorder": {
+        "_id": "MPBorder:2338AB83-D20B-4118-8C38-D0F330E85F23",
+        "color": "MPColor:black",
+        "style": "MPBorderStyle:EBBB68B9-16A9-4EA2-8817-43755FF1B7A1",
+        "width": 1,
+        "objectType": "MPBorder"
+      },
+      "headerTopBorder": {
+        "_id": "MPBorder:6BC92907-B7DF-4542-84CF-1456246EFEA9",
+        "color": "MPColor:black",
+        "style": "MPBorderStyle:EBBB68B9-16A9-4EA2-8817-43755FF1B7A1",
+        "width": 2,
+        "objectType": "MPBorder"
+      },
+      "footerTopSpacing": 3,
+      "footerBottomBorder": {
+        "_id": "MPBorder:EC933CA4-ABBB-49D0-A2EF-4B0B2D1DA786",
+        "color": "MPColor:black",
+        "style": "MPBorderStyle:EBBB68B9-16A9-4EA2-8817-43755FF1B7A1",
+        "width": 1,
+        "objectType": "MPBorder"
+      },
+      "headerBottomBorder": {
+        "_id": "MPBorder:EB6A90B8-E464-4016-A6E7-90F704EC63C2",
+        "color": "MPColor:black",
+        "style": "MPBorderStyle:EBBB68B9-16A9-4EA2-8817-43755FF1B7A1",
+        "width": 1,
+        "objectType": "MPBorder"
+      },
+      "bodyBackgroundColor": "MPColor:white",
+      "headerBottomSpacing": 3,
+      "footerBackgroundColor": "MPColor:white",
+      "headerBackgroundColor": "MPColor:verylightgray",
+      "bodyColumnSeparatorBorder": {
+        "_id": "MPBorder:EBB5D0B3-A9FE-49B3-ADAD-2CC5851D91F9",
+        "color": "MPColor:black",
+        "style": "MPBorderStyle:00FD8810-B85D-4FC5-8C23-8022A36E07BD",
+        "width": 1,
+        "objectType": "MPBorder"
+      },
+      "bodyBackgroundAlternateColor": "MPColor:white"
+    },
+    {
+      "_id": "MPColor:5479E7B3-652A-4F0F-BD23-4FCDDAC5FC4A",
+      "name": "darkpink",
+      "title": "Dark Pink",
+      "value": "#F474AE",
+      "bundled": true,
+      "priority": 170,
+      "createdAt": 1689589036,
+      "prototype": "MPColor:darkpink",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-16574fd4-c502-4d0b-9d60-b18f75ec3113"
+        ]
+      },
+      "objectType": "MPColor",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPParagraphStyle:A42C1418-2F9B-4620-A555-29EEFD8BDC9F",
+      "kind": "heading",
+      "name": "heading6",
+      "title": "Subsubsubsubsubsection Heading",
+      "bundled": true,
+      "priority": 25,
+      "alignment": "left",
+      "createdAt": 1689589036,
+      "nextStyle": "MPParagraphStyle:bodyText",
+      "partOfTOC": false,
+      "prototype": "MPParagraphStyle:H6",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-02d0a263-8a06-492f-b090-5c5f001f2564"
+        ]
+      },
+      "headIndent": 0,
+      "objectType": "MPParagraphStyle",
+      "tailIndent": 0,
+      "topSpacing": 8,
+      "containerID": "MPProject:lost-keywords",
+      "lineSpacing": 1.5,
+      "textStyling": {
+        "_id": "MPTextStyling:5507294C-AD8D-48EC-B86A-A4E5AE6C34D5",
+        "bold": true,
+        "color": "MPColor:black",
+        "italic": false,
+        "fontSize": 10,
+        "fontFamily": "Charter",
+        "objectType": "MPTextStyling"
+      },
+      "manuscriptID": "MPManuscript:lost-kwds",
+      "bottomSpacing": 5,
+      "firstLineIndent": 0,
+      "preferredXHTMLElement": "h6"
+    },
+    {
+      "_id": "MPParagraphStyle:BCC7781C-5DB9-4CD9-9D6B-23E2A5ECE8F4",
+      "kind": "footnote",
+      "name": "footnote",
+      "title": "Footnote",
+      "bundled": true,
+      "priority": 100,
+      "alignment": "left",
+      "createdAt": 1689589036,
+      "nextStyle": "MPParagraphStyle:footnote",
+      "partOfTOC": false,
+      "prototype": "MPParagraphStyle:footnote",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-cd8c5174-5579-440e-ae0a-ba1c841786a6"
+        ]
+      },
+      "headIndent": 0,
+      "objectType": "MPParagraphStyle",
+      "tailIndent": 0,
+      "topSpacing": 10,
+      "containerID": "MPProject:lost-keywords",
+      "lineSpacing": 2,
+      "textStyling": {
+        "_id": "MPTextStyling:A6E169AC-4610-44C6-A979-7FD95AE787CC",
+        "bold": false,
+        "color": "MPColor:black",
+        "italic": false,
+        "fontSize": 10,
+        "fontFamily": "Charter",
+        "objectType": "MPTextStyling"
+      },
+      "manuscriptID": "MPManuscript:lost-kwds",
+      "bottomSpacing": 10,
+      "listHeadIndent": 30,
+      "listTailIndent": 0,
+      "firstLineIndent": 0,
+      "preferredXHTMLElement": "p",
+      "listItemIndentPerLevel": 30,
+      "hierarchicalListNumbering": false,
+      "embeddedListItemBulletStyles": {
+        "1": {
+          "_id": "MPListItemBulletStyle:0E9110F4-8426-4B66-B97A-9053CFC9C77A",
+          "objectType": "MPListItemBulletStyle",
+          "bulletStyle": "disc"
+        },
+        "2": {
+          "_id": "MPListItemBulletStyle:1066DC6B-704F-4CA0-B807-72F461F5E0BA",
+          "objectType": "MPListItemBulletStyle",
+          "bulletStyle": "circle"
+        }
+      },
+      "embeddedListItemNumberingStyles": {
+        "1": {
+          "_id": "MPNumberingStyle:5A479546-C898-4C4B-9836-202EA34332A8",
+          "prefix": "",
+          "suffix": ".",
+          "objectType": "MPNumberingStyle",
+          "startIndex": 1,
+          "numberingScheme": "decimal"
+        },
+        "2": {
+          "_id": "MPNumberingStyle:BE16BD50-9F21-49A7-8F66-15011A3DBCEE",
+          "prefix": "",
+          "suffix": ".",
+          "objectType": "MPNumberingStyle",
+          "startIndex": 1,
+          "numberingScheme": "decimal"
+        },
+        "3": {
+          "_id": "MPNumberingStyle:5AC47239-EDA2-4314-8BE5-8A5399F379DF",
+          "prefix": "",
+          "suffix": ".",
+          "objectType": "MPNumberingStyle",
+          "startIndex": 1,
+          "numberingScheme": "decimal"
+        }
+      },
+      "hideListNumberingSuffixForLastLevel": true
+    },
+    {
+      "_id": "MPColor:405AE4A8-5D7D-402C-8B3C-E4A6F2DE71BC",
+      "name": "lightgray",
+      "title": "Light Gray",
+      "value": "#E2E2E2",
+      "bundled": true,
+      "priority": 30,
+      "createdAt": 1689589036,
+      "prototype": "MPColor:lightgray",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-f1ef9326-6750-490a-97e0-e85265936ff8"
+        ]
+      },
+      "objectType": "MPColor",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPColor:B1E2F2AC-D0BC-489D-B2C0-BE02BFC6202C",
+      "name": "purple",
+      "title": "Purple",
+      "value": "#B3A1FC",
+      "bundled": true,
+      "priority": 140,
+      "createdAt": 1689589036,
+      "prototype": "MPColor:purple",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-ecea2ed6-34f7-41e1-a734-9361f5b9aa48"
+        ]
+      },
+      "objectType": "MPColor",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPColor:95095988-F71F-4239-B8FF-D01285C72C9F",
+      "name": "yellow",
+      "title": "Yellow",
+      "value": "#FFFCDB",
+      "bundled": true,
+      "priority": 190,
+      "createdAt": 1689589036,
+      "prototype": "MPColor:yellow",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-480ae7d2-c99b-415d-b6d8-17a80de3a227"
+        ]
+      },
+      "objectType": "MPColor",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPFigureLayout:3EC6FB1A-A061-48B6-8DDF-3CEE2FF75028",
+      "name": "nine_figures",
+      "rows": 3,
+      "title": "Nine Figures (3×3)",
+      "bundled": true,
+      "columns": 3,
+      "priority": 90,
+      "createdAt": 1689589036,
+      "prototype": "MPFigureLayout:nine_figures",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-639070b4-6f47-4797-b12f-14d82ecbcf6d"
+        ]
+      },
+      "objectType": "MPFigureLayout",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPParagraphStyle:6F805BA8-F2BC-418E-8BD4-2CE58F5DF88E",
+      "kind": "body",
+      "name": "bodyText",
+      "title": "Table of Contents",
+      "bundled": true,
+      "priority": 20,
+      "alignment": "left",
+      "createdAt": 1689589036,
+      "nextStyle": "MPParagraphStyle:bodyText",
+      "partOfTOC": false,
+      "prototype": "MPParagraphStyle:toc",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-7e463e7d-56f1-4fe9-90e2-1b1b0a40ff03"
+        ]
+      },
+      "headIndent": 0,
+      "objectType": "MPParagraphStyle",
+      "tailIndent": 0,
+      "topSpacing": 10,
+      "containerID": "MPProject:lost-keywords",
+      "lineSpacing": 2,
+      "textStyling": {
+        "_id": "MPTextStyling:2E79D76D-CAC1-492F-8709-DAD9FD369B8B",
+        "bold": false,
+        "color": "MPColor:black",
+        "italic": false,
+        "fontSize": 12,
+        "fontFamily": "Charter",
+        "objectType": "MPTextStyling"
+      },
+      "manuscriptID": "MPManuscript:lost-kwds",
+      "bottomSpacing": 10,
+      "listHeadIndent": 30,
+      "listTailIndent": 0,
+      "firstLineIndent": 0,
+      "preferredXHTMLElement": "p",
+      "listItemIndentPerLevel": 30,
+      "hierarchicalListNumbering": false,
+      "embeddedListItemBulletStyles": {
+        "1": {
+          "_id": "MPListItemBulletStyle:DD563297-776A-42C6-9408-21501DD0B0AC",
+          "objectType": "MPListItemBulletStyle",
+          "bulletStyle": "none"
+        },
+        "2": {
+          "_id": "MPListItemBulletStyle:EC293DED-80AD-414C-9988-9EF62A9A4EF4",
+          "objectType": "MPListItemBulletStyle",
+          "bulletStyle": "none"
+        }
+      },
+      "embeddedListItemNumberingStyles": {
+        "1": {
+          "_id": "MPNumberingStyle:43D2A1BA-0ED9-4B8E-8C29-265B17B9F1DD",
+          "prefix": "",
+          "suffix": ".",
+          "objectType": "MPNumberingStyle",
+          "startIndex": 1,
+          "numberingScheme": "none"
+        },
+        "2": {
+          "_id": "MPNumberingStyle:9D6F6970-0273-4C53-BC7A-8B2FAA784D4A",
+          "prefix": "",
+          "suffix": ".",
+          "objectType": "MPNumberingStyle",
+          "startIndex": 1,
+          "numberingScheme": "none"
+        },
+        "3": {
+          "_id": "MPNumberingStyle:AAB86A8A-5D9D-4C37-995F-F0226E22E10D",
+          "prefix": "",
+          "suffix": ".",
+          "objectType": "MPNumberingStyle",
+          "startIndex": 1,
+          "numberingScheme": "none"
+        }
+      },
+      "hideListNumberingSuffixForLastLevel": true
+    },
+    {
+      "_id": "MPFigureLayout:EFA0897E-776E-49A7-80A6-910F18941161",
+      "name": "two_figures",
+      "rows": 1,
+      "title": "Two Figures Side by Side",
+      "bundled": true,
+      "columns": 2,
+      "priority": 20,
+      "createdAt": 1689589036,
+      "prototype": "MPFigureLayout:two_figures",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-a0649690-cf8e-499c-a3ae-cb5d2497d487"
+        ]
+      },
+      "objectType": "MPFigureLayout",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPParagraphStyle:1313BE48-7BE6-439A-A579-C51DF31CC2CE",
+      "kind": "body",
+      "name": "bodyText",
+      "title": "Body Text",
+      "bundled": true,
+      "priority": 10,
+      "alignment": "left",
+      "createdAt": 1689589036,
+      "nextStyle": "MPParagraphStyle:bodyText",
+      "partOfTOC": false,
+      "prototype": "MPParagraphStyle:bodyText",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-cafd9adf-d8fb-4ded-95d6-bd699f75faac"
+        ]
+      },
+      "headIndent": 0,
+      "objectType": "MPParagraphStyle",
+      "tailIndent": 0,
+      "topSpacing": 10,
+      "containerID": "MPProject:lost-keywords",
+      "lineSpacing": 2,
+      "textStyling": {
+        "_id": "MPTextStyling:A6E169AC-4610-44C6-A979-7FD95AE787CC",
+        "bold": false,
+        "color": "MPColor:black",
+        "italic": false,
+        "fontSize": 12,
+        "fontFamily": "Charter",
+        "objectType": "MPTextStyling"
+      },
+      "manuscriptID": "MPManuscript:lost-kwds",
+      "bottomSpacing": 10,
+      "listHeadIndent": 30,
+      "listTailIndent": 0,
+      "firstLineIndent": 0,
+      "preferredXHTMLElement": "p",
+      "listItemIndentPerLevel": 30,
+      "hierarchicalListNumbering": false,
+      "embeddedListItemBulletStyles": {
+        "1": {
+          "_id": "MPListItemBulletStyle:0E9110F4-8426-4B66-B97A-9053CFC9C77A",
+          "objectType": "MPListItemBulletStyle",
+          "bulletStyle": "disc"
+        },
+        "2": {
+          "_id": "MPListItemBulletStyle:1066DC6B-704F-4CA0-B807-72F461F5E0BA",
+          "objectType": "MPListItemBulletStyle",
+          "bulletStyle": "circle"
+        }
+      },
+      "embeddedListItemNumberingStyles": {
+        "1": {
+          "_id": "MPNumberingStyle:5A479546-C898-4C4B-9836-202EA34332A8",
+          "prefix": "",
+          "suffix": ".",
+          "objectType": "MPNumberingStyle",
+          "startIndex": 1,
+          "numberingScheme": "decimal"
+        },
+        "2": {
+          "_id": "MPNumberingStyle:BE16BD50-9F21-49A7-8F66-15011A3DBCEE",
+          "prefix": "",
+          "suffix": ".",
+          "objectType": "MPNumberingStyle",
+          "startIndex": 1,
+          "numberingScheme": "decimal"
+        },
+        "3": {
+          "_id": "MPNumberingStyle:5AC47239-EDA2-4314-8BE5-8A5399F379DF",
+          "prefix": "",
+          "suffix": ".",
+          "objectType": "MPNumberingStyle",
+          "startIndex": 1,
+          "numberingScheme": "decimal"
+        }
+      },
+      "hideListNumberingSuffixForLastLevel": true
+    },
+    {
+      "_id": "MPParagraphStyle:7A0F6B56-37B8-46D7-997B-45A4E8B92719",
+      "kind": "listing",
+      "name": "listing",
+      "title": "Listing",
+      "bundled": true,
+      "priority": 110,
+      "alignment": "left",
+      "createdAt": 1689589036,
+      "nextStyle": "MPParagraphStyle:listing",
+      "partOfTOC": false,
+      "prototype": "MPParagraphStyle:listing",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-12b2846b-ab05-41e5-b762-67c0b648fe1e"
+        ]
+      },
+      "headIndent": 0,
+      "objectType": "MPParagraphStyle",
+      "tailIndent": 0,
+      "topSpacing": 10,
+      "containerID": "MPProject:lost-keywords",
+      "lineSpacing": 1.5,
+      "textStyling": {
+        "_id": "MPTextStyling:38ED2127-F6B6-4465-B739-09A3701A832D",
+        "bold": false,
+        "color": "MPColor:black",
+        "italic": false,
+        "fontSize": 11,
+        "fontFamily": "Menlo",
+        "objectType": "MPTextStyling"
+      },
+      "manuscriptID": "MPManuscript:lost-kwds",
+      "bottomSpacing": 10,
+      "firstLineIndent": 0,
+      "preferredXHTMLElement": "pre"
+    },
+    {
+      "_id": "MPCaptionStyle:475EC7BB-FEB0-41C8-9E99-0174C1651DFF",
+      "name": "default",
+      "title": "Default",
+      "bundled": true,
+      "priority": 10,
+      "createdAt": 1689589036,
+      "prototype": "MPCaptionStyle:default",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-65077374-b698-4b30-b538-e3f49d42c735"
+        ]
+      },
+      "objectType": "MPCaptionStyle",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds",
+      "embeddedCaptionComponents": [
+        {
+          "_id": "MPStyleableStringComponent:E43EAFE4-7C81-468E-BF88-8CEF41435062",
+          "bold": true,
+          "italic": false,
+          "objectType": "MPStyleableStringComponent",
+          "placeholderString": "${kind} ${elementIndex}:"
+        },
+        {
+          "_id": "MPStyleableStringComponent:A6F4C1B4-597F-4206-A21A-4CA60F6C7A2E",
+          "bold": false,
+          "italic": false,
+          "editable": true,
+          "objectType": "MPStyleableStringComponent",
+          "placeholderString": "${caption}"
+        }
+      ],
+      "figureTitleNumberingScheme": "decimal",
+      "embeddedFigureTitleComponents": [
+        {
+          "_id": "MPStyleableStringComponent:E5CB691A-EE39-41BD-8D78-22E02BD7782A",
+          "bold": true,
+          "italic": false,
+          "objectType": "MPStyleableStringComponent",
+          "placeholderString": "${figureIndex}. "
+        },
+        {
+          "_id": "MPStyleableStringComponent:9E4DDC68-4667-49C8-9F3E-600E0258A53A",
+          "bold": false,
+          "italic": false,
+          "editable": true,
+          "objectType": "MPStyleableStringComponent",
+          "placeholderString": "${title}"
+        }
+      ]
+    },
+    {
+      "_id": "MPFigureLayout:D31B7554-20F5-4C19-918B-FF9C57086192",
+      "name": "default",
+      "rows": 1,
+      "title": "Single Figure",
+      "bundled": true,
+      "columns": 1,
+      "priority": 10,
+      "createdAt": 1689589036,
+      "prototype": "MPFigureLayout:default",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-4e14421a-69c9-4867-a5a1-b965d068a01f"
+        ]
+      },
+      "objectType": "MPFigureLayout",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPFigureLayout:86983CC4-1377-4F05-98BB-BFD715A4FBC4",
+      "name": "four_figures",
+      "rows": 2,
+      "title": "Four Figures (2×2)",
+      "bundled": true,
+      "columns": 2,
+      "priority": 40,
+      "createdAt": 1689589036,
+      "prototype": "MPFigureLayout:four_figures",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-6106cbe5-734a-4880-95e9-3d3fbe18ea10"
+        ]
+      },
+      "objectType": "MPFigureLayout",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPAuxiliaryObjectReferenceStyle:1B0A2009-203D-4862-B8C9-A0B676E4035C",
+      "name": "default",
+      "title": "Default",
+      "bundled": true,
+      "priority": 10,
+      "createdAt": 1689589036,
+      "prototype": "MPAuxiliaryObjectReferenceStyle:default",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-7a7d2f58-94e9-4178-a831-f3104799a7f9"
+        ]
+      },
+      "objectType": "MPAuxiliaryObjectReferenceStyle",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds",
+      "embeddedReferenceStringComponents": [
+        {
+          "_id": "MPStyleableStringComponent:B8CF9955-0956-4114-AAC7-F9C6CC99688F",
+          "bold": true,
+          "italic": false,
+          "objectType": "MPStyleableStringComponent",
+          "placeholderString": "${kind} ${elementIndex}"
+        }
+      ]
+    },
+    {
+      "_id": "MPFigureLayout:691769C5-2722-4CA9-A21F-8521462728AA",
+      "name": "three_figures",
+      "rows": 1,
+      "title": "Three Figures in a Row",
+      "bundled": true,
+      "columns": 3,
+      "priority": 30,
+      "createdAt": 1689589036,
+      "prototype": "MPFigureLayout:three_figures",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-a9682e86-b100-4302-8100-f864f55712c8"
+        ]
+      },
+      "objectType": "MPFigureLayout",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPAffiliation:D2C49C5D-7CB2-4BE2-B967-FBE3541201DB",
+      "country": "China",
+      "priority": 2,
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-d6a0dfcb-3311-48fe-b597-a3bc97f559c6"
+        ]
+      },
+      "objectType": "MPAffiliation",
+      "containerID": "MPProject:lost-keywords",
+      "institution": "Xinghua Forth People’s Hospital",
+      "addressLine1": "Xinghua, Jiangsu",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPFigureElement:13AC1FED-31D2-47D5-9D60-3A8A7E7F1F41",
+      "label": "Fig. 1",
+      "caption": "<p class=\"caption-description\" data-placeholder-text=\"Caption...\" contenteditable=\"true\">Modelled tracheid production rate (PR) as a function of (a) water potential and (b) temperature as given by <b>Eq. 1</b> in the main text (black lines; the grey line represents the effect of temperature without threshold), given temperature and water potential thresholds (<i>γ<sub>T</sub></i> = 7 °C and <i>γ<sub>ψ</sub></i> = –1 MPa). The optimum temperature, <i>T</i><sub>opt</sub> = 30 °C, is derived from the fixed parameter values. Here PR is relativized by the maximum PR given the range of water potential and temperature.</p>",
+      "createdAt": 1689589036,
+      "listingID": "MPListing:C72399B7-6DD3-4989-9D90-17F161C9D205",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-5148bbfb-27bd-404a-8f95-1ea68a0da452"
+        ]
+      },
+      "objectType": "MPFigureElement",
+      "containerID": "MPProject:lost-keywords",
+      "elementType": "figure",
+      "manuscriptID": "MPManuscript:lost-kwds",
+      "containedObjectIDs": [
+        "MPFigure:E55CAB56-35CA-46A2-9393-4E05BCF34C3F"
+      ]
+    },
+    {
+      "_id": "MPListing:C72399B7-6DD3-4989-9D90-17F161C9D205",
+      "contents": "",
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-5b243380-98f1-40ce-8b22-cec776700d77"
+        ]
+      },
+      "objectType": "MPListing",
+      "containerID": "MPProject:lost-keywords",
+      "languageKey": "null",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPParagraphElement:C0F67999-4C82-4530-9E21-A53C90F39F3A",
+      "contents": "<p xmlns=\"http://www.w3.org/1999/xhtml\" id=\"MPParagraphElement:C0F67999-4C82-4530-9E21-A53C90F39F3A\" class=\"MPElement\" data-object-type=\"MPParagraphElement\">DβH catalyzes the conversion of DA to NE in the central nervous system that both of which influence cognitive performance in schizophrenia. Cognitive deficits have been reported to be inversely associated with plasma DβH (pDβH) activity in patients with schizophrenia. DβH has been shown to be involved in mood regulation and attention deficits. Also, the <i>DβH</i> knockout mice are unable to synthesis NE that is involved with cognitive deficits. Several studies have shown that <i>DβH</i> genetic variants are associated with cognitive deficits. For example, it has been found that <i>DβH</i> 5’-1021C/T polymorphism is involved in executive performance in children and adolescents with attention-deficit/hyperactivity disorder (ADHD). It is also involved in attention abnormality for neural facial expression and sustained attention in the healthy population. Other <i>DβH</i> genetic variants are reported to contribute to sustained attention deficits in ADHD and spatial working memory deficits in the healthy population. Taken together, these results support that <i>DβH</i> genetic variants might be associated with cognitive function in suicide attempters with chronic schizophrenia.</p>",
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-36e842a2-feed-47d6-be8c-e7c67efa3bd7"
+        ]
+      },
+      "objectType": "MPParagraphElement",
+      "containerID": "MPProject:lost-keywords",
+      "elementType": "p",
+      "manuscriptID": "MPManuscript:lost-kwds",
+      "placeholderInnerHTML": ""
+    },
+    {
+      "_id": "MPParagraphElement:745179DB-086E-45AE-98DD-824DAD9DD2A9",
+      "contents": "<p xmlns=\"http://www.w3.org/1999/xhtml\" id=\"MPParagraphElement:745179DB-086E-45AE-98DD-824DAD9DD2A9\" class=\"MPElement\" data-object-type=\"MPParagraphElement\">All patients were Han Chinese recruited from the Beijing area. Any patients with any abnormalities whatsoever were excluded, including cardiovascular disease, cerebrovascular disease, infections, cancer, unstable diabetes, uncontrolled hypertension, pregnancy, and drug or alcohol abuse. The Institutional Review Board, HuiLongGuan Hospital approved the protocol and informed consent of this study, and signed informed consent was obtained from each patient before recruitment (see <span class=\"cross-reference\" data-reference-id=\"MPAuxiliaryObjectReference:B3487603-5D95-4E9A-8275-DD5B5A7B3AFE\"><span class=\"kind elementIndex\"><b>Table 1</b></span></span>).</p>",
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-499d2b59-3a37-4a40-9497-08dbbc504048"
+        ]
+      },
+      "objectType": "MPParagraphElement",
+      "containerID": "MPProject:lost-keywords",
+      "elementType": "p",
+      "manuscriptID": "MPManuscript:lost-kwds",
+      "placeholderInnerHTML": ""
+    },
+    {
+      "_id": "MPEquation:0B973CFD-049D-4188-8E87-5E2EF1AADFE7",
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-298163be-5db9-46a4-a19f-dbbaa30810bb"
+        ]
+      },
+      "objectType": "MPEquation",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds",
+      "TeXRepresentation": "",
+      "SVGStringRepresentation": "<svg xmlns=\"http://www.w3.org/2000/svg\" style=\"vertical-align: -0.798ex;\" width=\"26.95ex\" height=\"2.73ex\" role=\"img\" focusable=\"false\" viewBox=\"0 -853.7 11911.8 1206.5\"><g stroke=\"currentColor\" fill=\"currentColor\" stroke-width=\"0\" transform=\"scale(1,-1)\"><g data-mml-node=\"math\" xmlns:mml=\"http://www.w3.org/1998/Math/MathML\"><g data-mml-node=\"msup\"><g data-mml-node=\"mrow\"><g data-mml-node=\"mfenced\"><g data-mml-node=\"mo\"><path data-c=\"28\" d=\"M94 250Q94 319 104 381T127 488T164 576T202 643T244 695T277 729T302 750H315H319Q333 750 333 741Q333 738 316 720T275 667T226 581T184 443T167 250T184 58T225 -81T274 -167T316 -220T333 -241Q333 -250 318 -250H315H302L274 -226Q180 -141 137 -14T94 250Z\"/></g><g data-mml-node=\"mrow\" transform=\"translate(389,0)\"><g data-mml-node=\"mi\"><path data-c=\"1D465\" d=\"M52 289Q59 331 106 386T222 442Q257 442 286 424T329 379Q371 442 430 442Q467 442 494 420T522 361Q522 332 508 314T481 292T458 288Q439 288 427 299T415 328Q415 374 465 391Q454 404 425 404Q412 404 406 402Q368 386 350 336Q290 115 290 78Q290 50 306 38T341 26Q378 26 414 59T463 140Q466 150 469 151T485 153H489Q504 153 504 145Q504 144 502 134Q486 77 440 33T333 -11Q263 -11 227 52Q186 -10 133 -10H127Q78 -10 57 16T35 71Q35 103 54 123T99 143Q142 143 142 101Q142 81 130 66T107 46T94 41L91 40Q91 39 97 36T113 29T132 26Q168 26 194 71Q203 87 217 139T245 247T261 313Q266 340 266 352Q266 380 251 392T217 404Q177 404 142 372T93 290Q91 281 88 280T72 278H58Q52 284 52 289Z\"/></g><g data-mml-node=\"mo\" transform=\"translate(794.2,0)\"><path data-c=\"2B\" d=\"M56 237T56 250T70 270H369V420L370 570Q380 583 389 583Q402 583 409 568V270H707Q722 262 722 250T707 230H409V-68Q401 -82 391 -82H389H387Q375 -82 369 -68V230H70Q56 237 56 250Z\"/></g><g data-mml-node=\"mi\" transform=\"translate(1794.4,0)\"><path data-c=\"1D44E\" d=\"M33 157Q33 258 109 349T280 441Q331 441 370 392Q386 422 416 422Q429 422 439 414T449 394Q449 381 412 234T374 68Q374 43 381 35T402 26Q411 27 422 35Q443 55 463 131Q469 151 473 152Q475 153 483 153H487Q506 153 506 144Q506 138 501 117T481 63T449 13Q436 0 417 -8Q409 -10 393 -10Q359 -10 336 5T306 36L300 51Q299 52 296 50Q294 48 292 46Q233 -10 172 -10Q117 -10 75 30T33 157ZM351 328Q351 334 346 350T323 385T277 405Q242 405 210 374T160 293Q131 214 119 129Q119 126 119 118T118 106Q118 61 136 44T179 26Q217 26 254 59T298 110Q300 114 325 217T351 328Z\"/></g></g><g data-mml-node=\"mo\" transform=\"translate(2712.4,0)\"><path data-c=\"29\" d=\"M60 749L64 750Q69 750 74 750H86L114 726Q208 641 251 514T294 250Q294 182 284 119T261 12T224 -76T186 -143T145 -194T113 -227T90 -246Q87 -249 86 -250H74Q66 -250 63 -250T58 -247T55 -238Q56 -237 66 -225Q221 -64 221 250T66 725Q56 737 55 738Q55 746 60 749Z\"/></g></g></g><g data-mml-node=\"mrow\" transform=\"translate(3134.4,477.1) scale(0.707)\"><g data-mml-node=\"mi\"><path data-c=\"1D45B\" d=\"M21 287Q22 293 24 303T36 341T56 388T89 425T135 442Q171 442 195 424T225 390T231 369Q231 367 232 367L243 378Q304 442 382 442Q436 442 469 415T503 336T465 179T427 52Q427 26 444 26Q450 26 453 27Q482 32 505 65T540 145Q542 153 560 153Q580 153 580 145Q580 144 576 130Q568 101 554 73T508 17T439 -10Q392 -10 371 17T350 73Q350 92 386 193T423 345Q423 404 379 404H374Q288 404 229 303L222 291L189 157Q156 26 151 16Q138 -11 108 -11Q95 -11 87 -5T76 7T74 17Q74 30 112 180T152 343Q153 348 153 366Q153 405 129 405Q91 405 66 305Q60 285 60 284Q58 278 41 278H27Q21 284 21 287Z\"/></g></g></g><g data-mml-node=\"mo\" transform=\"translate(3886.5,0)\"><path data-c=\"3D\" d=\"M56 347Q56 360 70 367H707Q722 359 722 347Q722 336 708 328L390 327H72Q56 332 56 347ZM56 153Q56 168 72 173H708Q722 163 722 153Q722 140 707 133H70Q56 140 56 153Z\"/></g><g data-mml-node=\"mrow\" transform=\"translate(4942.3,0)\"><g data-mml-node=\"msubsup\"><g data-mml-node=\"mo\"><path data-c=\"2211\" d=\"M61 748Q64 750 489 750H913L954 640Q965 609 976 579T993 533T999 516H979L959 517Q936 579 886 621T777 682Q724 700 655 705T436 710H319Q183 710 183 709Q186 706 348 484T511 259Q517 250 513 244L490 216Q466 188 420 134T330 27L149 -187Q149 -188 362 -188Q388 -188 436 -188T506 -189Q679 -189 778 -162T936 -43Q946 -27 959 6H999L913 -249L489 -250Q65 -250 62 -248Q56 -246 56 -239Q56 -234 118 -161Q186 -81 245 -11L428 206Q428 207 242 462L57 717L56 728Q56 744 61 748Z\"/></g><g data-mml-node=\"mrow\" transform=\"translate(1089,477.1) scale(0.707)\"><g data-mml-node=\"mi\"><path data-c=\"1D45B\" d=\"M21 287Q22 293 24 303T36 341T56 388T89 425T135 442Q171 442 195 424T225 390T231 369Q231 367 232 367L243 378Q304 442 382 442Q436 442 469 415T503 336T465 179T427 52Q427 26 444 26Q450 26 453 27Q482 32 505 65T540 145Q542 153 560 153Q580 153 580 145Q580 144 576 130Q568 101 554 73T508 17T439 -10Q392 -10 371 17T350 73Q350 92 386 193T423 345Q423 404 379 404H374Q288 404 229 303L222 291L189 157Q156 26 151 16Q138 -11 108 -11Q95 -11 87 -5T76 7T74 17Q74 30 112 180T152 343Q153 348 153 366Q153 405 129 405Q91 405 66 305Q60 285 60 284Q58 278 41 278H27Q21 284 21 287Z\"/></g></g><g data-mml-node=\"mrow\" transform=\"translate(1089,-285.4) scale(0.707)\"><g data-mml-node=\"mi\"><path data-c=\"1D458\" d=\"M121 647Q121 657 125 670T137 683Q138 683 209 688T282 694Q294 694 294 686Q294 679 244 477Q194 279 194 272Q213 282 223 291Q247 309 292 354T362 415Q402 442 438 442Q468 442 485 423T503 369Q503 344 496 327T477 302T456 291T438 288Q418 288 406 299T394 328Q394 353 410 369T442 390L458 393Q446 405 434 405H430Q398 402 367 380T294 316T228 255Q230 254 243 252T267 246T293 238T320 224T342 206T359 180T365 147Q365 130 360 106T354 66Q354 26 381 26Q429 26 459 145Q461 153 479 153H483Q499 153 499 144Q499 139 496 130Q455 -11 378 -11Q333 -11 305 15T277 90Q277 108 280 121T283 145Q283 167 269 183T234 206T200 217T182 220H180Q168 178 159 139T145 81T136 44T129 20T122 7T111 -2Q98 -11 83 -11Q66 -11 57 -1T48 16Q48 26 85 176T158 471L195 616Q196 629 188 632T149 637H144Q134 637 131 637T124 640T121 647Z\"/></g><g data-mml-node=\"mo\" transform=\"translate(521,0)\"><path data-c=\"3D\" d=\"M56 347Q56 360 70 367H707Q722 359 722 347Q722 336 708 328L390 327H72Q56 332 56 347ZM56 153Q56 168 72 173H708Q722 163 722 153Q722 140 707 133H70Q56 140 56 153Z\"/></g><g data-mml-node=\"mn\" transform=\"translate(1299,0)\"><path data-c=\"30\" d=\"M96 585Q152 666 249 666Q297 666 345 640T423 548Q460 465 460 320Q460 165 417 83Q397 41 362 16T301 -15T250 -22Q224 -22 198 -16T137 16T82 83Q39 165 39 320Q39 494 96 585ZM321 597Q291 629 250 629Q208 629 178 597Q153 571 145 525T137 333Q137 175 145 125T181 46Q209 16 250 16Q290 16 318 46Q347 76 354 130T362 333Q362 478 354 524T321 597Z\"/></g></g></g><g data-mml-node=\"mrow\" transform=\"translate(2411.1,0)\"><g data-mml-node=\"mfenced\"><g data-mml-node=\"mo\" transform=\"translate(0 -0.5)\"><path data-c=\"28\" d=\"M152 251Q152 646 388 850H416Q422 844 422 841Q422 837 403 816T357 753T302 649T255 482T236 250Q236 124 255 19T301 -147T356 -251T403 -315T422 -340Q422 -343 416 -349H388Q359 -325 332 -296T271 -213T212 -97T170 56T152 251Z\"/></g><g data-mml-node=\"mrow\" transform=\"translate(458,0)\"><g data-mml-node=\"mfrac\"><g data-mml-node=\"mrow\" transform=\"translate(120,444) scale(0.707)\"><g data-mml-node=\"mi\"><path data-c=\"1D45B\" d=\"M21 287Q22 293 24 303T36 341T56 388T89 425T135 442Q171 442 195 424T225 390T231 369Q231 367 232 367L243 378Q304 442 382 442Q436 442 469 415T503 336T465 179T427 52Q427 26 444 26Q450 26 453 27Q482 32 505 65T540 145Q542 153 560 153Q580 153 580 145Q580 144 576 130Q568 101 554 73T508 17T439 -10Q392 -10 371 17T350 73Q350 92 386 193T423 345Q423 404 379 404H374Q288 404 229 303L222 291L189 157Q156 26 151 16Q138 -11 108 -11Q95 -11 87 -5T76 7T74 17Q74 30 112 180T152 343Q153 348 153 366Q153 405 129 405Q91 405 66 305Q60 285 60 284Q58 278 41 278H27Q21 284 21 287Z\"/></g></g><g data-mml-node=\"mrow\" transform=\"translate(147.9,-345) scale(0.707)\"><g data-mml-node=\"mi\"><path data-c=\"1D458\" d=\"M121 647Q121 657 125 670T137 683Q138 683 209 688T282 694Q294 694 294 686Q294 679 244 477Q194 279 194 272Q213 282 223 291Q247 309 292 354T362 415Q402 442 438 442Q468 442 485 423T503 369Q503 344 496 327T477 302T456 291T438 288Q418 288 406 299T394 328Q394 353 410 369T442 390L458 393Q446 405 434 405H430Q398 402 367 380T294 316T228 255Q230 254 243 252T267 246T293 238T320 224T342 206T359 180T365 147Q365 130 360 106T354 66Q354 26 381 26Q429 26 459 145Q461 153 479 153H483Q499 153 499 144Q499 139 496 130Q455 -11 378 -11Q333 -11 305 15T277 90Q277 108 280 121T283 145Q283 167 269 183T234 206T200 217T182 220H180Q168 178 159 139T145 81T136 44T129 20T122 7T111 -2Q98 -11 83 -11Q66 -11 57 -1T48 16Q48 26 85 176T158 471L195 616Q196 629 188 632T149 637H144Q134 637 131 637T124 640T121 647Z\"/></g></g></g></g><g data-mml-node=\"mo\" transform=\"translate(1122.3,0) translate(0 -0.5)\"><path data-c=\"29\" d=\"M305 251Q305 -145 69 -349H56Q43 -349 39 -347T35 -338Q37 -333 60 -307T108 -239T160 -136T204 27T221 250T204 473T160 636T108 740T60 807T35 839Q35 850 50 850H56H69Q197 743 256 566Q305 425 305 251Z\"/></g></g><g data-mml-node=\"msup\" transform=\"translate(1580.3,0)\"><g data-mml-node=\"mrow\"><g data-mml-node=\"mi\"><path data-c=\"1D465\" d=\"M52 289Q59 331 106 386T222 442Q257 442 286 424T329 379Q371 442 430 442Q467 442 494 420T522 361Q522 332 508 314T481 292T458 288Q439 288 427 299T415 328Q415 374 465 391Q454 404 425 404Q412 404 406 402Q368 386 350 336Q290 115 290 78Q290 50 306 38T341 26Q378 26 414 59T463 140Q466 150 469 151T485 153H489Q504 153 504 145Q504 144 502 134Q486 77 440 33T333 -11Q263 -11 227 52Q186 -10 133 -10H127Q78 -10 57 16T35 71Q35 103 54 123T99 143Q142 143 142 101Q142 81 130 66T107 46T94 41L91 40Q91 39 97 36T113 29T132 26Q168 26 194 71Q203 87 217 139T245 247T261 313Q266 340 266 352Q266 380 251 392T217 404Q177 404 142 372T93 290Q91 281 88 280T72 278H58Q52 284 52 289Z\"/></g></g><g data-mml-node=\"mrow\" transform=\"translate(605,363) scale(0.707)\"><g data-mml-node=\"mi\"><path data-c=\"1D458\" d=\"M121 647Q121 657 125 670T137 683Q138 683 209 688T282 694Q294 694 294 686Q294 679 244 477Q194 279 194 272Q213 282 223 291Q247 309 292 354T362 415Q402 442 438 442Q468 442 485 423T503 369Q503 344 496 327T477 302T456 291T438 288Q418 288 406 299T394 328Q394 353 410 369T442 390L458 393Q446 405 434 405H430Q398 402 367 380T294 316T228 255Q230 254 243 252T267 246T293 238T320 224T342 206T359 180T365 147Q365 130 360 106T354 66Q354 26 381 26Q429 26 459 145Q461 153 479 153H483Q499 153 499 144Q499 139 496 130Q455 -11 378 -11Q333 -11 305 15T277 90Q277 108 280 121T283 145Q283 167 269 183T234 206T200 217T182 220H180Q168 178 159 139T145 81T136 44T129 20T122 7T111 -2Q98 -11 83 -11Q66 -11 57 -1T48 16Q48 26 85 176T158 471L195 616Q196 629 188 632T149 637H144Q134 637 131 637T124 640T121 647Z\"/></g></g></g><g data-mml-node=\"msup\" transform=\"translate(2603.7,0)\"><g data-mml-node=\"mrow\"><g data-mml-node=\"mi\"><path data-c=\"1D44E\" d=\"M33 157Q33 258 109 349T280 441Q331 441 370 392Q386 422 416 422Q429 422 439 414T449 394Q449 381 412 234T374 68Q374 43 381 35T402 26Q411 27 422 35Q443 55 463 131Q469 151 473 152Q475 153 483 153H487Q506 153 506 144Q506 138 501 117T481 63T449 13Q436 0 417 -8Q409 -10 393 -10Q359 -10 336 5T306 36L300 51Q299 52 296 50Q294 48 292 46Q233 -10 172 -10Q117 -10 75 30T33 157ZM351 328Q351 334 346 350T323 385T277 405Q242 405 210 374T160 293Q131 214 119 129Q119 126 119 118T118 106Q118 61 136 44T179 26Q217 26 254 59T298 110Q300 114 325 217T351 328Z\"/></g></g><g data-mml-node=\"mrow\" transform=\"translate(562,363) scale(0.707)\"><g data-mml-node=\"mi\"><path data-c=\"1D45B\" d=\"M21 287Q22 293 24 303T36 341T56 388T89 425T135 442Q171 442 195 424T225 390T231 369Q231 367 232 367L243 378Q304 442 382 442Q436 442 469 415T503 336T465 179T427 52Q427 26 444 26Q450 26 453 27Q482 32 505 65T540 145Q542 153 560 153Q580 153 580 145Q580 144 576 130Q568 101 554 73T508 17T439 -10Q392 -10 371 17T350 73Q350 92 386 193T423 345Q423 404 379 404H374Q288 404 229 303L222 291L189 157Q156 26 151 16Q138 -11 108 -11Q95 -11 87 -5T76 7T74 17Q74 30 112 180T152 343Q153 348 153 366Q153 405 129 405Q91 405 66 305Q60 285 60 284Q58 278 41 278H27Q21 284 21 287Z\"/></g><g data-mml-node=\"mo\" transform=\"translate(600,0)\"><path data-c=\"2212\" d=\"M84 237T84 250T98 270H679Q694 262 694 250T679 230H98Q84 237 84 250Z\"/></g><g data-mml-node=\"mi\" transform=\"translate(1378,0)\"><path data-c=\"1D458\" d=\"M121 647Q121 657 125 670T137 683Q138 683 209 688T282 694Q294 694 294 686Q294 679 244 477Q194 279 194 272Q213 282 223 291Q247 309 292 354T362 415Q402 442 438 442Q468 442 485 423T503 369Q503 344 496 327T477 302T456 291T438 288Q418 288 406 299T394 328Q394 353 410 369T442 390L458 393Q446 405 434 405H430Q398 402 367 380T294 316T228 255Q230 254 243 252T267 246T293 238T320 224T342 206T359 180T365 147Q365 130 360 106T354 66Q354 26 381 26Q429 26 459 145Q461 153 479 153H483Q499 153 499 144Q499 139 496 130Q455 -11 378 -11Q333 -11 305 15T277 90Q277 108 280 121T283 145Q283 167 269 183T234 206T200 217T182 220H180Q168 178 159 139T145 81T136 44T129 20T122 7T111 -2Q98 -11 83 -11Q66 -11 57 -1T48 16Q48 26 85 176T158 471L195 616Q196 629 188 632T149 637H144Q134 637 131 637T124 640T121 647Z\"/></g></g></g></g></g></g></g></svg>",
+      "MathMLStringRepresentation": "<mml:math xmlns:mml=\"http://www.w3.org/1998/Math/MathML\"><mml:msup><mml:mrow><mml:mfenced separators=\"|\"><mml:mrow><mml:mi>x</mml:mi><mml:mo>+</mml:mo><mml:mi>a</mml:mi></mml:mrow></mml:mfenced></mml:mrow><mml:mrow><mml:mi>n</mml:mi></mml:mrow></mml:msup><mml:mo>=</mml:mo><mml:mrow><mml:msubsup><mml:mo stretchy=\"true\">∑</mml:mo><mml:mrow><mml:mi>k</mml:mi><mml:mo>=</mml:mo><mml:mn>0</mml:mn></mml:mrow><mml:mrow><mml:mi>n</mml:mi></mml:mrow></mml:msubsup><mml:mrow><mml:mfenced separators=\"|\"><mml:mrow><mml:mfrac linethickness=\"0pt\"><mml:mrow><mml:mi>n</mml:mi></mml:mrow><mml:mrow><mml:mi>k</mml:mi></mml:mrow></mml:mfrac></mml:mrow></mml:mfenced><mml:msup><mml:mrow><mml:mi>x</mml:mi></mml:mrow><mml:mrow><mml:mi>k</mml:mi></mml:mrow></mml:msup><mml:msup><mml:mrow><mml:mi>a</mml:mi></mml:mrow><mml:mrow><mml:mi>n</mml:mi><mml:mo>-</mml:mo><mml:mi>k</mml:mi></mml:mrow></mml:msup></mml:mrow></mml:mrow></mml:math>"
+    },
+    {
+      "_id": "MPFigureElement:D5DD6051-69DE-44DE-B5E8-978DCE6A2830",
+      "label": "Fig. 4",
+      "caption": "<p class=\"caption-description\" data-placeholder-text=\"Caption...\" contenteditable=\"true\">Observed (empty symbols and dashed lines) and simulated (filled symbols and solid lines) dates for onset (circles), peak (triangles) and cessation (squares) of tracheid production (P) for larch (red) and spruce (blue) as average over the period 2009-2013 at the high and low elevation plots, given the different model scenarios. Note that only larch is present at the treeline and that high elevation thus only includes one plot in the case of spruce. See my shorts for observed phenology by individual elevations and on the full extent of xylogenesis sampling. Stars indicate model simulations with MS1(P2). Points and error-bars are means and bootstrapped 95% confidence interval.</p>",
+      "createdAt": 1689589036,
+      "listingID": "MPListing:956F7781-7A95-4B02-BD9D-41A3EB68F690",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-2fae8649-dd27-4704-afb3-4b1b43ec34a9"
+        ]
+      },
+      "objectType": "MPFigureElement",
+      "containerID": "MPProject:lost-keywords",
+      "elementType": "figure",
+      "manuscriptID": "MPManuscript:lost-kwds",
+      "containedObjectIDs": [
+        "MPFigure:8F732497-F5CE-4C5A-95F7-B9A861B93A65"
+      ]
+    },
+    {
+      "_id": "MPFigureLayout:85319074-050B-42E6-95C2-FAD80F63841B",
+      "name": "3_by_2",
+      "rows": 2,
+      "title": "Six Figures (3×2)",
+      "bundled": true,
+      "columns": 3,
+      "priority": 60,
+      "createdAt": 1689589036,
+      "prototype": "MPFigureLayout:3_by_2",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-408b27e0-70ab-47af-90d5-920ada8eec46"
+        ]
+      },
+      "objectType": "MPFigureLayout",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPParagraphStyle:4C7D076F-115D-40C7-A132-E662E1105802",
+      "kind": "heading",
+      "name": "heading1",
+      "title": "Section Heading",
+      "bundled": true,
+      "priority": 20,
+      "alignment": "left",
+      "createdAt": 1689589036,
+      "nextStyle": "MPParagraphStyle:bodyText",
+      "partOfTOC": true,
+      "prototype": "MPParagraphStyle:H1",
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-f0b4f359-5f81-4d33-aa4e-b449d3fead18"
+        ]
+      },
+      "headIndent": 0,
+      "objectType": "MPParagraphStyle",
+      "tailIndent": 0,
+      "topSpacing": 8,
+      "containerID": "MPProject:lost-keywords",
+      "lineSpacing": 1.5,
+      "textStyling": {
+        "_id": "MPTextStyling:2E2D93EB-2474-4494-AD92-B5EAD46A38BE",
+        "bold": true,
+        "color": "MPColor:black",
+        "italic": false,
+        "fontSize": 16,
+        "fontFamily": "Charter",
+        "objectType": "MPTextStyling"
+      },
+      "manuscriptID": "MPManuscript:lost-kwds",
+      "bottomSpacing": 5,
+      "firstLineIndent": 0,
+      "preferredXHTMLElement": "h1"
+    },
+    {
+      "_id": "MPContributor:4A4ED838-E2C7-4CD9-9DA0-2FAD43A3CA44",
+      "role": "author",
+      "priority": 3,
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-101897cf-c6f2-44be-9b1e-f4ffdb1d914a"
+        ]
+      },
+      "objectType": "MPContributor",
+      "containerID": "MPProject:lost-keywords",
+      "affiliations": [
+        "MPAffiliation:D2C49C5D-7CB2-4BE2-B967-FBE3541201DB"
+      ],
+      "manuscriptID": "MPManuscript:lost-kwds",
+      "bibliographicName": {
+        "_id": "MPBibliographicName:FB1F7981-B21B-4239-9B16-89B1A3475861",
+        "given": "Song Tian",
+        "family": "Gao",
+        "objectType": "MPBibliographicName"
+      }
+    },
+    {
+      "_id": "MPContributor:0693F308-9BCC-47BC-B57F-794A2B804F1E",
+      "role": "author",
+      "corresp": [
+        {
+          "correspID": "MPCorresponding:A5E45283-E91D-42E5-AAA5-1EEAB567C326",
+          "correspLabel": "*"
+        }
+      ],
+      "priority": 0,
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-826fbac4-6cb9-4455-aba3-bf185e7d1f5d"
+        ]
+      },
+      "objectType": "MPContributor",
+      "containerID": "MPProject:lost-keywords",
+      "affiliations": [
+        "MPAffiliation:48B3D0DA-A9CD-46DF-BFEC-C1972701FA61"
+      ],
+      "manuscriptID": "MPManuscript:lost-kwds",
+      "isCorresponding": true,
+      "bibliographicName": {
+        "_id": "MPBibliographicName:D3B46909-A30F-437F-A58F-24744D480952",
+        "given": "Li",
+        "family": "Hui",
+        "objectType": "MPBibliographicName"
+      }
+    },
+    {
+      "_id": "MPParagraphElement:AE3B95FC-4DCA-4C37-9A31-CB0210E14B76",
+      "contents": "<p xmlns=\"http://www.w3.org/1999/xhtml\" id=\"MPParagraphElement:AE3B95FC-4DCA-4C37-9A31-CB0210E14B76\" class=\"MPElement\" data-object-type=\"MPParagraphElement\">The allelic and genotypic frequencies of this polymorphism between two groups did not differ after controlling for covariaties (both, p&gt;0.05). There were no differences in RBANS scores between two groups after adjusting for covariaties (all, p&gt;0.05). However, based on the genotype grouping in suicide attempters and non-attempters, the attention score significantly differed after adjusting for covariaties (both, p&lt;0.05). Further analysis indicated that this polymorphism was associated with attention score in suicide attempters (p&lt;0.05), but not in non-suicide attempters (p&gt;0.05).</p>",
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-155535db-ec62-43bb-9d1c-216fdd8995b2"
+        ]
+      },
+      "objectType": "MPParagraphElement",
+      "containerID": "MPProject:lost-keywords",
+      "elementType": "p",
+      "manuscriptID": "MPManuscript:lost-kwds",
+      "placeholderInnerHTML": ""
+    },
+    {
+      "_id": "MPFigure:E55CAB56-35CA-46A2-9393-4E05BCF34C3F",
+      "src": "attachment:e435b08e-58a0-44a4-9b45-59066cb6f467",
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-23158555-1fd1-4543-80dc-757c6b38a708"
+        ]
+      },
+      "objectType": "MPFigure",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    },
+    {
+      "_id": "MPParagraphElement:56B0ACDC-485B-4A44-B4AB-1169EF88A809",
+      "contents": "<p xmlns=\"http://www.w3.org/1999/xhtml\" id=\"MPParagraphElement:56B0ACDC-485B-4A44-B4AB-1169EF88A809\" class=\"MPElement\" data-object-type=\"MPParagraphElement\">Dopamine beta-hydroxylase (DβH) is a key enzyme that is in charge of catalyzing the conversion of dopamine (DA) to norepinephrine (NE). Inhibiting DβH activity will increase DA levels and decrease NE levels, and both of them are linked to suicidal behavior. Several studies have found that NE abnormality might cause behavior and mood deviance that was also closely associated with suicidal behavior. Moreover, <i>DβH</i> promoter polymorphisms are reported to be involved in positive psychotic symptom, cognitive deficits, depression and mental disorders that all of which are associated with suicidal risk. <i>DβH</i> haplotype (consisting of rs1611115, rs1108580, rs2519152 and rs129882) is found to significantly contribute to the development of suicide behavior for alcohol-dependent patients. The above studies suggest that <i>DβH</i> genetic variants may be associated with suicide attempts in chronic schizophrenia.</p>",
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-3c067952-d360-4a19-9a72-dbee43ea745b"
+        ]
+      },
+      "objectType": "MPParagraphElement",
+      "containerID": "MPProject:lost-keywords",
+      "elementType": "p",
+      "manuscriptID": "MPManuscript:lost-kwds",
+      "placeholderInnerHTML": ""
+    },
+    {
+      "_id": "MPParagraphElement:521D99A4-BA67-42D7-B9E9-1DA89A355BDF",
+      "contents": "<p xmlns=\"http://www.w3.org/1999/xhtml\" id=\"MPParagraphElement:521D99A4-BA67-42D7-B9E9-1DA89A355BDF\" class=\"MPElement\" data-object-type=\"MPParagraphElement\">A 19-bp insertion/deletion polymorphism localized 4.5kb from <i>DβH</i> 5’ flank transcriptional starting site on chromosome 9q34 is named <i>DβH</i> 5’-Ins/Del polymorphism. It is a functional locus, which has been reported to influence DβH activity. The pDβH activity in individuals with <i>DβH</i> 5’-Del/Del is only half of those in individuals with <i>DβH</i> 5’-Ins/Ins. Previous studies have indicated that this polymorphism is associated with cognitive abnormality in older women, average reaction response time in Chinese females, attention bias for negative faces in the young subjects, and post-error slowing in the young Caucasian healthy adults that are correlated with suicidal behavior. <i>DβH</i> haplotype (consisting of <i>DβH</i> 5'-del allele and 11 allele of GT<sub>n</sub> repeats) is linked to suicide attempts in schizophrenia. Interestingly, <i>DβH</i> 5’-Ins/Del polymorphism is implicated in attention in patients with chronic schizophrenia. Taken together, these results suggest that this polymorphism might be involved in cognitive regulation and the development of suicide attempts in chronic schizophrenia. However, no studies have examined <i>DβH</i> 5’-Ins/Del polymorphism in relation to cognitive function and the development of suicide attempts in chronic schizophrenia. Thus, the objectives of this study are to examine whether <i>DβH</i> 5’-Ins/Del polymorphism influences cognitive regulation, and further contributes to the development of suicide attempts in chronic schizophrenia.</p>",
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-12416554-9b16-4a11-ac1c-bfe2cdf3bf6c"
+        ]
+      },
+      "objectType": "MPParagraphElement",
+      "containerID": "MPProject:lost-keywords",
+      "elementType": "p",
+      "manuscriptID": "MPManuscript:lost-kwds",
+      "placeholderInnerHTML": ""
+    },
+    {
+      "_id": "MPEquationElement:6E2F6EA4-9367-46B9-8F4F-9381CBE973E4",
+      "caption": "",
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "_revisions": {
+        "ids": [
+          "0-dd150f75-1c4a-4032-90f0-a58b9933dfd7"
+        ]
+      },
+      "objectType": "MPEquationElement",
+      "containerID": "MPProject:lost-keywords",
+      "elementType": "p",
+      "manuscriptID": "MPManuscript:lost-kwds",
+      "suppressCaption": true,
+      "containedObjectID": "MPEquation:0B973CFD-049D-4188-8E87-5E2EF1AADFE7"
+    },
+    {
+      "_id": "MPKeywordGroup:47F4DF3D-C3BC-4134-B250-9B2323139E45",
+      "type": "author",
+      "title": "Lorem ipsum",
+      "createdAt": 1689589036,
+      "sessionID": "579459a9-d137-4b7f-8996-db10bd057ae5",
+      "updatedAt": 1689589036,
+      "objectType": "MPKeywordGroup",
+      "containerID": "MPProject:lost-keywords",
+      "manuscriptID": "MPManuscript:lost-kwds"
+    }
+  ]
+}
