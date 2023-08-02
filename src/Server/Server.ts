@@ -29,6 +29,7 @@ import { getRoutes as getRoutesV2 } from '../Controller/V2/Routes'
 import { SQLDatabase } from '../DataAccess/SQLDatabase'
 import { ForbiddenOriginError, IllegalStateError, isStatusCoded } from '../Errors'
 import { log } from '../Utilities/Logger'
+import generateDocs from '../Utilities/swagger'
 import { IServer } from './IServer'
 import { configurePromClientRegistry } from './PromClientRegistryConfig'
 
@@ -103,11 +104,11 @@ export class Server implements IServer {
   private loadRoutes() {
     const routerV1 = initRouter(getRoutesV1())
     const routerV2 = initRouter(getRoutesV2())
+    generateDocs(this.app)
 
     // use router middleware
     this.app.use('/api/v1', routerV1)
     this.app.use('/api/v2', routerV2)
-
     this.app.get('/', (_req, res: express.Response) => {
       return res.redirect('/api/v2/app/version')
     })
