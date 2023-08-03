@@ -18,7 +18,7 @@ import { readFileSync } from 'fs'
 import swaggerUi from 'swagger-ui-express'
 import { parse } from 'yaml'
 
-const swaggerDocument = parse(readFileSync(__dirname + '/../../doc/manuscripts-v2.yml', 'utf8'))
+const swaggerDocument = parse(readFileSync(__dirname + '/manuscripts-v2.yml', 'utf8'))
 
 function generateDocs(app: Application) {
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
