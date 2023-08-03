@@ -14,6 +14,7 @@ COPY ./emails ./emails
 COPY ./build ./build
 COPY ./types ./types
 COPY ./config ./config
+COPY ./doc ./doc
 
 COPY tsconfig.json tsconfig.build.json ./
 
