@@ -3,14 +3,14 @@
     "_id": "MPBundle:www-zotero-org-styles-american-medical-association",
     "objectType": "MPBundle",
     "csl": {
-      "_id": "MPCitationStyle:www-zotero-org-styles-american-medical-association"
+      "_id": "american-medical-association"
     }
   },
   {
     "_id": "MPBundle:www-zotero-org-styles-chicago-author-date",
     "objectType": "MPBundle",
     "csl": {
-      "_id": "MPCitationStyle:www-zotero-org-styles-chicago-author-date"
+      "_id": "chicago-author-date"
     }
   }
 ]
