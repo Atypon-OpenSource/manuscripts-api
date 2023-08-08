@@ -60,6 +60,8 @@ import { InvitationService } from '../DomainServices/Invitation/InvitationServic
 import { IPressroomService } from '../DomainServices/Pressroom/IPressroomService'
 import { PressroomService } from '../DomainServices/Pressroom/PressroomService'
 import { ProjectService } from '../DomainServices/ProjectService'
+import { IQuarterbackService } from '../DomainServices/Quarterback/IQuarterbackService'
+import { QuarterbackService } from '../DomainServices/Quarterback/QuarterbackService'
 import { IUserRegistrationService } from '../DomainServices/Registration/IUserRegistrationService'
 import { UserRegistrationService } from '../DomainServices/Registration/UserRegistrationService'
 import { ISGService } from '../DomainServices/SG/ISGService'
@@ -127,6 +129,7 @@ export class DIContainer {
   readonly containerRequestService: IContainerRequestService
   readonly containerRequestRepository: ContainerRequestRepository
   readonly pressroomService: IPressroomService
+  readonly quarterback: IQuarterbackService
   readonly manuscriptRepository: IManuscriptRepository
   readonly manuscriptNotesRepository: ManuscriptNoteRepository
   readonly templateRepository: TemplateRepository
@@ -265,6 +268,7 @@ export class DIContainer {
       this.containerInvitationRepository
     )
     this.pressroomService = new PressroomService(config.pressroom.baseurl, config.pressroom.apiKey)
+    this.quarterback = new QuarterbackService(config.quarterback.baseurl, config.quarterback.apiKey)
   }
 
   /**

@@ -20,6 +20,7 @@ import { RegistrationRoute } from '../V1/Registration/RegistrationRoute'
 import { ServerStatusRoute } from '../V1/ServerStatus/ServerStatusRoute'
 import { UserRoute } from '../V1/User/UserRoute'
 import { ProjectRoute } from './Project/ProjectRoute'
+import { QuarterbackRoute } from './Quarterback/QuarterbackRoute'
 
 export function getRoutes(): BaseRoute[] {
   return [
@@ -28,5 +29,6 @@ export function getRoutes(): BaseRoute[] {
     new UserRoute(),
     new ServerStatusRoute(),
     new ProjectRoute(),
+    new QuarterbackRoute(),
   ]
 }
