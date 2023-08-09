@@ -61,20 +61,19 @@ export class QuarterbackController extends ContainedBaseController {
 
   async deleteSnapshot(req: Request): Promise<Buffer> {
     const { snapshotID } = req.params
+    const snapshot = await this.fetchSnapshot(snapshotID)
+    const manuscript = await this.getManuscriptFromSnapshot(snapshot)
+    await this.validateUserAccess(req.user, manuscript.containerID, ProjectPermission.DELETE)
+    return DIContainer.sharedContainer.quarterback.deleteSnapshot(snapshotID)
+  }
+
+  private async fetchSnapshot(snapshotID: string) {
     const result = await DIContainer.sharedContainer.quarterback.getSnapshot(snapshotID)
     if (!result) {
       throw new ValidationError('Snapshot not found', snapshotID)
     }
     const snapshot: Snapshot = JSON.parse(result.toString())
-    const manuscriptID = snapshot.doc_id
-    const manuscript: Manuscript | null =
-      await DIContainer.sharedContainer.manuscriptRepository.getById(manuscriptID)
-
-    if (!manuscript) {
-      throw new ValidationError('Manuscript not found', manuscriptID)
-    }
-    await this.validateUserAccess(req.user, manuscript.containerID, ProjectPermission.DELETE)
-    return DIContainer.sharedContainer.quarterback.deleteSnapshot(snapshotID)
+    return snapshot
   }
 
   async getSnapshotLabels(req: Request): Promise<Buffer> {
@@ -85,12 +84,13 @@ export class QuarterbackController extends ContainedBaseController {
 
   async getSnapshot(req: Request): Promise<Snapshot> {
     const { snapshotID } = req.params
-    const result = await DIContainer.sharedContainer.quarterback.getSnapshot(snapshotID)
-    if (!result) {
-      throw new ValidationError('Snapshot not found', snapshotID)
-    }
-    const snapshot: Snapshot = JSON.parse(result.toString())
+    const snapshot: Snapshot = await this.fetchSnapshot(snapshotID)
+    const manuscript = await this.getManuscriptFromSnapshot(snapshot);
+    await this.validateUserAccess(req.user, manuscript.containerID, ProjectPermission.READ)
+    return snapshot
+  }
 
+  private async getManuscriptFromSnapshot(snapshot: Snapshot) {
     const manuscriptID = snapshot.doc_id
     const manuscript: Manuscript | null =
       await DIContainer.sharedContainer.manuscriptRepository.getById(manuscriptID)
@@ -98,9 +98,9 @@ export class QuarterbackController extends ContainedBaseController {
     if (!manuscript) {
       throw new ValidationError('Manuscript not found', manuscriptID)
     }
-    await this.validateUserAccess(req.user, manuscript.containerID, ProjectPermission.READ)
-    return snapshot
+    return manuscript
   }
+
   private async validateUserAccess(
     user: Express.User | undefined,
     projectID: string,
