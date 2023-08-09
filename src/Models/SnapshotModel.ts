@@ -1,5 +1,5 @@
 /*!
- * © 2020 Atypon Systems LLC
+ * © 2023 Atypon Systems LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,4 @@
  * limitations under the License.
  */
 
-export interface IQuarterbackService {
-  getDocument(docId: string): Promise<Buffer>
-  createDocument(document: object): Promise<Buffer>
-  updateDocument(document: Buffer, docId: string): Promise<Buffer>
-  deleteDocument(docId: string): Promise<Buffer>
-
-  getSnapshotLabels(docId: string): Promise<Buffer>
-  getSnapshot(docId: string): Promise<Buffer>
-  updateSnapshot(document: Buffer, docId: string): Promise<Buffer>
-  deleteSnapshot(docId: string): Promise<Buffer>
-  createSnapshot(document: Buffer): Promise<Buffer>
-}
+export type Snapshot = { doc_id: string; snapshot: string; id: string; createdAt: number }

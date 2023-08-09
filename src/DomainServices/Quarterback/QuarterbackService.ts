@@ -37,7 +37,7 @@ export class QuarterbackService implements IQuarterbackService {
     )
   }
 
-  async createDocument(document: Buffer): Promise<Buffer> {
+  async createDocument(document: object): Promise<Buffer> {
     const res = await fetch(`${this.baseurl}/doc`, {
       method: 'POST',
       body: JSON.stringify(document),

@@ -18,6 +18,7 @@ import { Request } from 'express'
 import { DIContainer } from '../../../DIContainer/DIContainer'
 import { ProjectPermission } from '../../../DomainServices/ProjectService'
 import { RoleDoesNotPermitOperationError, ValidationError } from '../../../Errors'
+import { Snapshot } from '../../../Models/SnapshotModel'
 import { ContainedBaseController } from '../../ContainedBaseController'
 
 export class QuarterbackController extends ContainedBaseController {
@@ -27,7 +28,9 @@ export class QuarterbackController extends ContainedBaseController {
   async createDocument(req: Request): Promise<Buffer> {
     const { projectID } = req.params
     await this.validateUserAccess(req.user, projectID, ProjectPermission.CREATE_MANUSCRIPT)
-    return DIContainer.sharedContainer.quarterback.createDocument(req.body)
+    const doc = JSON.parse(req.body)
+    doc.user_model_id = req.user?._id
+    return DIContainer.sharedContainer.quarterback.createDocument(doc)
   }
 
   async getDocument(req: Request): Promise<Buffer> {
@@ -63,8 +66,13 @@ export class QuarterbackController extends ContainedBaseController {
   }
 
   async deleteSnapshot(req: Request): Promise<Buffer> {
-    const { snapshotId, projectID } = req.params
-    await this.validateUserAccess(req.user, projectID, ProjectPermission.DELETE)
+    const { snapshotId } = req.params
+    const result = await DIContainer.sharedContainer.quarterback.getSnapshot(snapshotId)
+    if (!result) {
+      throw new ValidationError('Snapshot not found', snapshotId)
+    }
+    const snapshot: Snapshot = JSON.parse(result.toString())
+    await this.validateUserAccess(req.user, snapshot.doc_id, ProjectPermission.DELETE)
     return DIContainer.sharedContainer.quarterback.deleteSnapshot(snapshotId)
   }
 
@@ -74,10 +82,17 @@ export class QuarterbackController extends ContainedBaseController {
     return DIContainer.sharedContainer.quarterback.getSnapshotLabels(manuscriptID)
   }
 
-  async getSnapshot(req: Request): Promise<Buffer> {
-    const { snapshotId, projectID } = req.params
+  async getSnapshot(req: Request): Promise<Snapshot> {
+    const { snapshotId } = req.params
+    const result = await DIContainer.sharedContainer.quarterback.getSnapshot(snapshotId)
+    if (!result) {
+      throw new ValidationError('Snapshot not found', snapshotId)
+    }
+    const snapshot: Snapshot = JSON.parse(result.toString())
+
+    const projectID = snapshot.doc_id
     await this.validateUserAccess(req.user, projectID, ProjectPermission.READ)
-    return DIContainer.sharedContainer.quarterback.getSnapshot(snapshotId)
+    return snapshot
   }
   private async validateUserAccess(
     user: Express.User | undefined,

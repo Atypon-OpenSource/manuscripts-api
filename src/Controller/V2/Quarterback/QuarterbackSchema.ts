@@ -33,8 +33,6 @@ export const updateDocumentSchema: Joi.SchemaMap = {
     manuscriptID: Joi.string().required(),
   }),
   body: Joi.object({
-    manuscript_model_id: Joi.object().required(),
-    project_model_id: Joi.object().required(),
     doc: Joi.object().required(),
   }),
 }
@@ -64,17 +62,11 @@ export const createSnapshotSchema: Joi.SchemaMap = {
 }
 export const updateSnapshotSchema: Joi.SchemaMap = {
   params: Joi.object({
-    projectID: Joi.string().required(),
-    manuscriptID: Joi.string().required(),
-  }),
-  body: Joi.object({
-    name: Joi.string().optional(),
-    snapshot: Joi.object().required(), //TODO: why isn;t it in quarterback??
+    snapshotID: Joi.string().required(),
   }),
 }
 export const getSnapshotSchema: Joi.SchemaMap = {
   params: Joi.object({
-    projectID: Joi.string().required(),
     manuscriptID: Joi.string().required(),
   }),
 }
@@ -86,7 +78,6 @@ export const getSnapshotLabelsSchema: Joi.SchemaMap = {
 }
 export const deleteSnapshotSchema: Joi.SchemaMap = {
   params: Joi.object({
-    projectID: Joi.string().required(),
     snapshotId: Joi.string().required(),
   }),
 }

@@ -42,7 +42,7 @@ export class QuarterbackRoute extends BaseRoute {
 
   public create(router: Router): void {
     router.post(
-      `${this.basePath}/doc/:projectID/:manuscriptID`,
+      `${this.basePath}/doc/:projectID/manuscript/:manuscriptID`,
       celebrate(createDocumentSchema, {}),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
@@ -55,7 +55,7 @@ export class QuarterbackRoute extends BaseRoute {
     )
 
     router.put(
-      `${this.basePath}/doc/:projectID/:manuscriptID`,
+      `${this.basePath}/doc/:projectID/manuscript/:manuscriptID`,
       celebrate(updateDocumentSchema, {}),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
@@ -67,7 +67,7 @@ export class QuarterbackRoute extends BaseRoute {
       }
     )
     router.delete(
-      `${this.basePath}/doc/:projectID/:manuscriptID`,
+      `${this.basePath}/doc/:projectID/manuscript/:manuscriptID`,
       celebrate(deleteDocumentSchema, {}),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
@@ -80,7 +80,7 @@ export class QuarterbackRoute extends BaseRoute {
     )
 
     router.get(
-      `${this.basePath}/doc/:projectID/:manuscriptID`,
+      `${this.basePath}/doc/:projectID/manuscript/:manuscriptID`,
       celebrate(getDocumentSchema, {}),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
@@ -93,7 +93,7 @@ export class QuarterbackRoute extends BaseRoute {
     )
 
     router.post(
-      `${this.basePath}/snapshot/:projectID/:manuscriptID`,
+      `${this.basePath}/snapshot/:projectID/manuscript/:manuscriptID`,
       celebrate(createSnapshotSchema, {}),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
@@ -106,7 +106,7 @@ export class QuarterbackRoute extends BaseRoute {
     )
 
     router.put(
-      `${this.basePath}/snapshot/:projectID/:snapshotID`,
+      `${this.basePath}/snapshot/:snapshotID`,
       celebrate(updateSnapshotSchema, {}),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
@@ -118,7 +118,7 @@ export class QuarterbackRoute extends BaseRoute {
       }
     )
     router.delete(
-      `${this.basePath}/snapshot/:projectID/:snapshotID`,
+      `${this.basePath}/snapshot/:snapshotID`,
       celebrate(deleteSnapshotSchema, {}),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
@@ -131,7 +131,7 @@ export class QuarterbackRoute extends BaseRoute {
     )
 
     router.get(
-      `${this.basePath}/snapshot/:projectID/:snapshotID`,
+      `${this.basePath}/snapshot/:snapshotID`,
       celebrate(getSnapshotSchema, {}),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
@@ -144,7 +144,7 @@ export class QuarterbackRoute extends BaseRoute {
     )
 
     router.get(
-      `${this.basePath}/snapshot/:projectID/:manuscriptID/:snapshotID/labels`,
+      `${this.basePath}/snapshot/:projectID/manuscript/:manuscriptID/labels`,
       celebrate(getSnapshotLabelsSchema, {}),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
