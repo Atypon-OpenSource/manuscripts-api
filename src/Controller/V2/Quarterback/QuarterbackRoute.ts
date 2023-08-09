@@ -30,13 +30,12 @@ import {
   getSnapshotLabelsSchema,
   getSnapshotSchema,
   updateDocumentSchema,
-  updateSnapshotSchema,
 } from './QuarterbackSchema'
 
 export class QuarterbackRoute extends BaseRoute {
   private quarterbackController = new QuarterbackController()
 
-  private basePath(): string {
+  private get basePath(): string {
     return `/quarterback`
   }
 
@@ -105,18 +104,6 @@ export class QuarterbackRoute extends BaseRoute {
       }
     )
 
-    router.put(
-      `${this.basePath}/snapshot/:snapshotID`,
-      celebrate(updateSnapshotSchema, {}),
-      AuthStrategy.JsonHeadersValidation,
-      AuthStrategy.JWTAuth,
-      (req: Request, res: Response, next: NextFunction) => {
-        return this.runWithErrorHandling(async () => {
-          const result = await this.quarterbackController.updateSnapshot(req)
-          res.status(StatusCodes.OK).send(result)
-        }, next)
-      }
-    )
     router.delete(
       `${this.basePath}/snapshot/:snapshotID`,
       celebrate(deleteSnapshotSchema, {}),

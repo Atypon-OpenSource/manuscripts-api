@@ -85,7 +85,7 @@ export class QuarterbackService implements IQuarterbackService {
   }
 
   async getSnapshotLabels(docId: string): Promise<Buffer> {
-    const res = await fetch(`${this.baseurl}/snapshot/${docId}`, {
+    const res = await fetch(`${this.baseurl}/doc/${docId}/snapshot/labels`, {
       method: 'GET',
       headers: this.headers,
     })
@@ -111,22 +111,6 @@ export class QuarterbackService implements IQuarterbackService {
     // should only apply in case of server client errors
     throw new RequestError(
       `Quarterback request 'get snapshot' failed with error: code(${res.status}) - message(${res.statusText})`
-    )
-  }
-
-  async updateSnapshot(document: Buffer, docId: string): Promise<Buffer> {
-    const res = await fetch(`${this.baseurl}/snapshot/${docId}`, {
-      method: 'PUT',
-      body: JSON.stringify(document),
-      headers: this.headers,
-    })
-
-    if (res.ok && res.body) {
-      return getStream.buffer(res.body)
-    }
-    // should only apply in case of server client errors
-    throw new RequestError(
-      `Quarterback request 'update snapshot' failed with error: code(${res.status}) - message(${res.statusText})`
     )
   }
 

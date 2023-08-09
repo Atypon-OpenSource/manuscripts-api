@@ -60,14 +60,9 @@ export const createSnapshotSchema: Joi.SchemaMap = {
     snapshot: Joi.object().required(),
   }),
 }
-export const updateSnapshotSchema: Joi.SchemaMap = {
-  params: Joi.object({
-    snapshotID: Joi.string().required(),
-  }),
-}
 export const getSnapshotSchema: Joi.SchemaMap = {
   params: Joi.object({
-    manuscriptID: Joi.string().required(),
+    snapshotID: Joi.string().required(),
   }),
 }
 export const getSnapshotLabelsSchema: Joi.SchemaMap = {
@@ -78,6 +73,6 @@ export const getSnapshotLabelsSchema: Joi.SchemaMap = {
 }
 export const deleteSnapshotSchema: Joi.SchemaMap = {
   params: Joi.object({
-    snapshotId: Joi.string().required(),
+    snapshotID: Joi.string().required(),
   }),
 }

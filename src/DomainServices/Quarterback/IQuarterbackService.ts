@@ -22,7 +22,6 @@ export interface IQuarterbackService {
 
   getSnapshotLabels(docId: string): Promise<Buffer>
   getSnapshot(docId: string): Promise<Buffer>
-  updateSnapshot(document: Buffer, docId: string): Promise<Buffer>
   deleteSnapshot(docId: string): Promise<Buffer>
   createSnapshot(document: Buffer): Promise<Buffer>
 }
