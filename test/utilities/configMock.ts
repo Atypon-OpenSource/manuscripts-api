@@ -90,6 +90,10 @@ jest.mock('../../src/Config/Config', () => {
       baseurl: 'https://pressroom-js-dev.manuscripts.io',
       apiKey: 'something-random',
     },
+    quarterback: {
+      baseurl: 'https://pressroom-js-dev.manuscripts.io',
+      apiKey: 'something-random',
+    },
   }
 
   const Environment = {
