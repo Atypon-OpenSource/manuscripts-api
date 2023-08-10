@@ -41,6 +41,7 @@ export async function onUpdate(doc: any, id: string) {
         !userCollaborator.projects.owner.length &&
         !userCollaborator.projects.writer.length &&
         !userCollaborator.projects.viewer.length &&
+        !userCollaborator.projects.proofer.length &&
         !userCollaborator.projects.annotator.length
       ) {
         await DIContainer.sharedContainer.userCollaboratorRepository.remove(userCollaborator._id)
@@ -57,7 +58,7 @@ export async function onUpdate(doc: any, id: string) {
     userCollaborators: any[],
     role: string
   ) {
-    const usersIDs = doc.owners.concat(doc.writers, doc.viewers, doc.annotator)
+    const usersIDs = doc.owners.concat(doc.writers, doc.viewers, doc.annotator, doc.proofers)
 
     for (const userCollaborator of userCollaborators) {
       const isUserIDMissing = !usersIDs.includes(userCollaborator.userID)
@@ -73,6 +74,7 @@ export async function onUpdate(doc: any, id: string) {
           !userCollaborator.projects.owner.length &&
           !userCollaborator.projects.writer.length &&
           !userCollaborator.projects.viewer.length &&
+          !userCollaborator.projects.proofer.length &&
           !userCollaborator.projects.annotator.length
         ) {
           await DIContainer.sharedContainer.userCollaboratorRepository.remove(userCollaborator._id)
@@ -124,6 +126,7 @@ export async function onUpdate(doc: any, id: string) {
               owner: [],
               writer: [],
               viewer: [],
+              proofer: [],
               annotator: [],
             }
 
@@ -206,12 +209,16 @@ export async function onUpdate(doc: any, id: string) {
     const writers = doc.writers
     const viewers = doc.viewers.filter((x: any) => x !== '*')
     const annotators = doc.annotators ?? []
-    const usersIDs = owners.concat(writers, viewers, annotators)
+    const proofers = doc.proofers ?? []
+    const usersIDs = owners.concat(writers, viewers, annotators, proofers)
 
     for (const userID of usersIDs) {
       await createUserCollaborator(userID, owners, 'owner')
       await createUserCollaborator(userID, writers, 'writer')
       await createUserCollaborator(userID, viewers, 'viewer')
+      if (proofers) {
+        await createUserCollaborator(userID, proofers, 'proofer')
+      }
       if (annotators) {
         await createUserCollaborator(userID, annotators, 'annotator')
       }
@@ -237,6 +244,13 @@ export async function onUpdate(doc: any, id: string) {
         'viewer'
       )
     await removeContainerFromUserCollaborator(doc.viewers, viewersIDs, 'viewer')
+
+    const proofersIDs =
+      await DIContainer.sharedContainer.userCollaboratorRepository.getByContainerRole(
+        containerID,
+        'proofer'
+      )
+    await removeContainerFromUserCollaborator(doc.proofers, proofersIDs, 'proofer')
 
     const annotatorsIDs =
       await DIContainer.sharedContainer.userCollaboratorRepository.getByContainerRole(

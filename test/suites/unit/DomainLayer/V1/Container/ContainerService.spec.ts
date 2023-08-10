@@ -38,7 +38,7 @@ import {
   UserRoleError,
   ValidationError,
 } from '../../../../../../src/Errors'
-import { ContainerRole, ContainerType } from '../../../../../../src/Models/ContainerModels'
+import { ContainerRole } from '../../../../../../src/Models/ContainerModels'
 import { validJWTToken, validUserStatus } from '../../../../../data/fixtures/authServiceUser'
 import { validBody2 } from '../../../../../data/fixtures/credentialsRequestPayload'
 import { validNote1, validNote2 } from '../../../../../data/fixtures/ManuscriptNote'
@@ -223,6 +223,22 @@ describe('containerService - deleteContainer', () => {
 
     await containerService.deleteContainer(chance.guid(), { _id: 'User|123abc123abc' })
     expect(containerService.containerRepository.removeWithAllResources).toHaveBeenCalled()
+  })
+})
+
+describe('containerService - checkIfCanEdit', () => {
+  test('should return true if user can edit document', () => {
+    const containerService: any = DIContainer.sharedContainer.containerService
+
+    containerService.getContainer = () => Promise.resolve({ owners: ['User_test'], writers: [] })
+    return expect(containerService.checkIfCanEdit('User_test', 'someId')).resolves.toBeTruthy()
+  })
+
+  test('should return false if user cant edit document', () => {
+    const containerService: any = DIContainer.sharedContainer.containerService
+
+    containerService.getContainer = () => Promise.resolve({ owners: ['User_test'], writers: [] })
+    return expect(containerService.checkIfCanEdit('User_test1', 'someId')).resolves.toBeFalsy()
   })
 })
 
