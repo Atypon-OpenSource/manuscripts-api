@@ -118,12 +118,6 @@ export async function proceedWithContributeAccess(doc: any, userId: string | und
 }
 
 export async function syncAccessControl(doc: any, oldDoc: any, userId?: string): Promise<void> {
-  let errorMessage
-
-  if (oldDoc && oldDoc._deleted && doc._deleted) {
-    throw { forbidden: 'deleted document cannot be mutated' }
-  }
-
   if (!doc._id) {
     throw { forbidden: 'missing _id' }
   }
@@ -132,33 +126,22 @@ export async function syncAccessControl(doc: any, oldDoc: any, userId?: string):
     throw { forbidden: '_id must have objectType as prefix' }
   }
 
-  const isAllowedToUndelete = !!doc.containerID
+  // check that the update isn't mutating objectType
+  if (oldDoc && oldDoc.objectType !== doc.objectType) {
+    // prettier-ignore
+    throw({ forbidden: 'objectType cannot be mutated' });
+  }
 
-  if (oldDoc && oldDoc._deleted && !isAllowedToUndelete) {
-    errorMessage = validate(doc)
+  if (oldDoc && oldDoc.containerID !== doc.containerID) {
+    // prettier-ignore
+    throw({ forbidden: 'containerID cannot be mutated' });
+  }
 
-    if (errorMessage) {
-      // prettier-ignore
-      throw({ forbidden: errorMessage });
-    }
-  } else if (!doc._deleted || isAllowedToUndelete) {
-    // check that the update isn't mutating objectType
-    if (oldDoc && oldDoc.objectType !== doc.objectType) {
-      // prettier-ignore
-      throw({ forbidden: 'objectType cannot be mutated' });
-    }
+  const errorMessage = validate(doc)
 
-    if (oldDoc && oldDoc.containerID !== doc.containerID) {
-      // prettier-ignore
-      throw({ forbidden: 'containerID cannot be mutated' });
-    }
-
-    errorMessage = validate(doc)
-
-    if (errorMessage) {
-      // prettier-ignore
-      throw({ forbidden: errorMessage });
-    }
+  if (errorMessage) {
+    // prettier-ignore
+    throw({ forbidden: errorMessage });
   }
 
   function objectTypeMatches(arg: string) {
@@ -205,28 +188,26 @@ export async function syncAccessControl(doc: any, oldDoc: any, userId?: string):
 
     const allUserIds = [].concat(owners, writers, viewers, proofers, annotators, editors)
 
-    if (!doc._deleted) {
-      // if there have been changes, we need to be ensure we are the owner
-      if (
-        hasMutated('owners') ||
-        hasMutated('writers') ||
-        hasMutated('viewers') ||
-        hasMutated('annotators') ||
-        hasMutated('proofers') ||
-        hasMutated('editors')
-      ) {
-        requireUser(owners, userId)
-      }
+    // if there have been changes, we need to be ensure we are the owner
+    if (
+      hasMutated('owners') ||
+      hasMutated('writers') ||
+      hasMutated('viewers') ||
+      hasMutated('annotators') ||
+      hasMutated('proofers') ||
+      hasMutated('editors')
+    ) {
+      requireUser(owners, userId)
+    }
 
-      // only do this for non-deleted items for perf.
-      const userIds: any = {}
-      for (let i = 0; i < allUserIds.length; i++) {
-        if (allUserIds[i] in userIds) {
-          // prettier-ignore
-          throw({ forbidden: 'duplicate userId:' + allUserIds[i] });
-        }
-        userIds[allUserIds[i]] = true
+    // only do this for non-deleted items for perf.
+    const userIds: any = {}
+    for (let i = 0; i < allUserIds.length; i++) {
+      if (allUserIds[i] in userIds) {
+        // prettier-ignore
+        throw({ forbidden: 'duplicate userId:' + allUserIds[i] });
       }
+      userIds[allUserIds[i]] = true
     }
 
     if (oldDoc) {
@@ -259,13 +240,6 @@ export async function syncAccessControl(doc: any, oldDoc: any, userId?: string):
     if (hasMutated('isRead')) {
       const userID = doc.userID
       requireUser([userID], userId)
-    }
-  } else if (objectTypeMatches('MPBibliographyItem')) {
-    if (doc.keywordIDs) {
-      for (let i = 0; i < doc.keywordIDs.length; i++) {
-        const keywordID = doc.keywordIDs[i]
-        await proceedWithRejectAccess(keywordID, userId)
-      }
     }
   } else if (
     objectTypeMatches('MPCorrection') ||

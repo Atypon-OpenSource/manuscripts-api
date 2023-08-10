@@ -76,9 +76,7 @@ describe('SG - CRUD', () => {
     )
     expect(response.status).toBe(StatusCodes.OK)
     const doc = response.body
-    currentRev = doc._rev
     expect(doc).toEqual(expect.objectContaining(project))
-    expect(doc._rev).toEqual(`${doc._revisions.ids[0]}`)
   })
 
   test('should patch the project by id', async () => {
@@ -107,10 +105,8 @@ describe('SG - CRUD', () => {
     expect(response.status).toBe(StatusCodes.OK)
 
     const doc = response.body
-    currentRev = doc._rev
     expect(doc.viewers).toEqual(body.viewers)
     expect(doc).toEqual(expect.objectContaining({ ...project, ...body }))
-    expect(doc._rev).toEqual(`${doc._revisions.ids[0]}`)
   })
 
   test('should fail patch if not the owner', async () => {
@@ -129,32 +125,6 @@ describe('SG - CRUD', () => {
         ...authHeader,
       },
       { rev: currentRev },
-      body,
-      {
-        db: 'project',
-        id: project._id,
-      }
-    )
-
-    expect(response.status).toBe(StatusCodes.INTERNAL_SERVER_ERROR)
-  })
-
-  test('should fail to patch with a bad revision', async () => {
-    const loginResponse: supertest.Response = await basicLogin(
-      validBody,
-      ValidHeaderWithApplicationKey
-    )
-    expect(loginResponse.status).toBe(StatusCodes.OK)
-
-    const authHeader = authorizationHeader(loginResponse.body.token)
-    const body = { viewers: ['random'] }
-
-    const response: supertest.Response = await SGUpdate(
-      {
-        ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader,
-      },
-      { rev: 'whatever' },
       body,
       {
         db: 'project',
@@ -265,7 +235,6 @@ describe('SG - CRUD', () => {
     expect(response.status).toBe(StatusCodes.OK)
 
     const doc = response.body
-    currentRev = doc._rev
     expect(doc.writers).toEqual(body.writers)
   })
 

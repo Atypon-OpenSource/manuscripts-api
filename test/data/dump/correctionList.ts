@@ -22,53 +22,48 @@ correctionList.push({
   _id: 'MPCorrection:valid-correction-id-1',
   containerID: 'MPProject:valid-project-id-2',
   manuscriptID: 'MPManuscript:valid-manuscript-id-1',
-  sessionID: 'test',
   objectType: 'MPCorrection',
   snapshotID: 'MPSnapshot:test-snap',
   status: { label: 'accepted', editorProfileID: 'MPUserProfile:valid-user-profile-1' },
-  commitChangeID: 'MPCommit:123-123'
+  commitChangeID: 'MPCommit:123-123',
 })
 
 correctionList.push({
   _id: 'MPCorrection:valid-correction-id-2',
   containerID: 'MPProject:valid-project-id-2',
   manuscriptID: 'MPManuscript:valid-manuscript-id-1',
-  sessionID: 'test',
   objectType: 'MPCorrection',
   snapshotID: 'MPSnapshot:test-snap',
   status: { label: 'accepted', editorProfileID: 'MPUserProfile:valid-user-profile-1' },
-  commitChangeID: 'MPCommit:123-123'
+  commitChangeID: 'MPCommit:123-123',
 })
 
 correctionList.push({
   _id: 'MPCorrection:valid-correction-id-3',
   containerID: 'MPProject:valid-project-id-2',
   manuscriptID: 'MPManuscript:valid-manuscript-id-1',
-  sessionID: 'test',
   objectType: 'MPCorrection',
   snapshotID: 'MPSnapshot:test-snap',
   status: { label: 'rejected', editorProfileID: 'MPUserProfile:valid-user-profile-1' },
-  commitChangeID: 'MPCommit:123-123'
+  commitChangeID: 'MPCommit:123-123',
 })
 
 correctionList.push({
   _id: 'MPCorrection:valid-correction-id-4',
   containerID: 'MPProject:valid-project-id-2',
   manuscriptID: 'MPManuscript:valid-manuscript-id-1',
-  sessionID: 'test',
   objectType: 'MPCorrection',
   snapshotID: 'MPSnapshot:test-snap',
   status: { label: 'proposed', editorProfileID: 'MPUserProfile:valid-user-profile-1' },
-  commitChangeID: 'MPCommit:123-123'
+  commitChangeID: 'MPCommit:123-123',
 })
 
 correctionList.push({
   _id: 'MPCorrection:valid-correction-id-5',
   containerID: 'MPProject:valid-project-id-2',
   manuscriptID: 'MPManuscript:valid-manuscript-id-1',
-  sessionID: 'test',
   objectType: 'MPCorrection',
   snapshotID: 'MPSnapshot:test-snap',
   status: { label: 'accepted', editorProfileID: 'MPUserProfile:valid-user-profile-1' },
-  commitChangeID: 'MPCommit:123-123'
+  commitChangeID: 'MPCommit:123-123',
 })

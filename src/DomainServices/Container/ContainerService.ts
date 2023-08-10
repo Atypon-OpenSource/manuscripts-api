@@ -864,7 +864,6 @@ export class ContainerService implements IContainerService {
             _id: `${this.manuscriptNoteRepository.objectType}:${uuid_v4()}`,
             createdAt: stamp,
             updatedAt: stamp,
-            sessionID: uuid_v4(),
             objectType: this.manuscriptNoteRepository.objectType,
             containerID: containerID,
             manuscriptID: manuscriptID,
@@ -900,12 +899,6 @@ export class ContainerService implements IContainerService {
       throw new ProductionNotesLoadError()
     }
   }
-
-  public async updateDocumentSessionId(docId: string) {
-    const sessionID = uuid_v4()
-    await DIContainer.sharedContainer.projectRepository.patch(docId, { _id: docId, sessionID })
-  }
-
   public async getCollaborators(containerID: string, userId: string) {
     const canAccess = await this.checkUserContainerAccess(userId, containerID)
     if (!canAccess) {
@@ -915,13 +908,11 @@ export class ContainerService implements IContainerService {
   }
 
   public async processManuscriptModels(docs: Model[], containerID: string, manuscriptID: string) {
-    const sessionID = uuid_v4()
     const createdAt = Math.round(Date.now() / 1000)
 
     const projectDocs = docs.map((doc) => {
       const updatedDoc = {
         ...doc,
-        sessionID,
         createdAt,
         updatedAt: createdAt,
         containerID,

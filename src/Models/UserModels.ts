@@ -341,11 +341,6 @@ export interface UserToken {
    * Application's id.
    */
   appId: string
-
-  /**
-   * IAM session id.
-   */
-  iamSessionID?: string
 }
 
 export interface UserEmail {

@@ -141,7 +141,7 @@ export class AuthService implements IAuthService {
       ...(user.deleteAt && { deleteAt: user.deleteAt }),
     }
 
-    const { userToken } = await this.createUserSessions(userModel, appId, deviceId, {}, false)
+    const { userToken } = await this.createUserSessions(userModel, appId, deviceId, false)
 
     return { token: userToken.token, user: userModel }
   }
@@ -174,7 +174,7 @@ export class AuthService implements IAuthService {
       email: user.email,
     }
 
-    const { userToken } = await this.createUserSessions(userModel, appId, deviceId, {}, false)
+    const { userToken } = await this.createUserSessions(userModel, appId, deviceId, false)
 
     return { user: userModel, token: userToken.token }
   }
@@ -235,7 +235,6 @@ export class AuthService implements IAuthService {
     user: User,
     appId: string,
     deviceId: string,
-    iamCredentials: { iamSessionID?: string },
     hasExpiry: boolean
   ) {
     await this.ensureUserProfileExists(user)
@@ -245,8 +244,7 @@ export class AuthService implements IAuthService {
       appId,
       deviceId,
       hasExpiry,
-      user.email,
-      iamCredentials.iamSessionID
+      user.email
     )
 
     await this.ensureUserStatusExists(userToken.userId)
@@ -268,8 +266,7 @@ export class AuthService implements IAuthService {
     appId: string,
     deviceId: string,
     hasExpiry: boolean,
-    email?: string,
-    iamSessionID?: string
+    email?: string
   ): Promise<UserToken> {
     const criteria = {
       userId,
@@ -296,7 +293,6 @@ export class AuthService implements IAuthService {
           connectUserID,
           userProfileId: UserService.profileID(userId),
           appId,
-          iamSessionID,
           email,
         },
         expiryTime
@@ -309,7 +305,6 @@ export class AuthService implements IAuthService {
         deviceId,
         appId,
         token,
-        iamSessionID,
       }
 
       await this.userTokenRepository.create(userToken)

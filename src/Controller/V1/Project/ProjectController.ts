@@ -23,7 +23,6 @@ import getStream from 'get-stream'
 import jwt from 'jsonwebtoken'
 import { Readable } from 'stream'
 import tempy from 'tempy'
-import { v4 as uuidv4 } from 'uuid'
 
 import { DIContainer } from '../../../DIContainer/DIContainer'
 import { ContainerService } from '../../../DomainServices/Container/ContainerService'
@@ -156,7 +155,6 @@ export class ProjectController extends BaseController {
       manuscriptObject._id = manuscriptId
     }
 
-    const sessionID = uuidv4()
     const createdAt = Math.round(Date.now() / 1000)
     const docs = json.data
       .filter((model: Model) => model.objectType !== 'MPManuscript')
@@ -165,7 +163,6 @@ export class ProjectController extends BaseController {
           ...model,
           createdAt,
           updatedAt: createdAt,
-          sessionID,
           containerID: project._id,
         }
 
@@ -199,7 +196,6 @@ export class ProjectController extends BaseController {
       ...manuscriptObject,
       createdAt,
       updatedAt: createdAt,
-      sessionID,
       containerID: project._id,
     }
 

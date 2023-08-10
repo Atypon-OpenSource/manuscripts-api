@@ -151,15 +151,8 @@ export interface IContainerService {
     manuscriptID: string,
     userID: string
   ): Promise<ManuscriptNote[]>
-
   /**
-   * Updates the document (project) sessionID
-   * @param docId the document/project ID
-   */
-  updateDocumentSessionId(docId: string): void
-
-  /**
-   * Adds sessionID, createdAt, updatedAt, containerID, manuscriptID attributes
+   * Adds createdAt, updatedAt, containerID, manuscriptID attributes
    * validates against schema
    * @param docs list of Models
    * @return an array with validated objects

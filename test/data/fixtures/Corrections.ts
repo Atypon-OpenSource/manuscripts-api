@@ -20,12 +20,11 @@ export const validCorrection: CorrectionLike = {
   _id: 'MPCorrection:valid-correction-id-1',
   containerID: 'MPProject:valid-project-id-2',
   manuscriptID: 'MPManuscript:valid-manuscript-id-1',
-  sessionID: 'test',
   objectType: 'MPCorrection',
   snapshotID: 'MPSnapshot:test-snap',
   status: {
     label: 'proposed',
-    editorProfileID: ''
+    editorProfileID: '',
   },
-  commitChangeID: 'MPCommit:123-123'
+  commitChangeID: 'MPCommit:123-123',
 }
