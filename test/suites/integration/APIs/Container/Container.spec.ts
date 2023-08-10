@@ -75,6 +75,7 @@ beforeAll(async () => {
 
 async function seedAccounts() {
   await DIContainer.sharedContainer.syncService.getOrCreateUserStatus('User|' + validBody.email)
+  await DIContainer.sharedContainer.syncService.getOrCreateUserStatus('User|' + validBody2.email)
 }
 
 afterAll(() => {
@@ -655,11 +656,39 @@ describe('ContainerService - loadProject', () => {
       name: 'foobar',
       email: validBody.email,
     })
+    await DIContainer.sharedContainer.syncService.createUserProfile({
+      _id: `User|${validBody2.email}`,
+      name: 'foobar2',
+      email: validBody2.email,
+    })
   })
 
   test('should successfully loadProject', async () => {
     const loginResponse: supertest.Response = await basicLogin(
       validBody,
+      ValidHeaderWithApplicationKey
+    )
+
+    expect(loginResponse.status).toBe(StatusCodes.OK)
+
+    const authHeader = authorizationHeader(loginResponse.body.token)
+    await createProject('MPProject:valid-project-id-2')
+    const response: supertest.Response = await loadProject(
+      {
+        ...ValidContentTypeAcceptJsonHeader,
+        ...authHeader,
+      },
+      {},
+      {
+        projectId: 'MPProject:valid-project-id-2',
+      }
+    )
+    expect(response.status).toBe(StatusCodes.OK)
+  })
+
+  test('should successfully loadProject when user is proofer', async () => {
+    const loginResponse: supertest.Response = await basicLogin(
+      validBody2,
       ValidHeaderWithApplicationKey
     )
 

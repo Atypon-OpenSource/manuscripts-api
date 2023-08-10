@@ -353,6 +353,7 @@ describe('projectService', () => {
         viewers: [],
         editors: [],
         annotators: [],
+        proofers: [],
       })
     })
   })

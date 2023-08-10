@@ -63,11 +63,12 @@ async function proceedWithAccess(doc: any, userId: string | undefined, accessTyp
   const writers = container.writers
   const viewers = container.viewers || []
   const annotators = container.annotators || []
+  const proofers = container.proofers || []
   const editors = container.editors || []
 
   switch (accessType) {
     case AccessType.Read: {
-      const readUserIds = [].concat(owners, writers, viewers, annotators, editors)
+      const readUserIds = [].concat(owners, writers, viewers, annotators, proofers, editors)
       requireUser(readUserIds, userId)
       break
     }
@@ -87,7 +88,7 @@ async function proceedWithAccess(doc: any, userId: string | undefined, accessTyp
       break
     }
     case AccessType.Contribute: {
-      const contributeUserIds = [].concat(owners, writers, editors, annotators)
+      const contributeUserIds = [].concat(owners, writers, editors, proofers, annotators)
       requireUser(contributeUserIds, userId)
       break
     }
@@ -182,9 +183,10 @@ export async function syncAccessControl(doc: any, oldDoc: any, userId?: string):
     const writers = doc.writers
     const viewers = doc.viewers || []
     const annotators = doc.annotators || []
+    const proofers = doc.proofer || []
     const editors = doc.editors || []
 
-    const allUserIds = [].concat(owners, writers, viewers, annotators, editors)
+    const allUserIds = [].concat(owners, writers, viewers, proofers, annotators, editors)
 
     // if there have been changes, we need to be ensure we are the owner
     if (
@@ -192,6 +194,7 @@ export async function syncAccessControl(doc: any, oldDoc: any, userId?: string):
       hasMutated('writers') ||
       hasMutated('viewers') ||
       hasMutated('annotators') ||
+      hasMutated('proofers') ||
       hasMutated('editors')
     ) {
       requireUser(owners, userId)
