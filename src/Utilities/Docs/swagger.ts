@@ -13,22 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Application } from 'express'
+import { readFileSync } from 'fs'
+import swaggerUi from 'swagger-ui-express'
+import { parse } from 'yaml'
 
-import { BaseRoute } from '../BaseRoute'
-import { AuthRoute } from '../V1/Auth/AuthRoute'
-import { RegistrationRoute } from '../V1/Registration/RegistrationRoute'
-import { ServerStatusRoute } from '../V1/ServerStatus/ServerStatusRoute'
-import { UserRoute } from '../V1/User/UserRoute'
-import { ConfigRoute } from './Config/ConfigRoute'
-import { ProjectRoute } from './Project/ProjectRoute'
+const swaggerDocument = parse(readFileSync(__dirname + '/../../../doc/manuscripts-v2.yml', 'utf8'))
 
-export function getRoutes(): BaseRoute[] {
-  return [
-    new AuthRoute(),
-    new RegistrationRoute(),
-    new UserRoute(),
-    new ServerStatusRoute(),
-    new ProjectRoute(),
-    new ConfigRoute(),
-  ]
+function generateDocs(app: Application) {
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 }
+
+export default generateDocs

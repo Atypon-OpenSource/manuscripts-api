@@ -1,0 +1,872 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: Manuscripts-API v2
+components:
+  schemas:
+    Manuscript:
+      type: array
+      items:
+        type: object
+    UserCollaborator:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: The ID of the collaborator
+        objectType:
+          type: string
+          enum: [ MPUserCollaborator ]
+          description: The type of the object
+        createdAt:
+          type: number
+          description: The creation timestamp of the collaborator
+        updatedAt:
+          type: number
+          description: The last update timestamp of the collaborator
+        prototype:
+          type: string
+          description: The prototype of the collaborator
+        userID:
+          type: string
+          description: The user ID of the collaborator
+        collaboratorID:
+          type: string
+          description: The collaborator ID
+        collaboratorProfile:
+          type: object
+        containers:
+          type: object
+          properties:
+            owner:
+              type: array
+              items:
+                type: string
+            writer:
+              type: array
+              items:
+                type: string
+            editor:
+              type: array
+              items:
+                type: string
+            viewer:
+              type: array
+              items:
+                type: string
+            annotators:
+              type: array
+              items:
+                type: string
+          additionalProperties:
+            type: string
+        projects:
+          type: object
+          properties:
+            owner:
+              type: array
+              items:
+                type: string
+            writer:
+              type: array
+              items:
+                type: string
+            editor:
+              type: array
+              items:
+                type: string
+            viewer:
+              type: array
+              items:
+                type: string
+            annotator:
+              type: array
+              items:
+                type: string
+          additionalProperties:
+            type: string
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+paths:
+  /api/v2/project/{projectID}:
+    delete:
+      tags:
+        - Project
+      summary: Delete a project
+      security:
+        - JWTAuth: [ ]
+      parameters:
+        - in: header
+          name: Accept
+          schema:
+            type: string
+            default: application/json
+          required: true
+        - in: path
+          name: projectID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Project successfully deleted
+    post:
+      summary: Create a new project
+      tags:
+        - Project
+      parameters:
+        - in: header
+          name: Accept
+          schema:
+            type: string
+            default: application/json
+          required: true
+        - in: path
+          name: projectID
+          schema:
+            type: string
+          description: The ID of the project
+          required: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: The title of the project
+                owners:
+                  type: array
+                  items:
+                    type: string
+                  description: An array of owner IDs
+                writers:
+                  type: array
+                  items:
+                    type: string
+                  description: An array of writer IDs
+                viewers:
+                  type: array
+                  items:
+                    type: string
+                  description: An array of viewer IDs
+      responses:
+        200:
+          description: The newly created project
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  objectType:
+                    type: string
+                  updatedAt:
+                    type: number
+                  createdAt:
+                    type: number
+                  _id:
+                    type: string
+                  title:
+                    type: string
+                  owners:
+                    type: array
+                    items:
+                      type: string
+                  writers:
+                    type: array
+                    items:
+                      type: string
+                  viewers:
+                    type: array
+                    items:
+                      type: string
+        400:
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+      security:
+        - bearerAuth: [ ]
+    get:
+      summary: Get a project's models
+      tags:
+        - Project
+      parameters:
+        - in: header
+          name: Accept
+          schema:
+            type: string
+            default: application/json
+          required: true
+        - in: header
+          name: If-Modified-Since
+          schema:
+            type: string
+            format: date-time
+          required: false
+        - in: path
+          name: projectID
+          schema:
+            type: string
+          required: true
+        - in: body
+          name: body
+          schema:
+            type: object
+            properties:
+              types:
+                type: array
+                items:
+                  type: string
+                description: Types of project models to return
+      responses:
+        200:
+          description: The project models
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+        304:
+          description: Not Modified
+        400:
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+      security:
+        - bearerAuth: [ ]
+    put:
+      summary: Update an existing project
+      tags:
+        - Project
+      parameters:
+        - in: path
+          name: projectID
+          schema:
+            type: string
+          description: The ID of the project
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                        description: The ID of the object
+                      objectType:
+                        type: string
+                        description: The type of the object
+      responses:
+        200:
+          description: The updated project
+          content:
+            application/json:
+              schema:
+                type: string
+        400:
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+      security:
+        - bearerAuth: [ ]
+  /api/v2/project/{projectID}/manuscript/{manuscriptID}:
+    post:
+      summary: Create a new manuscript in a project
+      tags:
+        - Project
+      parameters:
+        - in: path
+          name: projectID
+          schema:
+            type: string
+          required: true
+          description: The ID of the project
+        - in: path
+          name: manuscriptID
+          schema:
+            type: string
+          description: The ID of the manuscript (optional)
+          required: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                templateID:
+                  type: string
+                  description: The ID of the template for the new manuscript
+      responses:
+        200:
+          description: The newly created manuscript
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Manuscript'
+        400:
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+      security:
+        - bearerAuth: [ ]
+    get:
+        summary: Get a project's manuscript
+        tags:
+          - Project
+        parameters:
+          - in: header
+            name: Accept
+            schema:
+              type: string
+              default: application/json
+            required: true
+          - in: header
+            name: If-Modified-Since
+            schema:
+              type: string
+              format: date-time
+            required: false
+          - in: path
+            name: projectID
+            schema:
+              type: string
+            required: true
+          - in: path
+            name: manuscriptID
+            schema:
+              type: string
+            required: false
+          - in: body
+            name: body
+            schema:
+              type: object
+              properties:
+                types:
+                  type: array
+                  items:
+                    type: string
+                  description: Types of manuscript models to return
+        responses:
+          200:
+            description: The manuscript models
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Manuscript'
+          304:
+            description: Not Modified
+          400:
+            description: Validation error
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+        security:
+          - bearerAuth: [ ]
+
+  /api/v2/project/{projectID}/users:
+    post:
+      summary: Update a user's role in a project
+      tags:
+        - Project
+      parameters:
+        - in: header
+          name: Accept
+          schema:
+            type: string
+            default: application/json
+          required: true
+        - in: path
+          name: projectID
+          schema:
+            type: string
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userID:
+                  type: string
+                  description: The ID of the user whose role needs to be updated
+                  required: true
+                role:
+                  type: string
+                  description: The new role for the user
+                  enum: [ Owner, Writer, Viewer, Editor, Annotator ]
+                  required: true
+      responses:
+        204:
+          description: The user's role was updated successfully
+        400:
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+      security:
+        - bearerAuth: [ ]
+  /api/v2/project/{projectID}/collaborators:
+    get:
+      summary: Get collaborators for a project
+      tags:
+        - Project
+      parameters:
+        - in: header
+          name: Accept
+          schema:
+            type: string
+            default: application/json
+          required: true
+        - in: path
+          name: projectID
+          schema:
+            type: string
+          description: The ID of the project
+          required: true
+      responses:
+        200:
+          description: An array of collaborators
+          content:
+            application/json:
+              schema:
+                type: array
+        400:
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+      security:
+        - bearerAuth: [ ]
+  /api/v2/project/{projectID}/archive:
+    get:
+      tags:
+        - Project
+      summary: Get project archive
+      security:
+        - JWTAuth: [ ]
+      parameters:
+        - in: path
+          name: projectID
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: onlyIDs
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: string
+                format: byte
+            application/zip:
+              schema:
+                type: string
+                format: byte
+  /api/v2/project/{projectID}/manuscript/{manuscriptID}/archive:
+      get:
+        tags:
+          - Project
+        summary: Get manuscript archive
+        security:
+          - JWTAuth: [ ]
+        parameters:
+          - in: path
+            name: projectID
+            required: true
+            schema:
+              type: string
+          - in: path
+            name: manuscriptID
+            required: false
+            schema:
+              type: string
+          - in: query
+            name: onlyIDs
+            schema:
+              type: boolean
+        responses:
+          '200':
+            description: Successful operation
+            content:
+              application/json:
+                schema:
+                  type: string
+                  format: byte
+              application/zip:
+                schema:
+                  type: string
+                  format: byte
+  /api/v2/project/{projectID}/{scope}:
+      get:
+        tags:
+          - Project
+        summary: Generate access token
+        security:
+          - JWTAuth: [ ]
+        parameters:
+          - in: path
+            name: projectID
+            required: true
+            schema:
+              type: string
+          - in: path
+            name: scope
+            required: true
+            schema:
+              type: string
+        responses:
+          '200':
+            description: Successful operation
+            content:
+              application/json:
+                schema:
+                  type: string
+  /api/v2/templates:
+    get:
+      summary: Retrieve a template
+      tags:
+        - Config
+      parameters:
+        - in: header
+          name: Accept
+          schema:
+            type: string
+            default: application/json
+          required: true
+        - in: query
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The template id
+      responses:
+        200:
+          description: The template
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                    description: The unique ID of the template
+                  objectType:
+                    type: string
+                    description: The type of the object
+                  bundle:
+                    type: string
+                    description: The bundle associated with the template
+                  title:
+                    type: string
+                    description: The title of the template
+                  createdAt:
+                    type: number
+                    format: double
+                    description: The time the template was created at
+                  updatedAt:
+                    type: number
+                    format: double
+                    description: The time the template was updated at
+        404:
+          description: No data found
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "No data found"
+        400:
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+      security:
+        - bearerAuth: []
+  /api/v2/bundles:
+    get:
+      summary: Retrieve a bundle
+      tags:
+        - Config
+      parameters:
+        - in: header
+          name: Accept
+          schema:
+            type: string
+            default: application/json
+          required: true
+        - in: query
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The bundle id
+      responses:
+        200:
+          description: The bundle
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                    description: The unique ID of the bundle
+                  objectType:
+                    type: string
+                    description: The type of the
+                  csl:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                        description: The unique ID of the CSL
+        404:
+          description: No data found
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "No data found"
+        400:
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+      security:
+        - bearerAuth: []
+  /api/v2/config:
+    get:
+      summary: Retrieve a list of data
+      tags:
+        - Config
+      parameters:
+        - in: header
+          name: Accept
+          schema:
+            type: string
+            default: application/json
+          required: true
+        - in: query
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The file id
+      responses:
+        200:
+          description: A list of sections
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    _id:
+                      type: string
+                      description: The unique ID of the section category
+                    name:
+                      type: string
+                      description: The name of the section category
+                    desc:
+                      type: string
+                      description: The description of the section category
+                    objectType:
+                      type: string
+                      description: The type of the object
+                    titles:
+                      type: array
+                      items:
+                        type: string
+                      description: An array of titles for the section category
+                    priority:
+                      type: number
+                      description: The priority of the section category
+                    uniqueInScope:
+                      type: boolean
+                      description: If the section category is unique in its scope
+                    pageBreakStyle:
+                      type: number
+                      description: The style of page break for the section category
+                    singular:
+                      type: string
+                      description: Singular form of the section category
+                    groupIDs:
+                      type: array
+                      items:
+                        type: string
+                      description: An array of group IDs associated with the section category
+                    supplementary:
+                      type: boolean
+                      description: Whether the section category is supplementary or not
+                  required:
+                    - _id
+                    - name
+                    - desc
+                    - objectType
+                    - titles
+                    - priority
+                    - uniqueInScope
+        404:
+          description: No data found
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "No data found"
+        400:
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+      security:
+        - bearerAuth: []
+  /api/v2/csl/locales:
+    get:
+      summary: Retrieve a locale
+      tags:
+        - Config
+      parameters:
+        - in: header
+          name: Accept
+          schema:
+            type: string
+            default: application/json
+          required: true
+        - in: query
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The locale id
+      responses:
+        200:
+          description: Locale data
+          content:
+            application/json:
+              schema:
+                type: string
+                description: The locale data in XML format converted to a string
+                example: "<?xml version='1.0' encoding='utf-8'?>\n<locale xmlns='http://purl.org/net/xbiblio/csl' version='1.0' xml:lang='en-US'>...</locale>"
+        404:
+          description: No data found
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "No data found"
+        400:
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+      security:
+        - bearerAuth: []
+  /api/v2/csl/styles:
+    get:
+      summary: Retrieve a style
+      tags:
+        - Config
+      parameters:
+        - in: header
+          name: Accept
+          schema:
+            type: string
+            default: application/json
+          required: true
+        - in: query
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The CSL style id
+      responses:
+        200:
+          description: CSL file data
+          content:
+            application/json:
+              schema:
+                type: string
+                description: The CSL file data
+                example: "<?xml version='1.0' encoding='utf-8'?>\n<style xmlns='http://purl.org/net/xbiblio/csl' class='in-text' version='1.0' demote-non-dropping-particle='sort-only' default-locale='en-US' page-range-format='expanded'>...</style>"
+        404:
+          description: No data found
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "No data found"
+        400:
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+      security:
+        - bearerAuth: []

@@ -14,21 +14,11 @@
  * limitations under the License.
  */
 
-import { BaseRoute } from '../BaseRoute'
-import { AuthRoute } from '../V1/Auth/AuthRoute'
-import { RegistrationRoute } from '../V1/Registration/RegistrationRoute'
-import { ServerStatusRoute } from '../V1/ServerStatus/ServerStatusRoute'
-import { UserRoute } from '../V1/User/UserRoute'
-import { ConfigRoute } from './Config/ConfigRoute'
-import { ProjectRoute } from './Project/ProjectRoute'
+import { DIContainer } from '../../../DIContainer/DIContainer'
+import { BaseController } from '../../BaseController'
 
-export function getRoutes(): BaseRoute[] {
-  return [
-    new AuthRoute(),
-    new RegistrationRoute(),
-    new UserRoute(),
-    new ServerStatusRoute(),
-    new ProjectRoute(),
-    new ConfigRoute(),
-  ]
+export class ConfigController extends BaseController {
+  public async getDocument(id: string) {
+    return DIContainer.sharedContainer.configService.getDocument(id)
+  }
 }

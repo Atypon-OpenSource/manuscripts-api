@@ -31,6 +31,7 @@ import {
   ClientApplicationsConfiguration,
   ConfigurationContainer,
   DatabaseConfiguration,
+  DataConfiguration,
   EmailConfiguration,
   Environment,
   EnvironmentLike,
@@ -82,6 +83,7 @@ export class Configuration implements ConfigurationContainer {
   readonly apps: ClientApplicationsConfiguration
   readonly scopes: ScopedAccessTokenConfiguration[]
   readonly pressroom: PressroomConfiguration
+  readonly data: DataConfiguration
 
   constructor(env: EnvironmentLike) {
     this.API = {
@@ -155,6 +157,10 @@ export class Configuration implements ConfigurationContainer {
     this.pressroom = {
       baseurl: getString(env.APP_PRESSROOM_BASE_URL, 'APP_PRESSROOM_BASE_URL'),
       apiKey: getString(env.APP_PRESSROOM_APIKEY, 'APP_PRESSROOM_APIKEY'),
+    }
+
+    this.data = {
+      path: getString(env.CONFIG_PATH, 'CONFIG_PATH'),
     }
   }
 

@@ -13,6 +13,8 @@ COPY ./prisma ./prisma
 COPY ./emails ./emails
 COPY ./build ./build
 COPY ./types ./types
+COPY ./config ./config
+COPY ./doc ./doc
 
 COPY tsconfig.json tsconfig.build.json ./
 
@@ -26,6 +28,8 @@ WORKDIR /app
 COPY --from=build /usr/src/app/package.json ./package.json
 COPY --from=build /usr/src/app/dist ./dist
 COPY --from=build /usr/src/app/node_modules ./node_modules
+COPY --from=build /usr/src/app/doc ./doc
+COPY --from=build /usr/src/app/config ./config
 
 EXPOSE 3000
 CMD [ "node", "dist/index.js" ]

@@ -1,0 +1,16 @@
+[
+  {
+    "_id": "MPBundle:www-zotero-org-styles-american-medical-association",
+    "objectType": "MPBundle",
+    "csl": {
+      "_id": "american-medical-association"
+    }
+  },
+  {
+    "_id": "MPBundle:www-zotero-org-styles-chicago-author-date",
+    "objectType": "MPBundle",
+    "csl": {
+      "_id": "chicago-author-date"
+    }
+  }
+]
