@@ -387,7 +387,7 @@ describe('ProjectController', () => {
       DIContainer.sharedContainer.manuscriptRepository.create = jest.fn()
       DIContainer.sharedContainer.templateRepository.getById = jest.fn(() => Promise.resolve(null))
       ContainerService.userIdForSync = jest.fn(() => 'User_foo')
-      DIContainer.sharedContainer.pressroomService.validateTemplateId = jest.fn(() =>
+      DIContainer.sharedContainer.configService.hasDocument = jest.fn(() =>
         Promise.resolve(false)
       )
       const json = {
@@ -449,7 +449,7 @@ describe('ProjectController', () => {
         Promise.resolve()
       )
       DIContainer.sharedContainer.manuscriptRepository.create = jest.fn()
-      DIContainer.sharedContainer.pressroomService.validateTemplateId = jest.fn(() =>
+      DIContainer.sharedContainer.configService.hasDocument = jest.fn(() =>
         Promise.resolve(false)
       )
 
