@@ -1,5 +1,5 @@
 /*!
- * © 2020 Atypon Systems LLC
+ * © 2023 Atypon Systems LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-export interface PatchProject {
-  _id: string
-  title?: string
-  owners?: string[]
-  writers?: string[]
-  viewers?: string[]
-  editors?: string[]
-  annotators?: string[]
-  proofers?: string[]
+import { DIContainer } from '../../../DIContainer/DIContainer'
+import { BaseController } from '../../BaseController'
+
+export class ConfigController extends BaseController {
+  public async getDocument(id: string) {
+    return DIContainer.sharedContainer.configService.getDocument(id)
+  }
 }

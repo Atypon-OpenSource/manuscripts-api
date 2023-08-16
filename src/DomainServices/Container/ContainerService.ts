@@ -215,7 +215,7 @@ export class ContainerService implements IContainerService {
     this.ensureValidRole(role)
 
     const title = ContainerService.containerTitle(container)
-    const { owners, writers, viewers, editors, annotators } = this.updatedRoles(
+    const { owners, writers, viewers, editors, proofers, annotators } = this.updatedRoles(
       container,
       userId,
       role
@@ -229,6 +229,7 @@ export class ContainerService implements IContainerService {
         writers,
         viewers,
         editors,
+        proofers,
         annotators
       )
 
@@ -261,7 +262,7 @@ export class ContainerService implements IContainerService {
     }
 
     this.ensureValidRole(role)
-    const { owners, writers, viewers, editors, annotators } = this.updatedRoles(
+    const { owners, writers, viewers, editors, proofers, annotators } = this.updatedRoles(
       container,
       user._id,
       role
@@ -277,6 +278,7 @@ export class ContainerService implements IContainerService {
       writers,
       viewers,
       editors,
+      proofers,
       annotators
     )
   }
@@ -291,6 +293,7 @@ export class ContainerService implements IContainerService {
     writers: string[]
     viewers: string[]
     editors?: string[]
+    proofers?: string[]
     annotators?: string[]
   } {
     const syncUserId = ContainerService.userIdForSync(userId)
@@ -299,6 +302,7 @@ export class ContainerService implements IContainerService {
     const writers = _.cloneDeep(container.writers)
     const viewers = _.cloneDeep(container.viewers)
     let annotators = _.cloneDeep(container.annotators)
+    let proofers = _.cloneDeep(container.proofers)
     let editors = _.cloneDeep(container.editors)
     const ownerIdx = owners.indexOf(syncUserId)
     const writerIdx = writers.indexOf(syncUserId)
@@ -315,6 +319,12 @@ export class ContainerService implements IContainerService {
       const idx = annotators.indexOf(syncUserId)
       if (idx > -1) {
         annotators.splice(idx, 1)
+      }
+    }
+    if (proofers && proofers.length) {
+      const idx = proofers.indexOf(syncUserId)
+      if (idx > -1) {
+        proofers.splice(idx, 1)
       }
     }
     if (editors && editors.length) {
@@ -341,6 +351,13 @@ export class ContainerService implements IContainerService {
           annotators = [syncUserId]
         }
         break
+      case ContainerRole.Proofer:
+        if (proofers) {
+          proofers.push(syncUserId)
+        } else {
+          proofers = [syncUserId]
+        }
+        break
       case ContainerRole.Editor:
         if (editors) {
           editors.push(syncUserId)
@@ -350,7 +367,7 @@ export class ContainerService implements IContainerService {
         break
     }
 
-    return { owners, writers, viewers, editors, annotators }
+    return { owners, writers, viewers, editors, proofers, annotators }
   }
 
   private async handleInvitations(
@@ -370,6 +387,7 @@ export class ContainerService implements IContainerService {
     writers: string[] | undefined,
     viewers: string[] | undefined,
     editors?: string[] | undefined,
+    proofers?: string[] | undefined,
     annotators?: string[] | undefined
   ): Promise<void> {
     // call it without userId intentionally
@@ -380,6 +398,7 @@ export class ContainerService implements IContainerService {
       writers: writers && writers.map((u) => ContainerService.userIdForSync(u)),
       viewers: viewers && viewers.map((u) => ContainerService.userIdForSync(u)),
       editors: editors && editors.map((u) => ContainerService.userIdForSync(u)),
+      proofers: proofers && proofers.map((u) => ContainerService.userIdForSync(u)),
       annotators: annotators && annotators.map((u) => ContainerService.userIdForSync(u)),
     })
   }
@@ -390,6 +409,7 @@ export class ContainerService implements IContainerService {
       this.isWriter(container, userId) ||
       this.isViewer(container, userId) ||
       this.isEditor(container, userId) ||
+      this.isProofer(container, userId) ||
       this.isAnnotator(container, userId)
     )
   }
@@ -405,6 +425,8 @@ export class ContainerService implements IContainerService {
       return ContainerRole.Editor
     } else if (ContainerService.isAnnotator(container, userId)) {
       return ContainerRole.Annotator
+    } else if (ContainerService.isProofer(container, userId)) {
+      return ContainerRole.Proofer
     } else {
       return null
     }
@@ -533,15 +555,16 @@ export class ContainerService implements IContainerService {
 
   public async checkUserContainerAccess(userID: string, containerID: string): Promise<boolean> {
     // eslint-disable-next-line prefer-const
-    let { owners, writers, viewers, editors, annotators } = await this.getContainer(
+    let { owners, writers, viewers, editors, proofers, annotators } = await this.getContainer(
       containerID,
       ContainerService.userIdForSync(userID)
     )
 
     editors = editors || []
     annotators = annotators || []
+    proofers = proofers || []
 
-    return [...owners, ...writers, ...viewers, ...editors, ...annotators].includes(
+    return [...owners, ...writers, ...viewers, ...editors, ...proofers, ...annotators].includes(
       ContainerService.userIdForSync(userID)
     )
   }
@@ -561,10 +584,16 @@ export class ContainerService implements IContainerService {
   }
 
   public async checkIfUserCanCreateNote(userID: string, containerID: string): Promise<boolean> {
-    const { owners, writers, annotators, editors } = await this.getContainer(containerID, userID)
+    const { owners, writers, proofers, annotators, editors } = await this.getContainer(
+      containerID,
+      userID
+    )
     let usersWithAccess = [...owners, ...writers]
     if (annotators && annotators.length) {
       usersWithAccess = usersWithAccess.concat(annotators)
+    }
+    if (proofers && proofers.length) {
+      usersWithAccess = usersWithAccess.concat(proofers)
     }
     if (editors && editors.length) {
       usersWithAccess = usersWithAccess.concat(editors)
@@ -580,6 +609,9 @@ export class ContainerService implements IContainerService {
     }
     if (container.annotators) {
       contributors = contributors.concat(container.annotators)
+    }
+    if (container.proofers) {
+      contributors = contributors.concat(container.proofers)
     }
     const syncUserID = ContainerService.userIdForSync(userID)
 
@@ -691,6 +723,14 @@ export class ContainerService implements IContainerService {
     const annotators = container.annotators
     if (annotators && annotators.length) {
       return annotators.indexOf(ContainerService.userIdForSync(userId)) > -1
+    }
+    return false
+  }
+
+  public static isProofer(container: Container, userId: string): boolean {
+    const proofers = container.proofers
+    if (proofers && proofers.length) {
+      return proofers.indexOf(ContainerService.userIdForSync(userId)) > -1
     }
     return false
   }

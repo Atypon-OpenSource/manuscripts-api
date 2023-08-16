@@ -25,6 +25,7 @@ export enum ContainerRole {
   Viewer = 'Viewer',
   Editor = 'Editor',
   Annotator = 'Annotator',
+  Proofer = 'Proofer',
 }
 
 export enum ProjectUserRole {
@@ -32,6 +33,7 @@ export enum ProjectUserRole {
   Writer = 'Writer',
   Viewer = 'Viewer',
   Editor = 'Editor',
+  Proofer = 'Proofer',
   Annotator = 'Annotator',
 }
 

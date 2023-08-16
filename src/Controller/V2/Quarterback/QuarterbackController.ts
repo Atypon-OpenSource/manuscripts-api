@@ -85,7 +85,7 @@ export class QuarterbackController extends ContainedBaseController {
   async getSnapshot(req: Request): Promise<Snapshot> {
     const { snapshotID } = req.params
     const snapshot: Snapshot = await this.fetchSnapshot(snapshotID)
-    const manuscript = await this.getManuscriptFromSnapshot(snapshot);
+    const manuscript = await this.getManuscriptFromSnapshot(snapshot)
     await this.validateUserAccess(req.user, manuscript.containerID, ProjectPermission.READ)
     return snapshot
   }

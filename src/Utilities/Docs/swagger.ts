@@ -1,5 +1,5 @@
 /*!
- * © 2020 Atypon Systems LLC
+ * © 2023 Atypon Systems LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,14 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Application } from 'express'
+import { readFileSync } from 'fs'
+import swaggerUi from 'swagger-ui-express'
+import { parse } from 'yaml'
 
-export interface PatchProject {
-  _id: string
-  title?: string
-  owners?: string[]
-  writers?: string[]
-  viewers?: string[]
-  editors?: string[]
-  annotators?: string[]
-  proofers?: string[]
+const swaggerDocument = parse(readFileSync(__dirname + '/../../../doc/manuscripts-v2.yml', 'utf8'))
+
+function generateDocs(app: Application) {
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 }
+
+export default generateDocs

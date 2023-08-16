@@ -31,6 +31,7 @@ import {
   ClientApplicationsConfiguration,
   ConfigurationContainer,
   DatabaseConfiguration,
+  DataConfiguration,
   EmailConfiguration,
   Environment,
   EnvironmentLike,
@@ -83,6 +84,7 @@ export class Configuration implements ConfigurationContainer {
   readonly scopes: ScopedAccessTokenConfiguration[]
   readonly pressroom: PressroomConfiguration
   readonly quarterback: PressroomConfiguration
+  readonly data: DataConfiguration
 
   constructor(env: EnvironmentLike) {
     this.API = {
@@ -161,6 +163,10 @@ export class Configuration implements ConfigurationContainer {
     this.quarterback = {
       baseurl: getString(env.APP_QUARTERBACK_BASE_URL, 'APP_QUARTERBACK_BASE_URL'),
       apiKey: getString(env.APP_QUARTERBACK_APIKEY, 'APP_QUARTERBACK_APIKEY'),
+    }
+
+    this.data = {
+      path: getString(env.CONFIG_PATH, 'CONFIG_PATH'),
     }
   }
 

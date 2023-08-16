@@ -164,6 +164,12 @@ export class UserCollaboratorRepository extends SGRepository<
             },
             {
               data: {
+                path: ['projects', 'proofer'],
+                array_contains: containerId,
+              },
+            },
+            {
+              data: {
                 path: ['projects', 'annotator'],
                 array_contains: containerId,
               },
