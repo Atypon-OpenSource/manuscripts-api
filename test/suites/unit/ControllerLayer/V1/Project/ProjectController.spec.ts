@@ -410,7 +410,7 @@ describe('ProjectController', () => {
       ).rejects.toThrow(MissingTemplateError)
     })
 
-    test('should not fail if template is found in pressroom', async () => {
+    test('should not fail if template is found in config data', async () => {
       const controller: any = new ProjectController()
 
       DIContainer.sharedContainer.containerService.upsertProjectModels = jest.fn(async () =>
@@ -419,7 +419,7 @@ describe('ProjectController', () => {
       DIContainer.sharedContainer.manuscriptRepository.create = jest.fn()
       ContainerService.userIdForSync = jest.fn(() => 'User_foo')
       DIContainer.sharedContainer.templateRepository.getById = jest.fn(() => Promise.resolve(null))
-      DIContainer.sharedContainer.pressroomService.validateTemplateId = jest.fn(() =>
+      DIContainer.sharedContainer.configService.hasDocument = jest.fn(() =>
         Promise.resolve(true)
       )
       const json = {

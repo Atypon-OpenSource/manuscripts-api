@@ -181,11 +181,8 @@ export class ProjectController extends BaseController {
       : null
 
     let templateFound: boolean = templateId !== undefined && template !== null
-
     if (!templateFound && templateId) {
-      templateFound = await DIContainer.sharedContainer.pressroomService.validateTemplateId(
-        templateId
-      )
+      templateFound = await DIContainer.sharedContainer.configService.hasDocument(templateId)
     }
 
     if (!templateFound && templateId) {
