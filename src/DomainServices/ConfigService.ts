@@ -42,7 +42,9 @@ export class ConfigService {
   }
 
   private async initTemplates(root: string) {
-    const models: Model[] = JSON.parse(await fs.readFile(path.join(root, 'templates.json'), 'utf-8'))
+    const models: Model[] = JSON.parse(
+      await fs.readFile(path.join(root, 'templates.json'), 'utf-8')
+    )
     return this.index(models)
   }
 
@@ -84,5 +86,10 @@ export class ConfigService {
   public async getDocument(id: string) {
     const data = await this.store
     return data.get(id)
+  }
+
+  public async hasDocument(id: string): Promise<boolean> {
+    const data = await this.store
+    return data.has(id)
   }
 }
