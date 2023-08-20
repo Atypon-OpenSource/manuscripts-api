@@ -17,18 +17,40 @@ import { Manuscript } from '@manuscripts/json-schema'
 import { Request } from 'express'
 
 import { DIContainer } from '../../../DIContainer/DIContainer'
-import { ProjectPermission } from '../../../DomainServices/ProjectService'
 import { RoleDoesNotPermitOperationError, ValidationError } from '../../../Errors'
+import { ContainerRole } from '../../../Models/ContainerModels'
 import { Snapshot } from '../../../Models/SnapshotModel'
 import { ContainedBaseController } from '../../ContainedBaseController'
 
+//To be updated with new more targeted permissions (ex. UPDATE_AUTHORS)
+export enum QuarterbackPermission {
+  READ,
+  WRITE,
+}
+
+const EMPTY_PERMISSIONS = new Set<QuarterbackPermission>()
 export class QuarterbackController extends ContainedBaseController {
-  async getPermissions(projectID: string, userID: string): Promise<ReadonlySet<ProjectPermission>> {
-    return DIContainer.sharedContainer.projectService.getPermissions(projectID, userID)
+  async getPermissions(
+    projectID: string,
+    userID: string
+  ): Promise<ReadonlySet<QuarterbackPermission>> {
+    const project = await DIContainer.sharedContainer.projectService.getProject(projectID)
+    const role = DIContainer.sharedContainer.containerService.getUserRole(project, userID)
+    switch (role) {
+      case ContainerRole.Owner:
+      case ContainerRole.Writer:
+      case ContainerRole.Editor:
+      case ContainerRole.Annotator:
+      case ContainerRole.Proofer:
+        return new Set([QuarterbackPermission.READ, QuarterbackPermission.WRITE])
+      case ContainerRole.Viewer:
+        return new Set([QuarterbackPermission.READ])
+    }
+    return EMPTY_PERMISSIONS
   }
   async createDocument(req: Request): Promise<Buffer> {
     const { projectID } = req.params
-    await this.validateUserAccess(req.user, projectID, ProjectPermission.CREATE_MANUSCRIPT)
+    await this.validateUserAccess(req.user, projectID, QuarterbackPermission.WRITE)
     const doc = req.body
     doc.user_model_id = req.user?._id
     return DIContainer.sharedContainer.quarterback.createDocument(doc)
@@ -36,25 +58,25 @@ export class QuarterbackController extends ContainedBaseController {
 
   async getDocument(req: Request): Promise<Buffer> {
     const { projectID, manuscriptID } = req.params
-    await this.validateUserAccess(req.user, projectID, ProjectPermission.READ)
+    await this.validateUserAccess(req.user, projectID, QuarterbackPermission.READ)
     return DIContainer.sharedContainer.quarterback.getDocument(manuscriptID)
   }
 
   async deleteDocument(req: Request): Promise<Buffer> {
     const { projectID, manuscriptID } = req.params
-    await this.validateUserAccess(req.user, projectID, ProjectPermission.DELETE)
+    await this.validateUserAccess(req.user, projectID, QuarterbackPermission.WRITE)
     return DIContainer.sharedContainer.quarterback.deleteDocument(manuscriptID)
   }
 
   async updateDocument(req: Request): Promise<Buffer> {
     const { projectID, manuscriptID } = req.params
-    await this.validateUserAccess(req.user, projectID, ProjectPermission.UPDATE)
+    await this.validateUserAccess(req.user, projectID, QuarterbackPermission.WRITE)
     return DIContainer.sharedContainer.quarterback.updateDocument(req.body, manuscriptID)
   }
 
   async createSnapshot(req: Request): Promise<Buffer> {
     const { projectID } = req.params
-    await this.validateUserAccess(req.user, projectID, ProjectPermission.CREATE_MANUSCRIPT)
+    await this.validateUserAccess(req.user, projectID, QuarterbackPermission.WRITE)
     const doc = req.body
     return DIContainer.sharedContainer.quarterback.createSnapshot(doc)
   }
@@ -63,7 +85,7 @@ export class QuarterbackController extends ContainedBaseController {
     const { snapshotID } = req.params
     const snapshot = await this.fetchSnapshot(snapshotID)
     const manuscript = await this.getManuscriptFromSnapshot(snapshot)
-    await this.validateUserAccess(req.user, manuscript.containerID, ProjectPermission.DELETE)
+    await this.validateUserAccess(req.user, manuscript.containerID, QuarterbackPermission.WRITE)
     return DIContainer.sharedContainer.quarterback.deleteSnapshot(snapshotID)
   }
 
@@ -78,7 +100,7 @@ export class QuarterbackController extends ContainedBaseController {
 
   async getSnapshotLabels(req: Request): Promise<Buffer> {
     const { projectID, manuscriptID } = req.params
-    await this.validateUserAccess(req.user, projectID, ProjectPermission.READ)
+    await this.validateUserAccess(req.user, projectID, QuarterbackPermission.READ)
     return DIContainer.sharedContainer.quarterback.getSnapshotLabels(manuscriptID)
   }
 
@@ -86,7 +108,7 @@ export class QuarterbackController extends ContainedBaseController {
     const { snapshotID } = req.params
     const snapshot: Snapshot = await this.fetchSnapshot(snapshotID)
     const manuscript = await this.getManuscriptFromSnapshot(snapshot)
-    await this.validateUserAccess(req.user, manuscript.containerID, ProjectPermission.READ)
+    await this.validateUserAccess(req.user, manuscript.containerID, QuarterbackPermission.READ)
     return snapshot
   }
 
@@ -104,7 +126,7 @@ export class QuarterbackController extends ContainedBaseController {
   private async validateUserAccess(
     user: Express.User | undefined,
     projectID: string,
-    permission: ProjectPermission
+    permission: QuarterbackPermission
   ) {
     if (!user) {
       throw new ValidationError('No user found', user)

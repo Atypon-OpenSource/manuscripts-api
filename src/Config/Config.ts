@@ -35,7 +35,7 @@ import {
   EmailConfiguration,
   Environment,
   EnvironmentLike,
-  PressroomConfiguration,
+  ExternalAPIConfiguration,
   ScopedAccessTokenConfiguration,
   ServerConfiguration,
 } from './ConfigurationTypes'
@@ -82,8 +82,8 @@ export class Configuration implements ConfigurationContainer {
   readonly server: ServerConfiguration
   readonly apps: ClientApplicationsConfiguration
   readonly scopes: ScopedAccessTokenConfiguration[]
-  readonly pressroom: PressroomConfiguration
-  readonly quarterback: PressroomConfiguration
+  readonly pressroom: ExternalAPIConfiguration
+  readonly quarterback: ExternalAPIConfiguration
   readonly data: DataConfiguration
 
   constructor(env: EnvironmentLike) {

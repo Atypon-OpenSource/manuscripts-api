@@ -56,7 +56,7 @@ export const createSnapshotSchema: Joi.SchemaMap = {
   }),
   body: Joi.object({
     name: Joi.string().required(),
-    docId: Joi.string().required(),
+    docID: Joi.string().required(),
     snapshot: Joi.object().required(),
   }),
 }
