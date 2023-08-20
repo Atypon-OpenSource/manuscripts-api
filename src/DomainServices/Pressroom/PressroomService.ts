@@ -78,24 +78,4 @@ export class PressroomService implements IPressroomService {
     )
   }
 
-  public async validateTemplateId(templateID: string): Promise<boolean> {
-    const headers = {
-      'pressroom-api-key': this.apiKey,
-    }
-
-    const res = await fetch(`${this.baseurl}/api/v2/validate/templateId/${templateID}`, {
-      method: 'POST',
-      headers,
-    })
-    if (res.ok) {
-      return true
-    } else if (res.status === 404) {
-      return false
-    }
-
-    // should only apply in case of server client errors
-    throw new RequestError(
-      `Pressroom request 'validate/templateId' failed with error: code(${res.status}) - message(${res.statusText})`
-    )
-  }
 }

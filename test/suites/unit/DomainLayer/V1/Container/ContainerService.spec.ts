@@ -1600,7 +1600,7 @@ describe('ContainerService - createManuscript', () => {
     containerService.manuscriptRepository.getById = jest.fn(() => Promise.resolve(null))
     containerService.manuscriptRepository.create = jest.fn()
     containerService.templateRepository.getById = jest.fn(() => Promise.resolve(null))
-    DIContainer.sharedContainer.pressroomService.validateTemplateId = jest.fn(() =>
+    DIContainer.sharedContainer.configService.hasDocument = jest.fn(() =>
       Promise.resolve(false)
     )
     const containerID = validNote1.containerID
@@ -1612,14 +1612,14 @@ describe('ContainerService - createManuscript', () => {
     ).rejects.toThrow(MissingTemplateError)
   })
 
-  test('should not fail if template found in pressroom', async () => {
+  test('should not fail if template found in config data', async () => {
     const containerService: any =
       DIContainer.sharedContainer.containerService
     containerService.getContainer = jest.fn(() => Promise.resolve(validProject))
     containerService.manuscriptRepository.getById = jest.fn(() => Promise.resolve(null))
     containerService.manuscriptRepository.create = jest.fn(() => Promise.resolve({}))
     containerService.templateRepository.getById = jest.fn(() => Promise.resolve(null))
-    DIContainer.sharedContainer.pressroomService.validateTemplateId = jest.fn(() =>
+    DIContainer.sharedContainer.configService.hasDocument = jest.fn(() =>
       Promise.resolve(true)
     )
     const containerID = validNote1.containerID
@@ -1635,7 +1635,7 @@ describe('ContainerService - createManuscript', () => {
       DIContainer.sharedContainer.containerService
     containerService.getContainer = jest.fn(() => Promise.resolve(validProject))
     containerService.templateRepository.getById = jest.fn(() => Promise.resolve(null))
-    DIContainer.sharedContainer.pressroomService.validateTemplateId = jest.fn(() =>
+    DIContainer.sharedContainer.configService.hasDocument = jest.fn(() =>
       Promise.resolve(true)
     )
     containerService.manuscriptRepository = {

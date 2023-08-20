@@ -87,4 +87,9 @@ export class ConfigService {
     const data = await this.store
     return data.get(id)
   }
+
+  public async hasDocument(id: string): Promise<boolean> {
+    const data = await this.store
+    return data.has(id)
+  }
 }
