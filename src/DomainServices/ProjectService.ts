@@ -19,6 +19,7 @@ import JSZip from 'jszip'
 import { v4 as uuid_v4 } from 'uuid'
 
 import { config } from '../Config/Config'
+import { SnapshotLabelResult } from '../Controller/V2/Quarterback/QuarterbackController'
 import { IManuscriptRepository } from '../DataAccess/Interfaces/IManuscriptRepository'
 import { IUserRepository } from '../DataAccess/Interfaces/IUserRepository'
 import { TemplateRepository } from '../DataAccess/TemplateRepository/TemplateRepository'
@@ -121,8 +122,19 @@ export class ProjectService {
   }
 
   public async deleteProject(projectID: string): Promise<void> {
+    const models = await this.containerRepository.getContainerResources(projectID, null, [
+      ObjectTypes.Manuscript,
+    ])
     //todo log
     await this.containerRepository.removeWithAllResources(projectID)
+    if (models && models.length === 1) {
+      const result = await DIContainer.sharedContainer.quarterback.getSnapshotLabels(models[0]._id)
+      const snapshotModel: SnapshotLabelResult[] = JSON.parse(result.toString()).labels
+      for (const snapshot of snapshotModel) {
+        await DIContainer.sharedContainer.quarterback.deleteSnapshot(snapshot.id)
+      }
+      await DIContainer.sharedContainer.quarterback.deleteDocument(models[0]._id)
+    }
   }
 
   public async getProject(projectID: string): Promise<Project> {

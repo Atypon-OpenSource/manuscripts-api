@@ -28,6 +28,12 @@ export enum QuarterbackPermission {
   WRITE,
 }
 
+export interface SnapshotLabelResult {
+  id: string
+  name: string
+  createdAt: number
+}
+
 const EMPTY_PERMISSIONS = new Set<QuarterbackPermission>()
 export class QuarterbackController extends ContainedBaseController {
   async getPermissions(

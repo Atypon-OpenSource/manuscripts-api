@@ -18,9 +18,10 @@ import '../../../../../utilities/configMock'
 
 import { QuarterbackController } from '../../../../../../src/Controller/V2/Quarterback/QuarterbackController'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
-import { ProjectPermission } from '../../../../../../src/DomainServices/ProjectService'
+import { ContainerService } from '../../../../../../src/DomainServices/Container/ContainerService'
 import { ValidationError } from '../../../../../../src/Errors'
 import { validManuscript } from '../../../../../data/fixtures/manuscripts'
+import { validProject } from '../../../../../data/fixtures/projects'
 import { validUser } from '../../../../../data/fixtures/userServiceUser'
 import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
 
@@ -42,17 +43,10 @@ describe('QuarterbackController', () => {
     doc: { type: 'proseMirrorDoc' },
   }
   beforeEach(() => {
+    const proj = validProject
+    proj.owners.push(ContainerService.userIdForSync(validUser._id))
     controller = new QuarterbackController()
-    DIContainer.sharedContainer.projectService.getPermissions = jest
-      .fn()
-      .mockResolvedValue(
-        new Set([
-          ProjectPermission.READ,
-          ProjectPermission.CREATE_MANUSCRIPT,
-          ProjectPermission.DELETE,
-          ProjectPermission.UPDATE,
-        ])
-      )
+    DIContainer.sharedContainer.projectService.getProject = jest.fn().mockResolvedValue(proj)
   })
   describe('create Document', () => {
     it('should call quarterbackService.createDocument', async () => {

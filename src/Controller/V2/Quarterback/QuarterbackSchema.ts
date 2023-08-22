@@ -22,8 +22,8 @@ export const createDocumentSchema: Joi.SchemaMap = {
     manuscriptID: Joi.string().required(),
   }),
   body: Joi.object({
-    manuscript_model_id: Joi.object().required(),
-    project_model_id: Joi.object().required(),
+    manuscript_model_id: Joi.string().required(),
+    project_model_id: Joi.string().required(),
     doc: Joi.object().required(),
   }),
 }
@@ -57,7 +57,6 @@ export const createSnapshotSchema: Joi.SchemaMap = {
   body: Joi.object({
     name: Joi.string().required(),
     docID: Joi.string().required(),
-    snapshot: Joi.object().required(),
   }),
 }
 export const getSnapshotSchema: Joi.SchemaMap = {
