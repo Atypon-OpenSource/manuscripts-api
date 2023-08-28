@@ -164,7 +164,7 @@ export class ProjectService {
     if (user._id === '*' && (role === 'Owner' || role === 'Writer')) {
       throw new ValidationError('User can not be owner or writer', user._id)
     }
-    const userIdForSync = ContainerService.userIdForSync(userID)
+    const userIdForSync = ContainerService.userIdForSync(user._id)
 
     if (
       ProjectService.isOnlyOwner(project, user._id) ||
