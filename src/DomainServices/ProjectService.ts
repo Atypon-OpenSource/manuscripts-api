@@ -60,7 +60,7 @@ export class ProjectService {
       _id: containerID,
       objectType: ObjectTypes.Project,
       title: title,
-      owners: [userID],
+      owners: [ContainerService.userIdForSync(userID)],
       writers: [],
       viewers: [],
     }
