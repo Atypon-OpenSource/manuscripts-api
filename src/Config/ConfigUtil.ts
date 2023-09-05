@@ -30,7 +30,7 @@ export function getMap(
   innerSeparator: string,
   outerSeparator: string
 ): Map<string, string> {
-  let map = new Map()
+  const map = new Map()
   configStr.split(outerSeparator).map((x) => {
     const configParts = x.split(innerSeparator)
     if (configParts.length !== 2) {

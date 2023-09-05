@@ -16,12 +16,11 @@
 
 import { validApplication } from './applications'
 
-
 export const validIAMOAuthStartRequest = {
   query: {
-    deviceId: 'Device Id Example'
+    deviceId: 'Device Id Example',
   },
   headers: {
-    'manuscripts-app-id': validApplication._id
-  }
+    'manuscripts-app-id': validApplication._id,
+  },
 }

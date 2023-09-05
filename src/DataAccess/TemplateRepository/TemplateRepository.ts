@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-import { SGRepository } from '../SGRepository'
+import { ManuscriptTemplate } from '@manuscripts/json-schema'
+
 import { ManuscriptTemplateLike } from '../Interfaces/Models'
-import { ManuscriptTemplate } from '@manuscripts/manuscripts-json-schema/dist/types'
+import { SGRepository } from '../SGRepository'
 
 class TemplateRepository extends SGRepository<
   ManuscriptTemplate,

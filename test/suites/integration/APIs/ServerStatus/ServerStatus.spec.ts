@@ -14,33 +14,33 @@
  * limitations under the License.
  */
 
-import { getAppVersion, getRoot } from '../../../../api'
-import * as HttpStatus from 'http-status-codes'
+import { StatusCodes } from 'http-status-codes'
 import * as supertest from 'supertest'
 import * as url from 'url'
 
+import { DIContainer } from '../../../../../src/DIContainer/DIContainer'
+import { getAppVersion, getRoot } from '../../../../api'
 import { TEST_TIMEOUT } from '../../../../utilities/testSetup'
+
 jest.setTimeout(TEST_TIMEOUT)
 
 const pjson = require('../../../../../package.json')
 
-import { DIContainer } from '../../../../../src/DIContainer/DIContainer'
-
 beforeAll(() => {
-  (DIContainer as any)._sharedContainer = null
+  ;(DIContainer as any)._sharedContainer = null
   return DIContainer.init()
 })
 
 describe('ServerStatusRoute - version', () => {
   test('should match package.json version', async () => {
     const appVersionResponse: supertest.Response = await getAppVersion({})
-    expect(appVersionResponse.status).toBe(HttpStatus.OK)
+    expect(appVersionResponse.status).toBe(StatusCodes.OK)
     expect(JSON.parse(appVersionResponse.text).version).toEqual(pjson.version)
   })
 
   test('root redirects to version endpoint', async () => {
     const rootResponse: supertest.Response = await getRoot({})
-    expect(rootResponse.status).toBe(HttpStatus.MOVED_TEMPORARILY)
+    expect(rootResponse.status).toBe(StatusCodes.MOVED_TEMPORARILY)
     const responseURL = url.parse(rootResponse.get('location'))
     expect(responseURL.path).toEqual('/api/v1/app/version')
   })

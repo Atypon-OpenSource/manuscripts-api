@@ -15,184 +15,157 @@
  */
 
 import '../../../../../utilities/dbMock'
+
 import { Chance } from 'chance'
 
+import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
 import {
-  ValidationError,
   InvalidCredentialsError,
   MissingContainerError,
-  RecordGoneError
+  RecordGoneError,
+  ValidationError,
 } from '../../../../../../src/Errors'
-import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
 import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
 
 jest.setTimeout(TEST_TIMEOUT)
 
 beforeEach(() => {
-  (DIContainer as any)._sharedContainer = null
+  ;(DIContainer as any)._sharedContainer = null
   return DIContainer.init()
 })
 
 describe('Invitation - Accept', () => {
   test('should fail if invitation does not exist', () => {
-    const invitationService: any =
-      DIContainer.sharedContainer.invitationService
+    const invitationService: any = DIContainer.sharedContainer.invitationService
 
     invitationService.invitationRepository = {
-      getById: async () => Promise.resolve(null)
+      getById: async () => Promise.resolve(null),
     }
 
-    return expect(
-      invitationService.accept('foo', null, null)
-    ).rejects.toThrowError(ValidationError)
+    return expect(invitationService.accept('foo', null, null)).rejects.toThrow(ValidationError)
   })
 
   test('should fail invited user does not exist and name and password are null', () => {
-    const invitationService: any =
-      DIContainer.sharedContainer.invitationService
+    const invitationService: any = DIContainer.sharedContainer.invitationService
     invitationService.invitationRepository = {
-      getById: async () =>
-        Promise.resolve({ invitedUserEmail: 'example@example.com' })
+      getById: async () => Promise.resolve({ invitedUserEmail: 'example@example.com' }),
     }
 
     invitationService.userRepository = {
-      getOne: async () => Promise.resolve(null)
+      getOne: async () => Promise.resolve(null),
     }
 
-    return expect(
-      invitationService.accept('foo', null, null)
-    ).rejects.toThrowError(ValidationError)
+    return expect(invitationService.accept('foo', null, null)).rejects.toThrow(ValidationError)
   })
 
   test('should fail invited user does not exist and name is null', () => {
-    const invitationService: any =
-      DIContainer.sharedContainer.invitationService
+    const invitationService: any = DIContainer.sharedContainer.invitationService
     invitationService.invitationRepository = {
-      getById: async () =>
-        Promise.resolve({ invitedUserEmail: 'example@example.com' })
+      getById: async () => Promise.resolve({ invitedUserEmail: 'example@example.com' }),
     }
     invitationService.userRepository = {
-      getOne: async () => Promise.resolve(null)
+      getOne: async () => Promise.resolve(null),
     }
 
-    return expect(
-      invitationService.accept('foo', '123', null)
-    ).rejects.toThrowError(ValidationError)
+    return expect(invitationService.accept('foo', '123', null)).rejects.toThrow(ValidationError)
   })
 
   test('should fail invited user does not exist and password is null', () => {
-    const invitationService: any =
-      DIContainer.sharedContainer.invitationService
+    const invitationService: any = DIContainer.sharedContainer.invitationService
     invitationService.invitationRepository = {
-      getById: async () =>
-        Promise.resolve({ invitedUserEmail: 'example@example.com' })
+      getById: async () => Promise.resolve({ invitedUserEmail: 'example@example.com' }),
     }
     invitationService.userRepository = {
-      getOne: async () => Promise.resolve(null)
+      getOne: async () => Promise.resolve(null),
     }
 
-    return expect(
-      invitationService.accept('foo', null, 'bar')
-    ).rejects.toThrowError(ValidationError)
+    return expect(invitationService.accept('foo', null, 'bar')).rejects.toThrow(ValidationError)
   })
 
   test('should call signup function and create collaboration document', async () => {
-    const invitationService: any =
-      DIContainer.sharedContainer.invitationService
+    const invitationService: any = DIContainer.sharedContainer.invitationService
 
-    invitationService.userRegistrationService.signup = jest.fn(() =>
-      Promise.resolve()
-    )
+    invitationService.userRegistrationService.signup = jest.fn(() => Promise.resolve())
 
-    invitationService.collaborationsRepository.create = jest.fn(() =>
-      Promise.resolve()
-    )
+    invitationService.collaborationsRepository.create = jest.fn(() => Promise.resolve())
 
     invitationService.invitationRepository = {
       getById: async () =>
         Promise.resolve({
           userId: 'User|valid-user@manuscriptsapp.com',
-          invitedUserEmail: 'valid-user@manuscriptsapp.com'
+          invitedUserEmail: 'valid-user@manuscriptsapp.com',
         }),
-      remove: jest.fn(() => Promise.resolve())
+      remove: jest.fn(() => Promise.resolve()),
     }
 
     invitationService.userRepository = {
       getOne: async () => {
-        invitationService.userRepository.getOne = () =>
-          Promise.resolve({ _id: 'User|bar' })
+        invitationService.userRepository.getOne = () => Promise.resolve({ _id: 'User|bar' })
         return null
-      }
+      },
     }
 
     await invitationService.accept('foo', 'baz', 'bar')
-    expect(invitationService.userRegistrationService.signup).toBeCalled()
-    expect(invitationService.invitationRepository.remove).toBeCalled()
-    expect(invitationService.collaborationsRepository.create).toBeCalled()
+    expect(invitationService.userRegistrationService.signup).toHaveBeenCalled()
+    expect(invitationService.invitationRepository.remove).toHaveBeenCalled()
+    expect(invitationService.collaborationsRepository.create).toHaveBeenCalled()
   })
 
   test('should not call signup function and fail if user not create in the signup method', async () => {
-    const invitationService: any =
-      DIContainer.sharedContainer.invitationService
-    invitationService.userRegistrationService.signup = jest.fn(() =>
-      Promise.resolve()
-    )
-    invitationService.collaborationsRepository.create = jest.fn(() =>
-      Promise.resolve()
-    )
+    const invitationService: any = DIContainer.sharedContainer.invitationService
+    invitationService.userRegistrationService.signup = jest.fn(() => Promise.resolve())
+    invitationService.collaborationsRepository.create = jest.fn(() => Promise.resolve())
     invitationService.invitationRepository = {
-      getById: async () =>
-        Promise.resolve({ invitedUserEmail: 'example@example.com' }),
-      remove: jest.fn(() => Promise.resolve())
+      getById: async () => Promise.resolve({ invitedUserEmail: 'example@example.com' }),
+      remove: jest.fn(() => Promise.resolve()),
     }
 
     invitationService.userRepository = {
       getOne: async () => {
         invitationService.userRepository.getOne = () => Promise.resolve(null)
         return { _id: 'User|bar' }
-      }
+      },
     }
 
-    return expect(
-      invitationService.accept('foo', 'baz', 'bar')
-    ).rejects.toThrowError(InvalidCredentialsError)
+    return expect(invitationService.accept('foo', 'baz', 'bar')).rejects.toThrow(
+      InvalidCredentialsError
+    )
   })
 })
 
 describe('Invitation - acceptContainerInvite', () => {
   test('should fail if invitation does not exist', () => {
-    const containerInvitationService: any =
-      DIContainer.sharedContainer.containerInvitationService
+    const containerInvitationService: any = DIContainer.sharedContainer.containerInvitationService
 
     containerInvitationService.containerInvitationRepository = {
-      getById: async () => Promise.resolve(null)
+      getById: async () => Promise.resolve(null),
     }
 
     return expect(
-      containerInvitationService.acceptContainerInvite('foo', {_id: "User|id"})
-    ).rejects.toThrowError(RecordGoneError)
+      containerInvitationService.acceptContainerInvite('foo', { _id: 'User|id' })
+    ).rejects.toThrow(RecordGoneError)
   })
 
-  test('should fail - Only the invited user could accept invitation. ', () => {
-    const containerInvitationService: any =
-      DIContainer.sharedContainer.containerInvitationService
+  test('should fail - Only the invited user could accept invitation.', () => {
+    const containerInvitationService: any = DIContainer.sharedContainer.containerInvitationService
 
     containerInvitationService.containerInvitationRepository = {
-      getById: async () =>
-        Promise.resolve({ invitedUserEmail: 'example@example.com' })
+      getById: async () => Promise.resolve({ invitedUserEmail: 'example@example.com' }),
     }
 
     return expect(
-      containerInvitationService.acceptContainerInvite('foo', { _id: 'User|id', email: 'id@example.com' })
-    ).rejects.toThrowError(InvalidCredentialsError)
+      containerInvitationService.acceptContainerInvite('foo', {
+        _id: 'User|id',
+        email: 'id@example.com',
+      })
+    ).rejects.toThrow(InvalidCredentialsError)
   })
 
   test('should fail if the project does not exist', async () => {
-    const invitationService: any =
-      DIContainer.sharedContainer.containerInvitationService
+    const invitationService: any = DIContainer.sharedContainer.containerInvitationService
 
     invitationService.projectService = {
-      getContainer: async () => Promise.reject()
+      getContainer: async () => Promise.reject(),
     }
 
     invitationService.containerInvitationRepository = {
@@ -200,20 +173,22 @@ describe('Invitation - acceptContainerInvite', () => {
         Promise.resolve({
           invitedUserEmail: 'example@example.com',
           role: 'Owner',
-          invitingUserID: 'User_id'
+          invitingUserID: 'User_id',
         }),
       patch: jest.fn(() => Promise.resolve()),
-      remove: jest.fn()
+      remove: jest.fn(),
     }
 
     return expect(
-      invitationService.acceptContainerInvite('foo', { _id: 'User|id', email: 'example@example.com' })
-    ).rejects.toThrowError(MissingContainerError)
+      invitationService.acceptContainerInvite('foo', {
+        _id: 'User|id',
+        email: 'example@example.com',
+      })
+    ).rejects.toThrow(MissingContainerError)
   })
 
   test('should accept the invitation and update the current user role', async () => {
-    const invitationService: any =
-      DIContainer.sharedContainer.containerInvitationService
+    const invitationService: any = DIContainer.sharedContainer.containerInvitationService
 
     invitationService.containerInvitationRepository = {
       getById: async () =>
@@ -221,29 +196,31 @@ describe('Invitation - acceptContainerInvite', () => {
           invitedUserEmail: 'valid-user-1@manuscriptsapp.com',
           role: 'Owner',
           invitingUserID: 'User_id',
-          containerID: 'MPProject:something'
+          containerID: 'MPProject:something',
         }),
       patch: jest.fn(() => Promise.resolve()),
-      getInvitationsForUser: async () => []
+      getInvitationsForUser: async () => [],
     }
 
     invitationService.projectService = {
       getContainer: jest.fn(() => Promise.resolve({})),
       updateContainerUser: jest.fn(),
-      getUserRole: () => 'Viewer'
+      getUserRole: () => 'Viewer',
     }
 
     invitationService.userRepository = {
-      getById: async () => Promise.resolve({ _id: 'User|id', email: 'id@manuscriptsapp.com' })
+      getById: async () => Promise.resolve({ _id: 'User|id', email: 'id@manuscriptsapp.com' }),
     }
 
-    await invitationService.acceptContainerInvite('foo', { _id: 'User|id', email: 'valid-user-1@manuscriptsapp.com' })
-    expect(invitationService.projectService.updateContainerUser).toBeCalled()
+    await invitationService.acceptContainerInvite('foo', {
+      _id: 'User|id',
+      email: 'valid-user-1@manuscriptsapp.com',
+    })
+    expect(invitationService.projectService.updateContainerUser).toHaveBeenCalled()
   })
 
   test('should return a message if the same role permitted', async () => {
-    const invitationService: any =
-      DIContainer.sharedContainer.containerInvitationService
+    const invitationService: any = DIContainer.sharedContainer.containerInvitationService
 
     invitationService.containerInvitationRepository = {
       getById: async () =>
@@ -251,28 +228,30 @@ describe('Invitation - acceptContainerInvite', () => {
           invitedUserEmail: 'valid-user-1@manuscriptsapp.com',
           role: 'Owner',
           invitingUserID: 'User_id',
-          containerID: 'MPProject:something'
+          containerID: 'MPProject:something',
         }),
       remove: jest.fn(),
-      getInvitationsForUser: async () => []
+      getInvitationsForUser: async () => [],
     }
 
     invitationService.projectService = {
       getContainer: async () => Promise.resolve({}),
       updateContainerUser: jest.fn(),
-      getUserRole: () => 'Owner'
+      getUserRole: () => 'Owner',
     }
 
     invitationService.userRepository = {
-      getById: async () => Promise.resolve({ _id: 'User|id', email: 'id@manuscriptsapp.com' })
+      getById: async () => Promise.resolve({ _id: 'User|id', email: 'id@manuscriptsapp.com' }),
     }
-    const response = await invitationService.acceptContainerInvite('foo', { _id: 'User|id', email: 'valid-user-1@manuscriptsapp.com' })
+    const response = await invitationService.acceptContainerInvite('foo', {
+      _id: 'User|id',
+      email: 'valid-user-1@manuscriptsapp.com',
+    })
     return expect(response.message).toBe('You already have this role.')
   })
 
   test('should return a message if a more limiting role permitted', async () => {
-    const invitationService: any =
-      DIContainer.sharedContainer.containerInvitationService
+    const invitationService: any = DIContainer.sharedContainer.containerInvitationService
 
     invitationService.containerInvitationRepository = {
       getById: async () =>
@@ -280,28 +259,32 @@ describe('Invitation - acceptContainerInvite', () => {
           invitedUserEmail: 'valid-user-1@manuscriptsapp.com',
           role: 'Viewer',
           invitingUserID: 'User_id',
-          containerID: 'MPProject:something'
+          containerID: 'MPProject:something',
         }),
       remove: jest.fn(),
-      getInvitationsForUser: async () => []
+      getInvitationsForUser: async () => [],
     }
 
     invitationService.projectService = {
       getContainer: async () => Promise.resolve({}),
       updateContainerUser: jest.fn(),
-      getUserRole: () => 'Owner'
+      getUserRole: () => 'Owner',
     }
 
     invitationService.userRepository = {
-      getById: async () => Promise.resolve({ _id: 'User|id', email: 'id@manuscriptsapp.com' })
+      getById: async () => Promise.resolve({ _id: 'User|id', email: 'id@manuscriptsapp.com' }),
     }
-    const response = await invitationService.acceptContainerInvite('foo', { _id: 'User|id', email: 'valid-user-1@manuscriptsapp.com' })
-    return expect(response.message).toBe('Your current role in the project is already of higher privilege.')
+    const response = await invitationService.acceptContainerInvite('foo', {
+      _id: 'User|id',
+      email: 'valid-user-1@manuscriptsapp.com',
+    })
+    return expect(response.message).toBe(
+      'Your current role in the project is already of higher privilege.'
+    )
   })
 
   test('should return a message if invitation already accepted', async () => {
-    const invitationService: any =
-      DIContainer.sharedContainer.containerInvitationService
+    const invitationService: any = DIContainer.sharedContainer.containerInvitationService
 
     invitationService.containerInvitationRepository = {
       getById: async () =>
@@ -309,29 +292,31 @@ describe('Invitation - acceptContainerInvite', () => {
           invitedUserEmail: 'valid-user-1@manuscriptsapp.com',
           role: 'Viewer',
           invitingUserID: 'User_id',
-          acceptedAt: (new Chance()).timestamp(),
-          containerID: 'MPProject:something'
+          acceptedAt: new Chance().timestamp(),
+          containerID: 'MPProject:something',
         }),
       remove: jest.fn(),
-      getInvitationsForUser: async () => []
+      getInvitationsForUser: async () => [],
     }
 
     invitationService.projectService = {
       getContainer: async () => Promise.resolve({}),
       updateContainerUser: jest.fn(),
-      getUserRole: () => 'Owner'
+      getUserRole: () => 'Owner',
     }
 
     invitationService.userRepository = {
-      getById: async () => Promise.resolve({ _id: 'User|id', email: 'id@manuscriptsapp.com' })
+      getById: async () => Promise.resolve({ _id: 'User|id', email: 'id@manuscriptsapp.com' }),
     }
-    const response = await invitationService.acceptContainerInvite('foo', { _id: 'User|id', email: 'valid-user-1@manuscriptsapp.com' })
+    const response = await invitationService.acceptContainerInvite('foo', {
+      _id: 'User|id',
+      email: 'valid-user-1@manuscriptsapp.com',
+    })
     return expect(response.message).toBe('Invitation already accepted.')
   })
 
   test('should find and accept the least limiting invitation', async () => {
-    const invitationService: any =
-      DIContainer.sharedContainer.containerInvitationService
+    const invitationService: any = DIContainer.sharedContainer.containerInvitationService
 
     invitationService.containerInvitationRepository = {
       getById: async () =>
@@ -339,30 +324,32 @@ describe('Invitation - acceptContainerInvite', () => {
           invitedUserEmail: 'valid-user-1@manuscriptsapp.com',
           role: 'Writer',
           invitingUserID: 'User_id',
-          containerID: 'MPProject:something'
+          containerID: 'MPProject:something',
         }),
       patch: jest.fn(() => Promise.resolve()),
-      getInvitationsForUser: async () => Promise.resolve([{ role: 'Owner', containerID: 'MPProject:something' }])
-
+      getInvitationsForUser: async () =>
+        Promise.resolve([{ role: 'Owner', containerID: 'MPProject:something' }]),
     }
 
     invitationService.projectService = {
       getContainer: async () => Promise.resolve({}),
       addContainerUser: jest.fn(() => true),
-      getUserRole: () => null
+      getUserRole: () => null,
     }
 
     invitationService.userRepository = {
-      getById: async () => Promise.resolve({ _id: 'User|id', email: 'id@manuscriptsapp.com' })
+      getById: async () => Promise.resolve({ _id: 'User|id', email: 'id@manuscriptsapp.com' }),
     }
 
-    await invitationService.acceptContainerInvite('foo', { _id: 'User|id', email: 'valid-user-1@manuscriptsapp.com' })
-    expect(invitationService.projectService.addContainerUser).toBeCalled()
+    await invitationService.acceptContainerInvite('foo', {
+      _id: 'User|id',
+      email: 'valid-user-1@manuscriptsapp.com',
+    })
+    expect(invitationService.projectService.addContainerUser).toHaveBeenCalled()
   })
 
   test('should find and accept the least limiting invitation and delete others', async () => {
-    const invitationService: any =
-      DIContainer.sharedContainer.containerInvitationService
+    const invitationService: any = DIContainer.sharedContainer.containerInvitationService
 
     invitationService.containerInvitationRepository = {
       getById: async () =>
@@ -370,7 +357,7 @@ describe('Invitation - acceptContainerInvite', () => {
           invitedUserEmail: 'valid-user-1@manuscriptsapp.com',
           role: 'Viewer',
           invitingUserID: 'User_id',
-          containerID: 'MPProject:something'
+          containerID: 'MPProject:something',
         }),
       patch: jest.fn(() => Promise.resolve()),
       remove: jest.fn(),
@@ -380,22 +367,25 @@ describe('Invitation - acceptContainerInvite', () => {
           {
             role: 'Viewer',
             _id: 'MPContainerInvitation:valid',
-            containerID: 'MPProject:something'
-          }
-        ])
+            containerID: 'MPProject:something',
+          },
+        ]),
     }
 
     invitationService.projectService = {
       getContainer: async () => Promise.resolve({}),
       addContainerUser: jest.fn(() => true),
-      getUserRole: () => null
+      getUserRole: () => null,
     }
 
     invitationService.userRepository = {
-      getById: async () => Promise.resolve({ _id: 'User|id', email: 'id@manuscriptsapp.com' })
+      getById: async () => Promise.resolve({ _id: 'User|id', email: 'id@manuscriptsapp.com' }),
     }
 
-    await invitationService.acceptContainerInvite('foo', { _id: 'User|id', email: 'valid-user-1@manuscriptsapp.com' })
-    expect(invitationService.projectService.addContainerUser).toBeCalled()
+    await invitationService.acceptContainerInvite('foo', {
+      _id: 'User|id',
+      email: 'valid-user-1@manuscriptsapp.com',
+    })
+    expect(invitationService.projectService.addContainerUser).toHaveBeenCalled()
   })
 })

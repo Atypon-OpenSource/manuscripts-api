@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as HttpStatus from 'http-status-codes'
+import { StatusCodes } from 'http-status-codes'
 import * as supertest from 'supertest'
 import checksum from 'checksum'
 
@@ -68,7 +68,7 @@ describe('InvitationService - uninvite', () => {
       ValidHeaderWithApplicationKey
     )
 
-    expect(loginResponse.status).toBe(HttpStatus.OK)
+    expect(loginResponse.status).toBe(StatusCodes.OK)
 
     const header = authorizationHeader(loginResponse.body.token)
 
@@ -86,6 +86,6 @@ describe('InvitationService - uninvite', () => {
       }
     )
 
-    expect(response.status).toBe(HttpStatus.OK)
+    expect(response.status).toBe(StatusCodes.OK)
   })
 })

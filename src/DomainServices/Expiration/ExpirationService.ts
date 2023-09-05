@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { IUserTokenRepository } from '../../DataAccess/Interfaces/IUserTokenRepository'
-import { IUserEventRepository } from '../../DataAccess/Interfaces/IUserEventRepository'
-import { InvitationRepository } from '../../DataAccess/InvitationRepository/InvitationRepository'
-import { IInvitationTokenRepository } from '../../DataAccess/Interfaces/IInvitationTokenRepository'
 import { ContainerInvitationRepository } from '../../DataAccess/ContainerInvitationRepository/ContainerInvitationRepository'
+import { IInvitationTokenRepository } from '../../DataAccess/Interfaces/IInvitationTokenRepository'
+import { IUserEventRepository } from '../../DataAccess/Interfaces/IUserEventRepository'
+import { IUserTokenRepository } from '../../DataAccess/Interfaces/IUserTokenRepository'
+import { InvitationRepository } from '../../DataAccess/InvitationRepository/InvitationRepository'
 
 export class ExpirationService {
   constructor(

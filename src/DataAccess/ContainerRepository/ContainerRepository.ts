@@ -14,14 +14,18 @@
  * limitations under the License.
  */
 
-import { Model, LibraryCollection } from '@manuscripts/manuscripts-json-schema'
-
-import { SGRepository } from '../SGRepository'
+import { Model } from '@manuscripts/json-schema'
 
 import { IContainerRepository } from '../Interfaces/IContainerRepository'
-import { selectActiveResources } from '../../Utilities/ContainerUtils/selectActiveResources'
+import { IdentifiableEntity } from '../Interfaces/IdentifiableEntity'
+import { SGRepository } from '../SGRepository'
+import { proceedWithReadAccess } from '../syncAccessControl'
 
-export abstract class ContainerRepository<Container, ContainerLike, PatchContainer>
+export abstract class ContainerRepository<
+    Container extends Partial<IdentifiableEntity>,
+    ContainerLike extends Partial<IdentifiableEntity>,
+    PatchContainer
+  >
   extends SGRepository<Container, ContainerLike, ContainerLike, PatchContainer>
   implements IContainerRepository<Container, ContainerLike, PatchContainer>
 {
@@ -76,7 +80,6 @@ export abstract class ContainerRepository<Container, ContainerLike, PatchContain
   public async getContainerResources(
     containerId: string,
     manuscriptID: string | null,
-    allowOrphanedDocs?: boolean,
     types?: string[]
   ) {
     const container = await this.getById(containerId)
@@ -89,16 +92,13 @@ export abstract class ContainerRepository<Container, ContainerLike, PatchContain
         (result: any) => ({ ...this.buildModel(result), _id: result.id } as Model)
       )
 
-      const activeResources =
-        containerId.startsWith(`${this.objectType}:`) && !allowOrphanedDocs
-          ? selectActiveResources([container, ...otherDocs])
-          : [container, ...otherDocs]
+      const projectResources = [container, ...otherDocs]
 
       if (types && types.length > 0) {
         const typeSet = new Set(types)
-        return activeResources.filter((doc: Model) => typeSet.has(doc.objectType))
+        return projectResources.filter((doc: Model) => typeSet.has(doc.objectType))
       }
-      return activeResources
+      return projectResources
     }
 
     const Q = {
@@ -169,15 +169,13 @@ export abstract class ContainerRepository<Container, ContainerLike, PatchContain
     const callbackFn = (results: any) => {
       const otherDocs = results.map((result: any) => ({ _id: result.id } as Model))
 
-      const activeResources = containerId.startsWith(`${this.objectType}:`)
-        ? selectActiveResources([container, ...otherDocs])
-        : [container, ...otherDocs]
+      const projectResources = [container, ...otherDocs]
 
       if (types && types.length > 0) {
         const typeSet = new Set(types)
-        return activeResources.filter((doc: Model) => typeSet.has(doc.objectType))
+        return projectResources.filter((doc: Model) => typeSet.has(doc.objectType))
       }
-      return activeResources
+      return projectResources
     }
 
     const Q = {
@@ -218,21 +216,6 @@ export abstract class ContainerRepository<Container, ContainerLike, PatchContain
     }
 
     return this.database.bucket.query(Q).then((res: any) => callbackFn(res))
-  }
-
-  /**
-   * Overriding the remove method to make it delete a manuscripts resources.
-   * @param manuscriptID The Id of the manuscript.
-   */
-  public async removeAllManuscriptResources(manuscriptID: string): Promise<void> {
-    const Q = {
-      data: {
-        path: ['manuscriptID'],
-        equals: manuscriptID,
-      },
-    }
-
-    await this.database.bucket.remove(Q)
   }
 
   /**
@@ -414,40 +397,11 @@ export abstract class ContainerRepository<Container, ContainerLike, PatchContain
   }
 
   public buildItem = (row: any) => {
-    const { _sync, sessionID, containerID, templateID, ...item } = row.projects
+    const { _sync, containerID, templateID, ...item } = row.projects
     return { ...item, _id: row.id }
   }
 
-  public getContainedLibraryCollections(containerId: string): Promise<LibraryCollection[]> {
-    const Q = {
-      AND: [
-        {
-          data: {
-            path: ['objectType'],
-            equals: 'MPLibraryCollection',
-          },
-        },
-        {
-          data: {
-            path: ['containerID'],
-            equals: containerId,
-          },
-        },
-        /*{
-          data: {
-            path: ["_deleted"],
-            equals: undefined
-          }
-        }*/
-      ],
-    }
-
-    const callbackFn = (results: any) => {
-      return results.map((row: any) => ({
-        ...this.buildModel(row),
-      }))
-    }
-
-    return this.database.bucket.query(Q).then((res: any) => callbackFn(res))
+  public async validateReadAccess(doc: any, userId: string): Promise<void> {
+    await proceedWithReadAccess(doc, userId)
   }
 }

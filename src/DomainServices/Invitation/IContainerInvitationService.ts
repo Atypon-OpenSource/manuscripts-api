@@ -15,8 +15,8 @@
  */
 
 import {
-  ContainerRole,
   ContainerInvitationResponse,
+  ContainerRole,
   InvitedUserData,
 } from '../../Models/ContainerModels'
 import { InvitationToken, User } from '../../Models/UserModels'

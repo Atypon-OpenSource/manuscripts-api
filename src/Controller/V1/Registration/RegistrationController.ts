@@ -15,35 +15,13 @@
  */
 
 import { Request } from 'express'
-import { isString } from '../../../util'
 
-import { authorizationBearerToken, BaseController } from '../../BaseController'
-import { IRegistrationController } from './IRegistrationController'
-import { ValidationError } from '../../../Errors'
 import { DIContainer } from '../../../DIContainer/DIContainer'
+import { ValidationError } from '../../../Errors'
+import { isString } from '../../../util'
+import { BaseController } from '../../BaseController'
 
-export class RegistrationController extends BaseController implements IRegistrationController {
-  async signup(req: Request): Promise<void> {
-    const { email, password, name } = req.body
-
-    if (!isString(email) || !isString(password) || !isString(name)) {
-      throw new ValidationError('email, password, name should be strings.', req.body)
-    }
-
-    const token = req.headers.authorization ? authorizationBearerToken(req) : undefined
-
-    const credentials = {
-      password,
-      name,
-      email: email.toLowerCase(),
-      isVerified: false,
-      createdAt: new Date().getTime(),
-      token,
-    }
-
-    return DIContainer.sharedContainer.userRegistrationService.signup(credentials)
-  }
-
+export class RegistrationController extends BaseController {
   async connectSignup(req: Request): Promise<void> {
     const { email, name, connectUserID } = req.body
 
@@ -59,27 +37,5 @@ export class RegistrationController extends BaseController implements IRegistrat
     }
 
     return DIContainer.sharedContainer.userRegistrationService.connectSignup(credentials)
-  }
-
-  async verify(req: Request): Promise<void> {
-    const token = req.body.token
-
-    if (!isString(token)) {
-      throw new ValidationError('token should be string', token)
-    }
-
-    return DIContainer.sharedContainer.userRegistrationService.verify(token)
-  }
-
-  async requestVerificationEmail(req: Request): Promise<void> {
-    const email = req.body.email
-
-    if (!isString(email)) {
-      throw new ValidationError('email should be string', email)
-    }
-
-    return DIContainer.sharedContainer.userRegistrationService.requestVerificationEmail(
-      email.toLowerCase()
-    )
   }
 }

@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { KeyValueRepository } from '../Interfaces/KeyValueRepository'
 import { UpdateCollaboration } from '../../Models/CollaborationsModels'
+import { KeyValueRepository } from '../Interfaces/KeyValueRepository'
 import { CollaborationLike } from './Models'
 
 /**

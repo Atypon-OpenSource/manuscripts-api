@@ -35,7 +35,7 @@ export function isBoolean(value: any): value is boolean {
  * @param o - object with keys as string
  */
 export function removeEmptyValuesFromObj(o: { [index: string]: any }): { [index: string]: any } {
-  let newObj: { [index: string]: any } = {}
+  const newObj: { [index: string]: any } = {}
   Object.keys(o).forEach((key) => {
     const val = o[key]
     if (typeof val !== 'undefined' && val !== null && val.length !== 0) {

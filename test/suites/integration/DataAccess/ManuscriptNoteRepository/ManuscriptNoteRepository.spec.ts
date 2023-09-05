@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { drop, testDatabase, seed, dropBucket } from '../../../../utilities/db'
-import { TEST_TIMEOUT } from '../../../../utilities/testSetup'
 import { BucketKey } from '../../../../../src/Config/ConfigurationTypes'
 import { ManuscriptNoteRepository } from '../../../../../src/DataAccess/ManuscriptNoteRepository/ManuscriptNoteRepository'
+import { drop, dropBucket, seed, testDatabase } from '../../../../utilities/db'
+import { TEST_TIMEOUT } from '../../../../utilities/testSetup'
 
 jest.setTimeout(TEST_TIMEOUT)
 
@@ -34,7 +34,10 @@ describe('ManuscriptNoteRepository getProductionNotes', () => {
 
   test('should fetch list of notes', async () => {
     const repository = new ManuscriptNoteRepository(BucketKey.Project, db)
-    const data = await repository.getProductionNotes('MPProject:valid-project-id-11', 'MPManuscript:valid-manuscript-id-1')
+    const data = await repository.getProductionNotes(
+      'MPProject:valid-project-id-11',
+      'MPManuscript:valid-manuscript-id-1'
+    )
     expect(data).toBeTruthy()
     expect(data.length).toBeGreaterThan(0)
   })

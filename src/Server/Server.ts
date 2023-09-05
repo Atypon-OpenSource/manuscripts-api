@@ -14,21 +14,24 @@
  * limitations under the License.
  */
 
-// tslint:disable:member-ordering
-import methodOverride from 'method-override'
-import express from 'express'
 import cors from 'cors'
+import express from 'express'
+import promBundle from 'express-prom-bundle'
 import logger from 'morgan'
 import * as path from 'path'
 
-import { log } from '../Utilities/Logger'
-import { IServer } from './IServer'
 import { PassportAuth } from '../Auth/Passport/Passport'
-import { loadRoutes } from '../Controller/RouteLoader'
-import { SQLDatabase } from '../DataAccess/SQLDatabase'
-import { isStatusCoded, ForbiddenOriginError, IllegalStateError } from '../Errors'
 import { config } from '../Config/Config'
 import { Environment } from '../Config/ConfigurationTypes'
+import { initRouter } from '../Controller/InitRouter'
+import { getRoutes as getRoutesV1 } from '../Controller/V1/Routes'
+import { getRoutes as getRoutesV2 } from '../Controller/V2/Routes'
+import { SQLDatabase } from '../DataAccess/SQLDatabase'
+import { ForbiddenOriginError, IllegalStateError, isStatusCoded } from '../Errors'
+import generateDocs from '../Utilities/Docs/swagger'
+import { log } from '../Utilities/Logger'
+import { IServer } from './IServer'
+import { configurePromClientRegistry } from './PromClientRegistryConfig'
 
 /**
  * The server.
@@ -91,21 +94,23 @@ export class Server implements IServer {
     this.app.use(express.json({ limit: '50mb' }))
     this.app.use(express.urlencoded({ extended: true, limit: '50mb' }))
 
-    this.app.use(methodOverride())
+    const metricsMiddleware = promBundle({ promClient: { collectDefaultMetrics: {} } })
+    this.app.use(metricsMiddleware)
+    configurePromClientRegistry()
 
     PassportAuth.init(this.app)
   }
 
   private loadRoutes() {
-    const router: express.Router = express.Router()
-
-    loadRoutes(router)
+    const routerV1 = initRouter(getRoutesV1())
+    const routerV2 = initRouter(getRoutesV2())
+    generateDocs(this.app)
 
     // use router middleware
-    this.app.use('/api/v1', router)
-
+    this.app.use('/api/v1', routerV1)
+    this.app.use('/api/v2', routerV2)
     this.app.get('/', (_req, res: express.Response) => {
-      return res.redirect('/api/v1/app/version')
+      return res.redirect('/api/v2/app/version')
     })
 
     this.app.get(`/.well-known/jwks.json`, (_req: express.Request, res: express.Response) => {
@@ -114,6 +119,7 @@ export class Server implements IServer {
     })
 
     // catch any error and forward to error handler
+    // eslint-disable-next-line @typescript-eslint/ban-types
     this.app.use((req: express.Request, res: express.Response, _next: Function) => {
       if (process.env.NODE_ENV !== 'test') {
         log.error(
@@ -124,6 +130,7 @@ export class Server implements IServer {
     })
 
     // catch any error and forward to error handler
+    // eslint-disable-next-line @typescript-eslint/ban-types
     this.app.use((error: Error, req: express.Request, res: express.Response, _next: Function) => {
       const statusCode = isStatusCoded(error) ? error.statusCode : 400
       if (process.env.NODE_ENV !== 'test') {

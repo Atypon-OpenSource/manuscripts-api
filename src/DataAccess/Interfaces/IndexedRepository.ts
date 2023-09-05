@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import { QueryOptions } from './QueryOptions'
 import { ValidationError } from '../../Errors'
 import { IdentifiableEntity, TypedEntity } from './IdentifiableEntity'
-import { QueryCriteria } from './QueryCriteria'
-import { Repository } from './Repository'
 import { KeyValueRepository } from './KeyValueRepository'
+import { QueryCriteria } from './QueryCriteria'
+import { QueryOptions } from './QueryOptions'
+import { Repository } from './Repository'
 
 /**
  * Manages document persistent storage operations.

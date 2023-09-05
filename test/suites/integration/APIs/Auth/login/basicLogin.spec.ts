@@ -14,33 +14,37 @@
  * limitations under the License.
  */
 
-import * as HttpStatus from 'http-status-codes'
-import * as supertest from 'supertest'
+import * as StatusCodes from 'http-status-codes'
 import * as _ from 'lodash'
+import * as supertest from 'supertest'
 
+import { config } from '../../../../../../src/Config/Config'
+import { BucketKey } from '../../../../../../src/Config/ConfigurationTypes'
+import { SeedOptions } from '../../../../../../src/DataAccess/Interfaces/SeedOptions'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
-import { drop, seed, testDatabase, dropBucket } from '../../../../../utilities/db'
+import { MAX_NUMBER_OF_LOGIN_ATTEMPTS } from '../../../../../../src/DomainServices/Auth/AuthService'
 import { basicLogin } from '../../../../../api'
 import {
-  validBody,
-  validEmailBody,
   emptyBodyElements,
   emptyEmailBody,
-  emptyPasswordBody
+  emptyPasswordBody,
+  validBody,
+  validEmailBody,
 } from '../../../../../data/fixtures/credentialsRequestPayload'
 import {
-  ValidHeaderWithApplicationKey,
   EmptyAcceptJsonHeader,
   EmptyContentTypeAcceptJsonHeader,
   InValidAcceptJsonHeader,
-  ValidHeaderWithCharsetAndApplicationKey
+  ValidHeaderWithApplicationKey,
+  ValidHeaderWithCharsetAndApplicationKey,
 } from '../../../../../data/fixtures/headers'
+import {
+  blockedStatus,
+  blockedStatusButBlockTimeExpired,
+  notVerifiedStatus,
+} from '../../../../../data/fixtures/userStatus'
+import { drop, dropBucket, seed, testDatabase } from '../../../../../utilities/db'
 import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
-import { blockedStatus, blockedStatusButBlockTimeExpired,notVerifiedStatus } from '../../../../../data/fixtures/userStatus'
-import { MAX_NUMBER_OF_LOGIN_ATTEMPTS } from '../../../../../../src/DomainServices/Auth/AuthService'
-import { SeedOptions } from '../../../../../../src/DataAccess/Interfaces/SeedOptions'
-import { config } from '../../../../../../src/Config/Config'
-import { BucketKey } from '../../../../../../src/Config/ConfigurationTypes'
 
 jest.setTimeout(TEST_TIMEOUT)
 
@@ -52,10 +56,8 @@ beforeAll(async () => {
   db = await testDatabase()
 })
 
-async function seedAccounts () {
-  await DIContainer.sharedContainer.syncService.getOrCreateUserStatus(
-      'User|' + validBody.email
-    )
+async function seedAccounts() {
+  await DIContainer.sharedContainer.syncService.getOrCreateUserStatus('User|' + validBody.email)
 }
 
 afterAll(() => db.bucket.disconnect())
@@ -75,12 +77,9 @@ describe('Basic Login - POST api/v1/auth/login', () => {
   })
 
   test('ensures user can log in', async () => {
-    const response: supertest.Response = await basicLogin(
-      validBody,
-      ValidHeaderWithApplicationKey
-    )
+    const response: supertest.Response = await basicLogin(validBody, ValidHeaderWithApplicationKey)
 
-    expect(response.status).toBe(HttpStatus.OK)
+    expect(response.status).toBe(StatusCodes.OK)
     expect(response.body.token).toBeDefined()
 
     delete response.body.token
@@ -97,7 +96,7 @@ describe('Basic Login - POST api/v1/auth/login', () => {
       ValidHeaderWithApplicationKey
     )
 
-    return expect(response.status).toBe(HttpStatus.UNAUTHORIZED)
+    return expect(response.status).toBe(StatusCodes.UNAUTHORIZED)
   })
 
   test('should fail user is blocked', async () => {
@@ -109,7 +108,7 @@ describe('Basic Login - POST api/v1/auth/login', () => {
       ValidHeaderWithApplicationKey
     )
 
-    return expect(response.status).toBe(HttpStatus.FORBIDDEN)
+    return expect(response.status).toBe(StatusCodes.FORBIDDEN)
   })
 
   test('should fail user is not verified', async () => {
@@ -121,16 +120,18 @@ describe('Basic Login - POST api/v1/auth/login', () => {
       ValidHeaderWithApplicationKey
     )
 
-    return expect(response.status).toBe(HttpStatus.FORBIDDEN)
+    return expect(response.status).toBe(StatusCodes.FORBIDDEN)
   })
 
-  xtest('should block the user if number of failed login attempts exceeds the threshold', async () => {
+  test.skip('should block the user if number of failed login attempts exceeds the threshold', async () => {
     await DIContainer.sharedContainer.userEventRepository.remove(null)
     const userEventsCountBefore = await DIContainer.sharedContainer.userEventRepository.count(null)
     expect(userEventsCountBefore).toBe(0)
 
     const userStatusId = 'UserStatus|User|valid-user@manuscriptsapp.com'
-    let userStatus: any = await DIContainer.sharedContainer.userStatusRepository.getById(userStatusId)
+    const userStatus: any = await DIContainer.sharedContainer.userStatusRepository.getById(
+      userStatusId
+    )
     expect(userStatus.blockUntil).toBeNull()
 
     // MAX_NUMBER_OF_LOGIN_ATTEMPTS * 4 because the failed login counting is only approximate
@@ -145,36 +146,43 @@ describe('Basic Login - POST api/v1/auth/login', () => {
     expect(userEventsCount).toBeGreaterThanOrEqual(MAX_NUMBER_OF_LOGIN_ATTEMPTS)
 
     // waiting period of time to make sure the view (failedLoginCount) got indexed
-    await new Promise(
-      (_resolve, reject) => setTimeout(() => basicLogin(
-          validEmailBody,
-          ValidHeaderWithApplicationKey
-        ).then(response => {
-          expect(response.status).toBe(HttpStatus.FORBIDDEN)
-          return DIContainer.sharedContainer.userStatusRepository.getById(userStatusId)
-        }).then((userStatus: any) => {
-          expect(new Date(userStatus.blockUntil).getTime()).toBeGreaterThan(new Date().getTime())
-        }).catch(error => reject(error)), 15000)
+    await new Promise((_resolve, reject) =>
+      setTimeout(
+        () =>
+          basicLogin(validEmailBody, ValidHeaderWithApplicationKey)
+            .then((response) => {
+              expect(response.status).toBe(StatusCodes.FORBIDDEN)
+              return DIContainer.sharedContainer.userStatusRepository.getById(userStatusId)
+            })
+            .then((userStatus: any) => {
+              expect(new Date(userStatus.blockUntil).getTime()).toBeGreaterThan(
+                new Date().getTime()
+              )
+            })
+            .catch((error) => reject(error)),
+        15000
+      )
     )
   })
 
   test('should update user status to be unblocked and log in after blocking expires', async () => {
     await DIContainer.sharedContainer.userStatusRepository.remove(null)
-    await DIContainer.sharedContainer.userStatusRepository.create(blockedStatusButBlockTimeExpired, {})
+    await DIContainer.sharedContainer.userStatusRepository.create(blockedStatusButBlockTimeExpired)
 
-    const response: supertest.Response = await basicLogin(
-      validBody,
-      ValidHeaderWithApplicationKey
-    )
-    expect(response.status).toBe(HttpStatus.OK)
+    const response: supertest.Response = await basicLogin(validBody, ValidHeaderWithApplicationKey)
+    expect(response.status).toBe(StatusCodes.OK)
 
     expect(response.body.token).toBeDefined()
     delete response.body.token
     delete response.body.recover
     expect(response.body).toEqual({})
 
-    const userStatusId = DIContainer.sharedContainer.userStatusRepository.fullyQualifiedId('User|valid-user@manuscriptsapp.com')
-    const userStatus: any = await DIContainer.sharedContainer.userStatusRepository.getById(userStatusId)
+    const userStatusId = DIContainer.sharedContainer.userStatusRepository.fullyQualifiedId(
+      'User|valid-user@manuscriptsapp.com'
+    )
+    const userStatus: any = await DIContainer.sharedContainer.userStatusRepository.getById(
+      userStatusId
+    )
     expect(userStatus.blockUntil).toBe(null)
   })
 
@@ -184,7 +192,7 @@ describe('Basic Login - POST api/v1/auth/login', () => {
       ValidHeaderWithApplicationKey
     )
 
-    return expect(response.status).toBe(HttpStatus.UNAUTHORIZED)
+    return expect(response.status).toBe(StatusCodes.UNAUTHORIZED)
   })
 
   test('ensures a user can not log in if email and password are empty', async () => {
@@ -193,7 +201,7 @@ describe('Basic Login - POST api/v1/auth/login', () => {
       ValidHeaderWithApplicationKey
     )
 
-    return expect(response.status).toBe(HttpStatus.BAD_REQUEST)
+    return expect(response.status).toBe(StatusCodes.BAD_REQUEST)
   })
 
   test('ensures a user can not log in if email not sent', async () => {
@@ -202,7 +210,7 @@ describe('Basic Login - POST api/v1/auth/login', () => {
       ValidHeaderWithApplicationKey
     )
 
-    return expect(response.status).toBe(HttpStatus.BAD_REQUEST)
+    return expect(response.status).toBe(StatusCodes.BAD_REQUEST)
   })
 
   test('ensures a user can not log in if password not sent', async () => {
@@ -211,7 +219,7 @@ describe('Basic Login - POST api/v1/auth/login', () => {
       ValidHeaderWithApplicationKey
     )
 
-    return expect(response.status).toBe(HttpStatus.BAD_REQUEST)
+    return expect(response.status).toBe(StatusCodes.BAD_REQUEST)
   })
 
   test('ensures api does not work if Content-Type & Accept headers not sent', async () => {
@@ -220,25 +228,19 @@ describe('Basic Login - POST api/v1/auth/login', () => {
       EmptyContentTypeAcceptJsonHeader
     )
 
-    return expect(response.status).toBe(HttpStatus.BAD_REQUEST)
+    return expect(response.status).toBe(StatusCodes.BAD_REQUEST)
   })
 
   test('ensures api does not work if Accept header not sent', async () => {
-    const response: supertest.Response = await basicLogin(
-      validBody,
-      EmptyAcceptJsonHeader
-    )
+    const response: supertest.Response = await basicLogin(validBody, EmptyAcceptJsonHeader)
 
-    return expect(response.status).toBe(HttpStatus.BAD_REQUEST)
+    return expect(response.status).toBe(StatusCodes.BAD_REQUEST)
   })
 
   test('ensures api does not work if Accept header is invalid', async () => {
-    const response: supertest.Response = await basicLogin(
-      validBody,
-      InValidAcceptJsonHeader
-    )
+    const response: supertest.Response = await basicLogin(validBody, InValidAcceptJsonHeader)
 
-    return expect(response.status).toBe(HttpStatus.BAD_REQUEST)
+    return expect(response.status).toBe(StatusCodes.BAD_REQUEST)
   })
 
   test('ensures basicLogin API does work if Accept and Content-Type headers has charset=UTF-8', async () => {
@@ -247,6 +249,6 @@ describe('Basic Login - POST api/v1/auth/login', () => {
       ValidHeaderWithCharsetAndApplicationKey
     )
 
-    expect(response.status).toBe(HttpStatus.OK)
+    expect(response.status).toBe(StatusCodes.OK)
   })
 })

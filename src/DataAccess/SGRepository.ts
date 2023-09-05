@@ -1,3 +1,4 @@
+/* eslint-disable */
 /*!
  * © 2020 Atypon Systems LLC
  *
@@ -14,19 +15,17 @@
  * limitations under the License.
  */
 
-import * as _ from 'lodash'
+import { Prisma } from '@prisma/client'
 import * as HttpStatus from 'http-status-codes'
+import * as _ from 'lodash'
 
-import { ValidationError, DatabaseError, SyncError } from '../Errors'
+import { BucketKey } from '../Config/ConfigurationTypes'
+import { DatabaseError, SyncError,ValidationError } from '../Errors'
+import { timestamp } from '../Utilities/JWT/LoginTokenPayload'
 import { IdentifiableEntity } from './Interfaces/IdentifiableEntity'
 import { KeyValueRepository } from './Interfaces/KeyValueRepository'
-import { BucketKey } from '../Config/ConfigurationTypes'
 import { SQLDatabase } from './SQLDatabase'
-import { timestamp } from '../Utilities/JWT/LoginTokenPayload'
 import { syncAccessControl } from './syncAccessControl'
-const { validate } = require('./jsonSchemaValidator')
-import { Prisma } from '@prisma/client'
-import { v4 as uuid_v4 } from 'uuid'
 
 export abstract class SGRepository<
   TEntity extends Partial<IdentifiableEntity>,
@@ -72,7 +71,6 @@ export abstract class SGRepository<
   public async create(newDocument: TNewEntity, userId?: string): Promise<TEntity> {
     const docId = this.documentId((newDocument as any)._id)
     const createdAt = timestamp()
-    const revision = `0-${uuid_v4()}`
 
     const prismaDoc = {
       _id: docId,
@@ -80,10 +78,6 @@ export abstract class SGRepository<
         objectType: this.objectType,
         updatedAt: createdAt,
         createdAt,
-        _revisions: {
-          ids: [revision],
-        },
-        _rev: revision,
         ...(newDocument as any),
         _id: docId,
       },
@@ -129,7 +123,7 @@ export abstract class SGRepository<
             const doc = this.buildModel(res)
             if (userId) {
               try {
-                await this.validate({ ...doc }, { ...doc }, userId)
+                await this.validateReadAccess(doc, userId)
               } catch (e) {
                 return Promise.reject(e)
               }
@@ -188,18 +182,12 @@ export abstract class SGRepository<
   public async update(updatedDocument: TUpdateEntity): Promise<TEntity> {
     const docId = this.documentId(updatedDocument._id as any)
 
-    const depth = updatedDocument._rev ? parseInt(updatedDocument._rev.split('-')[0]) + 1 : 1
-    const revision = `${depth}-${uuid_v4()}`
-    const revisions = updatedDocument._revisions || { ids: [] }
-    revisions.ids.unshift(revision)
 
     const documentToUpdate = {
       _id: docId,
       data: {
         updatedAt: timestamp(),
         ...updatedDocument,
-        _revisions: revisions,
-        _rev: revision,
       },
     } as any
 
@@ -240,7 +228,6 @@ export abstract class SGRepository<
       throw new ValidationError(`Document with id ${id} does not exist`, id)
     }
 
-    const currentRev = document._rev
     const patchedDocument = _.mergeWith(
       document,
       dataToPatch,
@@ -249,10 +236,6 @@ export abstract class SGRepository<
 
     if (patchedDocument.objectType !== this.objectType) {
       throw new ValidationError(`Object type mismatched`, patchedDocument.objectType)
-    }
-
-    if (patchedDocument._rev !== currentRev) {
-      throw new SyncError(`Rev mismatched ${patchedDocument._rev} with ${currentRev}`, {})
     }
 
     if (userId) {
@@ -357,20 +340,11 @@ export abstract class SGRepository<
 
   public async bulkInsert(docs: any): Promise<any> {
     const batch = []
-    let errorMessage
     for (const doc of docs) {
-      errorMessage = validate(doc)
-      if (errorMessage) {
-        throw new SyncError(errorMessage, {})
-      }
       batch.push({ id: doc._id, data: doc })
     }
-    // return Promise.resolve({ count: 58 })
-    try {
-      return this.database.bucket.insertMany(batch)
-    } catch (e) {
-      console.log(e)
-    }
+
+    return this.database.bucket.insertMany(batch)
   }
 
   /**
@@ -392,16 +366,11 @@ export abstract class SGRepository<
       throw new ValidationError(`Document with id ${id} does not exist`, id)
     }
 
-    const currentRev = document._rev
     const patchedDocument = _.mergeWith(
       document,
       dataToPatch,
       (_documentValue: any, patchValue: any) => patchValue
     ) as any
-
-    if (patchedDocument._rev !== currentRev) {
-      throw new SyncError(`Rev mismatched ${patchedDocument._rev} with ${currentRev}`, {})
-    }
 
     if (userId) {
       try {
@@ -455,6 +424,10 @@ export abstract class SGRepository<
           resolve(res)
         })
     })
+  }
+
+  protected async validateReadAccess(doc: any, userId: string): Promise<void> {
+    await this.validate({ ...doc }, { ...doc }, userId)
   }
 
   private validate(doc: any, oldDoc: any, userId?: string): Promise<void> {

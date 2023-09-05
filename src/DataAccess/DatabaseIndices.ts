@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ObjectTypes } from '@manuscripts/manuscripts-json-schema'
+import { ObjectTypes } from '@manuscripts/json-schema'
 
 import { BucketKey } from '../Config/ConfigurationTypes'
 
@@ -70,7 +70,6 @@ const arrayIndexesObj = {
       { fields: ['writers'] },
       { fields: ['viewers'] },
     ],
-    [ObjectTypes.BibliographyItem]: [{ fields: ['keywordIDs'] }],
   } as any,
 } as any
 

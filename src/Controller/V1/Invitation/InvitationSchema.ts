@@ -16,7 +16,7 @@
 
 import * as Joi from 'joi'
 
-import { jsonHeadersSchema, emailSchema, appJsonAndCharset } from '../../BaseSchema'
+import { appJsonAndCharset, emailSchema, jsonHeadersSchema } from '../../BaseSchema'
 
 export const inviteSchema: Joi.SchemaMap = {
   body: Joi.object({

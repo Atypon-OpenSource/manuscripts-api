@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { IndexedRepository } from './IndexedRepository'
 import { UserActivityEvent } from '../../Models/UserEventModels'
+import { IndexedRepository } from './IndexedRepository'
 import { QueryCriteria } from './QueryCriteria'
 
 /**

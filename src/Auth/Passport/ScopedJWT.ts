@@ -18,9 +18,10 @@ import passport from 'passport'
 import { ExtractJwt, Strategy, StrategyOptions } from 'passport-jwt'
 
 import { config } from '../../Config/Config'
-import { AuthStrategyTypes } from './AuthStrategy'
-import { DIContainer } from '../../DIContainer/DIContainer'
 import { ScopedAccessTokenConfiguration } from '../../Config/ConfigurationTypes'
+import { DIContainer } from '../../DIContainer/DIContainer'
+import { AuthStrategyTypes } from './AuthStrategy'
+
 class ScopedJwtAuthStrategy {
   public static use(options: ArchiveOptions): void {
     const opts: StrategyOptions = {
@@ -33,7 +34,7 @@ class ScopedJwtAuthStrategy {
 
     passport.use(
       AuthStrategyTypes.scopedJwt,
-      new Strategy(opts, async (payload: any, done: Function) => {
+      new Strategy(opts, async (payload, done) => {
         const user = await DIContainer.sharedContainer.userRepository.getById(
           payload.sub.replace('_', '|')
         )

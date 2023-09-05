@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
+import { UserCollaborator } from '@manuscripts/json-schema'
+
 import { UserProfileLike } from '../../DataAccess/Interfaces/Models'
-import { UserCollaborator } from '@manuscripts/manuscripts-json-schema'
 
 export interface IUserService {
   deleteUser(userId: string): Promise<boolean>

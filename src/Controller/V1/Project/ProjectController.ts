@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-import { Request } from 'express'
-
-import { BaseController, authorizationBearerToken } from '../../BaseController'
-import { IProjectController } from './IProjectController'
-import { ContainerType, Container } from '../../../Models/ContainerModels'
-import { DIContainer } from '../../../DIContainer/DIContainer'
-import { Readable } from 'stream'
-import * as fs from 'fs'
-import path from 'path'
-import getStream from 'get-stream'
+import { manuscriptIDTypes, Model, UserCollaborator } from '@manuscripts/json-schema'
 import decompress from 'decompress'
+import { Request } from 'express'
+import * as fs from 'fs'
+import { remove } from 'fs-extra'
+import getStream from 'get-stream'
+import jwt from 'jsonwebtoken'
+import { Readable } from 'stream'
+import tempy from 'tempy'
+
+import { DIContainer } from '../../../DIContainer/DIContainer'
+import { ContainerService } from '../../../DomainServices/Container/ContainerService'
 import {
   InvalidCredentialsError,
   MissingManuscriptError,
@@ -34,20 +35,16 @@ import {
   RoleDoesNotPermitOperationError,
   ValidationError,
 } from '../../../Errors'
-import { manuscriptIDTypes, Model, UserCollaborator } from '@manuscripts/manuscripts-json-schema'
-import { remove } from 'fs-extra'
-import jsonwebtoken from 'jsonwebtoken'
-import { ContainerService } from '../../../DomainServices/Container/ContainerService'
+import { Container } from '../../../Models/ContainerModels'
 import { isLoginTokenPayload } from '../../../Utilities/JWT/LoginTokenPayload'
-import { v4 as uuidv4 } from 'uuid'
-import tempy from 'tempy'
+import { authorizationBearerToken, BaseController } from '../../BaseController'
 
-export class ProjectController extends BaseController implements IProjectController {
+export class ProjectController extends BaseController {
   async create(req: Request): Promise<Container> {
     const title = req.body.title
 
     const token = authorizationBearerToken(req)
-    const payload = jsonwebtoken.decode(token)
+    const payload = jwt.decode(token)
 
     if (!isLoginTokenPayload(payload)) {
       throw new InvalidCredentialsError('Unexpected token payload.')
@@ -55,21 +52,30 @@ export class ProjectController extends BaseController implements IProjectControl
 
     const owners = [payload.userId]
 
-    const { id }: any = await DIContainer.sharedContainer.containerService[
-      ContainerType.project
-    ].createContainer(token, null)
+    const { _id }: Container = await DIContainer.sharedContainer.containerService.createContainer(
+      token,
+      null
+    )
 
-    await DIContainer.sharedContainer.containerService[
-      ContainerType.project
-    ].updateContainerTitleAndCollaborators(id, title, owners, undefined, undefined)
+    await DIContainer.sharedContainer.containerService.updateContainerTitleAndCollaborators(
+      _id,
+      title,
+      owners,
+      undefined,
+      undefined
+    )
 
-    return DIContainer.sharedContainer.containerService[ContainerType.project].getContainer(id)
+    return DIContainer.sharedContainer.containerService.getContainer(_id)
   }
 
   async add(req: Request): Promise<Container> {
     const file = req.file
     const { projectId } = req.params
     const { manuscriptId, templateId } = req.body
+
+    if (!req.user) {
+      throw new ValidationError('No user found', req.user)
+    }
 
     if (!projectId) {
       throw new ValidationError('projectId parameter must be specified', projectId)
@@ -91,9 +97,7 @@ export class ProjectController extends BaseController implements IProjectControl
     )
     stream.close()
 
-    const project = await DIContainer.sharedContainer.containerService[
-      ContainerType.project
-    ].getContainer(projectId)
+    const project = await DIContainer.sharedContainer.containerService.getContainer(projectId)
 
     if (!ContainerService.isOwner(project, req.user._id)) {
       throw new RoleDoesNotPermitOperationError(
@@ -151,7 +155,6 @@ export class ProjectController extends BaseController implements IProjectControl
       manuscriptObject._id = manuscriptId
     }
 
-    const sessionID = uuidv4()
     const createdAt = Math.round(Date.now() / 1000)
     const docs = json.data
       .filter((model: Model) => model.objectType !== 'MPManuscript')
@@ -160,7 +163,6 @@ export class ProjectController extends BaseController implements IProjectControl
           ...model,
           createdAt,
           updatedAt: createdAt,
-          sessionID,
           containerID: project._id,
         }
 
@@ -179,11 +181,8 @@ export class ProjectController extends BaseController implements IProjectControl
       : null
 
     let templateFound: boolean = templateId !== undefined && template !== null
-
     if (!templateFound && templateId) {
-      templateFound = await DIContainer.sharedContainer.pressroomService.validateTemplateId(
-        templateId
-      )
+      templateFound = await DIContainer.sharedContainer.configService.hasDocument(templateId)
     }
 
     if (!templateFound && templateId) {
@@ -194,7 +193,6 @@ export class ProjectController extends BaseController implements IProjectControl
       ...manuscriptObject,
       createdAt,
       updatedAt: createdAt,
-      sessionID,
       containerID: project._id,
     }
 
@@ -211,9 +209,7 @@ export class ProjectController extends BaseController implements IProjectControl
       : await DIContainer.sharedContainer.manuscriptRepository.create(manuscriptObject, userID)
 
     // call it without userId because access control has already happened
-    await DIContainer.sharedContainer.containerService[ContainerType.project].upsertProjectModels(
-      docs
-    )
+    await DIContainer.sharedContainer.containerService.upsertProjectModels(docs)
 
     return manuscriptObject
   }
@@ -222,20 +218,25 @@ export class ProjectController extends BaseController implements IProjectControl
     const { projectId } = req.params
     const { data } = req.body
 
+    if (!req.user) {
+      throw new ValidationError('No user found', req.user)
+    }
+
     if (!projectId) {
       throw new ValidationError('projectId parameter must be specified', projectId)
     }
 
     const token = authorizationBearerToken(req)
-    const payload = jsonwebtoken.decode(token)
+    const payload = jwt.decode(token)
     if (!isLoginTokenPayload(payload)) {
       throw new InvalidCredentialsError('Unexpected token payload.')
     }
 
     const userId = ContainerService.userIdForSync(req.user._id)
-    const project = await DIContainer.sharedContainer.containerService[
-      ContainerType.project
-    ].getContainer(projectId, userId)
+    const project = await DIContainer.sharedContainer.containerService.getContainer(
+      projectId,
+      userId
+    )
 
     const manuscriptIdSet: Set<string> = new Set(
       data.map((doc: any) => {
@@ -253,9 +254,7 @@ export class ProjectController extends BaseController implements IProjectControl
       }
     }
     // call it without userId because access control has already happened
-    await DIContainer.sharedContainer.containerService[ContainerType.project].upsertProjectModels(
-      data
-    )
+    await DIContainer.sharedContainer.containerService.upsertProjectModels(data)
 
     return project
   }
@@ -263,6 +262,11 @@ export class ProjectController extends BaseController implements IProjectControl
   async projectReplace(req: Request): Promise<Model> {
     const { projectId, manuscriptId } = req.params
     const { data } = req.body
+
+    if (!req.user) {
+      throw new ValidationError('No user found', req.user)
+    }
+
     if (!projectId) {
       throw new ValidationError('projectId parameter must be specified', projectId)
     }
@@ -272,9 +276,10 @@ export class ProjectController extends BaseController implements IProjectControl
     }
 
     const userId = ContainerService.userIdForSync(req.user._id)
-    const canEdit = await DIContainer.sharedContainer.containerService[
-      ContainerType.project
-    ].checkIfCanEdit(userId, projectId)
+    const canEdit = await DIContainer.sharedContainer.containerService.checkIfCanEdit(
+      userId,
+      projectId
+    )
     if (!canEdit) {
       throw new RoleDoesNotPermitOperationError(`permission denied`, userId)
     }
@@ -286,16 +291,18 @@ export class ProjectController extends BaseController implements IProjectControl
     if (!manuscriptsObj) {
       throw new MissingManuscriptError(manuscriptId)
     }
-    await DIContainer.sharedContainer.projectRepository.removeAllManuscriptResources(manuscriptId)
-    //await DIContainer.sharedContainer.manuscriptRepository.purge(manuscriptId)
 
-    fs.writeFileSync(path.join(__dirname, '/XApreparedData.json'), JSON.stringify(data))
-
-    return await DIContainer.sharedContainer.containerService[ContainerType.project].bulkInsert(
+    // prevalidate models, so in the case of
+    // validation errors we fail before removing resources
+    const docs = await DIContainer.sharedContainer.containerService.processManuscriptModels(
       data,
       projectId,
       manuscriptId
     )
+
+    await DIContainer.sharedContainer.projectRepository.removeAllResources(projectId)
+
+    return await DIContainer.sharedContainer.projectRepository.bulkInsert(docs)
   }
 
   async collaborators(req: Request): Promise<UserCollaborator[]> {
@@ -306,18 +313,21 @@ export class ProjectController extends BaseController implements IProjectControl
     }
 
     const token = authorizationBearerToken(req)
-    const payload = jsonwebtoken.decode(token)
+    const payload = jwt.decode(token)
     if (!isLoginTokenPayload(payload)) {
       throw new InvalidCredentialsError('Unexpected token payload.')
     }
     const userId = ContainerService.userIdForSync(payload.userId)
-    return await DIContainer.sharedContainer.containerService[
-      ContainerType.project
-    ].getCollaborators(projectId, userId)
+    return await DIContainer.sharedContainer.containerService.getCollaborators(projectId, userId)
   }
 
   async deleteModel(req: Request): Promise<void> {
     const { projectId, manuscriptId, modelId } = req.params
+
+    if (!req.user) {
+      throw new ValidationError('No user found', req.user)
+    }
+
     if (!projectId) {
       throw new ValidationError('projectId parameter must be specified', projectId)
     }
@@ -331,9 +341,10 @@ export class ProjectController extends BaseController implements IProjectControl
     }
 
     const userId = ContainerService.userIdForSync(req.user._id)
-    const canEdit = await DIContainer.sharedContainer.containerService[
-      ContainerType.project
-    ].checkIfCanEdit(userId, projectId)
+    const canEdit = await DIContainer.sharedContainer.containerService.checkIfCanEdit(
+      userId,
+      projectId
+    )
     if (!canEdit) {
       throw new RoleDoesNotPermitOperationError(`permission denied`, userId)
     }

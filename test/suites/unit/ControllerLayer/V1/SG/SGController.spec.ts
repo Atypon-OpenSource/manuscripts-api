@@ -16,16 +16,16 @@
 
 import '../../../../../utilities/dbMock'
 
+import { BucketKey } from '../../../../../../src/Config/ConfigurationTypes'
 import { SGController } from '../../../../../../src/Controller/V1/SG/SGController'
+import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
 import {
-  ValidationError,
   InvalidBucketError,
   InvalidCredentialsError,
+  ValidationError,
 } from '../../../../../../src/Errors'
-import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
-import { authorizationHeader } from '../../../../../data/fixtures/headers'
 import { generateLoginToken } from '../../../../../../src/Utilities/JWT/LoginTokenPayload'
-import { BucketKey } from '../../../../../../src/Config/ConfigurationTypes'
+import { authorizationHeader } from '../../../../../data/fixtures/headers'
 
 const headers = authorizationHeader(
   generateLoginToken(
@@ -67,7 +67,7 @@ describe('SGController', () => {
 
       await sgController.get(req)
 
-      expect(sgService.get).toBeCalled()
+      expect(sgService.get).toHaveBeenCalled()
     })
 
     test('should fail if db not found', async () => {
@@ -132,7 +132,7 @@ describe('SGController', () => {
 
       await sgController.create(req)
 
-      expect(sgService.create).toBeCalled()
+      expect(sgService.create).toHaveBeenCalled()
     })
 
     test('should fail if db not found', async () => {
@@ -205,7 +205,7 @@ describe('SGController', () => {
 
       await sgController.update(req)
 
-      expect(projectRepository.patch).toBeCalled()
+      expect(projectRepository.patch).toHaveBeenCalled()
     })
 
     test('should call create in update', async () => {
@@ -235,7 +235,7 @@ describe('SGController', () => {
 
       await sgController.update(req)
 
-      expect(projectRepository.create).toBeCalled()
+      expect(projectRepository.create).toHaveBeenCalled()
     })
 
     test('should fail on update internal server error', async () => {
@@ -345,7 +345,7 @@ describe('SGController', () => {
 
       await sgController.remove(req)
 
-      expect(sgService.remove).toBeCalled()
+      expect(sgService.remove).toHaveBeenCalled()
     })
 
     test('should fail if db not found', async () => {

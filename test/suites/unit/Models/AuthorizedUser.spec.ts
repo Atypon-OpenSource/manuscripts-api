@@ -23,10 +23,7 @@ describe('Authorized User Model', () => {
     const user = userForRow(userRowData)
     const authorizedUser: AuthorizedUser = {
       token: authorizedUserRowData.token,
-      syncSessions: {
-        data: 'fooo'
-      },
-      user: user
+      user: user,
     }
     expect(authorizedUser).toMatchSnapshot()
   })

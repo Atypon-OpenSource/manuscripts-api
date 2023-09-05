@@ -22,7 +22,7 @@ describe('AdminTokenPayload', () => {
     const stringToken = 'foo'
     const invalidObjTokenA: any = { connectUserID: 2 }
     const invalidObjTokenB: any = { email: 3 }
-    const invalidObjTokenD = { }
+    const invalidObjTokenD = {}
     const validToken = { connectUserID: 'foo' }
 
     expect(isAdminTokenPayload(nullToken)).toBeFalsy()

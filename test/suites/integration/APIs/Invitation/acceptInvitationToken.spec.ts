@@ -14,58 +14,55 @@
  * limitations under the License.
  */
 
-import * as HttpStatus from 'http-status-codes'
+import { StatusCodes } from 'http-status-codes'
 import * as supertest from 'supertest'
+
+import { BucketKey } from '../../../../../src/Config/ConfigurationTypes'
+import { SeedOptions } from '../../../../../src/DataAccess/Interfaces/SeedOptions'
+import { DIContainer } from '../../../../../src/DIContainer/DIContainer'
+import { ContainerType } from '../../../../../src/Models/ContainerModels'
+import { acceptInvitationToken, basicLogin } from '../../../../api'
+import { validBody } from '../../../../data/fixtures/credentialsRequestPayload'
+import {
+  authorizationHeader,
+  ValidContentTypeAcceptJsonHeader,
+  ValidHeaderWithApplicationKey,
+} from '../../../../data/fixtures/headers'
+import {
+  validInvitationToken2,
+  validInvitationToken3,
+  validInvitationToken4,
+  validInvitationToken5,
+  validTokenButInvitationExist,
+  validTokenButInvitationExistBetterRole,
+} from '../../../../data/fixtures/invitationTokens'
+import { createProject } from '../../../../data/fixtures/misc'
+import { drop, dropBucket, seed, testDatabase } from '../../../../utilities/db'
+import { TEST_TIMEOUT } from '../../../../utilities/testSetup'
 
 jest.mock('email-templates', () =>
   jest.fn().mockImplementation(() => {
     return {
       send: jest.fn(() => Promise.resolve({})),
-      render: jest.fn(() => Promise.resolve({}))
+      render: jest.fn(() => Promise.resolve({})),
     }
   })
 )
-
-import { TEST_TIMEOUT } from '../../../../utilities/testSetup'
-import { drop, dropBucket, seed, testDatabase } from '../../../../utilities/db'
-import {
-  ValidContentTypeAcceptJsonHeader,
-  authorizationHeader,
-  ValidHeaderWithApplicationKey
-} from '../../../../data/fixtures/headers'
-import { acceptInvitationToken, basicLogin } from '../../../../api'
-import { SeedOptions } from '../../../../../src/DataAccess/Interfaces/SeedOptions'
-import {
-  validInvitationToken2,
-  validInvitationToken3,
-  validInvitationToken4,
-  validTokenButInvitationExist,
-  validTokenButInvitationExistBetterRole,
-  validInvitationToken5
-} from '../../../../data/fixtures/invitationTokens'
-import { validBody } from '../../../../data/fixtures/credentialsRequestPayload'
-import { BucketKey } from '../../../../../src/Config/ConfigurationTypes'
-import { DIContainer } from '../../../../../src/DIContainer/DIContainer'
-import { ContainerType } from '../../../../../src/Models/ContainerModels'
-import { createProject } from '../../../../data/fixtures/misc'
-
 
 let db: any = null
 const seedOptions: SeedOptions = {
   users: true,
   applications: true,
   invitationTokens: true,
-  projectInvitations: true
+  projectInvitations: true,
 }
 
 beforeAll(async () => {
   db = await testDatabase()
 })
 
-async function seedAccounts () {
-  await DIContainer.sharedContainer.syncService.getOrCreateUserStatus(
-      'User|' + validBody.email
-    )
+async function seedAccounts() {
+  await DIContainer.sharedContainer.syncService.getOrCreateUserStatus('User|' + validBody.email)
 }
 
 afterAll(() => {
@@ -88,24 +85,24 @@ describe('InvitationService - acceptInvitationToken', () => {
       ValidHeaderWithApplicationKey
     )
 
-    expect(loginResponse.status).toBe(HttpStatus.OK)
+    expect(loginResponse.status).toBe(StatusCodes.OK)
 
     const authHeader = authorizationHeader(loginResponse.body.token)
     await createProject('MPProject:valid-project-id-9')
     const response: supertest.Response = await acceptInvitationToken(
       {
-        token: validInvitationToken5.token
+        token: validInvitationToken5.token,
       },
       {
         ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
+        ...authHeader,
       },
       {
-        containerType: ContainerType.project
+        containerType: ContainerType.project,
       }
     )
 
-    expect(response.status).toBe(HttpStatus.OK)
+    expect(response.status).toBe(StatusCodes.OK)
   })
 
   test('should update the role of the user from viewer to writer', async () => {
@@ -114,24 +111,24 @@ describe('InvitationService - acceptInvitationToken', () => {
       ValidHeaderWithApplicationKey
     )
 
-    expect(loginResponse.status).toBe(HttpStatus.OK)
+    expect(loginResponse.status).toBe(StatusCodes.OK)
 
     const authHeader = authorizationHeader(loginResponse.body.token)
     await createProject('MPProject:valid-project-id-8')
     const response: supertest.Response = await acceptInvitationToken(
       {
-        token: validInvitationToken2.token
+        token: validInvitationToken2.token,
       },
       {
         ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
+        ...authHeader,
       },
       {
-        containerType: 'project'
+        containerType: 'project',
       }
     )
 
-    expect(response.status).toBe(HttpStatus.OK)
+    expect(response.status).toBe(StatusCodes.OK)
   })
 
   test('should not fail if the user is already in the project with the same role', async () => {
@@ -140,24 +137,24 @@ describe('InvitationService - acceptInvitationToken', () => {
       ValidHeaderWithApplicationKey
     )
 
-    expect(loginResponse.status).toBe(HttpStatus.OK)
+    expect(loginResponse.status).toBe(StatusCodes.OK)
 
     const authHeader = authorizationHeader(loginResponse.body.token)
     await createProject('MPProject:valid-project-id-8')
     const response: supertest.Response = await acceptInvitationToken(
       {
-        token: validInvitationToken3.token
+        token: validInvitationToken3.token,
       },
       {
         ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
+        ...authHeader,
       },
       {
-        containerType: 'project'
+        containerType: 'project',
       }
     )
 
-    expect(response.status).toBe(HttpStatus.OK)
+    expect(response.status).toBe(StatusCodes.OK)
   })
 
   test('should not fail if the user is already in the project with a higher role', async () => {
@@ -166,24 +163,24 @@ describe('InvitationService - acceptInvitationToken', () => {
       ValidHeaderWithApplicationKey
     )
 
-    expect(loginResponse.status).toBe(HttpStatus.OK)
+    expect(loginResponse.status).toBe(StatusCodes.OK)
 
     const authHeader = authorizationHeader(loginResponse.body.token)
     await createProject('MPProject:valid-project-id-7')
     const response: supertest.Response = await acceptInvitationToken(
       {
-        token: validInvitationToken4.token
+        token: validInvitationToken4.token,
       },
       {
         ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
+        ...authHeader,
       },
       {
-        containerType: 'project'
+        containerType: 'project',
       }
     )
 
-    expect(response.status).toBe(HttpStatus.OK)
+    expect(response.status).toBe(StatusCodes.OK)
   })
 
   test('should accept the sent invitation instead of URI if there is invitation exist with a better role', async () => {
@@ -192,24 +189,24 @@ describe('InvitationService - acceptInvitationToken', () => {
       ValidHeaderWithApplicationKey
     )
 
-    expect(loginResponse.status).toBe(HttpStatus.OK)
+    expect(loginResponse.status).toBe(StatusCodes.OK)
 
     const authHeader = authorizationHeader(loginResponse.body.token)
     await createProject('MPProject:valid-project-id-2')
     const response: supertest.Response = await acceptInvitationToken(
       {
-        token: validTokenButInvitationExist.token
+        token: validTokenButInvitationExist.token,
       },
       {
         ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
+        ...authHeader,
       },
       {
-        containerType: 'project'
+        containerType: 'project',
       }
     )
 
-    expect(response.status).toBe(HttpStatus.OK)
+    expect(response.status).toBe(StatusCodes.OK)
   })
 
   test('should accept the URI instead of sent invitation with a worse role', async () => {
@@ -218,23 +215,23 @@ describe('InvitationService - acceptInvitationToken', () => {
       ValidHeaderWithApplicationKey
     )
 
-    expect(loginResponse.status).toBe(HttpStatus.OK)
+    expect(loginResponse.status).toBe(StatusCodes.OK)
 
     const authHeader = authorizationHeader(loginResponse.body.token)
     await createProject('MPProject:valid-project-id')
     const response: supertest.Response = await acceptInvitationToken(
       {
-        token: validTokenButInvitationExistBetterRole.token
+        token: validTokenButInvitationExistBetterRole.token,
       },
       {
         ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
+        ...authHeader,
       },
       {
-        containerType: 'project'
+        containerType: 'project',
       }
     )
 
-    expect(response.status).toBe(HttpStatus.OK)
+    expect(response.status).toBe(StatusCodes.OK)
   })
 })

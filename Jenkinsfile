@@ -1,161 +1,66 @@
-#! /usr/bin/groovy
-node("cisanta") {
-    REGISTRY="us-central1-docker.pkg.dev/atypon-artifact/docker-registry-public"
-    REFSPEC="+refs/pull/*:refs/remotes/origin/pr/*"
-    ansiColor('xterm') {
-    stage("checkout") {
-        VARS = checkout scm
-        DOCKER_IMAGE="leanworkflow/manuscripts-api"
-        IMG_TAG=sh(script: "jq .version < package.json | tr -d '\"' ", returnStdout: true).trim()
+pipeline {
+    agent none
+    parameters {
+        string(name: 'GIT_BRANCH', defaultValue: 'master')
+        booleanParam(name: 'PUBLISH', defaultValue: false)
     }
-
-    stage("install") {
-        nodejs(nodeJSInstallationName: 'node_16_14_2') {
-            sh (script: "npm ci")
+    stages {
+        stage('Build') {
+            agent {
+                docker {
+                    image 'node:18'
+                    args '--userns=host \
+                          --security-opt seccomp:unconfined \
+                          -v /home/ci/.cache/yarn:/.cache/yarn \
+                          -v /home/ci/.npm:/.npm'
+                }
+            }
+            steps {
+                sh 'yarn install --non-interactive --frozen-lockfile'
+                sh 'yarn test:unit'
+                sh 'yarn build'
+            }
         }
-    }
-
-    stage("lint") {
-        nodejs(nodeJSInstallationName: 'node_16_14_2') {
-            sh (script: "npm run build")
-            sh (script: "npm run lint")
-        }
-    }
-
-    parallel([
-        'run_app': {
-            node {
-            VARS = checkout(scm:[$class: 'GitSCM', branches: [[name: "${sha1}"]],
-            doGenerateSubmoduleConfigurations: false,
-            submoduleCfg: [],
-            userRemoteConfigs: [
-                [credentialsId: '336d4fc3-f420-4a3e-b96c-0d0f36ad12be',
-                name: 'origin',
-                refspec: "${REFSPEC}",
-                url: 'git@github.com:Atypon-OpenSource/manuscripts-api.git']
-            ]]
-            )
-            sh ("""./bin/build-env.js .env.example > .env""")
-            env.NODE_ENV="production"
-            withEnv(readFile('.env').split('\n') as List) {
-                sh "env"
-                nodejs(nodeJSInstallationName: 'node_16_14_2') {
-                    sh (script: "npm ci")
-                    sh (script: "npx gulp -f docker/utils/Gulpfile.js")
-                    dir('docker') {
-                        sh (script: "cp ../.env .env")
-                        sh (script: "docker-compose build --pull")
-                        sh (script: "docker-compose up -d ")
-                        sh (script: "sleep 20")
-                        sh (script: """
-if [  -z `nc -z localhost 3000` ]; then \
-  echo "server is running"; \
-  exit 0; \
-else \
-  echo "server is NOT running"; \
-  exit 1; \
-fi""")
+        stage ('Docker') {
+            agent any
+            environment {
+                NAME = "${env.PRIVATE_ARTIFACT_REGISTRY}/manuscripts/api"
+                TAG = getImageTag(params.GIT_BRANCH)
+                GROUP_TAG = getImageGroupTag(params.GIT_BRANCH)
+            }
+            stages {
+                stage('Build docker image') {
+                    steps {
+                        sh 'docker build -t ${NAME}:${TAG} -t ${NAME}:${GROUP_TAG} .'
+                    }
+                }
+                stage('Publish docker image') {
+                    when {
+                        expression { params.PUBLISH == true }
+                    }
+                    steps {
+                        sh 'docker push ${NAME}:${TAG}'
+                        sh 'docker push ${NAME}:${GROUP_TAG}'
                     }
                 }
             }
-            }
-        },
-        'unit_tests': {
-            
-            node("cisanta") {
-            
-                VARS = checkout(scm:[$class: 'GitSCM', branches: [[name: "${sha1}"]],
-                doGenerateSubmoduleConfigurations: false,
-                submoduleCfg: [],
-                userRemoteConfigs: [
-                    [credentialsId: '336d4fc3-f420-4a3e-b96c-0d0f36ad12be',
-                    name: 'origin',
-                    refspec: "${REFSPEC}",
-                    url: 'git@github.com:Atypon-OpenSource/manuscripts-api.git']
-                ]])
-
-                sh (script: "npm ci")
-                sh (script: "./bin/set-package-json-version.sh")
-                sh (script: "./bin/build-env.js .env.example > .env")
-                withEnv(readFile('.env').split('\n') as List) {
-                    nodejs(nodeJSInstallationName: 'node_16_14_2') {
-                        sh (script: "npm ci")
-                        sh (script: "export NODE_ENV='test' && export APP_TEST_ACTION='test:unit' && npx gulp -f docker/utils/Gulpfile.js")
-                        dir('docker') {
-                            sh (script: "cp ../.env .env")
-                            sh (script: "export APP_TEST_ACTION='test:unit' && docker-compose build --pull")
-                            sh (script: "export APP_TEST_ACTION='test:unit' && docker-compose up --build --abort-on-container-exit test_runner")
-                        }
-                    }
-                }
-            }
-        },
-        'integration_tests': {
-
-            // node("ciath") {
-            //     VARS = checkout(scm:[$class: 'GitSCM', branches: [[name: "${sha1}"]],
-            //     doGenerateSubmoduleConfigurations: false,
-            //     submoduleCfg: [],
-            //     userRemoteConfigs: [
-            //         [credentialsId: '336d4fc3-f420-4a3e-b96c-0d0f36ad12be',
-            //         name: 'origin',
-            //         refspec: "${REFSPEC}",
-            //         url: 'git@github.com:Atypon-OpenSource/manuscripts-api.git']
-            //     ]])
-
-            //     sh (script: "npm ci")
-            //     sh (script: "./bin/set-package-json-version.sh")
-            //     sh (script: "./bin/build-env.js .env.example > .env")
-            //     withCredentials([string(credentialsId: 'PRESSROOM_APIKEY', variable: 'PRESSROOM_APIKEY')]) {
-            //         withEnv(readFile('.env').split('\n') as List) {
-            //             nodejs(nodeJSInstallationName: 'node_16_14_2') {
-            //                 sh (script: "npm ci")
-            //                 sh (script: "export NODE_ENV='test' && npx gulp -f docker/utils/Gulpfile.js")
-            //                 dir('docker') {
-            //                     sh (script: "cp ../.env .env")
-            //                     sh (script: "export NODE_ENV='test' && export APP_TEST_ACTION='test:int' && docker-compose build --pull")
-            //                     sh (script: "docker-compose up -d postgres")
-            //                     env.APP_DATABASE_URL="postgresql://postgres:admin@localhost:5432/test"
-            //                     sh (script: """
-            //                     export NODE_ENV='test' \
-            //                     && export APP_TEST_ACTION='test:int' \
-            //                     && export APP_DATABASE_URL='postgresql://postgres:admin@localhost:5432/test' \
-            //                     && npm run migrate-prisma
-            //                     """)
-
-            //                     sh (script: """
-            //                     export NODE_ENV='test' \
-            //                     && export APP_TEST_ACTION='test:int' \
-            //                     && export APP_PRESSROOM_APIKEY=${PRESSROOM_APIKEY} \
-            //                     && export APP_PRESSROOM_BASE_URL='https://pressroom-js-dev.manuscripts.io' \
-            //                     && docker-compose up --build --abort-on-container-exit test_runner
-            //                     """)
-            //                 }
-            //             }
-            //         }
-            //     }
-
-            // }
-        },
-        failFast: false
-    ])
-
-    if (VARS.GIT_BRANCH == "origin/master" ) {
-        stage("Build docker image") {
-            // build docker image with native docker 
-            sh("""
-            docker build -t ${REGISTRY}/${DOCKER_IMAGE}:${IMG_TAG} -f docker/app/Dockerfile .
-            """)
-
-            echo "Pushing ${DOCKER_IMAGE}:${IMG_TAG}"
-            // push to registry
-            sh("""
-            docker push ${REGISTRY}/${DOCKER_IMAGE}:${IMG_TAG} && \
-            docker push ${REGISTRY}/${DOCKER_IMAGE}
-            """)
-
         }
-    }
     }
 }
 
+def getImageTag(branch) {
+    if ('master'.equals(branch)) {
+        return sh(script: 'jq .version < package.json | tr -d \\"', returnStdout: true).trim();
+    } else {
+        def commit = env.GIT_COMMIT
+        return commit.substring(0, 9);
+    }
+}
+
+def getImageGroupTag(branch) {
+    if ('master'.equals(branch)) {
+        return 'latest';
+    } else {
+        return branch;
+    }
+}

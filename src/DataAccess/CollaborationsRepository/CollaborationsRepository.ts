@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { SGRepository } from '../SGRepository'
-import { ICollaborationsRepository } from '../Interfaces/ICollaborationsRepository'
 import { UpdateCollaboration } from '../../Models/CollaborationsModels'
+import { ICollaborationsRepository } from '../Interfaces/ICollaborationsRepository'
 import { CollaborationLike } from '../Interfaces/Models'
+import { SGRepository } from '../SGRepository'
 
 export class CollaborationsRepository
   extends SGRepository<

@@ -16,15 +16,14 @@
 
 import { Request } from 'express'
 
-import { IUserController } from './IUserController'
-import { BaseController, authorizationBearerToken } from '../../BaseController'
-import { ValidationError } from '../../../Errors'
-import { DIContainer } from '../../../DIContainer/DIContainer'
 import { UserProfileLike } from '../../../DataAccess/Interfaces/Models'
+import { DIContainer } from '../../../DIContainer/DIContainer'
+import { ValidationError } from '../../../Errors'
 import { Container } from '../../../Models/ContainerModels'
 import { isString } from '../../../util'
+import { authorizationBearerToken, BaseController } from '../../BaseController'
 
-export class UserController extends BaseController implements IUserController {
+export class UserController extends BaseController {
   /**
    * Sets the user deleteAt property.
    */
@@ -62,6 +61,9 @@ export class UserController extends BaseController implements IUserController {
   }
 
   async userContainers(req: Request): Promise<Container[]> {
+    if (!req.user) {
+      throw new ValidationError('No user found', req.user)
+    }
     return DIContainer.sharedContainer.projectRepository.getUserContainers(req.user._id)
   }
 }

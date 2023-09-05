@@ -16,17 +16,17 @@
 
 import { v4 as uuid_v4 } from 'uuid'
 
-import { SQLRepository } from '../SQLRepository'
-import { ISingleUseTokenRepository } from '../Interfaces/ISingleUseTokenRepository'
 import {
-  SingleUseToken,
   NewSingleUseToken,
-  UpdateSingleUseToken,
+  SingleUseToken,
   SingleUseTokenType,
+  UpdateSingleUseToken,
 } from '../../Models/SingleUseTokenModels'
 import { User } from '../../Models/UserModels'
+import { ISingleUseTokenRepository } from '../Interfaces/ISingleUseTokenRepository'
 import { SingleUseTokenQueryCriteria } from '../Interfaces/QueryCriteria'
-import { required, date } from '../validators'
+import { SQLRepository } from '../SQLRepository'
+import { date, required } from '../validators'
 
 /**
  * Manages tokens persistent storage operations.

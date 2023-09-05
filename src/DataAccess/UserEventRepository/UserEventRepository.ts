@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { SQLRepository } from '../SQLRepository'
+import { UserActivityEvent } from '../../Models/UserEventModels'
 import { IUserEventRepository } from '../Interfaces/IUserEventRepository'
 import { QueryCriteria } from '../Interfaces/QueryCriteria'
-import { UserActivityEvent } from '../../Models/UserEventModels'
-import { required, maxLength, date } from '../validators'
+import { SQLRepository } from '../SQLRepository'
+import { date, maxLength, required } from '../validators'
 
 /**
  * Manages user event persistent storage operations.

@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-import { SQLRepository } from '../SQLRepository'
-import { IUserEmailRepository } from '../Interfaces/IUserEmailRepository'
 import { UserEmail } from '../../Models/UserModels'
+import { IUserEmailRepository } from '../Interfaces/IUserEmailRepository'
+import { SQLRepository } from '../SQLRepository'
 
 /**
  * Manages user email persistent storage operations.
  */
 class UserEmailRepository
+  // eslint-disable-next-line @typescript-eslint/ban-types
   extends SQLRepository<UserEmail, UserEmail, {}, {}>
   implements IUserEmailRepository
 {

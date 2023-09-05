@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { SQLRepository } from '../SQLRepository'
-import { IInvitationTokenRepository } from '../Interfaces/IInvitationTokenRepository'
 import { InvitationToken, UpdateInvitationToken } from '../../Models/UserModels'
+import { IInvitationTokenRepository } from '../Interfaces/IInvitationTokenRepository'
 import { InvitationTokenQueryCriteria } from '../Interfaces/QueryCriteria'
+import { SQLRepository } from '../SQLRepository'
 import { required } from '../validators'
 
 /**

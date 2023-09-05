@@ -15,37 +15,41 @@
  */
 
 import '../../../../../utilities/dbMock'
+
 import { Chance } from 'chance'
 
-import { ValidationError, UserRoleError, RoleDoesNotPermitOperationError } from '../../../../../../src/Errors'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
-import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
-import { validProject } from '../../../../../data/fixtures/projects'
+import {
+  RoleDoesNotPermitOperationError,
+  UserRoleError,
+  ValidationError,
+} from '../../../../../../src/Errors'
 import { ContainerRole } from '../../../../../../src/Models/ContainerModels'
+import { validProject } from '../../../../../data/fixtures/projects'
 import { validUser } from '../../../../../data/fixtures/userServiceUser'
+import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
 
 jest.setTimeout(TEST_TIMEOUT)
 
 const chance = new Chance()
 
 beforeEach(() => {
-  (DIContainer as any)._sharedContainer = null
+  ;(DIContainer as any)._sharedContainer = null
   return DIContainer.init()
 })
 
 describe('ContainerRequestService - create', () => {
   test('should fail if users current role is less limiting than requested', () => {
-    const containerRequestService: any =
-      DIContainer.sharedContainer.containerRequestService
+    const containerRequestService: any = DIContainer.sharedContainer.containerRequestService
 
     containerRequestService.projectService = {
       getContainer: async () => Promise.resolve(validProject),
       ensureValidRole: () => {},
-      getUserRole: () => ContainerRole.Owner
+      getUserRole: () => ContainerRole.Owner,
     }
 
     containerRequestService.userProfileRepository = {
-      getById: async () => Promise.resolve({})
+      getById: async () => Promise.resolve({}),
     }
 
     return expect(
@@ -54,21 +58,20 @@ describe('ContainerRequestService - create', () => {
         validProject._id,
         ContainerRole.Viewer
       )
-    ).rejects.toThrowError(UserRoleError)
+    ).rejects.toThrow(UserRoleError)
   })
 
   test('should fail if users current role is the same as the reuquested', () => {
-    const containerRequestService: any =
-      DIContainer.sharedContainer.containerRequestService
+    const containerRequestService: any = DIContainer.sharedContainer.containerRequestService
 
     containerRequestService.projectService = {
       getContainer: async () => Promise.resolve(validProject),
       ensureValidRole: () => {},
-      getUserRole: () => ContainerRole.Viewer
+      getUserRole: () => ContainerRole.Viewer,
     }
 
     containerRequestService.userProfileRepository = {
-      getById: async () => Promise.resolve(null)
+      getById: async () => Promise.resolve(null),
     }
 
     return expect(
@@ -77,21 +80,20 @@ describe('ContainerRequestService - create', () => {
         validProject._id,
         ContainerRole.Viewer
       )
-    ).rejects.toThrowError(ValidationError)
+    ).rejects.toThrow(ValidationError)
   })
 
   test('should fail if userProfile does not exist', () => {
-    const containerRequestService: any =
-      DIContainer.sharedContainer.containerRequestService
+    const containerRequestService: any = DIContainer.sharedContainer.containerRequestService
 
     containerRequestService.projectService = {
       getContainer: async () => Promise.resolve(validProject),
       ensureValidRole: () => {},
-      getUserRole: () => null
+      getUserRole: () => null,
     }
 
     containerRequestService.userProfileRepository = {
-      getById: async () => Promise.resolve(null)
+      getById: async () => Promise.resolve(null),
     }
 
     return expect(
@@ -100,30 +102,29 @@ describe('ContainerRequestService - create', () => {
         validProject._id,
         ContainerRole.Viewer
       )
-    ).rejects.toThrowError(ValidationError)
+    ).rejects.toThrow(ValidationError)
   })
 
   test('should call create in containerRequestRepository', async () => {
-    const containerRequestService: any =
-      DIContainer.sharedContainer.containerRequestService
+    const containerRequestService: any = DIContainer.sharedContainer.containerRequestService
 
     containerRequestService.projectService = {
       getContainer: async () => Promise.resolve(validProject),
       ensureValidRole: () => {},
-      getUserRole: () => null
+      getUserRole: () => null,
     }
 
     containerRequestService.userProfileRepository = {
-      getById: async () => Promise.resolve({})
+      getById: async () => Promise.resolve({}),
     }
 
     containerRequestService.containerRequestRepository = {
       create: jest.fn(),
-      getById: () => Promise.resolve(null)
+      getById: () => Promise.resolve(null),
     }
 
     containerRequestService.userRepository = {
-      getById: async () => Promise.resolve(validUser)
+      getById: async () => Promise.resolve(validUser),
     }
 
     containerRequestService.emailService.sendContainerRequest = jest.fn()
@@ -134,32 +135,29 @@ describe('ContainerRequestService - create', () => {
       ContainerRole.Viewer
     )
 
-    return expect(
-      containerRequestService.containerRequestRepository.create
-    ).toBeCalled()
+    return expect(containerRequestService.containerRequestRepository.create).toHaveBeenCalled()
   })
 
   test('should call patch in containerRequestRepository', async () => {
-    const containerRequestService: any =
-      DIContainer.sharedContainer.containerRequestService
+    const containerRequestService: any = DIContainer.sharedContainer.containerRequestService
 
     containerRequestService.projectService = {
       getContainer: async () => Promise.resolve(validProject),
       ensureValidRole: () => {},
-      getUserRole: () => null
+      getUserRole: () => null,
     }
 
     containerRequestService.userProfileRepository = {
-      getById: async () => Promise.resolve({})
+      getById: async () => Promise.resolve({}),
     }
 
     containerRequestService.containerRequestRepository = {
       patch: jest.fn(),
-      getById: () => Promise.resolve({})
+      getById: () => Promise.resolve({}),
     }
 
     containerRequestService.userRepository = {
-      getById: async () => Promise.resolve(validUser)
+      getById: async () => Promise.resolve(validUser),
     }
 
     containerRequestService.emailService.sendContainerRequest = jest.fn()
@@ -170,248 +168,197 @@ describe('ContainerRequestService - create', () => {
       ContainerRole.Viewer
     )
 
-    return expect(
-      containerRequestService.containerRequestRepository.patch
-    ).toBeCalled()
+    return expect(containerRequestService.containerRequestRepository.patch).toHaveBeenCalled()
   })
 })
 
 describe('ContainerRequestService - response', () => {
   test('should fail if request does not exist', () => {
-    const containerRequestService: any =
-      DIContainer.sharedContainer.containerRequestService
+    const containerRequestService: any = DIContainer.sharedContainer.containerRequestService
 
     containerRequestService.containerRequestRepository = {
-      getById: async () => Promise.resolve(null)
+      getById: async () => Promise.resolve(null),
     }
 
     return expect(
-      containerRequestService.response(
-        chance.guid(),
-        { _id: `User_${chance.guid()}` },
-        false
-      )
-    ).rejects.toThrowError(ValidationError)
+      containerRequestService.response(chance.guid(), { _id: `User_${chance.guid()}` }, false)
+    ).rejects.toThrow(ValidationError)
   })
 
   test('should fail if requesting user does not exist', () => {
-    const containerRequestService: any =
-      DIContainer.sharedContainer.containerRequestService
+    const containerRequestService: any = DIContainer.sharedContainer.containerRequestService
 
     containerRequestService.containerRequestRepository = {
-      getById: async () => Promise.resolve({ userID: `User_${chance.guid()}` })
+      getById: async () => Promise.resolve({ userID: `User_${chance.guid()}` }),
     }
 
     containerRequestService.userRepository = {
-      getById: async () => Promise.resolve(null)
+      getById: async () => Promise.resolve(null),
     }
 
     return expect(
-      containerRequestService.response(
-        chance.guid(),
-        { _id: `User_${chance.guid()}` },
-        false
-      )
-    ).rejects.toThrowError(ValidationError)
+      containerRequestService.response(chance.guid(), { _id: `User_${chance.guid()}` }, false)
+    ).rejects.toThrow(ValidationError)
   })
 
   test('should fail if user is not owner', () => {
-    const containerRequestService: any =
-      DIContainer.sharedContainer.containerRequestService
+    const containerRequestService: any = DIContainer.sharedContainer.containerRequestService
 
     containerRequestService.containerRequestRepository = {
       getById: async () =>
         Promise.resolve({
           userID: `User_${chance.guid()}`,
-          containerID: validProject._id
-        })
+          containerID: validProject._id,
+        }),
     }
 
     containerRequestService.userRepository = {
-      getById: async () => Promise.resolve({})
+      getById: async () => Promise.resolve({}),
     }
 
     containerRequestService.projectService = {
-      getContainer: async () =>
-        Promise.resolve({ owners: [], _id: validProject._id }),
-      isOwner: () => false
+      getContainer: async () => Promise.resolve({ owners: [], _id: validProject._id }),
+      isOwner: () => false,
     }
 
     return expect(
-      containerRequestService.response(
-        chance.guid(),
-        { _id: `User_${chance.guid()}` },
-        false
-      )
-    ).rejects.toThrowError(RoleDoesNotPermitOperationError)
+      containerRequestService.response(chance.guid(), { _id: `User_${chance.guid()}` }, false)
+    ).rejects.toThrow(RoleDoesNotPermitOperationError)
   })
 
   test('should fail if requesting user has a less limiting role', () => {
-    const containerRequestService: any =
-      DIContainer.sharedContainer.containerRequestService
+    const containerRequestService: any = DIContainer.sharedContainer.containerRequestService
 
     containerRequestService.containerRequestRepository = {
       getById: async () =>
         Promise.resolve({
           userID: `User_${chance.guid()}`,
-          containerID: validProject._id
+          containerID: validProject._id,
         }),
-      remove: jest.fn()
+      remove: jest.fn(),
     }
 
     containerRequestService.userRepository = {
-      getById: async () => Promise.resolve({ containerID: validProject._id })
+      getById: async () => Promise.resolve({ containerID: validProject._id }),
     }
 
     containerRequestService.projectService = {
-      getContainer: async () =>
-        Promise.resolve({ owners: [], _id: validProject._id }),
+      getContainer: async () => Promise.resolve({ owners: [], _id: validProject._id }),
       isOwner: () => true,
-      getUserRole: () => ContainerRole.Owner
+      getUserRole: () => ContainerRole.Owner,
     }
 
     return expect(
-      containerRequestService.response(
-        chance.guid(),
-        { _id: `User_${chance.guid()}` },
-        true
-      )
-    ).rejects.toThrowError(RoleDoesNotPermitOperationError)
+      containerRequestService.response(chance.guid(), { _id: `User_${chance.guid()}` }, true)
+    ).rejects.toThrow(RoleDoesNotPermitOperationError)
   })
 
   test('should accept access request to the project', async () => {
-    const containerRequestService: any =
-      DIContainer.sharedContainer.containerRequestService
+    const containerRequestService: any = DIContainer.sharedContainer.containerRequestService
 
     containerRequestService.containerRequestRepository = {
       getById: async () =>
         Promise.resolve({
           userID: 'User_random-id',
-          containerID: validProject._id
+          containerID: validProject._id,
         }),
-      remove: jest.fn()
+      remove: jest.fn(),
     }
 
     containerRequestService.userRepository = {
-      getById: async () => Promise.resolve({ _id: 'User|random-id' })
+      getById: async () => Promise.resolve({ _id: 'User|random-id' }),
     }
 
     containerRequestService.projectService = {
       getContainer: async () =>
         Promise.resolve({
           owners: ['User_random-id-2'],
-          _id: validProject._id
+          _id: validProject._id,
         }),
       addContainerUser: jest.fn(),
       isOwner: () => true,
-      getUserRole: () => null
+      getUserRole: () => null,
     }
 
     containerRequestService.emailService.requestResponse = jest.fn()
 
-    await containerRequestService.response(
-      chance.guid(),
-      { _id: 'User_random-id-2' },
-      true
-    )
+    await containerRequestService.response(chance.guid(), { _id: 'User_random-id-2' }, true)
 
-    expect(
-      containerRequestService.projectService.addContainerUser
-    ).toBeCalled()
-    expect(
-      containerRequestService.containerRequestRepository.remove
-    ).toBeCalled()
-    expect(containerRequestService.emailService.requestResponse).toBeCalled()
+    expect(containerRequestService.projectService.addContainerUser).toHaveBeenCalled()
+    expect(containerRequestService.containerRequestRepository.remove).toHaveBeenCalled()
+    expect(containerRequestService.emailService.requestResponse).toHaveBeenCalled()
   })
 
   test('should accept access request to the project and update the user role', async () => {
-    const containerRequestService: any =
-      DIContainer.sharedContainer.containerRequestService
+    const containerRequestService: any = DIContainer.sharedContainer.containerRequestService
 
     containerRequestService.containerRequestRepository = {
       getById: async () =>
         Promise.resolve({
           userID: `User_${chance.guid()}`,
           role: ContainerRole.Writer,
-          containerID: validProject._id
+          containerID: validProject._id,
         }),
-      remove: jest.fn()
+      remove: jest.fn(),
     }
 
     containerRequestService.userRepository = {
-      getById: async () => Promise.resolve({})
+      getById: async () => Promise.resolve({}),
     }
 
     containerRequestService.projectService = {
       getContainer: async () =>
         Promise.resolve({
           owners: ['User_random-id-2'],
-          _id: validProject._id
+          _id: validProject._id,
         }),
       updateContainerUser: jest.fn(),
       isOwner: () => true,
-      getUserRole: () => ContainerRole.Viewer
+      getUserRole: () => ContainerRole.Viewer,
     }
 
     containerRequestService.emailService.requestResponse = jest.fn()
 
-    await containerRequestService.response(
-      chance.guid(),
-      { _id: 'User_random-id-2' },
-      true
-    )
+    await containerRequestService.response(chance.guid(), { _id: 'User_random-id-2' }, true)
 
-    expect(
-      containerRequestService.projectService.updateContainerUser
-    ).toBeCalled()
-    expect(
-      containerRequestService.containerRequestRepository.remove
-    ).toBeCalled()
-    expect(containerRequestService.emailService.requestResponse).toBeCalled()
+    expect(containerRequestService.projectService.updateContainerUser).toHaveBeenCalled()
+    expect(containerRequestService.containerRequestRepository.remove).toHaveBeenCalled()
+    expect(containerRequestService.emailService.requestResponse).toHaveBeenCalled()
   })
 
   test('should reject access request to the project', async () => {
-    const containerRequestService: any =
-      DIContainer.sharedContainer.containerRequestService
+    const containerRequestService: any = DIContainer.sharedContainer.containerRequestService
 
     containerRequestService.containerRequestRepository = {
       getById: async () =>
         Promise.resolve({
           userID: `User_${chance.guid()}`,
-          containerID: validProject._id
+          containerID: validProject._id,
         }),
-      remove: jest.fn()
+      remove: jest.fn(),
     }
 
     containerRequestService.userRepository = {
-      getById: async () => Promise.resolve({})
+      getById: async () => Promise.resolve({}),
     }
 
     containerRequestService.projectService = {
       getContainer: async () =>
         Promise.resolve({
           owners: ['User_random-id-2'],
-          _id: validProject._id
+          _id: validProject._id,
         }),
       addContainerUser: jest.fn(),
       isOwner: () => true,
-      isContainerUser: () => false
+      isContainerUser: () => false,
     }
 
     containerRequestService.emailService.requestResponse = jest.fn()
 
-    await containerRequestService.response(
-      chance.guid(),
-      { _id: 'User_random-id-2' },
-      false
-    )
+    await containerRequestService.response(chance.guid(), { _id: 'User_random-id-2' }, false)
 
-    expect(
-      containerRequestService.projectService.addContainerUser
-    ).not.toBeCalled()
-    expect(
-      containerRequestService.containerRequestRepository.remove
-    ).toBeCalled()
-    expect(containerRequestService.emailService.requestResponse).toBeCalled()
+    expect(containerRequestService.projectService.addContainerUser).not.toHaveBeenCalled()
+    expect(containerRequestService.containerRequestRepository.remove).toHaveBeenCalled()
+    expect(containerRequestService.emailService.requestResponse).toHaveBeenCalled()
   })
 })

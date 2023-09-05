@@ -17,18 +17,13 @@
 import '../../../utilities/dbMock'
 
 import { Chance } from 'chance'
-import { UserRepository } from '../../../../src/DataAccess/UserRepository/UserRepository'
-import { validUser1, validNewUser, NewUserNoId } from '../../../data/fixtures/UserRepository'
-import {
-  DatabaseError,
-  ValidationError,
-  NoBucketError,
-  RecordNotFoundError,
-} from '../../../../src/Errors'
 
-import { SQLDatabase } from '../../../../src/DataAccess/SQLDatabase'
 import { config } from '../../../../src/Config/Config'
 import { BucketKey } from '../../../../src/Config/ConfigurationTypes'
+import { SQLDatabase } from '../../../../src/DataAccess/SQLDatabase'
+import { UserRepository } from '../../../../src/DataAccess/UserRepository/UserRepository'
+import { DatabaseError, NoBucketError, ValidationError } from '../../../../src/Errors'
+import { NewUserNoId, validNewUser, validUser1 } from '../../../data/fixtures/UserRepository'
 import { TEST_TIMEOUT } from '../../../utilities/testSetup'
 
 jest.setTimeout(TEST_TIMEOUT)
@@ -69,7 +64,7 @@ describe('SQLRepository Create', () => {
         email: chance.email(),
         name: chance.name(),
       })
-    ).rejects.toThrowError(DatabaseError)
+    ).rejects.toThrow(DatabaseError)
   })
 
   test('should create user successfully', async () => {
@@ -122,7 +117,7 @@ describe('SQLRepository patch', () => {
       repository.patch(validUser1._id, {
         name: chance.name(),
       })
-    ).rejects.toThrowError(DatabaseError)
+    ).rejects.toThrow(DatabaseError)
   })
 
   test('should fail if document _id is different than the passed id', () => {
@@ -135,7 +130,7 @@ describe('SQLRepository patch', () => {
         _id: chance.string(),
         name: chance.name(),
       })
-    ).rejects.toThrowError(ValidationError)
+    ).rejects.toThrow(ValidationError)
   })
 
   test('should fail if error occurred', () => {
@@ -164,7 +159,7 @@ describe('SQLRepository patch', () => {
       repository.patch(validUser1._id, {
         name: 'Cody Rodriquez',
       })
-    ).rejects.toThrowError(DatabaseError)
+    ).rejects.toThrow(DatabaseError)
   })
 
   test('should patch user data successfully', () => {
@@ -205,7 +200,7 @@ describe('SQLRepository update', () => {
 
     const repository = new UserRepository(db)
 
-    return expect(repository.update(NewUserNoId as any)).rejects.toThrowError(ValidationError)
+    return expect(repository.update(NewUserNoId as any)).rejects.toThrow(ValidationError)
   })
 
   test('should fail if an error ocurred', () => {
@@ -223,7 +218,7 @@ describe('SQLRepository update', () => {
       },
     }
 
-    return expect(repository.update(validNewUser)).rejects.toThrowError(DatabaseError)
+    return expect(repository.update(validNewUser)).rejects.toThrow(DatabaseError)
   })
 
   test('should fail if id does not exists in the database', () => {
@@ -243,7 +238,7 @@ describe('SQLRepository update', () => {
       },
     }
 
-    return expect(repository.update(validNewUser)).rejects.toThrowError(DatabaseError)
+    return expect(repository.update(validNewUser)).rejects.toThrow(DatabaseError)
   })
 
   test('should fail if the document _type defined are not matched to the repository type', () => {
@@ -255,7 +250,7 @@ describe('SQLRepository update', () => {
       _type: 'Not User',
     }
 
-    return expect(repository.update(userToUpdate)).rejects.toThrowError(ValidationError)
+    return expect(repository.update(userToUpdate)).rejects.toThrow(ValidationError)
   })
 
   test('should update user successfully if the document _type is specified', async () => {
@@ -323,7 +318,7 @@ describe('SQLRepository touch', () => {
     const db = testDatabase()
     db.bucket = null
     const repository = new UserRepository(db)
-    return expect(repository.touch(validUser1._id, 100)).rejects.toThrowError(NoBucketError)
+    return expect(repository.touch(validUser1._id, 100)).rejects.toThrow(NoBucketError)
   })
 
   test('should fail if id is not in the database', () => {
@@ -345,7 +340,7 @@ describe('SQLRepository touch', () => {
       },
     }
 
-    return expect(repository.touch(validNewUser._id, 100)).rejects.toThrowError(DatabaseError)
+    return expect(repository.touch(validNewUser._id, 100)).rejects.toThrow(DatabaseError)
   })
 
   test('should fail if an error ocurred', () => {
@@ -365,7 +360,7 @@ describe('SQLRepository touch', () => {
       },
     }
 
-    return expect(repository.touch(validUser1._id, 100)).rejects.toThrowError(DatabaseError)
+    return expect(repository.touch(validUser1._id, 100)).rejects.toThrow(DatabaseError)
   })
 
   test('should touch user successfully', async () => {
@@ -392,7 +387,7 @@ describe('SQLRepository getById', () => {
     const db = testDatabase()
     db.bucket = null
     const repository = new UserRepository(db)
-    return expect(repository.getById(validUser1._id)).rejects.toThrowError(NoBucketError)
+    return expect(repository.getById(validUser1._id)).rejects.toThrow(NoBucketError)
   })
 
   test('should fail if error occurred', () => {
@@ -404,7 +399,7 @@ describe('SQLRepository getById', () => {
 
     const repository = new UserRepository(db)
 
-    return expect(repository.getById(validUser1._id)).rejects.toThrowError(DatabaseError)
+    return expect(repository.getById(validUser1._id)).rejects.toThrow(DatabaseError)
   })
 
   test('should return null if key does not exist', async () => {
@@ -441,7 +436,7 @@ describe('SQLRepository getById', () => {
     repository.database = {}
     const id = chance.hash()
 
-    return expect(repository.getById(id)).rejects.toThrowError(NoBucketError)
+    return expect(repository.getById(id)).rejects.toThrow(NoBucketError)
   })
 })
 
@@ -450,9 +445,7 @@ describe('SQLRepository getOne', () => {
     const db = testDatabase()
     db.bucket = null
     const repository = new UserRepository(db)
-    return expect(repository.getOne({ email: validUser1.email })).rejects.toThrowError(
-      NoBucketError
-    )
+    return expect(repository.getOne({ email: validUser1.email })).rejects.toThrow(NoBucketError)
   })
 
   test('should fail if error occurred', () => {
@@ -466,7 +459,7 @@ describe('SQLRepository getOne', () => {
 
     const repository = new UserRepository(db)
 
-    return expect(repository.getOne({})).rejects.toThrowError(DatabaseError)
+    return expect(repository.getOne({})).rejects.toThrow(DatabaseError)
   })
 
   test('should fail return null if no data exists', async () => {
@@ -499,7 +492,7 @@ describe('SQLRepository getOne', () => {
     repository.database = {}
     const id = new Chance().hash()
 
-    return expect(repository.getOne({ id })).rejects.toThrowError(NoBucketError)
+    return expect(repository.getOne({ id })).rejects.toThrow(NoBucketError)
   })
 })
 
@@ -508,7 +501,7 @@ describe('SQLRepository count', () => {
     const db = testDatabase()
     db.bucket = null
     const repository = new UserRepository(db)
-    return expect(repository.count({ email: validUser1.email })).rejects.toThrowError(NoBucketError)
+    return expect(repository.count({ email: validUser1.email })).rejects.toThrow(NoBucketError)
   })
 
   test('should fail if error occurred', () => {
@@ -522,7 +515,7 @@ describe('SQLRepository count', () => {
 
     const repository = new UserRepository(db)
 
-    return expect(repository.count({})).rejects.toThrowError(DatabaseError)
+    return expect(repository.count({})).rejects.toThrow(DatabaseError)
   })
 
   test('should fail return count as number there is keys', async () => {
@@ -541,7 +534,7 @@ describe('SQLRepository count', () => {
     const repository: any = new UserRepository(db)
     repository.database = {}
     const id = chance.hash()
-    return expect(repository.count({ id })).rejects.toThrowError(NoBucketError)
+    return expect(repository.count({ id })).rejects.toThrow(NoBucketError)
   })
 })
 
@@ -550,7 +543,7 @@ describe('SQLRepository getAll', () => {
     const db = testDatabase()
     db.bucket = null
     const repository = new UserRepository(db)
-    return expect(repository.getAll({}, null)).rejects.toThrowError(NoBucketError)
+    return expect(repository.getAll({}, null)).rejects.toThrow(NoBucketError)
   })
 
   test('should fail if error occurred', () => {
@@ -562,7 +555,7 @@ describe('SQLRepository getAll', () => {
 
     const repository = new UserRepository(db)
 
-    return expect(repository.getAll({}, null)).rejects.toThrowError(DatabaseError)
+    return expect(repository.getAll({}, null)).rejects.toThrow(DatabaseError)
   })
 
   test('should fail return empty set if no data exists', async () => {
@@ -595,7 +588,7 @@ describe('SQLRepository remove', () => {
     const db = testDatabase()
     db.bucket = null
     const repository = new UserRepository(db)
-    return expect(repository.remove({})).rejects.toThrowError(NoBucketError)
+    return expect(repository.remove({})).rejects.toThrow(NoBucketError)
   })
 
   test('should fail if error occurred', () => {
@@ -609,7 +602,7 @@ describe('SQLRepository remove', () => {
 
     const repository = new UserRepository(db)
 
-    return expect(repository.remove({})).rejects.toThrowError(DatabaseError)
+    return expect(repository.remove({})).rejects.toThrow(DatabaseError)
   })
 
   test('should remove key', async () => {

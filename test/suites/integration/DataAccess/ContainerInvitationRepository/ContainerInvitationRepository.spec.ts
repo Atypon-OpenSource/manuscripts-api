@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { drop, testDatabase, seed, dropBucket } from '../../../../utilities/db'
-import { TEST_TIMEOUT } from '../../../../utilities/testSetup'
-import { ContainerInvitationRepository } from '../../../../../src/DataAccess/ContainerInvitationRepository/ContainerInvitationRepository'
 import { BucketKey } from '../../../../../src/Config/ConfigurationTypes'
+import { ContainerInvitationRepository } from '../../../../../src/DataAccess/ContainerInvitationRepository/ContainerInvitationRepository'
 import { validProjectInvitationObject } from '../../../../data/fixtures/invitation'
+import { drop, dropBucket, seed, testDatabase } from '../../../../utilities/db'
+import { TEST_TIMEOUT } from '../../../../utilities/testSetup'
 
 jest.setTimeout(TEST_TIMEOUT)
 
@@ -54,14 +54,11 @@ describe('InvitationRepository getAllByEmail', () => {
   test('should get all invitations by email', async () => {
     const repository = new ContainerInvitationRepository(BucketKey.Project, db)
 
-    const invitations: any = await repository.getAllByEmail(
-      'valid-google@manuscriptsapp.com'
-    )
+    const invitations: any = await repository.getAllByEmail('valid-google@manuscriptsapp.com')
 
     expect(invitations[0]).toBeDefined()
   })
 })
-
 
 describe('InvitationRepository removeByUserIdAndEmail', () => {
   beforeEach(async () => {
@@ -78,9 +75,7 @@ describe('InvitationRepository removeByUserIdAndEmail', () => {
       'valid-google@manuscriptsapp.com'
     )
 
-    const invitations: any = await repository.getAllByEmail(
-      'valid-google@manuscriptsapp.com'
-    )
+    const invitations: any = await repository.getAllByEmail('valid-google@manuscriptsapp.com')
 
     expect(invitations.length).toEqual(0)
   })

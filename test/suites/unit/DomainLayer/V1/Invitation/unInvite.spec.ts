@@ -16,15 +16,19 @@
 
 import '../../../../../utilities/dbMock'
 
-import { InvalidCredentialsError, RoleDoesNotPermitOperationError, ValidationError } from '../../../../../../src/Errors'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
+import {
+  InvalidCredentialsError,
+  RoleDoesNotPermitOperationError,
+  ValidationError,
+} from '../../../../../../src/Errors'
 import { validProject2 } from '../../../../../data/fixtures/projects'
 import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
 
 jest.setTimeout(TEST_TIMEOUT)
 
 beforeEach(() => {
-  (DIContainer as any)._sharedContainer = null
+  ;(DIContainer as any)._sharedContainer = null
   return DIContainer.init()
 })
 
@@ -32,69 +36,72 @@ describe('Invitation - uninvite', () => {
   test('should fail if project owner does not exist', () => {
     const containerInvitationService: any = DIContainer.sharedContainer.containerInvitationService
     containerInvitationService.userRepository = {
-      getById: async () => Promise.resolve(null)
+      getById: async () => Promise.resolve(null),
     }
 
-    return expect(
-      containerInvitationService.uninvite('foo', 'bar')
-    ).rejects.toThrowError(InvalidCredentialsError)
+    return expect(containerInvitationService.uninvite('foo', 'bar')).rejects.toThrow(
+      InvalidCredentialsError
+    )
   })
 
   test('should fail if invitation does not exist', async () => {
     const containerInvitationService: any = DIContainer.sharedContainer.containerInvitationService
     containerInvitationService.userRepository = {
-      getById: async () => Promise.resolve({
-        email: 'foo@bar.com',
-        _id: 'User|foo@bar.com'
-      })
+      getById: async () =>
+        Promise.resolve({
+          email: 'foo@bar.com',
+          _id: 'User|foo@bar.com',
+        }),
     }
 
     containerInvitationService.containerInvitationRepository = {
-      getById: async () => Promise.resolve(null)
+      getById: async () => Promise.resolve(null),
     }
 
-    return expect(
-        containerInvitationService.uninvite('foo', 'bar')
-      ).rejects.toThrowError(ValidationError)
+    return expect(containerInvitationService.uninvite('foo', 'bar')).rejects.toThrow(
+      ValidationError
+    )
   })
 
   test('user cannot uninvite others in a project he is not an owner of', async () => {
     const containerInvitationService: any = DIContainer.sharedContainer.containerInvitationService
     containerInvitationService.userRepository = {
-      getById: async () => Promise.resolve({
-        email: 'foo@bar.com',
-        _id: 'User|foo'
-      })
+      getById: async () =>
+        Promise.resolve({
+          email: 'foo@bar.com',
+          _id: 'User|foo',
+        }),
     }
     containerInvitationService.containerInvitationRepository = {
-      getById: async () => Promise.resolve({ containerID: 'MPProject:valid-project-id-2' })
+      getById: async () => Promise.resolve({ containerID: 'MPProject:valid-project-id-2' }),
     }
 
     containerInvitationService.projectService = {
-      getContainer: async () => Promise.resolve(validProject2)
+      getContainer: async () => Promise.resolve(validProject2),
     }
-    return expect(
-      containerInvitationService.uninvite('foo', 'bar')
-    ).rejects.toThrowError(RoleDoesNotPermitOperationError)
+    return expect(containerInvitationService.uninvite('foo', 'bar')).rejects.toThrow(
+      RoleDoesNotPermitOperationError
+    )
   })
 
   test('project owner can successfully uninvite other user', async () => {
     const containerInvitationService: any = DIContainer.sharedContainer.containerInvitationService
     containerInvitationService.userRepository = {
-      getById: async () => Promise.resolve({
-        email: 'foo@bar.com',
-        _id: 'User|test'
-      })
+      getById: async () =>
+        Promise.resolve({
+          email: 'foo@bar.com',
+          _id: 'User|test',
+        }),
     }
     containerInvitationService.containerInvitationRepository = {
       getById: async () => Promise.resolve({ containerID: 'MPProject:valid-project-id-2' }),
-      remove: jest.fn(() => Promise.resolve())
+      remove: jest.fn(() => Promise.resolve()),
     }
     containerInvitationService.projectService = {
-      getContainer: async () => Promise.resolve(validProject2)
+      getContainer: async () => Promise.resolve(validProject2),
     }
 
     await containerInvitationService.uninvite('foo', 'bar')
-    expect(containerInvitationService.containerInvitationRepository.remove).toBeCalled()
+    expect(containerInvitationService.containerInvitationRepository.remove).toHaveBeenCalled()
   })
 })

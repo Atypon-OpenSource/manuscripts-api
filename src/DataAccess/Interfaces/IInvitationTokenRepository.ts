@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { IndexedRepository } from './IndexedRepository'
 import { InvitationToken, UpdateInvitationToken } from '../../Models/UserModels'
+import { IndexedRepository } from './IndexedRepository'
 import { InvitationTokenQueryCriteria } from './QueryCriteria'
 
 /**

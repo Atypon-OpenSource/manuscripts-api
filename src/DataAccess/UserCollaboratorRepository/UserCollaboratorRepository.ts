@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
+import { UserCollaborator } from '@manuscripts/json-schema'
+
 import { SGRepository } from '../SGRepository'
-import { UserCollaborator } from '@manuscripts/manuscripts-json-schema'
 
 export class UserCollaboratorRepository extends SGRepository<
   UserCollaborator,
@@ -158,6 +159,18 @@ export class UserCollaboratorRepository extends SGRepository<
             {
               data: {
                 path: ['projects', 'viewer'],
+                array_contains: containerId,
+              },
+            },
+            {
+              data: {
+                path: ['projects', 'proofer'],
+                array_contains: containerId,
+              },
+            },
+            {
+              data: {
+                path: ['projects', 'annotator'],
                 array_contains: containerId,
               },
             },

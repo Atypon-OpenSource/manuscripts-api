@@ -16,20 +16,14 @@
 
 import supertest from 'supertest'
 
-import { createServer } from './utilities/server'
-import { IServer } from '../src/Server/IServer'
 import { getContainerType } from '../src/Controller/ContainedBaseController'
+import { IServer } from '../src/Server/IServer'
+import { createServer } from './utilities/server'
 
 // Auth
-
 export async function basicLogin(body: any, headers: object): Promise<supertest.Response> {
   const server = await createServer()
   return supertest(server.app).post('/api/v1/auth/login').set(headers).send(body)
-}
-
-export async function serverToServerAuth(body: any, headers: object): Promise<supertest.Response> {
-  const server = await createServer()
-  return supertest(server.app).post('/api/v1/auth/admin').set(headers).send(body)
 }
 
 export async function serverToServerTokenAuth(
@@ -54,45 +48,8 @@ export async function logout(headers: object): Promise<supertest.Response> {
   return supertest(server.app).post('/api/v1/auth/logout').set(headers).send()
 }
 
-export async function backchannelLogout(
-  headers: object,
-  query: object
-): Promise<supertest.Response> {
-  const server = await createServer()
-  return supertest(server.app)
-    .post('/api/v1/auth/backchannel_logout')
-    .query(query)
-    .set(headers)
-    .send()
-}
-
-export async function forgotPassword(body: any, headers: object): Promise<supertest.Response> {
-  const server = await createServer()
-  return supertest(server.app).post('/api/v1/auth/sendForgottenPassword').set(headers).send(body)
-}
-
-export async function resetPassword(body: any, headers: object): Promise<supertest.Response> {
-  const server = await createServer()
-  return supertest(server.app).post('/api/v1/auth/resetPassword').set(headers).send(body)
-}
-
-export async function changePassword(body: any, headers: object): Promise<supertest.Response> {
-  const server = await createServer()
-  return supertest(server.app).post('/api/v1/auth/changePassword').set(headers).send(body)
-}
-
-export async function iamOAuthStart(headers: object, query: any): Promise<supertest.Response> {
-  const server: IServer = await createServer()
-  return supertest(server.app).get('/api/v1/auth/iam').set(headers).query(query).send()
-}
-
-export async function iamOAuthCallback(query: any, headers: object): Promise<supertest.Response> {
-  const server: IServer = await createServer()
-  return supertest(server.app).get('/api/v1/auth/iam/callback').query(query).set(headers).send()
-}
-
 export async function authorizationToken(
-  headers: Object,
+  headers: object,
   params: any
 ): Promise<supertest.Response> {
   const server = await createServer()
@@ -436,25 +393,6 @@ export async function createProject(headers: any, body: object): Promise<superte
   return supertest(server.app).post(`/api/v1/project/`).set(headers).send(body)
 }
 
-export async function createSnapshot(
-  headers: any,
-  params: any,
-  body: any
-): Promise<supertest.Response> {
-  const server: IServer = await createServer()
-  return supertest(server.app)
-    .post(`/api/v1/container/snapshot/${params.containerID}/create`)
-    .set(headers)
-    .send(body)
-}
-
-export async function getCorrectionStatus(headers: any, params: any): Promise<supertest.Response> {
-  const server: IServer = await createServer()
-  return supertest(server.app)
-    .get(`/api/v1/container/projects/${params.containerID}/suggestions/status`)
-    .set(headers)
-}
-
 export async function saveProject(
   headers: object,
   params: any,
@@ -484,14 +422,13 @@ export async function getCollaborators(headers: object, params: any): Promise<su
     .set(headers)
 }
 
-export async function deleteModel(
-  headers: object,
-  params: any
-): Promise<supertest.Response> {
+export async function deleteModel(headers: object, params: any): Promise<supertest.Response> {
   const server: IServer = await createServer()
   return supertest(server.app)
-  .delete(`/api/v1/project/${params.containerID}/manuscripts/${params.manuscriptID}/model/${params.modelID}/`)
-  .set(headers)
+    .delete(
+      `/api/v1/project/${params.containerID}/manuscripts/${params.manuscriptID}/model/${params.modelID}/`
+    )
+    .set(headers)
 }
 
 export async function importManuscript(

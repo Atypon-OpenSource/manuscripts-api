@@ -24,7 +24,6 @@ manuscriptNoteList.push({
   contents: 'test data',
   manuscriptID: 'MPManuscript:valid-manuscript-id-1',
   objectType: 'MPManuscriptNote',
-  sessionID: 'CAB15C5D-D178-4792-88F0-892BB1E29A79',
   target: 'MPManuscript:valid-manuscript-id-1',
   source: 'DASHBOARD',
   contributions: [
@@ -32,9 +31,9 @@ manuscriptNoteList.push({
       _id: 'MPContribution:52A07FF8-2E76-4AA3-8C4B-B65BC3211DBD',
       objectType: 'MPContribution',
       profileID: 'MPUserProfile:e5cef85828fdfb0af2e8a561389754028101431f',
-      timestamp: 1605918508
-    }
-  ]
+      timestamp: 1605918508,
+    },
+  ],
 })
 
 manuscriptNoteList.push({
@@ -43,7 +42,6 @@ manuscriptNoteList.push({
   contents: 'test data',
   manuscriptID: 'MPManuscript:valid-manuscript-id-1',
   objectType: 'MPManuscriptNote',
-  sessionID: 'CAB15C5D-D178-4792-88F0-892BB1E29A79',
   target: 'MPManuscript:valid-manuscript-id-1',
   source: 'DASHBOARD',
   contributions: [
@@ -51,7 +49,7 @@ manuscriptNoteList.push({
       _id: 'MPContribution:52A07FF8-2E76-4AA3-8C4B-B65BC3211DBD',
       objectType: 'MPContribution',
       profileID: 'MPUserProfile:e5cef85828fdfb0af2e8a561389754028101431f',
-      timestamp: 1605918508
-    }
-  ]
+      timestamp: 1605918508,
+    },
+  ],
 })

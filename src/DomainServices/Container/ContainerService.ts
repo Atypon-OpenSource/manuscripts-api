@@ -14,68 +14,58 @@
  * limitations under the License.
  */
 
-import * as jsonwebtoken from 'jsonwebtoken'
-import { v4 as uuid_v4 } from 'uuid'
+import {
+  manuscriptIDTypes,
+  ManuscriptNote,
+  Model,
+  ObjectTypes,
+  validate,
+} from '@manuscripts/json-schema'
+import jwt from 'jsonwebtoken'
+import JSZip from 'jszip'
 import * as _ from 'lodash'
+import { v4 as uuid_v4 } from 'uuid'
 
-import { IContainerService, ArchiveOptions } from './IContainerService'
-import { IUserRepository } from '../../DataAccess/Interfaces/IUserRepository'
-import { IUserStatusRepository } from '../../DataAccess/Interfaces/IUserStatusRepository'
-import { UserActivityTrackingService } from '../UserActivity/UserActivityTrackingService'
-import {
-  ContainerRole,
-  Container,
-  ContainerType,
-  ContainerRepository,
-  ContainerObjectType,
-} from '../../Models/ContainerModels'
-import { isLoginTokenPayload, timestamp } from '../../Utilities/JWT/LoginTokenPayload'
-import {
-  InvalidCredentialsError,
-  MissingUserStatusError,
-  UserBlockedError,
-  UserNotVerifiedError,
-  ValidationError,
-  UserRoleError,
-  RecordNotFoundError,
-  InvalidScopeNameError,
-  ConflictingRecordError,
-  MissingContainerError,
-  MissingProductionNoteError,
-  MissingUserRecordError,
-  MissingTemplateError,
-  RoleDoesNotPermitOperationError,
-  ProductionNotesLoadError,
-  ProductionNotesUpdateError,
-} from '../../Errors'
-import { isBlocked, User } from '../../Models/UserModels'
-import { UserActivityEventType } from '../../Models/UserEventModels'
-import { IUserService } from '../User/IUserService'
-import { EmailService } from '../Email/EmailService'
-import { ContainerInvitationRepository } from '../../DataAccess/ContainerInvitationRepository/ContainerInvitationRepository'
 import { config } from '../../Config/Config'
 import { ScopedAccessTokenConfiguration } from '../../Config/ConfigurationTypes'
-import { ManuscriptNoteRepository } from '../../DataAccess/ManuscriptNoteRepository/ManuscriptNoteRepository'
-import { UserService } from '../User/UserService'
-import { DIContainer } from '../../DIContainer/DIContainer'
-import { LibraryCollectionRepository } from '../../DataAccess/LibraryCollectionRepository/LibraryCollectionRepository'
-import {
-  ManuscriptNote,
-  ObjectTypes,
-  Snapshot,
-  Model,
-  manuscriptIDTypes,
-} from '@manuscripts/manuscripts-json-schema'
-import { CorrectionRepository } from '../../DataAccess/CorrectionRepository/CorrectionRepository'
+import { ContainerInvitationRepository } from '../../DataAccess/ContainerInvitationRepository/ContainerInvitationRepository'
 import { IManuscriptRepository } from '../../DataAccess/Interfaces/IManuscriptRepository'
-import { SnapshotRepository } from '../../DataAccess/SnapshotRepository/SnapshotRepository'
+import { IUserRepository } from '../../DataAccess/Interfaces/IUserRepository'
+import { IUserStatusRepository } from '../../DataAccess/Interfaces/IUserStatusRepository'
+import { ManuscriptNoteRepository } from '../../DataAccess/ManuscriptNoteRepository/ManuscriptNoteRepository'
 import { TemplateRepository } from '../../DataAccess/TemplateRepository/TemplateRepository'
-
-const JSZip = require('jszip')
+import { DIContainer } from '../../DIContainer/DIContainer'
+import {
+  ConflictingRecordError,
+  InvalidCredentialsError,
+  InvalidScopeNameError,
+  MissingContainerError,
+  MissingProductionNoteError,
+  MissingTemplateError,
+  MissingUserRecordError,
+  MissingUserStatusError,
+  ProductionNotesLoadError,
+  ProductionNotesUpdateError,
+  RecordNotFoundError,
+  RoleDoesNotPermitOperationError,
+  SyncError,
+  UserBlockedError,
+  UserNotVerifiedError,
+  UserRoleError,
+  ValidationError,
+} from '../../Errors'
+import { Container, ContainerRepository, ContainerRole } from '../../Models/ContainerModels'
+import { UserActivityEventType } from '../../Models/UserEventModels'
+import { isBlocked, User } from '../../Models/UserModels'
+import { isLoginTokenPayload, timestamp } from '../../Utilities/JWT/LoginTokenPayload'
+import { EmailService } from '../Email/EmailService'
+import { IUserService } from '../User/IUserService'
+import { UserService } from '../User/UserService'
+import { UserActivityTrackingService } from '../UserActivity/UserActivityTrackingService'
+import { ArchiveOptions, IContainerService } from './IContainerService'
 
 export class ContainerService implements IContainerService {
   constructor(
-    private containerType: ContainerType,
     private userRepository: IUserRepository,
     private userService: IUserService,
     private activityTrackingService: UserActivityTrackingService,
@@ -83,16 +73,13 @@ export class ContainerService implements IContainerService {
     private containerRepository: ContainerRepository,
     private containerInvitationRepository: ContainerInvitationRepository,
     private emailService: EmailService,
-    private libraryCollectionRepository: LibraryCollectionRepository,
     private manuscriptRepository: IManuscriptRepository,
     private manuscriptNoteRepository: ManuscriptNoteRepository,
-    private correctionRepository: CorrectionRepository,
-    private snapshotRepository: SnapshotRepository,
     private templateRepository: TemplateRepository
   ) {}
 
   public async createContainer(token: string, _id: string | null): Promise<Container> {
-    const payload = jsonwebtoken.decode(token)
+    const payload = jwt.decode(token)
 
     if (!isLoginTokenPayload(payload)) {
       throw new InvalidCredentialsError('Unexpected token payload.')
@@ -167,8 +154,7 @@ export class ContainerService implements IContainerService {
     user: User,
     containerId: string,
     managedUser: { userId: string; connectUserId: string },
-    newRole: ContainerRole | null,
-    secret?: string
+    newRole: ContainerRole | null
   ): Promise<void> {
     const container = await this.getContainer(containerId)
 
@@ -184,9 +170,7 @@ export class ContainerService implements IContainerService {
       throw new RoleDoesNotPermitOperationError('User must be an owner to manage roles.', newRole)
     }
 
-    const isServer = this.validateSecret(secret)
-
-    await this.validateManagedUser(managedUserObj._id, user._id, container, newRole, isServer)
+    await this.validateManagedUser(managedUserObj._id, newRole)
 
     if (ContainerService.isOwner(container, managedUserObj._id) && container.owners.length < 2) {
       throw new UserRoleError('User is the only owner', newRole)
@@ -194,57 +178,10 @@ export class ContainerService implements IContainerService {
     await this.updateContainerUser(containerId, newRole, managedUserObj)
   }
 
-  private async setUsersRolesInContainedLibraryCollections(
-    containerId: string,
-    userId: string,
-    role: ContainerRole | null
-  ) {
-    const libraryCollections = await this.containerRepository.getContainedLibraryCollections(
-      containerId
-    )
-    const syncUserId = ContainerService.userIdForSync(userId)
-    for (let lc of libraryCollections) {
-      const { owners, writers, viewers, editors, annotators } = this.updatedRoles(lc, userId, role)
-      let inherited
-
-      if (lc.inherited) {
-        inherited = lc.inherited.includes(syncUserId) ? lc.inherited : [...lc.inherited, syncUserId]
-      } else {
-        inherited = [syncUserId]
-      }
-
-      // call it without userId intentionally
-      await this.libraryCollectionRepository.patch(lc._id, {
-        _id: lc._id,
-        owners: owners && owners.map((u) => ContainerService.userIdForSync(u)),
-        writers: writers && writers.map((u) => ContainerService.userIdForSync(u)),
-        viewers: viewers && viewers.map((u) => ContainerService.userIdForSync(u)),
-        editors: editors && editors.map((u) => ContainerService.userIdForSync(u)),
-        annotators: annotators && annotators.map((u) => ContainerService.userIdForSync(u)),
-        inherited,
-      })
-    }
-  }
-
-  private validateSecret = (secret?: string) =>
-    secret ? secret === config.auth.serverSecret : false
-
   public async validateManagedUser(
     managedUserId: string,
-    userId: string,
-    container: Container,
-    newRole: ContainerRole | null,
-    isServer: boolean
+    newRole: ContainerRole | null
   ): Promise<void> {
-    if (
-      !isServer &&
-      managedUserId !== '*' &&
-      userId !== managedUserId &&
-      !ContainerService.isContainerUser(container, managedUserId)
-    ) {
-      throw new ValidationError('User is not in container', managedUserId)
-    }
-
     if (managedUserId === '*' && (newRole === 'Owner' || newRole === 'Writer')) {
       throw new ValidationError('User can not be owner or writer', managedUserId)
     }
@@ -278,7 +215,7 @@ export class ContainerService implements IContainerService {
     this.ensureValidRole(role)
 
     const title = ContainerService.containerTitle(container)
-    const { owners, writers, viewers, editors, annotators } = this.updatedRoles(
+    const { owners, writers, viewers, editors, proofers, annotators } = this.updatedRoles(
       container,
       userId,
       role
@@ -292,9 +229,9 @@ export class ContainerService implements IContainerService {
         writers,
         viewers,
         editors,
+        proofers,
         annotators
       )
-      await this.setUsersRolesInContainedLibraryCollections(containerID, userId, role)
 
       if (!skipEmail) {
         await this.notifyForAddingUser(container, role, addedUser, addingUser)
@@ -325,7 +262,7 @@ export class ContainerService implements IContainerService {
     }
 
     this.ensureValidRole(role)
-    const { owners, writers, viewers, editors, annotators } = this.updatedRoles(
+    const { owners, writers, viewers, editors, proofers, annotators } = this.updatedRoles(
       container,
       user._id,
       role
@@ -341,9 +278,9 @@ export class ContainerService implements IContainerService {
       writers,
       viewers,
       editors,
+      proofers,
       annotators
     )
-    await this.setUsersRolesInContainedLibraryCollections(containerID, user._id, role)
   }
 
   // tslint:disable-next-line: cyclomatic-complexity
@@ -356,6 +293,7 @@ export class ContainerService implements IContainerService {
     writers: string[]
     viewers: string[]
     editors?: string[]
+    proofers?: string[]
     annotators?: string[]
   } {
     const syncUserId = ContainerService.userIdForSync(userId)
@@ -364,6 +302,7 @@ export class ContainerService implements IContainerService {
     const writers = _.cloneDeep(container.writers)
     const viewers = _.cloneDeep(container.viewers)
     let annotators = _.cloneDeep(container.annotators)
+    let proofers = _.cloneDeep(container.proofers)
     let editors = _.cloneDeep(container.editors)
     const ownerIdx = owners.indexOf(syncUserId)
     const writerIdx = writers.indexOf(syncUserId)
@@ -380,6 +319,12 @@ export class ContainerService implements IContainerService {
       const idx = annotators.indexOf(syncUserId)
       if (idx > -1) {
         annotators.splice(idx, 1)
+      }
+    }
+    if (proofers && proofers.length) {
+      const idx = proofers.indexOf(syncUserId)
+      if (idx > -1) {
+        proofers.splice(idx, 1)
       }
     }
     if (editors && editors.length) {
@@ -406,6 +351,13 @@ export class ContainerService implements IContainerService {
           annotators = [syncUserId]
         }
         break
+      case ContainerRole.Proofer:
+        if (proofers) {
+          proofers.push(syncUserId)
+        } else {
+          proofers = [syncUserId]
+        }
+        break
       case ContainerRole.Editor:
         if (editors) {
           editors.push(syncUserId)
@@ -415,7 +367,7 @@ export class ContainerService implements IContainerService {
         break
     }
 
-    return { owners, writers, viewers, editors, annotators }
+    return { owners, writers, viewers, editors, proofers, annotators }
   }
 
   private async handleInvitations(
@@ -435,6 +387,7 @@ export class ContainerService implements IContainerService {
     writers: string[] | undefined,
     viewers: string[] | undefined,
     editors?: string[] | undefined,
+    proofers?: string[] | undefined,
     annotators?: string[] | undefined
   ): Promise<void> {
     // call it without userId intentionally
@@ -445,6 +398,7 @@ export class ContainerService implements IContainerService {
       writers: writers && writers.map((u) => ContainerService.userIdForSync(u)),
       viewers: viewers && viewers.map((u) => ContainerService.userIdForSync(u)),
       editors: editors && editors.map((u) => ContainerService.userIdForSync(u)),
+      proofers: proofers && proofers.map((u) => ContainerService.userIdForSync(u)),
       annotators: annotators && annotators.map((u) => ContainerService.userIdForSync(u)),
     })
   }
@@ -455,6 +409,7 @@ export class ContainerService implements IContainerService {
       this.isWriter(container, userId) ||
       this.isViewer(container, userId) ||
       this.isEditor(container, userId) ||
+      this.isProofer(container, userId) ||
       this.isAnnotator(container, userId)
     )
   }
@@ -470,6 +425,8 @@ export class ContainerService implements IContainerService {
       return ContainerRole.Editor
     } else if (ContainerService.isAnnotator(container, userId)) {
       return ContainerRole.Annotator
+    } else if (ContainerService.isProofer(container, userId)) {
+      return ContainerRole.Proofer
     } else {
       return null
     }
@@ -483,7 +440,6 @@ export class ContainerService implements IContainerService {
     return await this.containerRepository.getContainerResources(
       containerID,
       manuscriptID,
-      options.allowOrphanedDocs,
       options.types
     )
   }
@@ -521,44 +477,6 @@ export class ContainerService implements IContainerService {
     return this.makeArchive(containerID, manuscriptID, options)
   }
 
-  public async getProject(
-    userID: string,
-    containerID: string,
-    manuscriptID: string,
-    token: string
-  ) {
-    if (!token) {
-      throw new InvalidCredentialsError('Token not supplied.')
-    }
-
-    await this.userService.authenticateUser(token)
-    const canAccess = await this.checkUserContainerAccess(userID, containerID)
-    if (!canAccess) {
-      throw new ValidationError('User must be a contributor in the container', containerID)
-    }
-
-    const projectResources = await this.containerRepository.getContainerResources(
-      containerID,
-      manuscriptID,
-      false
-    )
-
-    if (!projectResources) {
-      throw new Error('Project is empty')
-    }
-
-    return projectResources
-  }
-
-  private rewriteAttachmentFilename(originalName: string, mimeType: string, includeExt: boolean) {
-    const updatedName = originalName.replace(':', '_')
-    if (includeExt) {
-      const [, ext] = mimeType.split('/')
-      return `${updatedName}.${ext}`
-    }
-    return updatedName
-  }
-
   // check getContainerResources & getProjectAttachments for generalization
   private async makeArchive(
     containerID: string,
@@ -570,7 +488,6 @@ export class ContainerService implements IContainerService {
       projectResourcesData = await this.containerRepository.getContainerResources(
         containerID,
         manuscriptID,
-        options.allowOrphanedDocs,
         options.types
       )
     } else {
@@ -581,44 +498,16 @@ export class ContainerService implements IContainerService {
     }
 
     const index = { version: '2.0', data: projectResourcesData }
-    if (!options.getAttachments) {
-      return index
-    }
-
-    const attachments = await this.containerRepository.getContainerAttachments(
-      containerID,
-      manuscriptID
-    )
 
     const zip = new JSZip()
     zip.file('index.manuscript-json', JSON.stringify(index))
 
-    if (attachments) {
-      const data = zip.folder('Data')
-
-      for (const key of attachments.keys()) {
-        for (const attachmentID of Object.keys(attachments.get(key))) {
-          const type = attachments.get(key)[attachmentID].content_type
-
-          const attachment = await this.containerRepository.getAttachmentBody(key, attachmentID)
-
-          // in MPFigure there will be a single attachment indexed as "image"
-          // otherwise will have index corresponding to its actual filename
-          const filename =
-            attachmentID === 'image'
-              ? this.rewriteAttachmentFilename(key, type, options.includeExt)
-              : attachmentID
-
-          data.file(filename, attachment, {
-            binary: true,
-          })
-        }
-      }
+    if (options.getAttachments) {
+      return zip.generateAsync({ type: 'nodebuffer' })
+    } else {
+      // @ts-ignore
+      return zip.file('index.manuscript-json').async('nodebuffer')
     }
-
-    const archive = await zip.generateAsync({ type: 'nodebuffer' })
-
-    return archive
   }
 
   public async getAttachment(userID: string, documentID: string, attachmentID?: string) {
@@ -665,15 +554,17 @@ export class ContainerService implements IContainerService {
   }
 
   public async checkUserContainerAccess(userID: string, containerID: string): Promise<boolean> {
-    let { owners, writers, viewers, editors, annotators } = await this.getContainer(
+    // eslint-disable-next-line prefer-const
+    let { owners, writers, viewers, editors, proofers, annotators } = await this.getContainer(
       containerID,
       ContainerService.userIdForSync(userID)
     )
 
     editors = editors || []
     annotators = annotators || []
+    proofers = proofers || []
 
-    return [...owners, ...writers, ...viewers, ...editors, ...annotators].includes(
+    return [...owners, ...writers, ...viewers, ...editors, ...proofers, ...annotators].includes(
       ContainerService.userIdForSync(userID)
     )
   }
@@ -693,10 +584,13 @@ export class ContainerService implements IContainerService {
   }
 
   public async checkIfUserCanCreateNote(userID: string, containerID: string): Promise<boolean> {
-    const { owners, writers, annotators, editors } = await this.getContainer(containerID, userID)
+    const { owners, writers, proofers, annotators, editors } = await this.getContainer(containerID, userID)
     let usersWithAccess = [...owners, ...writers]
     if (annotators && annotators.length) {
       usersWithAccess = usersWithAccess.concat(annotators)
+    }
+    if (proofers && proofers.length) {
+      usersWithAccess = usersWithAccess.concat(proofers)
     }
     if (editors && editors.length) {
       usersWithAccess = usersWithAccess.concat(editors)
@@ -712,6 +606,9 @@ export class ContainerService implements IContainerService {
     }
     if (container.annotators) {
       contributors = contributors.concat(container.annotators)
+    }
+    if (container.proofers) {
+      contributors = contributors.concat(container.proofers)
     }
     const syncUserID = ContainerService.userIdForSync(userID)
 
@@ -736,7 +633,7 @@ export class ContainerService implements IContainerService {
       expiresIn: `${scopeInfo.expiry}m`,
     }
 
-    return jsonwebtoken.sign(payload, scopeInfo.secret, options as any)
+    return jwt.sign(payload, scopeInfo.secret, options as any)
   }
 
   private async notifyForAddingUser(
@@ -757,8 +654,7 @@ export class ContainerService implements IContainerService {
       addedUser,
       addingUser,
       container,
-      role,
-      this.containerType
+      role
     )
 
     await this.announceAddedContributorToOwners(addedUser, addingUser, otherOwners, container, role)
@@ -782,8 +678,7 @@ export class ContainerService implements IContainerService {
         addedUser,
         addingUser,
         container,
-        role,
-        this.containerType
+        role
       )
     }
   }
@@ -829,6 +724,14 @@ export class ContainerService implements IContainerService {
     return false
   }
 
+  public static isProofer(container: Container, userId: string): boolean {
+    const proofers = container.proofers
+    if (proofers && proofers.length) {
+      return proofers.indexOf(ContainerService.userIdForSync(userId)) > -1
+    }
+    return false
+  }
+
   public isPublic(container: Container): boolean {
     return container.viewers.indexOf('*') > -1
   }
@@ -839,7 +742,7 @@ export class ContainerService implements IContainerService {
       owners: [ownerId],
       writers: [],
       viewers: [],
-      objectType: this.containerObjectType(),
+      objectType: ObjectTypes.Project,
     }
 
     return this.containerRepository.create(newContainer, ownerId)
@@ -873,17 +776,6 @@ export class ContainerService implements IContainerService {
     return id.replace('_', '|')
   }
 
-  private containerObjectType(): ContainerObjectType {
-    switch (this.containerType) {
-      case ContainerType.project:
-        return ObjectTypes.Project
-      case ContainerType.library:
-        return ObjectTypes.Library
-      case ContainerType.libraryCollection:
-        return ObjectTypes.LibraryCollection
-    }
-  }
-
   // tslint:disable-next-line:cyclomatic-complexity
   public async createManuscript(
     userId: string,
@@ -908,13 +800,13 @@ export class ContainerService implements IContainerService {
       throw new ConflictingRecordError('Manuscript with the same id exists', manuscript)
     }
 
-    let template = templateId
+    const template = templateId
       ? await this.templateRepository.getById(templateId /*, userID*/)
       : null
     let templateFound: boolean = templateId !== undefined && template !== null
 
     if (!templateFound && templateId) {
-      templateFound = await DIContainer.sharedContainer.pressroomService.validateTemplateId(
+      templateFound = await DIContainer.sharedContainer.configService.hasDocument(
         templateId
       )
     }
@@ -972,7 +864,6 @@ export class ContainerService implements IContainerService {
             _id: `${this.manuscriptNoteRepository.objectType}:${uuid_v4()}`,
             createdAt: stamp,
             updatedAt: stamp,
-            sessionID: uuid_v4(),
             objectType: this.manuscriptNoteRepository.objectType,
             containerID: containerID,
             manuscriptID: manuscriptID,
@@ -1008,37 +899,6 @@ export class ContainerService implements IContainerService {
       throw new ProductionNotesLoadError()
     }
   }
-
-  public async updateDocumentSessionId(docId: string) {
-    const sessionID = uuid_v4()
-    await DIContainer.sharedContainer.projectRepository.patch(docId, { _id: docId, sessionID })
-  }
-
-  public async saveSnapshot(key: string, containerID: string, creator: string, name?: string) {
-    const stamp = timestamp()
-    const doc: Snapshot = {
-      _id: `MPSnapshot:${uuid_v4()}`,
-      objectType: ObjectTypes.Snapshot,
-      s3Id: key,
-      containerID,
-      creator,
-      createdAt: stamp,
-      updatedAt: stamp,
-    }
-    if (name) {
-      doc['name'] = name
-    }
-    return this.snapshotRepository.create(doc, ContainerService.userIdForSync(creator))
-  }
-
-  public async getCorrectionStatus(containerID: string, userId: string) {
-    const canAccess = await this.checkUserContainerAccess(userId, containerID)
-    if (!canAccess) {
-      throw new ValidationError('User must be a contributor in the container', containerID)
-    }
-    return this.correctionRepository.getCorrectionStatus(containerID)
-  }
-
   public async getCollaborators(containerID: string, userId: string) {
     const canAccess = await this.checkUserContainerAccess(userId, containerID)
     if (!canAccess) {
@@ -1047,13 +907,12 @@ export class ContainerService implements IContainerService {
     return this.userService.getCollaborators(containerID)
   }
 
-  public async bulkInsert(docs: Model[], containerID: string, manuscriptID: string) {
-    const sessionID = uuid_v4()
+  public async processManuscriptModels(docs: Model[], containerID: string, manuscriptID: string) {
     const createdAt = Math.round(Date.now() / 1000)
+
     const projectDocs = docs.map((doc) => {
       const updatedDoc = {
         ...doc,
-        sessionID,
         createdAt,
         updatedAt: createdAt,
         containerID,
@@ -1063,8 +922,14 @@ export class ContainerService implements IContainerService {
         updatedDoc.manuscriptID = manuscriptID
       }
 
+      const errorMessage = validate(updatedDoc)
+      if (errorMessage) {
+        throw new SyncError(errorMessage, updatedDoc)
+      }
+
       return updatedDoc
     })
-    return DIContainer.sharedContainer.projectRepository.bulkInsert(projectDocs)
+
+    return projectDocs
   }
 }

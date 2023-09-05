@@ -15,21 +15,20 @@
  */
 
 import { Request } from 'express'
-import { isString } from '../../../util'
 
-import { IInvitationController } from './IInvitationController'
-import { ValidationError } from '../../../Errors'
 import { DIContainer } from '../../../DIContainer/DIContainer'
 import { AuthService } from '../../../DomainServices/Auth/AuthService'
+import { ValidationError } from '../../../Errors'
 import {
-  ContainerRole,
   ContainerInvitationResponse,
+  ContainerRole,
   ContainerType,
 } from '../../../Models/ContainerModels'
-import { InvitationToken, ensureValidUser } from '../../../Models/UserModels'
+import { ensureValidUser, InvitationToken } from '../../../Models/UserModels'
+import { isString } from '../../../util'
 import { ContainedBaseController } from '../../ContainedBaseController'
 
-export class InvitationController extends ContainedBaseController implements IInvitationController {
+export class InvitationController extends ContainedBaseController {
   async invite(req: Request): Promise<void> {
     const { invitedUsersEmails, message } = req.body
     const user = req.user

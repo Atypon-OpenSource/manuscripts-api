@@ -16,65 +16,59 @@
 
 import '../../../../../utilities/dbMock'
 
-import { ValidationError } from '../../../../../../src/Errors'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
+import { ValidationError } from '../../../../../../src/Errors'
 import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
 
 jest.setTimeout(TEST_TIMEOUT)
 
 beforeEach(() => {
-  (DIContainer as any)._sharedContainer = null
+  ;(DIContainer as any)._sharedContainer = null
   return DIContainer.init()
 })
 
 describe('Invitation - Reject', () => {
   test('should reject invitation successfully', async () => {
-    const invitationService: any =
-      DIContainer.sharedContainer.invitationService
+    const invitationService: any = DIContainer.sharedContainer.invitationService
     invitationService.invitationRepository = {
       getById: async () => Promise.resolve({ invitedUserId: 'foo' }),
-      remove: jest.fn(() => Promise.resolve())
+      remove: jest.fn(() => Promise.resolve()),
     }
 
     await invitationService.reject('bar')
-    expect(invitationService.invitationRepository.remove).toBeCalled()
+    expect(invitationService.invitationRepository.remove).toHaveBeenCalled()
   })
 
   test('should fail if invitation does not exist', () => {
-    const invitationService: any =
-      DIContainer.sharedContainer.invitationService
+    const invitationService: any = DIContainer.sharedContainer.invitationService
     invitationService.invitationRepository = {
-      getById: async () => Promise.resolve(null)
+      getById: async () => Promise.resolve(null),
     }
 
-    return expect(
-      invitationService.reject('foo', [], null)
-    ).rejects.toThrowError(ValidationError)
+    return expect(invitationService.reject('foo', [], null)).rejects.toThrow(ValidationError)
   })
 })
 
 describe('Invitation - rejectContainerInvite', () => {
   test('should reject invitation successfully', async () => {
-    const containerInvitationService: any =
-      DIContainer.sharedContainer.containerInvitationService
+    const containerInvitationService: any = DIContainer.sharedContainer.containerInvitationService
     containerInvitationService.containerInvitationRepository = {
       getById: async () => Promise.resolve({ invitedUserId: 'foo' }),
-      remove: jest.fn(() => Promise.resolve())
+      remove: jest.fn(() => Promise.resolve()),
     }
 
     await containerInvitationService.rejectContainerInvite('bar')
-    expect(containerInvitationService.containerInvitationRepository.remove).toBeCalled()
+    expect(containerInvitationService.containerInvitationRepository.remove).toHaveBeenCalled()
   })
 
   test('should fail if invitation does not exist', () => {
-    const containerInvitationService: any =
-      DIContainer.sharedContainer.containerInvitationService
+    const containerInvitationService: any = DIContainer.sharedContainer.containerInvitationService
     containerInvitationService.containerInvitationRepository = {
-      getById: async () => Promise.resolve(null)
+      getById: async () => Promise.resolve(null),
     }
 
     return expect(
       containerInvitationService.rejectContainerInvite('foo', [], null)
-    ).rejects.toThrowError(ValidationError)
+    ).rejects.toThrow(ValidationError)
   })
 })

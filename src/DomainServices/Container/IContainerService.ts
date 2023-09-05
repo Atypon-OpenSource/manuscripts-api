@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-import { ContainerRole, Container } from '../../Models/ContainerModels'
+import { Manuscript, ManuscriptNote, Model } from '@manuscripts/json-schema'
+
+import { Container, ContainerRole } from '../../Models/ContainerModels'
 import { User } from '../../Models/UserModels'
-import { Manuscript, ManuscriptNote, Model, Snapshot } from '@manuscripts/manuscripts-json-schema'
 
 export interface ArchiveOptions {
   getAttachments?: boolean
   onlyIDs?: boolean
-  allowOrphanedDocs?: boolean
   includeExt: boolean | true
   types?: string[]
 }
@@ -88,8 +88,8 @@ export interface IContainerService {
     containerID: string,
     manuscriptID: string | null,
     token: string | null,
-    options: { getAttachments: boolean; onlyIDs: boolean; includeExt: boolean }
-  ): Promise<Blob>
+    options: ArchiveOptions
+  ): Promise<Buffer>
 
   loadProject(
     containerID: string,
@@ -151,20 +151,11 @@ export interface IContainerService {
     manuscriptID: string,
     userID: string
   ): Promise<ManuscriptNote[]>
-
   /**
-   * Updates the document (project) sessionID
-   * @param docId the document/project ID
-   */
-  updateDocumentSessionId(docId: string): void
-
-  saveSnapshot(key: string, containerId: string, creator: string, name?: string): Promise<Snapshot>
-
-  /**
-   * Submit list of docs to the database
-   * Adding sessionID, createdAt, updatedAt attributes
+   * Adds createdAt, updatedAt, containerID, manuscriptID attributes
+   * validates against schema
    * @param docs list of Models
-   * @return an object with the number of docs inserted.
+   * @return an array with validated objects
    */
-  bulkInsert(docs: Model[], containerID: string, manuscriptID: string): Promise<any>
+  processManuscriptModels(docs: Model[], containerID: string, manuscriptID: string): Promise<any>
 }

@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { IndexedRepository } from './IndexedRepository'
 import { UserToken } from '../../Models/UserModels'
+import { IndexedRepository } from './IndexedRepository'
 import { UserTokenQueryCriteria } from './QueryCriteria'
 
 /**

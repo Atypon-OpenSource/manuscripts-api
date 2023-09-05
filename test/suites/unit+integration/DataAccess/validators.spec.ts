@@ -15,15 +15,15 @@
  */
 
 import {
-  required,
-  validEmail,
-  maxLength,
-  plainObject,
+  arrayValuedObject,
   date,
-  stringValuedObject,
-  stringValuedNestedObject,
+  maxLength,
   objectValuedObject,
-  arrayValuedObject
+  plainObject,
+  required,
+  stringValuedNestedObject,
+  stringValuedObject,
+  validEmail,
 } from '../../../../src/DataAccess/validators'
 import { ValidationError } from '../../../../src/Errors'
 import { TEST_TIMEOUT } from '../../../utilities/testSetup'
@@ -46,19 +46,19 @@ describe('validators', () => {
   test('required() should fail if value is empty', () => {
     expect(() => {
       required('', 'field name')
-    }).toThrowError(ValidationError)
+    }).toThrow(ValidationError)
   })
 
   test('required() should fail if value is whitespace alone', () => {
     expect(() => {
       required('  ', 'field name')
-    }).toThrowError(ValidationError)
+    }).toThrow(ValidationError)
   })
 
   test('validEmail() should fail if email is in invalid format', () => {
     expect(() => {
       validEmail('example@example', 'field name')
-    }).toThrowError(ValidationError)
+    }).toThrow(ValidationError)
   })
 
   test('validEmail() should pass if email is valid', () => {
@@ -76,13 +76,13 @@ describe('validators', () => {
   test('maxLength() should fail if string length > 30', () => {
     expect(() => {
       maxLength('example-example-example-example-', 30, 'field name')
-    }).toThrowError(ValidationError)
+    }).toThrow(ValidationError)
   })
 
   test('date() should fail if date is not valid', () => {
     expect(() => {
       date(new Date(13123165465413123), 'field name')
-    }).toThrowError(ValidationError)
+    }).toThrow(ValidationError)
   })
 
   test('date() should succeed if date is valid', () => {
@@ -104,43 +104,37 @@ describe('validators', () => {
   test('stringValuedObject() should fail if object contains non string value', () => {
     expect(() => {
       stringValuedObject({ foo: 'potato', bar: 1 }, 'field name')
-    }).toThrowError(ValidationError)
+    }).toThrow(ValidationError)
   })
 
   test('stringValuedObject() should fail if object is null', () => {
     expect(() => {
       stringValuedObject(null as any, 'field name')
-    }).toThrowError(ValidationError)
+    }).toThrow(ValidationError)
   })
 
   test('stringValuedNestedObject() should succeed if object is valid', () => {
     expect(() => {
-      stringValuedNestedObject(
-        { google: { foo: 'potato', bar: 'carrot' } },
-        'field name'
-      )
+      stringValuedNestedObject({ google: { foo: 'potato', bar: 'carrot' } }, 'field name')
     }).not.toThrow()
   })
 
   test('stringValuedNestedObject() should fail if object contains non-string values', () => {
     expect(() => {
-      stringValuedNestedObject(
-        { google: { foo: 'potato', bar: 1 } },
-        'field name'
-      )
-    }).toThrowError(ValidationError)
+      stringValuedNestedObject({ google: { foo: 'potato', bar: 1 } }, 'field name')
+    }).toThrow(ValidationError)
   })
 
   test('stringValuedNestedObject() should fail if object is null', () => {
     expect(() => {
       stringValuedNestedObject(null as any, 'field name')
-    }).toThrowError(ValidationError)
+    }).toThrow(ValidationError)
   })
 
   test('plainObject should fail if the value not an object', () => {
     expect(() => {
       plainObject('string' as any, 'fieldName')
-    }).toThrowError(ValidationError)
+    }).toThrow(ValidationError)
   })
 
   test('plainObject should not fail', () => {
@@ -158,13 +152,13 @@ describe('validators', () => {
   test('objectValuedObject should fail', () => {
     expect(() => {
       objectValuedObject({ value: 'xyz' }, 'fieldName')
-    }).toThrowError(ValidationError)
+    }).toThrow(ValidationError)
   })
 
   test('arrayValuedObject should fail', () => {
     expect(() => {
       arrayValuedObject({ anotherObject: 'xyz' }, 'fieldName')
-    }).toThrowError(ValidationError)
+    }).toThrow(ValidationError)
   })
 
   test('arrayValuedObject should not fail', () => {

@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-import * as _ from 'lodash'
+import { ObjectTypes } from '@manuscripts/json-schema'
 import checksum from 'checksum'
-import { ObjectTypes } from '@manuscripts/manuscripts-json-schema'
+import * as _ from 'lodash'
 
-import { IContainerRequestService } from './IContainerRequestService'
-import { ContainerRole } from '../../Models/ContainerModels'
-import { ValidationError, UserRoleError, RoleDoesNotPermitOperationError } from '../../Errors'
-import { User } from '../../Models/UserModels'
 import { ContainerRequestRepository } from '../../DataAccess/ContainerRequestRepository/ContainerRequestRepository'
-import { IContainerService } from '../Container/IContainerService'
-import { UserProfileRepository } from '../../DataAccess/UserProfileRepository/UserProfileRepository'
-import { UserService } from '../User/UserService'
-import { EmailService } from '../Email/EmailService'
 import { IUserRepository } from '../../DataAccess/Interfaces/IUserRepository'
 import { ContainerRequestLike } from '../../DataAccess/Interfaces/Models'
+import { UserProfileRepository } from '../../DataAccess/UserProfileRepository/UserProfileRepository'
+import { RoleDoesNotPermitOperationError, UserRoleError, ValidationError } from '../../Errors'
+import { ContainerRole } from '../../Models/ContainerModels'
+import { User } from '../../Models/UserModels'
 import { ContainerService } from '../Container/ContainerService'
+import { IContainerService } from '../Container/IContainerService'
+import { EmailService } from '../Email/EmailService'
+import { UserService } from '../User/UserService'
+import { IContainerRequestService } from './IContainerRequestService'
 
 export class ContainerRequestService implements IContainerRequestService {
   constructor(
@@ -37,8 +37,6 @@ export class ContainerRequestService implements IContainerRequestService {
     private userProfileRepository: UserProfileRepository,
     private userRepository: IUserRepository,
     private projectService: IContainerService,
-    private libraryService: IContainerService,
-    private libraryCollectionService: IContainerService,
     private emailService: EmailService
   ) {}
 
@@ -158,14 +156,6 @@ export class ContainerRequestService implements IContainerRequestService {
   private containerService(containerID: string) {
     if (containerID.startsWith('MPProject')) {
       return this.projectService
-    }
-
-    if (containerID.startsWith('MPLibrary')) {
-      return this.libraryService
-    }
-
-    if (containerID.startsWith('MPLibraryCollection')) {
-      return this.libraryCollectionService
     }
 
     throw new ValidationError('Invalid container id.', containerID)

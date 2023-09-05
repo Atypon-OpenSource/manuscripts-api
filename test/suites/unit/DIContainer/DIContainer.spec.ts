@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-import { ProjectRepository } from '../../../../src/DataAccess/ProjectRepository/ProjectRepository'
 import { BucketKey } from '../../../../src/Config/ConfigurationTypes'
-import { UserRepository } from '../../../../src/DataAccess/UserRepository/UserRepository'
-import { SQLRepository } from '../../../../src/DataAccess/SQLRepository'
+import { ProjectRepository } from '../../../../src/DataAccess/ProjectRepository/ProjectRepository'
 import { SGRepository } from '../../../../src/DataAccess/SGRepository'
-import { MemorizingRepository } from '../../../../src/DataAccess/MemorizingRepository/MemorizingRepository'
+import { SQLRepository } from '../../../../src/DataAccess/SQLRepository'
+import { UserRepository } from '../../../../src/DataAccess/UserRepository/UserRepository'
 
 const { DIContainer } = require('../../../../src/DIContainer/DIContainer')
 
@@ -42,7 +41,7 @@ describe('DIContainer', () => {
     const sgRepo = new ProjectRepository(BucketKey.Project, db)
     const cbRepo = new UserRepository(db)
     DIContainer._sharedContainer = {
-      bucketForKey: (key: BucketKey) => ({ bucketName: key })
+      bucketForKey: (key: BucketKey) => ({ bucketName: key }),
     }
 
     expect(DIContainer.isSGRepositoryLike(sgRepo)).toBeTruthy()
@@ -56,10 +55,7 @@ describe('DIContainer', () => {
     DIContainer._sharedContainer = container
     expect(
       container.repositories.every(
-        (x: any) =>
-          x instanceof SQLRepository ||
-          x instanceof SGRepository ||
-          x instanceof MemorizingRepository
+        (x: any) => x instanceof SQLRepository || x instanceof SGRepository
       )
     ).toBeTruthy()
   })
@@ -67,19 +63,15 @@ describe('DIContainer', () => {
   test('bucketForKey', () => {
     const userDB: any = {
       bucketKey: BucketKey.User,
-      documentMapper: { model: () => ({}) }
+      documentMapper: { model: () => ({}) },
     }
     const dataDB: any = {
       bucketKey: BucketKey.Project,
-      documentMapper: { model: () => ({}) }
+      documentMapper: { model: () => ({}) },
     }
 
     const container = new DIContainer(userDB, dataDB, false, null)
-    expect(container.bucketForKey(BucketKey.User).bucketKey).toEqual(
-      BucketKey.User
-    )
-    expect(container.bucketForKey(BucketKey.Project).bucketKey).toEqual(
-      BucketKey.Project
-    )
+    expect(container.bucketForKey(BucketKey.User).bucketKey).toEqual(BucketKey.User)
+    expect(container.bucketForKey(BucketKey.Project).bucketKey).toEqual(BucketKey.Project)
   })
 })

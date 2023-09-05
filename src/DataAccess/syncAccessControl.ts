@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-import prisma from './prismaClient'
-import { Container } from '../Models/ContainerModels'
+import { validate } from '@manuscripts/json-schema'
+import deepEqual from 'deep-equal'
 
-const { equal, validate } = require('./jsonSchemaValidator')
+import { Container } from '../Models/ContainerModels'
+import prisma from './prismaClient'
 
 enum AccessType {
   Read = 'read',
@@ -41,7 +42,7 @@ async function getContainer(id: string): Promise<Container | undefined> {
 }
 
 function requireUser(users: string[], userId: string | undefined): void {
-  let found = users.find((i) => i === userId)
+  const found = users.find((i) => i === userId)
   if (!found) {
     throw { forbidden: 'user does not have access' }
   }
@@ -62,11 +63,12 @@ async function proceedWithAccess(doc: any, userId: string | undefined, accessTyp
   const writers = container.writers
   const viewers = container.viewers || []
   const annotators = container.annotators || []
+  const proofers = container.proofers || []
   const editors = container.editors || []
 
   switch (accessType) {
     case AccessType.Read: {
-      const readUserIds = [].concat(owners, writers, viewers, annotators, editors)
+      const readUserIds = [].concat(owners, writers, viewers, annotators, proofers, editors)
       requireUser(readUserIds, userId)
       break
     }
@@ -86,7 +88,7 @@ async function proceedWithAccess(doc: any, userId: string | undefined, accessTyp
       break
     }
     case AccessType.Contribute: {
-      const contributeUserIds = [].concat(owners, writers, editors, annotators)
+      const contributeUserIds = [].concat(owners, writers, editors, proofers, annotators)
       requireUser(contributeUserIds, userId)
       break
     }
@@ -116,12 +118,6 @@ export async function proceedWithContributeAccess(doc: any, userId: string | und
 }
 
 export async function syncAccessControl(doc: any, oldDoc: any, userId?: string): Promise<void> {
-  let errorMessage
-
-  if (oldDoc && oldDoc._deleted && doc._deleted) {
-    throw { forbidden: 'deleted document cannot be mutated' }
-  }
-
   if (!doc._id) {
     throw { forbidden: 'missing _id' }
   }
@@ -130,33 +126,22 @@ export async function syncAccessControl(doc: any, oldDoc: any, userId?: string):
     throw { forbidden: '_id must have objectType as prefix' }
   }
 
-  let isAllowedToUndelete = !!doc.containerID
+  // check that the update isn't mutating objectType
+  if (oldDoc && oldDoc.objectType !== doc.objectType) {
+    // prettier-ignore
+    throw({ forbidden: 'objectType cannot be mutated' });
+  }
 
-  if (oldDoc && oldDoc._deleted && !isAllowedToUndelete) {
-    errorMessage = validate(doc)
+  if (oldDoc && oldDoc.containerID !== doc.containerID) {
+    // prettier-ignore
+    throw({ forbidden: 'containerID cannot be mutated' });
+  }
 
-    if (errorMessage) {
-      // prettier-ignore
-      throw({ forbidden: errorMessage });
-    }
-  } else if (!doc._deleted || isAllowedToUndelete) {
-    // check that the update isn't mutating objectType
-    if (oldDoc && oldDoc.objectType !== doc.objectType) {
-      // prettier-ignore
-      throw({ forbidden: 'objectType cannot be mutated' });
-    }
+  const errorMessage = validate(doc)
 
-    if (oldDoc && oldDoc.containerID !== doc.containerID) {
-      // prettier-ignore
-      throw({ forbidden: 'containerID cannot be mutated' });
-    }
-
-    errorMessage = validate(doc)
-
-    if (errorMessage) {
-      // prettier-ignore
-      throw({ forbidden: errorMessage });
-    }
+  if (errorMessage) {
+    // prettier-ignore
+    throw({ forbidden: errorMessage });
   }
 
   function objectTypeMatches(arg: string) {
@@ -180,80 +165,63 @@ export async function syncAccessControl(doc: any, oldDoc: any, userId?: string):
     }*/
 
     if (key) {
-      let objA = doc[key]
-      let objB = oldDoc[key]
-      return !equal(objA, objB)
+      const objA = doc[key]
+      const objB = oldDoc[key]
+      return !deepEqual(objA, objB)
     }
 
-    return !equal(doc, oldDoc)
+    return !deepEqual(doc, oldDoc)
   }
 
-  if (
-    objectTypeMatches('MPProject') ||
-    objectTypeMatches('MPLibraryCollection') ||
-    objectTypeMatches('MPLibrary')
-  ) {
-    let owners, writers, viewers, annotators, editors
-
+  if (objectTypeMatches('MPProject')) {
     if (doc.owners.length === 0) {
       // prettier-ignore
       throw({ forbidden: 'owners cannot be set/updated to be empty' });
     }
 
-    owners = doc.owners
-    writers = doc.writers
-    viewers = doc.viewers || []
-    annotators = doc.annotators || []
-    editors = doc.editors || []
+    const owners = doc.owners
+    const writers = doc.writers
+    const viewers = doc.viewers || []
+    const annotators = doc.annotators || []
+    const proofers = doc.proofer || []
+    const editors = doc.editors || []
 
-    let allUserIds = [].concat(owners, writers, viewers, annotators, editors)
+    const allUserIds = [].concat(owners, writers, viewers, proofers, annotators, editors)
 
-    if (!doc._deleted) {
-      // if there have been changes, we need to be ensure we are the owner
-      if (
-        hasMutated('owners') ||
-        hasMutated('writers') ||
-        hasMutated('viewers') ||
-        hasMutated('annotators') ||
-        hasMutated('editors')
-      ) {
-        requireUser(owners, userId)
+    // if there have been changes, we need to be ensure we are the owner
+    if (
+      hasMutated('owners') ||
+      hasMutated('writers') ||
+      hasMutated('viewers') ||
+      hasMutated('annotators') ||
+      hasMutated('proofers') ||
+      hasMutated('editors')
+    ) {
+      requireUser(owners, userId)
+    }
+
+    // only do this for non-deleted items for perf.
+    const userIds: any = {}
+    for (let i = 0; i < allUserIds.length; i++) {
+      if (allUserIds[i] in userIds) {
+        // prettier-ignore
+        throw({ forbidden: 'duplicate userId:' + allUserIds[i] });
       }
-
-      if (
-        (objectTypeMatches('MPLibraryCollection') || objectTypeMatches('MPLibrary')) &&
-        hasMutated('category')
-      ) {
-        throw { forbidden: 'category cannot be mutated' }
-      }
-
-      // only do this for non-deleted items for perf.
-      let userIds: any = {}
-      for (let i = 0; i < allUserIds.length; i++) {
-        if (allUserIds[i] in userIds) {
-          // prettier-ignore
-          throw({ forbidden: 'duplicate userId:' + allUserIds[i] });
-        }
-        userIds[allUserIds[i]] = true
-      }
+      userIds[allUserIds[i]] = true
     }
 
     if (oldDoc) {
       await proceedWithWriteAccess(oldDoc, userId)
     } else {
-      if (objectTypeMatches('MPLibraryCollection')) {
-        requireUser([].concat(owners, writers), userId)
-      } else {
-        requireUser(owners, userId)
-      }
+      requireUser(owners, userId)
     }
   } else if (
     objectTypeMatches('MPCollaboration') ||
     objectTypeMatches('MPInvitation') ||
     objectTypeMatches('MPContainerInvitation')
   ) {
-    let isCollaboration = objectTypeMatches('MPCollaboration')
-    let invitingUserID = doc.invitingUserID || (oldDoc && oldDoc.invitingUserID)
+    const isCollaboration = objectTypeMatches('MPCollaboration')
+    const invitingUserID = doc.invitingUserID || (oldDoc && oldDoc.invitingUserID)
 
     if (isCollaboration) {
       if (hasMutated(undefined)) {
@@ -263,22 +231,15 @@ export async function syncAccessControl(doc: any, oldDoc: any, userId?: string):
       requireUser([invitingUserID], userId)
     }
   } else if (objectTypeMatches('MPPreferences')) {
-    let username = doc._id.replace(/^MPPreferences:/, '')
+    const username = doc._id.replace(/^MPPreferences:/, '')
     requireUser([username], userId)
   } else if (objectTypeMatches('MPMutedCitationAlert')) {
-    let userID = doc.userID
+    const userID = doc.userID
     requireUser([userID], userId)
   } else if (objectTypeMatches('MPCitationAlert')) {
     if (hasMutated('isRead')) {
-      let userID = doc.userID
+      const userID = doc.userID
       requireUser([userID], userId)
-    }
-  } else if (objectTypeMatches('MPBibliographyItem')) {
-    if (doc.keywordIDs) {
-      for (let i = 0; i < doc.keywordIDs.length; i++) {
-        let keywordID = doc.keywordIDs[i]
-        await proceedWithRejectAccess(keywordID, userId)
-      }
     }
   } else if (
     objectTypeMatches('MPCorrection') ||
@@ -296,17 +257,17 @@ export async function syncAccessControl(doc: any, oldDoc: any, userId?: string):
         throw { forbidden: 'contributions cannot be mutated' }
       }
 
-      let isApprovingCorrections = !!(
+      const isApprovingCorrections = !!(
         objectTypeMatches('MPCorrection') &&
         oldDoc &&
         hasMutated('status')
       )
-      let isResolvingComments = !!(
+      const isResolvingComments = !!(
         (objectTypeMatches('MPCommentAnnotation') || objectTypeMatches('MPManuscriptNote')) &&
         oldDoc &&
         hasMutated('resolved')
       )
-      let isRejecting =
+      const isRejecting =
         (isApprovingCorrections && doc.status && doc.status.label === 'rejected') ||
         (isResolvingComments && doc.resolved === false)
 
@@ -335,7 +296,7 @@ export async function syncAccessControl(doc: any, oldDoc: any, userId?: string):
     }
   }
 
-  let containerId = doc.containerID
+  const containerId = doc.containerID
 
   if (
     containerId &&

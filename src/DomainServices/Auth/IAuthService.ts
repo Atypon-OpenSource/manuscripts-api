@@ -14,16 +14,7 @@
  * limitations under the License.
  */
 
-import {
-  AuthorizedUser,
-  Credentials,
-  ResetPasswordCredentials,
-  ChangePasswordCredentials,
-  ServerToServerAuthCredentials,
-} from '../../Models/UserModels'
-import { IAMAuthTokenPayload } from '../../Utilities/JWT/IAMAuthTokenPayload'
-import { IAMState } from '../../Auth/Interfaces/IAMState'
-import { IAMStartData } from '../../Models/IAMModels'
+import { AuthorizedUser, Credentials, ServerToServerAuthCredentials } from '../../Models/UserModels'
 
 export interface ResetPasswordOptions {
   /**
@@ -42,64 +33,8 @@ export interface IAuthService {
    * @param credentials User's login credentials.
    */
   login(credentials: Credentials): Promise<AuthorizedUser>
-
-  /**
-   * Authenticate an admin user login.
-   */
-  serverToServerAuth(credentials: ServerToServerAuthCredentials): Promise<AuthorizedUser>
-
   /**
    * Create token on behalf of user.
    */
   serverToServerTokenAuth(credentials: ServerToServerAuthCredentials): Promise<AuthorizedUser>
-  /**
-   * Returns url to initiate IAM OAuth flow
-   * @param state represents value of "state" passed to IAM
-   */
-  iamOAuthStartData(state: IAMState, action?: string): Promise<IAMStartData>
-
-  /**
-   * Constructs url where user should be redirected back, when there is an error
-   * in IAM OAuth flow.
-   * @returns {string} URL where user should be redirected back, in case of error
-   */
-  iamOAuthErrorURL(errorDescription: string, serverUrl: string): string
-
-  /**
-   * Handles IAM callback after user registration/login
-   */
-  iamOAuthCallback(iamOauthToken: IAMAuthTokenPayload, state: IAMState): Promise<AuthorizedUser>
-
-  /**
-   * Decodes the "state" param returned by IAM and returns the {@link IAMState} object representing the found data
-   * @param stateParam
-   */
-  decodeIAMState(stateParam: string): IAMState
-
-  /**
-   * Sends email to reset password.
-   */
-  sendPasswordResetInstructions(email: string): Promise<void>
-
-  /**
-   * Resets the user password and log the user in.
-   */
-  resetPassword(resetPasswordCredentials: ResetPasswordCredentials): Promise<AuthorizedUser>
-
-  /**
-   * Ends user's session if exists.
-   * @param token User's token.
-   */
-  logout(token: string): Promise<void>
-
-  /**
-   *  Ends user's session if exists.
-   * @param iamSessionID Connect session ID for the user.
-   */
-  backchannelLogout(iamSessionID: string): Promise<void>
-
-  /**
-   * Change the user password and delete sync sessions, token for all the other devices.
-   */
-  changePassword(credentials: ChangePasswordCredentials): Promise<void>
 }

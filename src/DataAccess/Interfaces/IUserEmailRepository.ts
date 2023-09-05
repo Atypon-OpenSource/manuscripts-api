@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-import { IndexedRepository } from './IndexedRepository'
 import { UserEmail } from '../../Models/UserModels'
+import { IndexedRepository } from './IndexedRepository'
 
 /**
  * Manages user token persistent storage operations.
  */
+// eslint-disable-next-line @typescript-eslint/ban-types
 export type IUserEmailRepository = IndexedRepository<UserEmail, UserEmail, {}, {}>

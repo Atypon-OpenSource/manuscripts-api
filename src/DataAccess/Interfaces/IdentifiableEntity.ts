@@ -22,7 +22,5 @@ export interface IdentifiableEntity {
   _id: string
   _type: string
   expiry: number
-  _rev: string
   _depth: number
-  _revisions: any
 }

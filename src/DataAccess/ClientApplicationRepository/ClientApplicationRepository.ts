@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-import { SQLRepository } from '../SQLRepository'
-import { IClientApplicationRepository } from '../Interfaces/IClientApplicationRepository'
+//import { log } from '../../Utilities/Logger'
+import { Prisma } from '@prisma/client'
+import { isString } from 'lodash'
+
+import { DatabaseError, ValidationError } from '../../Errors'
 import {
   ClientApplication,
   ClientApplicationQueryCriteria,
 } from '../../Models/ClientApplicationModels'
-
-import { required, maxLength } from '../validators'
-import { DatabaseError, ValidationError } from '../../Errors'
+import { IClientApplicationRepository } from '../Interfaces/IClientApplicationRepository'
 import { ensureValidDocumentType } from '../Interfaces/IndexedRepository'
-import { isString } from 'lodash'
-//import { log } from '../../Utilities/Logger'
-import { Prisma } from '@prisma/client'
+import { SQLRepository } from '../SQLRepository'
+import { maxLength, required } from '../validators'
 
 /**
  * Manages application persistent storage operations.
@@ -99,6 +99,7 @@ export class ClientApplicationRepository
           if (!isString(id)) {
             return reject(new ValidationError('Application record lacks _id', app))
           }
+          // eslint-disable-next-line promise/catch-or-return
           this.database.bucket
             .upsert(id, this.buildPrismaModel(app))
             .catch((error: Prisma.PrismaClientKnownRequestError) =>

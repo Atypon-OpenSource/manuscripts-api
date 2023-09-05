@@ -14,31 +14,18 @@
  * limitations under the License.
  */
 
-const expressJoiMiddleware = require('express-joi-middleware')
+import { celebrate } from 'celebrate'
 import { NextFunction, Request, Response, Router } from 'express'
-import * as HttpStatus from 'http-status-codes'
-import { stringify } from 'querystring'
-import { removeEmptyValuesFromObj } from '../../../util'
+import { StatusCodes } from 'http-status-codes'
 
+import { AuthStrategy } from '../../../Auth/Passport/AuthStrategy'
 import { BaseRoute } from '../../BaseRoute'
+import { AuthController } from './AuthController'
 import {
-  credentialsSchema,
-  forgotPasswordSchema,
-  resetPasswordSchema,
-  changePasswordSchema,
-  iamOAuthCallbackSchema,
-  iamOAuthStartSchema,
-  backchannelLogoutSchema,
-  serverToServerAuthSchema,
   authorizationTokenSchema,
+  credentialsSchema,
   serverToServerTokenAuthSchema,
 } from './AuthSchema'
-import { AuthController } from './AuthController'
-import { AuthStrategy } from '../../../Auth/Passport/AuthStrategy'
-import { COOKIE_EXPIRY_IN_MS } from '../../../DomainServices/Sync/SyncService'
-import { config } from '../../../Config/Config'
-import { DIContainer } from '../../../DIContainer/DIContainer'
-import { URL } from 'url'
 
 export class AuthRoute extends BaseRoute {
   private authController = new AuthController()
@@ -55,225 +42,27 @@ export class AuthRoute extends BaseRoute {
   public create(router: Router): void {
     router.post(
       `${this.basePath}/login`,
-      expressJoiMiddleware(credentialsSchema, {}),
+      celebrate(credentialsSchema, {}),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.applicationValidation(),
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
-          const {
-            token,
-            // syncSessions,
-            user,
-          } = await this.authController.login(req)
-
-          // this.setSyncCookies(syncSessions, res)
-
-          res
-            .status(HttpStatus.OK)
-            .json({ token, recover: user.deleteAt ? true : false })
-            .end()
-        }, next)
-      }
-    )
-
-    // Deprecated, Use: /auth/token/:connectUserID
-    router.post(
-      `${this.basePath}/admin`,
-      expressJoiMiddleware(serverToServerAuthSchema, {}),
-      AuthStrategy.JsonHeadersValidation,
-      AuthStrategy.verifyAdminToken,
-      AuthStrategy.applicationValidation(),
-      (req: Request, res: Response, next: NextFunction) => {
-        return this.runWithErrorHandling(async () => {
-          const {
-            token,
-            // syncSessions
-          } = await this.authController.serverToServerAuth(req)
-
-          // this.setSyncCookies(syncSessions, res)
-
-          res.status(HttpStatus.OK).json({ token }).end()
+          const { token, user } = await this.authController.login(req)
+          res.status(StatusCodes.OK).json({ token, recover: !!user.deleteAt }).end()
         }, next)
       }
     )
 
     router.post(
       `${this.basePath}/token/:connectUserID`,
-      expressJoiMiddleware(serverToServerTokenAuthSchema, {}),
+      celebrate(serverToServerTokenAuthSchema, {}),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.applicationValidation(),
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           const { token } = await this.authController.serverToServerTokenAuth(req)
 
-          res.status(HttpStatus.OK).json({ token }).end()
-        }, next)
-      }
-    )
-
-    // Endpoint to initiate IAM login/registration flow
-    // TODO: check for existence of "deviceId" before redirecting the user to IAM Outh flow
-    router.get(
-      `${this.basePath}/iam`,
-      expressJoiMiddleware(iamOAuthStartSchema, {}),
-      AuthStrategy.applicationValidation(),
-      (req: Request, res: Response, next: NextFunction) => {
-        return this.runWithErrorHandling(async () => {
-          const { redirectUri, deviceId, theme, action } = req.query
-          const redirectBaseUri = req.get('referer') || null
-          // Redirect user to IAM OAuth start endpoint
-          const { url, nonce } = await DIContainer.sharedContainer.authService.iamOAuthStartData(
-            {
-              deviceId,
-              redirectUri,
-              theme,
-              redirectBaseUri,
-            } as any,
-            action as any
-          )
-
-          this.setNonceCookie(nonce, res, redirectBaseUri)
-
-          res.redirect(url)
-        }, next)
-      }
-    )
-
-    function getPermittedUrlFromReferer(referer?: string | null): string {
-      let url = config.IAM.libraryURL
-      if (referer) {
-        const refererHost = new URL(referer).host
-        for (const permittedUrl of config.IAM.authServerPermittedURLs) {
-          const permittedHost = new URL(permittedUrl).host
-          if (permittedHost === refererHost) {
-            url = permittedUrl
-          }
-        }
-      }
-      return url
-    }
-
-    // IAM callback endpoint where user gets redirected to by IAM server, after user login/registration
-    router.get(
-      `${this.basePath}/iam/callback`,
-      expressJoiMiddleware(iamOAuthCallbackSchema, {}),
-      AuthStrategy.verifyIAMToken,
-      (req: Request, res: Response, next: NextFunction) => {
-        return this.runWithErrorHandling(async () => {
-          const state = DIContainer.sharedContainer.authService.decodeIAMState(
-            req.query.state as any
-          )
-          const serverUrl = getPermittedUrlFromReferer(state.redirectBaseUri)
-          this.clearNonceCookie(res, serverUrl)
-          if (req.query.error) {
-            const errorDescription = req.query.error_description
-            res.redirect(
-              DIContainer.sharedContainer.authService.iamOAuthErrorURL(
-                errorDescription as any,
-                serverUrl
-              )
-            )
-          } else {
-            const params = removeEmptyValuesFromObj({
-              redirectUri: state.redirectUri,
-              theme: state.theme,
-            })
-            try {
-              const { token, /*syncSessions,*/ user } = await this.authController.iamOAuthCallback(
-                req,
-                state
-              )
-
-              if (!user) {
-                res.redirect(`${serverUrl}/login#${stringify({ error: 'user-not-found' })}`)
-              } else {
-                // this.setSyncCookies(syncSessions, res, serverUrl)
-                res.redirect(
-                  `${serverUrl}/login?${stringify(params)}#${stringify({
-                    access_token: token,
-                    recover: user.deleteAt ? true : false,
-                  })}`
-                )
-              }
-            } catch (error) {
-              res.redirect(
-                `${serverUrl}/login#${stringify({
-                  error: 'error',
-                  error_description: error.message,
-                })}`
-              )
-            }
-          }
-        }, next)
-      }
-    )
-
-    router.post(
-      `${this.basePath}/backchannel_logout`,
-      AuthStrategy.verifyLogoutToken,
-      expressJoiMiddleware(backchannelLogoutSchema, {}),
-      (req: Request, res: Response, next: NextFunction) => {
-        return this.runWithErrorHandling(async () => {
-          await this.authController.backchannelLogout(req)
-          res.status(HttpStatus.OK).end()
-        }, next)
-      }
-    )
-
-    router.post(
-      `${this.basePath}/sendForgottenPassword`,
-      expressJoiMiddleware(forgotPasswordSchema, {}),
-      AuthStrategy.JsonHeadersValidation,
-      (req: Request, res: Response, next: NextFunction) => {
-        return this.runWithErrorHandling(async () => {
-          await this.authController.sendPasswordResetInstructions(req)
-          res.status(HttpStatus.NO_CONTENT).end()
-        }, next)
-      }
-    )
-
-    router.post(
-      `${this.basePath}/resetPassword`,
-      expressJoiMiddleware(resetPasswordSchema, {}),
-      AuthStrategy.JsonHeadersValidation,
-      AuthStrategy.applicationValidation(),
-      (req: Request, res: Response, next: NextFunction) => {
-        return this.runWithErrorHandling(async () => {
-          const {
-            token,
-            // syncSessions
-          } = await this.authController.resetPassword(req)
-
-          // this.setSyncCookies(syncSessions, res)
-          res.status(HttpStatus.OK).json({ token }).end()
-        }, next)
-      }
-    )
-
-    router.post(
-      `${this.basePath}/logout`,
-      AuthStrategy.JWTAuth,
-      (req: Request, res: Response, next: NextFunction) => {
-        return this.runWithErrorHandling(async () => {
-          // const referer = req.get('referer')
-          await this.authController.logout(req)
-          // this.clearSyncCookies(res, referer)
-          res.redirect(
-            HttpStatus.TEMPORARY_REDIRECT,
-            `${config.IAM.authServerURL}/api/oidc/logout?redirect=${config.email.fromBaseURL}`
-          )
-        }, next)
-      }
-    )
-
-    router.post(
-      `${this.basePath}/changePassword`,
-      expressJoiMiddleware(changePasswordSchema, {}),
-      AuthStrategy.JWTAuth,
-      (req: Request, res: Response, next: NextFunction) => {
-        return this.runWithErrorHandling(async () => {
-          await this.authController.changePassword(req)
-          res.status(HttpStatus.OK).end()
+          res.status(StatusCodes.OK).json({ token }).end()
         }, next)
       }
     )
@@ -281,7 +70,7 @@ export class AuthRoute extends BaseRoute {
     router.get(
       `/authorization/:scope`,
       AuthStrategy.JWTAuth,
-      expressJoiMiddleware(authorizationTokenSchema, {}),
+      celebrate(authorizationTokenSchema, {}),
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           const token = await this.authController.createAuthorizationToken(req)
@@ -293,33 +82,5 @@ export class AuthRoute extends BaseRoute {
         }, next)
       }
     )
-  }
-
-  // private cookieKey = (bucketKey: string) => `/${config.DB.buckets[bucketKey as BucketKey]}`
-
-  private cookieOptions = (domain: string, includeAge: boolean, path?: string) => ({
-    path,
-    domain,
-    maxAge: includeAge ? COOKIE_EXPIRY_IN_MS : 0,
-    httpOnly: true,
-    sameSite: (config.server.storeOnlySSLTransmittedCookies && 'None') || 'Strict',
-    secure: config.server.storeOnlySSLTransmittedCookies,
-  })
-
-  private clearNonceCookie(res: Response, referer?: string) {
-    const refererDomain = AuthRoute.getCookieDomain(referer)
-    res.clearCookie('nonce', this.cookieOptions(refererDomain, false) as any)
-  }
-
-  private setNonceCookie(nonce: string, res: Response, referer?: string | null) {
-    const refererDomain = AuthRoute.getCookieDomain(referer)
-    res.cookie('nonce', nonce, this.cookieOptions(refererDomain, true) as any)
-  }
-
-  private static getCookieDomain(referer?: string | null) {
-    const refererHost = referer ? new URL(referer).host : config.gateway.cookieDomain
-    return !refererHost.startsWith('.')
-      ? refererHost.substring(refererHost.indexOf('.'))
-      : refererHost
   }
 }

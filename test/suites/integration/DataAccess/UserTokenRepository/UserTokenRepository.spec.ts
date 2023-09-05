@@ -17,15 +17,15 @@
 import { Chance } from 'chance'
 
 import { UserTokenRepository } from '../../../../../src/DataAccess/UserTokenRepository/UserTokenRepository'
+import { validJWTToken } from '../../../../data/fixtures/authServiceUser'
 import { drop, testDatabase } from '../../../../utilities/db'
 import { TEST_TIMEOUT } from '../../../../utilities/testSetup'
-import { validJWTToken } from '../../../../data/fixtures/authServiceUser'
 
 const chance = new Chance()
 jest.setTimeout(TEST_TIMEOUT)
 
 let db: any = null
-beforeAll(async () => db = await testDatabase())
+beforeAll(async () => (db = await testDatabase()))
 afterAll(() => db.bucket.disconnect())
 
 describe('UserTokenRepository getOne', () => {
@@ -42,15 +42,15 @@ describe('UserTokenRepository getOne', () => {
       deviceId: 'deviceId',
       appId: 'appId',
       token: validJWTToken,
-      credentials: { google: { accessToken: 'foo', refreshToken: 'bar' } }
+      credentials: { google: { accessToken: 'foo', refreshToken: 'bar' } },
     }
 
-    await repository.create(token, {})
+    await repository.create(token)
 
     const userToken: any = await repository.getOne({
       userId: 'userId',
       deviceId: 'deviceId',
-      appId: 'appId'
+      appId: 'appId',
     })
 
     expect(userToken._id).toEqual(token._id)
@@ -62,7 +62,7 @@ describe('UserTokenRepository getOne', () => {
     const token = await repository.getOne({
       userId: 'userId',
       deviceId: 'deviceId',
-      appId: 'appId'
+      appId: 'appId',
     })
     expect(token).toBeNull()
   })

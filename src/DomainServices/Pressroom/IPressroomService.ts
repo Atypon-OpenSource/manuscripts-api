@@ -21,5 +21,4 @@ export interface IPressroomService {
 
   fetchHtml(archive: Buffer, manuscriptID: string): Promise<Buffer>
 
-  validateTemplateId(templateID: string): Promise<boolean>
 }

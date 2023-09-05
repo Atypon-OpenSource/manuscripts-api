@@ -69,9 +69,6 @@ export const getArchiveSchema: Joi.SchemaMap = {
     containerID: Joi.string().required(),
     manuscriptID: Joi.string(),
   }),
-  query: Joi.object({
-    allowOrphanedDocs: Joi.string(),
-  }),
 }
 
 export const loadProjectSchema: Joi.SchemaMap = {
@@ -140,20 +137,5 @@ export const addProductionNoteSchema: Joi.SchemaMap = {
     connectUserID: Joi.string().required(),
     source: Joi.string().required().valid('EDITOR', 'EMAIL', 'DASHBOARD'),
     target: Joi.string(),
-  }),
-}
-
-export const suggestionStatusSchema: Joi.SchemaMap = {
-  params: Joi.object({
-    containerID: Joi.string().required(),
-  }),
-}
-
-export const createSnapshotSchema: Joi.SchemaMap = {
-  params: Joi.object({
-    containerID: Joi.string().required(),
-  }),
-  body: Joi.object({
-    name: Joi.string(),
   }),
 }

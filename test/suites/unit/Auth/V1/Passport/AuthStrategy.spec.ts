@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import { ValidationError } from '../../../../../../src/Errors'
 import { getMockRes } from '@jest-mock/express'
-import * as HttpStatus from 'http-status-codes'
 import { Chance } from 'chance'
+import { StatusCodes } from 'http-status-codes'
 
 import { AuthStrategy } from '../../../../../../src/Auth/Passport/AuthStrategy'
+import { ValidationError } from '../../../../../../src/Errors'
 
 jest.mock('passport', () => {
   const originalModule = jest.requireActual('passport')
@@ -27,7 +27,7 @@ jest.mock('passport', () => {
   return {
     ...originalModule,
     use: () => Promise.resolve(),
-    authenticate: (_name: string, options: any, callback: Function) => {
+    authenticate: (_name: string, options: any, callback: any) => {
       const user: any = {
         _id: 'd5108332658149c4c2b276e1b16a1f8dca7fd6af',
       }
@@ -49,7 +49,7 @@ describe('AuthStrategy', () => {
     const req: any = {}
     const { res, next } = getMockRes()
     AuthStrategy.JWTAuth(req, res, next)
-    expect(next).toBeCalled()
+    expect(next).toHaveBeenCalled()
     expect(req.user).toEqual({
       _id: 'd5108332658149c4c2b276e1b16a1f8dca7fd6af',
     })
@@ -61,8 +61,8 @@ describe('AuthStrategy', () => {
     const error = new Error()
     AuthStrategy.userValidationCallback(error, null, req, res, next)
 
-    expect(res.status).toHaveBeenCalledWith(HttpStatus.UNAUTHORIZED)
-    expect(res.end).toBeCalled()
+    expect(res.status).toHaveBeenCalledWith(StatusCodes.UNAUTHORIZED)
+    expect(res.end).toHaveBeenCalled()
   })
 
   test('should return 401 if there if user not set', () => {
@@ -70,8 +70,8 @@ describe('AuthStrategy', () => {
     const { res, next } = getMockRes()
     AuthStrategy.userValidationCallback(null, null, req, res, next)
 
-    expect(res.status).toHaveBeenCalledWith(HttpStatus.UNAUTHORIZED)
-    expect(res.end).toBeCalled()
+    expect(res.status).toHaveBeenCalledWith(StatusCodes.UNAUTHORIZED)
+    expect(res.end).toHaveBeenCalled()
   })
 
   test('should set user in req object and call next function', () => {
@@ -85,7 +85,7 @@ describe('AuthStrategy', () => {
     AuthStrategy.userValidationCallback(null, user, req, res, next)
 
     expect(req.user).toEqual(user)
-    expect(next).toBeCalled()
+    expect(next).toHaveBeenCalled()
   })
 
   test('should fail if scope is not found', () => {
@@ -100,7 +100,7 @@ describe('AuthStrategy', () => {
     const { res, next } = getMockRes()
     const scopedAuth = AuthStrategy.scopedJWTAuth('file-picker')
     scopedAuth(req, res, next)
-    expect(next).toBeCalled()
+    expect(next).toHaveBeenCalled()
     expect(req.user).toEqual({
       _id: 'd5108332658149c4c2b276e1b16a1f8dca7fd6af',
     })

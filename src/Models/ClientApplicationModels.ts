@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
+import { createHash } from 'crypto'
+import { pem2jwk } from 'pem-jwk'
+
+import { ScopedAccessTokenConfiguration } from '../Config/ConfigurationTypes'
 import { QueryCriteria } from '../DataAccess/Interfaces/QueryCriteria'
 import { ValidationError } from '../Errors'
-import { ScopedAccessTokenConfiguration } from 'src/Config/ConfigurationTypes'
-import { pem2jwk } from 'pem-jwk'
-import { createHash } from 'crypto'
 
 /**
  * Represents criteria for an application query.

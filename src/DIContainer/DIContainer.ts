@@ -14,85 +14,64 @@
  * limitations under the License.
  */
 
-import jwksClientRSA from 'jwks-rsa' // the concrete JWKS client implementation
-
 import { config } from '../Config/Config'
 import { BucketKey } from '../Config/ConfigurationTypes'
-
-import { SQLDatabase } from '../DataAccess/SQLDatabase'
 import applyMiddleware from '../DataAccess/applyMiddleware'
-
-import { IAMTokenVerifier } from './IAMTokenVerifier'
-import { JWKSClient } from './JWKSClient' // our internal interface for JWKS
-
-import { IServer } from '../Server/IServer'
-import { Server } from '../Server/Server'
-
-import { ContainerType, ContainerServiceMap } from '../Models/ContainerModels'
-import { RepositoryLike, SGRepositoryLike } from '../DataAccess/Interfaces/IndexedRepository'
-
-import { IUserRepository } from '../DataAccess/Interfaces/IUserRepository'
-import { IUserTokenRepository } from '../DataAccess/Interfaces/IUserTokenRepository'
-import { ISingleUseTokenRepository } from '../DataAccess/Interfaces/ISingleUseTokenRepository'
+import { ClientApplicationRepository } from '../DataAccess/ClientApplicationRepository/ClientApplicationRepository'
+import { CollaborationsRepository } from '../DataAccess/CollaborationsRepository/CollaborationsRepository'
+import { ContainerInvitationRepository } from '../DataAccess/ContainerInvitationRepository/ContainerInvitationRepository'
+import { ContainerRequestRepository } from '../DataAccess/ContainerRequestRepository/ContainerRequestRepository'
 import { IClientApplicationRepository } from '../DataAccess/Interfaces/IClientApplicationRepository'
 import { ICollaborationsRepository } from '../DataAccess/Interfaces/ICollaborationsRepository'
 import { IInvitationTokenRepository } from '../DataAccess/Interfaces/IInvitationTokenRepository'
-import { IUserStatusRepository } from '../DataAccess/Interfaces/IUserStatusRepository'
-import { IUserEventRepository } from '../DataAccess/Interfaces/IUserEventRepository'
-import { UserCollaboratorRepository } from '../DataAccess/UserCollaboratorRepository/UserCollaboratorRepository'
-
-import { InvitationRepository } from '../DataAccess/InvitationRepository/InvitationRepository'
-import { UserRepository } from '../DataAccess/UserRepository/UserRepository'
-import { UserTokenRepository } from '../DataAccess/UserTokenRepository/UserTokenRepository'
-import { UserEmailRepository } from '../DataAccess/UserEmailRepository/UserEmailRepository'
+import { IManuscriptRepository } from '../DataAccess/Interfaces/IManuscriptRepository'
+import { RepositoryLike, SGRepositoryLike } from '../DataAccess/Interfaces/IndexedRepository'
+import { ISingleUseTokenRepository } from '../DataAccess/Interfaces/ISingleUseTokenRepository'
 import { IUserEmailRepository } from '../DataAccess/Interfaces/IUserEmailRepository'
-import { SingleUseTokenRepository } from '../DataAccess/SingleUseTokenRepository/SingleUseTokenRepository'
-import { ClientApplicationRepository } from '../DataAccess/ClientApplicationRepository/ClientApplicationRepository'
-import { CollaborationsRepository } from '../DataAccess/CollaborationsRepository/CollaborationsRepository'
-import { MemorizingClientApplicationRepository } from '../DataAccess/ClientApplicationRepository/MemorizingClientApplicationRepository'
-import { UserEventRepository } from '../DataAccess/UserEventRepository/UserEventRepository'
-import { UserStatusRepository } from '../DataAccess/UserStatusRepository/UserStatusRepository'
-import { ProjectRepository } from '../DataAccess/ProjectRepository/ProjectRepository'
-import { UserProfileRepository } from '../DataAccess/UserProfileRepository/UserProfileRepository'
+import { IUserEventRepository } from '../DataAccess/Interfaces/IUserEventRepository'
+import { IUserRepository } from '../DataAccess/Interfaces/IUserRepository'
+import { IUserStatusRepository } from '../DataAccess/Interfaces/IUserStatusRepository'
+import { IUserTokenRepository } from '../DataAccess/Interfaces/IUserTokenRepository'
+import { InvitationRepository } from '../DataAccess/InvitationRepository/InvitationRepository'
 import { InvitationTokenRepository } from '../DataAccess/InvitationTokenRepository/InvitationTokenRepository'
-import { ContainerRequestRepository } from '../DataAccess/ContainerRequestRepository/ContainerRequestRepository'
-import { ContainerInvitationRepository } from '../DataAccess/ContainerInvitationRepository/ContainerInvitationRepository'
-import { ISubmissionRepository } from '../DataAccess/Interfaces/ISubmissionRepository'
-import { SubmissionRepository } from '../DataAccess/SubmissionRepository/SubmissionRepository'
-
+import { ManuscriptNoteRepository } from '../DataAccess/ManuscriptNoteRepository/ManuscriptNoteRepository'
+import { ManuscriptRepository } from '../DataAccess/ManuscriptRepository/ManuscriptRepository'
+import { ProjectRepository } from '../DataAccess/ProjectRepository/ProjectRepository'
+import { SingleUseTokenRepository } from '../DataAccess/SingleUseTokenRepository/SingleUseTokenRepository'
+import { SQLDatabase } from '../DataAccess/SQLDatabase'
+import { TemplateRepository } from '../DataAccess/TemplateRepository/TemplateRepository'
+import { UserCollaboratorRepository } from '../DataAccess/UserCollaboratorRepository/UserCollaboratorRepository'
+import { UserEmailRepository } from '../DataAccess/UserEmailRepository/UserEmailRepository'
+import { UserEventRepository } from '../DataAccess/UserEventRepository/UserEventRepository'
+import { UserProfileRepository } from '../DataAccess/UserProfileRepository/UserProfileRepository'
+import { UserRepository } from '../DataAccess/UserRepository/UserRepository'
+import { UserStatusRepository } from '../DataAccess/UserStatusRepository/UserStatusRepository'
+import { UserTokenRepository } from '../DataAccess/UserTokenRepository/UserTokenRepository'
 import { AuthService } from '../DomainServices/Auth/AuthService'
 import { IAuthService } from '../DomainServices/Auth/IAuthService'
+import { ConfigService } from '../DomainServices/ConfigService'
+import { ContainerService } from '../DomainServices/Container/ContainerService'
+import { ContainerRequestService } from '../DomainServices/ContainerRequest/ContainerRequestService'
+import { IContainerRequestService } from '../DomainServices/ContainerRequest/IContainerRequestService'
 import { EmailService } from '../DomainServices/Email/EmailService'
 import { ExpirationService } from '../DomainServices/Expiration/ExpirationService'
-import { SyncService } from '../DomainServices/Sync/SyncService'
-import { ISyncService } from '../DomainServices/Sync/ISyncService'
-import { SGService } from '../DomainServices/SG/SGService'
-import { ISGService } from '../DomainServices/SG/ISGService'
-import { IUserRegistrationService } from '../DomainServices/Registration/IUserRegistrationService'
-import { UserRegistrationService } from '../DomainServices/Registration/UserRegistrationService'
-import { UserService } from '../DomainServices/User/UserService'
-import { IUserService } from '../DomainServices/User/IUserService'
-import { UserActivityTrackingService } from '../DomainServices/UserActivity/UserActivityTrackingService'
 import { ContainerInvitationService } from '../DomainServices/Invitation/ContainerInvitationService'
-import { ContainerService } from '../DomainServices/Container/ContainerService'
-import { InvitationService } from '../DomainServices/Invitation/InvitationService'
 import { IContainerInvitationService } from '../DomainServices/Invitation/IContainerInvitationService'
-import { IContainerRequestService } from '../DomainServices/ContainerRequest/IContainerRequestService'
-import { ContainerRequestService } from '../DomainServices/ContainerRequest/ContainerRequestService'
-import { ISubmissionService } from '../DomainServices/Submission/ISubmissionService'
-import { SubmissionService } from '../DomainServices/Submission/SubmissionService'
+import { InvitationService } from '../DomainServices/Invitation/InvitationService'
 import { IPressroomService } from '../DomainServices/Pressroom/IPressroomService'
 import { PressroomService } from '../DomainServices/Pressroom/PressroomService'
-import { ManuscriptNoteRepository } from '../DataAccess/ManuscriptNoteRepository/ManuscriptNoteRepository'
-import { LibraryRepository } from '../DataAccess/LibraryRepository/LibraryRepository'
-import { LibraryCollectionRepository } from '../DataAccess/LibraryCollectionRepository/LibraryCollectionRepository'
-import { IManuscriptRepository } from '../DataAccess/Interfaces/IManuscriptRepository'
-import { ManuscriptRepository } from '../DataAccess/ManuscriptRepository/ManuscriptRepository'
-import { SnapshotRepository } from '../DataAccess/SnapshotRepository/SnapshotRepository'
-import { CorrectionRepository } from '../DataAccess/CorrectionRepository/CorrectionRepository'
-import { ShacklesService } from '../DomainServices/Shackles/ShacklesService'
-import { IShacklesService } from '../DomainServices/Shackles/IShacklesService'
-import { TemplateRepository } from '../DataAccess/TemplateRepository/TemplateRepository'
+import { ProjectService } from '../DomainServices/ProjectService'
+import { IUserRegistrationService } from '../DomainServices/Registration/IUserRegistrationService'
+import { UserRegistrationService } from '../DomainServices/Registration/UserRegistrationService'
+import { ISGService } from '../DomainServices/SG/ISGService'
+import { SGService } from '../DomainServices/SG/SGService'
+import { ISyncService } from '../DomainServices/Sync/ISyncService'
+import { SyncService } from '../DomainServices/Sync/SyncService'
+import { IUserService } from '../DomainServices/User/IUserService'
+import { UserService } from '../DomainServices/User/UserService'
+import { UserActivityTrackingService } from '../DomainServices/UserActivity/UserActivityTrackingService'
+import { IServer } from '../Server/IServer'
+import { Server } from '../Server/Server'
 
 export class UninitializedContainerError extends Error {
   constructor() {
@@ -142,23 +121,16 @@ export class DIContainer {
   readonly containerInvitationService: IContainerInvitationService
   readonly invitationService: InvitationService
   readonly projectRepository: ProjectRepository
-  readonly libraryRepository: LibraryRepository
-  readonly libraryCollectionRepository: LibraryCollectionRepository
   readonly userProfileRepository: UserProfileRepository
   readonly userCollaboratorRepository: UserCollaboratorRepository
-  readonly containerService: ContainerServiceMap
+  readonly containerService: ContainerService
+  readonly projectService: ProjectService
+  readonly configService: ConfigService
   readonly containerRequestService: IContainerRequestService
   readonly containerRequestRepository: ContainerRequestRepository
-  readonly submissionRepository: ISubmissionRepository
-  readonly submissionService: ISubmissionService
-  readonly jwksClient: JWKSClient
-  readonly iamTokenVerifier: IAMTokenVerifier
   readonly pressroomService: IPressroomService
-  readonly shacklesService: IShacklesService
   readonly manuscriptRepository: IManuscriptRepository
   readonly manuscriptNotesRepository: ManuscriptNoteRepository
-  readonly correctionRepository: CorrectionRepository
-  readonly snapshotRepository: SnapshotRepository
   readonly templateRepository: TemplateRepository
 
   /**
@@ -178,10 +150,7 @@ export class DIContainer {
       BucketKey.User,
       this.userBucket
     )
-    this.applicationRepository = new MemorizingClientApplicationRepository(
-      new ClientApplicationRepository(this.userBucket),
-      60
-    )
+    this.applicationRepository = new ClientApplicationRepository(this.userBucket)
     this.server = new Server(this.userBucket)
     this.userRepository = new UserRepository(this.userBucket)
     this.userTokenRepository = new UserTokenRepository(this.userBucket)
@@ -209,11 +178,6 @@ export class DIContainer {
       this.syncService
     )
     this.projectRepository = new ProjectRepository(BucketKey.Project, this.dataBucket)
-    this.libraryRepository = new LibraryRepository(BucketKey.Project, this.dataBucket)
-    this.libraryCollectionRepository = new LibraryCollectionRepository(
-      BucketKey.Project,
-      this.dataBucket
-    )
     this.invitationRepository = new InvitationRepository(BucketKey.Project, this.dataBucket)
     this.containerInvitationRepository = new ContainerInvitationRepository(
       BucketKey.Project,
@@ -223,15 +187,11 @@ export class DIContainer {
       BucketKey.Project,
       this.dataBucket
     )
-    this.submissionRepository = new SubmissionRepository(BucketKey.Project, this.dataBucket)
-    this.submissionService = new SubmissionService(this.submissionRepository)
     this.manuscriptRepository = new ManuscriptRepository(BucketKey.Project, this.dataBucket)
     this.manuscriptNotesRepository = new ManuscriptNoteRepository(
       BucketKey.Project,
       this.dataBucket
     )
-    this.correctionRepository = new CorrectionRepository(BucketKey.Project, this.dataBucket)
-    this.snapshotRepository = new SnapshotRepository(BucketKey.Project, this.dataBucket)
     this.templateRepository = new TemplateRepository(BucketKey.Project, this.dataBucket)
     this.userService = new UserService(
       this.userRepository,
@@ -248,63 +208,29 @@ export class DIContainer {
       this.projectRepository,
       this.userCollaboratorRepository
     )
-    this.containerService = {
-      [ContainerType.project]: new ContainerService(
-        ContainerType.project,
-        this.userRepository,
-        this.userService,
-        this.activityTrackingService,
-        this.userStatusRepository,
-        this.projectRepository,
-        this.containerInvitationRepository,
-        this.emailService,
-        this.libraryCollectionRepository,
-        this.manuscriptRepository,
-        this.manuscriptNotesRepository,
-        this.correctionRepository,
-        this.snapshotRepository,
-        this.templateRepository
-      ),
-      [ContainerType.library]: new ContainerService(
-        ContainerType.library,
-        this.userRepository,
-        this.userService,
-        this.activityTrackingService,
-        this.userStatusRepository,
-        this.libraryRepository,
-        this.containerInvitationRepository,
-        this.emailService,
-        this.libraryCollectionRepository,
-        this.manuscriptRepository,
-        this.manuscriptNotesRepository,
-        this.correctionRepository,
-        this.snapshotRepository,
-        this.templateRepository
-      ),
-      [ContainerType.libraryCollection]: new ContainerService(
-        ContainerType.libraryCollection,
-        this.userRepository,
-        this.userService,
-        this.activityTrackingService,
-        this.userStatusRepository,
-        this.libraryCollectionRepository,
-        this.containerInvitationRepository,
-        this.emailService,
-        this.libraryCollectionRepository,
-        this.manuscriptRepository,
-        this.manuscriptNotesRepository,
-        this.correctionRepository,
-        this.snapshotRepository,
-        this.templateRepository
-      ),
-    }
+    this.containerService = new ContainerService(
+      this.userRepository,
+      this.userService,
+      this.activityTrackingService,
+      this.userStatusRepository,
+      this.projectRepository,
+      this.containerInvitationRepository,
+      this.emailService,
+      this.manuscriptRepository,
+      this.manuscriptNotesRepository,
+      this.templateRepository
+    )
+    this.projectService = new ProjectService(
+      this.projectRepository,
+      this.manuscriptRepository,
+      this.templateRepository,
+      this.userRepository
+    )
     this.containerInvitationService = new ContainerInvitationService(
       this.userRepository,
       this.userProfileRepository,
       this.emailService,
-      this.containerService[ContainerType.project],
-      this.containerService[ContainerType.library],
-      this.containerService[ContainerType.libraryCollection],
+      this.containerService,
       this.containerInvitationRepository,
       this.invitationTokenRepository,
       this.activityTrackingService
@@ -322,23 +248,16 @@ export class DIContainer {
       this.containerRequestRepository,
       this.userProfileRepository,
       this.userRepository,
-      this.containerService[ContainerType.project],
-      this.containerService[ContainerType.library],
-      this.containerService[ContainerType.libraryCollection],
+      this.containerService,
       this.emailService
     )
     this.authService = new AuthService(
       this.userRepository,
       this.userTokenRepository,
-      this.userEmailRepository,
       this.userProfileRepository,
-      this.emailService,
-      this.singleUseTokenRepository,
       this.activityTrackingService,
       this.syncService,
-      this.userStatusRepository,
-      this.invitationService,
-      this.containerInvitationService
+      this.userStatusRepository
     )
     this.expirationService = new ExpirationService(
       this.userEventRepository,
@@ -347,18 +266,8 @@ export class DIContainer {
       this.invitationTokenRepository,
       this.containerInvitationRepository
     )
-    this.jwksClient = jwksClientRSA({
-      cache: true,
-      cacheMaxEntries: 5,
-      cacheMaxAge: 10 * 60 * 60 * 1000, // 10h in ms
-      strictSsl: true,
-      rateLimit: true,
-      jwksRequestsPerMinute: 1,
-      jwksUri: `${config.IAM.authServerURL}/api/oidc/jwk.json`,
-    }) as any
-    this.iamTokenVerifier = new IAMTokenVerifier()
     this.pressroomService = new PressroomService(config.pressroom.baseurl, config.pressroom.apiKey)
-    this.shacklesService = new ShacklesService(config.shackles.baseUrl)
+    this.configService = new ConfigService(config.data.path)
   }
 
   /**

@@ -1,5 +1,5 @@
 -- CreateTable
-CREATE TABLE "User" (
+CREATE TABLE IF NOT EXISTS "User" (
     "id" TEXT NOT NULL,
     "data" JSONB,
 
@@ -7,7 +7,7 @@ CREATE TABLE "User" (
 );
 
 -- CreateTable
-CREATE TABLE "Project" (
+CREATE TABLE IF NOT EXISTS "Project" (
     "id" TEXT NOT NULL,
     "data" JSONB,
 

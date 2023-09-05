@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-import { Project } from '@manuscripts/manuscripts-json-schema'
+import { Project } from '@manuscripts/json-schema'
 
-import { ProjectRepository } from '../../../../../src/DataAccess/ProjectRepository/ProjectRepository'
 import { BucketKey } from '../../../../../src/Config/ConfigurationTypes'
+import { ProjectRepository } from '../../../../../src/DataAccess/ProjectRepository/ProjectRepository'
 import { MethodNotAllowedError } from '../../../../../src/Errors'
 
 describe('ProjectRepository - update', () => {
-  xtest('should not allow the user to use update', () => {
+  test.skip('should not allow the user to use update', () => {
     const repository = new ProjectRepository(BucketKey.Project, {} as any)
 
-    return expect(
-      repository.update('id', {} as Project, {})
-    ).rejects.toThrowError(MethodNotAllowedError)
+    return expect(repository.update('id', {} as Project, {})).rejects.toThrow(MethodNotAllowedError)
   })
 })

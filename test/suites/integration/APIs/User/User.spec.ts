@@ -14,37 +14,41 @@
  * limitations under the License.
  */
 
-import * as HttpStatus from 'http-status-codes'
+import { StatusCodes } from 'http-status-codes'
 import * as supertest from 'supertest'
+
+import { BucketKey } from '../../../../../src/Config/ConfigurationTypes'
+import { SeedOptions } from '../../../../../src/DataAccess/Interfaces/SeedOptions'
+import { DIContainer } from '../../../../../src/DIContainer/DIContainer'
+import {
+  basicLogin,
+  getProfile,
+  markUserForDeletion,
+  unmarkUserForDeletion,
+  userContainers,
+} from '../../../../api'
+import { validBody } from '../../../../data/fixtures/credentialsRequestPayload'
+import {
+  authorizationHeader,
+  ValidContentTypeAcceptJsonHeader,
+  ValidHeaderWithApplicationKey,
+} from '../../../../data/fixtures/headers'
+import { drop, dropBucket, seed, testDatabase } from '../../../../utilities/db'
+import { TEST_TIMEOUT } from '../../../../utilities/testSetup'
 
 jest.mock('email-templates', () =>
   jest.fn().mockImplementation(() => {
     return {
       send: jest.fn(() => Promise.resolve({})),
-      render: jest.fn(() => Promise.resolve({}))
+      render: jest.fn(() => Promise.resolve({})),
     }
   })
 )
 
-import { validBody } from '../../../../data/fixtures/credentialsRequestPayload'
-import { markUserForDeletion, unmarkUserForDeletion, basicLogin, getProfile, userContainers } from '../../../../api'
-import { TEST_TIMEOUT } from '../../../../utilities/testSetup'
-import { drop, seed, testDatabase, dropBucket } from '../../../../utilities/db'
-import { DIContainer } from '../../../../../src/DIContainer/DIContainer'
-import {
-  ValidContentTypeAcceptJsonHeader,
-  authorizationHeader,
-  ValidHeaderWithApplicationKey
-} from '../../../../data/fixtures/headers'
-import { SeedOptions } from '../../../../../src/DataAccess/Interfaces/SeedOptions'
-import { BucketKey } from '../../../../../src/Config/ConfigurationTypes'
-
 let db: any = null
 beforeAll(async () => {
   db = await testDatabase()
-  await DIContainer.sharedContainer.syncService.getOrCreateUserStatus(
-      'User|' + validBody.email,
-    )
+  await DIContainer.sharedContainer.syncService.getOrCreateUserStatus('User|' + validBody.email)
 })
 
 afterAll(async () => db && db.bucket.disconnect())
@@ -66,15 +70,15 @@ describe('UserService - getProfile', () => {
       ValidHeaderWithApplicationKey
     )
 
-    expect(loginResponse.status).toBe(HttpStatus.OK)
+    expect(loginResponse.status).toBe(StatusCodes.OK)
 
     const authHeader = authorizationHeader(loginResponse.body.token)
     const response: supertest.Response = await getProfile({
       ...ValidContentTypeAcceptJsonHeader,
-      ...authHeader
+      ...authHeader,
     })
     expect(response.body).toBeTruthy()
-    expect(response.status).toBe(HttpStatus.OK)
+    expect(response.status).toBe(StatusCodes.OK)
   })
 })
 
@@ -83,7 +87,7 @@ describe('UserService - markUserForDeletion', () => {
     const seedOptions: SeedOptions = {
       users: true,
       applications: true,
-      projects: true
+      projects: true,
     }
 
     await drop()
@@ -97,22 +101,21 @@ describe('UserService - markUserForDeletion', () => {
       ValidHeaderWithApplicationKey
     )
 
-    expect(loginResponse.status).toBe(HttpStatus.OK)
+    expect(loginResponse.status).toBe(StatusCodes.OK)
 
     const authHeader = authorizationHeader(loginResponse.body.token)
     const response: supertest.Response = await markUserForDeletion(
       {
         ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
+        ...authHeader,
       },
       {
-        password: '12345'
+        password: '12345',
       }
     )
 
-    expect(response.status).toBe(HttpStatus.OK)
+    expect(response.status).toBe(StatusCodes.OK)
   })
-
 })
 
 describe('UserService - unmarkUserForDeletion', () => {
@@ -120,7 +123,7 @@ describe('UserService - unmarkUserForDeletion', () => {
     const seedOptions: SeedOptions = {
       users: true,
       applications: true,
-      projects: true
+      projects: true,
     }
 
     await drop()
@@ -134,17 +137,15 @@ describe('UserService - unmarkUserForDeletion', () => {
       ValidHeaderWithApplicationKey
     )
 
-    expect(loginResponse.status).toBe(HttpStatus.OK)
+    expect(loginResponse.status).toBe(StatusCodes.OK)
 
     const authHeader = authorizationHeader(loginResponse.body.token)
-    const response: supertest.Response = await unmarkUserForDeletion(
-      {
-        ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader
-      }
-    )
+    const response: supertest.Response = await unmarkUserForDeletion({
+      ...ValidContentTypeAcceptJsonHeader,
+      ...authHeader,
+    })
 
-    expect(response.status).toBe(HttpStatus.OK)
+    expect(response.status).toBe(StatusCodes.OK)
   })
 })
 
@@ -153,13 +154,11 @@ describe('ContainerService - userContainers', () => {
     await drop()
     await dropBucket(BucketKey.Project)
     await seed({ users: true, applications: true, projects: true })
-    await DIContainer.sharedContainer.syncService.createUserProfile(
-      {
-        _id: `User|${validBody.email}`,
-        name: 'foobar',
-        email: validBody.email
-      }
-    )
+    await DIContainer.sharedContainer.syncService.createUserProfile({
+      _id: `User|${validBody.email}`,
+      name: 'foobar',
+      email: validBody.email,
+    })
   })
 
   test('should retrieve all projects', async () => {
@@ -168,13 +167,13 @@ describe('ContainerService - userContainers', () => {
       ValidHeaderWithApplicationKey
     )
 
-    expect(loginResponse.status).toBe(HttpStatus.OK)
+    expect(loginResponse.status).toBe(StatusCodes.OK)
     const authHeader = authorizationHeader(loginResponse.body.token)
     const response: supertest.Response = await userContainers({
       ...ValidContentTypeAcceptJsonHeader,
-      ...authHeader
+      ...authHeader,
     })
 
-    expect(response.status).toBe(HttpStatus.OK)
+    expect(response.status).toBe(StatusCodes.OK)
   })
 })
