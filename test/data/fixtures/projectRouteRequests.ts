@@ -13,146 +13,97 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ObjectTypes } from '@manuscripts/json-schema'
-
-import { ContainerRole } from '../../../src/Models/ContainerModels'
 import { templates } from '../dump/templates'
 import { validManuscript } from './manuscripts'
 import { validProject } from './projects'
 import { validUser } from './userServiceUser'
 
-export const validProjectRouteRequest = {
-  data: [
-    {
-      _id: validProject._id,
-      objectType: ObjectTypes.Project,
-      createdAt: 20,
-      updatedAt: 21,
-    },
-  ],
+export const createProjectRequest = {
+  user: validUser,
+  body: {
+    title: 'test',
+  },
+}
+
+export const updateProjectRequest = {
+  user: validUser,
+  params: {
+    projectID: validProject._id,
+  },
+  body: {
+    data: [],
+  },
+}
+
+export const getProjectModelsRequest = {
+  user: validUser,
+  params: {
+    projectID: validProject._id,
+  },
+  body: {},
+  headers: {
+    'if-modified-since': new Date('2022-01-01').toISOString(),
+  },
+}
+
+export const updateUserRoleRequest = {
+  user: validUser,
+  params: {
+    projectID: validProject._id,
+  },
+  body: {
+    userID: '',
+    role: 'Writer',
+  },
+}
+
+export const createManuscriptRequest = {
+  user: validUser,
+  params: {
+    projectID: validProject._id,
+  },
   body: {
     templateID: templates[0]._id,
-    title: 'pressroom',
-    types: [ObjectTypes.ManuscriptNote, ObjectTypes.BibliographicName],
-    role: ContainerRole.Writer,
-    userID: validUser._id,
   },
+}
+
+export const getCollaboratorsRequest = {
+  user: validUser,
+  params: {
+    projectID: validProject._id,
+  },
+}
+
+export const getArchiveRequest = {
+  user: validUser,
   params: {
     projectID: validProject._id,
     manuscriptID: validManuscript._id,
-    scope: 'pressroom',
   },
+  query: {
+    onlyIDs: 'true',
+  },
+  headers: {
+    accept: 'application/zip',
+  },
+}
+
+export const generateAccessTokenRequest = {
   user: validUser,
-  headers: { 'if-modified-since': new Date('2022-01-01').toISOString() },
-  query: {
-    onlyIDs: 'true',
-  },
-}
-export const projectRouteRequestWithInvalidRole = {
-  data: [
-    {
-      _id: validProject._id,
-      objectType: ObjectTypes.Project,
-      createdAt: 20,
-      updatedAt: 21,
-    },
-  ],
-  body: {
-    templateID: templates[0]._id,
-    title: 'pressroom',
-    types: [ObjectTypes.ManuscriptNote, ObjectTypes.BibliographicName],
-    role: 'random',
-    userID: validUser._id,
-  },
-  params: {
-    projectID: validProject._id,
-    manuscriptID: validManuscript._id,
-    scope: 'pressroom',
-  },
-  user: validUser,
-  headers: { 'if-modified-since': new Date('2022-01-01').toISOString() },
-  query: {
-    onlyIDs: 'true',
-  },
-}
-export const projectRouteRequestWithoutUser = {
-  data: [
-    {
-      _id: validProject._id,
-      objectType: ObjectTypes.Project,
-      createdAt: 20,
-      updatedAt: 21,
-    },
-  ],
-  body: {
-    templateID: templates[0]._id,
-    title: 'pressroom',
-    types: [ObjectTypes.ManuscriptNote, ObjectTypes.BibliographicName],
-    role: ContainerRole.Writer,
-    userID: validUser._id,
-  },
-  params: {
-    projectID: validProject._id,
-    manuscriptID: validManuscript._id,
-    scope: 'pressroom',
-  },
-  user: null,
-  headers: { 'if-modified-since': new Date('2022-01-01').toISOString() },
-  query: {
-    onlyIDs: 'true',
-  },
-}
-export const projectRouteRequestWithoutProjectID = {
-  data: [
-    {
-      _id: validProject._id,
-      objectType: ObjectTypes.Project,
-      createdAt: 20,
-      updatedAt: 21,
-    },
-  ],
-  body: {
-    templateID: templates[0]._id,
-    title: 'pressroom',
-    types: [ObjectTypes.ManuscriptNote, ObjectTypes.BibliographicName],
-    role: ContainerRole.Writer,
-    userID: validUser._id,
-  },
-  params: {
-    manuscriptID: validManuscript._id,
-    scope: 'pressroom',
-  },
-  user: validUser,
-  headers: { 'if-modified-since': new Date('2022-01-01').toISOString() },
-  query: {
-    onlyIDs: 'true',
-  },
-}
-new Date('2022-01-01').toISOString()
-export const projectRouteRequestWithoutManuscriptID = {
-  data: [
-    {
-      _id: validProject._id,
-      objectType: ObjectTypes.Project,
-      createdAt: 20,
-      updatedAt: 21,
-    },
-  ],
-  body: {
-    templateID: templates[0]._id,
-    title: 'pressroom',
-    types: [ObjectTypes.ManuscriptNote, ObjectTypes.BibliographicName],
-    role: ContainerRole.Writer,
-    userID: validUser._id,
-  },
   params: {
     projectID: validProject._id,
     scope: 'pressroom',
   },
+}
+
+export const deleteProjectRequest = {
   user: validUser,
-  headers: { 'if-modified-since': new Date('2022-01-01').toISOString() },
-  query: {
-    onlyIDs: 'true',
+  params: {
+    projectID: validProject._id,
   },
 }
-new Date('2022-01-01').toISOString()
+
+export function removeUser(request: any) {
+  const { user, ...rest } = request
+  return rest
+}
