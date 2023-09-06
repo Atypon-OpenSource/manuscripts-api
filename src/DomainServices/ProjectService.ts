@@ -34,7 +34,6 @@ import { v4 as uuid_v4 } from 'uuid'
 import { config } from '../Config/Config'
 import { IManuscriptRepository } from '../DataAccess/Interfaces/IManuscriptRepository'
 import { IUserRepository } from '../DataAccess/Interfaces/IUserRepository'
-import { TemplateRepository } from '../DataAccess/TemplateRepository/TemplateRepository'
 import { DIContainer } from '../DIContainer/DIContainer'
 import {
   InvalidScopeNameError,
@@ -62,7 +61,6 @@ export class ProjectService {
   constructor(
     private containerRepository: ContainerRepository,
     private manuscriptRepository: IManuscriptRepository,
-    private templateRepository: TemplateRepository,
     private userRepository: IUserRepository
   ) {}
 
@@ -81,8 +79,8 @@ export class ProjectService {
 
   public async createManuscript(projectID: string, templateID?: string) {
     if (templateID) {
-      const template = await this.templateRepository.getById(templateID)
-      if (!template) {
+      const exists = await DIContainer.sharedContainer.configService.hasDocument(templateID)
+      if (!exists) {
         throw new MissingTemplateError(templateID)
       }
     }
@@ -101,16 +99,15 @@ export class ProjectService {
     templateID?: string
   ): Promise<Manuscript> {
     if (templateID) {
-      const template = await DIContainer.sharedContainer.configService.hasDocument(templateID)
-      if (!template) {
+      const exists = await DIContainer.sharedContainer.configService.hasDocument(templateID)
+      if (!exists) {
         throw new MissingTemplateError(templateID)
       }
     }
 
     const zip = await this.convert(file.path)
 
-    const root = tempy.directory()
-    const files = await this.extract(zip, root)
+    const { root, files } = await this.extract(zip)
 
     if (!files || !files['index.manuscript-json']) {
       throw new ValidationError('JSON file not found', file.filename)
@@ -121,7 +118,11 @@ export class ProjectService {
     const index = files['index.manuscript-json'].data
     let models = JSON.parse(index.toString()).data as Model[]
 
-    const manuscript = models.find((m) => m.objectType === ObjectTypes.Manuscript) as Manuscript
+    let manuscript = models.find((m) => m.objectType === ObjectTypes.Manuscript) as Manuscript
+
+    if (!manuscript) {
+      throw new ValidationError('Manuscript not found', file.filename)
+    }
 
     models = models.map((m) => {
       const updated = {
@@ -140,6 +141,7 @@ export class ProjectService {
       return updated
     })
 
+    manuscript = models.find((m) => m.objectType === ObjectTypes.Manuscript) as Manuscript
     if (templateID) {
       manuscript.prototype = templateID
     }
@@ -381,12 +383,15 @@ export class ProjectService {
   }
 
   private async extract(
-    zip: Readable,
-    target: string
-  ): Promise<{ [key: string]: decompress.File }> {
+    zip: Readable
+  ): Promise<{ root: string; files: { [k: string]: decompress.File } }> {
+    const root = tempy.directory()
     const buffer = await getStream.buffer(zip)
-    const files = await decompress(buffer, target)
-    return files.reduce((a, v) => ({ ...a, [v.path]: v }), {})
+    const files = await decompress(buffer, root)
+    return {
+      root,
+      files: files.reduce((a, v) => ({ ...a, [v.path]: v }), {}),
+    }
   }
 
   private validate(models: Model[]) {

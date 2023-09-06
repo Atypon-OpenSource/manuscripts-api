@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
+import { ContainerInvitation } from '@manuscripts/json-schema'
 import checksum from 'checksum'
-import { ContainerInvitation } from '@manuscripts/manuscripts-json-schema'
 
 export const validInvitation = {
   message: 'Message',
