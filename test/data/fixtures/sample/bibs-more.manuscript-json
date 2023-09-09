@@ -1,0 +1,3798 @@
+{
+  "version": "2.0",
+  "data": [
+    {
+      "_id": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "title": "LW Project",
+      "owners": [
+        "User_12fd5d70-f775-490c-ac6e-bb1be36732e4"
+      ],
+      "viewers": [],
+      "writers": [],
+      "createdAt": 1693913525.226,
+      "updatedAt": 1693913525.226,
+      "annotators": [
+        "User_1b67bf9e-dcdf-471d-bd85-0b18994a0c3b",
+        "User_21ca654b-a1c5-4e3e-9560-4b836c9f9d47"
+      ],
+      "objectType": "MPProject"
+    },
+    {
+      "_id": "MPAffiliation:035C9438-A93A-4871-9FBF-B086EFC88349",
+      "country": "Belgium",
+      "priority": 1,
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPAffiliation",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "institution": "Research Institute for Nature and Forest",
+      "addressLine1": "Gaverstraat 4",
+      "addressLine2": "9500 Geraardsbergen",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872"
+    },
+    {
+      "_id": "MPContributor:3C2D12BF-2A21-4D38-AF5A-2285230DD19C",
+      "role": "author",
+      "priority": 0,
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPContributor",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "affiliations": [
+        "MPAffiliation:3C0C80C8-04C0-43AC-B58C-B3B76A4DF499"
+      ],
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "ORCIDIdentifier": "https://orcid.org/0000-0003-1215-2987",
+      "isCorresponding": true,
+      "bibliographicName": {
+        "_id": "MPBibliographicName:8AC5F5F6-CC83-4059-9D2E-661A2A21EFD3",
+        "given": "Quentin",
+        "family": "Mauvisseau",
+        "objectType": "MPBibliographicName"
+      }
+    },
+    {
+      "_id": "MPContributor:F96B176A-6AE8-4C85-90CE-20277C18FBF0",
+      "role": "author",
+      "priority": 3,
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPContributor",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "affiliations": [
+        "MPAffiliation:369D1033-09E9-42CB-931C-51F752B9E3BF"
+      ],
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "bibliographicName": {
+        "_id": "MPBibliographicName:56EBD7F2-FB81-4C6E-8D13-988C33E590C2",
+        "given": "Alfred",
+        "family": "Burian",
+        "objectType": "MPBibliographicName"
+      }
+    },
+    {
+      "_id": "MPCorresponding:FB4B58D4-9CEC-435A-982D-16CB7CA0AD05",
+      "contents": "Corresponding authors, Quentin Mauvisseau: quentin.mauvisseau@nhm.uio.no, ORCID 0000-0003-1215-2987, Rein Brys: rein.brys@inbo.be, ORCID 0000-0002-0688-3268",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPCorresponding",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872"
+    },
+    {
+      "_id": "MPSupplement:D509BEE8-9F1F-410E-BF5D-D68F454D401F",
+      "MIME": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "href": "attachment:8621ba33-0213-4839-94d5-0793a682d4ec",
+      "title": "ATHENA-2023-0065_supp1",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPSupplement",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872"
+    },
+    {
+      "_id": "MPSupplement:9E9F6A24-7B38-4B5D-8481-EC72E60ED675",
+      "MIME": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "href": "attachment:368e648c-cf46-4f31-92e7-83701997e1c6",
+      "title": "ATHENA-2023-0065_supp3",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPSupplement",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872"
+    },
+    {
+      "_id": "MPSupplement:86BE487F-1809-4937-9D77-28025EEB4ECC",
+      "MIME": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "href": "attachment:d2c0a291-a957-4b4a-9a90-10111eeed426",
+      "title": "supplementary_material_review",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPSupplement",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872"
+    },
+    {
+      "_id": "MPSupplement:654FE80B-6870-4220-A666-3DC42061B18F",
+      "MIME": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "href": "attachment:cd81cf93-5c92-47fe-b35a-694c39af9dd0",
+      "title": "table_s2_review",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPSupplement",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872"
+    },
+    {
+      "_id": "MPSection:32937BD3-022C-4AB3-A6C7-F5EC81D39427",
+      "path": [
+        "MPSection:32937BD3-022C-4AB3-A6C7-F5EC81D39427"
+      ],
+      "title": "Keywords",
+      "category": "MPSectionCategory:keywords",
+      "priority": 1,
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "elementIDs": [
+        "MPKeywordsElement:5412C7F2-CDD2-4897-8B6F-0AEC64B516DC"
+      ],
+      "objectType": "MPSection",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872"
+    },
+    {
+      "_id": "MPKeyword:9B79782E-0B11-4BAA-A398-2F65F4C64630",
+      "name": "environmental DNA",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPKeyword",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "containedGroup": "MPKeywordGroup:B842E249-1FBA-4B1F-B876-7F2ECB982282"
+    },
+    {
+      "_id": "MPKeyword:F231C85C-93BC-427D-A708-0DC892BC68C9",
+      "name": "buffer",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPKeyword",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "containedGroup": "MPKeywordGroup:B842E249-1FBA-4B1F-B876-7F2ECB982282"
+    },
+    {
+      "_id": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "title": "Effects of preservation strategies on environmental DNA detection and quantification using ddPCR",
+      "createdAt": 1693913529,
+      "prototype": "MPManuscriptTemplate:MPManuscriptTemplate:MPManuscriptTemplate:MPBundle:www-zotero-org-styles-harvard1-cambridge_university_press_journal_publication-MPBundle:www-zotero-org-styles-chicago-author-date-health_economics,_policy_and_law-MPBundle:www-zotero-org-styles-chicago-author-date-review_article_health_economics,_policy_and_law",
+      "updatedAt": 1693913529,
+      "wordCount": 4718,
+      "objectType": "MPManuscript",
+      "tableCount": 1,
+      "articleType": "other",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "figureCount": 3,
+      "receiveDate": 1610064000,
+      "runningTitle": "Effect of preservation strategies on eDNA",
+      "equationCount": 0,
+      "genericCounts": [
+        {
+          "count": 0,
+          "countType": "box"
+        }
+      ],
+      "acceptanceDate": 1614643200,
+      "referencesCount": 29,
+      "revisionReceiveDate": 1614556800
+    },
+    {
+      "_id": "MPAffiliation:3C0C80C8-04C0-43AC-B58C-B3B76A4DF499",
+      "country": "Norway",
+      "priority": 0,
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "department": "Natural History Museum",
+      "objectType": "MPAffiliation",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "institution": "University of Oslo",
+      "addressLine1": "Oslo",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872"
+    },
+    {
+      "_id": "MPContributor:124DFEE7-0373-4149-9DB9-76394D8EBDF2",
+      "role": "author",
+      "priority": 1,
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPContributor",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "affiliations": [
+        "MPAffiliation:035C9438-A93A-4871-9FBF-B086EFC88349"
+      ],
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "bibliographicName": {
+        "_id": "MPBibliographicName:CD8C2031-4CDF-4CB3-9C9F-02844A24B902",
+        "given": "David",
+        "family": "Halfmaerten",
+        "objectType": "MPBibliographicName"
+      }
+    },
+    {
+      "_id": "MPContributor:4A9B4AB9-ADC1-4E06-A52A-EBC246FCAD6E",
+      "role": "author",
+      "priority": 2,
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPContributor",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "affiliations": [
+        "MPAffiliation:035C9438-A93A-4871-9FBF-B086EFC88349"
+      ],
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "bibliographicName": {
+        "_id": "MPBibliographicName:B8780399-6547-475C-844C-7AB7E23B8E64",
+        "given": "Sabrina",
+        "family": "Neyrinck",
+        "objectType": "MPBibliographicName"
+      }
+    },
+    {
+      "_id": "MPContributor:E3B2AFF1-7B32-43B2-884D-AE5AB34614B7",
+      "role": "author",
+      "priority": 4,
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPContributor",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "affiliations": [
+        "MPAffiliation:035C9438-A93A-4871-9FBF-B086EFC88349"
+      ],
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "isCorresponding": true,
+      "bibliographicName": {
+        "_id": "MPBibliographicName:AF4356FB-470D-46B6-B5C2-C01B6990C595",
+        "given": "Rein",
+        "family": "Brys",
+        "objectType": "MPBibliographicName"
+      }
+    },
+    {
+      "_id": "MPJournal:00D177AE-0AD5-4E72-BE03-C33CD13E396E",
+      "ISSNs": [
+        {
+          "ISSN": "2637-4943",
+          "publicationType": "epub"
+        }
+      ],
+      "title": "Environmental DNA",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPJournal",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "publisherName": "Atypon ReX",
+      "abbreviatedTitles": [
+        {
+          "abbrevType": "pubmed",
+          "abbreviatedTitle": "Environ. DNA"
+        }
+      ],
+      "journalIdentifiers": [
+        {
+          "journalID": "EDN3",
+          "journalIDType": "publisher-id"
+        },
+        {
+          "journalID": "Environ DNA",
+          "journalIDType": "nlm-ta"
+        },
+        {
+          "journalID": "",
+          "journalIDType": "doi"
+        }
+      ]
+    },
+    {
+      "_id": "MPSupplement:EAF1DCCC-ECF3-474C-983E-957BFF32E584",
+      "MIME": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "href": "attachment:e75159c3-dbc1-448e-a80d-d3b028969791",
+      "title": "ATHENA-2023-0065_supp2",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPSupplement",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872"
+    },
+    {
+      "_id": "MPSupplement:42680ACC-8767-4A42-AF4C-751A9012EFBD",
+      "MIME": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "href": "attachment:4ca821f1-336e-4661-a973-3f082c55541d",
+      "title": "ATHENA-2023-0065_supp4",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPSupplement",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872"
+    },
+    {
+      "_id": "MPSupplement:6D810AE3-1E16-4D42-990A-372E40FB49B9",
+      "MIME": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "href": "attachment:21b54397-adab-4734-be1c-5c81466d3fc9",
+      "title": "table_s1_review",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPSupplement",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872"
+    },
+    {
+      "_id": "MPSupplement:2756B752-3094-4B3B-984E-CD9A75782367",
+      "MIME": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "href": "attachment:abe66dc2-08bc-4de0-8bdd-c9a949b510c8",
+      "title": "table_s3_review",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPSupplement",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872"
+    },
+    {
+      "_id": "MPKeywordGroup:B842E249-1FBA-4B1F-B876-7F2ECB982282",
+      "type": "author",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPKeywordGroup",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872"
+    },
+    {
+      "_id": "MPKeyword:8392B25E-617F-4B1C-AD0E-90513672263C",
+      "name": "ddPCR",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPKeyword",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "containedGroup": "MPKeywordGroup:B842E249-1FBA-4B1F-B876-7F2ECB982282"
+    },
+    {
+      "_id": "MPKeyword:B4AE240B-960D-4F96-B28A-1E492E9A9D8E",
+      "name": "preservation strategies",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPKeyword",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "containedGroup": "MPKeywordGroup:B842E249-1FBA-4B1F-B876-7F2ECB982282"
+    },
+    {
+      "_id": "MPAffiliation:369D1033-09E9-42CB-931C-51F752B9E3BF",
+      "country": "Mozambique",
+      "priority": 2,
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPAffiliation",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "institution": "Marine Ecology Department, Lurio University, Nampula",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872"
+    },
+    {
+      "_id": "MPSection:B5364C05-DF46-447C-B3EC-0CC930BEBA36",
+      "path": [
+        "MPSection:B5364C05-DF46-447C-B3EC-0CC930BEBA36"
+      ],
+      "title": "",
+      "category": "MPSectionCategory:body",
+      "priority": 4,
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "elementIDs": [],
+      "objectType": "MPSection",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872"
+    },
+    {
+      "_id": "MPParagraphElement:7FF940C3-AA73-4B33-9BFC-45A2BB2439D5",
+      "contents": "<p xmlns=\"http://www.w3.org/1999/xhtml\" id=\"MPParagraphElement:7FF940C3-AA73-4B33-9BFC-45A2BB2439D5\" class=\"MPElement\" data-object-type=\"MPParagraphElement\">Environmental DNA (eDNA) based monitoring has been on the rise for the last few years for both biodiversity and targeted species assessment (<span class=\"citation\" data-reference-id=\"MPCitation:0F577BF0-51C5-4262-A636-77E4B5D23C21\">Hinlo, Gleeson, Lintermans, &amp; Furlan, 2017</span>). As a result, studies have been conducted, investigating various methodological elements of eDNA measurement procedures, allowing to increase the reliability and robustness of these approaches. Collection methods including filter type, pore size, extraction protocols or sample storage strategies and their impacts on eDNA recovery, and ultimately detection sensitivity, have already been extensively explored (<span class=\"citation\" data-reference-id=\"MPCitation:D86FE1AF-E259-470C-A6A2-B5951D97B7B1\">Wegleitner, Jerde, Tucker, Chadderton, &amp; Mahon, 2015</span>; <span class=\"citation\" data-reference-id=\"MPCitation:D7A59A78-0127-4CFF-9AB4-B97DFE39E0F1\">Yamanaka et al., 2016</span>; <span class=\"citation\" data-reference-id=\"MPCitation:98246F10-3EFF-4792-9D9B-798FEDFAC84C\">Djurhuus et al., 2017</span>; <span class=\"citation\" data-reference-id=\"MPCitation:2A92894E-11D9-4EE6-80C9-CA012B13BB1A\">Hinlo et al., 2017</span>; <span class=\"citation\" data-reference-id=\"MPCitation:1E4171FF-8E0D-48C9-9DB8-2F03E480C26A\">Spens et al., 2017</span>; <span class=\"citation\" data-reference-id=\"MPCitation:ED4E89A8-F361-4108-B58F-71CFEF5EE9A3\">Curtis, Larson, &amp; Davis, 2020</span>; <span class=\"citation\" data-reference-id=\"MPCitation:06D559A2-A8AE-4BFF-9F61-7D13D4CB5242\">Mauvisseau et al., 2020</span>). Currently, on-site filtration followed by rapid DNA extraction is generally recommended to reduce DNA degradation and obtain optimal DNA concentrations of specific target organisms or taxonomic groups (<span class=\"citation\" data-reference-id=\"MPCitation:617C8FB8-6754-4B12-8D7F-70E7E01E8303\">Yamanaka et al., 2016</span>; <span class=\"citation\" data-reference-id=\"MPCitation:BD91AB3C-0787-48BD-902C-4A9340278042\">Hinlo et al., 2017</span>). Despite this, on-site filtration can be difficult or dangerous in remote or less secured areas (<span class=\"citation\" data-reference-id=\"MPCitation:78706871-A480-45C7-A9C5-52AF51A12963\">Sales, Wangensteen, Carvalho, &amp; Mariani, 2019</span>) and a speedy subsequent DNA extraction is often a methodological bottleneck, especially during intensive field campaigns or monitoring programmes. This poses the necessity for using preservation strategies to allow longer-term storage of such samples with a minimum of DNA degradation until further analysis in an appropriate environment.</p>",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPParagraphElement",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "elementType": "p",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "placeholderInnerHTML": ""
+    },
+    {
+      "_id": "MPSection:86F39D5D-BC78-4A41-982C-2496AD2A8CCA",
+      "path": [
+        "MPSection:B5364C05-DF46-447C-B3EC-0CC930BEBA36",
+        "MPSection:86F39D5D-BC78-4A41-982C-2496AD2A8CCA"
+      ],
+      "title": "Methods",
+      "category": "MPSectionCategory:materials-method",
+      "priority": 6,
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "elementIDs": [],
+      "objectType": "MPSection",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872"
+    },
+    {
+      "_id": "MPFigureElement:21048F32-728F-48E4-9A43-0CBE22FD9735",
+      "label": "Figure 1",
+      "caption": "<p class=\"caption-description\" data-placeholder-text=\"Caption...\" contenteditable=\"true\">Experimental design of the mesocosms and the subsequent handling of the sampled water and filters, to compare the five different preservation strategies within this study. In each of the three mesocosms, a total of 15 independent samples were collected and randomly divided among conservation strategies. Preservation strategies are described more in detail in the method section.</p>",
+      "createdAt": 1693913529,
+      "listingID": "MPListing:44205AF9-2BA6-41B5-8592-CAFF7CF29036",
+      "updatedAt": 1693913529,
+      "objectType": "MPFigureElement",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "elementType": "figure",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "containedObjectIDs": [
+        "MPFigure:B7A9E390-C2F3-42B0-A360-246A4FC7D141"
+      ]
+    },
+    {
+      "_id": "MPSection:8D67B0F4-9565-4861-8B3D-25C1BE126EED",
+      "path": [
+        "MPSection:B5364C05-DF46-447C-B3EC-0CC930BEBA36",
+        "MPSection:86F39D5D-BC78-4A41-982C-2496AD2A8CCA",
+        "MPSection:8D67B0F4-9565-4861-8B3D-25C1BE126EED"
+      ],
+      "title": "Preservation methods and eDNA extraction",
+      "priority": 8,
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "elementIDs": [
+        "MPParagraphElement:513CB0AD-FE93-4DBE-855E-8EBD174C0809"
+      ],
+      "objectType": "MPSection",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872"
+    },
+    {
+      "_id": "MPParagraphElement:8BB5F9F5-050B-4529-9EAE-F887BE213D0C",
+      "contents": "<p xmlns=\"http://www.w3.org/1999/xhtml\" id=\"MPParagraphElement:8BB5F9F5-050B-4529-9EAE-F887BE213D0C\" class=\"MPElement\" data-object-type=\"MPParagraphElement\">Species-specific primer/probe assays compatible for ddPCR were developed following the methods outlined in Brys et al., 2020 and Mauvisseau et al., 2020, to quantify species-specific eDNA concentrations of <i>N. melanostomus, L. lota</i> and <i>R. rutilus</i> retrieved following the five different preservation treatments (see details of the assays development, including Limits of Detection and Limits of Quantification in Supplementary Material 1 and Table S2). ddPCR analyses were conducted as in Mauvisseau et al., 2019 and Brys et al., 2020. Furthermore, we included four negative controls (i.e. non-template DNA) and four positive controls (i.e. DNA extracted from the targeted species) included on each ddPCR plate (see details of ddPCR protocol and analyses in Supplementary Material 1). Total amount of fish eDNA retrieved from each sample was quantified using group-specific “teleo” primers (for further details see <span class=\"citation\" data-reference-id=\"MPCitation:9C90D29F-DBFE-4E37-AEF2-FBEADA0312BC\">Valentini et al., 2016</span>).</p>",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPParagraphElement",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "elementType": "p",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "placeholderInnerHTML": ""
+    },
+    {
+      "_id": "MPSection:D4194E51-A82D-42C0-B0C8-DA2585295944",
+      "path": [
+        "MPSection:B5364C05-DF46-447C-B3EC-0CC930BEBA36",
+        "MPSection:D4194E51-A82D-42C0-B0C8-DA2585295944"
+      ],
+      "title": "Results",
+      "category": "MPSectionCategory:results",
+      "priority": 11,
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "elementIDs": [
+        "MPParagraphElement:2EF1571C-0C09-4609-9FF3-5FB9F2080F35",
+        "MPParagraphElement:D4EC2A75-3341-46F5-8347-93FFE6269AB5",
+        "MPTableElement:1BD69100-BECF-4DBF-A4AB-DAD50243EFC2",
+        "MPFigureElement:D2BDAD76-347D-4D9B-9E15-1B29B002BAEC",
+        "MPParagraphElement:7D85B8BD-E04D-408D-9AF8-8C783582ACFB",
+        "MPFigureElement:9EA36081-A309-4924-9735-CD5874490D97"
+      ],
+      "objectType": "MPSection",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872"
+    },
+    {
+      "_id": "MPKeyword:E92BBC5D-FF97-4128-9835-3D864050C58C",
+      "name": "fish",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPKeyword",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "containedGroup": "MPKeywordGroup:B842E249-1FBA-4B1F-B876-7F2ECB982282"
+    },
+    {
+      "_id": "MPSection:AF2BE4D1-35C7-4AC1-A5DF-A63BAB9FE9FA",
+      "path": [
+        "MPSection:385EBFEF-B543-489D-9272-261B72A8992A",
+        "MPSection:AF2BE4D1-35C7-4AC1-A5DF-A63BAB9FE9FA"
+      ],
+      "title": "Abstract",
+      "category": "MPSectionCategory:abstract",
+      "priority": 3,
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "elementIDs": [
+        "MPParagraphElement:D0E31A59-90AD-49E3-8BBA-1F5C55743912"
+      ],
+      "objectType": "MPSection",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872"
+    },
+    {
+      "_id": "MPSection:14A65CD0-730C-413F-B16C-57C684D7F1C2",
+      "path": [
+        "MPSection:B5364C05-DF46-447C-B3EC-0CC930BEBA36",
+        "MPSection:14A65CD0-730C-413F-B16C-57C684D7F1C2"
+      ],
+      "title": "Introduction",
+      "category": "MPSectionCategory:introduction",
+      "priority": 5,
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "elementIDs": [
+        "MPParagraphElement:7FF940C3-AA73-4B33-9BFC-45A2BB2439D5",
+        "MPParagraphElement:498F302F-39FA-4541-980A-8934B6F3713C",
+        "MPParagraphElement:267AF887-74B8-4900-AE47-FAB7A290E223",
+        "MPParagraphElement:6E163D55-BB8A-479A-B0D6-31A50A80E7A9"
+      ],
+      "objectType": "MPSection",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872"
+    },
+    {
+      "_id": "MPParagraphElement:267AF887-74B8-4900-AE47-FAB7A290E223",
+      "contents": "<p xmlns=\"http://www.w3.org/1999/xhtml\" id=\"MPParagraphElement:267AF887-74B8-4900-AE47-FAB7A290E223\" class=\"MPElement\" data-object-type=\"MPParagraphElement\">To date, several filter preservation strategies have been tested for eDNA recovery, such as freezing, drying with silica beads or storage in ethanol or lysis buffer (<span class=\"citation\" data-reference-id=\"MPCitation:DF0A2DDC-5FD5-4909-84CB-04450936FF66\">Majaneva et al., 2018</span>). However, systematic comparisons of preservation strategies are missing or were only implemented over short time periods. Consequently, the efficiency of these methods is still uncertain over longer time spans, although time represents a crucial factor in sample storage (<span class=\"citation\" data-reference-id=\"MPCitation:C4419796-F4AA-4BA9-9368-E12A2283C1E5\">Murphy et al., 2002</span>; <span class=\"citation\" data-reference-id=\"MPCitation:DA71A063-11E9-4192-9F0A-D2829437B225\">Tatangelo, Franzetti, Gandolfi, Bestetti, &amp; Ambrosini, 2014</span>). Curtis et al., 2020 documented that water samples that were chilled and stored in the dark 48h before filtration showed no substantial decrease in eDNA detection or concentration of <i>Corbicula fluminea</i> with qPCR compared to samples that were immediately filtered. Using ddPCR, <span class=\"citation\" data-reference-id=\"MPCitation:87898B33-18E8-4029-9D0C-FB7B5576CE60\">Wegleitner et al. (2015)</span> reported no significant differences in DNA concentrations of <i>Neogobius melanostomus</i> when filters were stored in Longmire’s buffer over a period of 150 days and at room temperature before DNA extraction, compared to filters that were immediately extracted. Finally, <span class=\"citation\" data-reference-id=\"MPCitation:B5A36401-4A3A-4A8A-AF56-4E784CB9F590\">Sales et al. (2019)</span> demonstrated through the use of metabarcoding analyses on fish that water samples stored cooled on ice before filtration and DNA extraction resulted in greater MOTUs recovery than by adding cationic surfactant benzalkonium chloride (BAC) as preservative. These studies already highlighted key factors that can improve the confidence of eDNA based-monitoring. However, a systematic long-term comparisons across multiple methods and target species (including primers designed for metabarcoding) is missing. Indeed, the reliability of preservation strategies can only be assessed over a long storage time to thoroughly assess their potential impacts on samples, as degradation can sometimes occurs after a certain amount of time. In this context, ddPCR is an ideal approach for such tests, since this technique offers absolute quantification of target DNA in a sample, and is additionally not strongly affected by inhibitions problems (<span class=\"citation\" data-reference-id=\"MPCitation:9221AF74-6783-45B4-A57B-6CE893BB821F\">Doi et al., 2015</span>; <span class=\"citation\" data-reference-id=\"MPCitation:EB8499D4-C661-4488-81C9-F5B3FF9913E7\">Mauvisseau et al., 2019</span>; <span class=\"citation\" data-reference-id=\"MPCitation:55E3EEE3-A861-4571-8EA9-80EA30E430CE\">Wood et al., 2019</span>; <span class=\"citation\" data-reference-id=\"MPCitation:D91926B3-AD93-4D3E-A335-E6BFD3B1AB90\">Brys et al., 2020</span>). In contrast, both qPCR and metabarcoding have their limitations, do not provide absolute quantification of eDNA concentrations, and are in many cases documented to be much more sensitive to inhibition (<span class=\"citation\" data-reference-id=\"MPCitation:FD5E2746-EB39-4AC2-8DFB-FC2879E019EF\">Fujii et al., 2019</span>).</p>",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPParagraphElement",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "elementType": "p",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "placeholderInnerHTML": ""
+    },
+    {
+      "_id": "MPSection:E82DCBCB-E905-4896-945B-D0E52866F283",
+      "path": [
+        "MPSection:B5364C05-DF46-447C-B3EC-0CC930BEBA36",
+        "MPSection:86F39D5D-BC78-4A41-982C-2496AD2A8CCA",
+        "MPSection:E82DCBCB-E905-4896-945B-D0E52866F283"
+      ],
+      "title": "Experimental design of the mesocosms",
+      "priority": 7,
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "elementIDs": [
+        "MPParagraphElement:787DCBC8-F591-46A2-BBEF-1767B95FBF24",
+        "MPFigureElement:21048F32-728F-48E4-9A43-0CBE22FD9735"
+      ],
+      "objectType": "MPSection",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872"
+    },
+    {
+      "_id": "MPFigure:B7A9E390-C2F3-42B0-A360-246A4FC7D141",
+      "src": "attachment:faf7e982-2bc8-4d24-aa49-ccc8b310990d",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPFigure",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872"
+    },
+    {
+      "_id": "MPParagraphElement:513CB0AD-FE93-4DBE-855E-8EBD174C0809",
+      "contents": "<p xmlns=\"http://www.w3.org/1999/xhtml\" id=\"MPParagraphElement:513CB0AD-FE93-4DBE-855E-8EBD174C0809\" class=\"MPElement\" data-object-type=\"MPParagraphElement\">We investigated the efficiency of five preservation methods including on site filtration followed by either (A) immediate DNA extraction (&lt; 2hrs; further referred to as “Filter Fresh”), or storage for eight months following (B) freezing at -20 °C (“Filter Frozen”), (C) preservation with either Longmire’s buffer (“Longmire”) or (D) Sarkosyl buffer (“Sarkosyl”) at room temperature, and (E) eight month freezing of water samples (“Water Frozen”). Consistently, 150 mL of water was filtered for each filter across treatments. At the end of all filtrations, water remaining inside the capsule was expelled by pushing air through the capsule until dry. For the buffer preservations (treatments “Longmire” and “Sarkosyl”), 2 mL buffer was added to the filter before capping them all at both ends. Longmire lysis buffer contained 100 mM Tris, 100 mM EDTA, 10 mM NaCl, 0.5% SDS (<span class=\"citation\" data-reference-id=\"MPCitation:B87E5520-BE39-4EE0-8D53-C351366DA4B7\">Longmire, Maltbie, &amp; Baker, 1997</span>) whereas the Sarkosyl buffer contained 100 mM Tris, 100 mM EDTA, 10 mM NaCl, 1% Sodium N-lauroylsarcosinate (<span class=\"citation\" data-reference-id=\"MPCitation:44A742EE-637D-4C6B-B145-091CDBE66154\">Civade et al., 2016</span>). Filters assigned to both buffer treatments were stored in the dark, at constant room temperature until DNA extraction. Each preservation treatment was analysed in three filter replicates for each of the three mesocosms, resulting in a total of nine replicates per treatment and 15 samples per mesocosm. All eDNA samples (45 in total) were stored and processed prior to PCRs in a dedicated PCR-free laboratory for low copy number template extractions, with controlled DNA-free, HEPA-filtered compartments with positive air pressure, to avoid any contamination of eDNA samples. The Sterivex filters were extracted following a slightly modified version of the SX<sub>CAPSULE</sub> and SX<sub>TUBE</sub> method (suitable for filters without and with preservation buffer as in <span class=\"citation\" data-reference-id=\"MPCitation:904BD705-B7A2-4A1E-94A7-3C03641C1609\">Spens et al., 2017</span>). For Sterivex filters with buffer lysates from each SX<sub>CAPSULE</sub> and SX<sub>TUBE</sub> were pooled to obtain one extract for each filter containing eDNA from both the filter and the preservation buffer. DNA-extracts were finally eluted in 100 μL TE-buffer and stored at -20°C before further analysis.</p>",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPParagraphElement",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "elementType": "p",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "placeholderInnerHTML": ""
+    },
+    {
+      "_id": "MPParagraphElement:5171070E-D5C3-4494-A181-35521E376136",
+      "contents": "<p xmlns=\"http://www.w3.org/1999/xhtml\" id=\"MPParagraphElement:5171070E-D5C3-4494-A181-35521E376136\" class=\"MPElement\" data-object-type=\"MPParagraphElement\">Statistical analyses were performed in R v3.6.2 (<span class=\"citation\" data-reference-id=\"MPCitation:88214EE8-AF50-4484-B849-8A998300EC35\">R Core Team, 2020</span>). The absolute eDNA concentrations from the three targeted fish species were normalised by dividing measured eDNA copies per μL<sup>-1</sup> by the targeted fish biomass (g) for each mesocosm. This standardisation was performed to facilitate comparisons among fishes and resulted in measured eDNA concentration per fish biomass (further referred to as relative eDNA concentration) as dependent variable for downstream analyses. To assess the factors that determined relative eDNA concentrations, we established a regression model using (i) preservation method, (ii) fish species identity, (iii) total non-target fish biomass per mesocosm and (iv) mesocosm identity as explanatory variables. A regression analysis was also applied to test for preservation treatment effects on total fish eDNA concentration in the mesocosms, and a Holm-correction has been applied to adjust p-values for multiple group comparisons. Total fish eDNA concentrations were measured using group specific primers (see above) and were included to account for the effect of total eDNA content in a sample on the performance of species-specific approaches. For each of these regression, mesocosm identity was incorporated as explanatory variable and not as random effect because residual structure made the application of a Generalised Least Squares (i.e. GLS) function necessary and the integration in GLS into mixed regression models is computationally challenging. Further, we incorporated non-target species fish biomass as additional predictor in GLS models assessing target-specifies responses to account for varying total fish biomass across the mesocosms. GLS was implemented using the ‘nlme’ package and log-likelihood method (Pinheiro, Bates, DebRoy, Sarkar, &amp; <span class=\"citation\" data-reference-id=\"MPCitation:40989AA4-F2A8-4832-AC65-AE1D2FF05B60\">R Core Team, 2020</span>). We followed a full model building approach and used the Akaike Information Criterion (AIC) to choose the most parsimonious model. Finally, we computed the coefficient of variation (CV) for each combination of the three targeted species and preservation strategy by dividing the mean of the absolute eDNA concentrations by its standard deviation. We then pooled CVs from all three targeted species to assess the disparities between each preservation strategies and investigate the effect of the [log (absolute eDNA concentration +1)] on the variability of these DNA measurements. Graphical representations were obtained using the ggplot2 and ggscatter packages (<span class=\"citation\" data-reference-id=\"MPCitation:C6850FEA-DEC9-47ED-8B4A-43C46C5BE897\">Wickham, 2016</span>).</p>",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPParagraphElement",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "elementType": "p",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "placeholderInnerHTML": ""
+    },
+    {
+      "_id": "MPParagraphElement:D4EC2A75-3341-46F5-8347-93FFE6269AB5",
+      "contents": "<p xmlns=\"http://www.w3.org/1999/xhtml\" id=\"MPParagraphElement:D4EC2A75-3341-46F5-8347-93FFE6269AB5\" class=\"MPElement\" data-object-type=\"MPParagraphElement\">Based on our GLS-regression analysis, we found that both preservation treatment and fish species identity had significant effects on the retained relative DNA concentration of the three target fish species. We also found a significant mesocosm effect, for which we accounted in our analyses. Species-specific eDNA concentration were additionally affected by the total fish biomass across mesocosm (an increase by 100g in non-target fish biomass increased the target eDNA concentration by 0.3 copies μL<sup>–1</sup> target fish biomass<sup>-1</sup>). Interaction effects between species identity and preservation treatment, however, were not found to be significant (increased model AIC by &gt;2 units), indicating a consistent impact of different preservation methods on eDNA recovery in our three study species. Pairwise comparisons between treatments revealed no significant differences of relative eDNA concentrations between the Filter Frozen, Longmire and Sarkosyl treatments for single species (<span class=\"cross-reference\" data-reference-id=\"MPAuxiliaryObjectReference:7A545E51-A134-496B-B897-D15A2BE41F0A\"><span class=\"kind elementIndex\"><b>Table 1</b></span></span>). However, Filter Fresh and Water Frozen treatments recovered significantly less DNA than the other three methods (<span class=\"cross-reference\" data-reference-id=\"MPAuxiliaryObjectReference:80CE3BB0-45AD-4D4A-877A-A4948DC8AE33\"><span class=\"kind elementIndex\"><b>Figure 2</b></span></span>, <span class=\"cross-reference\" data-reference-id=\"MPAuxiliaryObjectReference:7CE59DED-96AA-4449-A6C9-18896594C0A3\"><span class=\"kind elementIndex\"><b>Table 1</b></span></span>). Finally, for the species-specific recovery analysis, we found significant differences between the relative eDNA concentrations among each of the three fish species studied, with <i>N. melanostomus</i> showing the highest eDNA concentrations per biomass (see also Table S3).</p>",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPParagraphElement",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "elementType": "p",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "placeholderInnerHTML": ""
+    },
+    {
+      "_id": "MPListing:08B37153-BA86-438D-9090-AD8EEC4A3A89",
+      "contents": "",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPListing",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "languageKey": "null",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872"
+    },
+    {
+      "_id": "MPFigure:B08D2BEF-6237-4FA0-8974-7806A283D051",
+      "src": "attachment:9a8d2a8a-b123-450b-8823-01a64a240776",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPFigure",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872"
+    },
+    {
+      "_id": "MPFigure:02EBE85F-DA19-45A1-A15E-E0C3A06AB9C4",
+      "src": "attachment:e0bbb581-8584-44d2-bfdc-4f12b10c9eb6",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPFigure",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872"
+    },
+    {
+      "_id": "MPParagraphElement:383766A3-5DF9-4C2E-9131-7889BC9BE71F",
+      "contents": "<p xmlns=\"http://www.w3.org/1999/xhtml\" id=\"MPParagraphElement:383766A3-5DF9-4C2E-9131-7889BC9BE71F\" class=\"MPElement\" data-object-type=\"MPParagraphElement\">The processing of eDNA samples after collection is a critical step in the workflow of eDNA-based monitoring campaigns and can substantially influence the quality of resulting data. In this study, we assessed the impact of different long-term preservation strategies on the reliability of eDNA-based species detection and quantification in a systematic methods comparison. We showed that samples extracted immediately after collection yielded significantly less eDNA compared to all other preservation treatments investigated (<span class=\"cross-reference\" data-reference-id=\"MPAuxiliaryObjectReference:40545FFB-603B-4666-98CE-F8494EB1190F\"><span class=\"kind elementIndex\"><b>Figure 2</b></span></span>, <span class=\"cross-reference\" data-reference-id=\"MPAuxiliaryObjectReference:2DAD1180-3A8D-448E-8838-FC2F8BEF6E95\"><span class=\"kind elementIndex\"><b>Table 1</b></span></span>). The high preservation performance of both buffer solutions, Longmire and Sarkosyl’s buffer, allows storage at room temperature and is an encouraging result to reduce sampling costs and extend the range of monitoring surveys to more remote regions.</p>",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPParagraphElement",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "elementType": "p",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "placeholderInnerHTML": ""
+    },
+    {
+      "_id": "MPSection:385EBFEF-B543-489D-9272-261B72A8992A",
+      "path": [
+        "MPSection:385EBFEF-B543-489D-9272-261B72A8992A"
+      ],
+      "title": "",
+      "category": "MPSectionCategory:abstracts",
+      "priority": 2,
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "elementIDs": [],
+      "objectType": "MPSection",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872"
+    },
+    {
+      "_id": "MPParagraphElement:D0E31A59-90AD-49E3-8BBA-1F5C55743912",
+      "contents": "<p xmlns=\"http://www.w3.org/1999/xhtml\" id=\"MPParagraphElement:D0E31A59-90AD-49E3-8BBA-1F5C55743912\" class=\"MPElement\" data-object-type=\"MPParagraphElement\">Molecular-based monitoring relying on environmentally DNA (eDNA) detection became routinely used around the world in the last few years, especially in the life aquatic with Steve Zissou. The large potential and increasing applications of this technique calls for technical improvements to optimise the reliability of these surveys. An important technical aspect in the eDNA workflow is the appropriate preservation of samples taken in the field, as it can significantly affect eDNA recovery and ultimately false negative rates. In this study, we explored the efficiency of five different preservation strategies by using a controlled mesocosm experiment in which we included three fishing communities of different composition. Specifically, we compared eDNA recovery in DNA extractions (i) performed immediately following collection, or after eight months storage from (ii) frozen filters, (iii) unfiltered water samples stored at -20 °C, and filters preserved at room temperature with (iv) Longmire and (v) Sarkosyl butter. Effects of different preservation strategies were quantified using ddPCR measurements of three fish species (<i>Neogobius melanostomus</i>, <i>Rutilus rutilus</i> and <i>Lota lota</i>) and total fish DNA content using group-specific primers for Teleostei. Samples extracted immediately following collection without any further preservation yielded significantly less DNA compared to the other approaches. Overall, Longmire’s buffer facilitated the best eDNA recovery across all fish species although approaches such as filter freezing or the use of Sarkosyl buffer yielded similar recovery results. Relative measurement variability, an important indicator for reliable eDNA quantification, was lowest when using Longmire’s and Sarkosyl buffers and generally decreased when increasing eDNA quantity. Overall, our results clearly highlight the significant impact of sample preservation and how this can substantially affect the performance and reliability of eDNA-based approaches.</p>",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPParagraphElement",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "elementType": "p",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "placeholderInnerHTML": ""
+    },
+    {
+      "_id": "MPParagraphElement:498F302F-39FA-4541-980A-8934B6F3713C",
+      "contents": "<p xmlns=\"http://www.w3.org/1999/xhtml\" id=\"MPParagraphElement:498F302F-39FA-4541-980A-8934B6F3713C\" class=\"MPElement\" data-object-type=\"MPParagraphElement\">The quick brown fox jumped over the lazy dogs.</p>",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPParagraphElement",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "elementType": "p",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "placeholderInnerHTML": ""
+    },
+    {
+      "_id": "MPParagraphElement:6E163D55-BB8A-479A-B0D6-31A50A80E7A9",
+      "contents": "<p xmlns=\"http://www.w3.org/1999/xhtml\" id=\"MPParagraphElement:6E163D55-BB8A-479A-B0D6-31A50A80E7A9\" class=\"MPElement\" data-object-type=\"MPParagraphElement\">In this study, we assessed the impact of five preservation strategies on the recovery of fish eDNA to determine the optimal long-term storage methods facilitating a reliable detection and quantification of eDNA samples. Our assessment was based on a controlled mesocosm experiment consisting of three tanks with different multi-species fish communities. Three target fish species, a combination the invasive round goby (<i>Neogobius melanostomus</i> Pallas, 1814), the endangered burbot (<i>Lota lota</i> Linnaeus, 1758) and the common roach (<i>Rutilus rutilus</i> Linnaeus, 1758), were part of all three communities but showed differences in abundance and biomass across tanks. Sample preservation treatments included immediate DNA extraction after collection and filtration, and long-term storage of both water samples and filters via freezing, and the use of Longmire and Sarkosyl preservation buffers for storage at room temperature. Based on this experimental set-up, ddPCR analyses using species-specific and group-specific metabarcoding primers were conducted for absolute DNA quantification.</p>",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPParagraphElement",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "elementType": "p",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "placeholderInnerHTML": ""
+    },
+    {
+      "_id": "MPParagraphElement:787DCBC8-F591-46A2-BBEF-1767B95FBF24",
+      "contents": "<p xmlns=\"http://www.w3.org/1999/xhtml\" id=\"MPParagraphElement:787DCBC8-F591-46A2-BBEF-1767B95FBF24\" class=\"MPElement\" data-object-type=\"MPParagraphElement\">We performed a controlled mesocosm experiment at the fish farm Vandeput (Zonhoven) in December 2019. Prior to the onset of the experiment, three 500L polyethylene tanks were decontaminated with 10% bleach solution before being filled with fish-DNA free ground water. Indeed, the ground water used was previously tested for potential fish contamination before the start of the experiment using metabarcoding analysis. In each tank, we introduced a fish community consisting of the same set of species with, however, slightly variating total biomasses and abundances for our three target species, <i>N. melanostomus</i>, <i>L. lota</i> and <i>R. rutilus</i> (see Table S1). All introduced fish were kept without feeding in single-species 40L tanks one week before their introduction to the mesocosms. This was implemented to avoid contamination with eDNA from other species that individuals had previously shared a tank. Before inclusion in one the three mesocosms, each fish was weighed to the nearest 0.1 g. During the experiment, mesocosms were vigorously aerated and covered to avoid cross-contamination among tanks. For each preservation treatment and mesocosm, three water samples were taken after one week (i.e., three field replicates) (<span class=\"cross-reference\" data-reference-id=\"MPAuxiliaryObjectReference:36530E5F-200F-4F1D-ADC2-E82F726C8F8F\"><span class=\"kind elementIndex\"><b>Figure 1</b></span></span>). We took 500 mL water samples, that were either stored in clean plastic bottles for further storage in the freezer, or immediately filtered on an enclosed 0.45-µm pore size PVDF Sterivex-HV filter capsule (SVHVL10RC, Merck Millipore, Darmstadt, Germany), using a sterile 60 mL Luer lock syringe for each mesocosm. The use of fishes within this experiment complied with Belgium animal welfare laws, guidelines and policy as approved by the Animal Welfare Department within the Flemish public administration.</p>",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPParagraphElement",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "elementType": "p",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "placeholderInnerHTML": ""
+    },
+    {
+      "_id": "MPListing:44205AF9-2BA6-41B5-8592-CAFF7CF29036",
+      "contents": "",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPListing",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "languageKey": "null",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872"
+    },
+    {
+      "_id": "MPSection:77DA6F47-5F8F-411E-B40E-1F076169FA70",
+      "path": [
+        "MPSection:B5364C05-DF46-447C-B3EC-0CC930BEBA36",
+        "MPSection:86F39D5D-BC78-4A41-982C-2496AD2A8CCA",
+        "MPSection:77DA6F47-5F8F-411E-B40E-1F076169FA70"
+      ],
+      "title": "ddPCR analyses",
+      "priority": 9,
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "elementIDs": [
+        "MPParagraphElement:8BB5F9F5-050B-4529-9EAE-F887BE213D0C"
+      ],
+      "objectType": "MPSection",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872"
+    },
+    {
+      "_id": "MPSection:D4C3DA19-B547-4B3C-BB7A-1FC746C6FBA0",
+      "path": [
+        "MPSection:B5364C05-DF46-447C-B3EC-0CC930BEBA36",
+        "MPSection:86F39D5D-BC78-4A41-982C-2496AD2A8CCA",
+        "MPSection:D4C3DA19-B547-4B3C-BB7A-1FC746C6FBA0"
+      ],
+      "title": "Statistical analyses",
+      "priority": 10,
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "elementIDs": [
+        "MPParagraphElement:5171070E-D5C3-4494-A181-35521E376136"
+      ],
+      "objectType": "MPSection",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872"
+    },
+    {
+      "_id": "MPParagraphElement:2EF1571C-0C09-4609-9FF3-5FB9F2080F35",
+      "contents": "<p xmlns=\"http://www.w3.org/1999/xhtml\" id=\"MPParagraphElement:2EF1571C-0C09-4609-9FF3-5FB9F2080F35\" class=\"MPElement\" data-object-type=\"MPParagraphElement\">All three species-specific assays targeting <i>L. lota</i>, <i>N. melanostomus</i> and <i>R. rutilus</i> were found to be species-specific, and positive and negative controls (i.e. four positive controls consisting of DNA from the target species and four negative control where DNA was replaced by ddH<sub>2</sub>O) performed as expected. All eDNA samples showed a positive amplification using the teleo primers across all preservation treatments and each of the technical replicates.</p>",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPParagraphElement",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "elementType": "p",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "placeholderInnerHTML": ""
+    },
+    {
+      "_id": "MPTableElement:1BD69100-BECF-4DBF-A4AB-DAD50243EFC2",
+      "title": "Results of pairwise comparisons showing the differences among preservation strategies in normalised eDNA concentration using regression analysis (a Holm-correction has been applied to adjust <i>p</i>-values for multiple group comparisons). Bold letter type indicates preservation strategies with a significantly higher DNA recovery rates. ‘ns’ stands for non-significant.",
+      "caption": "",
+      "createdAt": 1693913529,
+      "listingID": "MPListing:08B37153-BA86-438D-9090-AD8EEC4A3A89",
+      "updatedAt": 1693913529,
+      "objectType": "MPTableElement",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "elementType": "table",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "suppressFooter": true,
+      "containedObjectID": "MPTable:5EB517B8-97A9-4283-BD2C-38287E3A003D"
+    },
+    {
+      "_id": "MPFigureElement:D2BDAD76-347D-4D9B-9E15-1B29B002BAEC",
+      "label": "Figure 2",
+      "caption": "<p class=\"caption-description\" data-placeholder-text=\"Caption...\" contenteditable=\"true\">(A) The effect of five different preservation strategies on the total normalised fish eDNA concentrations retrieved using the teleo group-specific primers. Sample size was n = 9 (3 mesocosms x 3 filters) for each method. Normalised fish eDNA from the fish communities was obtained by dividing measured eDNA (copies / μL) using the using group-specific “teleo” primers by the entire fish biomass (g) for each mesocosm. (B) Preservation treatment effects on the normalised fish eDNA from N. melanostomus, L. lota and R. rutilus, retrieved using the species-specific primer/probe assays which are described more in detail in the methods section. Sample size was n = 27 (3 mesocosms x 3 filters x 3 species) for each method. Normalised fish eDNA from each species was obtained by dividing measured eDNA (copies / μL) by the targeted fish biomass (g) for each mesocosm.</p>",
+      "createdAt": 1693913529,
+      "listingID": "MPListing:9A1422B3-7006-48A0-A457-3D221564B2F5",
+      "updatedAt": 1693913529,
+      "objectType": "MPFigureElement",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "elementType": "figure",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "containedObjectIDs": [
+        "MPFigure:B08D2BEF-6237-4FA0-8974-7806A283D051"
+      ]
+    },
+    {
+      "_id": "MPListing:9A1422B3-7006-48A0-A457-3D221564B2F5",
+      "contents": "",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPListing",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "languageKey": "null",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872"
+    },
+    {
+      "_id": "MPFigureElement:9EA36081-A309-4924-9735-CD5874490D97",
+      "label": "Figure 3",
+      "caption": "<p class=\"caption-description\" data-placeholder-text=\"Caption...\" contenteditable=\"true\">Differences in the coefficient of variation across conservation strategies (A) and the relationship between the coefficient of variation and long-transformed mean DNA concentrations calculated for each preservation strategies (B).</p>",
+      "createdAt": 1693913529,
+      "listingID": "MPListing:DC03957A-4791-45E2-BA7F-2252EBB8446F",
+      "updatedAt": 1693913529,
+      "objectType": "MPFigureElement",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "elementType": "figure",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "containedObjectIDs": [
+        "MPFigure:02EBE85F-DA19-45A1-A15E-E0C3A06AB9C4"
+      ]
+    },
+    {
+      "_id": "MPSection:A204614C-E3EF-411A-8024-8CAFD7495CD7",
+      "path": [
+        "MPSection:B5364C05-DF46-447C-B3EC-0CC930BEBA36",
+        "MPSection:A204614C-E3EF-411A-8024-8CAFD7495CD7"
+      ],
+      "title": "Discussion",
+      "category": "MPSectionCategory:discussion",
+      "priority": 12,
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "elementIDs": [
+        "MPParagraphElement:383766A3-5DF9-4C2E-9131-7889BC9BE71F",
+        "MPParagraphElement:FA2164EA-16C8-40DB-B800-6C505A60B945",
+        "MPParagraphElement:AADC9214-0932-47CA-9F24-9760E3C807EF",
+        "MPParagraphElement:47FD9890-1A90-4375-91D5-2792F49E817F",
+        "MPParagraphElement:93C57FB8-157D-4545-9958-CEBD0ADF1E8C",
+        "MPParagraphElement:16BFA5CE-049D-4E85-8777-2E1A6FE7304D"
+      ],
+      "objectType": "MPSection",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872"
+    },
+    {
+      "_id": "MPParagraphElement:AADC9214-0932-47CA-9F24-9760E3C807EF",
+      "contents": "<p xmlns=\"http://www.w3.org/1999/xhtml\" id=\"MPParagraphElement:AADC9214-0932-47CA-9F24-9760E3C807EF\" class=\"MPElement\" data-object-type=\"MPParagraphElement\">Irrespective of mechanistic effects, our results clearly showed that Longmire’s buffer can be recommended to improve the recovery yields of eDNA samples as suggested by earlier studies (<span class=\"citation\" data-reference-id=\"MPCitation:853D4C41-437C-4994-9F16-E157F1A780F0\">Renshaw, Olds, Jerde, McVeigh, &amp; Lodge, 2015</span>; <span class=\"citation\" data-reference-id=\"MPCitation:6164A526-429A-4554-9100-213A19855931\">Kumar, Eble, &amp; Gaither, 2019</span>). We found that this results were consistent for eDNA recovery of three target fish species as well as for extraction of total fish DNA as required for metabarcoding approaches. These results are encouraging as they should help to facilitate forthcoming eDNA studies in remote areas or tropical regions, where other preservation treatments (previously showing high recovery rates of eDNA) might not be available (<span class=\"citation\" data-reference-id=\"MPCitation:63023C7D-FC5F-45C5-8E69-8A7A9B8FAD53\">Cilleros et al., 2019</span>; <span class=\"citation\" data-reference-id=\"MPCitation:6BFF596A-B844-493E-9D61-56657DA60CFC\">Sales et al., 2019</span>).</p>",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPParagraphElement",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "elementType": "p",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "placeholderInnerHTML": ""
+    },
+    {
+      "_id": "MPTable:5EB517B8-97A9-4283-BD2C-38287E3A003D",
+      "contents": "<table xmlns=\"http://www.w3.org/1999/xhtml\" id=\"MPTableElement:1BD69100-BECF-4DBF-A4AB-DAD50243EFC2\" class=\"MPElement\" data-contained-object-id=\"MPTable:5EB517B8-97A9-4283-BD2C-38287E3A003D\"><colgroup><col width=\"25.02%\" /><col width=\"25%\" /><col width=\"24.99%\" /><col width=\"24.99%\" /></colgroup><thead style=\"display: table-header-group;\"><tr><th data-placeholder-text=\"Data\" valign=\"top\" align=\"center\" scope=\"col\" style=\"border-top: solid 0.50pt; border-bottom: solid 1.50pt; background-color:rgb(255,255,255)\">Treatment 1</th><th data-placeholder-text=\"Data\" valign=\"top\" align=\"center\" scope=\"col\" style=\"border-top: solid 0.50pt; border-bottom: solid 1.50pt; background-color:rgb(255,255,255)\">Treatment 2</th><th colspan=\"2\" data-placeholder-text=\"Data\" valign=\"top\" align=\"center\" scope=\"colgroup\" style=\"border-top: solid 0.50pt; border-bottom: solid 1.50pt; background-color:rgb(255,255,255)\">Treatment effects - pairwise comparisons</th></tr><tr><th data-placeholder-text=\"Data\" valign=\"top\" align=\"center\" scope=\"col\" style=\"border-bottom: solid 0.50pt; background-color:rgb(204,204,204)\">Filtration fresh</th><th data-placeholder-text=\"Data\" valign=\"top\" align=\"center\" scope=\"col\" style=\"border-bottom: solid 0.50pt; background-color:rgb(204,204,204)\"><b>Longmire</b></th><th data-placeholder-text=\"Data\" valign=\"top\" align=\"center\" scope=\"col\" style=\"border-bottom: solid 0.50pt; background-color:rgb(204,204,204)\">***</th><th data-placeholder-text=\"Data\" valign=\"top\" align=\"center\" scope=\"col\" style=\"border-bottom: solid 0.50pt; background-color:rgb(204,204,204)\">&lt;0.001</th></tr></thead><tbody><tr><td data-placeholder-text=\"Data\" valign=\"top\" align=\"center\" scope=\"row\" style=\"border-top: solid 0.50pt\">Filter frozen</td><td data-placeholder-text=\"Data\" valign=\"top\" align=\"center\" style=\"border-top: solid 0.50pt\">Longmire</td><td data-placeholder-text=\"Data\" valign=\"top\" align=\"center\" style=\"border-top: solid 0.50pt\">ns</td><td data-placeholder-text=\"Data\" valign=\"top\" align=\"center\" style=\"border-top: solid 0.50pt\">1</td></tr><tr><td data-placeholder-text=\"Data\" valign=\"top\" align=\"center\" scope=\"row\" style=\"background-color:rgb(204,204,204)\">Sarkosyl</td><td data-placeholder-text=\"Data\" valign=\"top\" align=\"center\" style=\"background-color:rgb(204,204,204)\"><b>Longmire</b></td><td data-placeholder-text=\"Data\" valign=\"top\" align=\"center\" style=\"background-color:rgb(204,204,204)\">ns</td><td data-placeholder-text=\"Data\" valign=\"top\" align=\"center\" style=\"background-color:rgb(204,204,204)\">1</td></tr><tr><td data-placeholder-text=\"Data\" valign=\"top\" align=\"center\" scope=\"row\">Water frozen</td><td data-placeholder-text=\"Data\" valign=\"top\" align=\"center\"><b>Longmire</b></td><td data-placeholder-text=\"Data\" valign=\"top\" align=\"center\">*</td><td data-placeholder-text=\"Data\" valign=\"top\" align=\"center\">0.045</td></tr><tr><td data-placeholder-text=\"Data\" valign=\"top\" align=\"center\" scope=\"row\" style=\"background-color:rgb(204,204,204)\">Filter frozen</td><td data-placeholder-text=\"Data\" valign=\"top\" align=\"center\" style=\"background-color:rgb(204,204,204)\">Filter fresh</td><td data-placeholder-text=\"Data\" valign=\"top\" align=\"center\" style=\"background-color:rgb(204,204,204)\">***</td><td data-placeholder-text=\"Data\" valign=\"top\" align=\"center\" style=\"background-color:rgb(204,204,204)\">&lt;0.001</td></tr><tr><td data-placeholder-text=\"Data\" valign=\"top\" align=\"center\" scope=\"row\">Sarkosyl</td><td data-placeholder-text=\"Data\" valign=\"top\" align=\"center\">Filter fresh</td><td data-placeholder-text=\"Data\" valign=\"top\" align=\"center\">***</td><td data-placeholder-text=\"Data\" valign=\"top\" align=\"center\">&lt;0.001</td></tr><tr><td data-placeholder-text=\"Data\" valign=\"top\" align=\"center\" scope=\"row\" style=\"background-color:rgb(204,204,204)\">Water frozen</td><td data-placeholder-text=\"Data\" valign=\"top\" align=\"center\" style=\"background-color:rgb(204,204,204)\">Filter fresh</td><td data-placeholder-text=\"Data\" valign=\"top\" align=\"center\" style=\"background-color:rgb(204,204,204)\">***</td><td data-placeholder-text=\"Data\" valign=\"top\" align=\"center\" style=\"background-color:rgb(204,204,204)\">&lt;0.001</td></tr><tr><td data-placeholder-text=\"Data\" valign=\"top\" align=\"center\" scope=\"row\">Sarkosyl</td><td data-placeholder-text=\"Data\" valign=\"top\" align=\"center\">Filter frozen</td><td data-placeholder-text=\"Data\" valign=\"top\" align=\"center\">ns</td><td data-placeholder-text=\"Data\" valign=\"top\" align=\"center\">1</td></tr><tr><td data-placeholder-text=\"Data\" valign=\"top\" align=\"center\" scope=\"row\" style=\"background-color:rgb(204,204,204)\">Water frozen</td><td data-placeholder-text=\"Data\" valign=\"top\" align=\"center\" style=\"background-color:rgb(204,204,204)\"><b>Filter frozen</b></td><td data-placeholder-text=\"Data\" valign=\"top\" align=\"center\" style=\"background-color:rgb(204,204,204)\">**</td><td data-placeholder-text=\"Data\" valign=\"top\" align=\"center\" style=\"background-color:rgb(204,204,204)\">&lt;0.007</td></tr><tr><td data-placeholder-text=\"Data\" valign=\"top\" align=\"center\" scope=\"row\" style=\"border-bottom: solid 0.50pt\">Water frozen</td><td data-placeholder-text=\"Data\" valign=\"top\" align=\"center\" style=\"border-bottom: solid 0.50pt\"><b>Sarkosyl</b></td><td data-placeholder-text=\"Data\" valign=\"top\" align=\"center\" style=\"border-bottom: solid 0.50pt\">**</td><td data-placeholder-text=\"Data\" valign=\"top\" align=\"center\" style=\"border-bottom: solid 0.50pt\">&lt;0.009</td></tr></tbody><tfoot style=\"display: none;\"><tr><td data-placeholder-text=\"Data\" class=\"placeholder\"></td></tr></tfoot></table>",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPTable",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872"
+    },
+    {
+      "_id": "MPKeywordsElement:5412C7F2-CDD2-4897-8B6F-0AEC64B516DC",
+      "contents": "<div></div>",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPKeywordsElement",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "elementType": "div",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872"
+    },
+    {
+      "_id": "MPParagraphElement:7D85B8BD-E04D-408D-9AF8-8C783582ACFB",
+      "contents": "<p xmlns=\"http://www.w3.org/1999/xhtml\" id=\"MPParagraphElement:7D85B8BD-E04D-408D-9AF8-8C783582ACFB\" class=\"MPElement\" data-object-type=\"MPParagraphElement\">The results of the teleo primers largely mirrored those of species specific estimates (<span class=\"cross-reference\" data-reference-id=\"MPAuxiliaryObjectReference:F224D7DA-7A1C-4DFF-8983-F1F41D884D55\"><span class=\"kind elementIndex\"><b>Fig. 2</b></span></span>) with both treatment and mesocosm identity significantly affecting the retained amount of total eDNA. Again no relevant interaction effects were found (i.e. inclusion increased AIC). The Filter Fresh and Water Frozen treatments performed significantly less than the other three treatments (<i>P</i> &lt; 0.084 in all comparisons), with the Longmire treatment performing significantly better than the Filter Frozen and Sarkosyl’s buffer preservation treatments (<i>P</i> &lt; 0.02). Finally, the coefficients of variation of eDNA measurements significantly decreased with an increasing mean species-specific eDNA concentration across all species (<i>R</i> = -0.62, <i>P</i> &lt; 0.01; <span class=\"cross-reference\" data-reference-id=\"MPAuxiliaryObjectReference:6A55F781-4561-4110-9A6B-54ED726561C3\"><span class=\"kind elementIndex\"><b>Figure 3</b></span></span>). Preservation strategies had no direct (inclusion increased AIC) but only an indirect impact via on this relationship by impacting extracted eDNA concentrations.</p>",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPParagraphElement",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "elementType": "p",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "placeholderInnerHTML": ""
+    },
+    {
+      "_id": "MPListing:DC03957A-4791-45E2-BA7F-2252EBB8446F",
+      "contents": "",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPListing",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "languageKey": "null",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872"
+    },
+    {
+      "_id": "MPParagraphElement:FA2164EA-16C8-40DB-B800-6C505A60B945",
+      "contents": "<p xmlns=\"http://www.w3.org/1999/xhtml\" id=\"MPParagraphElement:FA2164EA-16C8-40DB-B800-6C505A60B945\" class=\"MPElement\" data-object-type=\"MPParagraphElement\">The much poorer performance of freshly extracted filters compared to other methods (e.g. average reduction of 20% of extracted DNA compared to freezing filters) was surprising. One possibility to explain this result is a potential rapid DNA degradation occurring within the filters before extraction. However, the loss of such large DNA quantities during a relatively short period of time (&lt; 2 hrs.) seems rather unlikely. An alternative explanation is that preservation techniques such as freezing or the application of preservation buffer could facilitate cell lysis and a more efficient DNA extraction (<span class=\"citation\" data-reference-id=\"MPCitation:F2429B44-AC1E-46A0-9B04-3D0BF3AFFA18\">Wegleitner et al., 2015</span>). However, our results remain inconclusive in this regard, and it would be a worthwhile aim for future studies to investigate more specifically the mechanisms leading to these such large differences in eDNA recovery.</p>",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPParagraphElement",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "elementType": "p",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "placeholderInnerHTML": ""
+    },
+    {
+      "_id": "MPParagraphElement:93C57FB8-157D-4545-9958-CEBD0ADF1E8C",
+      "contents": "<p xmlns=\"http://www.w3.org/1999/xhtml\" id=\"MPParagraphElement:93C57FB8-157D-4545-9958-CEBD0ADF1E8C\" class=\"MPElement\" data-object-type=\"MPParagraphElement\">Moreover, species-specific eDNA concentration were affected by overall fish biomass in mesocosms. This positive effect was a non-anticipating finding, which could be explained by the effects of overall fish biomass and stocking rates on fish behaviour. High stocking rates are known for their potential stress induction (<span class=\"citation\" data-reference-id=\"MPCitation:280A6D41-D4D6-4EEC-9525-34F5C4FE04AE\">Costas, Aragão, Mancera, Dinis, &amp; Conceição, 2007</span>). Associated changes and physiology and behaviour may have led to increased DNA shedding rates and eventually higher DNA concentration. However, further experiment would be required to evaluate whether our observation is indeed a consistent phenomenon.</p>",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPParagraphElement",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "elementType": "p",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "placeholderInnerHTML": ""
+    },
+    {
+      "_id": "MPParagraphElement:47FD9890-1A90-4375-91D5-2792F49E817F",
+      "contents": "<p xmlns=\"http://www.w3.org/1999/xhtml\" id=\"MPParagraphElement:47FD9890-1A90-4375-91D5-2792F49E817F\" class=\"MPElement\" data-object-type=\"MPParagraphElement\">Furthermore, our results revealed species-specific differences in the normalised DNA concentrations (eDNA concentration in water per fish biomass), that can be attributed to variation in the three species’ eDNA shedding rates (<span class=\"citation\" data-reference-id=\"MPCitation:CCB6D854-1DDB-43CD-8055-C3C6BCF17F47\">Sassoubre, Yamahara, Gardner, Block, &amp; Boehm, 2016</span>). Such differences in shedding rates can emerge from biological factors such as variable metabolic rates, surface to volume ratios or an effort of individuals to deceive their “chemical footprint” in order to avoid detection by predators or competitors (<span class=\"citation\" data-reference-id=\"MPCitation:005AA557-38A1-44EE-9FC3-3DAB64DA5614\">Andruszkiewicz Allan, Zhang, Lavery, &amp; Govindarajan, 2020</span>; <span class=\"citation\" data-reference-id=\"MPCitation:781AA953-88E5-4681-94EE-F07E3CC15415\">Jo, Murakami, Yamamoto, Masuda, &amp; Minamoto, 2019</span>). On the other hand, technical aspects could favour species differences. Although all species-specific assays were amplifying similar size of DNA fragments, potential differences in assays design and efficiency may contribute to such results.</p>",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPParagraphElement",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "elementType": "p",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "placeholderInnerHTML": ""
+    },
+    {
+      "_id": "MPParagraphElement:16BFA5CE-049D-4E85-8777-2E1A6FE7304D",
+      "contents": "<p xmlns=\"http://www.w3.org/1999/xhtml\" id=\"MPParagraphElement:16BFA5CE-049D-4E85-8777-2E1A6FE7304D\" class=\"MPElement\" data-object-type=\"MPParagraphElement\">Finally, we also observed a decrease in the standardised variability of eDNA measurements among the technical replicates with increasing measured DNA concentrations. Such estimates of variability are an important evaluation criterion as a higher measurement variability rapidly decreases the reliability of eDNA quantification. Consequently, sub-optimal sample preservation can have to profound effects. First, it may increase the risk of false negative results, especially in applications with lower sensitivity such as qPCR or metabarcoding. Additionally, it is likely to introduce noise and thereby decrease the reliability of quantitative ddPCR approaches or semi-quantitative analysed based on relative number of reads in metabarcoding samples. Preservation strategies are linked to little additional costs and represent easily implementable adjustments to current eDNA protocols. Therefore, we recommend the standard application of appropriate techniques in future field sampling and monitoring campaigns.</p>",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPParagraphElement",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "elementType": "p",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "placeholderInnerHTML": ""
+    },
+    {
+      "_id": "MPSection:76DD8C5F-64D0-4307-BA08-8099FFD06050",
+      "path": [
+        "MPSection:76DD8C5F-64D0-4307-BA08-8099FFD06050"
+      ],
+      "title": "",
+      "category": "MPSectionCategory:backmatter",
+      "priority": 13,
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "elementIDs": [],
+      "objectType": "MPSection",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872"
+    },
+    {
+      "_id": "MPParagraphElement:B9958CDB-2B5C-4240-B9E8-7178208F659D",
+      "contents": "<p xmlns=\"http://www.w3.org/1999/xhtml\" id=\"MPParagraphElement:B9958CDB-2B5C-4240-B9E8-7178208F659D\" class=\"MPElement\" data-object-type=\"MPParagraphElement\">The authors declare no competing interests.</p>",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPParagraphElement",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "elementType": "p",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "placeholderInnerHTML": ""
+    },
+    {
+      "_id": "MPSection:17F5EB69-5414-4007-9D09-08BE166D5D89",
+      "path": [
+        "MPSection:76DD8C5F-64D0-4307-BA08-8099FFD06050",
+        "MPSection:17F5EB69-5414-4007-9D09-08BE166D5D89"
+      ],
+      "title": "Author contributions",
+      "category": "MPSectionCategory:con",
+      "priority": 14,
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "elementIDs": [
+        "MPParagraphElement:1840FA81-EC36-40CC-9A57-D31A575E0C6F"
+      ],
+      "objectType": "MPSection",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872"
+    },
+    {
+      "_id": "MPParagraphElement:1840FA81-EC36-40CC-9A57-D31A575E0C6F",
+      "contents": "<p xmlns=\"http://www.w3.org/1999/xhtml\" id=\"MPParagraphElement:1840FA81-EC36-40CC-9A57-D31A575E0C6F\" class=\"MPElement\" data-object-type=\"MPParagraphElement\">RB and DH designed the experiment and conducted field collection. SN conducted the laboratory work. QM, AB and RB conducted the data analysis. QM and RB wrote the manuscript. All co-authors provided comments and helped revising the manuscript.</p>",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPParagraphElement",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "elementType": "p",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "placeholderInnerHTML": ""
+    },
+    {
+      "_id": "MPSection:7C1C4983-43FB-44C6-8823-576237127BE4",
+      "path": [
+        "MPSection:76DD8C5F-64D0-4307-BA08-8099FFD06050",
+        "MPSection:7C1C4983-43FB-44C6-8823-576237127BE4"
+      ],
+      "title": "Competing interests",
+      "category": "MPSectionCategory:competing-interests",
+      "priority": 15,
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "elementIDs": [
+        "MPParagraphElement:B9958CDB-2B5C-4240-B9E8-7178208F659D"
+      ],
+      "objectType": "MPSection",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872"
+    },
+    {
+      "_id": "MPParagraphElement:11B3E3E0-C444-4964-81F6-7CDE5B394925",
+      "contents": "<p xmlns=\"http://www.w3.org/1999/xhtml\" id=\"MPParagraphElement:11B3E3E0-C444-4964-81F6-7CDE5B394925\" class=\"MPElement\" data-object-type=\"MPParagraphElement\">We are grateful to the Viskwekerij Gebroeders Vandeput &amp; Zonen for kindly allowing us their facilities and providing the large number of fish that we relied on in the mesocosm experiment.</p>",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPParagraphElement",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "elementType": "p",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "placeholderInnerHTML": ""
+    },
+    {
+      "_id": "MPParagraphElement:AD63D029-B969-46C0-93D3-A8668710EE30",
+      "contents": "<p xmlns=\"http://www.w3.org/1999/xhtml\" id=\"MPParagraphElement:AD63D029-B969-46C0-93D3-A8668710EE30\" class=\"MPElement\" data-object-type=\"MPParagraphElement\">Supplementary material 1: Additional information on the primers/probe development and ddPCR analyses. Table S1: Additional information on the aquarium experiment. Table S2: Accession number of DNA sequences used in this study. Table S3: Pairwise comparisons result between the three targeted species.</p>",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPParagraphElement",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "elementType": "p",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "placeholderInnerHTML": ""
+    },
+    {
+      "_id": "MPSection:D22E68DD-952A-47E4-8B37-A865E1203EB8",
+      "path": [
+        "MPSection:76DD8C5F-64D0-4307-BA08-8099FFD06050",
+        "MPSection:D22E68DD-952A-47E4-8B37-A865E1203EB8"
+      ],
+      "title": "Acknowledgments",
+      "category": "MPSectionCategory:acknowledgement",
+      "priority": 17,
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "elementIDs": [
+        "MPParagraphElement:11B3E3E0-C444-4964-81F6-7CDE5B394925"
+      ],
+      "objectType": "MPSection",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872"
+    },
+    {
+      "_id": "MPSection:56402750-5888-4070-B557-F986AE5041D0",
+      "path": [
+        "MPSection:76DD8C5F-64D0-4307-BA08-8099FFD06050",
+        "MPSection:56402750-5888-4070-B557-F986AE5041D0"
+      ],
+      "title": "Data availability statement",
+      "category": "MPSectionCategory:availability",
+      "priority": 16,
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "elementIDs": [
+        "MPParagraphElement:AD63D029-B969-46C0-93D3-A8668710EE30"
+      ],
+      "objectType": "MPSection",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872"
+    },
+    {
+      "_id": "MPSection:B29D3229-4B5B-4D93-8704-9ACFE3226E8A",
+      "path": [
+        "MPSection:76DD8C5F-64D0-4307-BA08-8099FFD06050",
+        "MPSection:B29D3229-4B5B-4D93-8704-9ACFE3226E8A"
+      ],
+      "title": "References",
+      "category": "MPSectionCategory:bibliography",
+      "priority": 18,
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "elementIDs": [
+        "MPBibliographyElement:AE9F4484-15EE-4B16-B990-029E2DDB8523"
+      ],
+      "objectType": "MPSection",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872"
+    },
+    {
+      "DOI": "https://doi.org/10.1111/jfb.14315",
+      "_id": "MPBibliographyItem:F7885D5E-897C-410D-8AF2-CCB5E33DC9FE",
+      "type": "article-journal",
+      "author": [
+        {
+          "_id": "MPBibliographicName:568AC982-E116-4EDE-9CBB-C1F6A8C0D5FA",
+          "given": "R.",
+          "family": "Brys",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:14396C00-71CD-405D-9A20-9CDB0E36AA14",
+          "given": "D.",
+          "family": "Halfmaerten",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:73C98E54-197D-4952-8673-47C837A38C5A",
+          "given": "S.",
+          "family": "Neyrinck",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:9C008793-B69A-4C04-A761-BA65D175226E",
+          "given": "Q.",
+          "family": "Mauvisseau",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:9982A059-BB7B-4C00-893C-B663890BC8F4",
+          "given": "J.",
+          "family": "Auwerx",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:D8573856-DB36-4274-80D1-847AE2E82E71",
+          "given": "M.",
+          "family": "Sweet",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:6A83A1A6-10FF-4741-B348-96BABE56D2D9",
+          "given": "J.",
+          "family": "Mergeay",
+          "objectType": "MPBibliographicName"
+        }
+      ],
+      "issued": {
+        "_id": "MPBibliographicDate:C3AB3D55-5DF9-48A9-8E64-6B95E2CE9EAF",
+        "date-parts": [
+          [
+            "2020"
+          ]
+        ],
+        "objectType": "MPBibliographicDate"
+      },
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPBibliographyItem",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872"
+    },
+    {
+      "DOI": "https://doi.org/10.1007/s10201-020-00634-y",
+      "_id": "MPBibliographyItem:D9CCCC3E-7738-487C-9C7F-3BB4DC7BC7B8",
+      "type": "article-journal",
+      "title": "Field storage of water samples affects measured environmental DNA concentration and detection.",
+      "author": [
+        {
+          "_id": "MPBibliographicName:E608CC78-41BF-4210-A8BC-969221E7899C",
+          "given": "A. N.",
+          "family": "Curtis",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:52C9E948-8C2C-4758-9812-DCD104F332C6",
+          "given": "E. R.",
+          "family": "Larson",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:5CC38130-3924-46B9-9790-D1076DCDA393",
+          "given": "M. A.",
+          "family": "Davis",
+          "objectType": "MPBibliographicName"
+        }
+      ],
+      "issued": {
+        "_id": "MPBibliographicDate:D3897C6A-1344-4E1D-B0A0-08E65385310F",
+        "date-parts": [
+          [
+            "2020"
+          ]
+        ],
+        "objectType": "MPBibliographicDate"
+      },
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPBibliographyItem",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "container-title": "Limnology"
+    },
+    {
+      "DOI": "https://doi.org/10.1371/journal.pone.0210357",
+      "_id": "MPBibliographyItem:4FBDE236-8F7C-4CF2-8227-A87D5C4443B8",
+      "type": "article-journal",
+      "issue": "1",
+      "title": "Environmental DNA metabarcoding for fish community analysis in backwater lakes: A comparison of capture methods.",
+      "author": [
+        {
+          "_id": "MPBibliographicName:C8EA9BB2-9DBA-4EFB-9BF1-4E8D7F7EB0F8",
+          "given": "K.",
+          "family": "Fujii",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:D9994240-9C30-4BD9-943A-5A7A3989B22D",
+          "given": "H.",
+          "family": "Doi",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:963402B1-2AFA-4E57-BD48-8151C1220D10",
+          "given": "S.",
+          "family": "Matsuoka",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:53F60FC9-0BF3-4151-86E0-47F23E2CE464",
+          "given": "M.",
+          "family": "Nagano",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:B15AA13B-8550-4237-945D-DE289E1ABACC",
+          "given": "H.",
+          "family": "Sato",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:F1F5FC94-A416-4315-8582-3CC519F3F680",
+          "given": "H.",
+          "family": "Yamanaka",
+          "objectType": "MPBibliographicName"
+        }
+      ],
+      "issued": {
+        "_id": "MPBibliographicDate:90EFCFC3-0B80-4D17-A6D6-BCC4E375B7E4",
+        "date-parts": [
+          [
+            "2019"
+          ]
+        ],
+        "objectType": "MPBibliographicDate"
+      },
+      "volume": "14",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPBibliographyItem",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "container-title": "PLOS ONE"
+    },
+    {
+      "_id": "MPBibliographyElement:AE9F4484-15EE-4B16-B990-029E2DDB8523",
+      "contents": "",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPBibliographyElement",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "elementType": "div",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "containedObjectIDs": [
+        "MPBibliographyItem:8C36D296-4FFC-40FE-8260-2FB732292017",
+        "MPBibliographyItem:F7885D5E-897C-410D-8AF2-CCB5E33DC9FE",
+        "MPBibliographyItem:760F5E99-D78C-4111-83F8-5A6591650512",
+        "MPBibliographyItem:13E8B487-DBD2-4B13-B1EF-CC8A0DB996BB",
+        "MPBibliographyItem:C9D828B4-6992-488A-B781-76E10D747F3C",
+        "MPBibliographyItem:D9CCCC3E-7738-487C-9C7F-3BB4DC7BC7B8",
+        "MPBibliographyItem:498DD48A-8227-4E43-913E-5BE00D84F49A",
+        "MPBibliographyItem:62B52A0B-79F8-482C-940A-0FFD3A299491",
+        "MPBibliographyItem:4FBDE236-8F7C-4CF2-8227-A87D5C4443B8",
+        "MPBibliographyItem:FD05FE67-A543-404F-8A70-D051C1889082",
+        "MPBibliographyItem:2FE611E6-2F29-4FA9-9E5B-B90DF10A9A8C",
+        "MPBibliographyItem:EEEAC967-4E9A-4504-87DA-2C6D6D282165",
+        "MPBibliographyItem:D07BC228-4EE9-41AA-A620-6ED33D76559E",
+        "MPBibliographyItem:6410F789-371C-4F01-9081-F23A771B9A0E",
+        "MPBibliographyItem:280490CD-3B1C-4447-8F24-A355F2FCB5DB",
+        "MPBibliographyItem:D2A9C831-5695-46B4-ADFF-C51C3DBC93E6",
+        "MPBibliographyItem:D9F5DFCE-8504-4ADC-AE05-E02AA9031A9D",
+        "MPBibliographyItem:B0AB118E-8762-4615-9A77-E739CCE44CAB",
+        "MPBibliographyItem:AD10692A-B4AC-4101-A938-D0D9925CD5AB",
+        "MPBibliographyItem:03D99218-09CA-44A5-A7CC-794520264CCA",
+        "MPBibliographyItem:54D1131A-C107-4B98-A645-43C01D7B5372",
+        "MPBibliographyItem:FF85ED66-4A50-4682-9B47-74C10C2049E4",
+        "MPBibliographyItem:FABB4BC1-0461-4030-9B97-635E0AFF2B18",
+        "MPBibliographyItem:4566B131-8418-4F9E-B176-852741BFAC8E",
+        "MPBibliographyItem:8291AD7E-6EFC-45FB-8AF7-FA133A903C4A",
+        "MPBibliographyItem:F4135E9F-6B42-4E57-B198-A62143EF2A03",
+        "MPBibliographyItem:D677F3EC-2811-4736-91BD-CDEE65050D9C",
+        "MPBibliographyItem:D8E3BED8-1B0E-4E0A-858A-56A01CC85C1A",
+        "MPBibliographyItem:B684EFA5-736F-4346-8B1D-B673DE2FE4F4"
+      ]
+    },
+    {
+      "DOI": "https://doi.org/10.1371/journal.pone.0157366",
+      "_id": "MPBibliographyItem:13E8B487-DBD2-4B13-B1EF-CC8A0DB996BB",
+      "type": "article-journal",
+      "issue": "6",
+      "title": "Spatial representativeness of environmental DNA metabarcoding signal for fish biodiversity assessment in a natural freshwater system.",
+      "author": [
+        {
+          "_id": "MPBibliographicName:BA4C7A59-A17E-4BFD-B850-C02F173ED7B6",
+          "given": "R.",
+          "family": "Civade",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:F0BDABCA-8BA4-48DC-BDA5-796846849380",
+          "given": "T.",
+          "family": "Dejean",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:809F71EE-BB22-49C9-A0C7-BC2FE64B2F4F",
+          "given": "A.",
+          "family": "Valentini",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:1F4472D5-AD59-4E58-8170-F5F3889319FA",
+          "given": "N.",
+          "family": "Roset",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:5C99D290-A0F1-4A00-A40C-BADC6ED0C124",
+          "given": "J.-C.",
+          "family": "Raymond",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:5EE1EA59-44D6-4E08-8C32-B1B4E63AA866",
+          "given": "A.",
+          "family": "Bonin",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:F2E4407E-96EC-4A83-A174-B7BA60E87355",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:D3AA0FEF-C58B-43DE-82CA-90C3CD1206F4",
+          "given": "D.",
+          "family": "Pont",
+          "objectType": "MPBibliographicName"
+        }
+      ],
+      "issued": {
+        "_id": "MPBibliographicDate:83E944B2-7FE9-45ED-B607-9F9D4E390F69",
+        "date-parts": [
+          [
+            "2016"
+          ]
+        ],
+        "objectType": "MPBibliographicDate"
+      },
+      "volume": "11",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPBibliographyItem",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "container-title": "PLoS One"
+    },
+    {
+      "DOI": "https://doi.org/10.1111/j.1365-2109.2007.01845.x",
+      "_id": "MPBibliographyItem:C9D828B4-6992-488A-B781-76E10D747F3C",
+      "page": "1-9",
+      "type": "article-journal",
+      "issue": "1",
+      "title": "High stocking density induces crowding stress and affects amino acid metabolism in Senegalese sole Solea senegalensis (Kaup 1858) juveniles: Crowding stress and amino acid metabolism in Senegalese sole.",
+      "author": [
+        {
+          "_id": "MPBibliographicName:322BD3F5-4F57-4B8E-80FB-E3E6681D52D4",
+          "given": "B.",
+          "family": "Costas",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:CA0DB133-DBB9-49F0-BBC6-3ECC719B7265",
+          "given": "C.",
+          "family": "Aragão",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:70CF734C-E264-4612-AC17-4F3D751BCC97",
+          "given": "J. M.",
+          "family": "Mancera",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:1863A297-BA02-4134-B9B1-D94803D5CA9C",
+          "given": "M. T.",
+          "family": "Dinis",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:E5271C52-B8E3-4CF0-9E75-7F57529AB40B",
+          "given": "L. E. C.",
+          "family": "Conceição",
+          "objectType": "MPBibliographicName"
+        }
+      ],
+      "issued": {
+        "_id": "MPBibliographicDate:0B831B93-2F79-4AAC-9674-9B222CD51269",
+        "date-parts": [
+          [
+            "2007"
+          ]
+        ],
+        "objectType": "MPBibliographicDate"
+      },
+      "volume": "39",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPBibliographyItem",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "container-title": "Aquaculture Research"
+    },
+    {
+      "DOI": "https://doi.org/10.1021/acs.est.5b00253",
+      "_id": "MPBibliographyItem:62B52A0B-79F8-482C-940A-0FFD3A299491",
+      "page": "5601-5608",
+      "type": "article-journal",
+      "issue": "9",
+      "title": "Droplet Digital Polymerase Chain Reaction (PCR) Outperforms Real-Time PCR in the Detection of Environmental DNA from an Invasive Fish Species.",
+      "author": [
+        {
+          "_id": "MPBibliographicName:133F100C-5F48-4BED-9752-7A6AA00704A2",
+          "given": "H.",
+          "family": "Doi",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:EE460E5E-FDDD-42E0-AA80-5EEB695AD1C5",
+          "given": "T.",
+          "family": "Takahara",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:BE3F9AA4-5A0D-4231-BBCA-7EB80A05F20A",
+          "given": "T.",
+          "family": "Minamoto",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:A8AD5D58-BC14-4A07-9C9E-A3F14065E6BD",
+          "given": "S.",
+          "family": "Matsuhashi",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:188E0758-E97B-4956-A56D-7A9DAB620642",
+          "given": "K.",
+          "family": "Uchii",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:929E3CB6-FC94-4276-8788-206D1CD023C7",
+          "given": "H.",
+          "family": "Yamanaka",
+          "objectType": "MPBibliographicName"
+        }
+      ],
+      "issued": {
+        "_id": "MPBibliographicDate:034EA4DE-D6EA-492B-9F61-3549679CDFF6",
+        "date-parts": [
+          [
+            "2015"
+          ]
+        ],
+        "objectType": "MPBibliographicDate"
+      },
+      "volume": "49",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPBibliographyItem",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "container-title": "Environmental Science & Technology"
+    },
+    {
+      "DOI": "https://doi.org/10.1002/edn3.141",
+      "_id": "MPBibliographyItem:8C36D296-4FFC-40FE-8260-2FB732292017",
+      "type": "article-journal",
+      "author": [
+        {
+          "_id": "MPBibliographicName:C0C03001-A320-468A-BF66-32EAC7158318",
+          "given": "E.",
+          "family": "Andruszkiewicz Allan",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:553D9293-5D32-4087-8CDB-A59615300F94",
+          "given": "W. G.",
+          "family": "Zhang",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:3528A2A4-A346-4FF4-9EA0-05D1B687AD77",
+          "given": "A.",
+          "family": "Lavery",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:BAC01CF2-9E53-4760-983C-BE826E1DB032",
+          "given": "A.",
+          "family": "Govindarajan",
+          "objectType": "MPBibliographicName"
+        }
+      ],
+      "issued": {
+        "_id": "MPBibliographicDate:74808D69-F826-4CAA-82B4-4DB230FE0904",
+        "date-parts": [
+          [
+            "2020"
+          ]
+        ],
+        "objectType": "MPBibliographicDate"
+      },
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPBibliographyItem",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872"
+    },
+    {
+      "DOI": "https://doi.org/10.1111/1755-0998.12900",
+      "_id": "MPBibliographyItem:760F5E99-D78C-4111-83F8-5A6591650512",
+      "page": "27-46",
+      "type": "article-journal",
+      "issue": "1",
+      "title": "Unlocking biodiversity and conservation studies in high‐diversity environments using environmental DNA (eDNA): A test with Guianese freshwater fishes.",
+      "author": [
+        {
+          "_id": "MPBibliographicName:C4CE22BE-5B46-40B9-B74F-FC52C71A4337",
+          "given": "K.",
+          "family": "Cilleros",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:744AE0F1-F14A-4978-8658-97F56FFF12D9",
+          "given": "A.",
+          "family": "Valentini",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:9A3DD5A4-D2C9-4C2B-99C5-361FF55A02E0",
+          "given": "L.",
+          "family": "Allard",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:E2B34D01-2456-425D-A175-F47E1051E38D",
+          "given": "T.",
+          "family": "Dejean",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:EDDB14C9-26BC-48B3-919C-0F9FBE3FBD69",
+          "given": "R.",
+          "family": "Etienne",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:FA0BD8EC-2323-4127-96B6-18AAFC92F431",
+          "given": "G.",
+          "family": "Grenouillet",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:3D9F487A-C058-44E9-B724-43AF103BCE2C",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:4B1F31EC-F58B-4F1E-A46F-E57529D53C1B",
+          "given": "S.",
+          "family": "Brosse",
+          "objectType": "MPBibliographicName"
+        }
+      ],
+      "issued": {
+        "_id": "MPBibliographicDate:A213209C-8C07-4E45-94FC-3D8DB377FD78",
+        "date-parts": [
+          [
+            "2019"
+          ]
+        ],
+        "objectType": "MPBibliographicDate"
+      },
+      "volume": "19",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPBibliographyItem",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "container-title": "Molecular Ecology Resources"
+    },
+    {
+      "DOI": "https://doi.org/10.3389/fmars.2017.00314",
+      "_id": "MPBibliographyItem:498DD48A-8227-4E43-913E-5BE00D84F49A",
+      "type": "article-journal",
+      "title": "Evaluation of Filtration and DNA Extraction Methods for Environmental DNA Biodiversity Assessments across Multiple Trophic Levels.",
+      "author": [
+        {
+          "_id": "MPBibliographicName:97C1B511-ABFE-4633-9862-6D2C8AD05C12",
+          "given": "A.",
+          "family": "Djurhuus",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:001A51B9-AD49-4A58-8BF4-63708282CDF7",
+          "given": "J.",
+          "family": "Port",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:5D9C09C0-EDE8-475D-9A89-721FDCA7B75D",
+          "given": "C. J.",
+          "family": "Closek",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:237FA7B5-FA9D-40B5-BD46-F748438F1000",
+          "given": "K. M.",
+          "family": "Yamahara",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:9F382518-5AA5-4EFB-BFD5-5272C6363683",
+          "given": "O.",
+          "family": "Romero-Maraccini",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:849A90F1-7AEB-4F91-B0B0-C3B076EB8E51",
+          "given": "K. R.",
+          "family": "Walz",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:F0059E27-B0DC-443E-9768-54F72F494AF1",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:43B7FDC3-D806-4BE9-A762-76E4F3F4C1B2",
+          "given": "F. P.",
+          "family": "Chavez",
+          "objectType": "MPBibliographicName"
+        }
+      ],
+      "issued": {
+        "_id": "MPBibliographicDate:6A551DE3-9974-4429-8307-D8B81FA060F3",
+        "date-parts": [
+          [
+            "2017"
+          ]
+        ],
+        "objectType": "MPBibliographicDate"
+      },
+      "volume": "4",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPBibliographyItem",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "container-title": "Frontiers in Marine Science"
+    },
+    {
+      "DOI": "https://doi.org/10.1371/journal.pone.0179251",
+      "_id": "MPBibliographyItem:FD05FE67-A543-404F-8A70-D051C1889082",
+      "type": "article-journal",
+      "issue": "6",
+      "title": "Methods to maximise recovery of environmental DNA from water samples.",
+      "author": [
+        {
+          "_id": "MPBibliographicName:D6431F93-9011-423A-9B3C-B0A8001082A6",
+          "given": "R.",
+          "family": "Hinlo",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:56974FB9-7E72-4FDA-B7C4-72CB62C2C969",
+          "given": "D.",
+          "family": "Gleeson",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:564F90FA-D52A-48B0-A8BB-10CDDC96610D",
+          "given": "M.",
+          "family": "Lintermans",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:116B7B18-A405-446F-9063-8AA6EFDC240F",
+          "given": "E.",
+          "family": "Furlan",
+          "objectType": "MPBibliographicName"
+        }
+      ],
+      "issued": {
+        "_id": "MPBibliographicDate:0A1982FE-1D94-4DDF-8B15-C40763D8A3BB",
+        "date-parts": [
+          [
+            "2017"
+          ]
+        ],
+        "objectType": "MPBibliographicDate"
+      },
+      "volume": "12",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPBibliographyItem",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "container-title": "PLOS ONE"
+    },
+    {
+      "DOI": "https://doi.org/10.5962/bhl.title.143318",
+      "_id": "MPBibliographyItem:D07BC228-4EE9-41AA-A620-6ED33D76559E",
+      "type": "article-journal",
+      "author": [
+        {
+          "_id": "MPBibliographicName:758FE38C-01AA-402A-B7F5-CEFD7B507211",
+          "given": "J. L.",
+          "family": "Longmire",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:A6ABA769-E29C-4325-B6BF-13509D611668",
+          "given": "M.",
+          "family": "Maltbie",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:E063775C-03DB-4694-96B3-49F655C00D89",
+          "given": "R. J.",
+          "family": "Baker",
+          "objectType": "MPBibliographicName"
+        }
+      ],
+      "issued": {
+        "_id": "MPBibliographicDate:BB535AE9-6756-471B-A765-EECF8F672DE9",
+        "date-parts": [
+          [
+            "1997"
+          ]
+        ],
+        "objectType": "MPBibliographicDate"
+      },
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPBibliographyItem",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "container-title": "Use of “Lysis Buffer” in DNA isolation and its implication for museum collections."
+    },
+    {
+      "DOI": "https://doi.org/10.1002/ece3.4802",
+      "_id": "MPBibliographyItem:2FE611E6-2F29-4FA9-9E5B-B90DF10A9A8C",
+      "type": "article-journal",
+      "title": "Effect of water temperature and fish biomass on environmental DNA shedding, degradation, and size distribution.",
+      "author": [
+        {
+          "_id": "MPBibliographicName:036B7BF3-FB56-46C7-8994-112C65EC08AA",
+          "given": "T.",
+          "family": "Jo",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:9C358338-7228-413E-9D8A-F47E610D6596",
+          "given": "H.",
+          "family": "Murakami",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:B020EAD6-D31C-4B3D-A124-FCDF3DA47C51",
+          "given": "S.",
+          "family": "Yamamoto",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:30A5123B-C3FD-49D0-B9D8-2AC64447A612",
+          "given": "R.",
+          "family": "Masuda",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:59295635-0D63-4D32-80EF-5F82929EFD5B",
+          "given": "T.",
+          "family": "Minamoto",
+          "objectType": "MPBibliographicName"
+        }
+      ],
+      "issued": {
+        "_id": "MPBibliographicDate:EB948EF5-6845-4370-B2E1-ECCD8F211ECE",
+        "date-parts": [
+          [
+            "2019"
+          ]
+        ],
+        "objectType": "MPBibliographicDate"
+      },
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPBibliographyItem",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "container-title": "Ecology and Evolution"
+    },
+    {
+      "DOI": "https://doi.org/10.1038/s41598-018-23052-8",
+      "_id": "MPBibliographyItem:6410F789-371C-4F01-9081-F23A771B9A0E",
+      "type": "article-journal",
+      "issue": "1",
+      "title": "Environmental DNA filtration techniques affect recovered biodiversity.",
+      "author": [
+        {
+          "_id": "MPBibliographicName:27B8D668-43DE-4B90-BCC0-77DE3A97CBA2",
+          "given": "M.",
+          "family": "Majaneva",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:11A2950E-3FB1-48ED-8522-0FACF1761CBF",
+          "given": "O. H.",
+          "family": "Diserud",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:FC95C3B4-4064-4ED4-A3F9-C85E044300CF",
+          "given": "S. H. C.",
+          "family": "Eagle",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:70969D4D-730D-4E99-8958-6ECBC656896B",
+          "given": "E.",
+          "family": "Boström",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:EFC48174-E839-49F6-978A-7D0488238545",
+          "given": "M.",
+          "family": "Hajibabaei",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:2F2A64F3-06FA-461E-83AB-733585BCEBC6",
+          "given": "T.",
+          "family": "Ekrem",
+          "objectType": "MPBibliographicName"
+        }
+      ],
+      "issued": {
+        "_id": "MPBibliographicDate:2C9E74D9-7C9E-45CB-BEFF-6A19F182E201",
+        "date-parts": [
+          [
+            "2018"
+          ]
+        ],
+        "objectType": "MPBibliographicDate"
+      },
+      "volume": "8",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPBibliographyItem",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "container-title": "Scientific Reports"
+    },
+    {
+      "DOI": "https://doi.org/10.1023/A:1020503330767",
+      "_id": "MPBibliographyItem:D9F5DFCE-8504-4ADC-AE05-E02AA9031A9D",
+      "page": "435-440",
+      "type": "article-journal",
+      "title": "An evaluation of long-term preservation methods for brown bear (<i>Ursus arctos</i>) faecal DNA samples.",
+      "author": [
+        {
+          "_id": "MPBibliographicName:973B1D18-DC4C-4AE6-9DDE-BEE2AF8A745F",
+          "given": "M.",
+          "family": "Murphy",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:DF1F409C-4167-45EB-B121-D05C0F83535F",
+          "given": "L.",
+          "family": "Waits",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:31A5E1B9-7E43-443C-9F90-596BBE146E76",
+          "given": "K.",
+          "family": "Kendall",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:A9209BA8-6F83-40F9-9EC8-75E40FFD336B",
+          "given": "S.",
+          "family": "Wasser",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:71951483-CD26-4ACD-B1D9-61B2973A802C",
+          "given": "J.",
+          "family": "Higbee",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:C0BB6BD3-8A37-4534-9F64-D4B6A86DB2D7",
+          "given": "R.",
+          "family": "Bogden",
+          "objectType": "MPBibliographicName"
+        }
+      ],
+      "issued": {
+        "_id": "MPBibliographicDate:0AA3FBC6-7A33-40A8-B93A-10B278D4EC3C",
+        "date-parts": [
+          [
+            "2002"
+          ]
+        ],
+        "objectType": "MPBibliographicDate"
+      },
+      "volume": "3",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPBibliographyItem",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "container-title": "Conservation Genetics"
+    },
+    {
+      "DOI": "https://doi.org/10.1111/1755-0998.12281",
+      "_id": "MPBibliographyItem:03D99218-09CA-44A5-A7CC-794520264CCA",
+      "page": "168-176",
+      "type": "article-journal",
+      "issue": "1",
+      "title": "The room temperature preservation of filtered environmental DNA samples and assimilation into a phenol-chloroform-isoamyl alcohol DNA extraction.",
+      "author": [
+        {
+          "_id": "MPBibliographicName:BD80EC01-D65B-4E0C-9867-954E9D225577",
+          "given": "M. A.",
+          "family": "Renshaw",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:21C5CF7B-6928-45C8-A2D1-E03C5D0BF8A9",
+          "given": "B. P.",
+          "family": "Olds",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:201D2E58-5CE4-4429-9FD2-877E7BDD8007",
+          "given": "C. L.",
+          "family": "Jerde",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:5E8E3C46-F583-4FC0-B4C7-9EDA8F685F4E",
+          "given": "M. M.",
+          "family": "McVeigh",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:5A4A3948-2F01-4137-A92C-EB5062EAD216",
+          "given": "D. M.",
+          "family": "Lodge",
+          "objectType": "MPBibliographicName"
+        }
+      ],
+      "issued": {
+        "_id": "MPBibliographicDate:FA8F98BC-1F1D-4834-B98A-6AE75C8EFB23",
+        "date-parts": [
+          [
+            "2015"
+          ]
+        ],
+        "objectType": "MPBibliographicDate"
+      },
+      "volume": "15",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPBibliographyItem",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "container-title": "Molecular Ecology Resources"
+    },
+    {
+      "DOI": "https://doi.org/10.1111/1755-0998.13107",
+      "_id": "MPBibliographyItem:EEEAC967-4E9A-4504-87DA-2C6D6D282165",
+      "type": "article-journal",
+      "author": [
+        {
+          "_id": "MPBibliographicName:68E9965F-7DB7-4310-B5F6-8291C788DF8D",
+          "given": "G.",
+          "family": "Kumar",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:4A6D0CEE-3609-48C4-9205-4A84B25354E5",
+          "given": "J. E.",
+          "family": "Eble",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:35911D94-E8E8-4D75-9DFD-6AAB6996A3FD",
+          "given": "M. R.",
+          "family": "Gaither",
+          "objectType": "MPBibliographicName"
+        }
+      ],
+      "issued": {
+        "_id": "MPBibliographicDate:8FE1F894-79E8-424C-9187-FA22DC55EA89",
+        "date-parts": [
+          [
+            "2019"
+          ]
+        ],
+        "objectType": "MPBibliographicDate"
+      },
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPBibliographyItem",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "container-title": "A practical guide to sample preservation and pre‐PCR processing of aquatic environmental DNA."
+    },
+    {
+      "DOI": "https://doi.org/10.1038/s41598-019-50571-9",
+      "_id": "MPBibliographyItem:280490CD-3B1C-4447-8F24-A355F2FCB5DB",
+      "type": "article-journal",
+      "title": "Combining ddPCR and environmental DNA to improve detection capabilities of a critically endangered freshwater invertebrate.",
+      "author": [
+        {
+          "_id": "MPBibliographicName:0B002046-7DC1-4524-9406-1C50F70ADFD0",
+          "given": "Q.",
+          "family": "Mauvisseau",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:7CC0392C-445D-4CA8-8813-2965E38480B9",
+          "given": "J.",
+          "family": "Davy-Bowker",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:B0E2C217-2E79-4397-9C89-351E747A96EC",
+          "given": "M.",
+          "family": "Bulling",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:B8187C3D-0A81-4C09-B405-50852B5BDA79",
+          "given": "R.",
+          "family": "Brys",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:3D51D122-B620-403A-9408-ED54F1928F13",
+          "given": "S.",
+          "family": "Neyrinck",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:B20D19AE-7900-43CC-8BDE-EB06251F70F4",
+          "given": "C.",
+          "family": "Troth",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:8ED0286D-C33C-45B5-8E8E-AD3361810061",
+          "given": "M.",
+          "family": "Sweet",
+          "objectType": "MPBibliographicName"
+        }
+      ],
+      "issued": {
+        "_id": "MPBibliographicDate:A3068102-5BD1-44DB-8776-6F663396A226",
+        "date-parts": [
+          [
+            "2019"
+          ]
+        ],
+        "objectType": "MPBibliographicDate"
+      },
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPBibliographyItem",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "container-title": "Scientific Reports"
+    },
+    {
+      "_id": "MPBibliographyItem:B0AB118E-8762-4615-9A77-E739CCE44CAB",
+      "type": "article-journal",
+      "issued": {
+        "_id": "MPBibliographicDate:07CB41D1-6EE1-44A2-8E18-B98B313519EC",
+        "date-parts": [
+          [
+            "2020"
+          ]
+        ],
+        "objectType": "MPBibliographicDate"
+      },
+      "literal": "1651a190-0fb8-4226-be6e-0c92a78c3f2ePinheiro, J., Bates, D., DebRoy, S., Sarkar, D., & R Core Team. (2020). nlme: Linear and Nonlinear Mixed Effects Models. R Package Version 3.1-148. doi: https://CRAN.R-project.org/package=nlme",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPBibliographyItem",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872"
+    },
+    {
+      "DOI": "https://doi.org/10.1002/edn3.14",
+      "_id": "MPBibliographyItem:54D1131A-C107-4B98-A645-43C01D7B5372",
+      "type": "article-journal",
+      "author": [
+        {
+          "_id": "MPBibliographicName:D41DFB61-2C08-40C7-876B-28803D811EA8",
+          "given": "N. G.",
+          "family": "Sales",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:8E7D0B62-334D-46E7-AED9-44889D059EE7",
+          "given": "O. S.",
+          "family": "Wangensteen",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:88EB258F-DFCE-4E97-9E9B-F258B56DB82F",
+          "given": "D. C.",
+          "family": "Carvalho",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:64381D09-6CDF-4C8D-94AF-73BF2C5BA606",
+          "given": "S.",
+          "family": "Mariani",
+          "objectType": "MPBibliographicName"
+        }
+      ],
+      "issued": {
+        "_id": "MPBibliographicDate:847A3720-B884-4361-81F2-99E811D990A7",
+        "date-parts": [
+          [
+            "2019"
+          ]
+        ],
+        "objectType": "MPBibliographicDate"
+      },
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPBibliographyItem",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872"
+    },
+    {
+      "DOI": "https://doi.org/10.1111/mec.13428",
+      "_id": "MPBibliographyItem:8291AD7E-6EFC-45FB-8AF7-FA133A903C4A",
+      "page": "929-942",
+      "type": "article-journal",
+      "issue": "4",
+      "title": "Next-generation monitoring of aquatic biodiversity using environmental DNA metabarcoding.",
+      "author": [
+        {
+          "_id": "MPBibliographicName:C8442576-EE10-444A-B3CB-D9CAB9BB3C71",
+          "given": "A.",
+          "family": "Valentini",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:E12F5DA2-482D-4287-8FAE-3ADD417A1995",
+          "given": "P.",
+          "family": "Taberlet",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:ED2283C9-5B8D-42A9-AFF4-B431C67263ED",
+          "given": "C.",
+          "family": "Miaud",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:9E8072B8-D4FA-4929-8A3C-8EF76C6CD617",
+          "given": "R.",
+          "family": "Civade",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:BC20AA4E-9434-4A9B-BF1A-D23951843734",
+          "given": "J.",
+          "family": "Herder",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:24A39591-E06D-44E5-BC86-46E5496E644F",
+          "given": "P. F.",
+          "family": "Thomsen",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:F05ECE16-09FE-4ACB-8DF4-91351857E431",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:18218EA4-0CD7-413E-B3DA-2C0E655A698D",
+          "given": "T.",
+          "family": "Dejean",
+          "objectType": "MPBibliographicName"
+        }
+      ],
+      "issued": {
+        "_id": "MPBibliographicDate:FE9BFBBA-1F7F-46A0-A895-6EB4E932232C",
+        "date-parts": [
+          [
+            "2016"
+          ]
+        ],
+        "objectType": "MPBibliographicDate"
+      },
+      "volume": "25",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPBibliographyItem",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "container-title": "Molecular Ecology"
+    },
+    {
+      "DOI": "https://doi.org/10.1002/edn3.92",
+      "_id": "MPBibliographyItem:D2A9C831-5695-46B4-ADFF-C51C3DBC93E6",
+      "type": "article-journal",
+      "author": [
+        {
+          "_id": "MPBibliographicName:31DEE8B4-E001-4370-9B53-EF168DA2E497",
+          "given": "Q.",
+          "family": "Mauvisseau",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:2C7D2ED7-114D-45E8-AD84-735778FE0A03",
+          "given": "E.",
+          "family": "Kalogianni",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:BDE0120F-7534-4F1B-824F-C6543E16B471",
+          "given": "B.",
+          "family": "Zimmerman",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:46D5CCA7-3EF5-4B41-B016-1585127A3C39",
+          "given": "M.",
+          "family": "Bulling",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:937E8DEF-26ED-45F0-945F-0376EA4593F6",
+          "given": "R.",
+          "family": "Brys",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:7E7BF573-7364-4ACA-8C36-1B70EE8C195F",
+          "given": "M.",
+          "family": "Sweet",
+          "objectType": "MPBibliographicName"
+        }
+      ],
+      "issued": {
+        "_id": "MPBibliographicDate:9F393082-031F-422F-B694-06EEC50A29D7",
+        "date-parts": [
+          [
+            "2020"
+          ]
+        ],
+        "objectType": "MPBibliographicDate"
+      },
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPBibliographyItem",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872"
+    },
+    {
+      "_id": "MPBibliographyItem:AD10692A-B4AC-4101-A938-D0D9925CD5AB",
+      "type": "article-journal",
+      "author": [
+        {
+          "_id": "MPBibliographicName:54A20B79-D200-4E5B-93C3-EF9768C89CC6",
+          "literal": "R Core Team",
+          "objectType": "MPBibliographicName"
+        }
+      ],
+      "issued": {
+        "_id": "MPBibliographicDate:7ECD817D-F615-4721-BA7F-7C01CD6471C7",
+        "date-parts": [
+          [
+            "2020"
+          ]
+        ],
+        "objectType": "MPBibliographicDate"
+      },
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPBibliographyItem",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "container-title": "R: A Language and Environment for Statistical Computing."
+    },
+    {
+      "DOI": "https://doi.org/10.1111/2041-210X.12683",
+      "_id": "MPBibliographyItem:FABB4BC1-0461-4030-9B97-635E0AFF2B18",
+      "page": "635-645",
+      "type": "article-journal",
+      "issue": "5",
+      "title": "Comparison of capture and storage methods for aqueous macrobial eDNA using an optimized extraction protocol: advantage of enclosed filter.",
+      "author": [
+        {
+          "_id": "MPBibliographicName:5249117B-0640-499B-A573-F4D853AAE3B7",
+          "given": "J.",
+          "family": "Spens",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:41251953-A0B6-4FFA-9ADC-BFB993A2249A",
+          "given": "A. R.",
+          "family": "Evans",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:CF532D3C-EB4C-4929-8400-26793AE9CE22",
+          "given": "D.",
+          "family": "Halfmaerten",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:E7E90B1E-E169-44FF-963D-F987C4B2F6D0",
+          "given": "S. W.",
+          "family": "Knudsen",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:377D6317-AA60-4819-8ABE-0EE79F63A2D3",
+          "given": "M. E.",
+          "family": "Sengupta",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:7FBFDC3B-4618-4900-8E55-436075EE1598",
+          "given": "S. S. T.",
+          "family": "Mak",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:7B2019FF-9B9C-4C5F-98A8-9F6A903C9DF3",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:0B5A9D04-1E67-4953-9471-3D05F4CBA5A3",
+          "given": "M.",
+          "family": "Hellström",
+          "objectType": "MPBibliographicName"
+        }
+      ],
+      "issued": {
+        "_id": "MPBibliographicDate:7181824A-F391-4BB4-8031-C8913D35BE65",
+        "date-parts": [
+          [
+            "2017"
+          ]
+        ],
+        "objectType": "MPBibliographicDate"
+      },
+      "volume": "8",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPBibliographyItem",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "container-title": "Methods in Ecology and Evolution"
+    },
+    {
+      "DOI": "https://doi.org/10.1111/1574-6968.12475",
+      "_id": "MPBibliographyItem:4566B131-8418-4F9E-B176-852741BFAC8E",
+      "page": "32-38",
+      "type": "article-journal",
+      "issue": "1",
+      "title": "Effect of preservation method on the assessment of bacterial community structure in soil and water samples.",
+      "author": [
+        {
+          "_id": "MPBibliographicName:D7E07AFA-E9E7-4D0C-8840-852EC1FC647D",
+          "given": "V.",
+          "family": "Tatangelo",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:B1C75620-5811-44E6-9434-19EF2C2C0F6D",
+          "given": "A.",
+          "family": "Franzetti",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:196E5659-D32B-41B8-9E18-CB01828E385A",
+          "given": "I.",
+          "family": "Gandolfi",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:32B0E546-DFC0-4F9E-B875-0CD033FA3EF0",
+          "given": "G.",
+          "family": "Bestetti",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:27225351-7B65-4063-9451-C6B24A922984",
+          "given": "R.",
+          "family": "Ambrosini",
+          "objectType": "MPBibliographicName"
+        }
+      ],
+      "issued": {
+        "_id": "MPBibliographicDate:9968DADD-E7F0-4702-A12D-74EFEE62CBF6",
+        "date-parts": [
+          [
+            "2014"
+          ]
+        ],
+        "objectType": "MPBibliographicDate"
+      },
+      "volume": "356",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPBibliographyItem",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "container-title": "FEMS Microbiology Letters"
+    },
+    {
+      "DOI": "https://doi.org/10.1111/1755-0998.13055",
+      "_id": "MPBibliographyItem:D8E3BED8-1B0E-4E0A-858A-56A01CC85C1A",
+      "type": "article-journal",
+      "author": [
+        {
+          "_id": "MPBibliographicName:1F128339-0F6A-47E0-9941-D4D40B82CE90",
+          "given": "S. A.",
+          "family": "Wood",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:0E7E9074-FC4E-48A3-90F2-5406E6EEFB3F",
+          "given": "X.",
+          "family": "Pochon",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:B69EAA8A-D623-449F-8BA5-9B191F08B4BB",
+          "given": "O.",
+          "family": "Laroche",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:EB24C924-9AA8-40FE-9D25-D4BC68839A14",
+          "given": "U.",
+          "family": "von Ammon",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:4AB539D6-7AC4-4162-AE4E-7D2F7F17A44C",
+          "given": "J.",
+          "family": "Adamson",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:D1A6D794-C86A-414D-8EF0-7DB8508AB573",
+          "given": "A.",
+          "family": "Zaiko",
+          "objectType": "MPBibliographicName"
+        }
+      ],
+      "issued": {
+        "_id": "MPBibliographicDate:9BAD015F-CCCF-48C5-837E-246392C01DE6",
+        "date-parts": [
+          [
+            "2019"
+          ]
+        ],
+        "objectType": "MPBibliographicDate"
+      },
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPBibliographyItem",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872"
+    },
+    {
+      "_id": "MPCitation:0F577BF0-51C5-4262-A636-77E4B5D23C21",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPCitation",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "embeddedCitationItems": [
+        {
+          "_id": "MPCitationItem:C0FEDE75-98C1-4F07-9E6E-CF729FDA7DCB",
+          "objectType": "MPCitationItem",
+          "bibliographyItem": "MPBibliographyItem:FD05FE67-A543-404F-8A70-D051C1889082"
+        }
+      ]
+    },
+    {
+      "_id": "MPCitation:1E4171FF-8E0D-48C9-9DB8-2F03E480C26A",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPCitation",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "embeddedCitationItems": [
+        {
+          "_id": "MPCitationItem:95940DDF-1E38-4CCF-BC36-56911434EB32",
+          "objectType": "MPCitationItem",
+          "bibliographyItem": "MPBibliographyItem:FABB4BC1-0461-4030-9B97-635E0AFF2B18"
+        }
+      ]
+    },
+    {
+      "DOI": "https://doi.org/10.1021/acs.est.6b03114",
+      "_id": "MPBibliographyItem:FF85ED66-4A50-4682-9B47-74C10C2049E4",
+      "page": "10456-10464",
+      "type": "article-journal",
+      "issue": "19",
+      "title": "Quantification of Environmental DNA (eDNA) Shedding and Decay Rates for Three Marine Fish.",
+      "author": [
+        {
+          "_id": "MPBibliographicName:F567C26D-9BF4-458E-A2DE-A638E657C66D",
+          "given": "L. M.",
+          "family": "Sassoubre",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:DCC1652E-62E5-4B77-800D-07F3206589AC",
+          "given": "K. M.",
+          "family": "Yamahara",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:E0BB29C3-0D3A-424B-8491-E7FF143807A6",
+          "given": "L. D.",
+          "family": "Gardner",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:4F799577-FC3C-4105-AE4C-7F1E0692484D",
+          "given": "B. A.",
+          "family": "Block",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:E3B48268-F8A5-4AD2-B1EB-E335B285A234",
+          "given": "A. B.",
+          "family": "Boehm",
+          "objectType": "MPBibliographicName"
+        }
+      ],
+      "issued": {
+        "_id": "MPBibliographicDate:BD65ED40-A428-42DD-80E5-EE4343BE3ECF",
+        "date-parts": [
+          [
+            "2016"
+          ]
+        ],
+        "objectType": "MPBibliographicDate"
+      },
+      "volume": "50",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPBibliographyItem",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "container-title": "Environmental Science & Technology"
+    },
+    {
+      "_id": "MPBibliographyItem:D677F3EC-2811-4736-91BD-CDEE65050D9C",
+      "type": "article-journal",
+      "author": [
+        {
+          "_id": "MPBibliographicName:F9C14957-C63B-4CA2-AD81-1DE79F20F7D7",
+          "given": "H.",
+          "family": "Wickham",
+          "objectType": "MPBibliographicName"
+        }
+      ],
+      "issued": {
+        "_id": "MPBibliographicDate:BB8E1B19-F54C-4773-96FE-94B2E8475D32",
+        "date-parts": [
+          [
+            "2016"
+          ]
+        ],
+        "objectType": "MPBibliographicDate"
+      },
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPBibliographyItem",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872"
+    },
+    {
+      "DOI": "https://doi.org/10.1007/s11284-016-1400-9",
+      "_id": "MPBibliographyItem:B684EFA5-736F-4346-8B1D-B673DE2FE4F4",
+      "page": "963-967",
+      "type": "article-journal",
+      "issue": "6",
+      "title": "On-site filtration of water samples for environmental DNA analysis to avoid DNA degradation during transportation.",
+      "author": [
+        {
+          "_id": "MPBibliographicName:8222BBEA-6A39-47ED-9C8A-15268056EB89",
+          "given": "H.",
+          "family": "Yamanaka",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:70EA79AC-8577-4F75-BFC0-2B168BE5E588",
+          "given": "H.",
+          "family": "Motozawa",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:6EE98BA5-4BA5-475F-B43E-A1A5FDA7933A",
+          "given": "S.",
+          "family": "Tsuji",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:84748D39-0B37-493D-8720-F93D405E3AAB",
+          "given": "R. C.",
+          "family": "Miyazawa",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:74474858-45B1-4C0B-816F-BE4DC32627C5",
+          "given": "T.",
+          "family": "Takahara",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:26CF4D91-DBA8-48BA-882D-D0F71B0C05B2",
+          "given": "T.",
+          "family": "Minamoto",
+          "objectType": "MPBibliographicName"
+        }
+      ],
+      "issued": {
+        "_id": "MPBibliographicDate:05770C8A-D7AE-4B80-B5A1-0FA48E80F3B0",
+        "date-parts": [
+          [
+            "2016"
+          ]
+        ],
+        "objectType": "MPBibliographicDate"
+      },
+      "volume": "31",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPBibliographyItem",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "container-title": "Ecological Research"
+    },
+    {
+      "_id": "MPCitation:98246F10-3EFF-4792-9D9B-798FEDFAC84C",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPCitation",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "embeddedCitationItems": [
+        {
+          "_id": "MPCitationItem:68F4E38C-CEE1-4C9B-98C5-8ABF45C37585",
+          "objectType": "MPCitationItem",
+          "bibliographyItem": "MPBibliographyItem:498DD48A-8227-4E43-913E-5BE00D84F49A"
+        }
+      ]
+    },
+    {
+      "_id": "MPCitation:2A92894E-11D9-4EE6-80C9-CA012B13BB1A",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPCitation",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "embeddedCitationItems": [
+        {
+          "_id": "MPCitationItem:9FCACB39-AB0F-4E71-8258-F74C95E49D23",
+          "objectType": "MPCitationItem",
+          "bibliographyItem": "MPBibliographyItem:FD05FE67-A543-404F-8A70-D051C1889082"
+        }
+      ]
+    },
+    {
+      "_id": "MPCitation:ED4E89A8-F361-4108-B58F-71CFEF5EE9A3",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPCitation",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "embeddedCitationItems": [
+        {
+          "_id": "MPCitationItem:BF7E5E69-57F9-4050-9AA8-F5DD65718A42",
+          "objectType": "MPCitationItem",
+          "bibliographyItem": "MPBibliographyItem:D9CCCC3E-7738-487C-9C7F-3BB4DC7BC7B8"
+        }
+      ]
+    },
+    {
+      "_id": "MPCitation:78706871-A480-45C7-A9C5-52AF51A12963",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPCitation",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "embeddedCitationItems": [
+        {
+          "_id": "MPCitationItem:3767DD68-62BF-46FB-B929-7837DD0CA6A3",
+          "objectType": "MPCitationItem",
+          "bibliographyItem": "MPBibliographyItem:54D1131A-C107-4B98-A645-43C01D7B5372"
+        }
+      ]
+    },
+    {
+      "_id": "MPCitation:87898B33-18E8-4029-9D0C-FB7B5576CE60",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPCitation",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "embeddedCitationItems": [
+        {
+          "_id": "MPCitationItem:BF404795-EFCF-4674-BC6A-2763805B87A4",
+          "objectType": "MPCitationItem",
+          "bibliographyItem": "MPBibliographyItem:F4135E9F-6B42-4E57-B198-A62143EF2A03"
+        }
+      ]
+    },
+    {
+      "_id": "MPCitation:EB8499D4-C661-4488-81C9-F5B3FF9913E7",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPCitation",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "embeddedCitationItems": [
+        {
+          "_id": "MPCitationItem:1E468EEB-32B3-4BE9-BF42-D4B3651C4373",
+          "objectType": "MPCitationItem",
+          "bibliographyItem": "MPBibliographyItem:280490CD-3B1C-4447-8F24-A355F2FCB5DB"
+        }
+      ]
+    },
+    {
+      "DOI": "https://doi.org/10.1007/s12686-015-0483-x",
+      "_id": "MPBibliographyItem:F4135E9F-6B42-4E57-B198-A62143EF2A03",
+      "page": "789-791",
+      "type": "article-journal",
+      "issue": "4",
+      "title": "Long duration, room temperature preservation of filtered eDNA samples.",
+      "author": [
+        {
+          "_id": "MPBibliographicName:CE59BC7C-25D0-4C7E-8B4D-2E84FED8500F",
+          "given": "B. J.",
+          "family": "Wegleitner",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:433796E9-E772-4E80-890F-A63E1ECCD3F8",
+          "given": "C. L.",
+          "family": "Jerde",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:2B732E25-D303-4264-981A-BC94F62A3041",
+          "given": "A.",
+          "family": "Tucker",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:53D2D722-8019-434E-B200-3C928D8DF64A",
+          "given": "W. L.",
+          "family": "Chadderton",
+          "objectType": "MPBibliographicName"
+        },
+        {
+          "_id": "MPBibliographicName:B389E510-85AA-42FA-B08A-3088999B201D",
+          "given": "A. R.",
+          "family": "Mahon",
+          "objectType": "MPBibliographicName"
+        }
+      ],
+      "issued": {
+        "_id": "MPBibliographicDate:938C4DAA-751E-46A4-894C-943247A86AD5",
+        "date-parts": [
+          [
+            "2015"
+          ]
+        ],
+        "objectType": "MPBibliographicDate"
+      },
+      "volume": "7",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPBibliographyItem",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "container-title": "Conservation Genetics Resources"
+    },
+    {
+      "_id": "MPCitation:D86FE1AF-E259-470C-A6A2-B5951D97B7B1",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPCitation",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "embeddedCitationItems": [
+        {
+          "_id": "MPCitationItem:21E32B67-9C7C-40E0-81CA-43879BAED4C5",
+          "objectType": "MPCitationItem",
+          "bibliographyItem": "MPBibliographyItem:F4135E9F-6B42-4E57-B198-A62143EF2A03"
+        }
+      ]
+    },
+    {
+      "_id": "MPCitation:D7A59A78-0127-4CFF-9AB4-B97DFE39E0F1",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPCitation",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "embeddedCitationItems": [
+        {
+          "_id": "MPCitationItem:AD143E78-6A59-4909-988B-ED2E047B699C",
+          "objectType": "MPCitationItem",
+          "bibliographyItem": "MPBibliographyItem:B684EFA5-736F-4346-8B1D-B673DE2FE4F4"
+        }
+      ]
+    },
+    {
+      "_id": "MPCitation:06D559A2-A8AE-4BFF-9F61-7D13D4CB5242",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPCitation",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "embeddedCitationItems": [
+        {
+          "_id": "MPCitationItem:9464B479-05A3-4E08-BDB7-6E42E6854BA8",
+          "objectType": "MPCitationItem",
+          "bibliographyItem": "MPBibliographyItem:D2A9C831-5695-46B4-ADFF-C51C3DBC93E6"
+        }
+      ]
+    },
+    {
+      "_id": "MPCitation:BD91AB3C-0787-48BD-902C-4A9340278042",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPCitation",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "embeddedCitationItems": [
+        {
+          "_id": "MPCitationItem:FCAA0A89-0CB0-4ADB-9C06-81F5FAB951C9",
+          "objectType": "MPCitationItem",
+          "bibliographyItem": "MPBibliographyItem:FD05FE67-A543-404F-8A70-D051C1889082"
+        }
+      ]
+    },
+    {
+      "_id": "MPCitation:C4419796-F4AA-4BA9-9368-E12A2283C1E5",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPCitation",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "embeddedCitationItems": [
+        {
+          "_id": "MPCitationItem:053B323F-1BE4-4DC8-BDE7-3D3AB4DFB28F",
+          "objectType": "MPCitationItem",
+          "bibliographyItem": "MPBibliographyItem:D9F5DFCE-8504-4ADC-AE05-E02AA9031A9D"
+        }
+      ]
+    },
+    {
+      "_id": "MPCitation:9221AF74-6783-45B4-A57B-6CE893BB821F",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPCitation",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "embeddedCitationItems": [
+        {
+          "_id": "MPCitationItem:2AFF1259-D755-4618-9773-2A27EA98785A",
+          "objectType": "MPCitationItem",
+          "bibliographyItem": "MPBibliographyItem:62B52A0B-79F8-482C-940A-0FFD3A299491"
+        }
+      ]
+    },
+    {
+      "_id": "MPCitation:DA71A063-11E9-4192-9F0A-D2829437B225",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPCitation",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "embeddedCitationItems": [
+        {
+          "_id": "MPCitationItem:D309D515-EA3C-4C68-915F-703B1CF56D83",
+          "objectType": "MPCitationItem",
+          "bibliographyItem": "MPBibliographyItem:4566B131-8418-4F9E-B176-852741BFAC8E"
+        }
+      ]
+    },
+    {
+      "_id": "MPCitation:B87E5520-BE39-4EE0-8D53-C351366DA4B7",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPCitation",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "embeddedCitationItems": [
+        {
+          "_id": "MPCitationItem:DBBC311D-D58A-4F9C-8BE8-53AF33969CF0",
+          "objectType": "MPCitationItem",
+          "bibliographyItem": "MPBibliographyItem:D07BC228-4EE9-41AA-A620-6ED33D76559E"
+        }
+      ]
+    },
+    {
+      "_id": "MPCitation:44A742EE-637D-4C6B-B145-091CDBE66154",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPCitation",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "embeddedCitationItems": [
+        {
+          "_id": "MPCitationItem:94DED276-E7D6-4F4C-9833-D753ADC3E820",
+          "objectType": "MPCitationItem",
+          "bibliographyItem": "MPBibliographyItem:13E8B487-DBD2-4B13-B1EF-CC8A0DB996BB"
+        }
+      ]
+    },
+    {
+      "_id": "MPCitation:C6850FEA-DEC9-47ED-8B4A-43C46C5BE897",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPCitation",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "embeddedCitationItems": [
+        {
+          "_id": "MPCitationItem:6B19FD2C-1CD7-4C8D-B6BA-7C6E44F4A4A0",
+          "objectType": "MPCitationItem",
+          "bibliographyItem": "MPBibliographyItem:D677F3EC-2811-4736-91BD-CDEE65050D9C"
+        }
+      ]
+    },
+    {
+      "_id": "MPAuxiliaryObjectReference:7CE59DED-96AA-4449-A6C9-18896594C0A3",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPAuxiliaryObjectReference",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "referencedObject": "MPTableElement:1BD69100-BECF-4DBF-A4AB-DAD50243EFC2"
+    },
+    {
+      "_id": "MPCitation:617C8FB8-6754-4B12-8D7F-70E7E01E8303",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPCitation",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "embeddedCitationItems": [
+        {
+          "_id": "MPCitationItem:87FC0775-723B-459A-95C8-122D9810A45D",
+          "objectType": "MPCitationItem",
+          "bibliographyItem": "MPBibliographyItem:B684EFA5-736F-4346-8B1D-B673DE2FE4F4"
+        }
+      ]
+    },
+    {
+      "_id": "MPCitation:DF0A2DDC-5FD5-4909-84CB-04450936FF66",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPCitation",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "embeddedCitationItems": [
+        {
+          "_id": "MPCitationItem:C6917B50-6B44-44E2-9768-0C269A1AEF7F",
+          "objectType": "MPCitationItem",
+          "bibliographyItem": "MPBibliographyItem:6410F789-371C-4F01-9081-F23A771B9A0E"
+        }
+      ]
+    },
+    {
+      "_id": "MPCitation:B5A36401-4A3A-4A8A-AF56-4E784CB9F590",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPCitation",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "embeddedCitationItems": [
+        {
+          "_id": "MPCitationItem:67709F75-CF47-4A6D-A627-36A5A2DD1994",
+          "objectType": "MPCitationItem",
+          "bibliographyItem": "MPBibliographyItem:54D1131A-C107-4B98-A645-43C01D7B5372"
+        }
+      ]
+    },
+    {
+      "_id": "MPCitation:55E3EEE3-A861-4571-8EA9-80EA30E430CE",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPCitation",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "embeddedCitationItems": [
+        {
+          "_id": "MPCitationItem:38CBF2D4-7FFB-4361-81EC-31DC310F0FAC",
+          "objectType": "MPCitationItem",
+          "bibliographyItem": "MPBibliographyItem:D8E3BED8-1B0E-4E0A-858A-56A01CC85C1A"
+        }
+      ]
+    },
+    {
+      "_id": "MPCitation:FD5E2746-EB39-4AC2-8DFB-FC2879E019EF",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPCitation",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "embeddedCitationItems": [
+        {
+          "_id": "MPCitationItem:438EBDDA-B667-4C1A-9E2A-ECA69C69A41F",
+          "objectType": "MPCitationItem",
+          "bibliographyItem": "MPBibliographyItem:4FBDE236-8F7C-4CF2-8227-A87D5C4443B8"
+        }
+      ]
+    },
+    {
+      "_id": "MPCitation:904BD705-B7A2-4A1E-94A7-3C03641C1609",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPCitation",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "embeddedCitationItems": [
+        {
+          "_id": "MPCitationItem:7EEB4A17-81A4-4D42-BA51-4BF03F816583",
+          "objectType": "MPCitationItem",
+          "bibliographyItem": "MPBibliographyItem:FABB4BC1-0461-4030-9B97-635E0AFF2B18"
+        }
+      ]
+    },
+    {
+      "_id": "MPCitation:88214EE8-AF50-4484-B849-8A998300EC35",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPCitation",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "embeddedCitationItems": [
+        {
+          "_id": "MPCitationItem:0D2DB633-453C-492E-9DE6-15C37D445E31",
+          "objectType": "MPCitationItem",
+          "bibliographyItem": "MPBibliographyItem:AD10692A-B4AC-4101-A938-D0D9925CD5AB"
+        }
+      ]
+    },
+    {
+      "_id": "MPCitation:9C90D29F-DBFE-4E37-AEF2-FBEADA0312BC",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPCitation",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "embeddedCitationItems": [
+        {
+          "_id": "MPCitationItem:F2AB6DDD-BA1E-4D04-8FDC-DC8C7BBEC1EE",
+          "objectType": "MPCitationItem",
+          "bibliographyItem": "MPBibliographyItem:8291AD7E-6EFC-45FB-8AF7-FA133A903C4A"
+        }
+      ]
+    },
+    {
+      "_id": "MPAuxiliaryObjectReference:80CE3BB0-45AD-4D4A-877A-A4948DC8AE33",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPAuxiliaryObjectReference",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "referencedObject": "MPFigureElement:D2BDAD76-347D-4D9B-9E15-1B29B002BAEC"
+    },
+    {
+      "_id": "MPAuxiliaryObjectReference:2DAD1180-3A8D-448E-8838-FC2F8BEF6E95",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPAuxiliaryObjectReference",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "referencedObject": "MPTableElement:1BD69100-BECF-4DBF-A4AB-DAD50243EFC2"
+    },
+    {
+      "_id": "MPAuxiliaryObjectReference:40545FFB-603B-4666-98CE-F8494EB1190F",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPAuxiliaryObjectReference",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "referencedObject": "MPFigureElement:D2BDAD76-347D-4D9B-9E15-1B29B002BAEC"
+    },
+    {
+      "_id": "MPCitation:CCB6D854-1DDB-43CD-8055-C3C6BCF17F47",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPCitation",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "embeddedCitationItems": [
+        {
+          "_id": "MPCitationItem:B2196AD5-5213-4084-AD2F-88C461B49931",
+          "objectType": "MPCitationItem",
+          "bibliographyItem": "MPBibliographyItem:FF85ED66-4A50-4682-9B47-74C10C2049E4"
+        }
+      ]
+    },
+    {
+      "_id": "MPCitation:6BFF596A-B844-493E-9D61-56657DA60CFC",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPCitation",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "embeddedCitationItems": [
+        {
+          "_id": "MPCitationItem:E1D8AB02-1918-462F-A288-E976290276D1",
+          "objectType": "MPCitationItem",
+          "bibliographyItem": "MPBibliographyItem:54D1131A-C107-4B98-A645-43C01D7B5372"
+        }
+      ]
+    },
+    {
+      "_id": "MPCommentAnnotation:7C906BB0-6D5D-4A29-BC92-1D7812A230DD",
+      "target": "MPParagraphElement:787DCBC8-F591-46A2-BBEF-1767B95FBF24",
+      "contents": "No table matches the in-text citation \"Table S1\". Please supply the missing table or delete the citation.",
+      "selector": {
+        "to": 826,
+        "from": 826
+      },
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPCommentAnnotation",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "contributions": [
+        {
+          "_id": "MPContribution:6053097D-33E8-453D-9B74-CFD89007E8ED",
+          "profileID": "MPUserProfile:0000000000000000000000000000000000000001",
+          "timestamp": 1693913529,
+          "objectType": "MPContribution"
+        }
+      ],
+      "annotationColor": "rgb(250, 224, 150)"
+    },
+    {
+      "_id": "MPCitation:D91926B3-AD93-4D3E-A335-E6BFD3B1AB90",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPCitation",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "embeddedCitationItems": [
+        {
+          "_id": "MPCitationItem:81397B5C-7E60-4EEE-BF81-E64C33DD93FE",
+          "objectType": "MPCitationItem",
+          "bibliographyItem": "MPBibliographyItem:F7885D5E-897C-410D-8AF2-CCB5E33DC9FE"
+        }
+      ]
+    },
+    {
+      "_id": "MPAuxiliaryObjectReference:36530E5F-200F-4F1D-ADC2-E82F726C8F8F",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPAuxiliaryObjectReference",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "referencedObject": "MPFigureElement:21048F32-728F-48E4-9A43-0CBE22FD9735"
+    },
+    {
+      "_id": "MPCitation:40989AA4-F2A8-4832-AC65-AE1D2FF05B60",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPCitation",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "embeddedCitationItems": [
+        {
+          "_id": "MPCitationItem:F86080EC-CA67-4F0A-97B8-A8A92ED31D77",
+          "objectType": "MPCitationItem",
+          "bibliographyItem": "MPBibliographyItem:AD10692A-B4AC-4101-A938-D0D9925CD5AB"
+        }
+      ]
+    },
+    {
+      "_id": "MPAuxiliaryObjectReference:7A545E51-A134-496B-B897-D15A2BE41F0A",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPAuxiliaryObjectReference",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "referencedObject": "MPTableElement:1BD69100-BECF-4DBF-A4AB-DAD50243EFC2"
+    },
+    {
+      "_id": "MPAuxiliaryObjectReference:6A55F781-4561-4110-9A6B-54ED726561C3",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPAuxiliaryObjectReference",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "referencedObject": "MPFigureElement:9EA36081-A309-4924-9735-CD5874490D97"
+    },
+    {
+      "_id": "MPCitation:F2429B44-AC1E-46A0-9B04-3D0BF3AFFA18",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPCitation",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "embeddedCitationItems": [
+        {
+          "_id": "MPCitationItem:D7B390AD-A92B-4AD9-8F09-4C484EC17615",
+          "objectType": "MPCitationItem",
+          "bibliographyItem": "MPBibliographyItem:F4135E9F-6B42-4E57-B198-A62143EF2A03"
+        }
+      ]
+    },
+    {
+      "_id": "MPCitation:63023C7D-FC5F-45C5-8E69-8A7A9B8FAD53",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPCitation",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "embeddedCitationItems": [
+        {
+          "_id": "MPCitationItem:0D5D2AB0-C773-4C6F-A120-318D3AC88BC2",
+          "objectType": "MPCitationItem",
+          "bibliographyItem": "MPBibliographyItem:760F5E99-D78C-4111-83F8-5A6591650512"
+        }
+      ]
+    },
+    {
+      "_id": "MPCitation:005AA557-38A1-44EE-9FC3-3DAB64DA5614",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPCitation",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "embeddedCitationItems": [
+        {
+          "_id": "MPCitationItem:D728A290-1842-4482-8FB6-1A8566937642",
+          "objectType": "MPCitationItem",
+          "bibliographyItem": "MPBibliographyItem:8C36D296-4FFC-40FE-8260-2FB732292017"
+        }
+      ]
+    },
+    {
+      "_id": "MPElementsOrder:7DD05253-6896-4470-8E87-6EDA9905E564",
+      "elements": [
+        "MPFigureElement:21048F32-728F-48E4-9A43-0CBE22FD9735",
+        "MPFigureElement:D2BDAD76-347D-4D9B-9E15-1B29B002BAEC",
+        "MPFigureElement:9EA36081-A309-4924-9735-CD5874490D97"
+      ],
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPElementsOrder",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "elementType": "MPFigureElement",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872"
+    },
+    {
+      "_id": "MPCommentAnnotation:90DD7FBE-3B20-4204-8290-7F36160384F7",
+      "target": "MPParagraphElement:8BB5F9F5-050B-4529-9EAE-F887BE213D0C",
+      "contents": "No table matches the in-text citation \"Table S2\". Please supply the missing table or delete the citation.",
+      "selector": {
+        "to": 619,
+        "from": 619
+      },
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPCommentAnnotation",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "contributions": [
+        {
+          "_id": "MPContribution:2B64BA8E-0FE9-4363-A2F0-62FCEE8B6225",
+          "profileID": "MPUserProfile:0000000000000000000000000000000000000001",
+          "timestamp": 1693913529,
+          "objectType": "MPContribution"
+        }
+      ],
+      "annotationColor": "rgb(250, 224, 150)"
+    },
+    {
+      "_id": "MPCommentAnnotation:165B9BA1-9680-4072-A77E-2EA18162A48B",
+      "target": "MPParagraphElement:AD63D029-B969-46C0-93D3-A8668710EE30",
+      "contents": "No table matches the in-text citation \"Table S1\". Please supply the missing table or delete the citation.",
+      "selector": {
+        "to": 267,
+        "from": 267
+      },
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPCommentAnnotation",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "contributions": [
+        {
+          "_id": "MPContribution:520AEC3E-476C-4FDF-BEE2-4B3E8ADD2037",
+          "profileID": "MPUserProfile:0000000000000000000000000000000000000001",
+          "timestamp": 1693913529,
+          "objectType": "MPContribution"
+        }
+      ],
+      "annotationColor": "rgb(250, 224, 150)"
+    },
+    {
+      "_id": "MPCommentAnnotation:8A444113-0A00-4B57-8734-31A9F8C22B8E",
+      "target": "MPBibliographyItem:8C36D296-4FFC-40FE-8260-2FB732292017",
+      "contents": "CrossRef reports the year should be \"2021\", not \"2020\". (Ref. \"Andruszkiewicz Allan, Zhang, Lavery, Govindarajan, 2020\")",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPCommentAnnotation",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "contributions": [
+        {
+          "_id": "MPContribution:D60DC400-1530-42BF-8857-4292F13314C0",
+          "profileID": "MPUserProfile:0000000000000000000000000000000000000001",
+          "timestamp": 1693913529,
+          "objectType": "MPContribution"
+        }
+      ],
+      "annotationColor": "rgb(250, 224, 150)"
+    },
+    {
+      "_id": "MPAuxiliaryObjectReference:F224D7DA-7A1C-4DFF-8983-F1F41D884D55",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPAuxiliaryObjectReference",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "referencedObject": "MPFigureElement:D2BDAD76-347D-4D9B-9E15-1B29B002BAEC"
+    },
+    {
+      "_id": "MPCitation:853D4C41-437C-4994-9F16-E157F1A780F0",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPCitation",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "embeddedCitationItems": [
+        {
+          "_id": "MPCitationItem:4092E93A-8B13-447A-BEAB-9E34B242927C",
+          "objectType": "MPCitationItem",
+          "bibliographyItem": "MPBibliographyItem:03D99218-09CA-44A5-A7CC-794520264CCA"
+        }
+      ]
+    },
+    {
+      "_id": "MPCitation:6164A526-429A-4554-9100-213A19855931",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPCitation",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "embeddedCitationItems": [
+        {
+          "_id": "MPCitationItem:F9F572CD-5E3D-4726-891B-D2B8B778AB64",
+          "objectType": "MPCitationItem",
+          "bibliographyItem": "MPBibliographyItem:EEEAC967-4E9A-4504-87DA-2C6D6D282165"
+        }
+      ]
+    },
+    {
+      "_id": "MPCitation:781AA953-88E5-4681-94EE-F07E3CC15415",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPCitation",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "embeddedCitationItems": [
+        {
+          "_id": "MPCitationItem:14BAD3F2-21A6-499C-8A62-4AA60989A598",
+          "objectType": "MPCitationItem",
+          "bibliographyItem": "MPBibliographyItem:2FE611E6-2F29-4FA9-9E5B-B90DF10A9A8C"
+        }
+      ]
+    },
+    {
+      "_id": "MPCitation:280A6D41-D4D6-4EEC-9525-34F5C4FE04AE",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPCitation",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "embeddedCitationItems": [
+        {
+          "_id": "MPCitationItem:06866B12-5276-4186-81C5-2FE83584B4BA",
+          "objectType": "MPCitationItem",
+          "bibliographyItem": "MPBibliographyItem:C9D828B4-6992-488A-B781-76E10D747F3C"
+        }
+      ]
+    },
+    {
+      "_id": "MPCommentAnnotation:029C49EF-E395-44F6-A29F-41669A2168C3",
+      "target": "MPParagraphElement:D4EC2A75-3341-46F5-8347-93FFE6269AB5",
+      "contents": "No table matches the in-text citation \"Table S3\". Please supply the missing table or delete the citation.",
+      "selector": {
+        "to": 2073,
+        "from": 2073
+      },
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPCommentAnnotation",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "contributions": [
+        {
+          "_id": "MPContribution:695551CE-6662-4A3D-BEED-5D1A1D95C611",
+          "profileID": "MPUserProfile:0000000000000000000000000000000000000001",
+          "timestamp": 1693913529,
+          "objectType": "MPContribution"
+        }
+      ],
+      "annotationColor": "rgb(250, 224, 150)"
+    },
+    {
+      "_id": "MPCommentAnnotation:76122082-9859-4E4B-BA70-E30B5CDBDC61",
+      "target": "MPParagraphElement:AD63D029-B969-46C0-93D3-A8668710EE30",
+      "contents": "No table matches the in-text citation \"Table S3\". Please supply the missing table or delete the citation.",
+      "selector": {
+        "to": 392,
+        "from": 392
+      },
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPCommentAnnotation",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "contributions": [
+        {
+          "_id": "MPContribution:C3A165C4-A00E-4D2A-827C-3243EC27F896",
+          "profileID": "MPUserProfile:0000000000000000000000000000000000000001",
+          "timestamp": 1693913529,
+          "objectType": "MPContribution"
+        }
+      ],
+      "annotationColor": "rgb(250, 224, 150)"
+    },
+    {
+      "_id": "MPCommentAnnotation:24169A01-8A65-4F2D-B7A9-1704608EC8B0",
+      "target": "MPBibliographyItem:C9D828B4-6992-488A-B781-76E10D747F3C",
+      "contents": "CrossRef reports the year should be \"2008\", not \"2007\". (Ref. \"Costas, Aragão, Mancera, Dinis, Conceição, 2007\")",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPCommentAnnotation",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "contributions": [
+        {
+          "_id": "MPContribution:DD9CDDF3-3129-4FC5-B973-8E49B67EC071",
+          "profileID": "MPUserProfile:0000000000000000000000000000000000000001",
+          "timestamp": 1693913529,
+          "objectType": "MPContribution"
+        }
+      ],
+      "annotationColor": "rgb(250, 224, 150)"
+    },
+    {
+      "_id": "MPCommentAnnotation:76585131-9F66-44D5-BA83-A311BAD98439",
+      "target": "MPBibliographyItem:D9CCCC3E-7738-487C-9C7F-3BB4DC7BC7B8",
+      "contents": "CrossRef reports the year should be \"2021\", not \"2020\". (Ref. \"Curtis, Larson, Davis, 2020\")",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPCommentAnnotation",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "contributions": [
+        {
+          "_id": "MPContribution:70F759F9-BD1B-4EFA-BD5D-95ACA9316E7B",
+          "profileID": "MPUserProfile:0000000000000000000000000000000000000001",
+          "timestamp": 1693913529,
+          "objectType": "MPContribution"
+        }
+      ],
+      "annotationColor": "rgb(250, 224, 150)"
+    },
+    {
+      "_id": "MPCommentAnnotation:5B76065E-D17E-49BF-8EB8-C40DB070DD2F",
+      "target": "MPBibliographyItem:FD05FE67-A543-404F-8A70-D051C1889082",
+      "contents": "CrossRef reports the DOI should be \"10.1371/journal.pone.0179251\", not \"10.1371/ journal.pone.0179251\". eXtyles has used the CrossRef-supplied DOI. (Ref. \"Hinlo, Gleeson, Lintermans, Furlan, 2017\")",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPCommentAnnotation",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "contributions": [
+        {
+          "_id": "MPContribution:F86D2196-8D89-4682-9C0C-8DC90678FB19",
+          "profileID": "MPUserProfile:0000000000000000000000000000000000000001",
+          "timestamp": 1693913529,
+          "objectType": "MPContribution"
+        }
+      ],
+      "annotationColor": "rgb(250, 224, 150)"
+    },
+    {
+      "_id": "MPCommentAnnotation:F76B5F42-46A8-4A6D-8F6C-E8BBF36C0894",
+      "target": "MPBibliographyItem:D07BC228-4EE9-41AA-A620-6ED33D76559E",
+      "contents": "Could not find a publisher location in this book reference. (Ref. \"Longmire, Maltbie, Baker, 1997\")",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPCommentAnnotation",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "contributions": [
+        {
+          "_id": "MPContribution:FB48A044-262F-432D-9404-E490CA585738",
+          "profileID": "MPUserProfile:0000000000000000000000000000000000000001",
+          "timestamp": 1693913529,
+          "objectType": "MPContribution"
+        }
+      ],
+      "annotationColor": "rgb(250, 224, 150)"
+    },
+    {
+      "_id": "MPElementsOrder:70AB0352-7D4C-4B55-9EA0-EB1C2A921157",
+      "elements": [
+        "MPTableElement:1BD69100-BECF-4DBF-A4AB-DAD50243EFC2"
+      ],
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPElementsOrder",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "elementType": "MPTableElement",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872"
+    },
+    {
+      "_id": "MPCommentAnnotation:9F51E2B1-7238-462D-A634-BA0C8A84AE80",
+      "target": "MPParagraphElement:AD63D029-B969-46C0-93D3-A8668710EE30",
+      "contents": "No table matches the in-text citation \"Table S2\". Please supply the missing table or delete the citation.",
+      "selector": {
+        "to": 328,
+        "from": 328
+      },
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPCommentAnnotation",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "contributions": [
+        {
+          "_id": "MPContribution:D2DF899E-2784-44F9-8628-9377A362BA49",
+          "profileID": "MPUserProfile:0000000000000000000000000000000000000001",
+          "timestamp": 1693913529,
+          "objectType": "MPContribution"
+        }
+      ],
+      "annotationColor": "rgb(250, 224, 150)"
+    },
+    {
+      "_id": "MPCommentAnnotation:4276D3F4-F2A9-4AA2-A339-9B51175C5F4C",
+      "target": "MPBibliographyItem:C9D828B4-6992-488A-B781-76E10D747F3C",
+      "contents": "Medline indexes \"Aquaculture Research\" but cannot find a listing for this reference. Please check the reference for accuracy. (Ref. \"Costas, Aragão, Mancera, Dinis, Conceição, 2007\")",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPCommentAnnotation",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "contributions": [
+        {
+          "_id": "MPContribution:D2201EFD-4434-4BF1-85F0-15EB4729F2B8",
+          "profileID": "MPUserProfile:0000000000000000000000000000000000000001",
+          "timestamp": 1693913529,
+          "objectType": "MPContribution"
+        }
+      ],
+      "annotationColor": "rgb(250, 224, 150)"
+    },
+    {
+      "_id": "MPCommentAnnotation:98FE2696-3156-4772-86B1-EB8B39A6E425",
+      "target": "MPBibliographyItem:D9CCCC3E-7738-487C-9C7F-3BB4DC7BC7B8",
+      "contents": "Medline indexes \"Limnology\" but cannot find a listing for this reference. Please check the reference for accuracy. (Ref. \"Curtis, Larson, Davis, 2020\")",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPCommentAnnotation",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "contributions": [
+        {
+          "_id": "MPContribution:B712EA47-E3B8-4C77-B1BC-9E789C17FF3E",
+          "profileID": "MPUserProfile:0000000000000000000000000000000000000001",
+          "timestamp": 1693913529,
+          "objectType": "MPContribution"
+        }
+      ],
+      "annotationColor": "rgb(250, 224, 150)"
+    },
+    {
+      "_id": "MPCommentAnnotation:6DCA4C14-7974-4760-9F35-53EF0211CD6D",
+      "target": "MPBibliographyItem:FD05FE67-A543-404F-8A70-D051C1889082",
+      "contents": "Medline reports the DOI should be \"10.1371/journal.pone.0179251\", not \"10.1371/ journal.pone.0179251\". eXtyles has used the Medline-supplied DOI. (Ref. \"Hinlo, Gleeson, Lintermans, Furlan, 2017\")",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPCommentAnnotation",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "contributions": [
+        {
+          "_id": "MPContribution:185E5EE1-D86C-45A4-A649-59A61E50F47A",
+          "profileID": "MPUserProfile:0000000000000000000000000000000000000001",
+          "timestamp": 1693913529,
+          "objectType": "MPContribution"
+        }
+      ],
+      "annotationColor": "rgb(250, 224, 150)"
+    },
+    {
+      "_id": "MPCommentAnnotation:E3E0FF49-BDB8-4D42-A14F-9F3A19629EDB",
+      "target": "MPBibliographyItem:D9F5DFCE-8504-4ADC-AE05-E02AA9031A9D",
+      "contents": "Medline cannot find the journal \"Conservation Genetics\". Please check the journal name. (Ref. \"Murphy, Waits, Kendall, Wasser, Higbee, Bogden, 2002\")",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPCommentAnnotation",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "contributions": [
+        {
+          "_id": "MPContribution:748AA4D1-F99F-4ED5-BA95-881898AF75AE",
+          "profileID": "MPUserProfile:0000000000000000000000000000000000000001",
+          "timestamp": 1693913529,
+          "objectType": "MPContribution"
+        }
+      ],
+      "annotationColor": "rgb(250, 224, 150)"
+    },
+    {
+      "_id": "MPCommentAnnotation:AE313361-1893-49EB-B39F-6FCB25DCF652",
+      "target": "MPBibliographyItem:FABB4BC1-0461-4030-9B97-635E0AFF2B18",
+      "contents": "Medline indexes \"Methods in Ecology and Evolution\" but cannot find a listing for this reference. Please check the reference for accuracy. (Ref. \"Spens, Evans, Halfmaerten, Knudsen, Sengupta, Mak, Hellström, …, 2017\")",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPCommentAnnotation",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "contributions": [
+        {
+          "_id": "MPContribution:2B6C7013-78C1-4A35-883F-645F5E5BBE1E",
+          "profileID": "MPUserProfile:0000000000000000000000000000000000000001",
+          "timestamp": 1693913529,
+          "objectType": "MPContribution"
+        }
+      ],
+      "annotationColor": "rgb(250, 224, 150)"
+    },
+    {
+      "_id": "MPCommentAnnotation:098655AC-B77F-4392-B309-812D28DAB4E4",
+      "target": "MPBibliographyItem:F7885D5E-897C-410D-8AF2-CCB5E33DC9FE",
+      "contents": "CrossRef reports the year should be \"2021\", not \"2020\". (Ref. \"Brys, Halfmaerten, Neyrinck, Mauvisseau, Auwerx, Sweet, Mergeay, 2020\")",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPCommentAnnotation",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "contributions": [
+        {
+          "_id": "MPContribution:7316F492-6755-4772-99D2-81762B3FC927",
+          "profileID": "MPUserProfile:0000000000000000000000000000000000000001",
+          "timestamp": 1693913529,
+          "objectType": "MPContribution"
+        }
+      ],
+      "annotationColor": "rgb(250, 224, 150)"
+    },
+    {
+      "_id": "MPCommentAnnotation:4C65A304-846A-4AD6-86D6-6662D1B63BD4",
+      "target": "MPBibliographyItem:498DD48A-8227-4E43-913E-5BE00D84F49A",
+      "contents": "Medline indexes \"Frontiers in Marine Science\" but cannot find a listing for this reference. Please check the reference for accuracy. (Ref. \"Djurhuus, Port, Closek, Yamahara, Romero-Maraccini, Walz, Chavez, …, 2017\")",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPCommentAnnotation",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "contributions": [
+        {
+          "_id": "MPContribution:4C50F7B0-F503-4E73-9CCF-D24C88FD7B49",
+          "profileID": "MPUserProfile:0000000000000000000000000000000000000001",
+          "timestamp": 1693913529,
+          "objectType": "MPContribution"
+        }
+      ],
+      "annotationColor": "rgb(250, 224, 150)"
+    },
+    {
+      "_id": "MPCommentAnnotation:EE1118A6-9084-4A7F-ABB5-023667D36DC9",
+      "target": "MPBibliographyItem:EEEAC967-4E9A-4504-87DA-2C6D6D282165",
+      "contents": "CrossRef reports the year should be \"2020\", not \"2019\". (Ref. \"Kumar, Eble, Gaither, 2019\")",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPCommentAnnotation",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "contributions": [
+        {
+          "_id": "MPContribution:BD37926C-DCCE-48A8-BE8B-91F1D2005EEF",
+          "profileID": "MPUserProfile:0000000000000000000000000000000000000001",
+          "timestamp": 1693913529,
+          "objectType": "MPContribution"
+        }
+      ],
+      "annotationColor": "rgb(250, 224, 150)"
+    },
+    {
+      "_id": "MPCommentAnnotation:B54811CA-D34C-44D0-A9B1-8DC19C12BA60",
+      "target": "MPBibliographyItem:B0AB118E-8762-4615-9A77-E739CCE44CAB",
+      "contents": "Reference \"Pinheiro, J., Bates, D., DebRoy, 2020\" is not cited in the text. Please add an in-text citation or delete the reference.",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPCommentAnnotation",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "contributions": [
+        {
+          "_id": "MPContribution:662342BB-62CF-4FCD-B297-3EC3D18E5BCF",
+          "profileID": "MPUserProfile:0000000000000000000000000000000000000001",
+          "timestamp": 1693913529,
+          "objectType": "MPContribution"
+        }
+      ],
+      "annotationColor": "rgb(250, 224, 150)"
+    },
+    {
+      "_id": "MPCommentAnnotation:DB4EE84F-A97C-4960-B4D9-7F2D53E6B705",
+      "target": "MPBibliographyItem:F4135E9F-6B42-4E57-B198-A62143EF2A03",
+      "contents": "Medline indexes \"Conservation Genetics Resources\" but cannot find a listing for this reference. Please check the reference for accuracy. (Ref. \"Wegleitner, Jerde, Tucker, Chadderton, Mahon, 2015\")",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPCommentAnnotation",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "contributions": [
+        {
+          "_id": "MPContribution:A7D9780D-9179-45F2-9AF8-A8FC23CF5FCB",
+          "profileID": "MPUserProfile:0000000000000000000000000000000000000001",
+          "timestamp": 1693913529,
+          "objectType": "MPContribution"
+        }
+      ],
+      "annotationColor": "rgb(250, 224, 150)"
+    },
+    {
+      "_id": "MPCommentAnnotation:7CCAD980-C1D5-4566-B143-30C8C08DE247",
+      "target": "MPBibliographyItem:54D1131A-C107-4B98-A645-43C01D7B5372",
+      "contents": "CrossMark reports this article was originally posted as a Preprint at https://doi.org/10.1101/489609. (Ref. \"Sales, Wangensteen, Carvalho, Mariani, 2019\")",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPCommentAnnotation",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "contributions": [
+        {
+          "_id": "MPContribution:9F913C78-14FB-4746-8B3F-8564DDDAC729",
+          "profileID": "MPUserProfile:0000000000000000000000000000000000000001",
+          "timestamp": 1693913529,
+          "objectType": "MPContribution"
+        }
+      ],
+      "annotationColor": "rgb(250, 224, 150)"
+    },
+    {
+      "_id": "MPCommentAnnotation:D8049646-CE50-409B-9706-F68D75C42247",
+      "target": "MPBibliographyItem:B684EFA5-736F-4346-8B1D-B673DE2FE4F4",
+      "contents": "Medline indexes \"Ecological Research\" but cannot find a listing for this reference. Please check the reference for accuracy. (Ref. \"Yamanaka, Motozawa, Tsuji, Miyazawa, Takahara, Minamoto, 2016\")",
+      "createdAt": 1693913529,
+      "updatedAt": 1693913529,
+      "objectType": "MPCommentAnnotation",
+      "containerID": "MPProject:e3ecbbaa-c4e1-49cc-9ffd-f8654cf19f7d",
+      "manuscriptID": "MPManuscript:b8d7cf54-aa47-48c9-807e-25301caf6872",
+      "contributions": [
+        {
+          "_id": "MPContribution:2386F2C8-58B5-4F9A-B932-AA88ED19DB68",
+          "profileID": "MPUserProfile:0000000000000000000000000000000000000001",
+          "timestamp": 1693913529,
+          "objectType": "MPContribution"
+        }
+      ],
+      "annotationColor": "rgb(250, 224, 150)"
+    }
+  ]
+}

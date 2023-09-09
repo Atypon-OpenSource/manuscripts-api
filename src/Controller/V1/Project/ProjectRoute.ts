@@ -28,7 +28,6 @@ import {
   deleteModelSchema,
   projectCollaboratorsSchema,
   replaceProjectSchema,
-  saveProjectSchema,
 } from './ProjectSchema'
 
 export class ProjectRoute extends BaseRoute {
@@ -75,7 +74,6 @@ export class ProjectRoute extends BaseRoute {
 
     router.post(
       `${this.basePath}/:projectId/save`,
-      celebrate(saveProjectSchema),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
