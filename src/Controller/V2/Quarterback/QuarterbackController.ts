@@ -68,6 +68,24 @@ export class QuarterbackController extends ContainedBaseController {
     return DIContainer.sharedContainer.quarterback.getDocument(manuscriptID)
   }
 
+  async receiveSteps(req: Request): Promise<Buffer> {
+    const { projectID, manuscriptID } = req.params
+    await this.validateUserAccess(req.user, projectID, QuarterbackPermission.WRITE)
+    return DIContainer.sharedContainer.quarterback.receiveSteps(req.body, manuscriptID)
+  }
+
+  async handleSteps(req: Request): Promise<Buffer> {
+    const { projectID, manuscriptID } = req.params
+    await this.validateUserAccess(req.user, projectID, QuarterbackPermission.READ)
+    return DIContainer.sharedContainer.quarterback.handleSteps(manuscriptID)
+  }
+
+  async getDocOfVersion(req: Request): Promise<Buffer> {
+    const { projectID, manuscriptID } = req.params
+    await this.validateUserAccess(req.user, projectID, QuarterbackPermission.READ)
+    return DIContainer.sharedContainer.quarterback.receiveSteps(req.body, manuscriptID)
+  }
+
   async deleteDocument(req: Request): Promise<Buffer> {
     const { projectID, manuscriptID } = req.params
     await this.validateUserAccess(req.user, projectID, QuarterbackPermission.WRITE)

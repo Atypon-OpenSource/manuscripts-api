@@ -26,9 +26,12 @@ import {
   createSnapshotSchema,
   deleteDocumentSchema,
   deleteSnapshotSchema,
+  getDocOfVersionSchema,
   getDocumentSchema,
   getSnapshotLabelsSchema,
   getSnapshotSchema,
+  listenSchema,
+  receiveStepsSchema,
   updateDocumentSchema,
 } from './QuarterbackSchema'
 
@@ -86,6 +89,45 @@ export class QuarterbackRoute extends BaseRoute {
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           const result = await this.quarterbackController.getDocument(req)
+          res.status(StatusCodes.OK).send(result)
+        }, next)
+      }
+    )
+    router.post(
+      `${this.basePath}/doc/:projectID/manuscript/:manuscriptID/steps`,
+      celebrate(receiveStepsSchema, {}),
+      AuthStrategy.JsonHeadersValidation,
+      AuthStrategy.JWTAuth,
+      (req: Request, res: Response, next: NextFunction) => {
+        return this.runWithErrorHandling(async () => {
+          const result = await this.quarterbackController.receiveSteps(req)
+          res.status(StatusCodes.OK).send(result)
+        }, next)
+      }
+    )
+    router.get(
+      `${this.basePath}/doc/:projectID/manuscript/:manuscriptID/listen`,
+      celebrate(listenSchema, {}),
+      AuthStrategy.JsonHeadersValidation,
+      AuthStrategy.JWTAuth,
+      (req: Request, res: Response, next: NextFunction) => {
+        return this.runWithErrorHandling(async () => {
+          const result = await this.quarterbackController.handleSteps(req)
+          res.setHeader('Content-Type', 'text/event-stream')
+          res.setHeader('Connection', 'keep-alive')
+          res.setHeader('Cache-Control', 'no-cache')
+          res.status(StatusCodes.OK).write(result)
+        }, next)
+      }
+    )
+    router.get(
+      `${this.basePath}/doc/:projectID/manuscript/:manuscriptID/version`,
+      celebrate(getDocOfVersionSchema, {}),
+      AuthStrategy.JsonHeadersValidation,
+      AuthStrategy.JWTAuth,
+      (req: Request, res: Response, next: NextFunction) => {
+        return this.runWithErrorHandling(async () => {
+          const result = await this.quarterbackController.getDocOfVersion(req)
           res.status(StatusCodes.OK).send(result)
         }, next)
       }

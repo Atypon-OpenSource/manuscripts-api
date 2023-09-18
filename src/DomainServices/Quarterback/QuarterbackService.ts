@@ -22,6 +22,45 @@ import { IQuarterbackService } from './IQuarterbackService'
 
 export class QuarterbackService implements IQuarterbackService {
   constructor(private baseurl: string, private apiKey: string) {}
+
+  async receiveSteps(body: object, docId: string) {
+    const res = await fetch(`${this.baseurl}/doc/${docId}/steps`, {
+      method: 'POST',
+      headers: this.headers,
+      body: JSON.stringify(body),
+    })
+    if (res.ok && res.body) {
+      return getStream.buffer(res.body)
+    }
+    throw new RequestError(
+      `Quarterback request 'POST steps' failed with error: code(${res.status}) - message(${res.statusText})`
+    )
+  }
+  async handleSteps(docId: string): Promise<Buffer> {
+    const res = await fetch(`${this.baseurl}/doc/${docId}/listen`, {
+      method: 'GET',
+      headers: this.headers,
+    })
+    if (res.ok && res.body) {
+      return getStream.buffer(res.body)
+    }
+    throw new RequestError(
+      `Quarterback request 'POST steps' failed with error: code(${res.status}) - message(${res.statusText})`
+    )
+  }
+  async getDocOfVersion(body: object, docId: string) {
+    const res = await fetch(`${this.baseurl}/doc/${docId}/version`, {
+      method: 'GET',
+      headers: this.headers,
+      body: JSON.stringify(body),
+    })
+    if (res.ok && res.body) {
+      return getStream.buffer(res.body)
+    }
+    throw new RequestError(
+      `Quarterback request 'POST steps' failed with error: code(${res.status}) - message(${res.statusText})`
+    )
+  }
   async getDocument(docId: string): Promise<Buffer> {
     const res = await fetch(`${this.baseurl}/doc/${docId}`, {
       method: 'GET',
