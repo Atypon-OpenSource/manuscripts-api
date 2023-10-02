@@ -24,14 +24,8 @@ const allowUnknownObjectsSchema = Joi.defaults((schema) =>
 )
 export const createProjectSchema: Joi.SchemaMap = {
   headers: jsonHeadersSchema.headers,
-  params: Joi.object({
-    projectID: Joi.string(),
-  }),
   body: Joi.object({
     title: Joi.string(),
-    owners: Joi.array().items(Joi.string()),
-    writers: Joi.array().items(Joi.string()),
-    viewers: Joi.array().items(Joi.string()),
   }),
 }
 
@@ -103,7 +97,20 @@ export const loadProjectSchema: Joi.SchemaMap = {
   }).options({ allowUnknown: true }),
   params: Joi.object({
     projectID: Joi.string().required(),
-    manuscriptID: Joi.string(),
+  }),
+  body: Joi.object({
+    types: Joi.array().items(Joi.string()),
+  }),
+}
+
+export const loadManuscriptSchema: Joi.SchemaMap = {
+  headers: Joi.object({
+    accept: appJsonAndCharset,
+    'if-modified-since': Joi.date(),
+  }).options({ allowUnknown: true }),
+  params: Joi.object({
+    projectID: Joi.string().required(),
+    manuscriptID: Joi.string().required(),
   }),
   body: Joi.object({
     types: Joi.array().items(Joi.string()),
@@ -120,7 +127,6 @@ export const accessTokenSchema: Joi.SchemaMap = {
 export const createManuscriptSchema: Joi.SchemaMap = {
   params: Joi.object({
     projectID: Joi.string().required(),
-    manuscriptID: Joi.string(),
   }),
   body: Joi.object({
     templateID: Joi.string(),

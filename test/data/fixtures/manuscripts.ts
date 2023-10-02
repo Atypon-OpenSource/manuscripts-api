@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Manuscript } from '@manuscripts/manuscripts-json-schema'
+import { Manuscript } from '@manuscripts/json-schema'
 
 export const validManuscript: Manuscript = {
   _id: 'MPManuscript:valid-manuscript-id-1',
@@ -24,7 +24,7 @@ export const validManuscript: Manuscript = {
   createdAt: 1603157299,
   updatedAt: 1603157220,
   priority: 1,
-  containerID: 'MPProject:valid-project-id-2'
+  containerID: 'MPProject:valid-project-id-2',
 }
 
 export const validManuscript1: Manuscript = {
@@ -35,5 +35,5 @@ export const validManuscript1: Manuscript = {
   createdAt: 1603157299,
   updatedAt: 1603157220,
   priority: 1,
-  containerID: 'MPProject:valid-project-id-11'
+  containerID: 'MPProject:valid-project-id-11',
 }

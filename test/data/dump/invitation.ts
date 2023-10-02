@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
+import { Invitation, UserProfile } from '@manuscripts/json-schema'
 import checksum from 'checksum'
-import { Invitation, UserProfile } from '@manuscripts/manuscripts-json-schema'
 
 export const invitationsList: Invitation[] = []
 

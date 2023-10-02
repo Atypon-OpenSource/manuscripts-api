@@ -28,7 +28,6 @@ import { RoleDoesNotPermitOperationError } from '../../../../../../src/Errors'
 import { ProjectUserRole } from '../../../../../../src/Models/ContainerModels'
 import { templates } from '../../../../../data/dump/templates'
 import { ValidHeaderWithApplicationKey } from '../../../../../data/fixtures/headers'
-import { validManuscript } from '../../../../../data/fixtures/manuscripts'
 import { validProject } from '../../../../../data/fixtures/projects'
 import { validUser } from '../../../../../data/fixtures/userServiceUser'
 import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
@@ -52,7 +51,6 @@ describe('ProjectController', () => {
   const user = validUser as Express.User
   const userID = user._id
   const role = ProjectUserRole.Owner
-  const manuscriptID = validManuscript._id
   const templateID = templates[0]._id
   const onlyIDs = 'true'
   const accept = ValidHeaderWithApplicationKey['Accept']
@@ -74,20 +72,15 @@ describe('ProjectController', () => {
 
       projectService.createProject = jest.fn().mockResolvedValue(mockProject)
 
-      const project = await controller.createProject(projectTitle, user, projectID)
+      const project = await controller.createProject(projectTitle, user)
 
-      expect(projectService.createProject).toHaveBeenCalledWith(userID, projectID, projectTitle)
+      expect(projectService.createProject).toHaveBeenCalledWith(userID, projectTitle)
       expect(project).toEqual(mockProject)
-    })
-    it('should not throw an error if projectID is missing', async () => {
-      await expect(controller.createProject(projectTitle, user)).resolves.not.toThrow()
     })
     it('should throw an error if ProjectService.createProject fails', async () => {
       projectService.createProject = jest.fn().mockRejectedValue(new Error('Test Error'))
 
-      await expect(controller.createProject(projectTitle, user, projectID)).rejects.toThrow(
-        'Test Error'
-      )
+      await expect(controller.createProject(projectTitle, user)).rejects.toThrow('Test Error')
     })
   })
   describe('updateProject', () => {
@@ -195,9 +188,9 @@ describe('ProjectController', () => {
     it('should throw error if user lacks CREATE_MANUSCRIPT permission', async () => {
       controller.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.READ]))
 
-      await expect(
-        controller.createManuscript(user, projectID, manuscriptID, templateID)
-      ).rejects.toThrow(new RoleDoesNotPermitOperationError('Access denied', user._id))
+      await expect(controller.createManuscript(user, projectID, templateID)).rejects.toThrow(
+        new RoleDoesNotPermitOperationError('Access denied', user._id)
+      )
     })
 
     it('should call projectService.createManuscript with correct params', async () => {
@@ -206,12 +199,8 @@ describe('ProjectController', () => {
         .fn()
         .mockResolvedValue(new Set([ProjectPermission.CREATE_MANUSCRIPT]))
 
-      await controller.createManuscript(user, projectID, manuscriptID, templateID)
-      expect(projectService.createManuscript).toHaveBeenCalledWith(
-        projectID,
-        manuscriptID,
-        templateID
-      )
+      await controller.createManuscript(user, projectID, templateID)
+      expect(projectService.createManuscript).toHaveBeenCalledWith(projectID, templateID)
     })
   })
   describe('getCollaborators', () => {

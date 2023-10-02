@@ -13,21 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Model, ObjectTypes, Project } from '@manuscripts/json-schema'
+import {
+  Manuscript,
+  manuscriptIDTypes,
+  Model,
+  ObjectTypes,
+  Project,
+  validate,
+} from '@manuscripts/json-schema'
+import decompress from 'decompress'
+import fs from 'fs'
+import { remove } from 'fs-extra'
+import getStream from 'get-stream'
 import jwt, { Algorithm } from 'jsonwebtoken'
 import JSZip from 'jszip'
+import { Readable } from 'stream'
+import tempy from 'tempy'
 import { v4 as uuid_v4 } from 'uuid'
 
 import { config } from '../Config/Config'
 import { IManuscriptRepository } from '../DataAccess/Interfaces/IManuscriptRepository'
 import { IUserRepository } from '../DataAccess/Interfaces/IUserRepository'
-import { TemplateRepository } from '../DataAccess/TemplateRepository/TemplateRepository'
 import { DIContainer } from '../DIContainer/DIContainer'
 import {
-  ConflictingRecordError,
   InvalidScopeNameError,
   MissingContainerError,
   MissingTemplateError,
+  SyncError,
   UserRoleError,
   ValidationError,
 } from '../Errors'
@@ -49,48 +61,98 @@ export class ProjectService {
   constructor(
     private containerRepository: ContainerRepository,
     private manuscriptRepository: IManuscriptRepository,
-    private templateRepository: TemplateRepository,
     private userRepository: IUserRepository
   ) {}
 
-  public async createProject(userID: string, id?: string, title?: string): Promise<Project> {
-    const containerID = id || uuid_v4()
-
-    const newContainer: any = {
-      _id: containerID,
-      objectType: ObjectTypes.Project,
+  public async createProject(userID: string, title?: string): Promise<Project> {
+    const project = {
+      _id: uuid_v4(),
+      objectType: ObjectTypes.Project as const,
       title: title,
       owners: [ContainerService.userIdForSync(userID)],
       writers: [],
       viewers: [],
     }
 
-    return await this.containerRepository.create(newContainer)
+    return await this.containerRepository.create(project)
   }
 
-  public async createManuscript(projectID: string, manuscriptID?: string, templateID?: string) {
-    if (manuscriptID) {
-      const manuscript = await this.manuscriptRepository.getById(manuscriptID)
-      if (manuscript) {
-        throw new ConflictingRecordError('Manuscript with the same id exists', manuscript)
-      }
-    } else {
-      manuscriptID = uuid_v4()
-    }
-
+  public async createManuscript(projectID: string, templateID?: string) {
     if (templateID) {
-      const template = await this.templateRepository.getById(templateID)
-      if (!template) {
+      const exists = await DIContainer.sharedContainer.configService.hasDocument(templateID)
+      if (!exists) {
         throw new MissingTemplateError(templateID)
       }
     }
 
     return await this.manuscriptRepository.create({
-      _id: manuscriptID,
+      _id: uuid_v4(),
       objectType: ObjectTypes.Manuscript,
       containerID: projectID,
       prototype: templateID,
     })
+  }
+
+  public async importJats(
+    file: Express.Multer.File,
+    projectID: string,
+    templateID?: string
+  ): Promise<Manuscript> {
+    if (templateID) {
+      const exists = await DIContainer.sharedContainer.configService.hasDocument(templateID)
+      if (!exists) {
+        throw new MissingTemplateError(templateID)
+      }
+    }
+
+    const zip = await this.convert(file.path)
+
+    const { root, files } = await this.extract(zip)
+
+    if (!files || !files['index.manuscript-json']) {
+      throw new ValidationError('JSON file not found', file.filename)
+    }
+
+    const now = Math.round(Date.now() / 1000)
+
+    const index = files['index.manuscript-json'].data
+    let models = JSON.parse(index.toString()).data as Model[]
+
+    let manuscript = models.find((m) => m.objectType === ObjectTypes.Manuscript) as Manuscript
+
+    if (!manuscript) {
+      throw new ValidationError('Manuscript not found', file.filename)
+    }
+
+    models = models.map((m) => {
+      const updated = {
+        ...m,
+        createdAt: now,
+        updatedAt: now,
+        containerID: projectID,
+      }
+
+      //why doesn't pressroom already include manuscriptID?
+      if (manuscriptIDTypes.has(m.objectType)) {
+        // @ts-ignore
+        updated.manuscriptID = manuscript._id
+      }
+
+      return updated
+    })
+
+    manuscript = models.find((m) => m.objectType === ObjectTypes.Manuscript) as Manuscript
+    if (templateID) {
+      manuscript.prototype = templateID
+    }
+
+    this.validate(models)
+
+    await DIContainer.sharedContainer.projectRepository.bulkInsert(models)
+
+    await remove(root)
+
+    return manuscript
   }
 
   public async makeArchive(projectID: string, manuscriptID?: string, options?: ArchiveOptions) {
@@ -145,8 +207,8 @@ export class ProjectService {
     await this.containerRepository.bulkUpsert(models)
   }
 
-  public async getProjectModels(projectID: string): Promise<Model[]> {
-    return await this.containerRepository.getContainerResources(projectID, null)
+  public async getProjectModels(projectID: string, manuscriptID?: string): Promise<Model[]> {
+    return await this.containerRepository.getContainerResources(projectID, manuscriptID || null)
   }
 
   public async updateUserRole(
@@ -309,5 +371,35 @@ export class ProjectService {
         throw new ValidationError(`manuscript doesn't belong to project`, models)
       }
     }
+  }
+
+  private async convert(path: string): Promise<Readable> {
+    const stream = fs.createReadStream(path)
+    try {
+      return await DIContainer.sharedContainer.pressroomService.importJATS(stream)
+    } finally {
+      stream.close()
+    }
+  }
+
+  private async extract(
+    zip: Readable
+  ): Promise<{ root: string; files: { [k: string]: decompress.File } }> {
+    const root = tempy.directory()
+    const buffer = await getStream.buffer(zip)
+    const files = await decompress(buffer, root)
+    return {
+      root,
+      files: files.reduce((a, v) => ({ ...a, [v.path]: v }), {}),
+    }
+  }
+
+  private validate(models: Model[]) {
+    models.forEach((m) => {
+      const error = validate(m)
+      if (error) {
+        throw new SyncError(error, m)
+      }
+    })
   }
 }
