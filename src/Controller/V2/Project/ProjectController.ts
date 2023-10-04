@@ -50,7 +50,12 @@ export class ProjectController extends BaseController {
     return new Date(modifiedSince).getTime() / 1000 >= project.updatedAt
   }
 
-  async getProjectModels(types: any, user: Express.User, projectID: string, manuscriptID?: string): Promise<Model[]> {
+  async getProjectModels(
+    types: any,
+    user: Express.User,
+    projectID: string,
+    manuscriptID?: string
+  ): Promise<Model[]> {
     const permissions = await this.getPermissions(projectID, user._id)
     if (!permissions.has(ProjectPermission.READ)) {
       throw new RoleDoesNotPermitOperationError(`Access denied`, user._id)
@@ -69,7 +74,7 @@ export class ProjectController extends BaseController {
   }
 
   async updateUserRole(
-    userID: string,
+    connectUserID: string,
     role: ProjectUserRole,
     user: Express.User,
     projectID: string
@@ -79,7 +84,7 @@ export class ProjectController extends BaseController {
       throw new RoleDoesNotPermitOperationError(`Access denied`, user._id)
     }
 
-    await DIContainer.sharedContainer.projectService.updateUserRole(projectID, userID, role)
+    await DIContainer.sharedContainer.projectService.updateUserRole(projectID, connectUserID, role)
   }
 
   async createManuscript(
