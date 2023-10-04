@@ -237,38 +237,38 @@ export class ProjectService {
 
     const updated = {
       _id: projectID,
-      owners: project.owners.filter((u) => u !== connectUserID && u !== userIdForSync),
-      writers: project.writers.filter((u) => u !== connectUserID && u !== userIdForSync),
-      viewers: project.viewers.filter((u) => u !== connectUserID && u !== userIdForSync),
+      owners: project.owners.filter((u) => u !== user._id && u !== userIdForSync),
+      writers: project.writers.filter((u) => u !== user._id && u !== userIdForSync),
+      viewers: project.viewers.filter((u) => u !== user._id && u !== userIdForSync),
       editors: project.editors
-        ? project.editors.filter((u) => u !== connectUserID && u !== userIdForSync)
+        ? project.editors.filter((u) => u !== user._id && u !== userIdForSync)
         : [],
       proofers: project.proofers
-        ? project.proofers.filter((u) => u !== connectUserID && u !== userIdForSync)
+        ? project.proofers.filter((u) => u !== user._id && u !== userIdForSync)
         : [],
       annotators: project.annotators
-        ? project.annotators.filter((u) => u !== connectUserID && u !== userIdForSync)
+        ? project.annotators.filter((u) => u !== user._id && u !== userIdForSync)
         : [],
     }
 
     switch (role) {
       case ProjectUserRole.Owner:
-        updated.owners.push(user._id)
+        updated.owners.push(userIdForSync)
         break
       case ProjectUserRole.Writer:
-        updated.writers.push(user._id)
+        updated.writers.push(userIdForSync)
         break
       case ProjectUserRole.Viewer:
-        updated.viewers.push(user._id)
+        updated.viewers.push(userIdForSync)
         break
       case ProjectUserRole.Editor:
-        updated.editors.push(user._id)
+        updated.editors.push(userIdForSync)
         break
       case ProjectUserRole.Proofer:
-        updated.proofers.push(user._id)
+        updated.proofers.push(userIdForSync)
         break
       case ProjectUserRole.Annotator:
-        updated.annotators.push(user._id)
+        updated.annotators.push(userIdForSync)
         break
     }
 
