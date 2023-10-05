@@ -426,10 +426,12 @@ describe('projectService', () => {
       expect(userRepository.getOne).toHaveBeenCalledWith({ connectUserID: userID })
 
       expect(containerRepository.patch).toHaveBeenCalledTimes(1)
+
+      const userIdForSync = userID.replace('|', '_')
       expect(containerRepository.patch).toHaveBeenCalledWith(projectID, {
         _id: projectID,
         owners: [validUser2._id],
-        writers: [userID],
+        writers: [userIdForSync],
         viewers: [],
         editors: [],
         annotators: [],

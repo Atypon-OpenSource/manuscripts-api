@@ -213,11 +213,11 @@ export class ProjectService {
 
   public async updateUserRole(
     projectID: string,
-    userID: string,
+    connectUserID: string,
     role: ProjectUserRole
   ): Promise<void> {
     const project = await this.getProject(projectID)
-    const user = await this.userRepository.getOne({ connectUserID: userID })
+    const user = await this.userRepository.getOne({ connectUserID: connectUserID })
 
     if (!user) {
       throw new ValidationError('Invalid user id', user)
@@ -237,38 +237,38 @@ export class ProjectService {
 
     const updated = {
       _id: projectID,
-      owners: project.owners.filter((u) => u !== userID && u !== userIdForSync),
-      writers: project.writers.filter((u) => u !== userID && u !== userIdForSync),
-      viewers: project.viewers.filter((u) => u !== userID && u !== userIdForSync),
+      owners: project.owners.filter((u) => u !== user._id && u !== userIdForSync),
+      writers: project.writers.filter((u) => u !== user._id && u !== userIdForSync),
+      viewers: project.viewers.filter((u) => u !== user._id && u !== userIdForSync),
       editors: project.editors
-        ? project.editors.filter((u) => u !== userID && u !== userIdForSync)
+        ? project.editors.filter((u) => u !== user._id && u !== userIdForSync)
         : [],
       proofers: project.proofers
-        ? project.proofers.filter((u) => u !== userID && u !== userIdForSync)
+        ? project.proofers.filter((u) => u !== user._id && u !== userIdForSync)
         : [],
       annotators: project.annotators
-        ? project.annotators.filter((u) => u !== userID && u !== userIdForSync)
+        ? project.annotators.filter((u) => u !== user._id && u !== userIdForSync)
         : [],
     }
 
     switch (role) {
       case ProjectUserRole.Owner:
-        updated.owners.push(userID)
+        updated.owners.push(userIdForSync)
         break
       case ProjectUserRole.Writer:
-        updated.writers.push(userID)
+        updated.writers.push(userIdForSync)
         break
       case ProjectUserRole.Viewer:
-        updated.viewers.push(userID)
+        updated.viewers.push(userIdForSync)
         break
       case ProjectUserRole.Editor:
-        updated.editors.push(userID)
+        updated.editors.push(userIdForSync)
         break
       case ProjectUserRole.Proofer:
-        updated.proofers.push(userID)
+        updated.proofers.push(userIdForSync)
         break
       case ProjectUserRole.Annotator:
-        updated.annotators.push(userID)
+        updated.annotators.push(userIdForSync)
         break
     }
 
