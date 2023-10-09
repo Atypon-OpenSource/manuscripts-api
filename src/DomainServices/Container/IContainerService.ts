@@ -124,7 +124,7 @@ export interface IContainerService {
    * @param containerId the ID of the container
    * @param manuscriptID the ID of the manuscript
    * @param content the note content
-   * @param user the userObject
+   * @param userId the ID of the User
    * @param source the source of the note (EDITOR, EMAIL, DASHBOARD)
    * @param target if supplied it note will act as a reply and the value of the target should be a note ID
    */
@@ -132,7 +132,7 @@ export interface IContainerService {
     containerId: string,
     manuscriptID: string,
     content: string,
-    user: User,
+    userId: string,
     source: string,
     target?: string
   ): Promise<ManuscriptNote>

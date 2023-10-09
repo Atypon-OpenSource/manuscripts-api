@@ -435,7 +435,7 @@ export class ContainersController extends ContainedBaseController {
       containerID,
       manuscriptID,
       content,
-      user,
+      user._id,
       source,
       target
     )

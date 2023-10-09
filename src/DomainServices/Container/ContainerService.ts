@@ -747,12 +747,12 @@ export class ContainerService implements IContainerService {
     containerID: string,
     manuscriptID: string,
     contents: string,
-    user: User,
+    userId: string,
     source: string,
     target?: string
   ): Promise<any> {
     const stamp = timestamp()
-    const userProfileID = UserService.profileID(user._id)
+    const userProfileID = UserService.profileID(userId)
     if (target) {
       const note = await this.manuscriptNoteRepository.getById(target /*, userID*/)
       if (!note) {

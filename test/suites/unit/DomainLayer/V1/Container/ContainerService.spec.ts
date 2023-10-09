@@ -1517,7 +1517,7 @@ describe('ContainerService - addProductionNote', () => {
         containerID,
         manuscriptID,
         content,
-        validUser1,
+        validUser1._id,
         source,
         target
       )
@@ -1544,7 +1544,7 @@ describe('ContainerService - addProductionNote', () => {
       containerID,
       manuscriptID,
       content,
-      validUser1,
+      validUser1._id,
       source,
       target
     )
