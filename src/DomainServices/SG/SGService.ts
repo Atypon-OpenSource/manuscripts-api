@@ -15,13 +15,9 @@
  */
 
 import { StatusCodes } from 'http-status-codes'
-import jwt from 'jsonwebtoken'
 
 import { SGRepository } from '../../DataAccess/SGRepository'
 import { DIContainer } from '../../DIContainer/DIContainer'
-import { InvalidCredentialsError } from '../../Errors'
-import { isLoginTokenPayload } from '../../Utilities/JWT/LoginTokenPayload'
-import { ContainerService } from '../Container/ContainerService'
 import { ISGService } from './ISGService'
 
 export class SGService implements ISGService {
@@ -44,43 +40,31 @@ export class SGService implements ISGService {
     }
   }
 
-  public async get(token: string, id: string): Promise<any> {
-    const userId = this.getUserId(token)
+  public async get(id: string): Promise<any> {
     const repo = this.getRepoById(id)
-    return repo.getById(id, userId)
+    return repo.getById(id)
   }
 
-  public async create(token: string, doc: any): Promise<any> {
-    const userId = this.getUserId(token)
+  public async create(doc: any): Promise<any> {
     const repo = this.getRepoById(doc._id)
-    return repo.create(doc, userId)
+    return repo.create(doc)
   }
 
-  public async update(token: string, id: string, doc: any): Promise<any> {
-    const userId = this.getUserId(token)
+  public async update(id: string, doc: any): Promise<any> {
     const repo = this.getRepoById(id)
-    return repo.patch(id, doc, userId).catch((err: any) => {
+    return repo.patch(id, doc).catch((err: any) => {
       if (err.statusCode === StatusCodes.BAD_REQUEST) {
         doc._id = id
-        return this.create(token, doc)
+        return this.create(doc)
       }
       // eslint-disable-next-line promise/no-return-wrap
       return Promise.reject(err)
     })
   }
 
-  public async remove(token: string, id: any): Promise<any> {
-    const userId = this.getUserId(token)
+  public async remove(id: any): Promise<any> {
     const repo = this.getRepoById(id)
-    return repo.remove(id, userId)
-  }
-
-  private getUserId(token: string) {
-    const payload = jwt.decode(token)
-    if (!isLoginTokenPayload(payload)) {
-      throw new InvalidCredentialsError('Unexpected token payload.')
-    }
-    return ContainerService.userIdForSync(payload.userId)
+    return repo.remove(id)
   }
 
   private getRepoById(id: string) {

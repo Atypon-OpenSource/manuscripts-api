@@ -36,7 +36,7 @@ export interface IContainerService {
   /**
    * Deletes the container with all resources.
    */
-  deleteContainer(containerId: string, user: User): Promise<void>
+  deleteContainer(containerId: string): Promise<void>
 
   /**
    * Adds user to container.
@@ -63,7 +63,6 @@ export interface IContainerService {
    * @param newRole The new role of a user, could be null for deleting the user from the container.
    */
   manageUserRole(
-    user: User,
     containerId: string,
     managedUserId: { userId?: string; connectUserId?: string },
     newRole: ContainerRole | null
@@ -77,14 +76,13 @@ export interface IContainerService {
   /**
    * Gets the container.
    */
-  getContainer(containerId: string, userId?: string): Promise<Container>
+  getContainer(containerId: string): Promise<Container>
 
   /**
    * Gets an archive (ZIP file) of the container
    * See https://gitlab.com/mpapp-private/pressroom#manuscripts-project-bundle-format-aka-manuproj
    */
   getArchive(
-    userID: string,
     containerID: string,
     manuscriptID: string | null,
     token: string | null,
@@ -97,7 +95,6 @@ export interface IContainerService {
     options: ArchiveOptions
   ): Promise<Model[]>
 
-  checkUserContainerAccess(userID: string, containerID: string): Promise<boolean>
   /**
    * Gets access token for specified scope.
    * @param scope The name of the specified scope.
@@ -127,7 +124,7 @@ export interface IContainerService {
    * @param containerId the ID of the container
    * @param manuscriptID the ID of the manuscript
    * @param content the note content
-   * @param userID the id of the user
+   * @param user the userObject
    * @param source the source of the note (EDITOR, EMAIL, DASHBOARD)
    * @param target if supplied it note will act as a reply and the value of the target should be a note ID
    */
@@ -135,7 +132,7 @@ export interface IContainerService {
     containerId: string,
     manuscriptID: string,
     content: string,
-    userID: string,
+    user: User,
     source: string,
     target?: string
   ): Promise<ManuscriptNote>

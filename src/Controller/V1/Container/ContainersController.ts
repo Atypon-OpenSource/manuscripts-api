@@ -22,10 +22,13 @@ import { config } from '../../../Config/Config'
 import { DIContainer } from '../../../DIContainer/DIContainer'
 import { ContainerService } from '../../../DomainServices/Container/ContainerService'
 import { ArchiveOptions } from '../../../DomainServices/Container/IContainerService'
+import { ProjectPermission } from '../../../DomainServices/ProjectService'
 import {
   IllegalStateError,
   ManuscriptContentParsingError,
   MissingContainerError,
+  MissingUserRecordError,
+  RoleDoesNotPermitOperationError,
   ValidationError,
 } from '../../../Errors'
 import { Container, ContainerType } from '../../../Models/ContainerModels'
@@ -62,7 +65,12 @@ export class ContainersController extends ContainedBaseController {
       throw new ValidationError('container id should be a string', containerID)
     }
 
-    await DIContainer.sharedContainer.containerService.deleteContainer(containerID, req.user)
+    const permissions = await this.getPermissions(containerID, req.user._id)
+    if (!permissions.has(ProjectPermission.DELETE)) {
+      throw new RoleDoesNotPermitOperationError(`Access denied`, req.user._id)
+    }
+
+    await DIContainer.sharedContainer.containerService.deleteContainer(containerID)
   }
 
   // tslint:disable-next-line:cyclomatic-complexity
@@ -93,8 +101,12 @@ export class ContainersController extends ContainedBaseController {
       throw new ValidationError('Secret must be string or undefined.', newRole)
     }
 
+    const permissions = await this.getPermissions(containerID, req.user._id)
+    if (!permissions.has(ProjectPermission.UPDATE_ROLES)) {
+      throw new RoleDoesNotPermitOperationError(`Access denied`, req.user._id)
+    }
+
     await DIContainer.sharedContainer.containerService.manageUserRole(
-      req.user,
       containerID,
       { userId: managedUserId, connectUserId: managedUserConnectId },
       newRole
@@ -120,6 +132,11 @@ export class ContainersController extends ContainedBaseController {
 
     if (role !== null && !isString(role)) {
       throw new ValidationError('Role must be string or null', role)
+    }
+
+    const permissions = await this.getPermissions(containerID, userId)
+    if (!permissions.has(ProjectPermission.UPDATE_ROLES)) {
+      throw new RoleDoesNotPermitOperationError(`Access denied`, userId)
     }
 
     await DIContainer.sharedContainer.containerService.addContainerUser(
@@ -149,10 +166,12 @@ export class ContainersController extends ContainedBaseController {
 
     const userID = req.user._id
 
-    const project = await DIContainer.sharedContainer.containerService.getContainer(
-      projectId,
-      userID
-    )
+    const permissions = await this.getPermissions(projectId, userID)
+    if (!permissions.has(ProjectPermission.READ)) {
+      throw new RoleDoesNotPermitOperationError(`Access denied`, req.user._id)
+    }
+
+    const project = await DIContainer.sharedContainer.containerService.getContainer(projectId)
     if (!project) {
       throw new MissingContainerError(project)
     }
@@ -201,10 +220,13 @@ export class ContainersController extends ContainedBaseController {
 
     const getAttachments = acceptHeader !== 'application/json'
 
-    const userID = req.user._id
+    const permissions = await this.getPermissions(containerID, req.user._id)
+    if (!permissions.has(ProjectPermission.READ)) {
+      throw new RoleDoesNotPermitOperationError(`Access denied`, req.user._id)
+    }
+
     try {
       return DIContainer.sharedContainer.containerService.getArchive(
-        userID,
         containerID,
         manuscriptID,
         token,
@@ -230,11 +252,8 @@ export class ContainersController extends ContainedBaseController {
       throw new ValidationError('id should be a string', id)
     }
 
-    return DIContainer.sharedContainer.containerService.getAttachment(
-      req.user._id,
-      id,
-      req.params.attachmentKey
-    )
+    // is this really needed
+    return DIContainer.sharedContainer.containerService.getAttachment(id, req.params.attachmentKey)
   }
 
   async getBundle(req: Request, finish: CallableFunction) {
@@ -249,14 +268,9 @@ export class ContainersController extends ContainedBaseController {
       throw new ValidationError('containerID should be string', containerID)
     }
 
-    // will fail of the user is not a collaborator on the project
-    const canAccess = await DIContainer.sharedContainer.containerService.checkUserContainerAccess(
-      req.user._id,
-      containerID
-    )
-
-    if (!canAccess) {
-      throw new ValidationError('User must be a contributor in the container', containerID)
+    const permissions = await this.getPermissions(containerID, req.user._id)
+    if (!permissions.has(ProjectPermission.READ)) {
+      throw new RoleDoesNotPermitOperationError(`Access denied`, req.user._id)
     }
 
     if (!isString(manuscriptID)) {
@@ -267,9 +281,7 @@ export class ContainersController extends ContainedBaseController {
 
     const getAttachments = true
     const includeExt = false
-    const userID = req.user._id
     const archive = await DIContainer.sharedContainer.containerService.getArchive(
-      userID,
       containerID,
       null,
       token,
@@ -350,6 +362,11 @@ export class ContainersController extends ContainedBaseController {
       throw new ValidationError('templateId should be string', templateId)
     }
 
+    const permissions = await this.getPermissions(containerID, user._id)
+    if (!permissions.has(ProjectPermission.CREATE_MANUSCRIPT)) {
+      throw new RoleDoesNotPermitOperationError(`Access denied`, user._id)
+    }
+
     return DIContainer.sharedContainer.containerService.createManuscript(
       user._id,
       containerID,
@@ -360,6 +377,7 @@ export class ContainersController extends ContainedBaseController {
 
   async getProductionNotes(req: Request) {
     const { containerID, manuscriptID } = req.params
+    const { user } = req
 
     if (!isString(containerID)) {
       throw new ValidationError('containerID should be string', containerID)
@@ -368,6 +386,16 @@ export class ContainersController extends ContainedBaseController {
     if (!isString(manuscriptID)) {
       throw new ValidationError('manuscriptID should be string', manuscriptID)
     }
+
+    if (!user) {
+      throw new ValidationError('No user found', user)
+    }
+
+    const permissions = await this.getPermissions(containerID, user._id)
+    if (!permissions.has(ProjectPermission.READ)) {
+      throw new RoleDoesNotPermitOperationError(`Access denied`, user._id)
+    }
+
     return DIContainer.sharedContainer.containerService.getProductionNotes(
       containerID,
       manuscriptID
@@ -393,13 +421,26 @@ export class ContainersController extends ContainedBaseController {
       throw new ValidationError('content should be string', manuscriptID)
     }
 
+    const user = await DIContainer.sharedContainer.userRepository.getOne({ connectUserID })
+    if (!user) {
+      throw new MissingUserRecordError(connectUserID)
+    }
+
+    const permissions = await this.getPermissions(containerID, user._id)
+    if (!permissions.has(ProjectPermission.UPDATE)) {
+      throw new RoleDoesNotPermitOperationError(`Access denied`, user._id)
+    }
+
     return DIContainer.sharedContainer.containerService.createManuscriptNote(
       containerID,
       manuscriptID,
       content,
-      connectUserID,
+      user,
       source,
       target
     )
+  }
+  async getPermissions(projectID: string, userID: string): Promise<ReadonlySet<ProjectPermission>> {
+    return DIContainer.sharedContainer.projectService.getPermissions(projectID, userID)
   }
 }

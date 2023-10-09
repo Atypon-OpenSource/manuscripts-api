@@ -29,10 +29,8 @@ import {
   MissingContainerError,
   MissingProductionNoteError,
   MissingTemplateError,
-  MissingUserRecordError,
   MissingUserStatusError,
   RecordNotFoundError,
-  RoleDoesNotPermitOperationError,
   UserBlockedError,
   UserNotVerifiedError,
   UserRoleError,
@@ -199,19 +197,6 @@ describe('containerService - deleteContainer', () => {
     ).rejects.toThrow(MissingContainerError)
   })
 
-  test('should fail if user is not an owner', () => {
-    const containerService: any =
-      DIContainer.sharedContainer.containerService
-
-    containerService.containerRepository = {
-      getById: async () => Promise.resolve({ owners: [] }),
-    }
-
-    return expect(
-      containerService.deleteContainer(chance.guid(), { _id: `User|${chance.guid()}` })
-    ).rejects.toThrow(RoleDoesNotPermitOperationError)
-  })
-
   test('should delete a project', async () => {
     const containerService: any =
       DIContainer.sharedContainer.containerService
@@ -226,26 +211,9 @@ describe('containerService - deleteContainer', () => {
   })
 })
 
-describe('containerService - checkIfCanEdit', () => {
-  test('should return true if user can edit document', () => {
-    const containerService: any = DIContainer.sharedContainer.containerService
-
-    containerService.getContainer = () => Promise.resolve({ owners: ['User_test'], writers: [] })
-    return expect(containerService.checkIfCanEdit('User_test', 'someId')).resolves.toBeTruthy()
-  })
-
-  test('should return false if user cant edit document', () => {
-    const containerService: any = DIContainer.sharedContainer.containerService
-
-    containerService.getContainer = () => Promise.resolve({ owners: ['User_test'], writers: [] })
-    return expect(containerService.checkIfCanEdit('User_test1', 'someId')).resolves.toBeFalsy()
-  })
-})
-
 describe('containerService - addContainerUser', () => {
   test('should fail if the project is not in the db', () => {
-    const containerService: any =
-      DIContainer.sharedContainer.containerService
+    const containerService: any = DIContainer.sharedContainer.containerService
 
     const chance = new Chance()
 
@@ -653,7 +621,7 @@ describe('containerService - manageUserRole', () => {
     }
 
     return expect(
-      containerService.manageUserRole(validUser, chance.string(), chance.string(), chance.string())
+      containerService.manageUserRole(chance.string(), chance.string(), chance.string())
     ).rejects.toThrow(MissingContainerError)
   })
 
@@ -673,36 +641,11 @@ describe('containerService - manageUserRole', () => {
 
     return expect(
       containerService.manageUserRole(
-        { _id: 'User|invalid' },
         validProject._id,
         { userId: `User|${chance.string()}` },
         chance.string()
       )
     ).rejects.toThrow(ValidationError)
-  })
-
-  test('should fail if the user is not an owner', () => {
-    const containerService: any =
-      DIContainer.sharedContainer.containerService
-
-    const chance = new Chance()
-
-    containerService.userRepository = {
-      getById: async () => Promise.resolve(validUser),
-    }
-
-    containerService.containerRepository = {
-      getById: async () => Promise.resolve(validProject),
-    }
-
-    return expect(
-      containerService.manageUserRole(
-        { _id: 'User|invalid' },
-        validProject._id,
-        { userId: `User|${chance.string()}` },
-        chance.string()
-      )
-    ).rejects.toThrow(RoleDoesNotPermitOperationError)
   })
 
   test('should fail if the managedUser is not in the project', () => {
@@ -721,7 +664,6 @@ describe('containerService - manageUserRole', () => {
 
     return expect(
       containerService.manageUserRole(
-        { _id: 'User|test' },
         validProject2._id,
         { userId: `User|${chance.string()}` },
         chance.string()
@@ -745,7 +687,6 @@ describe('containerService - manageUserRole', () => {
 
     return expect(
       containerService.manageUserRole(
-        { _id: 'User_valid-user-1@manuscriptsapp.com' },
         validProject5._id,
         { userId: validUser1._id },
         chance.string()
@@ -770,7 +711,6 @@ describe('containerService - manageUserRole', () => {
 
     return expect(
       containerService.manageUserRole(
-        { _id: 'User|test' },
         validProject5._id,
         '*',
         ContainerRole.Writer
@@ -794,7 +734,6 @@ describe('containerService - manageUserRole', () => {
     containerService.updateContainerTitleAndCollaborators = jest.fn()
 
     await containerService.manageUserRole(
-      { _id: 'User_valid-user-1@manuscriptsapp.com' },
       validProject4._id,
       { userId: validProject4.writers[0].replace('_', '|') },
       ContainerRole.Owner
@@ -819,7 +758,6 @@ describe('containerService - manageUserRole', () => {
     containerService.updateContainerTitleAndCollaborators = jest.fn()
 
     await containerService.manageUserRole(
-      { _id: 'User_valid-user-1@manuscriptsapp.com' },
       validProject4._id,
       { connectUserID: 'some-connect-id' },
       ContainerRole.Owner
@@ -834,6 +772,7 @@ describe('containerService - manageUserRole', () => {
 
     containerService.userRepository = {
       getById: async () => Promise.resolve(validUser),
+      getOne: async () => Promise.resolve(validUser),
     }
 
     containerService.containerRepository = {
@@ -844,7 +783,6 @@ describe('containerService - manageUserRole', () => {
     containerService.updateContainerTitleAndCollaborators = jest.fn()
 
     await containerService.manageUserRole(
-      { _id: 'User_valid-user-1@manuscriptsapp.com' },
       validProject4._id,
       { userId: validProject4.writers[0].replace('_', '|') },
       ContainerRole.Owner,
@@ -1283,73 +1221,13 @@ describe('containerService - getArchive', () => {
       getContainerResources: async () => Promise.resolve([]),
     }
 
-    return expect(containerService.getArchive('User_test', validProject4._id)).rejects.toThrow(
+    return expect(containerService.getArchive(validProject4._id)).rejects.toThrow(
       MissingContainerError
     )
   })
 
-  test('should return an object if project is public and attachments are not requested', async () => {
-    const containerService: any =
-      DIContainer.sharedContainer.containerService
-    const userService: any = DIContainer.sharedContainer.userService
-
-    userService.userProfileRepository = {
-      getById: async () => Promise.resolve(validUserProfile),
-    }
-
-    containerService.containerRepository = {
-      getById: async () => Promise.resolve(validProject7),
-      getContainerResources: async () => Promise.resolve([validProject7]),
-      getContainerAttachments: async () => Promise.resolve([]),
-    }
-
-    const archive = await containerService.getArchive(
-      validUserProfile.userID,
-      validProject7._id,
-      null,
-      false,
-      { getAttachments: true }
-    )
-    const zip = await JSZip.loadAsync(archive)
-    expect(Object.keys(zip.files).length).toBe(1)
-    const content = await zip.files['index.manuscript-json'].async('text')
-    const json = JSON.parse(content)
-    expect(json.data[0]._id).toBe('valid-project-id-7')
-  })
-
-  test('should return an object with only IDs if project is public and attachments are not requested', async () => {
-    const containerService: any =
-      DIContainer.sharedContainer.containerService
-    const userService: any = DIContainer.sharedContainer.userService
-
-    userService.userProfileRepository = {
-      getById: async () => Promise.resolve(validUserProfile),
-    }
-
-    containerService.containerRepository = {
-      getById: async () => Promise.resolve(validProject7),
-      getContainerResourcesIDs: async () => Promise.resolve([validProject7._id]),
-      getContainerAttachments: async () => Promise.resolve([]),
-    }
-
-    const archive = await containerService.getArchive(
-      validUserProfile.userID,
-      validProject7._id,
-      null,
-      false,
-      { onlyIDs: true, getAttachments: true }
-    )
-
-    const zip = await JSZip.loadAsync(archive)
-    expect(Object.keys(zip.files).length).toBe(1)
-    const content = await zip.files['index.manuscript-json'].async('text')
-    const json = JSON.parse(content)
-    expect(json.data[0]).toBe('valid-project-id-7')
-  })
-
   test('should fail to return a zip file if project is private and token not supplied', () => {
-    const containerService: any =
-      DIContainer.sharedContainer.containerService
+    const containerService: any = DIContainer.sharedContainer.containerService
 
     containerService.containerRepository = {
       getById: async () => Promise.resolve(validProject4),
@@ -1357,9 +1235,9 @@ describe('containerService - getArchive', () => {
       getContainerAttachments: async () => Promise.resolve([]),
     }
 
-    return expect(
-      containerService.getArchive(validUserProfile.userID, validProject4._id, null, true)
-    ).rejects.toThrow(InvalidCredentialsError)
+    return expect(containerService.getArchive(validProject4._id, null, true)).rejects.toThrow(
+      InvalidCredentialsError
+    )
   })
 
   test('should return a zip file if project is private and the user authenticated', async () => {
@@ -1376,13 +1254,9 @@ describe('containerService - getArchive', () => {
     }
 
     const chance = new Chance()
-    const archive = await containerService.getArchive(
-      validUserProfile.userID,
-      validProject4._id,
-      null,
-      chance.string(),
-      { getAttachments: true }
-    )
+    const archive = await containerService.getArchive(validProject4._id, null, chance.string(), {
+      getAttachments: true
+    })
     const zip = await JSZip.loadAsync(archive)
     expect(Object.keys(zip.files).length).toBe(1)
     const content = await zip.files['index.manuscript-json'].async('text')
@@ -1406,13 +1280,9 @@ describe('containerService - getArchive', () => {
     const chance = new Chance()
 
     return expect(
-      containerService.getArchive(
-        validUserProfile.userID,
-        validProject4._id,
-        null,
-        chance.string(),
-        { getAttachments: true }
-      )
+      containerService.getArchive(validProject4._id, null, chance.string(), {
+        getAttachments: true,
+      })
     ).resolves.toBeInstanceOf(Buffer)
   })
 })
@@ -1457,32 +1327,6 @@ describe('containerService - getAttachment', () => {
     return expect(containerService.getAttachment('MPFigure:12345')).resolves.toHaveProperty('body')
   })
 
-  test('should fail to return the file if the project is not public and user not contributor in project', () => {
-    const containerService: any =
-      DIContainer.sharedContainer.containerService
-
-    containerService.containerRepository = {
-      getById: async (id: string) => {
-        if (id === 'MPProject') {
-          return Promise.resolve(validProject4)
-        } else {
-          return Promise.resolve({
-            _id: 'MPFigure:12345',
-            containerID: 'MPProject',
-            _attachments: {
-              image: {
-                content_type: 'image/png',
-              },
-            },
-          })
-        }
-      },
-      getAttachmentBody: async () => Promise.resolve('body'),
-    }
-
-    return expect(containerService.getAttachment('MPFigure:12345')).rejects.toThrow(ValidationError)
-  })
-
   test('should throw MissingContainerError if the project cannot be found', () => {
     const containerService: any =
       DIContainer.sharedContainer.containerService
@@ -1520,7 +1364,7 @@ describe('containerService - getAttachment', () => {
     const documentID = chance.string()
     const attachmentKey = chance.string()
     return expect(
-      containerService.getAttachment('User_test', documentID, attachmentKey)
+      containerService.getAttachment(documentID, attachmentKey)
     ).rejects.toThrow(RecordNotFoundError)
   })
 })
@@ -1530,7 +1374,7 @@ describe('ContainerService - accessToken', () => {
     const containerService: any =
       DIContainer.sharedContainer.containerService
 
-    containerService.getContainer = () => Promise.resolve({ owners: ['User_test'] })
+    containerService.getContainer = () => Promise.resolve({ owners: ['User_test'], writers: [], viewers: [] })
 
     const accessToken = await containerService.accessToken(
       'User|test',
@@ -1546,7 +1390,7 @@ describe('ContainerService - accessToken', () => {
     const containerService: any =
       DIContainer.sharedContainer.containerService
 
-    containerService.getContainer = () => Promise.resolve({ owners: [] })
+    containerService.getContainer = () => Promise.resolve({ owners: [], writers: [], viewers: [] })
 
     return expect(
       containerService.accessToken('User|test', 'jupyterhub', 'MPProject:foobarbaz')
@@ -1666,7 +1510,6 @@ describe('ContainerService - addProductionNote', () => {
     const containerID = validNote1.containerID
     const manuscriptID = validNote1.manuscriptID
     const content = validNote1.contents
-    const userID = 'User_test'
     const target = 'invalidTarget'
     const source = 'DASHBOARD'
     await expect(
@@ -1674,52 +1517,11 @@ describe('ContainerService - addProductionNote', () => {
         containerID,
         manuscriptID,
         content,
-        userID,
+        validUser1,
         source,
         target
       )
     ).rejects.toThrow(MissingProductionNoteError)
-  })
-  test('should fail if user does not exists', async () => {
-    const containerService: any =
-      DIContainer.sharedContainer.containerService
-    containerService.getContainer = jest.fn(() => Promise.resolve(validProject))
-    const userRebo: any = DIContainer.sharedContainer.userRepository
-    userRebo.getOne = jest.fn(() => {
-      return null
-    })
-    const repo: any = DIContainer.sharedContainer.manuscriptNotesRepository
-    repo.create = jest.fn(() => validNote1)
-    repo.getById = jest.fn(() => {})
-    const containerID = validNote1.containerID
-    const manuscriptID = validNote1.manuscriptID
-    const content = validNote1.contents
-    const userID = validUser1._id
-    const source = 'DASHBOARD'
-    await expect(
-      containerService.createManuscriptNote(containerID, manuscriptID, content, userID, source)
-    ).rejects.toThrow(MissingUserRecordError)
-  })
-
-  test('should fail if user not contributor', async () => {
-    const containerService: any =
-      DIContainer.sharedContainer.containerService
-    containerService.getContainer = jest.fn(() => Promise.resolve(validProject))
-    const userRebo: any = DIContainer.sharedContainer.userRepository
-    userRebo.getOne = jest.fn(() => {
-      return { _id: 'User_test2', ...validBody2 }
-    })
-    const repo: any = DIContainer.sharedContainer.manuscriptNotesRepository
-    repo.create = jest.fn(() => validNote1)
-    repo.getById = jest.fn(() => {})
-    const containerID = validNote1.containerID
-    const manuscriptID = validNote1.manuscriptID
-    const content = validNote1.contents
-    const userID = validUser1._id
-    const source = 'DASHBOARD'
-    await expect(
-      containerService.createManuscriptNote(containerID, manuscriptID, content, userID, source)
-    ).rejects.toThrow(ValidationError)
   })
 
   test('should add note', async () => {
@@ -1736,14 +1538,13 @@ describe('ContainerService - addProductionNote', () => {
     const containerID = validNote2.containerID
     const manuscriptID = validNote2.manuscriptID
     const content = validNote2.contents
-    const userID = validUser1._id
     const target = validNote1._id
     const source = 'DASHBOARD'
     const note = await containerService.createManuscriptNote(
       containerID,
       manuscriptID,
       content,
-      userID,
+      validUser1,
       source,
       target
     )

@@ -96,7 +96,7 @@ export class InvitationService implements IInvitationService {
 
       const invitationID = `${ObjectTypes.Invitation}:${invitationTupleHash}`
 
-      let invitation = await this.invitationRepository.getById(invitationID, userID)
+      let invitation = await this.invitationRepository.getById(invitationID)
       if (invitation) {
         await this.invitationRepository.touch(
           invitationID,

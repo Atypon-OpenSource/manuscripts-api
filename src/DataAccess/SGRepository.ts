@@ -15,17 +15,17 @@
  * limitations under the License.
  */
 
-import { Prisma } from '@prisma/client'
+import {Prisma} from '@prisma/client'
 import * as HttpStatus from 'http-status-codes'
 import * as _ from 'lodash'
 
-import { BucketKey } from '../Config/ConfigurationTypes'
-import { DatabaseError, SyncError,ValidationError } from '../Errors'
-import { timestamp } from '../Utilities/JWT/LoginTokenPayload'
-import { IdentifiableEntity } from './Interfaces/IdentifiableEntity'
-import { KeyValueRepository } from './Interfaces/KeyValueRepository'
-import { SQLDatabase } from './SQLDatabase'
-import { syncAccessControl } from './syncAccessControl'
+import {BucketKey} from '../Config/ConfigurationTypes'
+import {DatabaseError, SyncError, ValidationError} from '../Errors'
+import {timestamp} from '../Utilities/JWT/LoginTokenPayload'
+import {IdentifiableEntity} from './Interfaces/IdentifiableEntity'
+import {KeyValueRepository} from './Interfaces/KeyValueRepository'
+import {SQLDatabase} from './SQLDatabase'
+import {validate} from '@manuscripts/json-schema'
 
 export abstract class SGRepository<
   TEntity extends Partial<IdentifiableEntity>,
@@ -85,13 +85,13 @@ export abstract class SGRepository<
 
     if (userId) {
       try {
-        await this.validate({ ...prismaDoc.data }, null, userId)
+        await this.validate({ ...prismaDoc.data }, null)
       } catch (e) {
         throw new SyncError(e.forbidden, {})
       }
     }
 
-    const createPromise = new Promise<TEntity>((resolve, reject) => {
+    return new Promise<TEntity>((resolve, reject) => {
       this.database.bucket
         .insert(this.buildPrismaModel(prismaDoc))
         .then(() => resolve(this.buildModel(prismaDoc)))
@@ -105,14 +105,12 @@ export abstract class SGRepository<
           )
         )
     })
-
-    return createPromise
   }
 
   /**
    * Returns single document based on unique id.
    */
-  public async getById(id: string, userId?: string): Promise<TEntity | null> {
+  public async getById(id: string): Promise<TEntity | null> {
     return new Promise((resolve, reject) => {
       const query = { id: this.documentId(id) }
 
@@ -121,13 +119,6 @@ export abstract class SGRepository<
         .then(async (res: any) => {
           if (res) {
             const doc = this.buildModel(res)
-            if (userId) {
-              try {
-                await this.validateReadAccess(doc, userId)
-              } catch (e) {
-                return Promise.reject(e)
-              }
-            }
             return resolve(doc)
           }
           resolve(null)
@@ -157,7 +148,7 @@ export abstract class SGRepository<
 
     const query = { id: this.documentId(id) }
     if (userId) {
-      await this.getById(query.id, userId)
+      await this.getById(query.id)
     }
 
     return new Promise((resolve, reject) => {
@@ -217,7 +208,7 @@ export abstract class SGRepository<
     const docId = this.documentId(id)
     let document
     try {
-      document = await this.getById(docId, userId)
+      document = await this.getById(docId)
     } catch (e) {
       if (e.name === 'SyncError') {
         throw new SyncError(e.forbidden, {})
@@ -240,7 +231,7 @@ export abstract class SGRepository<
 
     if (userId) {
       try {
-        await this.validate({ ...patchedDocument }, { ...document }, userId)
+        await this.validate({ ...patchedDocument }, { ...document })
       } catch (e) {
         if (e.forbidden) {
           throw new SyncError(e.forbidden, {})
@@ -355,7 +346,7 @@ export abstract class SGRepository<
     const docId = this.documentId(id)
     let document
     try {
-      document = await this.getById(docId, userId)
+      document = await this.getById(docId)
     } catch (e) {
       if (e.name === 'SyncError') {
         throw new SyncError(e.forbidden, {})
@@ -374,7 +365,7 @@ export abstract class SGRepository<
 
     if (userId) {
       try {
-        await this.validate({ ...patchedDocument }, { ...document }, userId)
+        await this.validate({ ...patchedDocument }, { ...document })
       } catch (e) {
         if (e.forbidden) {
           throw new SyncError(e.forbidden, {})
@@ -426,17 +417,18 @@ export abstract class SGRepository<
     })
   }
 
-  protected async validateReadAccess(doc: any, userId: string): Promise<void> {
-    await this.validate({ ...doc }, { ...doc }, userId)
-  }
-
-  private validate(doc: any, oldDoc: any, userId?: string): Promise<void> {
+  private validate(doc: any, oldDoc: any): void {
     if (doc.expiry) {
       delete doc.expiry
     }
     if (oldDoc && oldDoc.expiry) {
       delete oldDoc.expiry
     }
-    return syncAccessControl(doc, oldDoc, userId)
+    const errorMessage = validate(doc)
+
+    if (errorMessage) {
+      // prettier-ignore
+      throw({ forbidden: errorMessage });
+    }
   }
 }
