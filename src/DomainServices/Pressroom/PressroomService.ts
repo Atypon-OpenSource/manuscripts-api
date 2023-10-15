@@ -31,7 +31,6 @@ export class PressroomService implements IPressroomService {
       filename: 'file.zip',
       contentType: 'application/zip',
     })
-    form.append('addBundledData', 'true')
 
     const headers = {
       ...form.getHeaders(),

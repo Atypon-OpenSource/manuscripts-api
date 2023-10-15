@@ -25,19 +25,21 @@ import {
   ProjectService,
 } from '../../../../../../src/DomainServices/ProjectService'
 import { RoleDoesNotPermitOperationError, ValidationError } from '../../../../../../src/Errors'
-import { ContainerRole } from '../../../../../../src/Models/ContainerModels'
-import { templates } from '../../../../../data/dump/templates'
-import { validManuscript } from '../../../../../data/fixtures/manuscripts'
+import { ProjectUserRole } from '../../../../../../src/Models/ContainerModels'
 import {
-  projectRouteRequestWithInvalidRole,
-  projectRouteRequestWithoutManuscriptID,
-  projectRouteRequestWithoutProjectID,
-  projectRouteRequestWithoutUser,
-  validProjectRouteRequest,
+  createManuscriptRequest,
+  createProjectRequest,
+  deleteProjectRequest,
+  generateAccessTokenRequest,
+  getArchiveRequest,
+  getCollaboratorsRequest,
+  getProjectModelsRequest,
+  removeUser,
+  updateProjectRequest,
+  updateUserRoleRequest,
 } from '../../../../../data/fixtures/projectRouteRequests'
-import { validProject } from '../../../../../data/fixtures/projects'
-import { validUser } from '../../../../../data/fixtures/userServiceUser'
 import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
+
 jest.setTimeout(TEST_TIMEOUT)
 
 let projectService: ProjectService
@@ -51,12 +53,8 @@ afterEach(() => {
 })
 
 describe('ProjectRoute', () => {
-  let projectRoute: ProjectRoute
-  const validMockProject: { _id: string; title: string; owners: string[] } = {
-    _id: '123',
-    title: 'Test Project',
-    owners: ['user1'],
-  }
+  let route: ProjectRoute
+
   const res: {
     status: jest.Mock
     set: jest.Mock
@@ -69,41 +67,38 @@ describe('ProjectRoute', () => {
     end: jest.fn().mockReturnThis(),
   }
   beforeEach(() => {
-    projectRoute = new ProjectRoute()
+    route = new ProjectRoute()
   })
   describe('createProject', () => {
     it('should create a project and send the project object in the response', async () => {
-      projectService.createProject = jest.fn().mockResolvedValue(validMockProject)
+      const project: { _id: string; title: string; owners: string[] } = {
+        _id: '123',
+        title: 'Test Project',
+        owners: ['user1'],
+      }
+
+      projectService.createProject = jest.fn().mockResolvedValue(project)
 
       // @ts-ignore
-      await projectRoute.createProject(validProjectRouteRequest, res)
+      await route.createProject(createProjectRequest, res)
 
       expect(res.status).toHaveBeenCalledWith(StatusCodes.OK)
-      expect(res.send).toHaveBeenCalledWith(validMockProject)
+      expect(res.send).toHaveBeenCalledWith(project)
     })
+
     it('should throw an error if user is not found', async () => {
       await expect(
         // @ts-ignore
-        projectRoute.createProject(projectRouteRequestWithoutUser, res)
+        route.createProject(removeUser(createProjectRequest), res)
       ).rejects.toThrow(new ValidationError('No user found', null))
     })
-    it('should not throw an error if projectID is missing', async () => {
-      const projectService: any = DIContainer.sharedContainer.projectService
 
-      projectService.createProject = jest.fn().mockResolvedValue(validMockProject)
-
-      await expect(
-        // @ts-ignore
-        projectRoute.createProject(projectRouteRequestWithoutProjectID, res)
-      ).resolves.not.toThrow()
-      expect(res.status).toHaveBeenCalledWith(StatusCodes.OK)
-    })
     it('should throw an error if ProjectService.createProject fails', async () => {
       projectService.createProject = jest.fn().mockRejectedValue(new Error('Test Error'))
 
       await expect(
         // @ts-ignore
-        projectRoute.createProject(validProjectRouteRequest, res)
+        route.createProject(createProjectRequest, res)
       ).rejects.toThrow('Test Error')
     })
   })
@@ -111,51 +106,41 @@ describe('ProjectRoute', () => {
     it('should throw an error if user is missing', async () => {
       await expect(
         // @ts-ignore
-        projectRoute.updateProject(projectRouteRequestWithoutUser, res)
+        route.updateProject(removeUser(updateProjectRequest), res)
       ).rejects.toThrow(new ValidationError('No user found', null))
     })
+
     it('should throw an error if user does not have UPDATE permission', async () => {
-      projectService.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.READ]))
+      const permissions = new Set([ProjectPermission.READ])
+      projectService.getPermissions = jest.fn().mockResolvedValue(permissions)
 
       await expect(
         // @ts-ignore
-
-        projectRoute.updateProject(validProjectRouteRequest, res)
+        route.updateProject(updateProjectRequest, res)
       ).rejects.toThrow(
-        new RoleDoesNotPermitOperationError('Access denied', validProjectRouteRequest.user._id)
+        new RoleDoesNotPermitOperationError('Access denied', updateProjectRequest.user._id)
       )
     })
     it('should throw an error if ProjectService.updateProject fails', async () => {
-      projectService.getPermissions = jest
-        .fn()
-        .mockResolvedValue(new Set([ProjectPermission.UPDATE]))
+      const permissions = new Set([ProjectPermission.UPDATE])
+      projectService.getPermissions = jest.fn().mockResolvedValue(permissions)
+
       projectService.updateProject = jest.fn().mockRejectedValue(new Error('Test Error'))
 
       await expect(
         // @ts-ignore
-
-        projectRoute.updateProject(validProjectRouteRequest, res)
+        route.updateProject(updateProjectRequest, res)
       ).rejects.toThrow('Test Error')
     })
 
-    it('should not throw an error when operation is successful', async () => {
-      projectService.getPermissions = jest
-        .fn()
-        .mockResolvedValue(new Set([ProjectPermission.UPDATE]))
+    it('should return OK with invoked correctly', async () => {
+      const permissions = new Set([ProjectPermission.UPDATE])
+      projectService.getPermissions = jest.fn().mockResolvedValue(permissions)
+
       projectService.updateProject = jest.fn().mockResolvedValue({})
       await expect(
         // @ts-ignore
-        projectRoute.updateProject(validProjectRouteRequest, res)
-      ).resolves.not.toThrow()
-    })
-    it('should send correct status when operation is successful', async () => {
-      projectService.getPermissions = jest
-        .fn()
-        .mockResolvedValue(new Set([ProjectPermission.UPDATE]))
-      projectService.updateProject = jest.fn().mockResolvedValue({})
-      await expect(
-        // @ts-ignore
-        projectRoute.updateProject(validProjectRouteRequest, res)
+        route.updateProject(updateProjectRequest, res)
       ).resolves.not.toThrow()
       expect(res.status).toHaveBeenCalledWith(StatusCodes.OK)
     })
@@ -165,10 +150,26 @@ describe('ProjectRoute', () => {
       projectService.getProject = jest.fn().mockResolvedValue({
         updatedAt: new Date('2023-01-01').getTime() / 1000,
       })
+
       await expect(
         // @ts-ignore
-        projectRoute.getProjectModels(projectRouteRequestWithoutUser, res)
+        route.getProjectModels(removeUser(getProjectModelsRequest), res)
       ).rejects.toThrow(new ValidationError('No user found', null))
+    })
+
+    it('should throw an error if user does not have READ permission and cache is not valid', async () => {
+      const permissions = new Set([ProjectPermission.UPDATE])
+      projectService.getPermissions = jest.fn().mockResolvedValue(permissions)
+      projectService.getProject = jest.fn().mockResolvedValue({
+        updatedAt: new Date('2023-01-01').getTime() / 1000,
+      })
+
+      await expect(
+        // @ts-ignore
+        route.getProjectModels(getProjectModelsRequest, res)
+      ).rejects.toThrow(
+        new RoleDoesNotPermitOperationError('Access denied', getProjectModelsRequest.user._id)
+      )
     })
 
     it('should return NOT_MODIFIED status if project cache is valid', async () => {
@@ -177,94 +178,99 @@ describe('ProjectRoute', () => {
       })
 
       // @ts-ignore
-      await projectRoute.getProjectModels(validProjectRouteRequest, res)
+      await route.getProjectModels(getProjectModelsRequest, res)
+
       expect(res.status).toHaveBeenCalledWith(StatusCodes.NOT_MODIFIED)
       expect(res.end).toHaveBeenCalled()
     })
-    it('should return project models if cache is not valid', async () => {
-      const mockModels = [{ id: 'model1' }, { id: 'model2' }]
 
+    it('should return NOT_MODIFIED status if project cache is valid even if user is missing', async () => {
+      projectService.getProject = jest.fn().mockResolvedValue({
+        updatedAt: new Date('2021-01-01').getTime() / 1000,
+      })
+
+      // @ts-ignore
+      await route.getProjectModels(removeUser(getProjectModelsRequest), res)
+
+      expect(res.status).toHaveBeenCalledWith(StatusCodes.NOT_MODIFIED)
+      expect(res.end).toHaveBeenCalled()
+    })
+
+    it('should return OK if cache is not valid', async () => {
+      const permissions = new Set([ProjectPermission.READ])
+      projectService.getPermissions = jest.fn().mockResolvedValue(permissions)
       projectService.getProject = jest.fn().mockResolvedValue({
         updatedAt: new Date('2023-01-01').getTime() / 1000,
       })
-      projectService.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.READ]))
+      projectService.getProjectModels = jest.fn().mockResolvedValue([])
 
-      projectService.getProjectModels = jest.fn().mockResolvedValue(mockModels)
       // @ts-ignore
-      await projectRoute.getProjectModels(validProjectRouteRequest, res)
+      await route.getProjectModels(getProjectModelsRequest, res)
+
       expect(res.set).toHaveBeenCalledWith('Content-Type', 'application/json')
       expect(res.status).toHaveBeenCalledWith(StatusCodes.OK)
     })
-    it('should throw an error if user does not have READ permission and cache is not valid', async () => {
+
+    it('should return OK if header is missing', async () => {
+      const permissions = new Set([ProjectPermission.READ])
+      projectService.getPermissions = jest.fn().mockResolvedValue(permissions)
       projectService.getProject = jest.fn().mockResolvedValue({
         updatedAt: new Date('2023-01-01').getTime() / 1000,
       })
-      projectService.getPermissions = jest
-        .fn()
-        .mockResolvedValue(new Set([ProjectPermission.UPDATE]))
+      projectService.getProjectModels = jest.fn().mockResolvedValue([])
 
-      await expect(
-        // @ts-ignore
-        projectRoute.getProjectModels(validProjectRouteRequest, res)
-      ).rejects.toThrow(
-        new RoleDoesNotPermitOperationError('Access denied', validProjectRouteRequest.user._id)
-      )
+      const request = structuredClone(getProjectModelsRequest)
+      request.headers['if-modified-since'] = ''
+
+      // @ts-ignore
+      await route.getProjectModels(request, res)
+
+      expect(res.set).toHaveBeenCalledWith('Content-Type', 'application/json')
+      expect(res.status).toHaveBeenCalledWith(StatusCodes.OK)
     })
   })
   describe('updateUserRole', () => {
     it('should throw error if user is missing', async () => {
       await expect(
         // @ts-ignore
-        projectRoute.updateUserRole(projectRouteRequestWithoutUser, res)
+        route.updateUserRole(removeUser(updateUserRoleRequest), res)
       ).rejects.toThrow(new ValidationError('No user found', null))
     })
 
     it('should throw an error if user does not have READ permission', async () => {
-      projectService.getProject = jest.fn().mockResolvedValue({
-        updatedAt: new Date('2023-01-01').getTime() / 1000,
-      })
-      projectService.getPermissions = jest
-        .fn()
-        .mockResolvedValue(new Set([ProjectPermission.UPDATE]))
+      const permissions = new Set([ProjectPermission.UPDATE])
+      projectService.getPermissions = jest.fn().mockResolvedValue(permissions)
 
       await expect(
         // @ts-ignore
-        projectRoute.updateUserRole(validProjectRouteRequest, res)
+        route.updateUserRole(updateUserRoleRequest, res)
       ).rejects.toThrow(
-        new RoleDoesNotPermitOperationError('Access denied', validProjectRouteRequest.user._id)
+        new RoleDoesNotPermitOperationError('Access denied', updateUserRoleRequest.user._id)
       )
     })
+
     it('should throw an error if role is invalid', async () => {
+      const request = structuredClone(updateUserRoleRequest)
+      request.body.role = 'invalid'
+
       await expect(
         // @ts-ignore
-        projectRoute.updateUserRole(projectRouteRequestWithInvalidRole, res)
-      ).rejects.toThrow(
-        new ValidationError('Invalid role', projectRouteRequestWithInvalidRole.body.role)
-      )
+        route.updateUserRole(request, res)
+      ).rejects.toThrow(new ValidationError('Invalid role', request.body.role))
     })
-    it('should call projectService.updateUserRole with correct params', async () => {
+
+    it('should return NO_CONTENT if called correctly', async () => {
+      const projectID = updateUserRoleRequest.params.projectID
+      const userID = updateUserRoleRequest.body.userID
+      const role = ProjectUserRole[updateUserRoleRequest.body.role as keyof typeof ProjectUserRole]
+      const permissions = new Set([ProjectPermission.UPDATE_ROLES])
       projectService.updateUserRole = jest.fn().mockResolvedValue({})
-      projectService.getPermissions = jest
-        .fn()
-        .mockResolvedValue(new Set([ProjectPermission.UPDATE_ROLES]))
+      projectService.getPermissions = jest.fn().mockResolvedValue(permissions)
 
       // @ts-ignore
-      await projectRoute.updateUserRole(validProjectRouteRequest, res)
+      await route.updateUserRole(updateUserRoleRequest, res)
 
-      expect(projectService.updateUserRole).toHaveBeenCalledWith(
-        validProject._id,
-        validUser._id,
-        ContainerRole.Writer
-      )
-    })
-    it('should send correct status when operation is successful', async () => {
-      projectService.updateUserRole = jest.fn().mockResolvedValue({})
-      projectService.getPermissions = jest
-        .fn()
-        .mockResolvedValue(new Set([ProjectPermission.UPDATE_ROLES]))
-
-      // @ts-ignore
-      await projectRoute.updateUserRole(validProjectRouteRequest, res)
+      expect(projectService.updateUserRole).toHaveBeenCalledWith(projectID, userID, role)
       expect(res.status).toHaveBeenCalledWith(StatusCodes.NO_CONTENT)
     })
   })
@@ -272,38 +278,46 @@ describe('ProjectRoute', () => {
     it('should throw error if user is missing', async () => {
       await expect(
         // @ts-ignore
-        projectRoute.createManuscript(projectRouteRequestWithoutUser, res)
+        route.createManuscript(removeUser(createManuscriptRequest), res)
       ).rejects.toThrow(new ValidationError('No user found', null))
     })
 
     it('should throw error if user lacks CREATE_MANUSCRIPT permission', async () => {
-      projectService.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.READ]))
+      const permissions = new Set([ProjectPermission.READ])
+      projectService.getPermissions = jest.fn().mockResolvedValue(permissions)
       // @ts-ignore
-      await expect(projectRoute.createManuscript(validProjectRouteRequest)).rejects.toThrow(
-        new RoleDoesNotPermitOperationError('Access denied', validProjectRouteRequest.user._id)
+      await expect(route.createManuscript(createManuscriptRequest)).rejects.toThrow(
+        new RoleDoesNotPermitOperationError('Access denied', createManuscriptRequest.user._id)
       )
     })
 
-    it('should call projectService.createManuscript with correct params', async () => {
+    it('should return OK if called correctly', async () => {
+      const projectID = createManuscriptRequest.params.projectID
+      const templateID = createManuscriptRequest.body.templateID
+      const permissions = new Set([ProjectPermission.CREATE_MANUSCRIPT])
       projectService.createManuscript = jest.fn().mockResolvedValue({})
-      projectService.getPermissions = jest
-        .fn()
-        .mockResolvedValue(new Set([ProjectPermission.CREATE_MANUSCRIPT]))
+      projectService.getPermissions = jest.fn().mockResolvedValue(permissions)
+
       // @ts-ignore
-      await projectRoute.createManuscript(validProjectRouteRequest, res)
-      expect(projectService.createManuscript).toHaveBeenCalledWith(
-        validProject._id,
-        validManuscript._id,
-        templates[0]._id
-      )
+      await route.createManuscript(createManuscriptRequest, res)
+
+      expect(projectService.createManuscript).toHaveBeenCalledWith(projectID, templateID)
+      expect(res.status).toHaveBeenCalledWith(StatusCodes.OK)
     })
-    it('should send correct status when operation is successful', async () => {
-      projectService.createManuscript = jest.fn().mockResolvedValue({})
-      projectService.getPermissions = jest
-        .fn()
-        .mockResolvedValue(new Set([ProjectPermission.CREATE_MANUSCRIPT]))
+
+    it('should return OK if called correctly with a file', async () => {
+      const permissions = new Set([ProjectPermission.CREATE_MANUSCRIPT])
+      projectService.importJats = jest.fn().mockResolvedValue({})
+      projectService.getPermissions = jest.fn().mockResolvedValue(permissions)
+
+      const request = structuredClone(createManuscriptRequest)
       // @ts-ignore
-      await projectRoute.createManuscript(validProjectRouteRequest, res)
+      request.file = { path: '/tmp/test.zip' }
+
+      // @ts-ignore
+      await route.createManuscript(request, res)
+
+      expect(projectService.importJats).toHaveBeenCalled()
       expect(res.status).toHaveBeenCalledWith(StatusCodes.OK)
     })
   })
@@ -311,36 +325,32 @@ describe('ProjectRoute', () => {
     it('should throw error if user is missing', async () => {
       await expect(
         // @ts-ignore
-        projectRoute.getCollaborators(projectRouteRequestWithoutUser, res)
+        route.getCollaborators(removeUser(getCollaboratorsRequest), res)
       ).rejects.toThrow(new ValidationError('No user found', null))
     })
 
     it('should throw error if user lacks READ permission', async () => {
-      projectService.getPermissions = jest
-        .fn()
-        .mockResolvedValue(new Set([ProjectPermission.UPDATE]))
+      const permissions = new Set([ProjectPermission.UPDATE])
+      projectService.getPermissions = jest.fn().mockResolvedValue(permissions)
+
       // @ts-ignore
-      await expect(projectRoute.getCollaborators(validProjectRouteRequest)).rejects.toThrow(
-        new RoleDoesNotPermitOperationError('Access denied', validProjectRouteRequest.user._id)
+      await expect(route.getCollaborators(getCollaboratorsRequest)).rejects.toThrow(
+        new RoleDoesNotPermitOperationError('Access denied', getCollaboratorsRequest.user._id)
       )
     })
 
     it('should call userService.getCollaborators with correct params', async () => {
-      projectService.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.READ]))
+      const projectID = getCollaboratorsRequest.params.projectID
+      const permissions = new Set([ProjectPermission.READ])
+      projectService.getPermissions = jest.fn().mockResolvedValue(permissions)
       DIContainer.sharedContainer.userService.getCollaborators = jest.fn().mockResolvedValue([])
 
       // @ts-ignore
-      await projectRoute.getCollaborators(validProjectRouteRequest, res)
+      await route.getCollaborators(getCollaboratorsRequest, res)
+
       expect(DIContainer.sharedContainer.userService.getCollaborators).toHaveBeenCalledWith(
-        validProject._id
+        projectID
       )
-    })
-    it('should send correct status when operation is successful', async () => {
-      projectService.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.READ]))
-      DIContainer.sharedContainer.userService.getCollaborators = jest.fn().mockResolvedValue([])
-
-      // @ts-ignore
-      await projectRoute.getCollaborators(validProjectRouteRequest, res)
       expect(res.status).toHaveBeenCalledWith(StatusCodes.OK)
     })
   })
@@ -348,50 +358,60 @@ describe('ProjectRoute', () => {
     it('should throw error if user is missing', async () => {
       await expect(
         // @ts-ignore
-        projectRoute.getArchive(projectRouteRequestWithoutUser, res)
+        route.getArchive(removeUser(getArchiveRequest), res)
       ).rejects.toThrow(new ValidationError('No user found', null))
     })
 
-    it('should not throw error if manuscriptID is missing', async () => {
-      projectService.makeArchive = jest.fn().mockResolvedValue([])
-      projectService.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.READ]))
-      await expect(
-        // @ts-ignore
-        projectRoute.getArchive(projectRouteRequestWithoutManuscriptID, res)
-      ).resolves.not.toThrow()
-    })
-
     it('should throw error if user lacks READ permission', async () => {
-      projectService.getPermissions = jest
-        .fn()
-        .mockResolvedValue(new Set([ProjectPermission.UPDATE]))
+      const permissions = new Set([ProjectPermission.UPDATE])
+      projectService.getPermissions = jest.fn().mockResolvedValue(permissions)
       // @ts-ignore
-      await expect(projectRoute.getArchive(validProjectRouteRequest)).rejects.toThrow(
-        new RoleDoesNotPermitOperationError('Access denied', validProjectRouteRequest.user._id)
+      await expect(route.getArchive(getArchiveRequest)).rejects.toThrow(
+        new RoleDoesNotPermitOperationError('Access denied', getArchiveRequest.user._id)
       )
     })
 
-    it('should call projectService.makeArchive with correct params', async () => {
+    it('should return OK if called correctly', async () => {
+      const permissions = new Set([ProjectPermission.READ])
+      projectService.getPermissions = jest.fn().mockResolvedValue(permissions)
       projectService.makeArchive = jest.fn().mockResolvedValue([])
-      projectService.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.READ]))
+
       // @ts-ignore
-      await projectRoute.getArchive(validProjectRouteRequest, res)
+      await route.getArchive(getArchiveRequest, res)
 
       expect(projectService.makeArchive).toHaveBeenCalledWith(
-        validProject._id,
-        validManuscript._id,
+        getArchiveRequest.params.projectID,
+        getArchiveRequest.params.manuscriptID,
         {
           getAttachments: true,
           onlyIDs: true,
           includeExt: true,
         }
       )
+      expect(res.status).toHaveBeenCalledWith(StatusCodes.OK)
     })
-    it('should send correct status when operation is successful', async () => {
+
+    it('should return OK if called correctly without manuscriptID', async () => {
+      const permissions = new Set([ProjectPermission.READ])
+      projectService.getPermissions = jest.fn().mockResolvedValue(permissions)
       projectService.makeArchive = jest.fn().mockResolvedValue([])
-      projectService.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.READ]))
+
+      const request = structuredClone(getArchiveRequest)
       // @ts-ignore
-      await projectRoute.getArchive(validProjectRouteRequest, res)
+      delete request.params.manuscriptID
+
+      // @ts-ignore
+      await route.getArchive(request, res)
+
+      expect(projectService.makeArchive).toHaveBeenCalledWith(
+        getArchiveRequest.params.projectID,
+        undefined,
+        {
+          getAttachments: true,
+          onlyIDs: true,
+          includeExt: true,
+        }
+      )
       expect(res.status).toHaveBeenCalledWith(StatusCodes.OK)
     })
   })
@@ -399,78 +419,68 @@ describe('ProjectRoute', () => {
     it('should throw error if user is missing', async () => {
       await expect(
         // @ts-ignore
-        projectRoute.generateAccessToken(projectRouteRequestWithoutUser, res)
+        route.generateAccessToken(removeUser(generateAccessTokenRequest), res)
       ).rejects.toThrow(new ValidationError('No user found', null))
     })
 
     it('should throw error if user lacks READ permission', async () => {
-      projectService.getPermissions = jest
-        .fn()
-        .mockResolvedValue(new Set([ProjectPermission.UPDATE]))
+      const permissions = new Set([ProjectPermission.UPDATE])
+      projectService.getPermissions = jest.fn().mockResolvedValue(permissions)
+
       await expect(
         // @ts-ignore
-        projectRoute.generateAccessToken(validProjectRouteRequest, res)
+        route.generateAccessToken(generateAccessTokenRequest, res)
       ).rejects.toThrow(
-        new RoleDoesNotPermitOperationError('Access denied', validProjectRouteRequest.user._id)
+        new RoleDoesNotPermitOperationError('Access denied', generateAccessTokenRequest.user._id)
       )
     })
 
-    it('should call projectService.generateAccessToken with correct params', async () => {
+    it('should return OK if called correctly', async () => {
+      const permissions = new Set([ProjectPermission.READ])
+      projectService.getPermissions = jest.fn().mockResolvedValue(permissions)
       projectService.generateAccessToken = jest.fn().mockResolvedValue('access_token')
-      projectService.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.READ]))
+
       // @ts-ignore
-      await projectRoute.generateAccessToken(validProjectRouteRequest, res)
+      await route.generateAccessToken(generateAccessTokenRequest, res)
+
       expect(projectService.generateAccessToken).toHaveBeenCalledWith(
-        validProject._id,
-        validUser._id,
-        validProjectRouteRequest.params.scope
+        generateAccessTokenRequest.params.projectID,
+        generateAccessTokenRequest.user._id,
+        generateAccessTokenRequest.params.scope
       )
-    })
-    it('should send correct status when operation is successful', async () => {
-      projectService.generateAccessToken = jest.fn().mockResolvedValue('123')
-      projectService.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.READ]))
-      // @ts-ignore
-      await projectRoute.generateAccessToken(validProjectRouteRequest, res)
-      // @ts-ignore
-      expect(res.send).toHaveBeenCalledWith('123')
+      expect(res.send).toHaveBeenCalledWith('access_token')
     })
   })
   describe('deleteProject', () => {
     it('should throw error if user is missing', async () => {
       await expect(
         // @ts-ignore
-        projectRoute.deleteProject(projectRouteRequestWithoutUser, res)
+        route.deleteProject(removeUser(deleteProjectRequest), res)
       ).rejects.toThrow(new ValidationError('No user found', null))
     })
 
     it('should throw error if user lacks DELETE permission', async () => {
-      projectService.getPermissions = jest
-        .fn()
-        .mockResolvedValue(new Set([ProjectPermission.UPDATE]))
+      const permissions = new Set([ProjectPermission.READ])
+      projectService.getPermissions = jest.fn().mockResolvedValue(permissions)
+
       await expect(
         // @ts-ignore
-        projectRoute.deleteProject(validProjectRouteRequest, res)
+        route.deleteProject(deleteProjectRequest, res)
       ).rejects.toThrow(
-        new RoleDoesNotPermitOperationError('Access denied', validProjectRouteRequest.user._id)
+        new RoleDoesNotPermitOperationError('Access denied', deleteProjectRequest.user._id)
       )
     })
 
-    it('should call projectService.deleteProject with correct params', async () => {
+    it('should returned OK if called correctly', async () => {
+      const projectID = deleteProjectRequest.params.projectID
+      const permissions = new Set([ProjectPermission.DELETE])
+      projectService.getPermissions = jest.fn().mockResolvedValue(permissions)
       projectService.deleteProject = jest.fn().mockResolvedValue({})
-      projectService.getPermissions = jest
-        .fn()
-        .mockResolvedValue(new Set([ProjectPermission.DELETE]))
+
       // @ts-ignore
-      await projectRoute.deleteProject(validProjectRouteRequest, res)
-      expect(projectService.deleteProject).toHaveBeenCalledWith(validProject._id)
-    })
-    it('should send correct status when operation is successful', async () => {
-      projectService.getProject = jest.fn().mockResolvedValue({})
-      projectService.getPermissions = jest
-        .fn()
-        .mockResolvedValue(new Set([ProjectPermission.DELETE]))
-      // @ts-ignore
-      await projectRoute.deleteProject(validProjectRouteRequest, res)
+      await route.deleteProject(deleteProjectRequest, res)
+
+      expect(projectService.deleteProject).toHaveBeenCalledWith(projectID)
       expect(res.status).toHaveBeenCalledWith(StatusCodes.OK)
     })
   })

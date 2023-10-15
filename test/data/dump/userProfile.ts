@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import { UserProfile } from '@manuscripts/manuscripts-json-schema'
+import { UserProfile } from '@manuscripts/json-schema'
+
 import { UserService } from '../../../src/DomainServices/User/UserService'
 
 export const userProfileList: UserProfile[] = []
