@@ -424,6 +424,26 @@ export abstract class SGRepository<
     if (oldDoc && oldDoc.expiry) {
       delete oldDoc.expiry
     }
+
+    if (!doc._id) {
+      throw { forbidden: 'missing _id' }
+    }
+
+    if (doc.objectType && doc._id.substr(0, doc._id.indexOf(':')) !== doc.objectType) {
+      throw { forbidden: '_id must have objectType as prefix' }
+    }
+
+    // check that the update isn't mutating objectType
+    if (oldDoc && oldDoc.objectType !== doc.objectType) {
+      // prettier-ignore
+      throw({ forbidden: 'objectType cannot be mutated' });
+    }
+
+    if (oldDoc && oldDoc.containerID !== doc.containerID) {
+      // prettier-ignore
+      throw({ forbidden: 'containerID cannot be mutated' });
+    }
+
     const errorMessage = validate(doc)
 
     if (errorMessage) {

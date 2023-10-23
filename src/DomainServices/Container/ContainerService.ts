@@ -432,11 +432,6 @@ export class ContainerService implements IContainerService {
       throw new MissingContainerError(containerID)
     }
 
-    //This doesn't seem to be needed anymore
-    // if (this.isPublic(container)) {
-    //   return this.makeArchive(containerID, manuscriptID, options)
-    // }
-
     if (!token) {
       throw new InvalidCredentialsError('Token not supplied.')
     }
@@ -491,13 +486,6 @@ export class ContainerService implements IContainerService {
     if (!container) {
       throw new MissingContainerError(containerID)
     }
-    //This doesn't seem to be needed anymore
-    // if (!this.isPublic(container)) {
-    //   const canAccess = await this.checkUserContainerAccess(userID, containerID)
-    //   if (!canAccess) {
-    //     throw new ValidationError('User must be a contributor in the container', containerID)
-    //   }
-    // }
 
     attachmentID = attachmentID || Object.keys(doc._attachments)[0]
     if (!doc._attachments[attachmentID]) {
@@ -646,10 +634,6 @@ export class ContainerService implements IContainerService {
     }
     return false
   }
-
-  // public isPublic(container: Container): boolean {
-  //   return container.viewers.indexOf('*') > -1
-  // }
 
   private async handleContainerCreation(containerId: string, ownerId: string): Promise<Container> {
     const newContainer: any = {
