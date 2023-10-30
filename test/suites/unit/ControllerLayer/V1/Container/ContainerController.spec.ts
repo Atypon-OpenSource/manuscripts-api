@@ -22,6 +22,7 @@ import { Chance } from 'chance'
 import { ContainersController } from '../../../../../../src/Controller/V1/Container/ContainersController'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
 import { ContainerService } from '../../../../../../src/DomainServices/Container/ContainerService'
+import { ProjectPermission } from '../../../../../../src/DomainServices/ProjectService'
 import { UserService } from '../../../../../../src/DomainServices/User/UserService'
 import { ValidationError } from '../../../../../../src/Errors'
 import { validJWTToken } from '../../../../../data/fixtures/authServiceUser'
@@ -54,7 +55,10 @@ describe('ContainersController - create', () => {
 
     containerService.createContainer = jest.fn(() => {})
 
-    const containersController: ContainersController = new ContainersController()
+    const containersController: any = new ContainersController()
+    containersController.getPermissions = jest.fn(() => {
+      return new Set([ProjectPermission.CREATE_MANUSCRIPT, ProjectPermission.READ])
+    })
     await containersController.create(req)
 
     expect(containerService.createContainer).toHaveBeenCalled()
@@ -74,7 +78,10 @@ describe('ContainersController - create', () => {
 
     containerService.createContainer = jest.fn(() => {})
 
-    const containersController: ContainersController = new ContainersController()
+    const containersController: any = new ContainersController()
+    containersController.getPermissions = jest.fn(() => {
+      return new Set([ProjectPermission.CREATE_MANUSCRIPT, ProjectPermission.READ])
+    })
     await containersController.create(req)
 
     expect(containerService.createContainer).toHaveBeenCalled()
@@ -94,7 +101,10 @@ describe('ContainersController - create', () => {
 
     containerService.createContainer = jest.fn(() => {})
 
-    const containersController: ContainersController = new ContainersController()
+    const containersController: any = new ContainersController()
+    containersController.getPermissions = jest.fn(() => {
+      return new Set([ProjectPermission.CREATE_MANUSCRIPT, ProjectPermission.READ])
+    })
 
     return expect(containersController.create(req)).rejects.toThrow(ValidationError)
   })
@@ -113,7 +123,10 @@ describe('ContainersController - create', () => {
       },
     }
 
-    const containersController: ContainersController = new ContainersController()
+    const containersController: any = new ContainersController()
+    containersController.getPermissions = jest.fn(() => {
+      return new Set([ProjectPermission.CREATE_MANUSCRIPT, ProjectPermission.READ])
+    })
     return expect(containersController.create(req)).rejects.toThrow(ValidationError)
   })
 
@@ -132,7 +145,10 @@ describe('ContainersController - create', () => {
 
     containerService.createContainer = jest.fn(() => {})
 
-    const containersController: ContainersController = new ContainersController()
+    const containersController: any = new ContainersController()
+    containersController.getPermissions = jest.fn(() => {
+      return new Set([ProjectPermission.CREATE_MANUSCRIPT, ProjectPermission.READ])
+    })
 
     return expect(containersController.create(req)).rejects.toThrow(ValidationError)
   })
@@ -150,7 +166,10 @@ describe('ContainersController - create', () => {
       },
     }
 
-    const containersController: ContainersController = new ContainersController()
+    const containersController: any = new ContainersController()
+    containersController.getPermissions = jest.fn(() => {
+      return new Set([ProjectPermission.CREATE_MANUSCRIPT, ProjectPermission.READ])
+    })
     return expect(containersController.create(req)).rejects.toThrow(ValidationError)
   })
 
@@ -168,7 +187,10 @@ describe('ContainersController - create', () => {
       },
     }
 
-    const containersController: ContainersController = new ContainersController()
+    const containersController: any = new ContainersController()
+    containersController.getPermissions = jest.fn(() => {
+      return new Set([ProjectPermission.CREATE_MANUSCRIPT, ProjectPermission.READ])
+    })
     return expect(containersController.create(req)).rejects.toThrow(ValidationError)
   })
 })
@@ -192,7 +214,14 @@ describe('ContainersController - manageUserRole', () => {
 
     containerService.manageUserRole = jest.fn(() => {})
 
-    const containersController: ContainersController = new ContainersController()
+    const containersController: any = new ContainersController()
+    containersController.getPermissions = jest.fn(() => {
+      return new Set([
+        ProjectPermission.CREATE_MANUSCRIPT,
+        ProjectPermission.UPDATE_ROLES,
+        ProjectPermission.READ,
+      ])
+    })
     await containersController.manageUserRole(req)
 
     return expect(containerService.manageUserRole).toHaveBeenCalled()
@@ -213,7 +242,14 @@ describe('ContainersController - manageUserRole', () => {
       user: validUser,
     }
 
-    const containersController: ContainersController = new ContainersController()
+    const containersController: any = new ContainersController()
+    containersController.getPermissions = jest.fn(() => {
+      return new Set([
+        ProjectPermission.CREATE_MANUSCRIPT,
+        ProjectPermission.UPDATE_ROLES,
+        ProjectPermission.READ,
+      ])
+    })
     return expect(containersController.manageUserRole(req)).rejects.toThrow(ValidationError)
   })
 
@@ -231,7 +267,14 @@ describe('ContainersController - manageUserRole', () => {
       },
     }
 
-    const containersController: ContainersController = new ContainersController()
+    const containersController: any = new ContainersController()
+    containersController.getPermissions = jest.fn(() => {
+      return new Set([
+        ProjectPermission.CREATE_MANUSCRIPT,
+        ProjectPermission.UPDATE_ROLES,
+        ProjectPermission.READ,
+      ])
+    })
     return expect(containersController.manageUserRole(req)).rejects.toThrow(ValidationError)
   })
 
@@ -250,7 +293,14 @@ describe('ContainersController - manageUserRole', () => {
       user: validUser,
     }
 
-    const containersController: ContainersController = new ContainersController()
+    const containersController: any = new ContainersController()
+    containersController.getPermissions = jest.fn(() => {
+      return new Set([
+        ProjectPermission.CREATE_MANUSCRIPT,
+        ProjectPermission.UPDATE_ROLES,
+        ProjectPermission.READ,
+      ])
+    })
     return expect(containersController.manageUserRole(req)).rejects.toThrow(ValidationError)
   })
 
@@ -269,7 +319,14 @@ describe('ContainersController - manageUserRole', () => {
       user: validUser,
     }
 
-    const containersController: ContainersController = new ContainersController()
+    const containersController: any = new ContainersController()
+    containersController.getPermissions = jest.fn(() => {
+      return new Set([
+        ProjectPermission.CREATE_MANUSCRIPT,
+        ProjectPermission.UPDATE_ROLES,
+        ProjectPermission.READ,
+      ])
+    })
     return expect(containersController.manageUserRole(req)).rejects.toThrow(ValidationError)
   })
 
@@ -289,7 +346,14 @@ describe('ContainersController - manageUserRole', () => {
       user: validUser,
     }
 
-    const containersController: ContainersController = new ContainersController()
+    const containersController: any = new ContainersController()
+    containersController.getPermissions = jest.fn(() => {
+      return new Set([
+        ProjectPermission.CREATE_MANUSCRIPT,
+        ProjectPermission.UPDATE_ROLES,
+        ProjectPermission.READ,
+      ])
+    })
     return expect(containersController.manageUserRole(req)).rejects.toThrow(ValidationError)
   })
 })
@@ -314,7 +378,14 @@ describe('ContainersController - addUser', () => {
 
     containerService.addContainerUser = jest.fn(() => {})
 
-    const containersController: ContainersController = new ContainersController()
+    const containersController: any = new ContainersController()
+    containersController.getPermissions = jest.fn(() => {
+      return new Set([
+        ProjectPermission.CREATE_MANUSCRIPT,
+        ProjectPermission.UPDATE_ROLES,
+        ProjectPermission.READ,
+      ])
+    })
     await containersController.addUser(req)
 
     return expect(containerService.addContainerUser).toHaveBeenCalled()
@@ -334,7 +405,14 @@ describe('ContainersController - addUser', () => {
       },
     }
 
-    const containersController: ContainersController = new ContainersController()
+    const containersController: any = new ContainersController()
+    containersController.getPermissions = jest.fn(() => {
+      return new Set([
+        ProjectPermission.CREATE_MANUSCRIPT,
+        ProjectPermission.UPDATE,
+        ProjectPermission.READ,
+      ])
+    })
     return expect(containersController.addUser(req)).rejects.toThrow(ValidationError)
   })
 
@@ -353,7 +431,14 @@ describe('ContainersController - addUser', () => {
       user: validUser,
     }
 
-    const containersController: ContainersController = new ContainersController()
+    const containersController: any = new ContainersController()
+    containersController.getPermissions = jest.fn(() => {
+      return new Set([
+        ProjectPermission.CREATE_MANUSCRIPT,
+        ProjectPermission.UPDATE,
+        ProjectPermission.READ,
+      ])
+    })
     return expect(containersController.addUser(req)).rejects.toThrow(ValidationError)
   })
 
@@ -372,7 +457,14 @@ describe('ContainersController - addUser', () => {
       user: validUser,
     }
 
-    const containersController: ContainersController = new ContainersController()
+    const containersController: any = new ContainersController()
+    containersController.getPermissions = jest.fn(() => {
+      return new Set([
+        ProjectPermission.CREATE_MANUSCRIPT,
+        ProjectPermission.UPDATE,
+        ProjectPermission.READ,
+      ])
+    })
     return expect(containersController.addUser(req)).rejects.toThrow(ValidationError)
   })
 
@@ -391,7 +483,10 @@ describe('ContainersController - addUser', () => {
       user: validUser,
     }
 
-    const containersController: ContainersController = new ContainersController()
+    const containersController: any = new ContainersController()
+    containersController.getPermissions = jest.fn(() => {
+      return new Set([ProjectPermission.UPDATE, ProjectPermission.UPDATE_ROLES])
+    })
     return expect(containersController.addUser(req)).rejects.toThrow(ValidationError)
   })
 })
@@ -411,7 +506,12 @@ describe('ContainersController - delete', () => {
 
     containerService.deleteContainer = jest.fn(() => {})
 
-    const containersController: ContainersController = new ContainersController()
+    const containersController: any = new ContainersController()
+    containersController.getPermissions = jest.fn(() => {
+      return new Set([
+        ProjectPermission.DELETE,
+      ])
+    })
     await containersController.delete(req)
 
     return expect(containerService.deleteContainer).toHaveBeenCalled()
@@ -426,7 +526,14 @@ describe('ContainersController - delete', () => {
       },
     }
 
-    const containersController: ContainersController = new ContainersController()
+    const containersController: any = new ContainersController()
+    containersController.getPermissions = jest.fn(() => {
+      return new Set([
+        ProjectPermission.CREATE_MANUSCRIPT,
+        ProjectPermission.UPDATE,
+        ProjectPermission.READ,
+      ])
+    })
     return expect(containersController.delete(req)).rejects.toThrow(ValidationError)
   })
 
@@ -440,7 +547,14 @@ describe('ContainersController - delete', () => {
       user: validUser,
     }
 
-    const containersController: ContainersController = new ContainersController()
+    const containersController: any = new ContainersController()
+    containersController.getPermissions = jest.fn(() => {
+      return new Set([
+        ProjectPermission.CREATE_MANUSCRIPT,
+        ProjectPermission.UPDATE,
+        ProjectPermission.READ,
+      ])
+    })
     return expect(containersController.delete(req)).rejects.toThrow(ValidationError)
   })
 })
@@ -458,7 +572,14 @@ describe('ContainersController - getArchive', () => {
       query: {},
     }
 
-    const containersController: ContainersController = new ContainersController()
+    const containersController: any = new ContainersController()
+    containersController.getPermissions = jest.fn(() => {
+      return new Set([
+        ProjectPermission.CREATE_MANUSCRIPT,
+        ProjectPermission.UPDATE,
+        ProjectPermission.READ,
+      ])
+    })
     return expect(containersController.getArchive(req)).rejects.toThrow(ValidationError)
   })
 
@@ -481,7 +602,14 @@ describe('ContainersController - getArchive', () => {
 
     containerService.getArchive = jest.fn(() => {})
 
-    const containersController: ContainersController = new ContainersController()
+    const containersController: any = new ContainersController()
+    containersController.getPermissions = jest.fn(() => {
+      return new Set([
+        ProjectPermission.CREATE_MANUSCRIPT,
+        ProjectPermission.UPDATE,
+        ProjectPermission.READ,
+      ])
+    })
     await containersController.getArchive(req)
 
     return expect(containerService.getArchive).toHaveBeenCalled()
@@ -507,7 +635,14 @@ describe('ContainersController - getArchive', () => {
 
     containerService.getArchive = jest.fn(() => {})
 
-    const containersController: ContainersController = new ContainersController()
+    const containersController: any = new ContainersController()
+    containersController.getPermissions = jest.fn(() => {
+      return new Set([
+        ProjectPermission.CREATE_MANUSCRIPT,
+        ProjectPermission.UPDATE,
+        ProjectPermission.READ,
+      ])
+    })
     await containersController.getArchive(req)
 
     return expect(containerService.getArchive).toHaveBeenCalled()
@@ -536,7 +671,14 @@ describe('ContainerController - loadProject', () => {
     containerService.loadProject = jest.fn(() => Promise.resolve())
     containerService.getContainer = jest.fn(() => Promise.resolve({ _id: 'someId' }))
 
-    const containersController: ContainersController = new ContainersController()
+    const containersController: any = new ContainersController()
+    containersController.getPermissions = jest.fn(() => {
+      return new Set([
+        ProjectPermission.CREATE_MANUSCRIPT,
+        ProjectPermission.UPDATE,
+        ProjectPermission.READ,
+      ])
+    })
     await containersController.loadProject(req)
 
     return expect(containerService.loadProject).toHaveBeenCalled()
@@ -588,7 +730,14 @@ describe('ContainerController - loadProject', () => {
     containerService.loadProject = jest.fn(() => Promise.resolve())
     containerService.getContainer = jest.fn(() => Promise.resolve({ updatedAt: 10 }))
 
-    const containersController: ContainersController = new ContainersController()
+    const containersController: any = new ContainersController()
+    containersController.getPermissions = jest.fn(() => {
+      return new Set([
+        ProjectPermission.CREATE_MANUSCRIPT,
+        ProjectPermission.UPDATE,
+        ProjectPermission.READ,
+      ])
+    })
     const res = await containersController.loadProject(req)
     expect(res.status).toBe(304)
   })
@@ -729,7 +878,14 @@ describe('ContainersController - getBundle', () => {
       query: {},
     }
 
-    const containersController: ContainersController = new ContainersController()
+    const containersController: any = new ContainersController()
+    containersController.getPermissions = jest.fn(() => {
+      return new Set([
+        ProjectPermission.CREATE_MANUSCRIPT,
+        ProjectPermission.UPDATE,
+        ProjectPermission.READ,
+      ])
+    })
     const finish = jest.fn()
     return expect(containersController.getBundle(req, finish)).rejects.toThrow(ValidationError)
   })
@@ -752,7 +908,14 @@ describe('ContainersController - getBundle', () => {
       },
     }
 
-    const containersController: ContainersController = new ContainersController()
+    const containersController: any = new ContainersController()
+    containersController.getPermissions = jest.fn(() => {
+      return new Set([
+        ProjectPermission.CREATE_MANUSCRIPT,
+        ProjectPermission.UPDATE,
+        ProjectPermission.READ,
+      ])
+    })
     const finish = jest.fn()
     return expect(containersController.getBundle(req, finish)).rejects.toThrow(ValidationError)
   })
@@ -776,7 +939,14 @@ describe('ContainersController - getBundle', () => {
       },
     }
 
-    const containersController: ContainersController = new ContainersController()
+    const containersController: any = new ContainersController()
+    containersController.getPermissions = jest.fn(() => {
+      return new Set([
+        ProjectPermission.CREATE_MANUSCRIPT,
+        ProjectPermission.UPDATE,
+        ProjectPermission.READ,
+      ])
+    })
     const finish = jest.fn()
     return expect(containersController.getBundle(req, finish)).rejects.toThrow(ValidationError)
   })
@@ -862,7 +1032,14 @@ describe('ContainersController - getAttachment', () => {
       },
     }
 
-    const containersController: ContainersController = new ContainersController()
+    const containersController: any = new ContainersController()
+    containersController.getPermissions = jest.fn(() => {
+      return new Set([
+        ProjectPermission.CREATE_MANUSCRIPT,
+        ProjectPermission.UPDATE,
+        ProjectPermission.READ,
+      ])
+    })
     return expect(containersController.getAttachment(req)).resolves.toBeTruthy()
   })
 })
@@ -875,7 +1052,14 @@ describe('ContainersController - getProductionNotes', () => {
         containerID: chance.integer(),
       },
     }
-    const containersController: ContainersController = new ContainersController()
+    const containersController: any = new ContainersController()
+    containersController.getPermissions = jest.fn(() => {
+      return new Set([
+        ProjectPermission.CREATE_MANUSCRIPT,
+        ProjectPermission.UPDATE,
+        ProjectPermission.READ,
+      ])
+    })
     await expect(containersController.getProductionNotes(req)).rejects.toThrow(ValidationError)
   })
 
@@ -887,7 +1071,14 @@ describe('ContainersController - getProductionNotes', () => {
         manuscriptID: chance.integer(),
       },
     }
-    const containersController: ContainersController = new ContainersController()
+    const containersController: any = new ContainersController()
+    containersController.getPermissions = jest.fn(() => {
+      return new Set([
+        ProjectPermission.CREATE_MANUSCRIPT,
+        ProjectPermission.UPDATE,
+        ProjectPermission.READ,
+      ])
+    })
     await expect(containersController.getProductionNotes(req)).rejects.toThrow(ValidationError)
   })
 
@@ -904,7 +1095,14 @@ describe('ContainersController - getProductionNotes', () => {
         _id: chance.string(),
       },
     }
-    const containersController: ContainersController = new ContainersController()
+    const containersController: any = new ContainersController()
+    containersController.getPermissions = jest.fn(() => {
+      return new Set([
+        ProjectPermission.CREATE_MANUSCRIPT,
+        ProjectPermission.UPDATE,
+        ProjectPermission.READ,
+      ])
+    })
     await containersController.getProductionNotes(req)
     expect(containerService.getProductionNotes).toHaveBeenCalled()
   })
@@ -919,7 +1117,14 @@ describe('ContainersController - createManuscript', () => {
       },
       body: {},
     }
-    const containersController: ContainersController = new ContainersController()
+    const containersController: any = new ContainersController()
+    containersController.getPermissions = jest.fn(() => {
+      return new Set([
+        ProjectPermission.CREATE_MANUSCRIPT,
+        ProjectPermission.UPDATE,
+        ProjectPermission.READ,
+      ])
+    })
     await expect(containersController.createManuscript(req)).rejects.toThrow(ValidationError)
   })
 
@@ -933,7 +1138,14 @@ describe('ContainersController - createManuscript', () => {
         templateId: chance.integer(),
       },
     }
-    const containersController: ContainersController = new ContainersController()
+    const containersController: any = new ContainersController()
+    containersController.getPermissions = jest.fn(() => {
+      return new Set([
+        ProjectPermission.CREATE_MANUSCRIPT,
+        ProjectPermission.UPDATE,
+        ProjectPermission.READ,
+      ])
+    })
     await expect(containersController.createManuscript(req)).rejects.toThrow(ValidationError)
   })
 
@@ -946,7 +1158,14 @@ describe('ContainersController - createManuscript', () => {
       },
       body: {},
     }
-    const containersController: ContainersController = new ContainersController()
+    const containersController: any = new ContainersController()
+    containersController.getPermissions = jest.fn(() => {
+      return new Set([
+        ProjectPermission.CREATE_MANUSCRIPT,
+        ProjectPermission.UPDATE,
+        ProjectPermission.READ,
+      ])
+    })
     await expect(containersController.createManuscript(req)).rejects.toThrow(ValidationError)
   })
 
@@ -964,7 +1183,14 @@ describe('ContainersController - createManuscript', () => {
       },
       body: {},
     }
-    const containersController: ContainersController = new ContainersController()
+    const containersController: any = new ContainersController()
+    containersController.getPermissions = jest.fn(() => {
+      return new Set([
+        ProjectPermission.CREATE_MANUSCRIPT,
+        ProjectPermission.UPDATE,
+        ProjectPermission.READ,
+      ])
+    })
     await containersController.createManuscript(req)
     expect(containerService.createManuscript).toHaveBeenCalled()
   })
@@ -1034,6 +1260,7 @@ describe('ContainersController - addProductionNote', () => {
     const containerService = DIContainer.sharedContainer.containerService
     UserService.profileID = jest.fn()
     containerService.createManuscriptNote = jest.fn()
+    DIContainer.sharedContainer.userRepository.getOne = jest.fn().mockResolvedValue(validUser)
     const chance = new Chance()
     const req: any = {
       params: {
@@ -1049,7 +1276,14 @@ describe('ContainersController - addProductionNote', () => {
         _id: 'User_test',
       },
     }
-    const containersController: ContainersController = new ContainersController()
+    const containersController: any = new ContainersController()
+    containersController.getPermissions = jest.fn(() => {
+      return new Set([
+        ProjectPermission.CREATE_MANUSCRIPT,
+        ProjectPermission.UPDATE,
+        ProjectPermission.READ,
+      ])
+    })
     await containersController.addProductionNote(req)
     expect(containerService.createManuscriptNote).toHaveBeenCalled()
   })

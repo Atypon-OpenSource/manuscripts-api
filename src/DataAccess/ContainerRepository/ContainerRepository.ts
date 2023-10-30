@@ -19,7 +19,6 @@ import { Model } from '@manuscripts/json-schema'
 import { IContainerRepository } from '../Interfaces/IContainerRepository'
 import { IdentifiableEntity } from '../Interfaces/IdentifiableEntity'
 import { SGRepository } from '../SGRepository'
-import { proceedWithReadAccess } from '../syncAccessControl'
 
 export abstract class ContainerRepository<
     Container extends Partial<IdentifiableEntity>,
@@ -397,9 +396,5 @@ export abstract class ContainerRepository<
   public buildItem = (row: any) => {
     const { _sync, containerID, templateID, ...item } = row.projects
     return { ...item, _id: row.id }
-  }
-
-  public async validateReadAccess(doc: any, userId: string): Promise<void> {
-    await proceedWithReadAccess(doc, userId)
   }
 }

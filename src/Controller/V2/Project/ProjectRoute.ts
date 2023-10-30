@@ -31,7 +31,8 @@ import {
   createManuscriptSchema,
   createProjectSchema,
   deleteSchema,
-  getArchiveSchema, loadManuscriptSchema,
+  getArchiveSchema,
+  loadManuscriptSchema,
   loadProjectSchema,
   projectCollaboratorsSchema,
   saveProjectSchema,
@@ -215,12 +216,16 @@ export class ProjectRoute extends BaseRoute {
         throw new ValidationError('No user found', user)
       }
       const { types } = req.body
-      const models = await this.projectController.getProjectModels(types, user, projectID, manuscriptID)
+      const models = await this.projectController.getProjectModels(
+        types,
+        user,
+        projectID,
+        manuscriptID
+      )
       res.set('Content-Type', 'application/json')
       res.status(StatusCodes.OK).send(models)
     }
   }
-
 
   private async updateUserRole(req: Request, res: Response) {
     const { userID, role } = req.body
