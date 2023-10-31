@@ -29,33 +29,35 @@ export class QuarterbackService implements IQuarterbackService {
       headers: this.headers,
       body: JSON.stringify(body),
     })
-    if (res.ok && res.body) {
-      return getStream.buffer(res.body)
+    if (res.ok) {
+      return await res.json()
+    } else if (res.status === 404 || res.status === 409) {
+      return { err: res.status }
     }
     throw new RequestError(
       `Quarterback request 'POST steps' failed with error: code(${res.status}) - message(${res.statusText})`
     )
   }
-  async handleSteps(docId: string): Promise<Buffer> {
-    const res = await fetch(`${this.baseurl}/doc/${docId}/listen`, {
+  async listen(docId: string): Promise<any> {
+    const res = await fetch(`${this.baseurl}/doc/${docId}/history`, {
       method: 'GET',
       headers: this.headers,
     })
     if (res.ok && res.body) {
-      return getStream.buffer(res.body)
+      return await res.json()
     }
+
     throw new RequestError(
       `Quarterback request 'POST steps' failed with error: code(${res.status}) - message(${res.statusText})`
     )
   }
-  async getDocOfVersion(body: object, docId: string) {
-    const res = await fetch(`${this.baseurl}/doc/${docId}/version`, {
+  async getDocOfVersion(docId: string, versionId: string) {
+    const res = await fetch(`${this.baseurl}/doc/${docId}/version/${versionId}`, {
       method: 'GET',
       headers: this.headers,
-      body: JSON.stringify(body),
     })
-    if (res.ok && res.body) {
-      return getStream.buffer(res.body)
+    if (res.ok) {
+      return await res.json()
     }
     throw new RequestError(
       `Quarterback request 'POST steps' failed with error: code(${res.status}) - message(${res.statusText})`

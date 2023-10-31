@@ -60,8 +60,13 @@ export class AuthRoute extends BaseRoute {
       AuthStrategy.applicationValidation(),
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
+          const authHeader = req.headers['authorization']
+          if (authHeader && authHeader.startsWith('Bearer ')) {
+            const token = authHeader.substring(7) // Remove 'Bearer ' prefix
+            console.log(token)
+          }
           const { token } = await this.authController.serverToServerTokenAuth(req)
-
+          console.log(token)
           res.status(StatusCodes.OK).json({ token }).end()
         }, next)
       }

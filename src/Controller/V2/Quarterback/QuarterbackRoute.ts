@@ -94,40 +94,68 @@ export class QuarterbackRoute extends BaseRoute {
       }
     )
     router.post(
-      `${this.basePath}/doc/:projectID/manuscript/:manuscriptID/steps`,
+      `${this.basePath}/doc/:documentId/steps`,
       celebrate(receiveStepsSchema, {}),
       AuthStrategy.JsonHeadersValidation,
-      AuthStrategy.JWTAuth,
+      // AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
+          const { documentId } = req.params
+          const steps = req.body.steps
+          const clientVersion = req.body.version as number
           const result = await this.quarterbackController.receiveSteps(req)
-          res.status(StatusCodes.OK).send(result)
+          if (result.err) {
+            res.sendStatus(409)
+          } else if (result) {
+            res.sendStatus(200)
+            console.log('version route result: ' + result.clientIDs)
+            this.quarterbackController.sendDataToClients(
+              {
+                steps: steps,
+                clientIDs: result.clientIDs,
+                version: clientVersion,
+              },
+              documentId
+            )
+          }
         }, next)
       }
     )
     router.get(
-      `${this.basePath}/doc/:projectID/manuscript/:manuscriptID/listen`,
+      `${this.basePath}/doc/:documentId/listen`,
       celebrate(listenSchema, {}),
       AuthStrategy.JsonHeadersValidation,
-      AuthStrategy.JWTAuth,
+      // AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
-          const result = await this.quarterbackController.handleSteps(req)
+          const result = await this.quarterbackController.listen(req)
           res.setHeader('Content-Type', 'text/event-stream')
           res.setHeader('Connection', 'keep-alive')
           res.setHeader('Cache-Control', 'no-cache')
-          res.status(StatusCodes.OK).write(result)
+          console.log('listen route result: ' + result)
+          res.write(result)
+          const newClient = {
+            id: Date.now(),
+            res,
+          }
+          const { documentId } = req.params
+          this.quarterbackController.addClient(newClient, documentId)
+          req.on('close', () => {
+            console.log('client removed: ', newClient.id)
+            this.quarterbackController.removeClientById(newClient.id, documentId)
+          })
         }, next)
       }
     )
     router.get(
-      `${this.basePath}/doc/:projectID/manuscript/:manuscriptID/version`,
+      `${this.basePath}/doc/:documentId/version/:versionId`,
       celebrate(getDocOfVersionSchema, {}),
       AuthStrategy.JsonHeadersValidation,
-      AuthStrategy.JWTAuth,
+      // AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           const result = await this.quarterbackController.getDocOfVersion(req)
+          console.log('version route result: ' + result)
           res.status(StatusCodes.OK).send(result)
         }, next)
       }

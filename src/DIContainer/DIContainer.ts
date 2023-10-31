@@ -226,7 +226,6 @@ export class DIContainer {
     this.projectService = new ProjectService(
       this.projectRepository,
       this.manuscriptRepository,
-      this.templateRepository,
       this.userRepository
     )
     this.containerInvitationService = new ContainerInvitationService(

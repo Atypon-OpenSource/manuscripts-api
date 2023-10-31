@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
+import { ContainerInvitation, UserProfile } from '@manuscripts/json-schema'
 import checksum from 'checksum'
-import { UserProfile, ContainerInvitation } from '@manuscripts/manuscripts-json-schema'
+
 import { ContainerRole } from '../../../src/Models/ContainerModels'
 
 export const projectInvitationsList: ContainerInvitation[] = []

@@ -36,6 +36,35 @@ export interface SnapshotLabelResult {
 
 const EMPTY_PERMISSIONS = new Set<QuarterbackPermission>()
 export class QuarterbackController extends ContainedBaseController {
+  private _documentVersionMap = new Map<string, number>()
+  private _documentClientsMap = new Map<string, any[]>()
+  get documentsClientsMap() {
+    return this._documentClientsMap
+  }
+  get documentVersionMap() {
+    return this._documentVersionMap
+  }
+
+  addClient(newClient: any, documentId: string) {
+    const clients = this._documentClientsMap.get(documentId) || []
+    clients.push(newClient)
+    this.documentsClientsMap.set(documentId, clients)
+  }
+  sendDataToClients(data: any, documentId: string) {
+    const clientsForDocument = this.documentsClientsMap.get(documentId)
+    clientsForDocument?.forEach((client) => {
+      client.res.write(`data: ${JSON.stringify(data)}\n\n`)
+    })
+  }
+  removeClientById(clientId: number, documentId: string) {
+    const clients = this.documentsClientsMap.get(documentId) || []
+    const index = clients.findIndex((client) => client.id === clientId)
+    if (index !== -1) {
+      clients.splice(index, 1)
+      this.documentsClientsMap.set(documentId, clients)
+    }
+  }
+
   async getPermissions(
     projectID: string,
     userID: string
@@ -68,22 +97,22 @@ export class QuarterbackController extends ContainedBaseController {
     return DIContainer.sharedContainer.quarterback.getDocument(manuscriptID)
   }
 
-  async receiveSteps(req: Request): Promise<Buffer> {
-    const { projectID, manuscriptID } = req.params
-    await this.validateUserAccess(req.user, projectID, QuarterbackPermission.WRITE)
-    return DIContainer.sharedContainer.quarterback.receiveSteps(req.body, manuscriptID)
+  async receiveSteps(req: Request): Promise<any> {
+    const { documentId } = req.params
+    // await this.validateUserAccess(req.user, projectID, QuarterbackPermission.WRITE)
+    return DIContainer.sharedContainer.quarterback.receiveSteps(req.body, documentId)
   }
 
-  async handleSteps(req: Request): Promise<Buffer> {
-    const { projectID, manuscriptID } = req.params
-    await this.validateUserAccess(req.user, projectID, QuarterbackPermission.READ)
-    return DIContainer.sharedContainer.quarterback.handleSteps(manuscriptID)
+  async listen(req: Request): Promise<Buffer> {
+    const { documentId } = req.params
+    // await this.validateUserAccess(req.user, projectID, QuarterbackPermission.READ)
+    return DIContainer.sharedContainer.quarterback.listen(documentId)
   }
 
-  async getDocOfVersion(req: Request): Promise<Buffer> {
-    const { projectID, manuscriptID } = req.params
-    await this.validateUserAccess(req.user, projectID, QuarterbackPermission.READ)
-    return DIContainer.sharedContainer.quarterback.receiveSteps(req.body, manuscriptID)
+  async getDocOfVersion(req: Request): Promise<any> {
+    const { documentId, versionId } = req.params
+    // await this.validateUserAccess(req.user, projectID, QuarterbackPermission.READ)
+    return DIContainer.sharedContainer.quarterback.getDocOfVersion(documentId, versionId)
   }
 
   async deleteDocument(req: Request): Promise<Buffer> {

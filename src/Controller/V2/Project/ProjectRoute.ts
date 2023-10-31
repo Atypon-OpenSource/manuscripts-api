@@ -16,7 +16,9 @@
 
 import { celebrate } from 'celebrate'
 import { NextFunction, Request, Response, Router } from 'express'
+import { remove } from 'fs-extra'
 import { StatusCodes } from 'http-status-codes'
+import multer from 'multer'
 
 import { AuthStrategy } from '../../../Auth/Passport/AuthStrategy'
 import { ValidationError } from '../../../Errors'
@@ -29,7 +31,7 @@ import {
   createManuscriptSchema,
   createProjectSchema,
   deleteSchema,
-  getArchiveSchema,
+  getArchiveSchema, loadManuscriptSchema,
   loadProjectSchema,
   projectCollaboratorsSchema,
   saveProjectSchema,
@@ -41,9 +43,10 @@ export class ProjectRoute extends BaseRoute {
   private get basePath(): string {
     return '/project'
   }
+
   public create(router: Router): void {
     router.post(
-      `${this.basePath}/:projectID?`,
+      `${this.basePath}`,
       celebrate(createProjectSchema),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
@@ -66,8 +69,8 @@ export class ProjectRoute extends BaseRoute {
     )
 
     router.get(
-      [`${this.basePath}/:projectID`, `${this.basePath}/:projectID/manuscript/:manuscriptID?`],
-      celebrate(loadProjectSchema, {}),
+      `${this.basePath}/:projectID`,
+      celebrate(loadProjectSchema),
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
@@ -76,9 +79,20 @@ export class ProjectRoute extends BaseRoute {
       }
     )
 
+    router.get(
+      `${this.basePath}/:projectID/manuscript/:manuscriptID`,
+      celebrate(loadManuscriptSchema),
+      AuthStrategy.JWTAuth,
+      (req: Request, res: Response, next: NextFunction) => {
+        return this.runWithErrorHandling(async () => {
+          await this.getManuscriptModels(req, res)
+        }, next)
+      }
+    )
+
     router.post(
       `${this.basePath}/:projectID/users`,
-      celebrate(addUserSchema, {}),
+      celebrate(addUserSchema),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
@@ -89,9 +103,10 @@ export class ProjectRoute extends BaseRoute {
     )
 
     router.post(
-      `${this.basePath}/:projectID/manuscript/:manuscriptID?`,
-      celebrate(createManuscriptSchema, {}),
+      `${this.basePath}/:projectID/manuscript`,
+      celebrate(createManuscriptSchema),
       AuthStrategy.JWTAuth,
+      multer({ dest: `/tmp` }).single('file'),
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           await this.createManuscript(req, res)
@@ -148,16 +163,18 @@ export class ProjectRoute extends BaseRoute {
       }
     )
   }
+
   private async createProject(req: Request, res: Response) {
     const { title } = req.body
-    const { projectID } = req.params
     const { user } = req
+
     if (!user) {
       throw new ValidationError('No user found', user)
     }
-    const project = await this.projectController.createProject(title, user, projectID)
+    const project = await this.projectController.createProject(title, user)
     res.status(StatusCodes.OK).send(project)
   }
+
   private async updateProject(req: Request, res: Response) {
     const { projectID } = req.params
     const { data } = req.body
@@ -169,6 +186,7 @@ export class ProjectRoute extends BaseRoute {
     const manuscript = await this.projectController.updateProject(data, user, projectID)
     res.status(StatusCodes.OK).send(manuscript)
   }
+
   private async getProjectModels(req: Request, res: Response) {
     const modifiedSince = req.headers['if-modified-since']
     const { projectID } = req.params
@@ -185,6 +203,25 @@ export class ProjectRoute extends BaseRoute {
       res.status(StatusCodes.OK).send(models)
     }
   }
+
+  private async getManuscriptModels(req: Request, res: Response) {
+    const modifiedSince = req.headers['if-modified-since']
+    const { projectID, manuscriptID } = req.params
+    if (await this.projectController.isProjectCacheValid(projectID, modifiedSince)) {
+      res.status(StatusCodes.NOT_MODIFIED).end()
+    } else {
+      const { user } = req
+      if (!user) {
+        throw new ValidationError('No user found', user)
+      }
+      const { types } = req.body
+      const models = await this.projectController.getProjectModels(types, user, projectID, manuscriptID)
+      res.set('Content-Type', 'application/json')
+      res.status(StatusCodes.OK).send(models)
+    }
+  }
+
+
   private async updateUserRole(req: Request, res: Response) {
     const { userID, role } = req.body
     const { projectID } = req.params
@@ -193,30 +230,36 @@ export class ProjectRoute extends BaseRoute {
     if (!user) {
       throw new ValidationError('No user found', user)
     }
-    const validRoles = Object.keys(ProjectUserRole) as (keyof typeof ProjectUserRole)[]
 
-    if (!validRoles.includes(role)) {
+    if (!Object.values(ProjectUserRole).includes(role)) {
       throw new ValidationError('Invalid role', role)
     }
+
     await this.projectController.updateUserRole(userID, role, user, projectID)
     res.status(StatusCodes.NO_CONTENT).end()
   }
+
   private async createManuscript(req: Request, res: Response) {
-    const { projectID, manuscriptID } = req.params
+    const file = req.file
+    const { projectID } = req.params
     const { templateID } = req.body
     const { user } = req
 
     if (!user) {
       throw new ValidationError('No user found', user)
     }
-    const manuscript = await this.projectController.createManuscript(
-      user,
-      projectID,
-      manuscriptID,
-      templateID
-    )
+
+    let manuscript
+    if (file && file.path) {
+      manuscript = await this.projectController.importJats(user, file, projectID, templateID)
+      await remove(file.path)
+    } else {
+      manuscript = await this.projectController.createManuscript(user, projectID, templateID)
+    }
+
     res.status(StatusCodes.OK).send(manuscript)
   }
+
   private async getCollaborators(req: Request, res: Response) {
     const { projectID } = req.params
     const { user } = req
@@ -227,6 +270,7 @@ export class ProjectRoute extends BaseRoute {
     const collaborators = await this.projectController.getCollaborators(user, projectID)
     res.status(StatusCodes.OK).send(collaborators)
   }
+
   private async getArchive(req: Request, res: Response) {
     const { projectID, manuscriptID } = req.params
     const { onlyIDs } = req.query
@@ -251,6 +295,7 @@ export class ProjectRoute extends BaseRoute {
     }
     res.status(StatusCodes.OK).send(Buffer.from(archive))
   }
+
   private async generateAccessToken(req: Request, res: Response) {
     const { projectID, scope } = req.params
     const { user } = req
@@ -261,6 +306,7 @@ export class ProjectRoute extends BaseRoute {
 
     res.send(await this.projectController.generateAccessToken(scope, user, projectID))
   }
+
   private async deleteProject(req: Request, res: Response) {
     const { projectID } = req.params
     const { user } = req
