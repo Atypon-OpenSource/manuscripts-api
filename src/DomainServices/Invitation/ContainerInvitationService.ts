@@ -127,7 +127,7 @@ export class ContainerInvitationService implements IContainerInvitationService {
       )
 
       const invitationId = `${ObjectTypes.ContainerInvitation}:${invitationTupleHash}`
-      const invitation = await this.containerInvitationRepository.getById(invitationId, userID)
+      const invitation = await this.containerInvitationRepository.getById(invitationId)
 
       const expiry = ContainerInvitationService.invitationExpiryInDays()
       if (invitation) {
@@ -210,7 +210,7 @@ export class ContainerInvitationService implements IContainerInvitationService {
     }
 
     const userID = sgUsername(invitingUser._id)
-    const container = await this.containerService(containerID).getContainer(containerID, userID)
+    const container = await this.containerService(containerID).getContainer(containerID)
 
     const owners = container.owners
     if (owners.indexOf(userID) < 0) {
@@ -246,8 +246,7 @@ export class ContainerInvitationService implements IContainerInvitationService {
     user: User,
     skipEmail?: boolean
   ): Promise<ContainerInvitationResponse> {
-    const userID = sgUsername(user._id)
-    const invitation = await this.containerInvitationRepository.getById(invitationId, userID)
+    const invitation = await this.containerInvitationRepository.getById(invitationId)
 
     if (!invitation) {
       throw new RecordGoneError('The invitation does not exist.')
@@ -332,15 +331,14 @@ export class ContainerInvitationService implements IContainerInvitationService {
     }
 
     const userID = sgUsername(user._id)
-    const invitation = await this.containerInvitationRepository.getById(invitationId, userID)
+    const invitation = await this.containerInvitationRepository.getById(invitationId)
 
     if (!invitation) {
       throw new ValidationError(`Invitation with id ${invitationId} does not exist`, invitationId)
     }
 
     const container = await this.containerService(invitation.containerID).getContainer(
-      invitation.containerID,
-      userID
+      invitation.containerID
     )
 
     const owners = container.owners

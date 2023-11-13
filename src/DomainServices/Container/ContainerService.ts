@@ -42,12 +42,10 @@ import {
   MissingContainerError,
   MissingProductionNoteError,
   MissingTemplateError,
-  MissingUserRecordError,
   MissingUserStatusError,
   ProductionNotesLoadError,
   ProductionNotesUpdateError,
   RecordNotFoundError,
-  RoleDoesNotPermitOperationError,
   SyncError,
   UserBlockedError,
   UserNotVerifiedError,
@@ -121,37 +119,20 @@ export class ContainerService implements IContainerService {
     return newContainer
   }
 
-  public async deleteContainer(containerId: string, user: User): Promise<void> {
-    const userID = ContainerService.userIdForSync(user._id)
+  public async deleteContainer(containerId: string): Promise<void> {
     const container = await this.getContainer(containerId)
-
-    if (!ContainerService.isOwner(container, userID)) {
-      throw new RoleDoesNotPermitOperationError(`User ${userID} is not an owner.`, userID)
-    }
-
-    await this.containerRepository.removeWithAllResources(containerId)
+    await this.containerRepository.removeWithAllResources(container._id)
   }
 
-  public async getContainer(containerId: string, userId?: string): Promise<Container> {
-    let container
-    try {
-      const userForSync = userId ? ContainerService.userIdForSync(userId) : userId
-      container = await this.containerRepository.getById(containerId, userForSync)
-    } catch (e) {
-      if (e.name === 'SyncError') {
-        throw new RoleDoesNotPermitOperationError(`permission denied`, userId)
-      }
-    }
-
+  public async getContainer(containerId: string): Promise<Container> {
+    const container = await this.containerRepository.getById(containerId)
     if (!container) {
       throw new MissingContainerError(containerId)
     }
-
     return container
   }
 
   public async manageUserRole(
-    user: User,
     containerId: string,
     managedUser: { userId: string; connectUserId: string },
     newRole: ContainerRole | null
@@ -164,10 +145,6 @@ export class ContainerService implements IContainerService {
 
     if (!managedUserObj) {
       throw new ValidationError('Invalid managed user id', managedUser)
-    }
-
-    if (!ContainerService.isOwner(container, user._id)) {
-      throw new RoleDoesNotPermitOperationError('User must be an owner to manage roles.', newRole)
     }
 
     await this.validateManagedUser(managedUserObj._id, newRole)
@@ -207,8 +184,7 @@ export class ContainerService implements IContainerService {
     addingUser: User,
     skipEmail?: boolean
   ): Promise<boolean> {
-    const userID = addingUser ? ContainerService.userIdForSync(addingUser._id) : undefined
-    const container = await this.getContainer(containerID, userID)
+    const container = await this.getContainer(containerID)
 
     const addedUser = await this.getValidUser(userId)
 
@@ -445,23 +421,15 @@ export class ContainerService implements IContainerService {
   }
 
   public async getArchive(
-    userID: string,
     containerID: string,
     manuscriptID: string | null,
     token: string | null,
     options: ArchiveOptions
   ) {
-    const container = await this.containerRepository.getById(
-      containerID,
-      ContainerService.userIdForSync(userID)
-    )
+    const container = await this.containerRepository.getById(containerID)
 
     if (!container) {
       throw new MissingContainerError(containerID)
-    }
-
-    if (this.isPublic(container)) {
-      return this.makeArchive(containerID, manuscriptID, options)
     }
 
     if (!token) {
@@ -469,10 +437,6 @@ export class ContainerService implements IContainerService {
     }
 
     await this.userService.authenticateUser(token)
-    const canAccess = await this.checkUserContainerAccess(userID, containerID)
-    if (!canAccess) {
-      throw new ValidationError('User must be a contributor in the container', containerID)
-    }
 
     return this.makeArchive(containerID, manuscriptID, options)
   }
@@ -510,7 +474,7 @@ export class ContainerService implements IContainerService {
     }
   }
 
-  public async getAttachment(userID: string, documentID: string, attachmentID?: string) {
+  public async getAttachment(documentID: string, attachmentID?: string) {
     const doc: any = await this.containerRepository.getById(documentID)
     if (!doc) {
       throw new MissingContainerError(`Attachment document not found`)
@@ -521,12 +485,6 @@ export class ContainerService implements IContainerService {
 
     if (!container) {
       throw new MissingContainerError(containerID)
-    }
-    if (!this.isPublic(container)) {
-      const canAccess = await this.checkUserContainerAccess(userID, containerID)
-      if (!canAccess) {
-        throw new ValidationError('User must be a contributor in the container', containerID)
-      }
     }
 
     attachmentID = attachmentID || Object.keys(doc._attachments)[0]
@@ -552,75 +510,20 @@ export class ContainerService implements IContainerService {
 
     return scopeInfo
   }
-
-  public async checkUserContainerAccess(userID: string, containerID: string): Promise<boolean> {
-    // eslint-disable-next-line prefer-const
-    let { owners, writers, viewers, editors, proofers, annotators } = await this.getContainer(
-      containerID,
-      ContainerService.userIdForSync(userID)
-    )
-
-    editors = editors || []
-    annotators = annotators || []
-    proofers = proofers || []
-
-    return [...owners, ...writers, ...viewers, ...editors, ...proofers, ...annotators].includes(
-      ContainerService.userIdForSync(userID)
-    )
-  }
-
-  public async checkIfCanEdit(userID: string, containerID: string): Promise<boolean> {
-    const { owners, editors, writers } = await this.getContainer(containerID, userID)
-    let userList = [...owners, ...writers]
-    if (editors && editors.length) {
-      userList = userList.concat(editors)
-    }
-    return userList.includes(ContainerService.userIdForSync(userID))
-  }
-
-  public async checkIfOwnerOrWriter(userID: string, containerID: string): Promise<boolean> {
-    const { owners, writers } = await this.getContainer(containerID, userID)
-    return [...owners, ...writers].includes(ContainerService.userIdForSync(userID))
-  }
-
-  public async checkIfUserCanCreateNote(userID: string, containerID: string): Promise<boolean> {
-    const { owners, writers, proofers, annotators, editors } = await this.getContainer(containerID, userID)
-    let usersWithAccess = [...owners, ...writers]
-    if (annotators && annotators.length) {
-      usersWithAccess = usersWithAccess.concat(annotators)
-    }
-    if (proofers && proofers.length) {
-      usersWithAccess = usersWithAccess.concat(proofers)
-    }
-    if (editors && editors.length) {
-      usersWithAccess = usersWithAccess.concat(editors)
-    }
-    return usersWithAccess.includes(ContainerService.userIdForSync(userID))
-  }
-
   public async accessToken(userID: string, scope: string, containerID: string): Promise<any> {
-    const container = await this.getContainer(containerID, ContainerService.userIdForSync(userID))
-    let contributors = container.owners.concat(container.writers, container.viewers)
-    if (container.editors) {
-      contributors = contributors.concat(container.editors)
-    }
-    if (container.annotators) {
-      contributors = contributors.concat(container.annotators)
-    }
-    if (container.proofers) {
-      contributors = contributors.concat(container.proofers)
-    }
-    const syncUserID = ContainerService.userIdForSync(userID)
+    const userSyncId = ContainerService.userIdForSync(userID)
+    const container = await this.getContainer(containerID)
+    const isContributor = ContainerService.isContainerUser(container, userID)
 
-    if (contributors.indexOf(syncUserID) < 0) {
-      throw new ValidationError('User must be a contributor in the container', syncUserID)
+    if (!isContributor) {
+      throw new ValidationError('User must be a contributor in the container', userID)
     }
 
     const scopeInfo = ContainerService.findScope(scope, config.scopes)
 
     const payload = {
       iss: config.API.hostname,
-      sub: syncUserID,
+      sub: userSyncId,
       containerID,
       aud: scopeInfo.name,
     }
@@ -732,10 +635,6 @@ export class ContainerService implements IContainerService {
     return false
   }
 
-  public isPublic(container: Container): boolean {
-    return container.viewers.indexOf('*') > -1
-  }
-
   private async handleContainerCreation(containerId: string, ownerId: string): Promise<Container> {
     const newContainer: any = {
       _id: containerId,
@@ -806,9 +705,7 @@ export class ContainerService implements IContainerService {
     let templateFound: boolean = templateId !== undefined && template !== null
 
     if (!templateFound && templateId) {
-      templateFound = await DIContainer.sharedContainer.configService.hasDocument(
-        templateId
-      )
+      templateFound = await DIContainer.sharedContainer.configService.hasDocument(templateId)
     }
 
     if (!templateFound && templateId) {
@@ -834,23 +731,12 @@ export class ContainerService implements IContainerService {
     containerID: string,
     manuscriptID: string,
     contents: string,
-    connectUserID: string,
+    userId: string,
     source: string,
     target?: string
   ): Promise<any> {
-    const user = await DIContainer.sharedContainer.userRepository.getOne({ connectUserID })
-    if (!user) {
-      throw new MissingUserRecordError(connectUserID)
-    }
-    const userID = ContainerService.userIdForSync(user._id)
-    // will fail of the user is not a collaborator on the project
-    const canAccess = await this.checkIfUserCanCreateNote(userID, containerID)
-    if (!canAccess) {
-      throw new ValidationError('User must be a contributor in the container', containerID)
-    }
-
     const stamp = timestamp()
-    const userProfileID = UserService.profileID(user._id)
+    const userProfileID = UserService.profileID(userId)
     if (target) {
       const note = await this.manuscriptNoteRepository.getById(target /*, userID*/)
       if (!note) {
@@ -859,28 +745,25 @@ export class ContainerService implements IContainerService {
     }
     try {
       return this.manuscriptNoteRepository
-        .create(
-          {
-            _id: `${this.manuscriptNoteRepository.objectType}:${uuid_v4()}`,
-            createdAt: stamp,
-            updatedAt: stamp,
-            objectType: this.manuscriptNoteRepository.objectType,
-            containerID: containerID,
-            manuscriptID: manuscriptID,
-            contents: contents,
-            target: target ? target : manuscriptID,
-            source: source,
-            contributions: [
-              {
-                _id: `MPContribution:${uuid_v4()}`,
-                objectType: 'MPContribution',
-                profileID: userProfileID,
-                timestamp: stamp,
-              },
-            ],
-          },
-          userID
-        )
+        .create({
+          _id: `${this.manuscriptNoteRepository.objectType}:${uuid_v4()}`,
+          createdAt: stamp,
+          updatedAt: stamp,
+          objectType: this.manuscriptNoteRepository.objectType,
+          containerID: containerID,
+          manuscriptID: manuscriptID,
+          contents: contents,
+          target: target ? target : manuscriptID,
+          source: source,
+          contributions: [
+            {
+              _id: `MPContribution:${uuid_v4()}`,
+              objectType: 'MPContribution',
+              profileID: userProfileID,
+              timestamp: stamp,
+            },
+          ],
+        })
         .then((res) => {
           return { id: res._id, ok: true }
         })
@@ -899,18 +782,11 @@ export class ContainerService implements IContainerService {
       throw new ProductionNotesLoadError()
     }
   }
-  public async getCollaborators(containerID: string, userId: string) {
-    const canAccess = await this.checkUserContainerAccess(userId, containerID)
-    if (!canAccess) {
-      throw new ValidationError('User must be a contributor in the container', containerID)
-    }
-    return this.userService.getCollaborators(containerID)
-  }
 
   public async processManuscriptModels(docs: Model[], containerID: string, manuscriptID: string) {
     const createdAt = Math.round(Date.now() / 1000)
 
-    const projectDocs = docs.map((doc) => {
+    return docs.map((doc) => {
       const updatedDoc = {
         ...doc,
         createdAt,
@@ -929,7 +805,5 @@ export class ContainerService implements IContainerService {
 
       return updatedDoc
     })
-
-    return projectDocs
   }
 }

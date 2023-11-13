@@ -18,7 +18,7 @@ import '../../../../../utilities/dbMock'
 
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
 import { ContainerService } from '../../../../../../src/DomainServices/Container/ContainerService'
-import { ContainerRole, ContainerType } from '../../../../../../src/Models/ContainerModels'
+import { ContainerRole } from '../../../../../../src/Models/ContainerModels'
 
 beforeEach(() => {
   ;(DIContainer as any)._sharedContainer = null
@@ -121,65 +121,6 @@ describe('ContainerService - getProjectUserRole', () => {
       )
     ).toBe(ContainerRole.Editor)
   })
-  test('Should return true if user is a contributor|owner', async () => {
-    const containerService = DIContainer.sharedContainer.containerService
-    containerService.getContainer = jest.fn().mockImplementationOnce(() => {
-      return {
-        _id: 'MPProject:project-id',
-        owners: ['User_validId'],
-        viewers: [],
-        writers: [],
-      }
-    })
-    const result = await containerService.checkUserContainerAccess(
-      'User_validId',
-      'MPProject:project-id'
-    )
-    expect(result).toBeTruthy()
-  })
-
-  test('Should return true if user is a owner or writer', async () => {
-    const containerService = DIContainer.sharedContainer.containerService
-    containerService.getContainer = jest.fn().mockImplementationOnce(() => {
-      return {
-        _id: 'MPProject:project-id',
-        owners: ['User_validId'],
-        viewers: [],
-        writers: [],
-      }
-    })
-    const result = await containerService.checkIfOwnerOrWriter(
-      'User_validId',
-      'MPProject:project-id'
-    )
-    expect(result).toBeTruthy()
-  })
-
-  test('Should return true if user can create manuscript note', async () => {
-    const containerService = DIContainer.sharedContainer.containerService
-    containerService.getContainer = jest.fn().mockImplementation(() => {
-      return {
-        _id: 'MPProject:project-id',
-        owners: ['User_validId'],
-        viewers: [],
-        writers: [],
-        editors: ['User_validId-2'],
-        annotators: ['User_validId-3'],
-      }
-    })
-    let result = await containerService.checkIfUserCanCreateNote(
-      'User_validId-2',
-      'MPProject:project-id'
-    )
-    expect(result).toBeTruthy()
-
-    result = await containerService.checkIfUserCanCreateNote(
-      'User_validId-3',
-      'MPProject:project-id'
-    )
-    expect(result).toBeTruthy()
-  })
-
   test('Should return null if the user not in the project', () => {
     const containerService = DIContainer.sharedContainer.containerService
 
@@ -194,35 +135,5 @@ describe('ContainerService - getProjectUserRole', () => {
         'User_validId'
       )
     ).toBeNull()
-  })
-})
-
-describe('ContainerService - isPublic', () => {
-  test('Should return true if the project is public', () => {
-    const containerService = DIContainer.sharedContainer.containerService
-
-    expect(
-      containerService.isPublic({
-        _id: 'MPProject:project-id',
-        objectType: 'MPProject',
-        owners: [],
-        viewers: ['*'],
-        writers: ['User_validId'],
-      } as any)
-    ).toBeTruthy()
-  })
-
-  test('Should return false if the project is not public', () => {
-    const containerService = DIContainer.sharedContainer.containerService
-
-    expect(
-      containerService.isPublic({
-        _id: 'MPProject:project-id',
-        objectType: 'MPProject',
-        owners: [],
-        viewers: ['User_otherValidId'],
-        writers: ['User_validId'],
-      } as any)
-    ).toBeFalsy()
   })
 })

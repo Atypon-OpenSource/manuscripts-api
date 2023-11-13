@@ -16,8 +16,8 @@
 
 export interface ISGService {
   /** Gets a Sync Gateway user in the specified bucket using the SG Admin API. */
-  get(token: string, id: string): Promise<any>
-  create(token: string, doc: any): Promise<any>
-  update(token: string, id: string, doc: any): Promise<any>
-  remove(token: string, id: string): Promise<any>
+  get(id: string): Promise<any>
+  create(doc: any): Promise<any>
+  update(id: string, doc: any): Promise<any>
+  remove(id: string): Promise<any>
 }

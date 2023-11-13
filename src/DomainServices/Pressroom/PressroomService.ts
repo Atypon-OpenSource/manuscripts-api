@@ -76,5 +76,4 @@ export class PressroomService implements IPressroomService {
       `Pressroom request 'export/html' failed with error: code(${res.status}) - message(${res.statusText})`
     )
   }
-
 }

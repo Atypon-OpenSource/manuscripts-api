@@ -20,7 +20,7 @@ import { config } from '../../../Config/Config'
 import { BucketKey, DatabaseConfiguration } from '../../../Config/ConfigurationTypes'
 import { DIContainer } from '../../../DIContainer/DIContainer'
 import { InvalidBucketError } from '../../../Errors'
-import { authorizationBearerToken, BaseController } from '../../BaseController'
+import { BaseController } from '../../BaseController'
 
 export class SGController extends BaseController {
   public constructor(readonly configuration: DatabaseConfiguration = config.DB) {
@@ -34,9 +34,7 @@ export class SGController extends BaseController {
     }
 
     const id = req.params.id
-    const token = authorizationBearerToken(req)
-
-    return DIContainer.sharedContainer.sgService.get(token, id)
+    return DIContainer.sharedContainer.sgService.get(id)
   }
 
   async create(req: Request): Promise<any> {
@@ -46,9 +44,7 @@ export class SGController extends BaseController {
     }
 
     const doc = req.body
-    const token = authorizationBearerToken(req)
-
-    return DIContainer.sharedContainer.sgService.create(token, doc)
+    return DIContainer.sharedContainer.sgService.create(doc)
   }
 
   async update(req: Request): Promise<any> {
@@ -60,8 +56,7 @@ export class SGController extends BaseController {
     const id = req.params.id
     const body = req.body
 
-    const token = authorizationBearerToken(req)
-    return DIContainer.sharedContainer.sgService.update(token, id, body)
+    return DIContainer.sharedContainer.sgService.update(id, body)
   }
 
   async remove(req: Request): Promise<any> {
@@ -72,8 +67,6 @@ export class SGController extends BaseController {
 
     const id = req.params.id
     //const rev = req.query.rev
-    const token = authorizationBearerToken(req)
-
-    return DIContainer.sharedContainer.sgService.remove(token, id)
+    return DIContainer.sharedContainer.sgService.remove(id)
   }
 }

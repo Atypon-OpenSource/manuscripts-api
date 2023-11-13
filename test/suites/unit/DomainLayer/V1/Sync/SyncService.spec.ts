@@ -33,7 +33,6 @@ jest.mock(
 import '../../../../../utilities/dbMock'
 import '../../../../../utilities/configMock'
 
-import * as syncAccessControl from '../../../../../../src/DataAccess/syncAccessControl'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
 import { SyncService } from '../../../../../../src/DomainServices/Sync/SyncService'
 import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
@@ -95,8 +94,6 @@ describe('syncService', () => {
       syncService.userProfileRepository.database.bucket.insert = async (_id: string) => {
         await Promise.resolve()
       }
-      const mock = jest.spyOn(syncAccessControl, 'syncAccessControl')
-      mock.mockResolvedValue()
 
       const contrib = await syncService.createUserProfile(user)
 
