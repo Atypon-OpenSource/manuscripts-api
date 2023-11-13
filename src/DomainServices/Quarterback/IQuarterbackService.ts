@@ -20,8 +20,8 @@ export interface IQuarterbackService {
   updateDocument(document: Buffer, docId: string): Promise<Buffer>
   deleteDocument(docId: string): Promise<Buffer>
   receiveSteps(body: object, docId: string): Promise<any>
-  listen(docId: string): Promise<Buffer>
-  getDocOfVersion( docId: string, versionId: string): Promise<any>
+  listen(docId: string): Promise<any>
+  getStepFromVersion(docId: string, versionId: string): Promise<any>
   getSnapshotLabels(docId: string): Promise<Buffer>
   getSnapshot(docId: string): Promise<Buffer>
   deleteSnapshot(docId: string): Promise<Buffer>

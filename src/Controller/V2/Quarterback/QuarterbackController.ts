@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { Manuscript } from '@manuscripts/json-schema'
-import { Request } from 'express'
+import { Request, Response } from 'express'
 
 import { DIContainer } from '../../../DIContainer/DIContainer'
 import { RoleDoesNotPermitOperationError, ValidationError } from '../../../Errors'
@@ -34,34 +34,39 @@ export interface SnapshotLabelResult {
   createdAt: number
 }
 
+export type Client = {
+  id: number
+  res: Response
+}
+export type StepsData = {
+  steps: unknown[]
+  clientIDs: number[]
+  version: number
+}
+
 const EMPTY_PERMISSIONS = new Set<QuarterbackPermission>()
 export class QuarterbackController extends ContainedBaseController {
-  private _documentVersionMap = new Map<string, number>()
-  private _documentClientsMap = new Map<string, any[]>()
+  private _documentClientsMap = new Map<string, Client[]>()
   get documentsClientsMap() {
     return this._documentClientsMap
   }
-  get documentVersionMap() {
-    return this._documentVersionMap
-  }
-
-  addClient(newClient: any, documentId: string) {
-    const clients = this._documentClientsMap.get(documentId) || []
+  addClient(newClient: Client, manuscriptID: string) {
+    const clients = this._documentClientsMap.get(manuscriptID) || []
     clients.push(newClient)
-    this.documentsClientsMap.set(documentId, clients)
+    this.documentsClientsMap.set(manuscriptID, clients)
   }
-  sendDataToClients(data: any, documentId: string) {
-    const clientsForDocument = this.documentsClientsMap.get(documentId)
+  sendDataToClients(data: StepsData, manuscriptID: string) {
+    const clientsForDocument = this.documentsClientsMap.get(manuscriptID)
     clientsForDocument?.forEach((client) => {
       client.res.write(`data: ${JSON.stringify(data)}\n\n`)
     })
   }
-  removeClientById(clientId: number, documentId: string) {
-    const clients = this.documentsClientsMap.get(documentId) || []
-    const index = clients.findIndex((client) => client.id === clientId)
+  removeClientByID(clientID: number, manuscriptID: string) {
+    const clients = this.documentsClientsMap.get(manuscriptID) || []
+    const index = clients.findIndex((client) => client.id === clientID)
     if (index !== -1) {
       clients.splice(index, 1)
-      this.documentsClientsMap.set(documentId, clients)
+      this.documentsClientsMap.set(manuscriptID, clients)
     }
   }
 
@@ -97,22 +102,22 @@ export class QuarterbackController extends ContainedBaseController {
     return DIContainer.sharedContainer.quarterback.getDocument(manuscriptID)
   }
 
-  async receiveSteps(req: Request): Promise<any> {
-    const { documentId } = req.params
-    // await this.validateUserAccess(req.user, projectID, QuarterbackPermission.WRITE)
-    return DIContainer.sharedContainer.quarterback.receiveSteps(req.body, documentId)
+  async receiveSteps(req: Request) {
+    const { projectID, manuscriptID } = req.params
+    await this.validateUserAccess(req.user, projectID, QuarterbackPermission.WRITE)
+    return DIContainer.sharedContainer.quarterback.receiveSteps(req.body, manuscriptID)
   }
 
-  async listen(req: Request): Promise<Buffer> {
-    const { documentId } = req.params
-    // await this.validateUserAccess(req.user, projectID, QuarterbackPermission.READ)
-    return DIContainer.sharedContainer.quarterback.listen(documentId)
+  async listen(req: Request) {
+    const { projectID, manuscriptID } = req.params
+    await this.validateUserAccess(req.user, projectID, QuarterbackPermission.READ)
+    return DIContainer.sharedContainer.quarterback.listen(manuscriptID)
   }
 
-  async getDocOfVersion(req: Request): Promise<any> {
-    const { documentId, versionId } = req.params
-    // await this.validateUserAccess(req.user, projectID, QuarterbackPermission.READ)
-    return DIContainer.sharedContainer.quarterback.getDocOfVersion(documentId, versionId)
+  async getStepFromVersion(req: Request) {
+    const { manuscriptID, projectID, versionID } = req.params
+    await this.validateUserAccess(req.user, projectID, QuarterbackPermission.READ)
+    return DIContainer.sharedContainer.quarterback.getStepFromVersion(manuscriptID, versionID)
   }
 
   async deleteDocument(req: Request): Promise<Buffer> {
@@ -188,5 +193,17 @@ export class QuarterbackController extends ContainedBaseController {
     if (!permissions.has(permission)) {
       throw new RoleDoesNotPermitOperationError(`Access denied`, user._id)
     }
+  }
+  public manageClientConnection(req: Request, res: Response) {
+    const newClient: Client = {
+      id: Date.now(),
+      res,
+    }
+    const { manuscriptID } = req.params
+    this.addClient(newClient, manuscriptID)
+
+    req.on('close', () => {
+      this.removeClientByID(newClient.id, manuscriptID)
+    })
   }
 }

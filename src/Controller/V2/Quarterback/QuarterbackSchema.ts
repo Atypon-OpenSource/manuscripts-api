@@ -77,7 +77,8 @@ export const deleteSnapshotSchema: Joi.SchemaMap = {
 }
 export const receiveStepsSchema: Joi.SchemaMap = {
   params: Joi.object({
-    documentId: Joi.string().required(),
+    projectID: Joi.string().required(),
+    manuscriptID: Joi.string().required(),
   }),
   body: Joi.object({
     steps: Joi.array().items(Joi.object()),
@@ -87,15 +88,14 @@ export const receiveStepsSchema: Joi.SchemaMap = {
 }
 export const listenSchema: Joi.SchemaMap = {
   params: Joi.object({
-    documentId: Joi.string().required(),
+    projectID: Joi.string().required(),
+    manuscriptID: Joi.string().required(),
   }),
 }
-export const getDocOfVersionSchema: Joi.SchemaMap = {
+export const getStepsOfVersionSchema: Joi.SchemaMap = {
   params: Joi.object({
-    documentId: Joi.string().required(),
-    versionId: Joi.number().required(),
+    projectID: Joi.string().required(),
+    manuscriptID: Joi.string().required(),
+    versionID: Joi.number().required(),
   }),
-  // body: Joi.object({
-  //   versionId: Joi.number().required(),
-  // }),
 }
