@@ -123,7 +123,6 @@ export class AuthStrategy {
   ): void {
     if (error || !user) {
       const notFound = true
-      console.log(user)
       res.status(StatusCodes.UNAUTHORIZED).json({ notFound }).end()
     } else {
       req.user = user
