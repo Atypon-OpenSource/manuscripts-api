@@ -30,7 +30,10 @@ export class DocumentRoute extends BaseRoute {
 
   public create(router: Router): void {
     router.post(
-      `${this.basePath}/:projectID/manuscript/:manuscriptID`,
+      [
+        `${this.basePath}/:projectID/manuscript/:manuscriptID`,
+        `/quarterback${this.basePath}/:projectID/manuscript/:manuscriptID `,
+      ],
       celebrate(createDocumentSchema),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
@@ -41,7 +44,10 @@ export class DocumentRoute extends BaseRoute {
       }
     )
     router.put(
-      `${this.basePath}/:projectID/manuscript/:manuscriptID`,
+      [
+        `${this.basePath}/:projectID/manuscript/:manuscriptID`,
+        `/quarterback${this.basePath}/:projectID/manuscript/:manuscriptID `,
+      ],
       celebrate(createDocumentSchema),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
@@ -52,7 +58,10 @@ export class DocumentRoute extends BaseRoute {
       }
     )
     router.delete(
-      `${this.basePath}/:projectID/manuscript/:manuscriptID`,
+      [
+        `${this.basePath}/:projectID/manuscript/:manuscriptID`,
+        `/quarterback${this.basePath}/:projectID/manuscript/:manuscriptID `,
+      ],
       celebrate(deleteDocumentSchema),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
@@ -64,7 +73,10 @@ export class DocumentRoute extends BaseRoute {
     )
 
     router.get(
-      `${this.basePath}/:projectID/manuscript/:manuscriptID`,
+      [
+        `${this.basePath}/:projectID/manuscript/:manuscriptID`,
+        `/quarterback${this.basePath}/:projectID/manuscript/:manuscriptID `,
+      ],
       celebrate(getDocumentSchema),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,

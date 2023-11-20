@@ -31,12 +31,15 @@ export class SnapshotRoute extends BaseRoute {
   private snapshotController = new SnapshotController()
 
   private get basePath(): string {
-    return '/doc'
+    return '/snapshot'
   }
 
   public create(router: Router): void {
     router.post(
-      `${this.basePath}/snapshot/:projectID/manuscript/:manuscriptID`,
+      [
+        `${this.basePath}/:projectID/manuscript/:manuscriptID`,
+        `/quarterback${this.basePath}/:projectID/manuscript/:manuscriptID`,
+      ],
       celebrate(createSnapshotSchema),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
@@ -48,7 +51,7 @@ export class SnapshotRoute extends BaseRoute {
     )
 
     router.delete(
-      `${this.basePath}/snapshot/:snapshotID`,
+      [`${this.basePath}/:snapshotID`, `/quarterback${this.basePath}/:snapshotID`],
       celebrate(deleteSnapshotSchema, {}),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
@@ -60,7 +63,7 @@ export class SnapshotRoute extends BaseRoute {
     )
 
     router.get(
-      `${this.basePath}/snapshot/:snapshotID`,
+      [`${this.basePath}/:snapshotID`, `/quarterback${this.basePath}/:snapshotID`],
       celebrate(getSnapshotSchema, {}),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
@@ -72,7 +75,10 @@ export class SnapshotRoute extends BaseRoute {
     )
 
     router.get(
-      `${this.basePath}/snapshot/:projectID/manuscript/:manuscriptID/labels`,
+      [
+        `${this.basePath}/:projectID/manuscript/:manuscriptID/labels`,
+        `/quarterback${this.basePath}/:projectID/manuscript/:manuscriptID/labels`,
+      ],
       celebrate(getSnapshotLabelsSchema, {}),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
