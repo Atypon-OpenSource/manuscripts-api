@@ -14,141 +14,68 @@
  * limitations under the License.
  */
 
-import getStream from 'get-stream'
-import fetch from 'node-fetch'
+import { Manuscript } from '@manuscripts/json-schema'
 
-import { RequestError } from '../../Errors'
+import { DIContainer } from '../../DIContainer/DIContainer'
+import { RoleDoesNotPermitOperationError, ValidationError } from '../../Errors'
+import { ContainerRole } from '../../Models/ContainerModels'
+import { Snapshot } from '../../Models/SnapshotModel'
 import { IQuarterbackService } from './IQuarterbackService'
 
+export enum QuarterbackPermission {
+  READ,
+  WRITE,
+}
+
+export interface SnapshotLabelResult {
+  id: string
+  name: string
+  createdAt: number
+}
+const EMPTY_PERMISSIONS = new Set<QuarterbackPermission>()
+
 export class QuarterbackService implements IQuarterbackService {
-  constructor(private baseurl: string, private apiKey: string) {}
-  async getDocument(docId: string): Promise<Buffer> {
-    const res = await fetch(`${this.baseurl}/doc/${docId}`, {
-      method: 'GET',
-      headers: this.headers,
-    })
-
-    if (res.ok && res.body) {
-      return getStream.buffer(res.body)
+  private async getPermissions(
+    projectID: string,
+    userID: string
+  ): Promise<ReadonlySet<QuarterbackPermission>> {
+    const project = await DIContainer.sharedContainer.projectService.getProject(projectID)
+    const role = DIContainer.sharedContainer.containerService.getUserRole(project, userID)
+    switch (role) {
+      case ContainerRole.Owner:
+      case ContainerRole.Writer:
+      case ContainerRole.Editor:
+      case ContainerRole.Annotator:
+      case ContainerRole.Proofer:
+        return new Set([QuarterbackPermission.READ, QuarterbackPermission.WRITE])
+      case ContainerRole.Viewer:
+        return new Set([QuarterbackPermission.READ])
     }
-    // should only apply in case of server client errors
-    throw new RequestError(
-      `Quarterback request 'GET doc' failed with error: code(${res.status}) - message(${res.statusText})`
-    )
+    return EMPTY_PERMISSIONS
   }
 
-  async createDocument(document: object): Promise<Buffer> {
-    const res = await fetch(`${this.baseurl}/doc`, {
-      method: 'POST',
-      body: JSON.stringify(document),
-      headers: this.headers,
-    })
-
-    if (res.ok && res.body) {
-      return getStream.buffer(res.body)
+  public async validateUserAccess(
+    user: Express.User,
+    projectID: string,
+    permission: QuarterbackPermission
+  ) {
+    if (!user) {
+      throw new ValidationError('No user found', user)
     }
-    // should only apply in case of server client errors
-    throw new RequestError(
-      `Quarterback request 'create doc' failed with error: code(${res.status}) - message(${res.statusText})`
-    )
+    const permissions = await this.getPermissions(projectID, user._id)
+    if (!permissions.has(permission)) {
+      throw new RoleDoesNotPermitOperationError(`Access denied`, user._id)
+    }
   }
 
-  async updateDocument(document: Buffer, docId: string): Promise<Buffer> {
-    const res = await fetch(`${this.baseurl}/doc/${docId}`, {
-      method: 'PUT',
-      body: JSON.stringify(document),
-      headers: this.headers,
-    })
+  public async getManuscriptFromSnapshot(snapshot: Snapshot) {
+    const manuscriptID = snapshot.doc_id
+    const manuscript: Manuscript | null =
+      await DIContainer.sharedContainer.manuscriptRepository.getById(manuscriptID)
 
-    if (res.ok && res.body) {
-      return getStream.buffer(res.body)
+    if (!manuscript) {
+      throw new ValidationError('Manuscript not found', manuscriptID)
     }
-    // should only apply in case of server client errors
-    throw new RequestError(
-      `Quarterback request 'update doc' failed with error: code(${res.status}) - message(${res.statusText})`
-    )
-  }
-
-  async deleteDocument(docId: string): Promise<Buffer> {
-    const res = await fetch(`${this.baseurl}/doc/${docId}`, {
-      method: 'DELETE',
-      headers: this.headers,
-    })
-
-    if (res.ok && res.body) {
-      return getStream.buffer(res.body)
-    }
-    // should only apply in case of server client errors
-    throw new RequestError(
-      `Quarterback request 'delete doc' failed with error: code(${res.status}) - message(${res.statusText})`
-    )
-  }
-
-  async getSnapshotLabels(docId: string): Promise<Buffer> {
-    const res = await fetch(`${this.baseurl}/doc/${docId}/snapshot/labels`, {
-      method: 'GET',
-      headers: this.headers,
-    })
-
-    if (res.ok && res.body) {
-      return getStream.buffer(res.body)
-    }
-    // should only apply in case of server client errors
-    throw new RequestError(
-      `Quarterback request 'get snapshot labels' failed with error: code(${res.status}) - message(${res.statusText})`
-    )
-  }
-
-  async getSnapshot(docId: string): Promise<Buffer> {
-    const res = await fetch(`${this.baseurl}/snapshot/${docId}`, {
-      method: 'GET',
-      headers: this.headers,
-    })
-
-    if (res.ok && res.body) {
-      return getStream.buffer(res.body)
-    }
-    // should only apply in case of server client errors
-    throw new RequestError(
-      `Quarterback request 'get snapshot' failed with error: code(${res.status}) - message(${res.statusText})`
-    )
-  }
-
-  async deleteSnapshot(docId: string): Promise<Buffer> {
-    const res = await fetch(`${this.baseurl}/snapshot/${docId}`, {
-      method: 'DELETE',
-      headers: this.headers,
-    })
-
-    if (res.ok && res.body) {
-      return getStream.buffer(res.body)
-    }
-    // should only apply in case of server client errors
-    throw new RequestError(
-      `Quarterback request 'delete snapshot' failed with error: code(${res.status}) - message(${res.statusText})`
-    )
-  }
-
-  async createSnapshot(document: Buffer): Promise<Buffer> {
-    const res = await fetch(`${this.baseurl}/snapshot`, {
-      method: 'POST',
-      body: JSON.stringify(document),
-      headers: this.headers,
-    })
-
-    if (res.ok && res.body) {
-      return getStream.buffer(res.body)
-    }
-    // should only apply in case of server client errors
-    throw new RequestError(
-      `Quarterback request 'create snapshot' failed with error: code(${res.status}) - message(${res.statusText})`
-    )
-  }
-  private get headers() {
-    return {
-      'quarterback-api-key': this.apiKey,
-      'content-type': 'application/json',
-      accept: 'application/json',
-    }
+    return manuscript
   }
 }

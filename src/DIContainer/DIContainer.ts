@@ -53,6 +53,8 @@ import { ConfigService } from '../DomainServices/ConfigService'
 import { ContainerService } from '../DomainServices/Container/ContainerService'
 import { ContainerRequestService } from '../DomainServices/ContainerRequest/ContainerRequestService'
 import { IContainerRequestService } from '../DomainServices/ContainerRequest/IContainerRequestService'
+import { DocumentService } from '../DomainServices/Document/DocumentService'
+import { IDocumentService } from '../DomainServices/Document/IDocumentService'
 import { EmailService } from '../DomainServices/Email/EmailService'
 import { ExpirationService } from '../DomainServices/Expiration/ExpirationService'
 import { ContainerInvitationService } from '../DomainServices/Invitation/ContainerInvitationService'
@@ -67,6 +69,8 @@ import { IUserRegistrationService } from '../DomainServices/Registration/IUserRe
 import { UserRegistrationService } from '../DomainServices/Registration/UserRegistrationService'
 import { ISGService } from '../DomainServices/SG/ISGService'
 import { SGService } from '../DomainServices/SG/SGService'
+import { ISnapshotService } from '../DomainServices/Snapshot/ISnapshotService'
+import { SnapshotService } from '../DomainServices/Snapshot/SnapshotService'
 import { ISyncService } from '../DomainServices/Sync/ISyncService'
 import { SyncService } from '../DomainServices/Sync/SyncService'
 import { IUserService } from '../DomainServices/User/IUserService'
@@ -127,6 +131,8 @@ export class DIContainer {
   readonly userCollaboratorRepository: UserCollaboratorRepository
   readonly containerService: ContainerService
   readonly projectService: ProjectService
+  readonly documentService: IDocumentService
+  readonly snapshotService: ISnapshotService
   readonly configService: ConfigService
   readonly containerRequestService: IContainerRequestService
   readonly containerRequestRepository: ContainerRequestRepository
@@ -228,6 +234,8 @@ export class DIContainer {
       this.manuscriptRepository,
       this.userRepository
     )
+    this.documentService = new DocumentService()
+    this.snapshotService = new SnapshotService()
     this.containerInvitationService = new ContainerInvitationService(
       this.userRepository,
       this.userProfileRepository,
@@ -269,7 +277,7 @@ export class DIContainer {
       this.containerInvitationRepository
     )
     this.pressroomService = new PressroomService(config.pressroom.baseurl, config.pressroom.apiKey)
-    this.quarterback = new QuarterbackService(config.quarterback.baseurl, config.quarterback.apiKey)
+    this.quarterback = new QuarterbackService()
     this.configService = new ConfigService(config.data.path)
   }
 

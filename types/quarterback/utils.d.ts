@@ -1,5 +1,5 @@
 /*!
- * © 2020 Atypon Systems LLC
+ * © 2023 Atypon Systems LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,16 +14,11 @@
  * limitations under the License.
  */
 
-import { Manuscript } from '@manuscripts/json-schema'
-
-import { Snapshot } from '../../Models/SnapshotModel'
-import { QuarterbackPermission } from './QuarterbackService'
-
-export interface IQuarterbackService {
-  validateUserAccess(
-    user: Express.User,
-    projectID: string,
-    permission: QuarterbackPermission
-  ): Promise<void>
-  getManuscriptFromSnapshot(snapshot: Snapshot): Promise<Manuscript>
+export type Error = {
+  err: string
+  code: number
 }
+export type Ok<T> = {
+  data: T
+}
+export type Maybe<T> = Ok<T> | Error

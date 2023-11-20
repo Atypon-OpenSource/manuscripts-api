@@ -83,7 +83,6 @@ export class Configuration implements ConfigurationContainer {
   readonly apps: ClientApplicationsConfiguration
   readonly scopes: ScopedAccessTokenConfiguration[]
   readonly pressroom: ExternalAPIConfiguration
-  readonly quarterback: ExternalAPIConfiguration
   readonly data: DataConfiguration
 
   constructor(env: EnvironmentLike) {
@@ -158,11 +157,6 @@ export class Configuration implements ConfigurationContainer {
     this.pressroom = {
       baseurl: getString(env.APP_PRESSROOM_BASE_URL, 'APP_PRESSROOM_BASE_URL'),
       apiKey: getString(env.APP_PRESSROOM_APIKEY, 'APP_PRESSROOM_APIKEY'),
-    }
-
-    this.quarterback = {
-      baseurl: getString(env.APP_QUARTERBACK_BASE_URL, 'APP_QUARTERBACK_BASE_URL'),
-      apiKey: getString(env.APP_QUARTERBACK_APIKEY, 'APP_QUARTERBACK_APIKEY'),
     }
 
     this.data = {

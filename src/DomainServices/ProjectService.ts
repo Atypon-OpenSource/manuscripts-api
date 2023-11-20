@@ -29,10 +29,10 @@ import jwt, { Algorithm } from 'jsonwebtoken'
 import JSZip from 'jszip'
 import { Readable } from 'stream'
 import tempy from 'tempy'
+import type { SnapshotLabelResult } from 'types/quarterback/snapshot'
 import { v4 as uuid_v4 } from 'uuid'
 
 import { config } from '../Config/Config'
-import { SnapshotLabelResult } from '../Controller/V2/Quarterback/QuarterbackController'
 import { IManuscriptRepository } from '../DataAccess/Interfaces/IManuscriptRepository'
 import { IUserRepository } from '../DataAccess/Interfaces/IUserRepository'
 import { DIContainer } from '../DIContainer/DIContainer'
@@ -190,12 +190,14 @@ export class ProjectService {
     //todo log
     await this.containerRepository.removeWithAllResources(projectID)
     if (models && models.length === 1) {
-      const result = await DIContainer.sharedContainer.quarterback.getSnapshotLabels(models[0]._id)
+      const result = await DIContainer.sharedContainer.snapshotService.listSnapshotLabels(
+        models[0]._id
+      )
       const snapshotModel: SnapshotLabelResult[] = JSON.parse(result.toString()).labels
       for (const snapshot of snapshotModel) {
-        await DIContainer.sharedContainer.quarterback.deleteSnapshot(snapshot.id)
+        await DIContainer.sharedContainer.snapshotService.deleteSnapshot(snapshot.id)
       }
-      await DIContainer.sharedContainer.quarterback.deleteDocument(models[0]._id)
+      await DIContainer.sharedContainer.documentService.deleteDocument(models[0]._id)
     }
   }
 
