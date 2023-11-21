@@ -35,7 +35,7 @@ export interface SnapshotLabelResult {
 const EMPTY_PERMISSIONS = new Set<QuarterbackPermission>()
 
 export class QuarterbackService implements IQuarterbackService {
-  private async getPermissions(
+  async getPermissions(
     projectID: string,
     userID: string
   ): Promise<ReadonlySet<QuarterbackPermission>> {

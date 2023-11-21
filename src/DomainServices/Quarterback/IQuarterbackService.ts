@@ -26,4 +26,5 @@ export interface IQuarterbackService {
     permission: QuarterbackPermission
   ): Promise<void>
   getManuscriptFromSnapshot(snapshot: Snapshot): Promise<Manuscript>
+  getPermissions(projectID: string, userID: string): Promise<ReadonlySet<QuarterbackPermission>>
 }

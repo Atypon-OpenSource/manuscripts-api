@@ -95,7 +95,7 @@ export class SnapshotController extends BaseController {
     if (!('data' in result)) {
       throw new ValidationError('Snapshot not found', snapshotID)
     }
-    const snapshot: Snapshot = JSON.parse(result.toString())
+    const snapshot: Snapshot = JSON.parse(JSON.stringify(result.data))
     return snapshot
   }
 }
