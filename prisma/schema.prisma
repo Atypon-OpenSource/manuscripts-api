@@ -26,19 +26,10 @@ model ManuscriptDoc {
   createdAt           DateTime             @default(now())
   updatedAt           DateTime             @updatedAt
   snapshots           ManuscriptSnapshot[] @relation("ManuscriptSnapshotToManuscriptDoc")
-  comments            ManuscriptComment[]  @relation("ManuscriptCommentToManuscriptDoc")
 
+  @@index([manuscript_model_id], name: "idx_manuscript_model_id")
+  @@index([project_model_id], name: "idx_project_model_id")
   @@map("manuscript_doc")
-}
-
-model ManuscriptDocHistory {
-  doc_id    String
-  version   Int
-  client_id String?
-  steps     Json[]
-
-  @@id([doc_id, version])
-  @@map("manuscript_doc_history")
 }
 
 model ManuscriptSnapshot {
@@ -48,21 +39,7 @@ model ManuscriptSnapshot {
   createdAt DateTime            @default(now())
   doc       ManuscriptDoc       @relation("ManuscriptSnapshotToManuscriptDoc", fields: [doc_id], references: [manuscript_model_id], onDelete: Cascade)
   doc_id    String
-  comments  ManuscriptComment[] @relation("ManuscriptCommentToManuscriptSnapshot")
-
+  
+  @@index([doc_id], name: "idx_doc_id")
   @@map("manuscript_doc_snapshot")
-}
-
-model ManuscriptComment {
-  id            String              @id @default(uuid())
-  body          String
-  createdAt     DateTime            @default(now())
-  target_id     String
-  user_model_id String
-  doc           ManuscriptDoc       @relation("ManuscriptCommentToManuscriptDoc", fields: [doc_id], references: [manuscript_model_id], onDelete: Cascade)
-  doc_id        String
-  snapshot      ManuscriptSnapshot? @relation("ManuscriptCommentToManuscriptSnapshot", fields: [snapshot_id], references: [id], onDelete: Cascade)
-  snapshot_id   String?
-
-  @@map("manuscript_comment")
 }
