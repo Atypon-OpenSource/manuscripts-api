@@ -16,7 +16,6 @@
 
 import { ObjectTypes } from '@manuscripts/json-schema'
 import checksum from 'checksum'
-import * as _ from 'lodash'
 
 import { ContainerRequestRepository } from '../../DataAccess/ContainerRequestRepository/ContainerRequestRepository'
 import { IUserRepository } from '../../DataAccess/Interfaces/IUserRepository'
@@ -48,7 +47,7 @@ export class ContainerRequestService implements IContainerRequestService {
     containerService.ensureValidRole(role)
 
     const userProfileID = UserService.profileID(userID)
-    const userProfile = await this.userProfileRepository.getById(userProfileID, userID)
+    const userProfile = await this.userProfileRepository.getById(userProfileID)
 
     if (!userProfile) {
       throw new ValidationError("Inviting user's profile could not be retrieved", userProfileID)
@@ -64,7 +63,7 @@ export class ContainerRequestService implements IContainerRequestService {
     }
     const requestID = `${ObjectTypes.ContainerRequest}:${checksum(`${userID}-${containerID}`)}`
 
-    const userRequest = await this.containerRequestRepository.getById(requestID, userID)
+    const userRequest = await this.containerRequestRepository.getById(requestID)
 
     if (!userRequest) {
       const request: ContainerRequestLike = {
@@ -92,8 +91,7 @@ export class ContainerRequestService implements IContainerRequestService {
   }
 
   public async response(requestID: string, acceptingUser: User, accept: boolean) {
-    const acceptingUserID = acceptingUser._id.replace('|', '_')
-    const request = await this.containerRequestRepository.getById(requestID, acceptingUserID)
+    const request = await this.containerRequestRepository.getById(requestID)
 
     if (!request) {
       throw new ValidationError(`Request with id ${requestID} does not exist`, requestID)

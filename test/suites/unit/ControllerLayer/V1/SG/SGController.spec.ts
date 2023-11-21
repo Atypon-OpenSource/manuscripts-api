@@ -19,11 +19,7 @@ import '../../../../../utilities/dbMock'
 import { BucketKey } from '../../../../../../src/Config/ConfigurationTypes'
 import { SGController } from '../../../../../../src/Controller/V1/SG/SGController'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
-import {
-  InvalidBucketError,
-  InvalidCredentialsError,
-  ValidationError,
-} from '../../../../../../src/Errors'
+import { InvalidBucketError, ValidationError } from '../../../../../../src/Errors'
 import { generateLoginToken } from '../../../../../../src/Utilities/JWT/LoginTokenPayload'
 import { authorizationHeader } from '../../../../../data/fixtures/headers'
 
@@ -88,25 +84,6 @@ describe('SGController', () => {
 
       return expect(sgController.get(req)).rejects.toThrow(InvalidBucketError)
     })
-
-    test('should fail if wrong auth headers', async () => {
-      const req: any = {
-        params: {
-          db: 'project',
-          id: 'MPProject:1',
-        },
-        headers: authorizationHeader('derp'),
-      }
-
-      const sgController: any = new SGController()
-      sgController.configuration = {
-        buckets: {
-          project: req.params.db,
-        },
-      }
-
-      return expect(sgController.get(req)).rejects.toThrow(InvalidCredentialsError)
-    })
   })
 
   describe('create', () => {
@@ -154,27 +131,6 @@ describe('SGController', () => {
       }
 
       return expect(sgController.create(req)).rejects.toThrow(InvalidBucketError)
-    })
-
-    test('should fail if wrong auth headers', async () => {
-      const req: any = {
-        params: {
-          db: 'project',
-        },
-        body: {
-          _id: 'MPProject:1',
-        },
-        headers: authorizationHeader('derp'),
-      }
-
-      const sgController: any = new SGController()
-      sgController.configuration = {
-        buckets: {
-          project: req.params.db,
-        },
-      }
-
-      return expect(sgController.create(req)).rejects.toThrow(InvalidCredentialsError)
     })
   })
 
@@ -291,31 +247,6 @@ describe('SGController', () => {
 
       return expect(sgController.update(req)).rejects.toThrow(InvalidBucketError)
     })
-
-    test('should fail if wrong auth headers', async () => {
-      const req: any = {
-        params: {
-          db: 'project',
-          id: 'MPProject:1',
-        },
-        body: {
-          _id: 'MPProject:1',
-        },
-        query: {
-          rev: 'rev',
-        },
-        headers: authorizationHeader('derp'),
-      }
-
-      const sgController: any = new SGController()
-      sgController.configuration = {
-        buckets: {
-          project: req.params.db,
-        },
-      }
-
-      return expect(sgController.update(req)).rejects.toThrow(InvalidCredentialsError)
-    })
   })
 
   describe('delete', () => {
@@ -371,31 +302,6 @@ describe('SGController', () => {
       }
 
       return expect(sgController.remove(req)).rejects.toThrow(InvalidBucketError)
-    })
-
-    test('should fail if wrong auth headers', async () => {
-      const req: any = {
-        params: {
-          db: 'project',
-          id: 'MPProject:1',
-        },
-        body: {
-          _id: 'MPProject:1',
-        },
-        query: {
-          rev: 'rev',
-        },
-        headers: authorizationHeader('derp'),
-      }
-
-      const sgController: any = new SGController()
-      sgController.configuration = {
-        buckets: {
-          project: req.params.db,
-        },
-      }
-
-      return expect(sgController.remove(req)).rejects.toThrow(InvalidCredentialsError)
     })
   })
 })

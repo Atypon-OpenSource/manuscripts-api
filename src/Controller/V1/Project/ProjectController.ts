@@ -26,6 +26,7 @@ import tempy from 'tempy'
 
 import { DIContainer } from '../../../DIContainer/DIContainer'
 import { ContainerService } from '../../../DomainServices/Container/ContainerService'
+import { ProjectPermission } from '../../../DomainServices/ProjectService'
 import {
   InvalidCredentialsError,
   MissingManuscriptError,
@@ -81,6 +82,11 @@ export class ProjectController extends BaseController {
       throw new ValidationError('projectId parameter must be specified', projectId)
     }
 
+    const permissions = await this.getPermissions(projectId, req.user._id)
+    if (!permissions.has(ProjectPermission.CREATE_MANUSCRIPT)) {
+      throw new RoleDoesNotPermitOperationError(`Access denied`, req.user._id)
+    }
+
     if (!file || !file.path) {
       throw new ValidationError('no file found, please upload a JATS XML file to import', projectId)
     }
@@ -98,14 +104,6 @@ export class ProjectController extends BaseController {
     stream.close()
 
     const project = await DIContainer.sharedContainer.containerService.getContainer(projectId)
-
-    if (!ContainerService.isOwner(project, req.user._id)) {
-      throw new RoleDoesNotPermitOperationError(
-        'User must be an owner to add manuscripts.',
-        req.user._id
-      )
-    }
-
     const unzipRoot = tempy.directory()
     const byPath = await this.extractFiles(manuscript, unzipRoot)
 
@@ -232,11 +230,12 @@ export class ProjectController extends BaseController {
       throw new InvalidCredentialsError('Unexpected token payload.')
     }
 
-    const userId = ContainerService.userIdForSync(req.user._id)
-    const project = await DIContainer.sharedContainer.containerService.getContainer(
-      projectId,
-      userId
-    )
+    const permissions = await this.getPermissions(projectId, req.user._id)
+    if (!permissions.has(ProjectPermission.UPDATE)) {
+      throw new RoleDoesNotPermitOperationError(`Access denied`, req.user._id)
+    }
+
+    const project = await DIContainer.sharedContainer.containerService.getContainer(projectId)
 
     const manuscriptIdSet: Set<string> = new Set(
       data.map((doc: any) => {
@@ -276,14 +275,11 @@ export class ProjectController extends BaseController {
     }
 
     const userId = ContainerService.userIdForSync(req.user._id)
-    const canEdit = await DIContainer.sharedContainer.containerService.checkIfCanEdit(
-      userId,
-      projectId
-    )
-    if (!canEdit) {
-      throw new RoleDoesNotPermitOperationError(`permission denied`, userId)
-    }
 
+    const permissions = await this.getPermissions(projectId, req.user._id)
+    if (!permissions.has(ProjectPermission.UPDATE)) {
+      throw new RoleDoesNotPermitOperationError(`Access denied`, req.user._id)
+    }
     const manuscriptsObj = DIContainer.sharedContainer.manuscriptRepository.getById(
       manuscriptId,
       userId
@@ -317,8 +313,12 @@ export class ProjectController extends BaseController {
     if (!isLoginTokenPayload(payload)) {
       throw new InvalidCredentialsError('Unexpected token payload.')
     }
-    const userId = ContainerService.userIdForSync(payload.userId)
-    return await DIContainer.sharedContainer.containerService.getCollaborators(projectId, userId)
+    const permissions = await this.getPermissions(projectId, payload.userId)
+    if (!permissions.has(ProjectPermission.READ)) {
+      throw new RoleDoesNotPermitOperationError(`Access denied`, payload.userId)
+    }
+
+    return await DIContainer.sharedContainer.userService.getCollaborators(projectId)
   }
 
   async deleteModel(req: Request): Promise<void> {
@@ -341,12 +341,9 @@ export class ProjectController extends BaseController {
     }
 
     const userId = ContainerService.userIdForSync(req.user._id)
-    const canEdit = await DIContainer.sharedContainer.containerService.checkIfCanEdit(
-      userId,
-      projectId
-    )
-    if (!canEdit) {
-      throw new RoleDoesNotPermitOperationError(`permission denied`, userId)
+    const permissions = await this.getPermissions(projectId, req.user._id)
+    if (!permissions.has(ProjectPermission.DELETE)) {
+      throw new RoleDoesNotPermitOperationError(`Access denied`, req.user._id)
     }
 
     const manuscriptsObj = DIContainer.sharedContainer.manuscriptRepository.getById(
@@ -366,5 +363,9 @@ export class ProjectController extends BaseController {
     }
 
     return await DIContainer.sharedContainer.projectRepository.removeResource(modelId)
+  }
+
+  async getPermissions(projectID: string, userID: string): Promise<ReadonlySet<ProjectPermission>> {
+    return DIContainer.sharedContainer.projectService.getPermissions(projectID, userID)
   }
 }
