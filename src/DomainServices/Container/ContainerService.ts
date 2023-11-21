@@ -584,10 +584,7 @@ export class ContainerService implements IContainerService {
   }
 
   public async checkIfUserCanCreateNote(userID: string, containerID: string): Promise<boolean> {
-    const { owners, writers, proofers, annotators, editors } = await this.getContainer(
-      containerID,
-      userID
-    )
+    const { owners, writers, proofers, annotators, editors } = await this.getContainer(containerID, userID)
     let usersWithAccess = [...owners, ...writers]
     if (annotators && annotators.length) {
       usersWithAccess = usersWithAccess.concat(annotators)
