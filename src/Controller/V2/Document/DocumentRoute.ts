@@ -101,9 +101,14 @@ export class DocumentRoute extends BaseRoute {
   }
   private async updateDocument(req: Request, res: Response) {
     const { projectID, manuscriptID } = req.params
-    const { doc } = req.body
+    const payload = req.body
     const user = req.user
-    const result = await this.documentController.updateDocument(projectID, manuscriptID, doc, user)
+    const result = await this.documentController.updateDocument(
+      projectID,
+      manuscriptID,
+      payload,
+      user
+    )
     if ('err' in result && 'code' in result) {
       res.status(result.code).send(result.err)
     } else {
