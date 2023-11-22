@@ -96,6 +96,15 @@ describe('SnapshotController', () => {
       } as any)
       expect(spy).toHaveBeenCalled()
     })
+    it('should call snapshotService.listSnapshotLabels', async () => {
+      quarterbackService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
+      snapshotService.listSnapshotLabels = jest.fn()
+      const spy = jest.spyOn(snapshotService, 'listSnapshotLabels')
+      await snapshotController.listSnapshotLabels('projectID', 'manuscriptID', {
+        _id: 'random_user_id',
+      } as any)
+      expect(spy).toHaveBeenCalled()
+    })
     it('should throw an error if the user does not have read access', async () => {
       quarterbackService.getPermissions = jest.fn().mockResolvedValue(EMPTY_PERMISSIONS)
       await expect(
