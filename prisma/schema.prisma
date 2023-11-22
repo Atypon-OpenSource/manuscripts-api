@@ -26,10 +26,6 @@ model ManuscriptDoc {
   createdAt           DateTime             @default(now())
   updatedAt           DateTime             @updatedAt
   snapshots           ManuscriptSnapshot[] @relation("ManuscriptSnapshotToManuscriptDoc")
-
-  @@index([manuscript_model_id], name: "idx_manuscript_model_id")
-  @@index([project_model_id], name: "idx_project_model_id")
-  @@map("manuscript_doc")
 }
 
 model ManuscriptSnapshot {
@@ -39,7 +35,4 @@ model ManuscriptSnapshot {
   createdAt DateTime            @default(now())
   doc       ManuscriptDoc       @relation("ManuscriptSnapshotToManuscriptDoc", fields: [doc_id], references: [manuscript_model_id], onDelete: Cascade)
   doc_id    String
-  
-  @@index([doc_id], name: "idx_doc_id")
-  @@map("manuscript_doc_snapshot")
 }

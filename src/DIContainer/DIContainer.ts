@@ -299,11 +299,13 @@ export class DIContainer {
 
     // no loading of database models needed from this bucket (no Ottoman models are mapped there).
     const dataBucket = new SQLDatabase(config.DB, BucketKey.Project)
-
+    const manuscriptDocBucket = new SQLDatabase(config.DB, BucketKey.ManuscriptDoc)
+    const manuscriptSnapshotBucket = new SQLDatabase(config.DB, BucketKey.ManuscriptSnapshot)
     // do NOT parallelise these. Deferred PRIMARY index creation appears buggy in CB.
     await userBucket.loadDatabaseModels()
     await dataBucket.loadDatabaseModels()
-
+    await manuscriptDocBucket.loadDatabaseModels()
+    await manuscriptSnapshotBucket.loadDatabaseModels()
     applyMiddleware()
 
     DIContainer._sharedContainer = new DIContainer(userBucket, dataBucket, enableActivityTracking)

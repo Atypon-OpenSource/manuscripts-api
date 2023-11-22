@@ -39,6 +39,8 @@ export type APIConfiguration = {
 export enum BucketKey {
   User = 'user',
   Project = 'project',
+  ManuscriptDoc = 'manuscriptDoc',
+  ManuscriptSnapshot = 'manuscriptSnapshot',
 }
 
 export type DatabaseConfiguration = {

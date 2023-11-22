@@ -115,6 +115,11 @@ export class Configuration implements ConfigurationContainer {
     const buckets = {
       user: getString(env.APP_USER_BUCKET, 'APP_USER_BUCKET'),
       project: getString(env.APP_DATA_BUCKET, 'APP_DATA_BUCKET'),
+      manuscriptDoc: getString(env.APP_MANUSCRIPT_DOC_BUCKET, 'APP_MANUSCRIPT_DOC_BUCKET'),
+      manuscriptSnapshot: getString(
+        env.APP_MANUSCRIPT_SNAPSHOT_BUCKET,
+        'APP_MANUSCRIPT_SNAPSHOT_BUCKET'
+      ),
     }
 
     this.DB = {
