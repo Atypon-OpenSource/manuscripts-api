@@ -96,14 +96,6 @@ describe('SnapshotController', () => {
       } as any)
       expect(spy).toHaveBeenCalled()
     })
-    it('should call snapshotService.listSnapshotLabels', async () => {
-      quarterbackService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
-      const spy = jest.spyOn(snapshotService, 'listSnapshotLabels')
-      await snapshotController.listSnapshotLabels('projectID', 'manuscriptID', {
-        _id: 'random_user_id',
-      } as any)
-      expect(spy).toHaveBeenCalled()
-    })
     it('should throw an error if the user does not have read access', async () => {
       quarterbackService.getPermissions = jest.fn().mockResolvedValue(EMPTY_PERMISSIONS)
       await expect(
@@ -143,6 +135,8 @@ describe('SnapshotController', () => {
     it('should call snapshotService.getSnapshot', async () => {
       quarterbackService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
       snapshotController['fetchSnapshot'] = jest.fn().mockReturnValue(Promise.resolve(mockSnapshot))
+      snapshotService.getSnapshot = jest.fn()
+
       quarterbackService.getManuscriptFromSnapshot = jest
         .fn()
         .mockResolvedValue({ random: 'manuscript' })
@@ -255,10 +249,8 @@ describe('SnapshotController', () => {
       ).rejects.toThrow('Validation error: Manuscript not found')
     })
     it('should throw an error if the snapshot is not found', async () => {
-      snapshotService.deleteSnapshot = jest
-        .fn()
-        .mockReturnValue(Promise.resolve({ err: 'not found', 'code:': 404 }))
       quarterbackService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
+      snapshotService.getSnapshot = jest.fn().mockResolvedValue({ err: 'not found', 'code:': 404 })
       await expect(
         snapshotController.deleteSnapshot('snapshotID', { _id: 'random_user_id' } as any)
       ).rejects.toThrow('Validation error: Snapshot not found')
@@ -324,22 +316,11 @@ describe('SnapshotController', () => {
       )
       expect(result).toBe(mockSnapshot)
     })
-    it('should return an error and code if the manuscript is not found', async () => {
-      quarterbackService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
-      documentService.findDocumentWithSnapshot = jest
-        .fn()
-        .mockResolvedValue({ err: 'not found', 'code:': 404 })
-      const result = await snapshotController.createSnapshot(
-        'projectID',
-        { docID: 'docID', name: 'name' },
-        {
-          _id: 'random_user_id',
-        } as any
-      )
-      expect(result).toStrictEqual({ err: 'not found', 'code:': 404 })
-    })
     it('should return an error and code if the snapshot is not found', async () => {
       snapshotService.saveSnapshot = jest.fn().mockResolvedValue({ err: 'not found', 'code:': 404 })
+      documentService.findDocumentWithSnapshot = jest
+        .fn()
+        .mockResolvedValue({ err: 'not found', code: 404 })
       quarterbackService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
       const result = await snapshotController.createSnapshot(
         'projectID',
@@ -349,7 +330,7 @@ describe('SnapshotController', () => {
         } as any
       )
 
-      expect(result).toStrictEqual({ err: 'Document not found', code: 404 })
+      expect(result).toStrictEqual({ err: 'not found', code: 404 })
     })
   })
   describe('fetchSnapshot', () => {

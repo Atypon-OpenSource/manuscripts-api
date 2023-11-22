@@ -122,7 +122,7 @@ describe('DocumentController', () => {
     it('should call quarterback.validateUserAccess', async () => {
       quarterbackService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
       const spy = jest.spyOn(quarterbackService, 'validateUserAccess')
-
+      documentService.findDocumentWithSnapshot = jest.fn()
       await documentController.getDocument('projectID', 'manuscriptID', {
         _id: 'random_user_id',
       } as any)
