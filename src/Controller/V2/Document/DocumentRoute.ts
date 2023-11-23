@@ -15,11 +15,17 @@
  */
 import { celebrate } from 'celebrate'
 import { NextFunction, Request, Response, Router } from 'express'
+import { StatusCodes } from 'http-status-codes'
 
 import { AuthStrategy } from '../../../Auth/Passport/AuthStrategy'
 import { BaseRoute } from '../../BaseRoute'
 import { DocumentController } from './DocumentController'
-import { createDocumentSchema, deleteDocumentSchema, getDocumentSchema } from './DocumentSchema'
+import {
+  createDocumentSchema,
+  deleteDocumentSchema,
+  getDocumentSchema,
+  updateDocumentSchema,
+} from './DocumentSchema'
 
 export class DocumentRoute extends BaseRoute {
   private documentController = new DocumentController()
@@ -30,10 +36,7 @@ export class DocumentRoute extends BaseRoute {
 
   public create(router: Router): void {
     router.post(
-      [
-        `${this.basePath}/:projectID/manuscript/:manuscriptID`,
-        `/quarterback${this.basePath}/:projectID/manuscript/:manuscriptID `,
-      ],
+      `${this.basePath}/:projectID/manuscript/:manuscriptID`,
       celebrate(createDocumentSchema),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
@@ -44,11 +47,8 @@ export class DocumentRoute extends BaseRoute {
       }
     )
     router.put(
-      [
-        `${this.basePath}/:projectID/manuscript/:manuscriptID`,
-        `/quarterback${this.basePath}/:projectID/manuscript/:manuscriptID `,
-      ],
-      celebrate(createDocumentSchema),
+      `${this.basePath}/:projectID/manuscript/:manuscriptID`,
+      celebrate(updateDocumentSchema),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
@@ -58,10 +58,7 @@ export class DocumentRoute extends BaseRoute {
       }
     )
     router.delete(
-      [
-        `${this.basePath}/:projectID/manuscript/:manuscriptID`,
-        `/quarterback${this.basePath}/:projectID/manuscript/:manuscriptID `,
-      ],
+      `${this.basePath}/:projectID/manuscript/:manuscriptID`,
       celebrate(deleteDocumentSchema),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
@@ -73,10 +70,7 @@ export class DocumentRoute extends BaseRoute {
     )
 
     router.get(
-      [
-        `${this.basePath}/:projectID/manuscript/:manuscriptID`,
-        `/quarterback${this.basePath}/:projectID/manuscript/:manuscriptID `,
-      ],
+      `${this.basePath}/:projectID/manuscript/:manuscriptID`,
       celebrate(getDocumentSchema),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
@@ -112,7 +106,7 @@ export class DocumentRoute extends BaseRoute {
     if ('err' in result && 'code' in result) {
       res.status(result.code).send(result.err)
     } else {
-      res.status(200)
+      res.status(StatusCodes.OK).end()
     }
   }
   private async getDocument(req: Request, res: Response) {
@@ -132,7 +126,7 @@ export class DocumentRoute extends BaseRoute {
     if ('err' in result && 'code' in result) {
       res.status(result.code).send(result.err)
     } else {
-      res.status(200)
+      res.status(StatusCodes.OK).end()
     }
   }
 }

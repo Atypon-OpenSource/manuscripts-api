@@ -16,6 +16,7 @@
 
 import { celebrate } from 'celebrate'
 import { NextFunction, Request, Response, Router } from 'express'
+import { StatusCodes } from 'http-status-codes'
 
 import { AuthStrategy } from '../../../Auth/Passport/AuthStrategy'
 import { BaseRoute } from '../../BaseRoute'
@@ -36,10 +37,7 @@ export class SnapshotRoute extends BaseRoute {
 
   public create(router: Router): void {
     router.post(
-      [
-        `${this.basePath}/:projectID/manuscript/:manuscriptID`,
-        `/quarterback${this.basePath}/:projectID/manuscript/:manuscriptID`,
-      ],
+      `${this.basePath}/:projectID/manuscript/:manuscriptID`,
       celebrate(createSnapshotSchema),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
@@ -51,8 +49,8 @@ export class SnapshotRoute extends BaseRoute {
     )
 
     router.delete(
-      [`${this.basePath}/:snapshotID`, `/quarterback${this.basePath}/:snapshotID`],
-      celebrate(deleteSnapshotSchema, {}),
+      `${this.basePath}/:snapshotID`,
+      celebrate(deleteSnapshotSchema),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
@@ -63,8 +61,8 @@ export class SnapshotRoute extends BaseRoute {
     )
 
     router.get(
-      [`${this.basePath}/:snapshotID`, `/quarterback${this.basePath}/:snapshotID`],
-      celebrate(getSnapshotSchema, {}),
+      `${this.basePath}/:snapshotID`,
+      celebrate(getSnapshotSchema),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
@@ -75,11 +73,8 @@ export class SnapshotRoute extends BaseRoute {
     )
 
     router.get(
-      [
-        `${this.basePath}/:projectID/manuscript/:manuscriptID/labels`,
-        `/quarterback${this.basePath}/:projectID/manuscript/:manuscriptID/labels`,
-      ],
-      celebrate(getSnapshotLabelsSchema, {}),
+      `${this.basePath}/:projectID/manuscript/:manuscriptID/labels`,
+      celebrate(getSnapshotLabelsSchema),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
@@ -108,7 +103,7 @@ export class SnapshotRoute extends BaseRoute {
     if ('err' in result && 'code' in result) {
       res.status(result.code).send(result.err)
     } else {
-      res.sendStatus(200)
+      res.status(StatusCodes.OK).end()
     }
   }
   private async getSnapshot(req: Request, res: Response) {
