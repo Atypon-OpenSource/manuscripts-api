@@ -24,7 +24,8 @@ import type {
 import type { Maybe } from '../../../types/quarterback/utils'
 
 export interface IDocumentService {
-  findDocumentWithSnapshot(DocumentID: string): Promise<Maybe<ManuscriptDocWithSnapshots>>
+  findDocument(documentID: string): Promise<Maybe<ManuscriptDoc>>
+  findDocumentWithSnapshot(documentID: string): Promise<Maybe<ManuscriptDocWithSnapshots>>
   createDocument(
     payload: ICreateDocRequest,
     userID: string

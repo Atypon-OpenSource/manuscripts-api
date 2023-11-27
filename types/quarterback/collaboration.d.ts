@@ -13,35 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Prisma } from '@prisma/client'
+import { Step } from 'prosemirror-transform'
 
-import { ManuscriptDoc } from '@prisma/client'
-import { Response } from 'express'
-
-import type { SnapshotLabel } from './snapshot'
-
-export type Doc = Record<string, any>
-export type Client = {
-  id: number
-  res: Response
+export type IReceiveStepsRequest = {
+  steps: Prisma.JsonValue[]
+  clientID: string
+  clientVersion: number
 }
-export type StepsData = {
-  steps: unknown[]
+
+export type IReceiveStepsResponse = {
+  steps: Prisma.JsonValue[]
   clientIDs: number[]
   version: number
 }
 
-export type ManuscriptDocWithSnapshots = ManuscriptDoc & {
-  snapshots: SnapshotLabel[]
+export type IListenRequestResponse = {
+  steps: Step[]
+  clientIDs: number[]
+  version: number
+  doc?: Prisma.JsonValue
 }
-
-export type IGetDocumentResponse = ManuscriptDocWithSnapshots
-export interface ICreateDocRequest {
-  manuscript_model_id: string
-  project_model_id: string
-  doc: Doc
-}
-export type ICreateDocResponse = ManuscriptDocWithSnapshots
-
-export type IUpdateDocumentRequest = {
-  doc: Doc
+export type IGetStepsFromVersionResponse = {
+  steps: Step[]
+  clientIDs: number[]
+  version: number
 }

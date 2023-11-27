@@ -24,6 +24,9 @@ import {
   createDocumentSchema,
   deleteDocumentSchema,
   getDocumentSchema,
+  getStepsFromVersionSchema,
+  listenSchema,
+  receiveStepsSchema,
   updateDocumentSchema,
 } from './DocumentSchema'
 
@@ -79,6 +82,39 @@ export class DocumentRoute extends BaseRoute {
           await this.getDocument(req, res)
         }, next)
       }
+    ),
+      router.post(
+        `${this.basePath}/:projectID/manuscript/:manuscriptID/steps`,
+        celebrate(receiveStepsSchema),
+        AuthStrategy.JsonHeadersValidation,
+        AuthStrategy.JWTAuth,
+        (req: Request, res: Response, next: NextFunction) => {
+          return this.runWithErrorHandling(async () => {
+            await this.receiveSteps(req, res)
+          }, next)
+        }
+      )
+    router.get(
+      `${this.basePath}/:projectID/manuscript/:manuscriptID/listen`,
+      celebrate(listenSchema),
+      AuthStrategy.JsonHeadersValidation,
+      AuthStrategy.JWTAuth,
+      (req: Request, res: Response, next: NextFunction) => {
+        return this.runWithErrorHandling(async () => {
+          await this.listen(req, res)
+        }, next)
+      }
+    )
+    router.get(
+      `${this.basePath}/:projectID/manuscript/:manuscriptID/version/:versionID`,
+      celebrate(getStepsFromVersionSchema),
+      AuthStrategy.JsonHeadersValidation,
+      AuthStrategy.JWTAuth,
+      (req: Request, res: Response, next: NextFunction) => {
+        return this.runWithErrorHandling(async () => {
+          await this.getStepFromVersion(req, res)
+        }, next)
+      }
     )
   }
 
@@ -127,6 +163,61 @@ export class DocumentRoute extends BaseRoute {
       res.status(result.code).send(result.err)
     } else {
       res.status(StatusCodes.OK).end()
+    }
+  }
+  private async receiveSteps(req: Request, res: Response) {
+    const { manuscriptID, projectID } = req.params
+    const user = req.user
+    const payload = req.body
+    const result = await this.documentController.receiveSteps(
+      projectID,
+      manuscriptID,
+      payload,
+      user
+    )
+    if ('err' in result && 'code' in result) {
+      res.status(result.code).send(result.err)
+    } else {
+      res.status(StatusCodes.OK).end()
+      this.documentController.sendDataToClients(
+        {
+          steps: result.data.steps,
+          clientIDs: result.data.clientIDs,
+          version: result.data.version,
+        },
+        manuscriptID
+      )
+    }
+  }
+  private async listen(req: Request, res: Response) {
+    const { manuscriptID, projectID } = req.params
+    const user = req.user
+    const result = await this.documentController.listen(projectID, manuscriptID, user)
+    if ('err' in result && 'code' in result) {
+      res.status(result.code).send(result.err)
+    } else {
+      res.setHeader('Content-Type', 'text/event-stream')
+      res.setHeader('Connection', 'keep-alive')
+      res.setHeader('Cache-Control', 'no-cache')
+      res.write(result)
+      this.documentController.manageClientConnection(req, res)
+    }
+  }
+
+  private async getStepFromVersion(req: Request, res: Response) {
+    const { manuscriptID, projectID } = req.params
+    const { versionID } = req.body
+    const user = req.user
+    const result = await this.documentController.getStepsFromVersion(
+      projectID,
+      manuscriptID,
+      versionID,
+      user
+    )
+    if ('err' in result && 'code' in result) {
+      res.status(result.code).send(result.err)
+    } else {
+      res.status(StatusCodes.OK).send(result)
     }
   }
 }

@@ -16,6 +16,8 @@
 
 import { schedule } from 'node-cron'
 
+import { defineGlobals } from './Config/DefineGlobals'
+defineGlobals()
 import { config } from './Config/Config'
 import { ServerStatus } from './Controller/V1/ServerStatus/ServerStatus'
 import { SQLDatabase } from './DataAccess/SQLDatabase'

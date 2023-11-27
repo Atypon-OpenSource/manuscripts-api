@@ -25,6 +25,17 @@ import prisma from '../../DataAccess/prismaClient'
 import { IDocumentService } from './IDocumentService'
 
 export class DocumentService implements IDocumentService {
+  async findDocument(id: string): Promise<Maybe<ManuscriptDoc>> {
+    const found = await prisma.manuscriptDoc.findUnique({
+      where: {
+        manuscript_model_id: id,
+      },
+    })
+    if (!found) {
+      return { err: 'Document not found', code: 404 }
+    }
+    return { data: found }
+  }
   async findDocumentWithSnapshot(documentID: string): Promise<Maybe<ManuscriptDocWithSnapshots>> {
     const found = await prisma.manuscriptDoc.findUnique({
       where: {

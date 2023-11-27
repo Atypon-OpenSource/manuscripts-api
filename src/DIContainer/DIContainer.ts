@@ -49,12 +49,14 @@ import { UserStatusRepository } from '../DataAccess/UserStatusRepository/UserSta
 import { UserTokenRepository } from '../DataAccess/UserTokenRepository/UserTokenRepository'
 import { AuthService } from '../DomainServices/Auth/AuthService'
 import { IAuthService } from '../DomainServices/Auth/IAuthService'
+import { CollaborationService } from '../DomainServices/Collaboration/CollaborationService'
 import { ConfigService } from '../DomainServices/ConfigService'
 import { ContainerService } from '../DomainServices/Container/ContainerService'
 import { ContainerRequestService } from '../DomainServices/ContainerRequest/ContainerRequestService'
 import { IContainerRequestService } from '../DomainServices/ContainerRequest/IContainerRequestService'
 import { DocumentService } from '../DomainServices/Document/DocumentService'
 import { IDocumentService } from '../DomainServices/Document/IDocumentService'
+import { DocumentHistoryService } from '../DomainServices/DocumentHistory/DocumentHistoryService'
 import { EmailService } from '../DomainServices/Email/EmailService'
 import { ExpirationService } from '../DomainServices/Expiration/ExpirationService'
 import { ContainerInvitationService } from '../DomainServices/Invitation/ContainerInvitationService'
@@ -132,6 +134,8 @@ export class DIContainer {
   readonly containerService: ContainerService
   readonly projectService: ProjectService
   readonly documentService: IDocumentService
+  readonly documentHistoryService: DocumentHistoryService
+  readonly collaborationService: CollaborationService
   readonly snapshotService: ISnapshotService
   readonly configService: ConfigService
   readonly containerRequestService: IContainerRequestService
@@ -236,6 +240,8 @@ export class DIContainer {
     )
     this.documentService = new DocumentService()
     this.snapshotService = new SnapshotService()
+    this.documentHistoryService = new DocumentHistoryService()
+    this.collaborationService = new CollaborationService()
     this.containerInvitationService = new ContainerInvitationService(
       this.userRepository,
       this.userProfileRepository,
