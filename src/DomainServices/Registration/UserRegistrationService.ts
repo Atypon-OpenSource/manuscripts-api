@@ -63,29 +63,34 @@ export class UserRegistrationService implements IUserRegistrationService {
     const user = await this.userRepository.getOne({
       email,
     })
+    if (!user) {
+      try {
+        const userEmailID = this.userEmailID(email)
+        await this.userEmailRepository.create({ _id: userEmailID })
+      } catch (error) {
+        throw new DuplicateEmailError(email)
+      }
 
-    if (user) {
-      throw new DuplicateEmailError(user.email)
+      const newUser = await this.userRepository.create({ email, name, connectUserID })
+
+      await this.createUserDetails(newUser, true)
+
+      // tslint:disable-next-line: no-floating-promises
+      this.activityTrackingService.createEvent(
+        newUser._id,
+        UserActivityEventType.Registration,
+        null,
+        null
+      ) // intentional fire and forget.
+      return
     }
 
-    try {
-      const userEmailID = this.userEmailID(email)
-      await this.userEmailRepository.create({ _id: userEmailID })
-    } catch (error) {
-      throw new DuplicateEmailError(email)
+    if (user.connectUserID !== connectUserID) {
+      user.connectUserID = connectUserID
+      await this.userRepository.update(user)
+      return
     }
-
-    const newUser = await this.userRepository.create({ email, name, connectUserID })
-
-    await this.createUserDetails(newUser, true)
-
-    // tslint:disable-next-line: no-floating-promises
-    this.activityTrackingService.createEvent(
-      newUser._id,
-      UserActivityEventType.Registration,
-      null,
-      null
-    ) // intentional fire and forget.
+    throw new DuplicateEmailError(user.email)
   }
 
   public async signup(credentials: SignupCredentials): Promise<void> {
