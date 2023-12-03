@@ -75,4 +75,11 @@ export class DocumentHistoryService {
     }
     return { data: histories }
   }
+  async resestDocumentHistory(documentID: string) {
+    const documentHistory = await this.findLatestDocumentHistory(documentID)
+    await this.clearDocumentHistory(documentID)
+    if ('data' in documentHistory) {
+      await this.createDocumentHistory(documentID, [], documentHistory.data.version)
+    }
+  }
 }
