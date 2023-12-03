@@ -47,3 +47,27 @@ export const deleteDocumentSchema: Joi.SchemaMap = {
     manuscriptID: Joi.string().required(),
   }),
 }
+export const receiveStepsSchema: Joi.SchemaMap = {
+  params: Joi.object({
+    projectID: Joi.string().required(),
+    manuscriptID: Joi.string().required(),
+  }),
+  body: Joi.object({
+    steps: Joi.array().items(Joi.object()),
+    clientID: Joi.number().required(),
+    version: Joi.number().required(),
+  }),
+}
+export const listenSchema: Joi.SchemaMap = {
+  params: Joi.object({
+    projectID: Joi.string().required(),
+    manuscriptID: Joi.string().required(),
+  }),
+}
+export const getStepsFromVersionSchema: Joi.SchemaMap = {
+  params: Joi.object({
+    projectID: Joi.string().required(),
+    manuscriptID: Joi.string().required(),
+    versionID: Joi.number().required(),
+  }),
+}
