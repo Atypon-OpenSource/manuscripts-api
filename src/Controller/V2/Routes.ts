@@ -20,7 +20,9 @@ import { RegistrationRoute } from '../V1/Registration/RegistrationRoute'
 import { ServerStatusRoute } from '../V1/ServerStatus/ServerStatusRoute'
 import { UserRoute } from '../V1/User/UserRoute'
 import { ConfigRoute } from './Config/ConfigRoute'
+import { DocumentRoute } from './Document/DocumentRoute'
 import { ProjectRoute } from './Project/ProjectRoute'
+import { SnapshotRoute } from './Snapshot/SnapshotRoute'
 
 export function getRoutes(): BaseRoute[] {
   return [
@@ -30,5 +32,7 @@ export function getRoutes(): BaseRoute[] {
     new ServerStatusRoute(),
     new ProjectRoute(),
     new ConfigRoute(),
+    new DocumentRoute(),
+    new SnapshotRoute(),
   ]
 }
