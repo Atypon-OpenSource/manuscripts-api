@@ -47,9 +47,9 @@ export class DocumentController extends BaseController {
       projectID,
       QuarterbackPermission.READ
     )
-    return await this.fetchDocumentAndHistory(manuscriptID)
+    return await this.fetchDocumentAndVersion(manuscriptID)
   }
-  private async fetchDocumentAndHistory(manuscriptID: string) {
+  private async fetchDocumentAndVersion(manuscriptID: string) {
     const document = await DIContainer.sharedContainer.documentService.findDocumentWithSnapshot(
       manuscriptID
     )
@@ -115,7 +115,7 @@ export class DocumentController extends BaseController {
       payload
     )
   }
-  async getInitialHistoryWithDocument(
+  async getDocumentHistory(
     projectID: string,
     manuscriptID: string,
     user: Express.User | undefined
@@ -129,9 +129,7 @@ export class DocumentController extends BaseController {
       QuarterbackPermission.READ
     )
 
-    return await DIContainer.sharedContainer.collaborationService.getInitialHistoryWithDocument(
-      manuscriptID
-    )
+    return await DIContainer.sharedContainer.collaborationService.getDocumentHistory(manuscriptID)
   }
 
   async getStepsFromVersion(
@@ -148,7 +146,7 @@ export class DocumentController extends BaseController {
       projectID,
       QuarterbackPermission.READ
     )
-    return DIContainer.sharedContainer.collaborationService.getMergedHistoriesFromVersion(
+    return DIContainer.sharedContainer.collaborationService.getCombinedHistoriesFromVersion(
       manuscriptID,
       parseInt(versionID)
     )

@@ -40,7 +40,7 @@ model ManuscriptSnapshot {
 model ManuscriptDocHistory {
   doc_id    String
   version   Int
-  client_id String?
+  client_id String
   steps     Json[]
   @@id([doc_id, version])
 }

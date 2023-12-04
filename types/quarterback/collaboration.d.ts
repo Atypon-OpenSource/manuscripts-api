@@ -22,28 +22,10 @@ export type IReceiveStepsRequest = {
   clientVersion: number
 }
 
-export type IReceiveStepsResponse = {
-  steps: Prisma.JsonValue[]
+export type History = {
+  steps: Step[] | Prisma.JsonValue[]
   clientIDs: number[]
   version: number
 }
 
-export type IListenRequestResponse = {
-  steps: Step[]
-  clientIDs: number[]
-  version: number
-  doc?: Prisma.JsonValue
-}
-
-export type DocumentAndHistory = {
-  steps: Step[]
-  clientIDs: number[]
-  version: number
-  doc?: Prisma.JsonValue
-}
-
-export type IGetStepsFromVersionResponse = {
-  steps: Step[]
-  clientIDs: number[]
-  version: number
-}
+export type DocumentHistory = History & { doc: Prisma.JsonValue | undefined }

@@ -2,7 +2,7 @@
 CREATE TABLE "ManuscriptDocHistory" (
     "doc_id" TEXT NOT NULL,
     "version" INTEGER NOT NULL,
-    "client_id" TEXT,
+    "client_id" TEXT NOT NULL,
     "steps" JSONB[],
 
     CONSTRAINT "ManuscriptDocHistory_pkey" PRIMARY KEY ("doc_id","version")

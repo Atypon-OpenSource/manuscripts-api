@@ -19,24 +19,21 @@ import { ManuscriptDocHistory, Prisma } from '@prisma/client'
 import { Step } from 'prosemirror-transform'
 
 import type {
-  IGetStepsFromVersionResponse,
-  IListenRequestResponse,
+  DocumentHistory,
+  History,
   IReceiveStepsRequest,
-  IReceiveStepsResponse,
 } from '../../../types/quarterback/collaboration'
 import type { Doc } from '../../../types/quarterback/doc'
 import type { Maybe } from '../../../types/quarterback/utils'
 import { DIContainer } from '../../DIContainer/DIContainer'
 export class CollaborationService {
-  async receiveSteps(
-    documentID: string,
-    payload: IReceiveStepsRequest
-  ): Promise<Maybe<IReceiveStepsResponse>> {
+  async receiveSteps(documentID: string, payload: IReceiveStepsRequest): Promise<Maybe<History>> {
     const document = await DIContainer.sharedContainer.documentService.findDocument(documentID)
     if (!('data' in document)) {
       return { err: 'Document not found', code: 404 }
     }
-    const version = await this.getLatestDocumentHistoryVersion(documentID)
+    const version =
+      await DIContainer.sharedContainer.documentHistoryService.getLatestHistoryVersion(documentID)
     if (version != payload.clientVersion) {
       return {
         err: `Update denied, version is ${version}, and client version is ${payload.clientVersion}`,
@@ -53,7 +50,7 @@ export class CollaborationService {
     return {
       data: {
         steps: payload.steps,
-        clientIDs: Array(payload.steps.length).fill(payload.clientID),
+        clientIDs: Array(payload.steps.length).fill(parseInt(payload.clientID)),
         version: version + payload.steps.length,
       },
     }
@@ -67,19 +64,17 @@ export class CollaborationService {
     })
     await DIContainer.sharedContainer.documentService.updateDocument(
       document.data.manuscript_model_id,
-      {
-        doc: pmDocument.toJSON(),
-      }
+      { doc: pmDocument.toJSON() }
     )
   }
 
-  private mergeHistories(histories: ManuscriptDocHistory[]) {
+  private combineHistories(histories: ManuscriptDocHistory[]) {
     let steps: Prisma.JsonValue[] = []
-    let clientIDs: string[] = []
+    let clientIDs: number[] = []
     let version = 0
     for (const history of histories) {
       steps = steps.concat(history.steps)
-      clientIDs = clientIDs.concat(Array(history.steps.length).fill(history.client_id))
+      clientIDs = clientIDs.concat(Array(history.steps.length).fill(parseInt(history.client_id)))
       version = history.version > version ? history.version : version
     }
     return {
@@ -88,7 +83,7 @@ export class CollaborationService {
       version,
     }
   }
-  private async getMergedHistories(documentID: string, fromVersion = 0) {
+  private async getCombinedHistories(documentID: string, fromVersion = 0) {
     const histories =
       await DIContainer.sharedContainer.documentHistoryService.findDocumentHistories(
         documentID,
@@ -97,49 +92,35 @@ export class CollaborationService {
     if (!histories.data) {
       return { err: 'History not found', code: 404 }
     }
-    return { data: this.mergeHistories(histories.data) }
+    return { data: this.combineHistories(histories.data) }
   }
-
-  private async getLatestDocumentHistoryVersion(documentID: string): Promise<number> {
-    const latestDocumentHistory =
-      await DIContainer.sharedContainer.documentHistoryService.findLatestDocumentHistory(documentID)
-    if ('data' in latestDocumentHistory) {
-      return latestDocumentHistory.data.version
-    }
-    return 0
-  }
-  async getMergedHistoriesFromVersion(
+  async getCombinedHistoriesFromVersion(
     documentID: string,
     versionID: number
-  ): Promise<Maybe<IGetStepsFromVersionResponse>> {
-    const mergedHistories = await this.getMergedHistories(documentID, versionID)
+  ): Promise<Maybe<History>> {
+    const mergedHistories = await this.getCombinedHistories(documentID, versionID)
     if (!mergedHistories.data) {
       return { err: 'History not found', code: 404 }
     }
     return {
       data: {
         steps: hydrateSteps(mergedHistories.data.steps),
-        clientIDs: convertIDsToNumbers(mergedHistories.data.clientIDs),
+        clientIDs: mergedHistories.data.clientIDs,
         version: mergedHistories.data.version,
       },
     }
   }
 
-  async getInitialHistoryWithDocument(
-    documentID: string,
-    fromVersion = 0
-  ): Promise<Maybe<IListenRequestResponse>> {
+  async getDocumentHistory(documentID: string, fromVersion = 0): Promise<Maybe<DocumentHistory>> {
     const document = await DIContainer.sharedContainer.documentService.findDocument(documentID)
     if (!('data' in document)) {
       return { err: 'Document not found', code: 404 }
     }
-    const history = await this.getMergedHistoriesFromVersion(documentID, fromVersion)
+    const history = await this.getCombinedHistoriesFromVersion(documentID, fromVersion)
     if ('data' in history) {
       const initialData = {
         data: {
-          steps: history.data.steps,
-          clientIDs: history.data.clientIDs,
-          version: history.data.version,
+          ...history.data,
           doc: document.data.doc,
         },
       }
@@ -149,13 +130,6 @@ export class CollaborationService {
   }
 }
 
-const convertIDsToNumbers = (ids: string[]) => {
-  const newIDs: number[] = []
-  ids.forEach((id) => {
-    newIDs.push(parseInt(id))
-  })
-  return newIDs
-}
 const hydrateSteps = (jsonSteps: Prisma.JsonValue[]): Step[] => {
   return jsonSteps.map((step: Prisma.JsonValue) => Step.fromJSON(schema, step)) as Step[]
 }

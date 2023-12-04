@@ -228,11 +228,7 @@ export class DocumentRoute extends BaseRoute {
   private async listen(req: Request, res: Response) {
     const { manuscriptID, projectID } = req.params
     const user = req.user
-    const result = await this.documentController.getInitialHistoryWithDocument(
-      projectID,
-      manuscriptID,
-      user
-    )
+    const result = await this.documentController.getDocumentHistory(projectID, manuscriptID, user)
     if ('err' in result && 'code' in result) {
       res.status(result.code).send(result.err)
     } else {

@@ -32,14 +32,14 @@ export class DocumentHistoryService {
     documentID: string,
     steps: Prisma.JsonValue[],
     version: number,
-    clientId?: string
+    clientID: string
   ) {
     const saved = await prisma.manuscriptDocHistory.create({
       data: {
         doc_id: documentID,
         steps: steps,
         version: version,
-        client_id: clientId,
+        client_id: clientID,
       },
     })
     return { data: saved }
@@ -79,7 +79,14 @@ export class DocumentHistoryService {
     const documentHistory = await this.findLatestDocumentHistory(documentID)
     await this.clearDocumentHistory(documentID)
     if ('data' in documentHistory) {
-      await this.createDocumentHistory(documentID, [], documentHistory.data.version)
+      await this.createDocumentHistory(documentID, [], documentHistory.data.version, '')
     }
+  }
+  async getLatestHistoryVersion(documentID: string): Promise<number> {
+    const latestDocumentHistory = await this.findLatestDocumentHistory(documentID)
+    if ('data' in latestDocumentHistory) {
+      return latestDocumentHistory.data.version
+    }
+    return 0
   }
 }
