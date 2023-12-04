@@ -50,6 +50,8 @@ module.exports = {
         "!src/DomainServices/UserActivity/UserActivityTrackingService.ts",
         "!src/DataAccess/applyMiddleware.ts",
         "!src/DomainServices/Pressroom/PressroomService.ts",
+        "!src/DomainServices/Document/DocumentService.ts",
+        "!src/DomainServices/Snapshot/SnapshotService.ts",
         "!src/DomainServices/Shackles/ShacklesService.ts",
         "!src/DomainServices/Expiration/ExpirationService.ts",
         "!src/DomainServices/eventing.ts",

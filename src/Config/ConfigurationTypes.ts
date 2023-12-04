@@ -39,6 +39,8 @@ export type APIConfiguration = {
 export enum BucketKey {
   User = 'user',
   Project = 'project',
+  ManuscriptDoc = 'manuscriptDoc',
+  ManuscriptSnapshot = 'manuscriptSnapshot',
 }
 
 export type DatabaseConfiguration = {
@@ -85,7 +87,7 @@ export interface EnvironmentLike {
   [key: string]: string | undefined
 }
 
-export interface PressroomConfiguration {
+export interface ExternalAPIConfiguration {
   readonly baseurl: string
   readonly apiKey: string
 }
@@ -101,6 +103,6 @@ export interface ConfigurationContainer {
   readonly server: ServerConfiguration
   readonly apps: ClientApplicationsConfiguration
   readonly scopes: ScopedAccessTokenConfiguration[]
-  readonly pressroom: PressroomConfiguration
+  readonly pressroom: ExternalAPIConfiguration
   readonly data: DataConfiguration
 }
