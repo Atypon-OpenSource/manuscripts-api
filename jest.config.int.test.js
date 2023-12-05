@@ -19,6 +19,7 @@ module.exports = {
     "url": 'http://localhost'
   },
   testEnvironment: 'node',
+  setupFiles: ['./test/utilities/define-globals.ts'],
   testMatch: ['**/test/suites/integration/**/*.ts', '**/test/suites/unit+integration/**/*.ts'],
   testRunner: 'jest-circus/runner',
   moduleFileExtensions: ['ts', 'js', 'json', 'node'],
