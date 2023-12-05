@@ -20,6 +20,7 @@ import { StatusCodes } from 'http-status-codes'
 import type { Client, StepsData } from '../../../../types/quarterback/doc'
 import { AuthStrategy } from '../../../Auth/Passport/AuthStrategy'
 import { BaseRoute } from '../../BaseRoute'
+import { queueRequests } from '../RequestQueue'
 import { DocumentController } from './DocumentController'
 import {
   createDocumentSchema,
@@ -126,7 +127,7 @@ export class DocumentRoute extends BaseRoute {
         AuthStrategy.JWTAuth,
         (req: Request, res: Response, next: NextFunction) => {
           return this.runWithErrorHandling(async () => {
-            await this.receiveSteps(req, res)
+            await queueRequests(req, res, this.receiveSteps.bind(this))
           }, next)
         }
       )
@@ -137,7 +138,7 @@ export class DocumentRoute extends BaseRoute {
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
-          await this.listen(req, res)
+          await queueRequests(req, res, this.listen.bind(this))
         }, next)
       }
     )
@@ -148,7 +149,7 @@ export class DocumentRoute extends BaseRoute {
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
-          await this.getStepFromVersion(req, res)
+          await queueRequests(req, res, this.getStepFromVersion.bind(this))
         }, next)
       }
     )
@@ -235,14 +236,14 @@ export class DocumentRoute extends BaseRoute {
       res.setHeader('Content-Type', 'text/event-stream')
       res.setHeader('Connection', 'keep-alive')
       res.setHeader('Cache-Control', 'no-cache')
-      res.write(result.data)
+      const data = `data: ${JSON.stringify(result.data)}\n\n`
+      res.write(data)
       this.manageClientConnection(req, res)
     }
   }
 
   private async getStepFromVersion(req: Request, res: Response) {
-    const { manuscriptID, projectID } = req.params
-    const { versionID } = req.body
+    const { manuscriptID, projectID, versionID } = req.params
     const user = req.user
     const result = await this.documentController.getStepsFromVersion(
       projectID,

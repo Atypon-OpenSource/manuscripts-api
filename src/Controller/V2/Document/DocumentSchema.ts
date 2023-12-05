@@ -68,6 +68,6 @@ export const getStepsFromVersionSchema: Joi.SchemaMap = {
   params: Joi.object({
     projectID: Joi.string().required(),
     manuscriptID: Joi.string().required(),
-    versionID: Joi.number().required(),
+    versionID: Joi.string().required(),
   }),
 }

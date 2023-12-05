@@ -13,26 +13,5 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ManuscriptSnapshot } from '@prisma/client'
-
-export type SnapshotLabel = Pick<ManuscriptSnapshot, 'id' | 'name' | 'createdAt'>
-
-export interface IGetSnapshotLabelsResponse {
-  labels: SnapshotLabel[]
-}
-
-export type IGetSnapshotResponse = ManuscriptSnapshot
-
-export interface ISaveSnapshotRequest {
-  docID: string
-  name: string
-}
-export interface ISaveSnapshotResponse {
-  snapshot: ManuscriptSnapshot
-}
-export type SaveSnapshotModel = ISaveSnapshotRequest & { snapshot: any }
-export interface SnapshotLabelResult {
-  id: string
-  name: string
-  createdAt: number
-}
+import { defineGlobals } from '../../src/define-globals'
+defineGlobals()

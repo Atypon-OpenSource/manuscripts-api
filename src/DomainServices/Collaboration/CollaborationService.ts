@@ -34,9 +34,9 @@ export class CollaborationService {
     }
     const version =
       await DIContainer.sharedContainer.documentHistoryService.getLatestHistoryVersion(documentID)
-    if (version != payload.clientVersion) {
+    if (version != payload.version) {
       return {
-        err: `Update denied, version is ${version}, and client version is ${payload.clientVersion}`,
+        err: `Update denied, version is ${version}, and client version is ${payload.version}`,
         code: 409,
       }
     }
@@ -45,7 +45,7 @@ export class CollaborationService {
       documentID,
       payload.steps,
       version + payload.steps.length,
-      payload.clientID
+      payload.clientID.toString()
     )
     return {
       data: {

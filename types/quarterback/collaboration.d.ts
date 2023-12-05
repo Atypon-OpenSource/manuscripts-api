@@ -19,7 +19,7 @@ import { Step } from 'prosemirror-transform'
 export type IReceiveStepsRequest = {
   steps: Prisma.JsonValue[]
   clientID: string
-  clientVersion: number
+  version: number
 }
 
 export type History = {

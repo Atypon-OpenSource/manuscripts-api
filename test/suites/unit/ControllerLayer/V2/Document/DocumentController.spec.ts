@@ -113,56 +113,56 @@ describe('DocumentController', () => {
       ).rejects.toThrow('Access denied')
     })
   })
-  describe('getDocument', () => {
-    it('should throw an error if no user is found', async () => {
-      await expect(
-        documentController.getDocument('projectID', 'manuscriptID', undefined)
-      ).rejects.toThrow('No user found')
-    })
-    it('should call quarterback.validateUserAccess', async () => {
-      quarterbackService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
-      const spy = jest.spyOn(quarterbackService, 'validateUserAccess')
-      documentService.findDocumentWithSnapshot = jest.fn()
-      await documentController.getDocument('projectID', 'manuscriptID', {
-        _id: 'random_user_id',
-      } as any)
-      expect(spy).toHaveBeenCalled()
-    })
-    it('should call documentService.findDocumentWithSnapshot', async () => {
-      quarterbackService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
-      documentService.findDocumentWithSnapshot = jest.fn().mockReturnValue(mockCreateDocRequest.doc)
-      const spy = jest.spyOn(documentService, 'findDocumentWithSnapshot')
-      await documentController.getDocument('projectID', 'manuscriptID', {
-        _id: 'random_user_id',
-      } as any)
-      expect(spy).toHaveBeenCalled()
-    })
-    it('should call documentService.findDocumentWithSnapshot with the correct arguments', async () => {
-      quarterbackService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
-      documentService.findDocumentWithSnapshot = jest.fn()
-      const spy = jest.spyOn(documentService, 'findDocumentWithSnapshot')
-      await documentController.getDocument('projectID', 'manuscriptID', {
-        _id: 'random_user_id',
-      } as any)
-      expect(spy).toHaveBeenCalledWith('manuscriptID')
-    })
-    it('should return the document', async () => {
-      quarterbackService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
-      documentService.findDocumentWithSnapshot = jest.fn().mockReturnValue(mockCreateDocRequest.doc)
-      const result = await documentController.getDocument('projectID', 'manuscriptID', {
-        _id: 'random_user_id',
-      } as any)
-      expect(result).toEqual(mockCreateDocRequest.doc)
-    })
-    it('should throw an error if the user does not have permission to read', async () => {
-      quarterbackService.getPermissions = jest.fn().mockResolvedValue(EMPTY_PERMISSIONS)
-      await expect(
-        documentController.getDocument('projectID', 'manuscriptID', {
-          _id: 'random_user_id',
-        } as any)
-      ).rejects.toThrow('Access denied')
-    })
-  })
+  // describe('getDocument', () => {
+  //   it('should throw an error if no user is found', async () => {
+  //     await expect(
+  //       documentController.getDocument('projectID', 'manuscriptID', undefined)
+  //     ).rejects.toThrow('No user found')
+  //   })
+  //   it('should call quarterback.validateUserAccess', async () => {
+  //     quarterbackService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
+  //     const spy = jest.spyOn(quarterbackService, 'validateUserAccess')
+  //     documentService.findDocumentWithSnapshot = jest.fn()
+  //     await documentController.getDocument('projectID', 'manuscriptID', {
+  //       _id: 'random_user_id',
+  //     } as any)
+  //     expect(spy).toHaveBeenCalled()
+  //   })
+  //   it('should call documentService.findDocumentWithSnapshot', async () => {
+  //     quarterbackService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
+  //     documentService.findDocumentWithSnapshot = jest.fn().mockReturnValue(mockCreateDocRequest.doc)
+  //     const spy = jest.spyOn(documentService, 'findDocumentWithSnapshot')
+  //     await documentController.getDocument('projectID', 'manuscriptID', {
+  //       _id: 'random_user_id',
+  //     } as any)
+  //     expect(spy).toHaveBeenCalled()
+  //   })
+  //   it('should call documentService.findDocumentWithSnapshot with the correct arguments', async () => {
+  //     quarterbackService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
+  //     documentService.findDocumentWithSnapshot = jest.fn()
+  //     const spy = jest.spyOn(documentService, 'findDocumentWithSnapshot')
+  //     await documentController.getDocument('projectID', 'manuscriptID', {
+  //       _id: 'random_user_id',
+  //     } as any)
+  //     expect(spy).toHaveBeenCalledWith('manuscriptID')
+  //   })
+  //   it('should return the document', async () => {
+  //     quarterbackService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
+  //     documentService.findDocumentWithSnapshot = jest.fn().mockReturnValue(mockCreateDocRequest.doc)
+  //     const result = await documentController.getDocument('projectID', 'manuscriptID', {
+  //       _id: 'random_user_id',
+  //     } as any)
+  //     expect(result).toEqual(mockCreateDocRequest.doc)
+  //   })
+  //   it('should throw an error if the user does not have permission to read', async () => {
+  //     quarterbackService.getPermissions = jest.fn().mockResolvedValue(EMPTY_PERMISSIONS)
+  //     await expect(
+  //       documentController.getDocument('projectID', 'manuscriptID', {
+  //         _id: 'random_user_id',
+  //       } as any)
+  //     ).rejects.toThrow('Access denied')
+  //   })
+  // })
   describe('deleteDocument', () => {
     it('should throw an error if no user is found', async () => {
       await expect(

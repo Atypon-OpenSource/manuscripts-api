@@ -13,19 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import type { RequestQueueItem } from '../../../types/quarterback/utils'
+
+export const queue: RequestQueueItem[] = []
 import { Request, Response } from 'express'
 
-export type Error = {
-  err: string
-  code: number
-}
-export type Ok<T> = {
-  data: T
-}
-export type Maybe<T> = Ok<T> | Error
-
-export type RequestQueueItem = {
-  req: Request
-  res: Response
+export const queueRequests = async (
+  req: Request,
+  res: Response,
   callbackFunction: (req: Request, res: Response) => Promise<void>
+) => {
+  queue.push({ req, res, callbackFunction })
+
+  if (queue.length === 1) {
+    await processNextRequest()
+  }
+}
+const processNextRequest = async () => {
+  const item = queue.shift()
+  if (item) {
+    const { req, res, callbackFunction } = item
+    await callbackFunction(req, res)
+    if (queue.length > 0) {
+      await processNextRequest()
+    }
+  }
 }
