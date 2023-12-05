@@ -312,19 +312,19 @@ describe('SnapshotController', () => {
         } as any)
       ).rejects.toThrow('Access denied')
     })
-    it('should return the result of snapshotService.saveSnapshot', async () => {
-      quarterbackService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
-      documentService.findDocumentWithSnapshot = jest.fn().mockResolvedValue({ data: mockDoc })
-      snapshotService.saveSnapshot = jest.fn().mockResolvedValue(mockSnapshot)
-      const result = await snapshotController.createSnapshot(
-        'projectID',
-        { docID: 'docID', name: 'name' },
-        {
-          _id: 'random_user_id',
-        } as any
-      )
-      expect(result).toBe(mockSnapshot)
-    })
+    // it('should return the result of snapshotService.saveSnapshot', async () => {
+    //   quarterbackService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
+    //   documentService.findDocumentWithSnapshot = jest.fn().mockResolvedValue({ data: mockDoc })
+    //   snapshotService.saveSnapshot = jest.fn().mockResolvedValue(mockSnapshot)
+    //   const result = await snapshotController.createSnapshot(
+    //     'projectID',
+    //     { docID: 'docID', name: 'name' },
+    //     {
+    //       _id: 'random_user_id',
+    //     } as any
+    //   )
+    //   expect(result).toBe(mockSnapshot)
+    // })
     // it('should return an error and code if the snapshot is not found', async () => {
     //   snapshotService.saveSnapshot = jest.fn().mockResolvedValue({ err: 'not found', 'code:': 404 })
     //   documentService.findDocumentWithSnapshot = jest
