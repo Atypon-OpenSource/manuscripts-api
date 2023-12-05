@@ -1,0 +1,187 @@
+{
+  "version": "2.0",
+  "data": [
+    {
+      "_id": "MPManuscript:basic-man",
+      "objectType": "MPManuscript",
+      "title": "AMPS Boilerplate JATS for testing on Lean/Athena",
+      "articleType": "Manuscript",
+      "containerID": "MPProject:basic-man",
+      "createdAt": 0,
+      "updatedAt": 0
+    },
+    {
+      "_id": "MPJournal:F1DCA7FE-84F8-4DE5-A102-3B643D15762B",
+      "objectType": "MPJournal",
+      "abbreviatedTitles": [],
+      "journalIdentifiers": [],
+      "ISSNs": [],
+      "containerID": "MPProject:basic-man",
+      "manuscriptID": "MPManuscript:basic-man",
+      "createdAt": 0,
+      "updatedAt": 0
+    },
+    {
+      "category": "MPSectionCategory:keywords",
+      "priority": 1,
+      "title": "Keywords",
+      "path": [
+        "MPSection:E79CCDA2-C140-4066-863C-92FF4566EB03"
+      ],
+      "elementIDs": [
+        "MPKeywordsElement:0726071E-2CE9-4B1E-8BE0-202E2A2AAE5E"
+      ],
+      "_id": "MPSection:E79CCDA2-C140-4066-863C-92FF4566EB03",
+      "objectType": "MPSection",
+      "containerID": "MPProject:basic-man",
+      "manuscriptID": "MPManuscript:basic-man",
+      "createdAt": 0,
+      "updatedAt": 0
+    },
+    {
+      "contents": "<div></div>",
+      "elementType": "div",
+      "_id": "MPKeywordsElement:0726071E-2CE9-4B1E-8BE0-202E2A2AAE5E",
+      "objectType": "MPKeywordsElement",
+      "containerID": "MPProject:basic-man",
+      "manuscriptID": "MPManuscript:basic-man",
+      "createdAt": 0,
+      "updatedAt": 0
+    },
+    {
+      "type": "author",
+      "_id": "MPKeywordGroup:0303EC8A-8D2E-4C67-A2D8-62B3DA7C5B86",
+      "objectType": "MPKeywordGroup",
+      "containerID": "MPProject:basic-man",
+      "manuscriptID": "MPManuscript:basic-man",
+      "createdAt": 0,
+      "updatedAt": 0
+    },
+    {
+      "category": "MPSectionCategory:abstracts",
+      "priority": 2,
+      "path": [
+        "MPSection:CBBF3F6E-234A-4EC6-A538-92492352CE86"
+      ],
+      "elementIDs": [],
+      "_id": "MPSection:CBBF3F6E-234A-4EC6-A538-92492352CE86",
+      "objectType": "MPSection",
+      "containerID": "MPProject:basic-man",
+      "manuscriptID": "MPManuscript:basic-man",
+      "createdAt": 0,
+      "updatedAt": 0
+    },
+    {
+      "category": "MPSectionCategory:abstract",
+      "priority": 3,
+      "title": "Abstract",
+      "path": [
+        "MPSection:CBBF3F6E-234A-4EC6-A538-92492352CE86",
+        "MPSection:9BE4D2CA-B4CA-4E0F-BD3D-6159C84B8D81"
+      ],
+      "elementIDs": [
+        "MPParagraphElement:FC477313-8487-4BEE-8B7C-6F5B56C84A67"
+      ],
+      "_id": "MPSection:9BE4D2CA-B4CA-4E0F-BD3D-6159C84B8D81",
+      "objectType": "MPSection",
+      "containerID": "MPProject:basic-man",
+      "manuscriptID": "MPManuscript:basic-man",
+      "createdAt": 0,
+      "updatedAt": 0
+    },
+    {
+      "elementType": "p",
+      "contents": "<p xmlns=\"http://www.w3.org/1999/xhtml\" id=\"MPParagraphElement:FC477313-8487-4BEE-8B7C-6F5B56C84A67\" class=\"MPElement\" data-object-type=\"MPParagraphElement\"></p>",
+      "_id": "MPParagraphElement:FC477313-8487-4BEE-8B7C-6F5B56C84A67",
+      "objectType": "MPParagraphElement",
+      "containerID": "MPProject:basic-man",
+      "manuscriptID": "MPManuscript:basic-man",
+      "createdAt": 0,
+      "updatedAt": 0
+    },
+    {
+      "category": "MPSectionCategory:body",
+      "priority": 4,
+      "path": [
+        "MPSection:7EE364B0-B1B8-4CF4-95B7-2DC2EBBC3B0A"
+      ],
+      "elementIDs": [],
+      "_id": "MPSection:7EE364B0-B1B8-4CF4-95B7-2DC2EBBC3B0A",
+      "objectType": "MPSection",
+      "containerID": "MPProject:basic-man",
+      "manuscriptID": "MPManuscript:basic-man",
+      "createdAt": 0,
+      "updatedAt": 0
+    },
+    {
+      "category": "MPSectionCategory:introduction",
+      "priority": 5,
+      "title": "Introduction",
+      "path": [
+        "MPSection:7EE364B0-B1B8-4CF4-95B7-2DC2EBBC3B0A",
+        "MPSection:4F744FC8-458F-48C0-B9C1-427D90E1D37B"
+      ],
+      "elementIDs": [
+        "MPParagraphElement:8B464BDE-E90B-4B97-8AC9-7D59DB53C244"
+      ],
+      "_id": "MPSection:4F744FC8-458F-48C0-B9C1-427D90E1D37B",
+      "objectType": "MPSection",
+      "containerID": "MPProject:basic-man",
+      "manuscriptID": "MPManuscript:basic-man",
+      "createdAt": 0,
+      "updatedAt": 0
+    },
+    {
+      "elementType": "p",
+      "contents": "<p xmlns=\"http://www.w3.org/1999/xhtml\" id=\"MPParagraphElement:8B464BDE-E90B-4B97-8AC9-7D59DB53C244\" class=\"MPElement\" data-object-type=\"MPParagraphElement\"></p>",
+      "_id": "MPParagraphElement:8B464BDE-E90B-4B97-8AC9-7D59DB53C244",
+      "objectType": "MPParagraphElement",
+      "containerID": "MPProject:basic-man",
+      "manuscriptID": "MPManuscript:basic-man",
+      "createdAt": 0,
+      "updatedAt": 0
+    },
+    {
+      "category": "MPSectionCategory:backmatter",
+      "priority": 6,
+      "path": [
+        "MPSection:A179C892-700F-4E6F-8704-D208F9A3576B"
+      ],
+      "elementIDs": [],
+      "_id": "MPSection:A179C892-700F-4E6F-8704-D208F9A3576B",
+      "objectType": "MPSection",
+      "containerID": "MPProject:basic-man",
+      "manuscriptID": "MPManuscript:basic-man",
+      "createdAt": 0,
+      "updatedAt": 0
+    },
+    {
+      "category": "MPSectionCategory:financial-disclosure",
+      "priority": 7,
+      "title": "Sources of Funding",
+      "path": [
+        "MPSection:A179C892-700F-4E6F-8704-D208F9A3576B",
+        "MPSection:312B4762-C974-4980-AB3C-3829241E6F9C"
+      ],
+      "elementIDs": [
+        "MPParagraphElement:BC6DA364-D076-4C8B-978F-E72316B4500D"
+      ],
+      "_id": "MPSection:312B4762-C974-4980-AB3C-3829241E6F9C",
+      "objectType": "MPSection",
+      "containerID": "MPProject:basic-man",
+      "manuscriptID": "MPManuscript:basic-man",
+      "createdAt": 0,
+      "updatedAt": 0
+    },
+    {
+      "elementType": "p",
+      "contents": "<p xmlns=\"http://www.w3.org/1999/xhtml\" id=\"MPParagraphElement:BC6DA364-D076-4C8B-978F-E72316B4500D\" class=\"MPElement\" data-object-type=\"MPParagraphElement\"></p>",
+      "_id": "MPParagraphElement:BC6DA364-D076-4C8B-978F-E72316B4500D",
+      "objectType": "MPParagraphElement",
+      "containerID": "MPProject:basic-man",
+      "manuscriptID": "MPManuscript:basic-man",
+      "createdAt": 0,
+      "updatedAt": 0
+    }
+  ]
+}

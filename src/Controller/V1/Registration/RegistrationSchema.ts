@@ -26,3 +26,12 @@ export const connectSignupSchema: Joi.SchemaMap = {
   }),
   headers: appSecretHeadersSchema.headers,
 }
+
+export const signupSchema: Joi.SchemaMap = {
+  body: Joi.object({
+    email: emailSchema.required(),
+    password: Joi.string().max(100).min(8).required(),
+    name: Joi.string().max(100).required(),
+  }),
+  headers: appSecretHeadersSchema.headers,
+}

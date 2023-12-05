@@ -38,4 +38,26 @@ export class RegistrationController extends BaseController {
 
     return DIContainer.sharedContainer.userRegistrationService.connectSignup(credentials)
   }
+
+  // for testing only
+  async signup(req: Request): Promise<void> {
+    const { email, password, name } = req.body
+
+    if (!isString(email) || !isString(password) || !isString(name)) {
+      throw new ValidationError('email, password, name should be strings.', req.body)
+    }
+
+    const token = undefined
+
+    const credentials = {
+      password,
+      name,
+      email: email.toLowerCase(),
+      isVerified: false,
+      createdAt: new Date().getTime(),
+      token,
+    }
+
+    return DIContainer.sharedContainer.userRegistrationService.signup(credentials)
+  }
 }

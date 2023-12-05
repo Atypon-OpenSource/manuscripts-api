@@ -75,11 +75,12 @@ export class ProjectRoute extends BaseRoute {
 
     router.post(
       `${this.basePath}/:projectId/save`,
-      celebrate(saveProjectSchema),
+      // celebrate(saveProjectSchema),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
+          console.log(req.body)
           const manuscript = await this.projectController.saveProject(req)
           res.status(StatusCodes.OK).send(manuscript)
         }, next)
@@ -88,11 +89,12 @@ export class ProjectRoute extends BaseRoute {
 
     router.post(
       `${this.basePath}/:projectId/manuscripts/:manuscriptId/save`,
-      celebrate(replaceProjectSchema),
+      // celebrate(replaceProjectSchema),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
+          console.log(req.body)
           const manuscript = await this.projectController.projectReplace(req)
           res.status(StatusCodes.OK).send(manuscript)
         }, next)

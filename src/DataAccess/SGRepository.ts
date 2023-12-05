@@ -20,7 +20,7 @@ import * as HttpStatus from 'http-status-codes'
 import * as _ from 'lodash'
 
 import { BucketKey } from '../Config/ConfigurationTypes'
-import { DatabaseError, SyncError,ValidationError } from '../Errors'
+import { DatabaseError, SyncError, ValidationError } from '../Errors'
 import { timestamp } from '../Utilities/JWT/LoginTokenPayload'
 import { IdentifiableEntity } from './Interfaces/IdentifiableEntity'
 import { KeyValueRepository } from './Interfaces/KeyValueRepository'
@@ -87,6 +87,8 @@ export abstract class SGRepository<
       try {
         await this.validate({ ...prismaDoc.data }, null, userId)
       } catch (e) {
+        console.log(prismaDoc)
+        console.log(new Error().stack)
         throw new SyncError(e.forbidden, {})
       }
     }
@@ -181,7 +183,6 @@ export abstract class SGRepository<
    */
   public async update(updatedDocument: TUpdateEntity): Promise<TEntity> {
     const docId = this.documentId(updatedDocument._id as any)
-
 
     const documentToUpdate = {
       _id: docId,
