@@ -278,6 +278,7 @@ describe('SnapshotController', () => {
       const spy = jest.spyOn(quarterbackService, 'validateUserAccess')
       documentHistoryService.createDocumentHistory = jest.fn().mockReturnValue({ data: {} })
       documentService.findDocumentWithSnapshot = jest.fn().mockResolvedValue({ data: mockDoc })
+      documentHistoryService.clearDocumentHistory = jest.fn().mockReturnValue(Promise.resolve())
       snapshotService.saveSnapshot = jest.fn()
       await snapshotController.createSnapshot('projectID', { docID: 'docID', name: 'name' }, {
         _id: 'random_user_id',
@@ -288,6 +289,7 @@ describe('SnapshotController', () => {
       quarterbackService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
       documentService.findDocumentWithSnapshot = jest.fn().mockResolvedValue({ data: mockDoc })
       documentHistoryService.createDocumentHistory = jest.fn().mockReturnValue({ data: {} })
+      documentHistoryService.clearDocumentHistory = jest.fn().mockReturnValue(Promise.resolve())
 
       const spy = jest.spyOn(documentService, 'findDocumentWithSnapshot')
       snapshotService.saveSnapshot = jest.fn()
@@ -301,6 +303,8 @@ describe('SnapshotController', () => {
       documentService.findDocumentWithSnapshot = jest.fn().mockResolvedValue({ data: mockDoc })
       documentHistoryService.createDocumentHistory = jest.fn().mockReturnValue({ data: {} })
       snapshotService.saveSnapshot = jest.fn()
+      documentHistoryService.clearDocumentHistory = jest.fn().mockReturnValue(Promise.resolve())
+
       const spy = jest.spyOn(snapshotService, 'saveSnapshot')
       await snapshotController.createSnapshot('projectID', { docID: 'docID', name: 'name' }, {
         _id: 'random_user_id',

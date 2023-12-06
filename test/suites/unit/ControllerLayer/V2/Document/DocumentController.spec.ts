@@ -50,7 +50,7 @@ const mockDoc = {
     key4: { nestedKey: 'nestedValue' },
   },
 }
-const mockRecieveSteps = {
+const mockReceiveSteps = {
   steps: [],
   clientID: '123',
   version: 1,
@@ -270,18 +270,17 @@ describe('DocumentController', () => {
   describe('receiveSteps', () => {
     it('should throw an error if no user is found', async () => {
       await expect(
-        documentController.receiveSteps('projectID', 'manuscriptID', mockRecieveSteps, undefined)
+        documentController.receiveSteps('projectID', 'manuscriptID', mockReceiveSteps, undefined)
       ).rejects.toThrow('No user found')
     })
     it('should call quarterback.validateUserAccess', async () => {
       quarterbackService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
       const spy = jest.spyOn(quarterbackService, 'validateUserAccess')
-      documentService.updateDocument = jest.fn()
-
+      collaborationService.receiveSteps = jest.fn()
       await documentController.receiveSteps(
         'projectID',
         'manuscriptID',
-        mockRecieveSteps,
+        mockReceiveSteps,
         {} as any
       )
       expect(spy).toHaveBeenCalled()
@@ -291,7 +290,7 @@ describe('DocumentController', () => {
         .fn()
         .mockResolvedValue(new Set([QuarterbackPermission.READ]))
       await expect(
-        documentController.receiveSteps('projectID', 'manuscriptID', mockRecieveSteps, {} as any)
+        documentController.receiveSteps('projectID', 'manuscriptID', mockReceiveSteps, {} as any)
       ).rejects.toThrow('Access denied')
     })
   })
