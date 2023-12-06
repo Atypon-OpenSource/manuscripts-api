@@ -15,7 +15,6 @@
  */
 
 import {
-  Collaboration,
   ContainerInvitation,
   ContainerRequest,
   Correction,
@@ -40,11 +39,6 @@ export type ContainerInvitationLike = Pick<
   ContainerInvitation,
   Exclude<keyof ContainerInvitation, 'createdAt' | 'updatedAt'>
 > & { expiry: number }
-
-export type CollaborationLike = Pick<
-  Collaboration,
-  Exclude<keyof Collaboration, 'createdAt' | 'updatedAt'>
->
 
 export type ContainerRequestLike = Pick<
   ContainerRequest,

@@ -26,7 +26,7 @@ import {
   addSchema,
   createSchema,
   deleteModelSchema,
-  projectCollaboratorsSchema,
+  projectUserProfilesSchema,
   replaceProjectSchema,
   saveProjectSchema,
 } from './ProjectSchema'
@@ -100,14 +100,14 @@ export class ProjectRoute extends BaseRoute {
     )
 
     router.get(
-      `${this.basePath}/:projectId/collaborators`,
-      celebrate(projectCollaboratorsSchema),
+      `${this.basePath}/:projectId/userProfiles`,
+      celebrate(projectUserProfilesSchema),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
-          const collaborators = await this.projectController.collaborators(req)
-          res.status(StatusCodes.OK).send(collaborators)
+          const profiles = await this.projectController.userProfiles(req)
+          res.status(StatusCodes.OK).send(profiles)
         }, next)
       }
     )

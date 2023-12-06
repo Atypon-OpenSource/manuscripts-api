@@ -34,7 +34,7 @@ import {
   getArchiveSchema,
   loadManuscriptSchema,
   loadProjectSchema,
-  projectCollaboratorsSchema,
+  projectUserProfilesSchema,
   saveProjectSchema,
 } from './ProjectSchema'
 
@@ -116,13 +116,13 @@ export class ProjectRoute extends BaseRoute {
     )
 
     router.get(
-      `${this.basePath}/:projectID/collaborators`,
-      celebrate(projectCollaboratorsSchema),
+      `${this.basePath}/:projectID/userProfiles`,
+      celebrate(projectUserProfilesSchema),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
-          await this.getCollaborators(req, res)
+          await this.getProjectUserProfiles(req, res)
         }, next)
       }
     )
@@ -265,15 +265,15 @@ export class ProjectRoute extends BaseRoute {
     res.status(StatusCodes.OK).send(manuscript)
   }
 
-  private async getCollaborators(req: Request, res: Response) {
+  private async getProjectUserProfiles(req: Request, res: Response) {
     const { projectID } = req.params
     const { user } = req
 
     if (!user) {
       throw new ValidationError('No user found', user)
     }
-    const collaborators = await this.projectController.getCollaborators(user, projectID)
-    res.status(StatusCodes.OK).send(collaborators)
+    const userProfiles = await this.projectController.getUserProfiles(user, projectID)
+    res.status(StatusCodes.OK).send(userProfiles)
   }
 
   private async getArchive(req: Request, res: Response) {

@@ -16,9 +16,7 @@
 
 import { ObjectTypes } from '@manuscripts/json-schema'
 import checksum from 'checksum'
-import { v4 as uuid_v4 } from 'uuid'
 
-import { ICollaborationsRepository } from '../../DataAccess/Interfaces/ICollaborationsRepository'
 import { IUserProfileRepository } from '../../DataAccess/Interfaces/IUserProfileRepository'
 import { IUserRepository } from '../../DataAccess/Interfaces/IUserRepository'
 import { InvitationRepository } from '../../DataAccess/InvitationRepository/InvitationRepository'
@@ -45,7 +43,6 @@ export class InvitationService implements IInvitationService {
     private userProfileRepository: IUserProfileRepository,
     private emailService: EmailService,
     private invitationRepository: InvitationRepository,
-    private collaborationsRepository: ICollaborationsRepository,
     private activityTrackingService: UserActivityTrackingService,
     private userRegistrationService: IUserRegistrationService
   ) {}
@@ -168,12 +165,6 @@ export class InvitationService implements IInvitationService {
     }
 
     await this.invitationRepository.remove(invitationID)
-    await this.collaborationsRepository.create({
-      _id: uuid_v4(),
-      invitingUserID: invitation.invitingUserID,
-      invitedUserID: sgUsername(invitedUser._id),
-      objectType: ObjectTypes.Collaboration,
-    })
     return {
       containerID: null,
       message: 'Invitation accepted',

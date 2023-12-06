@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ObjectTypes, UserCollaborator } from '@manuscripts/json-schema'
+import { ObjectTypes, UserProfile } from '@manuscripts/json-schema'
 import { compare } from 'bcrypt'
 import checksum from 'checksum'
 import jwt from 'jsonwebtoken'
@@ -30,13 +30,14 @@ import { IUserTokenRepository } from '../../DataAccess/Interfaces/IUserTokenRepo
 import { UserProfileLike } from '../../DataAccess/Interfaces/Models'
 import { InvitationRepository } from '../../DataAccess/InvitationRepository/InvitationRepository'
 import { ProjectRepository } from '../../DataAccess/ProjectRepository/ProjectRepository'
-import { UserCollaboratorRepository } from '../../DataAccess/UserCollaboratorRepository/UserCollaboratorRepository'
+import { DIContainer } from '../../DIContainer/DIContainer'
 import { username as sgUsername } from '../../DomainServices/Sync/SyncService'
 import {
   InvalidCredentialsError,
   InvalidPasswordError,
   MissingUserStatusError,
   NoTokenError,
+  RecordNotFoundError,
   ValidationError,
 } from '../../Errors'
 import { UserActivityEventType } from '../../Models/UserEventModels'
@@ -60,8 +61,7 @@ export class UserService implements IUserService {
     private emailService: EmailService,
     private syncService: ISyncService,
     private userProfileRepository: IUserProfileRepository,
-    private projectRepository: ProjectRepository,
-    private userCollaboratorRepository: UserCollaboratorRepository
+    private projectRepository: ProjectRepository
   ) {}
 
   /**
@@ -110,7 +110,6 @@ export class UserService implements IUserService {
     })}`
 
     await this.removeUserFromProjects(user._id)
-    await this.userCollaboratorRepository.clearUserCollaborators(user._id)
     await this.userProfileRepository.purge(userProfileId)
     await this.syncService.removeUserStatus(user._id)
     await this.singleUseTokenRepository.remove({ userId: user._id })
@@ -141,6 +140,7 @@ export class UserService implements IUserService {
   /**
    * Sets the user deleteAt property
    * @param userId User's id
+   * @param password User's password
    */
   public async markUserForDeletion(userId: string, password?: string): Promise<void> {
     const user = await this.userRepository.getById(userId)
@@ -280,7 +280,25 @@ export class UserService implements IUserService {
     }
   }
 
-  public async getCollaborators(containerId: string): Promise<UserCollaborator[]> {
-    return this.userCollaboratorRepository.getByContainerId(containerId)
+  public async getProjectUserProfiles(containerId: string): Promise<UserProfile[]> {
+    const project = await this.projectRepository.getById(containerId)
+    if (!project) {
+      throw new RecordNotFoundError(containerId)
+    }
+    const annotator = project.annotators ?? []
+    const proofers = project.proofers ?? []
+    const editors = project.editors ?? []
+    const projectUsers = project.owners.concat(
+      editors,
+      project.writers,
+      project.viewers,
+      annotator,
+      proofers
+    )
+    const userProfiles: UserProfile[] = []
+    for (const id of projectUsers) {
+      userProfiles.push(await DIContainer.sharedContainer.userProfileRepository.getByUserId(id))
+    }
+    return userProfiles
   }
 }

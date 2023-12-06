@@ -87,8 +87,6 @@ describe('Invitation - Accept', () => {
 
     invitationService.userRegistrationService.signup = jest.fn(() => Promise.resolve())
 
-    invitationService.collaborationsRepository.create = jest.fn(() => Promise.resolve())
-
     invitationService.invitationRepository = {
       getById: async () =>
         Promise.resolve({
@@ -108,13 +106,11 @@ describe('Invitation - Accept', () => {
     await invitationService.accept('foo', 'baz', 'bar')
     expect(invitationService.userRegistrationService.signup).toHaveBeenCalled()
     expect(invitationService.invitationRepository.remove).toHaveBeenCalled()
-    expect(invitationService.collaborationsRepository.create).toHaveBeenCalled()
   })
 
   test('should not call signup function and fail if user not create in the signup method', async () => {
     const invitationService: any = DIContainer.sharedContainer.invitationService
     invitationService.userRegistrationService.signup = jest.fn(() => Promise.resolve())
-    invitationService.collaborationsRepository.create = jest.fn(() => Promise.resolve())
     invitationService.invitationRepository = {
       getById: async () => Promise.resolve({ invitedUserEmail: 'example@example.com' }),
       remove: jest.fn(() => Promise.resolve()),

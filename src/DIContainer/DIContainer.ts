@@ -16,13 +16,10 @@
 
 import { config } from '../Config/Config'
 import { BucketKey } from '../Config/ConfigurationTypes'
-import applyMiddleware from '../DataAccess/applyMiddleware'
 import { ClientApplicationRepository } from '../DataAccess/ClientApplicationRepository/ClientApplicationRepository'
-import { CollaborationsRepository } from '../DataAccess/CollaborationsRepository/CollaborationsRepository'
 import { ContainerInvitationRepository } from '../DataAccess/ContainerInvitationRepository/ContainerInvitationRepository'
 import { ContainerRequestRepository } from '../DataAccess/ContainerRequestRepository/ContainerRequestRepository'
 import { IClientApplicationRepository } from '../DataAccess/Interfaces/IClientApplicationRepository'
-import { ICollaborationsRepository } from '../DataAccess/Interfaces/ICollaborationsRepository'
 import { IInvitationTokenRepository } from '../DataAccess/Interfaces/IInvitationTokenRepository'
 import { IManuscriptRepository } from '../DataAccess/Interfaces/IManuscriptRepository'
 import { RepositoryLike, SGRepositoryLike } from '../DataAccess/Interfaces/IndexedRepository'
@@ -40,7 +37,6 @@ import { ProjectRepository } from '../DataAccess/ProjectRepository/ProjectReposi
 import { SingleUseTokenRepository } from '../DataAccess/SingleUseTokenRepository/SingleUseTokenRepository'
 import { SQLDatabase } from '../DataAccess/SQLDatabase'
 import { TemplateRepository } from '../DataAccess/TemplateRepository/TemplateRepository'
-import { UserCollaboratorRepository } from '../DataAccess/UserCollaboratorRepository/UserCollaboratorRepository'
 import { UserEmailRepository } from '../DataAccess/UserEmailRepository/UserEmailRepository'
 import { UserEventRepository } from '../DataAccess/UserEventRepository/UserEventRepository'
 import { UserProfileRepository } from '../DataAccess/UserProfileRepository/UserProfileRepository'
@@ -110,7 +106,6 @@ export class DIContainer {
   readonly userEmailRepository: IUserEmailRepository
   readonly singleUseTokenRepository: ISingleUseTokenRepository
   readonly applicationRepository: IClientApplicationRepository
-  readonly collaborationsRepository: ICollaborationsRepository
   readonly emailService: EmailService
   readonly expirationService: ExpirationService
   readonly syncService: ISyncService
@@ -128,7 +123,6 @@ export class DIContainer {
   readonly invitationService: InvitationService
   readonly projectRepository: ProjectRepository
   readonly userProfileRepository: UserProfileRepository
-  readonly userCollaboratorRepository: UserCollaboratorRepository
   readonly containerService: ContainerService
   readonly projectService: ProjectService
   readonly documentService: IDocumentService
@@ -155,10 +149,6 @@ export class DIContainer {
     readonly dataBucket: SQLDatabase,
     readonly enableActivityTracking: boolean
   ) {
-    this.userCollaboratorRepository = new UserCollaboratorRepository(
-      BucketKey.User,
-      this.userBucket
-    )
     this.applicationRepository = new ClientApplicationRepository(this.userBucket)
     this.server = new Server(this.userBucket)
     this.userRepository = new UserRepository(this.userBucket)
@@ -166,7 +156,6 @@ export class DIContainer {
     this.userEmailRepository = new UserEmailRepository(this.userBucket)
     this.singleUseTokenRepository = new SingleUseTokenRepository(this.userBucket)
     this.invitationTokenRepository = new InvitationTokenRepository(this.userBucket)
-    this.collaborationsRepository = new CollaborationsRepository(BucketKey.Project, this.dataBucket)
     this.emailService = new EmailService(config.email, {})
     this.userEventRepository = new UserEventRepository(this.userBucket)
     this.activityTrackingService = new UserActivityTrackingService(
@@ -214,8 +203,7 @@ export class DIContainer {
       this.emailService,
       this.syncService,
       this.userProfileRepository,
-      this.projectRepository,
-      this.userCollaboratorRepository
+      this.projectRepository
     )
     this.containerService = new ContainerService(
       this.userRepository,
@@ -250,7 +238,6 @@ export class DIContainer {
       this.userProfileRepository,
       this.emailService,
       this.invitationRepository,
-      this.collaborationsRepository,
       this.activityTrackingService,
       this.userRegistrationService
     )
@@ -306,7 +293,6 @@ export class DIContainer {
     await dataBucket.loadDatabaseModels()
     await manuscriptDocBucket.loadDatabaseModels()
     await manuscriptSnapshotBucket.loadDatabaseModels()
-    applyMiddleware()
 
     DIContainer._sharedContainer = new DIContainer(userBucket, dataBucket, enableActivityTracking)
 

@@ -32,7 +32,7 @@ import {
   deleteProjectRequest,
   generateAccessTokenRequest,
   getArchiveRequest,
-  getCollaboratorsRequest,
+  getUserProfilesRequest,
   getProjectModelsRequest,
   removeUser,
   updateProjectRequest,
@@ -321,11 +321,11 @@ describe('ProjectRoute', () => {
       expect(res.status).toHaveBeenCalledWith(StatusCodes.OK)
     })
   })
-  describe('getCollaborators', () => {
+  describe('getUserProfiles', () => {
     it('should throw error if user is missing', async () => {
       await expect(
         // @ts-ignore
-        route.getCollaborators(removeUser(getCollaboratorsRequest), res)
+        route.getProjectUserProfiles(removeUser(getUserProfilesRequest), res)
       ).rejects.toThrow(new ValidationError('No user found', null))
     })
 
@@ -334,21 +334,21 @@ describe('ProjectRoute', () => {
       projectService.getPermissions = jest.fn().mockResolvedValue(permissions)
 
       // @ts-ignore
-      await expect(route.getCollaborators(getCollaboratorsRequest)).rejects.toThrow(
-        new RoleDoesNotPermitOperationError('Access denied', getCollaboratorsRequest.user._id)
+      await expect(route.getProjectUserProfiles(getUserProfilesRequest)).rejects.toThrow(
+        new RoleDoesNotPermitOperationError('Access denied', getUserProfilesRequest.user._id)
       )
     })
 
-    it('should call userService.getCollaborators with correct params', async () => {
-      const projectID = getCollaboratorsRequest.params.projectID
+    it('should call userService.getProjectUserProfiles with correct params', async () => {
+      const projectID = getUserProfilesRequest.params.projectID
       const permissions = new Set([ProjectPermission.READ])
       projectService.getPermissions = jest.fn().mockResolvedValue(permissions)
-      DIContainer.sharedContainer.userService.getCollaborators = jest.fn().mockResolvedValue([])
+      DIContainer.sharedContainer.userService.getProjectUserProfiles = jest.fn().mockResolvedValue([])
 
       // @ts-ignore
-      await route.getCollaborators(getCollaboratorsRequest, res)
+      await route.getProjectUserProfiles(getUserProfilesRequest, res)
 
-      expect(DIContainer.sharedContainer.userService.getCollaborators).toHaveBeenCalledWith(
+      expect(DIContainer.sharedContainer.userService.getProjectUserProfiles).toHaveBeenCalledWith(
         projectID
       )
       expect(res.status).toHaveBeenCalledWith(StatusCodes.OK)
