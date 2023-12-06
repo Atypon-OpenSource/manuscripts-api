@@ -325,6 +325,7 @@ describe('SnapshotController', () => {
       quarterbackService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
       documentService.findDocumentWithSnapshot = jest.fn().mockResolvedValue({ data: mockDoc })
       documentHistoryService.createDocumentHistory = jest.fn().mockReturnValue({ data: {} })
+      documentHistoryService.clearDocumentHistory = jest.fn().mockReturnValue(Promise.resolve())
       snapshotService.saveSnapshot = jest.fn().mockResolvedValue(mockSnapshot)
       const result = await snapshotController.createSnapshot(
         'projectID',
