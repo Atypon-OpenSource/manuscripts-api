@@ -35,6 +35,7 @@ export type ICreateDocResponse = ManuscriptDocWithSnapshots
 
 export type IUpdateDocumentRequest = {
   doc: Doc
+  version?: number
 }
 
 export type Client = {

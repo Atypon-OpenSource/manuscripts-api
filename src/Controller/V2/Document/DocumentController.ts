@@ -47,28 +47,9 @@ export class DocumentController extends BaseController {
       projectID,
       QuarterbackPermission.READ
     )
-    return await this.fetchDocumentAndVersion(manuscriptID)
+    return await DIContainer.sharedContainer.documentService.findDocumentWithSnapshot(manuscriptID)
   }
-  private async fetchDocumentAndVersion(manuscriptID: string) {
-    const document = await DIContainer.sharedContainer.documentService.findDocumentWithSnapshot(
-      manuscriptID
-    )
-    const documentHistory =
-      await DIContainer.sharedContainer.documentHistoryService.findLatestDocumentHistory(
-        manuscriptID
-      )
-    if ('data' in document && 'data' in documentHistory) {
-      const updatedDocument = {
-        data: {
-          ...document.data,
-          version: documentHistory.data.version,
-          doc: document.data.doc,
-        },
-      }
-      return updatedDocument
-    }
-    return document
-  }
+
   async deleteDocument(projectID: string, manuscriptID: string, user: Express.User | undefined) {
     if (!user) {
       throw new ValidationError('No user found', user)

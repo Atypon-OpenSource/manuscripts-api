@@ -26,6 +26,9 @@ export class DocumentHistoryService {
         doc_id: documentID,
       },
     })
+    if (!deleted) {
+      return { err: 'Failed to clear document history', code: 500 }
+    }
     return { data: deleted }
   }
   async createDocumentHistory(
@@ -42,6 +45,9 @@ export class DocumentHistoryService {
         client_id: clientID,
       },
     })
+    if (!saved) {
+      return { err: 'Failed to save document history', code: 500 }
+    }
     return { data: saved }
   }
   async findLatestDocumentHistory(documentID: string): Promise<Maybe<ManuscriptDocHistory>> {
@@ -74,19 +80,5 @@ export class DocumentHistoryService {
       return { err: 'No history found', code: 404 }
     }
     return { data: histories }
-  }
-  async resestDocumentHistory(documentID: string) {
-    const documentHistory = await this.findLatestDocumentHistory(documentID)
-    await this.clearDocumentHistory(documentID)
-    if ('data' in documentHistory) {
-      await this.createDocumentHistory(documentID, [], documentHistory.data.version, '')
-    }
-  }
-  async getLatestHistoryVersion(documentID: string): Promise<number> {
-    const latestDocumentHistory = await this.findLatestDocumentHistory(documentID)
-    if ('data' in latestDocumentHistory) {
-      return latestDocumentHistory.data.version
-    }
-    return 0
   }
 }

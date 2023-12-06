@@ -30,23 +30,28 @@ export class CollaborationService {
   async receiveSteps(documentID: string, payload: IReceiveStepsRequest): Promise<Maybe<History>> {
     const document = await DIContainer.sharedContainer.documentService.findDocument(documentID)
     if (!('data' in document)) {
-      return { err: 'Document not found', code: 404 }
+      return { err: document.err, code: document.code }
     }
-    const version =
-      await DIContainer.sharedContainer.documentHistoryService.getLatestHistoryVersion(documentID)
-    if (version != payload.version) {
+    const version = document.data.version
+    if (document.data.version != payload.version) {
       return {
         err: `Update denied, version is ${version}, and client version is ${payload.version}`,
         code: 409,
       }
     }
-    await this.applyStepsToDocument(payload.steps, document)
-    await DIContainer.sharedContainer.documentHistoryService.createDocumentHistory(
+    const updatedDoc = await this.applyStepsToDocument(payload.steps, document)
+    if (!('data' in updatedDoc)) {
+      return { err: updatedDoc.err, code: updatedDoc.code }
+    }
+    const history = await DIContainer.sharedContainer.documentHistoryService.createDocumentHistory(
       documentID,
       payload.steps,
       version + payload.steps.length,
       payload.clientID.toString()
     )
+    if (!('data' in history)) {
+      return { err: history.err, code: history.code }
+    }
     return {
       data: {
         steps: payload.steps,
@@ -62,25 +67,23 @@ export class CollaborationService {
     steps.forEach((step: Step) => {
       pmDocument = step.apply(pmDocument).doc || pmDocument
     })
-    await DIContainer.sharedContainer.documentService.updateDocument(
+    const updatedDoc = await DIContainer.sharedContainer.documentService.updateDocument(
       document.data.manuscript_model_id,
-      { doc: pmDocument.toJSON() }
+      { doc: pmDocument.toJSON(), version: document.data.version + steps.length }
     )
+    return updatedDoc
   }
 
   private combineHistories(histories: ManuscriptDocHistory[]) {
     let steps: Prisma.JsonValue[] = []
     let clientIDs: number[] = []
-    let version = 0
     for (const history of histories) {
       steps = steps.concat(history.steps)
       clientIDs = clientIDs.concat(Array(history.steps.length).fill(parseInt(history.client_id)))
-      version = history.version > version ? history.version : version
     }
     return {
       steps,
       clientIDs,
-      version,
     }
   }
   private async getCombinedHistories(documentID: string, fromVersion = 0) {
@@ -90,7 +93,7 @@ export class CollaborationService {
         fromVersion
       )
     if (!histories.data) {
-      return { err: 'History not found', code: 404 }
+      return { err: histories.err, code: histories.code }
     }
     return { data: this.combineHistories(histories.data) }
   }
@@ -100,13 +103,19 @@ export class CollaborationService {
   ): Promise<Maybe<History>> {
     const mergedHistories = await this.getCombinedHistories(documentID, versionID)
     if (!mergedHistories.data) {
-      return { err: 'History not found', code: 404 }
+      return { err: mergedHistories.err, code: mergedHistories.code }
+    }
+    const docuemnt = await DIContainer.sharedContainer.documentService.findLatestVersionForDocument(
+      documentID
+    )
+    if (!('data' in docuemnt)) {
+      return { err: docuemnt.err, code: docuemnt.code }
     }
     return {
       data: {
         steps: hydrateSteps(mergedHistories.data.steps),
         clientIDs: mergedHistories.data.clientIDs,
-        version: mergedHistories.data.version,
+        version: docuemnt.data.version,
       },
     }
   }
@@ -114,7 +123,7 @@ export class CollaborationService {
   async getDocumentHistory(documentID: string, fromVersion = 0): Promise<Maybe<DocumentHistory>> {
     const document = await DIContainer.sharedContainer.documentService.findDocument(documentID)
     if (!('data' in document)) {
-      return { err: 'Document not found', code: 404 }
+      return { err: document.err, code: document.code }
     }
     const history = await this.getCombinedHistoriesFromVersion(documentID, fromVersion)
     if ('data' in history) {

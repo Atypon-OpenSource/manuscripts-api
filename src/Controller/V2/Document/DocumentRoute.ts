@@ -179,7 +179,7 @@ export class DocumentRoute extends BaseRoute {
     if ('err' in result && 'code' in result) {
       res.status(result.code).send(result.err)
     } else {
-      res.status(StatusCodes.OK).end()
+      res.sendStatus(StatusCodes.OK).end()
     }
   }
   private async getDocument(req: Request, res: Response) {
@@ -199,7 +199,7 @@ export class DocumentRoute extends BaseRoute {
     if ('err' in result && 'code' in result) {
       res.status(result.code).send(result.err)
     } else {
-      res.status(StatusCodes.OK).end()
+      res.sendStatus(StatusCodes.OK).end()
     }
   }
   private async receiveSteps(req: Request, res: Response) {
@@ -215,7 +215,7 @@ export class DocumentRoute extends BaseRoute {
     if ('err' in result && 'code' in result) {
       res.status(result.code).send(result.err)
     } else {
-      res.status(StatusCodes.OK).end()
+      res.sendStatus(StatusCodes.OK).end()
       this.sendDataToClients(
         {
           steps: result.data.steps,

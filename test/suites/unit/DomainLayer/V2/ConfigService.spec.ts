@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import '../../../utilities/dbMock.ts'
-import '../../../utilities/configMock.ts'
+import '../../../../utilities/dbMock.ts'
+import '../../../../utilities/configMock.ts'
 
 import fs from 'fs'
 import path from 'path'
 
-import { DIContainer } from '../../../../src/DIContainer/DIContainer'
-import { ConfigService } from '../../../../src/DomainServices/ConfigService'
-import { sectionCategories } from '../../../data/fixtures/section-categories'
+import { DIContainer } from '../../../../../src/DIContainer/DIContainer'
+import { ConfigService } from '../../../../../src/DomainServices/ConfigService'
+import { sectionCategories } from '../../../../data/fixtures/section-categories'
 
 let configService: ConfigService
 beforeEach(async () => {

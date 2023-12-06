@@ -25,6 +25,20 @@ import prisma from '../../DataAccess/prismaClient'
 import { IDocumentService } from './IDocumentService'
 
 export class DocumentService implements IDocumentService {
+  async findLatestVersionForDocument(id: string): Promise<Maybe<{ version: number }>> {
+    const found = await prisma.manuscriptDoc.findFirst({
+      where: {
+        manuscript_model_id: id,
+      },
+      select: {
+        version: true,
+      },
+    })
+    if (!found) {
+      return { err: 'Document not found', code: 404 }
+    }
+    return { data: found }
+  }
   async findDocument(id: string): Promise<Maybe<ManuscriptDoc>> {
     const found = await prisma.manuscriptDoc.findUnique({
       where: {
@@ -66,6 +80,7 @@ export class DocumentService implements IDocumentService {
         user_model_id: userID,
         project_model_id: payload.project_model_id,
         doc: payload.doc,
+        version: 0,
       },
     })
     return { data: { ...saved, snapshots: [] } }
@@ -80,6 +95,9 @@ export class DocumentService implements IDocumentService {
         manuscript_model_id: documentID,
       },
     })
+    if (!saved) {
+      return { err: 'Failed to update document', code: 500 }
+    }
     return { data: saved }
   }
   async deleteDocument(documentID: string): Promise<Maybe<ManuscriptDoc>> {
