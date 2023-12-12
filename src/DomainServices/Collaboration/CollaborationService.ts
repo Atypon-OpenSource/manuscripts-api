@@ -26,6 +26,7 @@ import type {
 import type { Doc } from '../../../types/quarterback/doc'
 import type { Maybe } from '../../../types/quarterback/utils'
 import { DIContainer } from '../../DIContainer/DIContainer'
+
 export class CollaborationService {
   async receiveSteps(documentID: string, payload: IReceiveStepsRequest): Promise<Maybe<History>> {
     const document = await DIContainer.sharedContainer.documentService.findDocument(documentID)
@@ -67,11 +68,10 @@ export class CollaborationService {
     steps.forEach((step: Step) => {
       pmDocument = step.apply(pmDocument).doc || pmDocument
     })
-    const updatedDoc = await DIContainer.sharedContainer.documentService.updateDocument(
+    return await DIContainer.sharedContainer.documentService.updateDocument(
       document.data.manuscript_model_id,
       { doc: pmDocument.toJSON(), version: document.data.version + steps.length }
     )
-    return updatedDoc
   }
 
   private combineHistories(histories: ManuscriptDocHistory[]) {
@@ -105,17 +105,15 @@ export class CollaborationService {
     if (!mergedHistories.data) {
       return { err: mergedHistories.err, code: mergedHistories.code }
     }
-    const docuemnt = await DIContainer.sharedContainer.documentService.findLatestVersionForDocument(
-      documentID
-    )
-    if (!('data' in docuemnt)) {
-      return { err: docuemnt.err, code: docuemnt.code }
+    const found = await DIContainer.sharedContainer.documentService.findDocumentVersion(documentID)
+    if (!('data' in found)) {
+      return { err: found.err, code: found.code }
     }
     return {
       data: {
         steps: hydrateSteps(mergedHistories.data.steps),
         clientIDs: mergedHistories.data.clientIDs,
-        version: docuemnt.data.version,
+        version: found.data.version,
       },
     }
   }

@@ -149,7 +149,7 @@ describe('CollaborationService', () => {
       documentHistoryService.findDocumentHistories = jest
         .fn()
         .mockResolvedValueOnce({ data: [{ steps: [step], client_id: '123', version: 1 }] })
-      documentService.findLatestVersionForDocument = jest
+      documentService.findDocumentVersion = jest
         .fn()
         .mockResolvedValueOnce({ data: { version: 1 } })
       const result = await collaborationService.getDocumentHistory('documentID', 0)
@@ -175,7 +175,7 @@ describe('CollaborationService', () => {
       documentHistoryService.findDocumentHistories = jest
         .fn()
         .mockResolvedValue({ data: [{ steps: [step], client_id: '123', version: 1 }] })
-      documentService.findLatestVersionForDocument = jest
+      documentService.findDocumentVersion = jest
         .fn()
         .mockResolvedValueOnce({ data: { version: 1 } })
       const result = await collaborationService.getCombinedHistoriesFromVersion('documentID', 0)
