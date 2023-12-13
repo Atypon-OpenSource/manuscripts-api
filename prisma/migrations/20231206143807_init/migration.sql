@@ -1,10 +1,10 @@
 -- AlterTable
-ALTER TABLE "ManuscriptDoc" ADD COLUMN     "version" INTEGER DEFAULT 0;
+ALTER TABLE "ManuscriptDoc" ADD COLUMN     "version" INTEGER;
 
 -- CreateTable
 CREATE TABLE IF NOT EXISTS "ManuscriptDocHistory" (
     "doc_id" TEXT NOT NULL,
-    "version" INTEGER,
+    "version" INTEGER NOT NULL,
     "client_id" TEXT NOT NULL,
     "steps" JSONB[],
 
