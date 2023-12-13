@@ -1,5 +1,5 @@
 -- AlterTable
-ALTER TABLE "ManuscriptDoc" ADD COLUMN     "version" INTEGER;
+ALTER TABLE "ManuscriptDoc1" ADD COLUMN     "version" INTEGER;
 
 -- CreateTable
 CREATE TABLE IF NOT EXISTS "ManuscriptDocHistory" (
