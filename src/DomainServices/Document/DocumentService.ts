@@ -25,7 +25,7 @@ import prisma from '../../DataAccess/prismaClient'
 import { IDocumentService } from './IDocumentService'
 
 export class DocumentService implements IDocumentService {
-  async findDocumentVersion(id: string): Promise<Maybe<{ version: number }>> {
+  async findDocumentVersion(id: string): Promise<Maybe<{ version: number | null }>> {
     const found = await prisma.manuscriptDoc.findFirst({
       where: {
         manuscript_model_id: id,

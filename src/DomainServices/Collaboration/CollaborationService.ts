@@ -33,7 +33,7 @@ export class CollaborationService {
     if (!('data' in document)) {
       return { err: document.err, code: document.code }
     }
-    const version = document.data.version
+    const version = document.data.version ?? 0
     if (document.data.version != payload.version) {
       return {
         err: `Update denied, version is ${version}, and client version is ${payload.version}`,
@@ -113,7 +113,7 @@ export class CollaborationService {
       data: {
         steps: hydrateSteps(mergedHistories.data.steps),
         clientIDs: mergedHistories.data.clientIDs,
-        version: found.data.version,
+        version: found.data.version ?? 0,
       },
     }
   }
