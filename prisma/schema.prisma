@@ -23,7 +23,7 @@ model ManuscriptDoc {
   user_model_id       String
   project_model_id    String
   doc                 Json
-  version             Int?
+  version             Int?                 @default(0)
   createdAt           DateTime             @default(now())
   updatedAt           DateTime             @updatedAt
   snapshots           ManuscriptSnapshot[] @relation("ManuscriptSnapshotToManuscriptDoc")
