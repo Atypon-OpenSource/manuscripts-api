@@ -19,6 +19,7 @@ import '../../../../../utilities/configMock'
 import { SnapshotController } from '../../../../../../src/Controller/V2/Snapshot/SnapshotController'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
 import { DocumentService } from '../../../../../../src/DomainServices/Document/DocumentService'
+import { DocumentHistoryService } from '../../../../../../src/DomainServices/DocumentHistory/DocumentHistoryService'
 import {
   QuarterbackPermission,
   QuarterbackService,
@@ -31,6 +32,7 @@ jest.setTimeout(TEST_TIMEOUT)
 let snapshotService: SnapshotService
 let quarterbackService: QuarterbackService
 let documentService: DocumentService
+let documentHistoryService: DocumentHistoryService
 
 const EMPTY_PERMISSIONS = new Set<QuarterbackPermission>()
 
@@ -69,8 +71,8 @@ beforeEach(async () => {
   await DIContainer.init()
   snapshotService = DIContainer.sharedContainer.snapshotService
   documentService = DIContainer.sharedContainer.documentService
-
   quarterbackService = DIContainer.sharedContainer.quarterback
+  documentHistoryService = DIContainer.sharedContainer.documentHistoryService
 })
 afterEach(() => {
   jest.clearAllMocks()
@@ -274,7 +276,9 @@ describe('SnapshotController', () => {
     it('should call quarterback.validateUserAccess', async () => {
       quarterbackService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
       const spy = jest.spyOn(quarterbackService, 'validateUserAccess')
+      documentHistoryService.createDocumentHistory = jest.fn().mockReturnValue({ data: {} })
       documentService.findDocumentWithSnapshot = jest.fn().mockResolvedValue({ data: mockDoc })
+      documentHistoryService.clearDocumentHistory = jest.fn().mockReturnValue(Promise.resolve())
       snapshotService.saveSnapshot = jest.fn()
       await snapshotController.createSnapshot('projectID', { docID: 'docID', name: 'name' }, {
         _id: 'random_user_id',
@@ -284,6 +288,8 @@ describe('SnapshotController', () => {
     it('should call documentService.findDocumentWithSnapshot', async () => {
       quarterbackService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
       documentService.findDocumentWithSnapshot = jest.fn().mockResolvedValue({ data: mockDoc })
+      documentHistoryService.createDocumentHistory = jest.fn().mockReturnValue({ data: {} })
+      documentHistoryService.clearDocumentHistory = jest.fn().mockReturnValue(Promise.resolve())
 
       const spy = jest.spyOn(documentService, 'findDocumentWithSnapshot')
       snapshotService.saveSnapshot = jest.fn()
@@ -295,7 +301,10 @@ describe('SnapshotController', () => {
     it('should call snapshotService.saveSnapshot', async () => {
       quarterbackService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
       documentService.findDocumentWithSnapshot = jest.fn().mockResolvedValue({ data: mockDoc })
+      documentHistoryService.createDocumentHistory = jest.fn().mockReturnValue({ data: {} })
       snapshotService.saveSnapshot = jest.fn()
+      documentHistoryService.clearDocumentHistory = jest.fn().mockReturnValue(Promise.resolve())
+
       const spy = jest.spyOn(snapshotService, 'saveSnapshot')
       await snapshotController.createSnapshot('projectID', { docID: 'docID', name: 'name' }, {
         _id: 'random_user_id',
@@ -315,6 +324,8 @@ describe('SnapshotController', () => {
     it('should return the result of snapshotService.saveSnapshot', async () => {
       quarterbackService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
       documentService.findDocumentWithSnapshot = jest.fn().mockResolvedValue({ data: mockDoc })
+      documentHistoryService.createDocumentHistory = jest.fn().mockReturnValue({ data: {} })
+      documentHistoryService.clearDocumentHistory = jest.fn().mockReturnValue(Promise.resolve())
       snapshotService.saveSnapshot = jest.fn().mockResolvedValue(mockSnapshot)
       const result = await snapshotController.createSnapshot(
         'projectID',

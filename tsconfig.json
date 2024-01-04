@@ -30,5 +30,6 @@
     "./types/quarterback/snapshot.d.ts",
     "./types/quarterback/doc.d.ts",
     "./types/quarterback/utils.d.ts",
+    "./types/quarterback/collaboration.d.ts",
   ]
 }

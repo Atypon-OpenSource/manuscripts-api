@@ -1,5 +1,5 @@
 -- CreateTable
-CREATE TABLE "ManuscriptDoc" (
+CREATE TABLE IF NOT EXISTS "ManuscriptDoc" (
     "manuscript_model_id" TEXT NOT NULL,
     "user_model_id" TEXT NOT NULL,
     "project_model_id" TEXT NOT NULL,
@@ -11,7 +11,7 @@ CREATE TABLE "ManuscriptDoc" (
 );
 
 -- CreateTable
-CREATE TABLE "ManuscriptSnapshot" (
+CREATE TABLE IF NOT EXISTS "ManuscriptSnapshot" (
     "id" TEXT NOT NULL,
     "name" VARCHAR(500) NOT NULL DEFAULT '',
     "snapshot" JSONB NOT NULL,

@@ -13,26 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ManuscriptSnapshot } from '@prisma/client'
+import { Prisma } from '@prisma/client'
+import { Step } from 'prosemirror-transform'
 
-export type SnapshotLabel = Pick<ManuscriptSnapshot, 'id' | 'name' | 'createdAt'>
-
-export interface IGetSnapshotLabelsResponse {
-  labels: SnapshotLabel[]
+export type IReceiveStepsRequest = {
+  steps: Prisma.JsonValue[]
+  clientID: string
+  version: number
 }
 
-export type IGetSnapshotResponse = ManuscriptSnapshot
+export type History = {
+  steps: Step[] | Prisma.JsonValue[]
+  clientIDs: number[]
+  version: number
+}
 
-export interface ISaveSnapshotRequest {
-  docID: string
-  name: string
-}
-export interface ISaveSnapshotResponse {
-  snapshot: ManuscriptSnapshot
-}
-export type SaveSnapshotModel = ISaveSnapshotRequest & { snapshot: any }
-export interface SnapshotLabelResult {
-  id: string
-  name: string
-  createdAt: number
-}
+export type DocumentHistory = History & { doc: Prisma.JsonValue | undefined }

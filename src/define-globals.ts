@@ -13,26 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ManuscriptSnapshot } from '@prisma/client'
+import { JSDOM } from 'jsdom'
 
-export type SnapshotLabel = Pick<ManuscriptSnapshot, 'id' | 'name' | 'createdAt'>
+export const defineGlobals = (): void => {
+  const { window } = new JSDOM()
 
-export interface IGetSnapshotLabelsResponse {
-  labels: SnapshotLabel[]
-}
-
-export type IGetSnapshotResponse = ManuscriptSnapshot
-
-export interface ISaveSnapshotRequest {
-  docID: string
-  name: string
-}
-export interface ISaveSnapshotResponse {
-  snapshot: ManuscriptSnapshot
-}
-export type SaveSnapshotModel = ISaveSnapshotRequest & { snapshot: any }
-export interface SnapshotLabelResult {
-  id: string
-  name: string
-  createdAt: number
+  Object.defineProperties(globalThis, {
+    window: {
+      value: window,
+    },
+    document: {
+      value: window.document,
+    },
+    DOMParser: {
+      value: window.DOMParser,
+    },
+    Element: {
+      value: window.Element,
+    },
+    Node: {
+      value: window.Node,
+    },
+    XMLSerializer: {
+      value: window.XMLSerializer,
+    },
+    XPathResult: {
+      value: window.XPathResult,
+    },
+  })
 }
