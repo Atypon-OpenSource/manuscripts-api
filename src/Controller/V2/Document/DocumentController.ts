@@ -16,11 +16,11 @@
 
 import type { ICreateDocRequest, IUpdateDocumentRequest } from 'types/quarterback/doc'
 
+import type { IReceiveStepsRequest } from '../../../../types/quarterback/collaboration'
 import { DIContainer } from '../../../DIContainer/DIContainer'
 import { QuarterbackPermission } from '../../../DomainServices/Quarterback/QuarterbackService'
 import { ValidationError } from '../../../Errors'
 import { BaseController } from '../../BaseController'
-
 export class DocumentController extends BaseController {
   async createDocument(
     projectID: string,
@@ -37,6 +37,7 @@ export class DocumentController extends BaseController {
     )
     return await DIContainer.sharedContainer.documentService.createDocument(payload, user._id)
   }
+
   async getDocument(projectID: string, manuscriptID: string, user: Express.User | undefined) {
     if (!user) {
       throw new ValidationError('No user found', user)
@@ -48,6 +49,7 @@ export class DocumentController extends BaseController {
     )
     return await DIContainer.sharedContainer.documentService.findDocumentWithSnapshot(manuscriptID)
   }
+
   async deleteDocument(projectID: string, manuscriptID: string, user: Express.User | undefined) {
     if (!user) {
       throw new ValidationError('No user found', user)
@@ -74,5 +76,60 @@ export class DocumentController extends BaseController {
       QuarterbackPermission.WRITE
     )
     return DIContainer.sharedContainer.documentService.updateDocument(manuscriptID, payload)
+  }
+  async receiveSteps(
+    projectID: string,
+    manuscriptID: string,
+    payload: IReceiveStepsRequest,
+    user: Express.User | undefined
+  ) {
+    if (!user) {
+      throw new ValidationError('No user found', user)
+    }
+    await DIContainer.sharedContainer.quarterback.validateUserAccess(
+      user,
+      projectID,
+      QuarterbackPermission.WRITE
+    )
+    return await DIContainer.sharedContainer.collaborationService.receiveSteps(
+      manuscriptID,
+      payload
+    )
+  }
+  async getDocumentHistory(
+    projectID: string,
+    manuscriptID: string,
+    user: Express.User | undefined
+  ) {
+    if (!user) {
+      throw new ValidationError('No user found', user)
+    }
+    await DIContainer.sharedContainer.quarterback.validateUserAccess(
+      user,
+      projectID,
+      QuarterbackPermission.READ
+    )
+
+    return await DIContainer.sharedContainer.collaborationService.getDocumentHistory(manuscriptID)
+  }
+
+  async getStepsFromVersion(
+    projectID: string,
+    manuscriptID: string,
+    versionID: string,
+    user: Express.User | undefined
+  ) {
+    if (!user) {
+      throw new ValidationError('No user found', user)
+    }
+    await DIContainer.sharedContainer.quarterback.validateUserAccess(
+      user,
+      projectID,
+      QuarterbackPermission.READ
+    )
+    return DIContainer.sharedContainer.collaborationService.getCombinedHistoriesFromVersion(
+      manuscriptID,
+      parseInt(versionID)
+    )
   }
 }

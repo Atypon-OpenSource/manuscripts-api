@@ -41,10 +41,12 @@ import { UserStatusRepository } from '../DataAccess/UserStatusRepository/UserSta
 import { UserTokenRepository } from '../DataAccess/UserTokenRepository/UserTokenRepository'
 import { AuthService } from '../DomainServices/Auth/AuthService'
 import { IAuthService } from '../DomainServices/Auth/IAuthService'
+import { CollaborationService } from '../DomainServices/Collaboration/CollaborationService'
 import { ConfigService } from '../DomainServices/ConfigService'
 import { ContainerService } from '../DomainServices/Container/ContainerService'
 import { DocumentService } from '../DomainServices/Document/DocumentService'
 import { IDocumentService } from '../DomainServices/Document/IDocumentService'
+import { DocumentHistoryService } from '../DomainServices/DocumentHistory/DocumentHistoryService'
 import { ExpirationService } from '../DomainServices/Expiration/ExpirationService'
 import { IPressroomService } from '../DomainServices/Pressroom/IPressroomService'
 import { PressroomService } from '../DomainServices/Pressroom/PressroomService'
@@ -111,6 +113,8 @@ export class DIContainer {
   readonly containerService: ContainerService
   readonly projectService: ProjectService
   readonly documentService: IDocumentService
+  readonly collaborationService: CollaborationService
+  readonly documentHistoryService: DocumentHistoryService
   readonly snapshotService: ISnapshotService
   readonly configService: ConfigService
   readonly pressroomService: IPressroomService
@@ -200,6 +204,8 @@ export class DIContainer {
     this.pressroomService = new PressroomService(config.pressroom.baseurl, config.pressroom.apiKey)
     this.quarterback = new QuarterbackService()
     this.configService = new ConfigService(config.data.path)
+    this.documentHistoryService = new DocumentHistoryService()
+    this.collaborationService = new CollaborationService()
   }
 
   /**

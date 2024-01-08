@@ -13,20 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import '../../../utilities/dbMock.ts'
-import '../../../utilities/configMock.ts'
+import '../../../../utilities/dbMock.ts'
+import '../../../../utilities/configMock.ts'
 
 import { ObjectTypes } from '@manuscripts/json-schema'
 import jwt from 'jsonwebtoken'
 import { v4 as uuid_v4 } from 'uuid'
 
-import { config } from '../../../../src/Config/Config'
-import { IManuscriptRepository } from '../../../../src/DataAccess/Interfaces/IManuscriptRepository'
-import { ProjectRepository } from '../../../../src/DataAccess/ProjectRepository/ProjectRepository'
-import { UserRepository } from '../../../../src/DataAccess/UserRepository/UserRepository'
-import { DIContainer } from '../../../../src/DIContainer/DIContainer'
-import { ConfigService } from '../../../../src/DomainServices/ConfigService'
-import { ProjectPermission, ProjectService } from '../../../../src/DomainServices/ProjectService'
+import { config } from '../../../../../src/Config/Config'
+import { IManuscriptRepository } from '../../../../../src/DataAccess/Interfaces/IManuscriptRepository'
+import { ProjectRepository } from '../../../../../src/DataAccess/ProjectRepository/ProjectRepository'
+import { UserRepository } from '../../../../../src/DataAccess/UserRepository/UserRepository'
+import { DIContainer } from '../../../../../src/DIContainer/DIContainer'
+import { ConfigService } from '../../../../../src/DomainServices/ConfigService'
+import { ProjectPermission, ProjectService } from '../../../../../src/DomainServices/ProjectService'
 import {
   InvalidScopeNameError,
   MissingContainerError,
@@ -34,14 +34,14 @@ import {
   SyncError,
   UserRoleError,
   ValidationError,
-} from '../../../../src/Errors'
-import { ProjectUserRole } from '../../../../src/Models/ContainerModels'
-import { templates } from '../../../data/dump/templates'
-import { validManuscript, validManuscript1 } from '../../../data/fixtures/manuscripts'
-import { validProject, validProject2 } from '../../../data/fixtures/projects'
-import { validUser2 } from '../../../data/fixtures/UserRepository'
-import { validUser } from '../../../data/fixtures/userServiceUser'
-import { TEST_TIMEOUT } from '../../../utilities/testSetup'
+} from '../../../../../src/Errors'
+import { ProjectUserRole } from '../../../../../src/Models/ContainerModels'
+import { templates } from '../../../../data/dump/templates'
+import { validManuscript, validManuscript1 } from '../../../../data/fixtures/manuscripts'
+import { validProject, validProject2 } from '../../../../data/fixtures/projects'
+import { validUser2 } from '../../../../data/fixtures/UserRepository'
+import { validUser } from '../../../../data/fixtures/userServiceUser'
+import { TEST_TIMEOUT } from '../../../../utilities/testSetup'
 
 jest.setTimeout(TEST_TIMEOUT)
 

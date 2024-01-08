@@ -37,6 +37,7 @@ module.exports = {
         "!src/Controller/**/*Route.ts",
         "!src/Controller/**/*Schema.ts",
         "!src/Controller/V2/Config/ConfigController.ts",
+        "!src/Controller/V2/RequestQueue.ts",
         "!src/Auth/Passport/**",
         "!src/Controller/RouteLoader.ts",
         "!src/**/Interfaces/*",
@@ -52,6 +53,7 @@ module.exports = {
         "!src/DomainServices/Pressroom/PressroomService.ts",
         "!src/DomainServices/Document/DocumentService.ts",
         "!src/DomainServices/Snapshot/SnapshotService.ts",
+        "!src/DomainServices/DocumentHistory/DocumentHistoryService.ts",
         "!src/DomainServices/Shackles/ShacklesService.ts",
         "!src/DomainServices/Expiration/ExpirationService.ts",
     ]

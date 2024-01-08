@@ -43,6 +43,7 @@ export class SnapshotController extends BaseController {
       return found
     }
     const snapshotModel = { docID: payload.docID, name: payload.name, snapshot: found.data.doc }
+    await this.resetDocumentHistory(payload.docID)
     return await DIContainer.sharedContainer.snapshotService.saveSnapshot(snapshotModel)
   }
   async deleteSnapshot(snapshotID: string, user: Express.User | undefined) {
@@ -97,5 +98,8 @@ export class SnapshotController extends BaseController {
     }
     const snapshot: Snapshot = JSON.parse(JSON.stringify(result.data))
     return snapshot
+  }
+  private async resetDocumentHistory(documentID: string) {
+    await DIContainer.sharedContainer.documentHistoryService.clearDocumentHistory(documentID)
   }
 }

@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import { defineGlobals } from './define-globals'
+defineGlobals()
 import { schedule } from 'node-cron'
 
 import { config } from './Config/Config'

@@ -103,7 +103,7 @@ export class SnapshotRoute extends BaseRoute {
     if ('err' in result && 'code' in result) {
       res.status(result.code).send(result.err)
     } else {
-      res.status(StatusCodes.OK).end()
+      res.sendStatus(StatusCodes.OK).end()
     }
   }
   private async getSnapshot(req: Request, res: Response) {

@@ -15,6 +15,7 @@
  */
 
 import { ManuscriptDoc } from '@prisma/client'
+import { Response } from 'express'
 
 import type { SnapshotLabel } from './snapshot'
 
@@ -34,4 +35,15 @@ export type ICreateDocResponse = ManuscriptDocWithSnapshots
 
 export type IUpdateDocumentRequest = {
   doc: Doc
+  version?: number
+}
+
+export type Client = {
+  id: number
+  res: Response
+}
+export type StepsData = {
+  steps: unknown[]
+  clientIDs: number[]
+  version: number
 }

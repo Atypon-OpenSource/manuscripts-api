@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+import { defineGlobals } from '../../src/define-globals'
+defineGlobals()
 import { ConfigurationContainer } from '../../src/Config/ConfigurationTypes'
 
 jest.mock('../../src/Config/Config', () => {
