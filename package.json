@@ -1,6 +1,6 @@
 {
   "name": "@manuscripts/api",
-  "version": "1.6.1-collaborators-removal-test",
+  "version": "1.6.1-collaborators-removal-test-v1",
   "description": "Manuscripts API server",
   "license": "Apache-2.0",
   "main": "dist/index",
@@ -64,7 +64,7 @@
     "pem-jwk": "^2.0.0",
     "prom-client": "^14.2.0",
     "qs": "^6.11.0",
-    "semver": "^7.5.0",
+    "semver": "^7.5.2",
     "source-map-support": "^0.5.21",
     "swagger-ui-express": "^5.0.0",
     "tempy": "^1.0.0",

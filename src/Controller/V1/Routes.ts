@@ -16,8 +16,6 @@
 import { BaseRoute } from '../BaseRoute'
 import { AuthRoute } from './Auth/AuthRoute'
 import { ContainerRoute } from './Container/ContainerRoute'
-import { ContainerRequestRoute } from './ContainerRequest/ContainerRequestRoute'
-import { InvitationRoute } from './Invitation/InvitationRoute'
 import { ProjectRoute } from './Project/ProjectRoute'
 import { RegistrationRoute } from './Registration/RegistrationRoute'
 import { ServerStatusRoute } from './ServerStatus/ServerStatusRoute'
@@ -29,11 +27,9 @@ export function getRoutes(): BaseRoute[] {
     new AuthRoute(),
     new RegistrationRoute(),
     new UserRoute(),
-    new InvitationRoute(),
     new ServerStatusRoute(),
     new SGRoute(),
     new ContainerRoute(),
     new ProjectRoute(),
-    new ContainerRequestRoute(),
   ]
 }

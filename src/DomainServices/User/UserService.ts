@@ -20,15 +20,12 @@ import checksum from 'checksum'
 import jwt from 'jsonwebtoken'
 
 import { config } from '../../Config/Config'
-import { ContainerInvitationRepository } from '../../DataAccess/ContainerInvitationRepository/ContainerInvitationRepository'
-import { ContainerRequestRepository } from '../../DataAccess/ContainerRequestRepository/ContainerRequestRepository'
 import { ISingleUseTokenRepository } from '../../DataAccess/Interfaces/ISingleUseTokenRepository'
 import { IUserProfileRepository } from '../../DataAccess/Interfaces/IUserProfileRepository'
 import { IUserRepository } from '../../DataAccess/Interfaces/IUserRepository'
 import { IUserStatusRepository } from '../../DataAccess/Interfaces/IUserStatusRepository'
 import { IUserTokenRepository } from '../../DataAccess/Interfaces/IUserTokenRepository'
 import { UserProfileLike } from '../../DataAccess/Interfaces/Models'
-import { InvitationRepository } from '../../DataAccess/InvitationRepository/InvitationRepository'
 import { ProjectRepository } from '../../DataAccess/ProjectRepository/ProjectRepository'
 import { DIContainer } from '../../DIContainer/DIContainer'
 import { username as sgUsername } from '../../DomainServices/Sync/SyncService'
@@ -43,7 +40,6 @@ import {
 import { UserActivityEventType } from '../../Models/UserEventModels'
 import { getExpirationTime, isLoginTokenPayload } from '../../Utilities/JWT/LoginTokenPayload'
 import { isScopedTokenPayload } from '../../Utilities/JWT/ScopedTokenPayload'
-import { EmailService } from '../Email/EmailService'
 import { ISyncService } from '../Sync/ISyncService'
 import { UserActivityTrackingService } from '../UserActivity/UserActivityTrackingService'
 import { IUserService } from './IUserService'
@@ -55,10 +51,6 @@ export class UserService implements IUserService {
     private activityTrackingService: UserActivityTrackingService,
     private userStatusRepository: IUserStatusRepository,
     private userTokenRepository: IUserTokenRepository,
-    private invitationRepository: InvitationRepository,
-    private containerInvitationRepository: ContainerInvitationRepository,
-    private containerRequestRepository: ContainerRequestRepository,
-    private emailService: EmailService,
     private syncService: ISyncService,
     private userProfileRepository: IUserProfileRepository,
     private projectRepository: ProjectRepository
@@ -85,10 +77,7 @@ export class UserService implements IUserService {
     if (users && users.length) {
       await Promise.all(
         users.map(async (user) => {
-          const userDeleted = await this.deleteUser(user._id)
-          if (userDeleted && !config.auth.skipVerification) {
-            await this.emailService.sendAccountDeletionConfirmation(user)
-          }
+          await this.deleteUser(user._id)
         })
       )
     }
@@ -114,10 +103,6 @@ export class UserService implements IUserService {
     await this.syncService.removeUserStatus(user._id)
     await this.singleUseTokenRepository.remove({ userId: user._id })
     await this.userTokenRepository.remove({ userId: user._id })
-
-    await this.invitationRepository.removeByUserIdAndEmail(user._id, user.email)
-    await this.containerInvitationRepository.removeByUserIdAndEmail(user._id, user.email)
-    await this.containerRequestRepository.removeByUserIdAndEmail(user._id, user.email)
 
     await this.userStatusRepository.remove({
       _id: this.userStatusRepository.userStatusId(user._id),
@@ -170,10 +155,6 @@ export class UserService implements IUserService {
     const deleteAt = getExpirationTime(30 * 24)
 
     await this.userRepository.patch(userId, { deleteAt: deleteAt })
-
-    if (!config.auth.skipVerification) {
-      await this.emailService.sendAccountDeletionNotification(user)
-    }
   }
 
   /**

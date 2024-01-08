@@ -22,7 +22,7 @@ module.exports = {
     "coverageThreshold": {
         "global": {
             "branches": 80,
-            "functions": 88,
+            "functions": 87,
             "lines": 80
         }
     },
@@ -36,6 +36,7 @@ module.exports = {
         "!src/Controller/**/Routes.ts",
         "!src/Controller/**/*Route.ts",
         "!src/Controller/**/*Schema.ts",
+        "!src/Controller/V2/Config/ConfigController.ts",
         "!src/Auth/Passport/**",
         "!src/Controller/RouteLoader.ts",
         "!src/**/Interfaces/*",

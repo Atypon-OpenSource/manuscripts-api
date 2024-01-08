@@ -17,8 +17,6 @@
 import { config } from '../Config/Config'
 import { BucketKey } from '../Config/ConfigurationTypes'
 import { ClientApplicationRepository } from '../DataAccess/ClientApplicationRepository/ClientApplicationRepository'
-import { ContainerInvitationRepository } from '../DataAccess/ContainerInvitationRepository/ContainerInvitationRepository'
-import { ContainerRequestRepository } from '../DataAccess/ContainerRequestRepository/ContainerRequestRepository'
 import { IClientApplicationRepository } from '../DataAccess/Interfaces/IClientApplicationRepository'
 import { IInvitationTokenRepository } from '../DataAccess/Interfaces/IInvitationTokenRepository'
 import { IManuscriptRepository } from '../DataAccess/Interfaces/IManuscriptRepository'
@@ -29,8 +27,6 @@ import { IUserEventRepository } from '../DataAccess/Interfaces/IUserEventReposit
 import { IUserRepository } from '../DataAccess/Interfaces/IUserRepository'
 import { IUserStatusRepository } from '../DataAccess/Interfaces/IUserStatusRepository'
 import { IUserTokenRepository } from '../DataAccess/Interfaces/IUserTokenRepository'
-import { InvitationRepository } from '../DataAccess/InvitationRepository/InvitationRepository'
-import { InvitationTokenRepository } from '../DataAccess/InvitationTokenRepository/InvitationTokenRepository'
 import { ManuscriptNoteRepository } from '../DataAccess/ManuscriptNoteRepository/ManuscriptNoteRepository'
 import { ManuscriptRepository } from '../DataAccess/ManuscriptRepository/ManuscriptRepository'
 import { ProjectRepository } from '../DataAccess/ProjectRepository/ProjectRepository'
@@ -47,15 +43,9 @@ import { AuthService } from '../DomainServices/Auth/AuthService'
 import { IAuthService } from '../DomainServices/Auth/IAuthService'
 import { ConfigService } from '../DomainServices/ConfigService'
 import { ContainerService } from '../DomainServices/Container/ContainerService'
-import { ContainerRequestService } from '../DomainServices/ContainerRequest/ContainerRequestService'
-import { IContainerRequestService } from '../DomainServices/ContainerRequest/IContainerRequestService'
 import { DocumentService } from '../DomainServices/Document/DocumentService'
 import { IDocumentService } from '../DomainServices/Document/IDocumentService'
-import { EmailService } from '../DomainServices/Email/EmailService'
 import { ExpirationService } from '../DomainServices/Expiration/ExpirationService'
-import { ContainerInvitationService } from '../DomainServices/Invitation/ContainerInvitationService'
-import { IContainerInvitationService } from '../DomainServices/Invitation/IContainerInvitationService'
-import { InvitationService } from '../DomainServices/Invitation/InvitationService'
 import { IPressroomService } from '../DomainServices/Pressroom/IPressroomService'
 import { PressroomService } from '../DomainServices/Pressroom/PressroomService'
 import { ProjectService } from '../DomainServices/ProjectService'
@@ -106,7 +96,6 @@ export class DIContainer {
   readonly userEmailRepository: IUserEmailRepository
   readonly singleUseTokenRepository: ISingleUseTokenRepository
   readonly applicationRepository: IClientApplicationRepository
-  readonly emailService: EmailService
   readonly expirationService: ExpirationService
   readonly syncService: ISyncService
   readonly sgService: ISGService
@@ -116,11 +105,7 @@ export class DIContainer {
   readonly userStatusRepository: IUserStatusRepository
   readonly userEventRepository: IUserEventRepository
   readonly userService: IUserService
-  readonly invitationRepository: InvitationRepository
-  readonly containerInvitationRepository: ContainerInvitationRepository
   readonly invitationTokenRepository: IInvitationTokenRepository
-  readonly containerInvitationService: IContainerInvitationService
-  readonly invitationService: InvitationService
   readonly projectRepository: ProjectRepository
   readonly userProfileRepository: UserProfileRepository
   readonly containerService: ContainerService
@@ -128,8 +113,6 @@ export class DIContainer {
   readonly documentService: IDocumentService
   readonly snapshotService: ISnapshotService
   readonly configService: ConfigService
-  readonly containerRequestService: IContainerRequestService
-  readonly containerRequestRepository: ContainerRequestRepository
   readonly pressroomService: IPressroomService
   readonly quarterback: IQuarterbackService
   readonly manuscriptRepository: IManuscriptRepository
@@ -155,8 +138,6 @@ export class DIContainer {
     this.userTokenRepository = new UserTokenRepository(this.userBucket)
     this.userEmailRepository = new UserEmailRepository(this.userBucket)
     this.singleUseTokenRepository = new SingleUseTokenRepository(this.userBucket)
-    this.invitationTokenRepository = new InvitationTokenRepository(this.userBucket)
-    this.emailService = new EmailService(config.email, {})
     this.userEventRepository = new UserEventRepository(this.userBucket)
     this.activityTrackingService = new UserActivityTrackingService(
       this.userEventRepository,
@@ -169,22 +150,12 @@ export class DIContainer {
     this.userRegistrationService = new UserRegistrationService(
       this.userRepository,
       this.userEmailRepository,
-      this.emailService,
       this.singleUseTokenRepository,
       this.activityTrackingService,
       this.userStatusRepository,
       this.syncService
     )
     this.projectRepository = new ProjectRepository(BucketKey.Project, this.dataBucket)
-    this.invitationRepository = new InvitationRepository(BucketKey.Project, this.dataBucket)
-    this.containerInvitationRepository = new ContainerInvitationRepository(
-      BucketKey.Project,
-      this.dataBucket
-    )
-    this.containerRequestRepository = new ContainerRequestRepository(
-      BucketKey.Project,
-      this.dataBucket
-    )
     this.manuscriptRepository = new ManuscriptRepository(BucketKey.Project, this.dataBucket)
     this.manuscriptNotesRepository = new ManuscriptNoteRepository(
       BucketKey.Project,
@@ -197,10 +168,6 @@ export class DIContainer {
       this.activityTrackingService,
       this.userStatusRepository,
       this.userTokenRepository,
-      this.invitationRepository,
-      this.containerInvitationRepository,
-      this.containerRequestRepository,
-      this.emailService,
       this.syncService,
       this.userProfileRepository,
       this.projectRepository
@@ -211,8 +178,6 @@ export class DIContainer {
       this.activityTrackingService,
       this.userStatusRepository,
       this.projectRepository,
-      this.containerInvitationRepository,
-      this.emailService,
       this.manuscriptRepository,
       this.manuscriptNotesRepository,
       this.templateRepository
@@ -224,30 +189,6 @@ export class DIContainer {
     )
     this.documentService = new DocumentService()
     this.snapshotService = new SnapshotService()
-    this.containerInvitationService = new ContainerInvitationService(
-      this.userRepository,
-      this.userProfileRepository,
-      this.emailService,
-      this.containerService,
-      this.containerInvitationRepository,
-      this.invitationTokenRepository,
-      this.activityTrackingService
-    )
-    this.invitationService = new InvitationService(
-      this.userRepository,
-      this.userProfileRepository,
-      this.emailService,
-      this.invitationRepository,
-      this.activityTrackingService,
-      this.userRegistrationService
-    )
-    this.containerRequestService = new ContainerRequestService(
-      this.containerRequestRepository,
-      this.userProfileRepository,
-      this.userRepository,
-      this.containerService,
-      this.emailService
-    )
     this.authService = new AuthService(
       this.userRepository,
       this.userTokenRepository,
@@ -255,13 +196,6 @@ export class DIContainer {
       this.activityTrackingService,
       this.syncService,
       this.userStatusRepository
-    )
-    this.expirationService = new ExpirationService(
-      this.userEventRepository,
-      this.userTokenRepository,
-      this.invitationRepository,
-      this.invitationTokenRepository,
-      this.containerInvitationRepository
     )
     this.pressroomService = new PressroomService(config.pressroom.baseurl, config.pressroom.apiKey)
     this.quarterback = new QuarterbackService()
