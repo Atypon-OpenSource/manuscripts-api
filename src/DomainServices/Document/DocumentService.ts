@@ -101,11 +101,15 @@ export class DocumentService implements IDocumentService {
     return { data: saved }
   }
   async deleteDocument(documentID: string): Promise<Maybe<ManuscriptDoc>> {
-    const deleted = await prisma.manuscriptDoc.delete({
-      where: {
-        manuscript_model_id: documentID,
-      },
-    })
-    return { data: deleted }
+    const document = await this.findDocument(documentID)
+    if ('data' in document) {
+      const deleted = await prisma.manuscriptDoc.delete({
+        where: {
+          manuscript_model_id: documentID,
+        },
+      })
+      return { data: deleted }
+    }
+    return { err: document.err, code: document.code }
   }
 }

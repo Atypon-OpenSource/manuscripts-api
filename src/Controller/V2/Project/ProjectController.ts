@@ -18,7 +18,7 @@ import { Manuscript, Model, Project, UserCollaborator } from '@manuscripts/json-
 
 import { DIContainer } from '../../../DIContainer/DIContainer'
 import { ProjectPermission } from '../../../DomainServices/ProjectService'
-import { RoleDoesNotPermitOperationError } from '../../../Errors'
+import { MissingContainerError, RoleDoesNotPermitOperationError } from '../../../Errors'
 import { ProjectUserRole } from '../../../Models/ContainerModels'
 import { BaseController } from '../../BaseController'
 
@@ -162,12 +162,17 @@ export class ProjectController extends BaseController {
   }
 
   async deleteProject(projectID: string, user: Express.User): Promise<void> {
-    const permissions = await this.getPermissions(projectID, user._id)
-    if (!permissions.has(ProjectPermission.DELETE)) {
-      throw new RoleDoesNotPermitOperationError(`Access denied`, user._id)
+    try {
+      const permissions = await this.getPermissions(projectID, user._id)
+      if (!permissions.has(ProjectPermission.DELETE)) {
+        throw new RoleDoesNotPermitOperationError(`Access denied`, user._id)
+      }
+      await DIContainer.sharedContainer.projectService.deleteProject(projectID)
+    } catch (error) {
+      if (!(error instanceof MissingContainerError)) {
+        throw error
+      }
     }
-
-    await DIContainer.sharedContainer.projectService.deleteProject(projectID)
   }
 
   async getPermissions(projectID: string, userID: string): Promise<ReadonlySet<ProjectPermission>> {

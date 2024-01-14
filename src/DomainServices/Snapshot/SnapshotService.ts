@@ -19,8 +19,9 @@ import { ManuscriptSnapshot } from '@prisma/client'
 import type { SaveSnapshotModel, SnapshotLabel } from '../../../types/quarterback/snapshot'
 import type { Maybe } from '../../../types/quarterback/utils'
 import prisma from '../../DataAccess/prismaClient'
+import { ISnapshotService } from './ISnapshotService'
 
-export class SnapshotService {
+export class SnapshotService implements ISnapshotService {
   async listSnapshotLabels(documentID: string): Promise<Maybe<SnapshotLabel[]>> {
     const found = await prisma.manuscriptSnapshot.findMany({
       where: {
@@ -57,11 +58,20 @@ export class SnapshotService {
     return { data: saved }
   }
   async deleteSnapshot(snapshotID: string): Promise<Maybe<ManuscriptSnapshot>> {
-    const saved = await prisma.manuscriptSnapshot.delete({
+    const deleted = await prisma.manuscriptSnapshot.delete({
       where: {
         id: snapshotID,
       },
     })
-    return { data: saved }
+    return { data: deleted }
+  }
+
+  async deleteAllManuscriptSnapshots(documentID: string): Promise<number> {
+    const { count } = await prisma.manuscriptSnapshot.deleteMany({
+      where: {
+        doc_id: documentID,
+      },
+    })
+    return count
   }
 }

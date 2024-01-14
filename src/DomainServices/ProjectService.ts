@@ -29,7 +29,6 @@ import jwt, { Algorithm } from 'jsonwebtoken'
 import JSZip from 'jszip'
 import { Readable } from 'stream'
 import tempy from 'tempy'
-import type { SnapshotLabelResult } from 'types/quarterback/snapshot'
 import { v4 as uuid_v4 } from 'uuid'
 
 import { config } from '../Config/Config'
@@ -63,7 +62,7 @@ export class ProjectService {
     private containerRepository: ContainerRepository,
     private manuscriptRepository: IManuscriptRepository,
     private userRepository: IUserRepository
-  ) {}
+  ) { }
 
   public async createProject(userID: string, title?: string): Promise<Project> {
     const project = {
@@ -184,24 +183,25 @@ export class ProjectService {
   }
 
   public async deleteProject(projectID: string): Promise<void> {
+    await this.containerRepository.removeWithAllResources(projectID)
+    const manuscriptID = await this.getManuscriptID(projectID)
+    if (manuscriptID) {
+      await this.deleteManuscriptResources(manuscriptID)
+    }
+  }
+
+  private async getManuscriptID(projectID: string): Promise<string | null> {
     const models = await this.containerRepository.getContainerResources(projectID, null, [
       ObjectTypes.Manuscript,
     ])
-    //todo log
-    await this.containerRepository.removeWithAllResources(projectID)
-    if (models && models.length === 1) {
-      const result = await DIContainer.sharedContainer.snapshotService.listSnapshotLabels(
-        models[0]._id
-      )
-      if ('data' in result) {
-        const snapshotModel: SnapshotLabelResult[] = JSON.parse(JSON.stringify(result.data))
-        for (const snapshot of snapshotModel) {
-          await DIContainer.sharedContainer.snapshotService.deleteSnapshot(snapshot.id)
-        }
-      }
+    return models[0]._id
+  }
 
-      await DIContainer.sharedContainer.documentService.deleteDocument(models[0]._id)
-    }
+  private async deleteManuscriptResources(manuscriptID: string) {
+    await Promise.all([
+      DIContainer.sharedContainer.snapshotService.deleteAllManuscriptSnapshots(manuscriptID),
+      DIContainer.sharedContainer.documentService.deleteDocument(manuscriptID),
+    ])
   }
 
   public async getProject(projectID: string): Promise<Project> {
