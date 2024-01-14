@@ -62,7 +62,7 @@ export class ProjectService {
     private containerRepository: ContainerRepository,
     private manuscriptRepository: IManuscriptRepository,
     private userRepository: IUserRepository
-  ) { }
+  ) {}
 
   public async createProject(userID: string, title?: string): Promise<Project> {
     const project = {
@@ -183,11 +183,11 @@ export class ProjectService {
   }
 
   public async deleteProject(projectID: string): Promise<void> {
-    await this.containerRepository.removeWithAllResources(projectID)
     const manuscriptID = await this.getManuscriptID(projectID)
     if (manuscriptID) {
       await this.deleteManuscriptResources(manuscriptID)
     }
+    await this.containerRepository.removeWithAllResources(projectID)
   }
 
   private async getManuscriptID(projectID: string): Promise<string | null> {
