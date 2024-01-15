@@ -16,7 +16,7 @@
 import { ManuscriptDoc } from '@prisma/client'
 
 import type {
-  ICreateDocRequest,
+  ICreateDoc,
   IUpdateDocument,
   ManuscriptDocWithSnapshots,
 } from '../../../types/quarterback/doc'
@@ -76,7 +76,7 @@ export class DocumentService implements IDocumentService {
     return found
   }
   async createDocument(
-    payload: ICreateDocRequest,
+    payload: ICreateDoc,
     userID: string
   ): Promise<ManuscriptDocWithSnapshots> {
     const saved = await prisma.manuscriptDoc.create({

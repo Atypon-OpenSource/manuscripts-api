@@ -17,7 +17,7 @@
 import { ManuscriptDoc } from '@prisma/client'
 
 import type {
-  ICreateDocRequest,
+  ICreateDoc,
   IUpdateDocument,
   ManuscriptDocWithSnapshots,
 } from '../../../types/quarterback/doc'
@@ -26,7 +26,7 @@ export interface IDocumentService {
   findDocumentVersion(id: string): Promise<number | null>
   findDocument(id: string): Promise<ManuscriptDoc>
   findDocumentWithSnapshot(DocumentID: string): Promise<ManuscriptDocWithSnapshots>
-  createDocument(payload: ICreateDocRequest, userID: string): Promise<ManuscriptDocWithSnapshots>
+  createDocument(payload: ICreateDoc, userID: string): Promise<ManuscriptDocWithSnapshots>
   updateDocument(documentID: string, payload: IUpdateDocument): Promise<ManuscriptDoc>
   deleteDocument(documentID: string): Promise<ManuscriptDoc>
 }

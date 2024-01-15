@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import type { ICreateDocRequest, IUpdateDocument } from 'types/quarterback/doc'
+import type { ICreateDoc, IUpdateDocument } from 'types/quarterback/doc'
 
 import type { IReceiveStepsRequest } from '../../../../types/quarterback/collaboration'
 import { DIContainer } from '../../../DIContainer/DIContainer'
@@ -24,7 +24,7 @@ import { BaseController } from '../../BaseController'
 export class DocumentController extends BaseController {
   async createDocument(
     projectID: string,
-    payload: ICreateDocRequest,
+    payload: ICreateDoc,
     user: Express.User | undefined
   ) {
     if (!user) {
