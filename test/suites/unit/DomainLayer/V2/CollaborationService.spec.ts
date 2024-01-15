@@ -34,7 +34,7 @@ let documentHistoryService: DocumentHistoryService
 let collaborationService: CollaborationService
 
 beforeEach(async () => {
-  ;(DIContainer as any)._sharedContainer = null
+  ; (DIContainer as any)._sharedContainer = null
   await DIContainer.init()
   documentService = DIContainer.sharedContainer.documentService
   documentHistoryService = DIContainer.sharedContainer.documentHistoryService
@@ -168,7 +168,7 @@ describe('CollaborationService', () => {
       documentHistoryService.findDocumentHistories = jest
         .fn()
         .mockResolvedValue({ err: 'No history found', code: 404 })
-      const result = await collaborationService.getCombinedHistoriesFromVersion('documentID', 0)
+      const result = await collaborationService.getHistoriesFromVersion('documentID', 0)
       expect(result).toEqual({ err: 'No history found', code: 404 })
     })
     it('should return the combined histories if the document history is found', async () => {
@@ -178,7 +178,7 @@ describe('CollaborationService', () => {
       documentService.findDocumentVersion = jest
         .fn()
         .mockResolvedValueOnce({ data: { version: 1 } })
-      const result = await collaborationService.getCombinedHistoriesFromVersion('documentID', 0)
+      const result = await collaborationService.getHistoriesFromVersion('documentID', 0)
       expect(result).toEqual({
         data: {
           steps: hydrateSteps([step]),

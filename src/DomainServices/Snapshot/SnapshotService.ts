@@ -17,11 +17,12 @@
 import { ManuscriptSnapshot } from '@prisma/client'
 
 import type { SaveSnapshotModel, SnapshotLabel } from '../../../types/quarterback/snapshot'
-import type { Maybe } from '../../../types/quarterback/utils'
 import prisma from '../../DataAccess/prismaClient'
+import { CreateSnapshotError, DeleteSnapshotError, MissingSnapshotError } from '../../Errors'
+import { ISnapshotService } from './ISnapshotService'
 
-export class SnapshotService {
-  async listSnapshotLabels(documentID: string): Promise<Maybe<SnapshotLabel[]>> {
+export class SnapshotService implements ISnapshotService {
+  async listSnapshotLabels(documentID: string): Promise<SnapshotLabel[]> {
     const found = await prisma.manuscriptSnapshot.findMany({
       where: {
         doc_id: documentID,
@@ -32,20 +33,20 @@ export class SnapshotService {
         createdAt: true,
       },
     })
-    return { data: found }
+    return found
   }
-  async getSnapshot(snapshotID: string): Promise<Maybe<ManuscriptSnapshot>> {
+  async getSnapshot(snapshotID: string): Promise<ManuscriptSnapshot> {
     const found = await prisma.manuscriptSnapshot.findUnique({
       where: {
         id: snapshotID,
       },
     })
     if (!found) {
-      return { err: 'Snapshot not found', code: 404 }
+      throw new MissingSnapshotError(snapshotID)
     }
-    return { data: found }
+    return found
   }
-  async saveSnapshot(payload: SaveSnapshotModel): Promise<Maybe<ManuscriptSnapshot>> {
+  async saveSnapshot(payload: SaveSnapshotModel): Promise<ManuscriptSnapshot> {
     const { docID, snapshot, name } = payload
     const saved = await prisma.manuscriptSnapshot.create({
       data: {
@@ -54,14 +55,20 @@ export class SnapshotService {
         name,
       },
     })
-    return { data: saved }
+    if (!saved) {
+      throw new CreateSnapshotError(docID)
+    }
+    return saved
   }
-  async deleteSnapshot(snapshotID: string): Promise<Maybe<ManuscriptSnapshot>> {
-    const saved = await prisma.manuscriptSnapshot.delete({
+  async deleteSnapshot(snapshotID: string): Promise<ManuscriptSnapshot> {
+    const deleted = await prisma.manuscriptSnapshot.delete({
       where: {
         id: snapshotID,
       },
     })
-    return { data: saved }
+    if (!deleted) {
+      throw new DeleteSnapshotError(snapshotID)
+    }
+    return deleted
   }
 }

@@ -32,7 +32,7 @@ let documentService: DocumentService
 let quarterbackService: QuarterbackService
 let collaborationService: CollaborationService
 beforeEach(async () => {
-  ;(DIContainer as any)._sharedContainer = null
+  ; (DIContainer as any)._sharedContainer = null
   await DIContainer.init()
   documentService = DIContainer.sharedContainer.documentService
   quarterbackService = DIContainer.sharedContainer.quarterback
@@ -323,7 +323,7 @@ describe('DocumentController', () => {
     it('should call quarterback.validateUserAccess', async () => {
       quarterbackService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
       const spy = jest.spyOn(quarterbackService, 'validateUserAccess')
-      collaborationService.getCombinedHistoriesFromVersion = jest.fn().mockReturnValue({ data: {} })
+      collaborationService.getHistoriesFromVersion = jest.fn().mockReturnValue({ data: {} })
       await documentController.getStepsFromVersion('projectID', 'manuscriptID', '1', {} as any)
       expect(spy).toHaveBeenCalled()
     })

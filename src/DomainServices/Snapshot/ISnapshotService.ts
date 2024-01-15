@@ -17,11 +17,10 @@
 import { ManuscriptSnapshot } from '@prisma/client'
 
 import type { SaveSnapshotModel, SnapshotLabel } from '../../../types/quarterback/snapshot'
-import type { Maybe } from '../../../types/quarterback/utils'
 
 export interface ISnapshotService {
-  listSnapshotLabels(documentID: string): Promise<Maybe<SnapshotLabel[]>>
-  getSnapshot(snapshotID: string): Promise<Maybe<ManuscriptSnapshot>>
-  saveSnapshot(payload: SaveSnapshotModel): Promise<Maybe<ManuscriptSnapshot>>
-  deleteSnapshot(snapshotID: string): Promise<Maybe<ManuscriptSnapshot>>
+  listSnapshotLabels(documentID: string): Promise<SnapshotLabel[]>
+  getSnapshot(snapshotID: string): Promise<ManuscriptSnapshot>
+  saveSnapshot(payload: SaveSnapshotModel): Promise<ManuscriptSnapshot>
+  deleteSnapshot(snapshotID: string): Promise<ManuscriptSnapshot>
 }

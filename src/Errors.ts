@@ -194,6 +194,131 @@ export class MissingManuscriptError extends Error implements StatusCoded {
   }
 }
 
+export class MissingDocumentError extends Error implements StatusCoded {
+  readonly internalErrorCode = InternalErrorCode.MissingDocumentError
+  readonly invalidValue: any
+  readonly statusCode = StatusCodes.NOT_FOUND
+
+  constructor(invalidValue: any) {
+    super(`Document '${invalidValue}' was not found.`)
+    this.invalidValue = invalidValue
+    this.name = 'MissingDocumentError'
+    Object.setPrototypeOf(this, new.target.prototype)
+  }
+}
+
+export class UpdateDocumentError extends Error implements StatusCoded {
+  readonly internalErrorCode = InternalErrorCode.UpdateDocumentError
+  readonly invalidValue: any
+  readonly statusCode = StatusCodes.INTERNAL_SERVER_ERROR
+
+  constructor(invalidValue: any) {
+    super(`Failed to update document '${invalidValue}'.`)
+    this.invalidValue = invalidValue
+    this.name = 'UpdateDocumentError'
+    Object.setPrototypeOf(this, new.target.prototype)
+  }
+}
+
+export class CreateDocumentError extends Error implements StatusCoded {
+  readonly internalErrorCode = InternalErrorCode.CreateDocumentError
+  readonly invalidValue: any
+  readonly statusCode = StatusCodes.INTERNAL_SERVER_ERROR
+
+  constructor(invalidValue: any) {
+    super(`Failed to create document '${invalidValue}'.`)
+    this.invalidValue = invalidValue
+    this.name = 'CreateDocumentError'
+    Object.setPrototypeOf(this, new.target.prototype)
+  }
+}
+
+export class DeleteDocumentError extends Error implements StatusCoded {
+  readonly internalErrorCode = InternalErrorCode.DeleteDocumentError
+  readonly invalidValue: any
+  readonly statusCode = StatusCodes.INTERNAL_SERVER_ERROR
+
+  constructor(invalidValue: any) {
+    super(`Failed to delete document '${invalidValue}'.`)
+    this.invalidValue = invalidValue
+    this.name = 'DeleteDocumentError'
+    Object.setPrototypeOf(this, new.target.prototype)
+  }
+}
+export class MissingSnapshotError extends Error implements StatusCoded {
+  readonly internalErrorCode = InternalErrorCode.MissingSnapshotError
+  readonly invalidValue: any
+  readonly statusCode = StatusCodes.NOT_FOUND
+
+  constructor(invalidValue: any) {
+    super(`Snapshot '${invalidValue}' was not found.`)
+    this.invalidValue = invalidValue
+    this.name = 'MissingSnapshotError'
+    Object.setPrototypeOf(this, new.target.prototype)
+  }
+}
+export class CreateSnapshotError extends Error implements StatusCoded {
+  readonly internalErrorCode = InternalErrorCode.CreateSnapshotError
+  readonly invalidValue: any
+  readonly statusCode = StatusCodes.INTERNAL_SERVER_ERROR
+
+  constructor(invalidValue: any) {
+    super(`Failed to create snapshot for document '${invalidValue}'.`)
+    this.invalidValue = invalidValue
+    this.name = 'CreateDocumentError'
+    Object.setPrototypeOf(this, new.target.prototype)
+  }
+}
+
+export class DeleteSnapshotError extends Error implements StatusCoded {
+  readonly internalErrorCode = InternalErrorCode.DeleteSnapshotError
+  readonly invalidValue: any
+  readonly statusCode = StatusCodes.INTERNAL_SERVER_ERROR
+
+  constructor(invalidValue: any) {
+    super(`Failed to delete snapshot '${invalidValue}'.`)
+    this.invalidValue = invalidValue
+    this.name = 'DeleteSnapshotError'
+    Object.setPrototypeOf(this, new.target.prototype)
+  }
+}
+export class CreateDocumentHistoryError extends Error implements StatusCoded {
+  readonly internalErrorCode = InternalErrorCode.CreateDocumentHistoryError
+  readonly invalidValue: any
+  readonly statusCode = StatusCodes.INTERNAL_SERVER_ERROR
+
+  constructor(invalidValue: any) {
+    super(`Failed to create document history for document '${invalidValue}'.`)
+    this.invalidValue = invalidValue
+    this.name = 'CreateDocumentHistoryError'
+    Object.setPrototypeOf(this, new.target.prototype)
+  }
+}
+export class MissingDocumentHistoryError extends Error implements StatusCoded {
+  readonly internalErrorCode = InternalErrorCode.CreateDocumentHistoryError
+  readonly invalidValue: any
+  readonly statusCode = StatusCodes.NOT_FOUND
+
+  constructor(invalidValue: any) {
+    super(`Document history not found for document '${invalidValue}'.`)
+    this.invalidValue = invalidValue
+    this.name = 'MissingDocumentHistoryError'
+    Object.setPrototypeOf(this, new.target.prototype)
+  }
+}
+
+export class VersionMismatchError extends Error implements StatusCoded {
+  readonly internalErrorCode = InternalErrorCode.VersionMismatchError
+  readonly invalidValue: any
+  readonly statusCode = StatusCodes.CONFLICT
+
+  constructor(invalidValue: any) {
+    super(`Update denied, backend version is ${invalidValue}.`)
+    this.invalidValue = invalidValue
+    this.name = 'VersionMismatchError'
+    Object.setPrototypeOf(this, new.target.prototype)
+  }
+}
 export class MissingModelError extends Error implements StatusCoded {
   readonly internalErrorCode = InternalErrorCode.MissingModelError
   readonly invalidValue: any

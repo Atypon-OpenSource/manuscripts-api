@@ -90,40 +90,28 @@ export class SnapshotRoute extends BaseRoute {
     const payload = req.body
     const user = req.user
     const result = await this.snapshotController.createSnapshot(projectID, payload, user)
-    if ('err' in result && 'code' in result) {
-      res.status(result.code).send(result.err)
-    } else {
-      res.json({ snapshot: result.data })
-    }
+    res.json({ snapshot: result })
   }
   private async deleteSnapshot(req: Request, res: Response) {
     const { snapshotID } = req.params
     const user = req.user
-    const result = await this.snapshotController.deleteSnapshot(snapshotID, user)
-    if ('err' in result && 'code' in result) {
-      res.status(result.code).send(result.err)
-    } else {
-      res.sendStatus(StatusCodes.OK).end()
-    }
+    await this.snapshotController.deleteSnapshot(snapshotID, user)
+    res.sendStatus(StatusCodes.OK).end()
   }
   private async getSnapshot(req: Request, res: Response) {
     const { snapshotID } = req.params
     const user = req.user
     const result = await this.snapshotController.getSnapshot(snapshotID, user)
-    if ('err' in result && 'code' in result) {
-      res.status(result.code).send(result.err)
-    } else {
-      res.json(result.data)
-    }
+    res.json(result)
   }
   private async getSnapshotLabels(req: Request, res: Response) {
     const { projectID, manuscriptID } = req.params
     const user = req.user
     const result = await this.snapshotController.listSnapshotLabels(projectID, manuscriptID, user)
-    if ('err' in result && 'code' in result) {
-      res.status(result.code).send(result.err)
+    if (!result) {
+      res.status(StatusCodes.NOT_FOUND).send('Snapshot labels not found')
     } else {
-      res.json({ labels: result.data })
+      res.json({ labels: result })
     }
   }
 }

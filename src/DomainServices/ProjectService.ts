@@ -193,8 +193,8 @@ export class ProjectService {
       const result = await DIContainer.sharedContainer.snapshotService.listSnapshotLabels(
         models[0]._id
       )
-      if ('data' in result) {
-        const snapshotModel: SnapshotLabelResult[] = JSON.parse(JSON.stringify(result.data))
+      if (result) {
+        const snapshotModel: SnapshotLabelResult[] = JSON.parse(JSON.stringify(result))
         for (const snapshot of snapshotModel) {
           await DIContainer.sharedContainer.snapshotService.deleteSnapshot(snapshot.id)
         }

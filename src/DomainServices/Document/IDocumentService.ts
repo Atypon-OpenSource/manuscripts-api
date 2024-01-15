@@ -21,16 +21,12 @@ import type {
   IUpdateDocumentRequest,
   ManuscriptDocWithSnapshots,
 } from '../../../types/quarterback/doc'
-import type { Maybe } from '../../../types/quarterback/utils'
 
 export interface IDocumentService {
-  findDocumentVersion(id: string): Promise<Maybe<{ version: number | null }>>
-  findDocument(id: string): Promise<Maybe<ManuscriptDoc>>
-  findDocumentWithSnapshot(DocumentID: string): Promise<Maybe<ManuscriptDocWithSnapshots>>
-  createDocument(
-    payload: ICreateDocRequest,
-    userID: string
-  ): Promise<Maybe<ManuscriptDocWithSnapshots>>
-  updateDocument(documentID: string, payload: IUpdateDocumentRequest): Promise<Maybe<ManuscriptDoc>>
-  deleteDocument(documentID: string): Promise<Maybe<ManuscriptDoc>>
+  findDocumentVersion(id: string): Promise<number | null>
+  findDocument(id: string): Promise<ManuscriptDoc>
+  findDocumentWithSnapshot(DocumentID: string): Promise<ManuscriptDocWithSnapshots>
+  createDocument(payload: ICreateDocRequest, userID: string): Promise<ManuscriptDocWithSnapshots>
+  updateDocument(documentID: string, payload: IUpdateDocumentRequest): Promise<ManuscriptDoc>
+  deleteDocument(documentID: string): Promise<ManuscriptDoc>
 }

@@ -110,7 +110,14 @@ export class DocumentController extends BaseController {
       QuarterbackPermission.READ
     )
 
-    return await DIContainer.sharedContainer.collaborationService.getDocumentHistory(manuscriptID)
+    const document = await DIContainer.sharedContainer.documentService.findDocument(manuscriptID)
+    const history =
+      await DIContainer.sharedContainer.collaborationService.getHistoriesFromVersion(
+        manuscriptID,
+        0
+      )
+
+    return { ...history, doc: document.doc }
   }
 
   async getStepsFromVersion(
@@ -127,7 +134,7 @@ export class DocumentController extends BaseController {
       projectID,
       QuarterbackPermission.READ
     )
-    return DIContainer.sharedContainer.collaborationService.getCombinedHistoriesFromVersion(
+    return DIContainer.sharedContainer.collaborationService.getHistoriesFromVersion(
       manuscriptID,
       parseInt(versionID)
     )

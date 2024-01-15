@@ -59,9 +59,6 @@ export class QuarterbackService implements IQuarterbackService {
     projectID: string,
     permission: QuarterbackPermission
   ) {
-    if (!user) {
-      throw new ValidationError('No user found', user)
-    }
     const permissions = await this.getPermissions(projectID, user._id)
     if (!permissions.has(permission)) {
       throw new RoleDoesNotPermitOperationError(`Access denied`, user._id)
