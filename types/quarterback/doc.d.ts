@@ -33,7 +33,7 @@ export interface ICreateDocRequest {
 }
 export type ICreateDocResponse = ManuscriptDocWithSnapshots
 
-export type IUpdateDocumentRequest = {
+export type IUpdateDocument = {
   doc: Doc
   version?: number
 }

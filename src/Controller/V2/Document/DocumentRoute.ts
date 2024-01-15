@@ -105,7 +105,6 @@ export class DocumentRoute extends BaseRoute {
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
-          console.log('listening')
           await this.listen(req, res)
         }, next)
       }

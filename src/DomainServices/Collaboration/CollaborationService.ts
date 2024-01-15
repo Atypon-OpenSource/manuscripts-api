@@ -15,26 +15,28 @@
  */
 
 import { schema } from '@manuscripts/transform'
-import { ManuscriptDoc, ManuscriptDocHistory, Prisma } from '@prisma/client'
+import { ManuscriptDocHistory, Prisma } from '@prisma/client'
 import { Step } from 'prosemirror-transform'
 
 import type { History, IReceiveStepsRequest } from '../../../types/quarterback/collaboration'
-import type { Doc } from '../../../types/quarterback/doc'
+import type { Doc, IUpdateDocument } from '../../../types/quarterback/doc'
 import { DIContainer } from '../../DIContainer/DIContainer'
 import { VersionMismatchError } from '../../Errors'
 
 export class CollaborationService {
   public async receiveSteps(documentID: string, payload: IReceiveStepsRequest): Promise<History> {
     const document = await DIContainer.sharedContainer.documentService.findDocument(documentID)
+    const updatedDoc = this.applyStepsToDocument(payload.steps, document)
     const version = document.version ?? 0
+    const newVersion = version + payload.steps.length
     if (version != payload.version) {
       throw new VersionMismatchError(version)
     }
-    await this.applyStepsToDocument(payload.steps, document)
+    await this.updateDocument(documentID, { doc: updatedDoc, version: newVersion })
     await this.createDocumentHistory(
       documentID,
       payload.steps,
-      version + payload.steps.length,
+      newVersion,
       payload.clientID.toString()
     )
     return {
@@ -44,19 +46,13 @@ export class CollaborationService {
     }
   }
 
-  private async applyStepsToDocument(
-    jsonSteps: Prisma.JsonValue[],
-    document: Doc
-  ): Promise<ManuscriptDoc> {
+  private applyStepsToDocument(jsonSteps: Prisma.JsonValue[], document: Doc): Promise<Doc> {
     const steps = hydrateSteps(jsonSteps)
     let pmDocument = schema.nodeFromJSON(document.doc)
     steps.forEach((step: Step) => {
       pmDocument = step.apply(pmDocument).doc || pmDocument
     })
-    return await DIContainer.sharedContainer.documentService.updateDocument(
-      document.manuscript_model_id,
-      { doc: pmDocument.toJSON(), version: document.version + steps.length }
-    )
+    return pmDocument.toJSON()
   }
 
   private combineHistories(histories: ManuscriptDocHistory[]) {
@@ -103,6 +99,9 @@ export class CollaborationService {
       version,
       clientID
     )
+  }
+  private async updateDocument(documentID: string, payload: IUpdateDocument) {
+    await DIContainer.sharedContainer.documentService.updateDocument(documentID, payload)
   }
 }
 

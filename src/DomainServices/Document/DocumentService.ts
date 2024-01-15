@@ -17,7 +17,7 @@ import { ManuscriptDoc } from '@prisma/client'
 
 import type {
   ICreateDocRequest,
-  IUpdateDocumentRequest,
+  IUpdateDocument,
   ManuscriptDocWithSnapshots,
 } from '../../../types/quarterback/doc'
 import prisma from '../../DataAccess/prismaClient'
@@ -95,7 +95,7 @@ export class DocumentService implements IDocumentService {
   }
   async updateDocument(
     documentID: string,
-    payload: IUpdateDocumentRequest
+    payload: IUpdateDocument
   ): Promise<ManuscriptDoc> {
     const saved = await prisma.manuscriptDoc.update({
       data: payload,
