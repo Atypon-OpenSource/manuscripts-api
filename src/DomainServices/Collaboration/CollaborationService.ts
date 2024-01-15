@@ -27,7 +27,9 @@ export class CollaborationService {
   public async receiveSteps(documentID: string, payload: IReceiveStepsRequest): Promise<History> {
     const document = await DIContainer.sharedContainer.documentService.findDocument(documentID)
     const updatedDoc = this.applyStepsToDocument(payload.steps, document)
-    const version = document.version ?? 0
+    // find the document version again to make sure it hasn't changed
+    const version =
+      (await DIContainer.sharedContainer.documentService.findDocumentVersion(documentID)) || 0
     const newVersion = version + payload.steps.length
     if (version != payload.version) {
       throw new VersionMismatchError(version)
