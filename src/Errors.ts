@@ -180,18 +180,6 @@ export class MissingContainerError extends Error implements StatusCoded {
     Object.setPrototypeOf(this, new.target.prototype)
   }
 }
-export class MissingRecordError extends Error implements StatusCoded {
-  readonly internalErrorCode = InternalErrorCode.MissingRecordError
-  readonly invalidValue: any
-  readonly statusCode = StatusCodes.NOT_FOUND
-
-  constructor(invalidValue: any) {
-    super(`Document '${invalidValue}' was not found.`)
-    this.invalidValue = invalidValue
-    this.name = 'MissingContainerError'
-    Object.setPrototypeOf(this, new.target.prototype)
-  }
-}
 
 export class MissingManuscriptError extends Error implements StatusCoded {
   readonly internalErrorCode = InternalErrorCode.MissingManuscriptError
@@ -218,29 +206,15 @@ export class MissingDocumentError extends Error implements StatusCoded {
     Object.setPrototypeOf(this, new.target.prototype)
   }
 }
-
-export class UpdateDocumentError extends Error implements StatusCoded {
-  readonly internalErrorCode = InternalErrorCode.UpdateDocumentError
+export class MissingRecordError extends Error implements StatusCoded {
+  readonly internalErrorCode = InternalErrorCode.MissingRecordError
   readonly invalidValue: any
-  readonly statusCode = StatusCodes.INTERNAL_SERVER_ERROR
+  readonly statusCode = StatusCodes.NOT_FOUND
 
   constructor(invalidValue: any) {
-    super(`Failed to update document '${invalidValue}'.`)
+    super(`Document '${invalidValue}' was not found.`)
     this.invalidValue = invalidValue
-    this.name = 'UpdateDocumentError'
-    Object.setPrototypeOf(this, new.target.prototype)
-  }
-}
-
-export class CreateDocumentError extends Error implements StatusCoded {
-  readonly internalErrorCode = InternalErrorCode.CreateDocumentError
-  readonly invalidValue: any
-  readonly statusCode = StatusCodes.INTERNAL_SERVER_ERROR
-
-  constructor(invalidValue: any) {
-    super(`Failed to create document '${invalidValue}'.`)
-    this.invalidValue = invalidValue
-    this.name = 'CreateDocumentError'
+    this.name = 'MissingContainerError'
     Object.setPrototypeOf(this, new.target.prototype)
   }
 }
