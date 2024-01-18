@@ -75,10 +75,7 @@ export class DocumentService implements IDocumentService {
     }
     return found
   }
-  async createDocument(
-    payload: ICreateDoc,
-    userID: string
-  ): Promise<ManuscriptDocWithSnapshots> {
+  async createDocument(payload: ICreateDoc, userID: string): Promise<ManuscriptDocWithSnapshots> {
     const saved = await prisma.manuscriptDoc.create({
       data: {
         manuscript_model_id: payload.manuscript_model_id,
@@ -93,10 +90,7 @@ export class DocumentService implements IDocumentService {
     }
     return { ...saved, snapshots: [] }
   }
-  async updateDocument(
-    documentID: string,
-    payload: IUpdateDocument
-  ): Promise<ManuscriptDoc> {
+  async updateDocument(documentID: string, payload: IUpdateDocument): Promise<ManuscriptDoc> {
     const saved = await prisma.manuscriptDoc.update({
       data: payload,
       where: {

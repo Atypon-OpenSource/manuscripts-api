@@ -22,11 +22,7 @@ import { QuarterbackPermission } from '../../../DomainServices/Quarterback/Quart
 import { ValidationError } from '../../../Errors'
 import { BaseController } from '../../BaseController'
 export class DocumentController extends BaseController {
-  async createDocument(
-    projectID: string,
-    payload: ICreateDoc,
-    user: Express.User | undefined
-  ) {
+  async createDocument(projectID: string, payload: ICreateDoc, user: Express.User | undefined) {
     if (!user) {
       throw new ValidationError('No user found', user)
     }
@@ -110,14 +106,13 @@ export class DocumentController extends BaseController {
       QuarterbackPermission.READ
     )
 
-    const document = await DIContainer.sharedContainer.documentService.findDocument(manuscriptID)
-    const history =
-      await DIContainer.sharedContainer.collaborationService.getHistoriesFromVersion(
-        manuscriptID,
-        0
-      )
+    const found = await DIContainer.sharedContainer.documentService.findDocument(manuscriptID)
+    const history = await DIContainer.sharedContainer.collaborationService.getHistoriesFromVersion(
+      manuscriptID,
+      0
+    )
 
-    return { ...history, doc: document.doc }
+    return { ...history, doc: found.doc }
   }
 
   async getStepsFromVersion(
