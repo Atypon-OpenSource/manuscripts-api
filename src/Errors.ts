@@ -180,6 +180,18 @@ export class MissingContainerError extends Error implements StatusCoded {
     Object.setPrototypeOf(this, new.target.prototype)
   }
 }
+export class MissingDocumentError extends Error implements StatusCoded {
+  readonly internalErrorCode = InternalErrorCode.MissingContainerError
+  readonly invalidValue: any
+  readonly statusCode = StatusCodes.NOT_FOUND
+
+  constructor(invalidValue: any) {
+    super(`Document '${invalidValue}' was not found.`)
+    this.invalidValue = invalidValue
+    this.name = 'MissingContainerError'
+    Object.setPrototypeOf(this, new.target.prototype)
+  }
+}
 
 export class MissingManuscriptError extends Error implements StatusCoded {
   readonly internalErrorCode = InternalErrorCode.MissingManuscriptError
