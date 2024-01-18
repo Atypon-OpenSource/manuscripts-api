@@ -20,13 +20,8 @@ import type {
   IUpdateDocument,
   ManuscriptDocWithSnapshots,
 } from '../../../types/quarterback/doc'
-import prisma from '../../DataAccess/prismaClient'
-import {
-  CreateDocumentError,
-  DeleteDocumentError,
-  MissingDocumentError,
-  UpdateDocumentError,
-} from '../../Errors'
+import prisma, { PrismaErrorCodes } from '../../DataAccess/prismaClient'
+import { MissingDocumentError, MissingRecordError } from '../../Errors'
 import { IDocumentService } from './IDocumentService'
 
 export class DocumentService implements IDocumentService {
@@ -85,32 +80,37 @@ export class DocumentService implements IDocumentService {
         version: 0,
       },
     })
-    if (!saved) {
-      throw new CreateDocumentError(payload.manuscript_model_id)
-    }
     return { ...saved, snapshots: [] }
   }
   async updateDocument(documentID: string, payload: IUpdateDocument): Promise<ManuscriptDoc> {
-    const saved = await prisma.manuscriptDoc.update({
-      data: payload,
-      where: {
-        manuscript_model_id: documentID,
-      },
-    })
-    if (!saved) {
-      throw new UpdateDocumentError(documentID)
+    try {
+      const saved = await prisma.manuscriptDoc.update({
+        data: payload,
+        where: {
+          manuscript_model_id: documentID,
+        },
+      })
+      return saved
+    } catch (error) {
+      if (error.code === PrismaErrorCodes.RecordMissing) {
+        throw new MissingRecordError(documentID)
+      }
+      throw error
     }
-    return saved
   }
   async deleteDocument(documentID: string): Promise<ManuscriptDoc> {
-    const deleted = await prisma.manuscriptDoc.delete({
-      where: {
-        manuscript_model_id: documentID,
-      },
-    })
-    if (!deleted) {
-      throw new DeleteDocumentError(documentID)
+    try {
+      const deleted = await prisma.manuscriptDoc.delete({
+        where: {
+          manuscript_model_id: documentID,
+        },
+      })
+      return deleted
+    } catch (error) {
+      if (error.code === PrismaErrorCodes.RecordMissing) {
+        throw new MissingRecordError(documentID)
+      }
+      throw error
     }
-    return deleted
   }
 }

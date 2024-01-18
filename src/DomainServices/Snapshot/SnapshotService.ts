@@ -17,8 +17,8 @@
 import { ManuscriptSnapshot } from '@prisma/client'
 
 import type { SaveSnapshotModel, SnapshotLabel } from '../../../types/quarterback/snapshot'
-import prisma from '../../DataAccess/prismaClient'
-import { CreateSnapshotError, DeleteSnapshotError, MissingSnapshotError } from '../../Errors'
+import prisma, { PrismaErrorCodes } from '../../DataAccess/prismaClient'
+import { MissingRecordError, MissingSnapshotError } from '../../Errors'
 import { ISnapshotService } from './ISnapshotService'
 
 export class SnapshotService implements ISnapshotService {
@@ -55,20 +55,29 @@ export class SnapshotService implements ISnapshotService {
         name,
       },
     })
-    if (!saved) {
-      throw new CreateSnapshotError(docID)
-    }
     return saved
   }
   async deleteSnapshot(snapshotID: string): Promise<ManuscriptSnapshot> {
-    const deleted = await prisma.manuscriptSnapshot.delete({
+    try {
+      const deleted = await prisma.manuscriptSnapshot.delete({
+        where: {
+          id: snapshotID,
+        },
+      })
+      return deleted
+    } catch (error) {
+      if (error.code === PrismaErrorCodes.RecordMissing) {
+        throw new MissingRecordError(snapshotID)
+      }
+      throw error
+    }
+  }
+  async deleteAllManuscriptSnapshots(documentID: string): Promise<number> {
+    const { count } = await prisma.manuscriptSnapshot.deleteMany({
       where: {
-        id: snapshotID,
+        doc_id: documentID,
       },
     })
-    if (!deleted) {
-      throw new DeleteSnapshotError(snapshotID)
-    }
-    return deleted
+    return count
   }
 }

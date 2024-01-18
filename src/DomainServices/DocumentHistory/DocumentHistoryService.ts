@@ -17,7 +17,7 @@
 import { ManuscriptDocHistory, Prisma } from '@prisma/client'
 
 import prisma from '../../DataAccess/prismaClient'
-import { CreateDocumentHistoryError, MissingDocumentHistoryError } from '../../Errors'
+import { MissingDocumentHistoryError } from '../../Errors'
 
 export class DocumentHistoryService {
   async clearDocumentHistory(documentID: string): Promise<number> {
@@ -43,9 +43,6 @@ export class DocumentHistoryService {
         client_id: clientID,
       },
     })
-    if (!saved) {
-      throw new CreateDocumentHistoryError(documentID)
-    }
     return saved
   }
   async findLatestDocumentHistory(documentID: string): Promise<ManuscriptDocHistory> {
@@ -77,9 +74,6 @@ export class DocumentHistoryService {
         version: 'asc',
       },
     })
-    if (!found) {
-      throw new MissingDocumentHistoryError(documentID)
-    }
     return found
   }
 }

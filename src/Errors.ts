@@ -180,6 +180,18 @@ export class MissingContainerError extends Error implements StatusCoded {
     Object.setPrototypeOf(this, new.target.prototype)
   }
 }
+export class MissingRecordError extends Error implements StatusCoded {
+  readonly internalErrorCode = InternalErrorCode.MissingRecordError
+  readonly invalidValue: any
+  readonly statusCode = StatusCodes.NOT_FOUND
+
+  constructor(invalidValue: any) {
+    super(`Document '${invalidValue}' was not found.`)
+    this.invalidValue = invalidValue
+    this.name = 'MissingContainerError'
+    Object.setPrototypeOf(this, new.target.prototype)
+  }
+}
 
 export class MissingManuscriptError extends Error implements StatusCoded {
   readonly internalErrorCode = InternalErrorCode.MissingManuscriptError
@@ -233,18 +245,6 @@ export class CreateDocumentError extends Error implements StatusCoded {
   }
 }
 
-export class DeleteDocumentError extends Error implements StatusCoded {
-  readonly internalErrorCode = InternalErrorCode.DeleteDocumentError
-  readonly invalidValue: any
-  readonly statusCode = StatusCodes.INTERNAL_SERVER_ERROR
-
-  constructor(invalidValue: any) {
-    super(`Failed to delete document '${invalidValue}'.`)
-    this.invalidValue = invalidValue
-    this.name = 'DeleteDocumentError'
-    Object.setPrototypeOf(this, new.target.prototype)
-  }
-}
 export class MissingSnapshotError extends Error implements StatusCoded {
   readonly internalErrorCode = InternalErrorCode.MissingSnapshotError
   readonly invalidValue: any
@@ -257,45 +257,8 @@ export class MissingSnapshotError extends Error implements StatusCoded {
     Object.setPrototypeOf(this, new.target.prototype)
   }
 }
-export class CreateSnapshotError extends Error implements StatusCoded {
-  readonly internalErrorCode = InternalErrorCode.CreateSnapshotError
-  readonly invalidValue: any
-  readonly statusCode = StatusCodes.INTERNAL_SERVER_ERROR
-
-  constructor(invalidValue: any) {
-    super(`Failed to create snapshot for document '${invalidValue}'.`)
-    this.invalidValue = invalidValue
-    this.name = 'CreateDocumentError'
-    Object.setPrototypeOf(this, new.target.prototype)
-  }
-}
-
-export class DeleteSnapshotError extends Error implements StatusCoded {
-  readonly internalErrorCode = InternalErrorCode.DeleteSnapshotError
-  readonly invalidValue: any
-  readonly statusCode = StatusCodes.INTERNAL_SERVER_ERROR
-
-  constructor(invalidValue: any) {
-    super(`Failed to delete snapshot '${invalidValue}'.`)
-    this.invalidValue = invalidValue
-    this.name = 'DeleteSnapshotError'
-    Object.setPrototypeOf(this, new.target.prototype)
-  }
-}
-export class CreateDocumentHistoryError extends Error implements StatusCoded {
-  readonly internalErrorCode = InternalErrorCode.CreateDocumentHistoryError
-  readonly invalidValue: any
-  readonly statusCode = StatusCodes.INTERNAL_SERVER_ERROR
-
-  constructor(invalidValue: any) {
-    super(`Failed to create document history for document '${invalidValue}'.`)
-    this.invalidValue = invalidValue
-    this.name = 'CreateDocumentHistoryError'
-    Object.setPrototypeOf(this, new.target.prototype)
-  }
-}
 export class MissingDocumentHistoryError extends Error implements StatusCoded {
-  readonly internalErrorCode = InternalErrorCode.CreateDocumentHistoryError
+  readonly internalErrorCode = InternalErrorCode.MissingDocumentHistoryError
   readonly invalidValue: any
   readonly statusCode = StatusCodes.NOT_FOUND
 
