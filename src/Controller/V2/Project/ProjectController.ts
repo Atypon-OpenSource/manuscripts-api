@@ -18,7 +18,11 @@ import { Manuscript, Model, Project, UserCollaborator } from '@manuscripts/json-
 
 import { DIContainer } from '../../../DIContainer/DIContainer'
 import { ProjectPermission } from '../../../DomainServices/ProjectService'
-import { MissingContainerError, RoleDoesNotPermitOperationError } from '../../../Errors'
+import {
+  MissingContainerError,
+  MissingDocumentError,
+  RoleDoesNotPermitOperationError,
+} from '../../../Errors'
 import { ProjectUserRole } from '../../../Models/ContainerModels'
 import { BaseController } from '../../BaseController'
 
@@ -169,7 +173,7 @@ export class ProjectController extends BaseController {
       }
       await DIContainer.sharedContainer.projectService.deleteProject(projectID)
     } catch (error) {
-      if (!(error instanceof MissingContainerError)) {
+      if (!(error instanceof MissingContainerError || error instanceof MissingDocumentError)) {
         throw error
       }
     }

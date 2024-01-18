@@ -21,6 +21,7 @@ export enum InternalErrorCode {
   InvalidBucketError = 'CB_INVALID_BUCKET',
   MissingQueryParameterError = 'QUERY_PARAM_NOT_FOUND',
   MissingContainerError = 'CONTAINER_NOT_FOUND',
+  MissingDocumentError = 'DOC_NOT_FOUND',
   MissingManuscriptError = 'MANUSCRIPT_NOT_FOUND',
   MissingModelError = 'MODEL_NOT_FOUND',
   MissingProductionNoteError = 'PN_NOTES_NOT_FOUND',
