@@ -18,39 +18,62 @@ import { schema } from '@manuscripts/transform'
 import { ManuscriptDocHistory, Prisma } from '@prisma/client'
 import { Step } from 'prosemirror-transform'
 
-import type { History, IReceiveStepsRequest } from '../../../types/quarterback/collaboration'
-import type { Doc, IUpdateDocument } from '../../../types/quarterback/doc'
+import type { History, IReceiveSteps } from '../../../types/quarterback/collaboration'
+import type { Doc } from '../../../types/quarterback/doc'
 import { DIContainer } from '../../DIContainer/DIContainer'
 import { VersionMismatchError } from '../../Errors'
+import { IDocumentService } from '../Document/IDocumentService'
+import { DocumentHistoryService } from '../DocumentHistory/DocumentHistoryService'
 
 export class CollaborationService {
-  public async receiveSteps(documentID: string, payload: IReceiveStepsRequest): Promise<History> {
-    const document = await DIContainer.sharedContainer.documentService.findDocument(documentID)
-    const updatedDoc = this.applyStepsToDocument(payload.steps, document)
-    // find the document version again to make sure it hasn't changed
-    const version =
-      (await DIContainer.sharedContainer.documentService.findDocumentVersion(documentID)) || 0
-    const newVersion = version + payload.steps.length
-    if (version != payload.version) {
-      throw new VersionMismatchError(version)
-    }
-    await this.updateDocument(documentID, { doc: updatedDoc, version: newVersion })
-    await this.createDocumentHistory(
+  constructor(
+    private readonly documentService: IDocumentService,
+    private readonly documentHistoryService: DocumentHistoryService
+  ) { }
+
+  private readonly DEFAULT_DOC_VERSION = 0
+
+  public async receiveSteps(documentID: string, payload: IReceiveSteps): Promise<History> {
+    const updatedDoc = await this.findAndApplyStepsToDocument(documentID, payload.steps)
+    await this.validateDocumentVersionForUpdate(documentID, payload.version)
+    await this.documentService.updateDocument(documentID, {
+      doc: updatedDoc,
+      version: payload.version + payload.steps.length,
+    })
+    await this.documentHistoryService.createDocumentHistory(
       documentID,
       payload.steps,
-      newVersion,
+      payload.version + payload.steps.length,
       payload.clientID.toString()
     )
     return {
       steps: payload.steps,
-      clientIDs: Array(payload.steps.length).fill(parseInt(payload.clientID)),
-      version: version + payload.steps.length,
+      clientIDs: Array(payload.steps.length).fill(payload.clientID),
+      version: payload.version + payload.steps.length,
     }
   }
-
-  private applyStepsToDocument(jsonSteps: Prisma.JsonValue[], document: Doc): Promise<Doc> {
-    const steps = hydrateSteps(jsonSteps)
-    let pmDocument = schema.nodeFromJSON(document.doc)
+  private async findAndApplyStepsToDocument(documentID: string, steps: Prisma.JsonValue[]) {
+    const found = await this.documentService.findDocument(documentID)
+    return this.applyStepsToDocument(steps, found.doc)
+  }
+  private async validateDocumentVersionForUpdate(
+    documentID: string,
+    version: number
+  ): Promise<void> {
+    // we find the document again to ensure that the version is still correct
+    const docVersion =
+      (await DIContainer.sharedContainer.documentService.findDocumentVersion(documentID)) ||
+      this.DEFAULT_DOC_VERSION
+    if (version != docVersion) {
+      throw new VersionMismatchError(docVersion)
+    }
+  }
+  private applyStepsToDocument(
+    jsonSteps: Prisma.JsonValue[],
+    document: Prisma.JsonValue
+  ): Promise<Doc> {
+    const steps = this.hydrateSteps(jsonSteps)
+    let pmDocument = schema.nodeFromJSON(document)
     steps.forEach((step: Step) => {
       pmDocument = step.apply(pmDocument).doc || pmDocument
     })
@@ -70,43 +93,22 @@ export class CollaborationService {
     }
   }
   private async getCombinedHistories(documentID: string, fromVersion = 0) {
-    const histories =
-      await DIContainer.sharedContainer.documentHistoryService.findDocumentHistories(
-        documentID,
-        fromVersion
-      )
+    const histories = await this.documentHistoryService.findDocumentHistories(
+      documentID,
+      fromVersion
+    )
     return this.combineHistories(histories)
   }
   public async getHistoriesFromVersion(documentID: string, versionID: number): Promise<History> {
     const mergedHistories = await this.getCombinedHistories(documentID, versionID)
-    const version = await DIContainer.sharedContainer.documentService.findDocumentVersion(
-      documentID
-    )
+    const version = await this.documentService.findDocumentVersion(documentID)
     return {
-      steps: hydrateSteps(mergedHistories.steps) || [],
+      steps: this.hydrateSteps(mergedHistories.steps) || [],
       clientIDs: mergedHistories.clientIDs || [],
-      version: version ?? 0,
+      version: version ?? this.DEFAULT_DOC_VERSION,
     }
   }
-
-  private async createDocumentHistory(
-    documentID: string,
-    steps: Prisma.JsonValue[],
-    version: number,
-    clientID: string
-  ) {
-    await DIContainer.sharedContainer.documentHistoryService.createDocumentHistory(
-      documentID,
-      steps,
-      version,
-      clientID
-    )
+  private hydrateSteps(jsonSteps: Prisma.JsonValue[]): Step[] {
+    return jsonSteps.map((step: Prisma.JsonValue) => Step.fromJSON(schema, step)) as Step[]
   }
-  private async updateDocument(documentID: string, payload: IUpdateDocument) {
-    await DIContainer.sharedContainer.documentService.updateDocument(documentID, payload)
-  }
-}
-
-const hydrateSteps = (jsonSteps: Prisma.JsonValue[]): Step[] => {
-  return jsonSteps.map((step: Prisma.JsonValue) => Step.fromJSON(schema, step)) as Step[]
 }

@@ -17,7 +17,7 @@
 import { Manuscript } from '@manuscripts/json-schema'
 
 import { DIContainer } from '../../DIContainer/DIContainer'
-import { RoleDoesNotPermitOperationError, ValidationError } from '../../Errors'
+import { MissingManuscriptError, RoleDoesNotPermitOperationError } from '../../Errors'
 import { ContainerRole } from '../../Models/ContainerModels'
 import { Snapshot } from '../../Models/SnapshotModel'
 import { IQuarterbackService } from './IQuarterbackService'
@@ -71,7 +71,7 @@ export class QuarterbackService implements IQuarterbackService {
       await DIContainer.sharedContainer.manuscriptRepository.getById(manuscriptID)
 
     if (!manuscript) {
-      throw new ValidationError('Manuscript not found', manuscriptID)
+      throw new MissingManuscriptError(manuscriptID)
     }
     return manuscript
   }

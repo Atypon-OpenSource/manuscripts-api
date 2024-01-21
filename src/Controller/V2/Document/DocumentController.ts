@@ -16,7 +16,7 @@
 
 import type { ICreateDoc, IUpdateDocument } from 'types/quarterback/doc'
 
-import type { IReceiveStepsRequest } from '../../../../types/quarterback/collaboration'
+import type { IReceiveSteps } from '../../../../types/quarterback/collaboration'
 import { DIContainer } from '../../../DIContainer/DIContainer'
 import { QuarterbackPermission } from '../../../DomainServices/Quarterback/QuarterbackService'
 import { ValidationError } from '../../../Errors'
@@ -76,7 +76,7 @@ export class DocumentController extends BaseController {
   async receiveSteps(
     projectID: string,
     manuscriptID: string,
-    payload: IReceiveStepsRequest,
+    payload: IReceiveSteps,
     user: Express.User | undefined
   ) {
     if (!user) {

@@ -16,9 +16,9 @@
 import { Prisma } from '@prisma/client'
 import { Step } from 'prosemirror-transform'
 
-export type IReceiveStepsRequest = {
+export type IReceiveSteps = {
   steps: Prisma.JsonValue[]
-  clientID: string
+  clientID: number
   version: number
 }
 
