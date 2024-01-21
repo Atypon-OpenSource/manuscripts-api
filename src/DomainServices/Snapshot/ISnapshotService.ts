@@ -24,4 +24,5 @@ export interface ISnapshotService {
   getSnapshot(snapshotID: string): Promise<Maybe<ManuscriptSnapshot>>
   saveSnapshot(payload: SaveSnapshotModel): Promise<Maybe<ManuscriptSnapshot>>
   deleteSnapshot(snapshotID: string): Promise<Maybe<ManuscriptSnapshot>>
+  deleteAllManuscriptSnapshots(documentID: string): Promise<number>
 }

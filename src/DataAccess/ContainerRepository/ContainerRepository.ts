@@ -77,11 +77,11 @@ export abstract class ContainerRepository<
   }
 
   public async getContainerResources(
-    containerId: string,
+    containerID: string,
     manuscriptID: string | null,
     types?: string[]
   ) {
-    const container = await this.getById(containerId)
+    const container = await this.getById(containerID)
     if (!container) {
       return null
     }
@@ -105,7 +105,7 @@ export abstract class ContainerRepository<
         {
           data: {
             path: ['containerID'],
-            equals: containerId,
+            equals: containerID,
           },
         },
         {
@@ -113,7 +113,7 @@ export abstract class ContainerRepository<
             {
               data: {
                 path: ['projectID'],
-                equals: containerId,
+                equals: containerID,
               },
             },
             {
@@ -155,12 +155,11 @@ export abstract class ContainerRepository<
         ],
       })
     }
-
     return this.database.bucket.query(Q).then((res: any) => callbackFn(res))
   }
 
-  public async getContainerResourcesIDs(containerId: string, types?: string[]) {
-    const container = await this.getById(containerId)
+  public async getContainerResourcesIDs(containerID: string, types?: string[]) {
+    const container = await this.getById(containerID)
     if (!container) {
       return null
     }
@@ -182,7 +181,7 @@ export abstract class ContainerRepository<
         {
           data: {
             path: ['containerID'],
-            equals: containerId,
+            equals: containerID,
           },
         },
         {
@@ -190,7 +189,7 @@ export abstract class ContainerRepository<
             {
               data: {
                 path: ['projectID'],
-                equals: containerId,
+                equals: containerID,
               },
             },
             {
@@ -327,7 +326,7 @@ export abstract class ContainerRepository<
     return this.database.bucket.query(Q).then((res: any) => callbackFn(res))
   }
 
-  public async findTemplatesInContainer(containerId: string) {
+  public async findTemplatesInContainer(containerID: string) {
     const Q = {
       AND: [
         {
@@ -339,7 +338,7 @@ export abstract class ContainerRepository<
         {
           data: {
             path: ['containerID'],
-            equals: containerId,
+            equals: containerID,
           },
         },
         /*{
@@ -360,19 +359,19 @@ export abstract class ContainerRepository<
     return this.database.bucket.query(Q).then((res: any) => callbackFn(res))
   }
 
-  public async findModelsInTemplate(containerId: string, templateId: string) {
+  public async findModelsInTemplate(containerID: string, templateID: string) {
     const Q = {
       AND: [
         {
           data: {
             path: ['templateID'],
-            equals: templateId,
+            equals: templateID,
           },
         },
         {
           data: {
             path: ['containerID'],
-            equals: containerId,
+            equals: containerID,
           },
         },
         /*{
