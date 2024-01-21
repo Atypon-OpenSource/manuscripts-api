@@ -25,7 +25,7 @@ import {
   QuarterbackService,
 } from '../../../../../../src/DomainServices/Quarterback/QuarterbackService'
 import { SnapshotService } from '../../../../../../src/DomainServices/Snapshot/SnapshotService'
-import { ValidationError } from '../../../../../../src/Errors'
+import { MissingSnapshotError, ValidationError } from '../../../../../../src/Errors'
 import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
 jest.setTimeout(TEST_TIMEOUT)
 
@@ -190,11 +190,11 @@ describe('SnapshotController', () => {
     it('should throw an error if the snapshot is not found', async () => {
       snapshotService.getSnapshot = jest
         .fn()
-        .mockReturnValue(Promise.resolve({ err: 'not found', 'code:': 404 }))
+        .mockRejectedValue(new MissingSnapshotError('snapshotID'))
       quarterbackService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
       await expect(
         snapshotController.getSnapshot('snapshotID', { _id: 'random_user_id' } as any)
-      ).rejects.toThrow('Validation error: Snapshot not found')
+      ).rejects.toThrow(new MissingSnapshotError('snapshotID'))
     })
   })
   describe('deleteSnapshot', () => {
@@ -261,10 +261,12 @@ describe('SnapshotController', () => {
     })
     it('should throw an error if the snapshot is not found', async () => {
       quarterbackService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
-      snapshotService.getSnapshot = jest.fn().mockResolvedValue({ err: 'not found', 'code:': 404 })
+      snapshotService.getSnapshot = jest
+        .fn()
+        .mockRejectedValue(new MissingSnapshotError('snapshotID'))
       await expect(
         snapshotController.deleteSnapshot('snapshotID', { _id: 'random_user_id' } as any)
-      ).rejects.toThrow('Validation error: Snapshot not found')
+      ).rejects.toThrow(new MissingSnapshotError('snapshotID'))
     })
   })
   describe('createSnapshot', () => {
@@ -336,22 +338,6 @@ describe('SnapshotController', () => {
       )
       expect(result).toBe(mockSnapshot)
     })
-    it('should return an error and code if the snapshot is not found', async () => {
-      snapshotService.saveSnapshot = jest.fn().mockResolvedValue({ err: 'not found', 'code:': 404 })
-      documentService.findDocumentWithSnapshot = jest
-        .fn()
-        .mockResolvedValue({ err: 'not found', code: 404 })
-      quarterbackService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
-      const result = await snapshotController.createSnapshot(
-        'projectID',
-        { docID: 'docID', name: 'name' },
-        {
-          _id: 'random_user_id',
-        } as any
-      )
-
-      expect(result).toStrictEqual({ err: 'not found', code: 404 })
-    })
   })
   describe('fetchSnapshot', () => {
     it('should call snapshotService.getSnapshot', async () => {
@@ -360,14 +346,16 @@ describe('SnapshotController', () => {
       expect(snapshotService.getSnapshot).toHaveBeenCalled()
     })
     it('should return the result of snapshotService.getSnapshot', async () => {
-      snapshotService.getSnapshot = jest.fn().mockResolvedValue({ data: mockSnapshot })
+      snapshotService.getSnapshot = jest.fn().mockResolvedValue(mockSnapshot)
       const result = await snapshotController['fetchSnapshot']('random_snapshot_id')
       expect(result).toStrictEqual(mockSnapshot)
     })
     it('should throw an error if the snapshot is not found', async () => {
-      snapshotService.getSnapshot = jest.fn().mockResolvedValue({ err: 'not found', 'code:': 404 })
+      snapshotService.getSnapshot = jest
+        .fn()
+        .mockRejectedValue(new MissingSnapshotError('random_snapshot_id'))
       await expect(snapshotController['fetchSnapshot']('random_snapshot_id')).rejects.toThrow(
-        'Validation error: Snapshot not found'
+        new MissingSnapshotError('random_snapshot_id')
       )
     })
   })
