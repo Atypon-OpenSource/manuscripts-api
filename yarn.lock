@@ -1353,10 +1353,10 @@
     deepmerge "^4.3.1"
     uuid "^9.0.0"
 
-"@manuscripts/library@1.3.1-LEAN-3074-0":
-  version "1.3.1-LEAN-3074-0"
-  resolved "https://registry.yarnpkg.com/@manuscripts/library/-/library-1.3.1-LEAN-3074-0.tgz#55cb6f80f4fff10fb98ede25ecc90aa18f7983fb"
-  integrity sha512-hVjMMnaQldrCKR9D2NYOIdNY9KbOoRBkeIo6oA5Z/MTjOu9Sw0CMlVBdMa+E0azVMaGL5DOAKql1qGQt9WT4/g==
+"@manuscripts/library@1.3.2":
+  version "1.3.2"
+  resolved "https://registry.yarnpkg.com/@manuscripts/library/-/library-1.3.2.tgz#ce7984a5073a96b1b48485fccbd3656acc230d47"
+  integrity sha512-V02zF+t9Y3O9D3druRNYr1AwMAEwE/4/+udbx6rU4PxWmHwscyVBk3FtVpfZtDTV+UaUrzXCu6wrMaP98yFvkQ==
   dependencies:
     "@manuscripts/json-schema" "^2.2.2"
     astrocite-bibtex "^0.16.4"
@@ -1364,13 +1364,13 @@
     citeproc "^2.4.62"
     fontoxpath "^3.28.2"
 
-"@manuscripts/transform@2.0.3-LEAN-3074-0":
-  version "2.0.3-LEAN-3074-0"
-  resolved "https://registry.yarnpkg.com/@manuscripts/transform/-/transform-2.0.3-LEAN-3074-0.tgz#4444cc43bd53c40c843dcfe92ae2a47a6ed1429e"
-  integrity sha512-PsrKzunt5IYsiqGrZBEXSeGDpaypJugiYLpekWrl/TIAMytUMP2jzyfXrdBjfQEacQHvfai7VDxFtz8kvPemeQ==
+"@manuscripts/transform@^2.0.4":
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/@manuscripts/transform/-/transform-2.0.4.tgz#340777265162dd1ff810133bcedb3b2a24995f16"
+  integrity sha512-Gx5MQ2HWw6/e88rJ7Id3e3kyaoWMx60crLntf/gJ/eZ9i93Es9UfPaZpXX4WqSAc2x3z7dMJ9JWwTfQSFXsRvg==
   dependencies:
     "@manuscripts/json-schema" "^2.2.2"
-    "@manuscripts/library" "1.3.1-LEAN-3074-0"
+    "@manuscripts/library" "1.3.2"
     debug "^4.3.4"
     jszip "^3.10.1"
     mathjax-full "^3.2.2"
