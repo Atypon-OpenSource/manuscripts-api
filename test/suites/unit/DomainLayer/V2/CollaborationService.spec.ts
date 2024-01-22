@@ -78,9 +78,8 @@ describe('CollaborationService', () => {
       ).rejects.toThrow(new MissingDocumentError('documentID'))
     })
     it('should throw an error if the version is not the latest', async () => {
-      documentService.findDocument = jest.fn().mockResolvedValue({})
-      collaborationService['findAndApplyStepsToDocument'] = jest.fn()
-      documentService.findDocumentVersion = jest.fn().mockResolvedValue(1)
+      documentService.findDocument = jest.fn().mockResolvedValue({ version: 1 })
+      collaborationService['applyStepsToDocument'] = jest.fn()
       await expect(
         collaborationService.receiveSteps('documentID', {
           steps: [],
@@ -92,7 +91,7 @@ describe('CollaborationService', () => {
     it('should throw an error if the document history creation fails', async () => {
       documentService.findDocument = jest.fn().mockResolvedValue({})
       documentService.updateDocument = jest.fn().mockResolvedValue({})
-      collaborationService['findAndApplyStepsToDocument'] = jest.fn()
+      collaborationService['applyStepsToDocument'] = jest.fn()
       documentService.findDocumentVersion = jest.fn().mockResolvedValue(0)
       documentHistoryService.createDocumentHistory = jest
         .fn()
