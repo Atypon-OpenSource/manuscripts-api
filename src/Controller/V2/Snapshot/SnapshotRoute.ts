@@ -108,7 +108,7 @@ export class SnapshotRoute extends BaseRoute {
     const { projectID, manuscriptID } = req.params
     const user = req.user
     const result = await this.snapshotController.listSnapshotLabels(projectID, manuscriptID, user)
-    if (!result) {
+    if (result.length === 0) {
       res.status(StatusCodes.NOT_FOUND).send('Snapshot labels not found')
     } else {
       res.json({ labels: result })
