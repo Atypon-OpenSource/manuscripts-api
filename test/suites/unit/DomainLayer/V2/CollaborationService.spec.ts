@@ -18,7 +18,7 @@ import '../../../../utilities/dbMock.ts'
 import '../../../../utilities/configMock.ts'
 
 import { schema } from '@manuscripts/transform'
-import { Prisma } from '@prisma/client'
+import { Prisma, PrismaClient } from '@prisma/client'
 import { Step } from 'prosemirror-transform'
 
 import { DIContainer } from '../../../../../src/DIContainer/DIContainer'
@@ -33,6 +33,7 @@ jest.setTimeout(TEST_TIMEOUT)
 let documentService: DocumentService
 let documentHistoryService: DocumentHistoryService
 let collaborationService: CollaborationService
+let mockPrisma: jest.Mocked<PrismaClient>
 
 beforeEach(async () => {
   ;(DIContainer as any)._sharedContainer = null
@@ -40,6 +41,17 @@ beforeEach(async () => {
   documentService = DIContainer.sharedContainer.documentService
   documentHistoryService = DIContainer.sharedContainer.documentHistoryService
   collaborationService = DIContainer.sharedContainer.collaborationService
+  mockPrisma = new PrismaClient() as any
+  mockPrisma.$transaction = jest.fn()
+})
+jest.mock('@prisma/client', () => {
+  const mPrismaClient = {
+    $use: jest.fn(),
+  }
+  const mPrisma = {
+    TransactionIsolationLevel: { Serializable: 'SERIALIZABLE' },
+  }
+  return { PrismaClient: jest.fn(() => mPrismaClient), Prisma: mPrisma }
 })
 afterEach(() => {
   jest.clearAllMocks()
@@ -66,6 +78,9 @@ const hydrateSteps = (jsonSteps: Prisma.JsonValue[]): Step[] => {
 describe('CollaborationService', () => {
   describe('receiveSteps', () => {
     it('should throw an error if the document is not found', async () => {
+      mockPrisma.$transaction.mockImplementation(async (callback) => {
+        return await callback(mockPrisma)
+      })
       documentService.findDocument = jest
         .fn()
         .mockRejectedValue(new MissingDocumentError('documentID'))
@@ -78,6 +93,9 @@ describe('CollaborationService', () => {
       ).rejects.toThrow(new MissingDocumentError('documentID'))
     })
     it('should throw an error if the version is not the latest', async () => {
+      mockPrisma.$transaction.mockImplementation(async (callback) => {
+        return await callback(mockPrisma)
+      })
       documentService.findDocument = jest.fn().mockResolvedValue({ version: 1 })
       collaborationService['applyStepsToDocument'] = jest.fn()
       await expect(
@@ -89,6 +107,9 @@ describe('CollaborationService', () => {
       ).rejects.toThrow(new VersionMismatchError(1))
     })
     it('should throw an error if the document history creation fails', async () => {
+      mockPrisma.$transaction.mockImplementation(async (callback) => {
+        return await callback(mockPrisma)
+      })
       documentService.findDocument = jest.fn().mockResolvedValue({})
       documentService.updateDocument = jest.fn().mockResolvedValue({})
       collaborationService['applyStepsToDocument'] = jest.fn()
@@ -105,6 +126,9 @@ describe('CollaborationService', () => {
       ).rejects.toThrow(new Error('Failed to create document history'))
     })
     it('should return the history if the document history creation succeeds', async () => {
+      mockPrisma.$transaction.mockImplementation(async (callback) => {
+        return await callback(mockPrisma)
+      })
       documentService.findDocument = jest.fn().mockResolvedValue({})
       documentService.findDocumentVersion = jest.fn().mockResolvedValue(0)
       documentService.updateDocument = jest.fn().mockResolvedValue({})
