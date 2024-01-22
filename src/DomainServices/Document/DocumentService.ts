@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ManuscriptDoc } from '@prisma/client'
+import { ManuscriptDoc, Prisma } from '@prisma/client'
 
 import type {
   ICreateDoc,
@@ -39,8 +39,11 @@ export class DocumentService implements IDocumentService {
     }
     return found.version
   }
-  async findDocument(documentID: string): Promise<ManuscriptDoc> {
-    const found = await prisma.manuscriptDoc.findUnique({
+  async findDocument(
+    documentID: string,
+    tx: Prisma.TransactionClient = prisma
+  ): Promise<ManuscriptDoc> {
+    const found = await tx.manuscriptDoc.findUnique({
       where: {
         manuscript_model_id: documentID,
       },
@@ -82,9 +85,13 @@ export class DocumentService implements IDocumentService {
     })
     return { ...saved, snapshots: [] }
   }
-  async updateDocument(documentID: string, payload: IUpdateDocument): Promise<ManuscriptDoc> {
+  async updateDocument(
+    documentID: string,
+    payload: IUpdateDocument,
+    tx: Prisma.TransactionClient = prisma
+  ): Promise<ManuscriptDoc> {
     try {
-      const saved = await prisma.manuscriptDoc.update({
+      const saved = await tx.manuscriptDoc.update({
         data: payload,
         where: {
           manuscript_model_id: documentID,

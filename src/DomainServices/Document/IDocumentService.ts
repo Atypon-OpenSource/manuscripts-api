@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ManuscriptDoc } from '@prisma/client'
+import { ManuscriptDoc, Prisma } from '@prisma/client'
 
 import type {
   ICreateDoc,
@@ -24,9 +24,13 @@ import type {
 
 export interface IDocumentService {
   findDocumentVersion(id: string): Promise<number | null>
-  findDocument(id: string): Promise<ManuscriptDoc>
+  findDocument(id: string, tx?: Prisma.TransactionClient): Promise<ManuscriptDoc>
   findDocumentWithSnapshot(DocumentID: string): Promise<ManuscriptDocWithSnapshots>
   createDocument(payload: ICreateDoc, userID: string): Promise<ManuscriptDocWithSnapshots>
-  updateDocument(documentID: string, payload: IUpdateDocument): Promise<ManuscriptDoc>
+  updateDocument(
+    documentID: string,
+    payload: IUpdateDocument,
+    tx?: Prisma.TransactionClient
+  ): Promise<ManuscriptDoc>
   deleteDocument(documentID: string): Promise<ManuscriptDoc>
 }

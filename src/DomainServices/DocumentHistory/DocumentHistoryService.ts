@@ -33,9 +33,10 @@ export class DocumentHistoryService {
     documentID: string,
     steps: Prisma.JsonValue[],
     version: number,
-    clientID: string
+    clientID: string,
+    tx: Prisma.TransactionClient = prisma
   ): Promise<ManuscriptDocHistory> {
-    const saved = await prisma.manuscriptDocHistory.create({
+    const saved = await tx.manuscriptDocHistory.create({
       data: {
         doc_id: documentID,
         steps: steps,

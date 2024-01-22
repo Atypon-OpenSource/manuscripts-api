@@ -19,59 +19,58 @@ import { ManuscriptDocHistory, Prisma } from '@prisma/client'
 import { Step } from 'prosemirror-transform'
 
 import type { History, IReceiveSteps } from '../../../types/quarterback/collaboration'
-import type { Doc } from '../../../types/quarterback/doc'
-import { DIContainer } from '../../DIContainer/DIContainer'
+import prisma from '../../DataAccess/prismaClient'
 import { VersionMismatchError } from '../../Errors'
 import { IDocumentService } from '../Document/IDocumentService'
 import { DocumentHistoryService } from '../DocumentHistory/DocumentHistoryService'
-
 export class CollaborationService {
   constructor(
     private readonly documentService: IDocumentService,
     private readonly documentHistoryService: DocumentHistoryService
-  ) { }
+  ) {}
 
   private readonly DEFAULT_DOC_VERSION = 0
 
   public async receiveSteps(documentID: string, payload: IReceiveSteps): Promise<History> {
-    const updatedDoc = await this.findAndApplyStepsToDocument(documentID, payload.steps)
-    await this.validateDocumentVersionForUpdate(documentID, payload.version)
-    await this.documentService.updateDocument(documentID, {
-      doc: updatedDoc,
-      version: payload.version + payload.steps.length,
-    })
-    await this.documentHistoryService.createDocumentHistory(
-      documentID,
-      payload.steps,
-      payload.version + payload.steps.length,
-      payload.clientID.toString()
+    return prisma.$transaction(
+      async (tx) => {
+        const found = await this.documentService.findDocument(documentID, tx)
+        await this.validateDocumentVersionForUpdate(found.version || 0, payload.version)
+        const updatedDoc = this.applyStepsToDocument(payload.steps, found.doc)
+        await this.documentService.updateDocument(
+          documentID,
+          {
+            doc: updatedDoc,
+            version: payload.version + payload.steps.length,
+          },
+          tx
+        )
+        await this.documentHistoryService.createDocumentHistory(
+          documentID,
+          payload.steps,
+          payload.version + payload.steps.length,
+          payload.clientID.toString(),
+          tx
+        )
+        return {
+          steps: payload.steps,
+          clientIDs: Array(payload.steps.length).fill(payload.clientID),
+          version: payload.version + payload.steps.length,
+        }
+      },
+      { isolationLevel: Prisma.TransactionIsolationLevel.Serializable }
     )
-    return {
-      steps: payload.steps,
-      clientIDs: Array(payload.steps.length).fill(payload.clientID),
-      version: payload.version + payload.steps.length,
-    }
   }
-  private async findAndApplyStepsToDocument(documentID: string, steps: Prisma.JsonValue[]) {
-    const found = await this.documentService.findDocument(documentID)
-    return this.applyStepsToDocument(steps, found.doc)
-  }
+
   private async validateDocumentVersionForUpdate(
-    documentID: string,
+    docVersion: number,
     version: number
   ): Promise<void> {
-    // we find the document again to ensure that the version is still correct
-    const docVersion =
-      (await DIContainer.sharedContainer.documentService.findDocumentVersion(documentID)) ||
-      this.DEFAULT_DOC_VERSION
     if (version != docVersion) {
       throw new VersionMismatchError(docVersion)
     }
   }
-  private applyStepsToDocument(
-    jsonSteps: Prisma.JsonValue[],
-    document: Prisma.JsonValue
-  ): Promise<Doc> {
+  private applyStepsToDocument(jsonSteps: Prisma.JsonValue[], document: Prisma.JsonValue) {
     const steps = this.hydrateSteps(jsonSteps)
     let pmDocument = schema.nodeFromJSON(document)
     steps.forEach((step: Step) => {
