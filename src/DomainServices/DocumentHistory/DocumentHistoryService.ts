@@ -18,10 +18,14 @@ import { ManuscriptDocHistory, Prisma } from '@prisma/client'
 
 import prisma from '../../DataAccess/prismaClient'
 import { MissingDocumentHistoryError } from '../../Errors'
+import { IDocumentHistoryService } from './IDocumentHistoryService'
 
-export class DocumentHistoryService {
-  async clearDocumentHistory(documentID: string): Promise<number> {
-    const { count } = await prisma.manuscriptDocHistory.deleteMany({
+export class DocumentHistoryService implements IDocumentHistoryService {
+  async clearDocumentHistory(
+    documentID: string,
+    tx: Prisma.TransactionClient = prisma
+  ): Promise<number> {
+    const { count } = await tx.manuscriptDocHistory.deleteMany({
       where: {
         doc_id: documentID,
       },
@@ -46,8 +50,11 @@ export class DocumentHistoryService {
     })
     return saved
   }
-  async findLatestDocumentHistory(documentID: string): Promise<ManuscriptDocHistory> {
-    const found = await prisma.manuscriptDocHistory.findFirst({
+  async findLatestDocumentHistory(
+    documentID: string,
+    tx: Prisma.TransactionClient = prisma
+  ): Promise<ManuscriptDocHistory> {
+    const found = await tx.manuscriptDocHistory.findFirst({
       where: {
         doc_id: documentID,
       },
@@ -62,9 +69,10 @@ export class DocumentHistoryService {
   }
   async findDocumentHistories(
     documentID: string,
-    fromVersion = 0
+    fromVersion = 0,
+    tx: Prisma.TransactionClient = prisma
   ): Promise<ManuscriptDocHistory[]> {
-    const found = await prisma.manuscriptDocHistory.findMany({
+    const found = await tx.manuscriptDocHistory.findMany({
       where: {
         doc_id: documentID,
         version: {

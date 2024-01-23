@@ -14,14 +14,17 @@
  * limitations under the License.
  */
 
-import { ManuscriptSnapshot } from '@prisma/client'
+import { ManuscriptSnapshot, Prisma } from '@prisma/client'
 
 import type { SaveSnapshotModel, SnapshotLabel } from '../../../types/quarterback/snapshot'
 
 export interface ISnapshotService {
-  listSnapshotLabels(documentID: string): Promise<SnapshotLabel[]>
-  getSnapshot(snapshotID: string): Promise<ManuscriptSnapshot>
-  saveSnapshot(payload: SaveSnapshotModel): Promise<ManuscriptSnapshot>
-  deleteSnapshot(snapshotID: string): Promise<ManuscriptSnapshot>
-  deleteAllManuscriptSnapshots(documentID: string): Promise<number>
+  listSnapshotLabels(documentID: string, tx?: Prisma.TransactionClient): Promise<SnapshotLabel[]>
+  getSnapshot(snapshotID: string, tx?: Prisma.TransactionClient): Promise<ManuscriptSnapshot>
+  saveSnapshot(
+    payload: SaveSnapshotModel,
+    tx?: Prisma.TransactionClient
+  ): Promise<ManuscriptSnapshot>
+  deleteSnapshot(snapshotID: string, tx?: Prisma.TransactionClient): Promise<ManuscriptSnapshot>
+  deleteAllManuscriptSnapshots(documentID: string, tx?: Prisma.TransactionClient): Promise<number>
 }

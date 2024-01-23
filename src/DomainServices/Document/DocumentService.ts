@@ -25,8 +25,11 @@ import { MissingDocumentError, MissingRecordError } from '../../Errors'
 import { IDocumentService } from './IDocumentService'
 
 export class DocumentService implements IDocumentService {
-  async findDocumentVersion(documentID: string): Promise<number | null> {
-    const found = await prisma.manuscriptDoc.findFirst({
+  async findDocumentVersion(
+    documentID: string,
+    tx: Prisma.TransactionClient = prisma
+  ): Promise<number | null> {
+    const found = await tx.manuscriptDoc.findFirst({
       where: {
         manuscript_model_id: documentID,
       },
@@ -53,8 +56,11 @@ export class DocumentService implements IDocumentService {
     }
     return found
   }
-  async findDocumentWithSnapshot(documentID: string): Promise<ManuscriptDocWithSnapshots> {
-    const found = await prisma.manuscriptDoc.findUnique({
+  async findDocumentWithSnapshot(
+    documentID: string,
+    tx: Prisma.TransactionClient = prisma
+  ): Promise<ManuscriptDocWithSnapshots> {
+    const found = await tx.manuscriptDoc.findUnique({
       where: {
         manuscript_model_id: documentID,
       },
@@ -73,8 +79,12 @@ export class DocumentService implements IDocumentService {
     }
     return found
   }
-  async createDocument(payload: ICreateDoc, userID: string): Promise<ManuscriptDocWithSnapshots> {
-    const saved = await prisma.manuscriptDoc.create({
+  async createDocument(
+    payload: ICreateDoc,
+    userID: string,
+    tx: Prisma.TransactionClient = prisma
+  ): Promise<ManuscriptDocWithSnapshots> {
+    const saved = await tx.manuscriptDoc.create({
       data: {
         manuscript_model_id: payload.manuscript_model_id,
         user_model_id: userID,
@@ -105,9 +115,12 @@ export class DocumentService implements IDocumentService {
       throw error
     }
   }
-  async deleteDocument(documentID: string): Promise<ManuscriptDoc> {
+  async deleteDocument(
+    documentID: string,
+    tx: Prisma.TransactionClient = prisma
+  ): Promise<ManuscriptDoc> {
     try {
-      const deleted = await prisma.manuscriptDoc.delete({
+      const deleted = await tx.manuscriptDoc.delete({
         where: {
           manuscript_model_id: documentID,
         },

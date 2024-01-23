@@ -23,14 +23,21 @@ import type {
 } from '../../../types/quarterback/doc'
 
 export interface IDocumentService {
-  findDocumentVersion(id: string): Promise<number | null>
+  findDocumentVersion(id: string, tx?: Prisma.TransactionClient): Promise<number | null>
   findDocument(id: string, tx?: Prisma.TransactionClient): Promise<ManuscriptDoc>
-  findDocumentWithSnapshot(DocumentID: string): Promise<ManuscriptDocWithSnapshots>
-  createDocument(payload: ICreateDoc, userID: string): Promise<ManuscriptDocWithSnapshots>
+  findDocumentWithSnapshot(
+    DocumentID: string,
+    tx?: Prisma.TransactionClient
+  ): Promise<ManuscriptDocWithSnapshots>
+  createDocument(
+    payload: ICreateDoc,
+    userID: string,
+    tx?: Prisma.TransactionClient
+  ): Promise<ManuscriptDocWithSnapshots>
   updateDocument(
     documentID: string,
     payload: IUpdateDocument,
     tx?: Prisma.TransactionClient
   ): Promise<ManuscriptDoc>
-  deleteDocument(documentID: string): Promise<ManuscriptDoc>
+  deleteDocument(documentID: string, tx?: Prisma.TransactionClient): Promise<ManuscriptDoc>
 }
