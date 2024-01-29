@@ -21,7 +21,8 @@ import type {
   ManuscriptDocWithSnapshots,
 } from '../../../types/quarterback/doc'
 import type { Maybe } from '../../../types/quarterback/utils'
-import prisma from '../../DataAccess/prismaClient'
+import prisma, { PrismaErrorCodes } from '../../DataAccess/prismaClient'
+import { MissingDocumentError } from '../../Errors'
 import { IDocumentService } from './IDocumentService'
 
 export class DocumentService implements IDocumentService {
@@ -101,11 +102,18 @@ export class DocumentService implements IDocumentService {
     return { data: saved }
   }
   async deleteDocument(documentID: string): Promise<Maybe<ManuscriptDoc>> {
-    const deleted = await prisma.manuscriptDoc.delete({
-      where: {
-        manuscript_model_id: documentID,
-      },
-    })
-    return { data: deleted }
+    try {
+      const deleted = await prisma.manuscriptDoc.delete({
+        where: {
+          manuscript_model_id: documentID,
+        },
+      })
+      return { data: deleted }
+    } catch (error) {
+      if (error.code === PrismaErrorCodes.RecordMissing) {
+        throw new MissingDocumentError(documentID)
+      }
+      throw error
+    }
   }
 }

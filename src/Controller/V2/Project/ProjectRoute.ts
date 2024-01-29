@@ -132,7 +132,7 @@ export class ProjectRoute extends BaseRoute {
         `${this.basePath}/:projectID/archive`,
         `${this.basePath}/:projectID/manuscript/:manuscriptID/archive`,
       ],
-      celebrate(getArchiveSchema, {}),
+      celebrate(getArchiveSchema),
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
@@ -143,7 +143,7 @@ export class ProjectRoute extends BaseRoute {
 
     router.get(
       `${this.basePath}/:projectID/:scope`,
-      celebrate(accessTokenSchema, {}),
+      celebrate(accessTokenSchema),
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
@@ -154,7 +154,7 @@ export class ProjectRoute extends BaseRoute {
 
     router.delete(
       `${this.basePath}/:projectID`,
-      celebrate(deleteSchema, {}),
+      celebrate(deleteSchema),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
@@ -320,6 +320,6 @@ export class ProjectRoute extends BaseRoute {
       throw new ValidationError('No user found', req.user)
     }
     await this.projectController.deleteProject(projectID, user)
-    res.status(StatusCodes.OK).end()
+    res.status(StatusCodes.NO_CONTENT).end()
   }
 }

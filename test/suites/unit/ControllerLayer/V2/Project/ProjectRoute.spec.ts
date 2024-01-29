@@ -471,7 +471,7 @@ describe('ProjectRoute', () => {
       )
     })
 
-    it('should returned OK if called correctly', async () => {
+    it('should return NO_CONTENT if called correctly', async () => {
       const projectID = deleteProjectRequest.params.projectID
       const permissions = new Set([ProjectPermission.DELETE])
       projectService.getPermissions = jest.fn().mockResolvedValue(permissions)
@@ -481,7 +481,7 @@ describe('ProjectRoute', () => {
       await route.deleteProject(deleteProjectRequest, res)
 
       expect(projectService.deleteProject).toHaveBeenCalledWith(projectID)
-      expect(res.status).toHaveBeenCalledWith(StatusCodes.OK)
+      expect(res.status).toHaveBeenCalledWith(StatusCodes.NO_CONTENT)
     })
   })
 })
