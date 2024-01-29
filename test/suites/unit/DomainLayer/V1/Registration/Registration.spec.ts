@@ -26,15 +26,6 @@ jest.mock('../../../../../../src/DomainServices/Sync/SyncService', () => {
   }
 })
 
-jest.mock('email-templates', () =>
-  jest.fn().mockImplementation(() => {
-    return {
-      send: jest.fn(() => Promise.resolve({})),
-      render: jest.fn(() => Promise.resolve({})),
-    }
-  })
-)
-
 import Chance from 'chance'
 
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
