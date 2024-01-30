@@ -35,7 +35,7 @@ export class CollaborationService {
     return prisma.$transaction(
       async (tx) => {
         const found = await this.documentService.findDocument(documentID, tx)
-        await this.validateDocumentVersionForUpdate(found.version || 0, payload.version)
+        this.validateDocumentVersionForUpdate(found.version || 0, payload.version)
         const updatedDoc = this.applyStepsToDocument(payload.steps, found.doc)
         await this.documentService.updateDocument(
           documentID,
@@ -62,10 +62,7 @@ export class CollaborationService {
     )
   }
 
-  private async validateDocumentVersionForUpdate(
-    docVersion: number,
-    version: number
-  ): Promise<void> {
+  private validateDocumentVersionForUpdate(docVersion: number, version: number): void {
     if (version != docVersion) {
       throw new VersionMismatchError(docVersion)
     }
