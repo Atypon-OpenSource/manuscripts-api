@@ -36,13 +36,10 @@ export class SnapshotController extends BaseController {
       projectID,
       QuarterbackPermission.WRITE
     )
-    const found = await DIContainer.sharedContainer.documentService.findDocumentWithSnapshot(
+    const document = await DIContainer.sharedContainer.documentService.findDocumentWithSnapshot(
       payload.docID
     )
-    if (!('data' in found)) {
-      return found
-    }
-    const snapshotModel = { docID: payload.docID, name: payload.name, snapshot: found.data.doc }
+    const snapshotModel = { docID: payload.docID, name: payload.name, snapshot: document.doc }
     await this.resetDocumentHistory(payload.docID)
     return await DIContainer.sharedContainer.snapshotService.saveSnapshot(snapshotModel)
   }
@@ -93,10 +90,7 @@ export class SnapshotController extends BaseController {
   }
   private async fetchSnapshot(snapshotID: string) {
     const result = await DIContainer.sharedContainer.snapshotService.getSnapshot(snapshotID)
-    if (!('data' in result)) {
-      throw new ValidationError('Snapshot not found', snapshotID)
-    }
-    const snapshot: Snapshot = JSON.parse(JSON.stringify(result.data))
+    const snapshot: Snapshot = JSON.parse(JSON.stringify(result))
     return snapshot
   }
   private async resetDocumentHistory(documentID: string) {

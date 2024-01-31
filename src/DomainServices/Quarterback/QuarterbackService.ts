@@ -17,7 +17,7 @@
 import { Manuscript } from '@manuscripts/json-schema'
 
 import { DIContainer } from '../../DIContainer/DIContainer'
-import { RoleDoesNotPermitOperationError, ValidationError } from '../../Errors'
+import { MissingManuscriptError, RoleDoesNotPermitOperationError } from '../../Errors'
 import { ContainerRole } from '../../Models/ContainerModels'
 import { Snapshot } from '../../Models/SnapshotModel'
 import { IQuarterbackService } from './IQuarterbackService'
@@ -59,9 +59,6 @@ export class QuarterbackService implements IQuarterbackService {
     projectID: string,
     permission: QuarterbackPermission
   ) {
-    if (!user) {
-      throw new ValidationError('No user found', user)
-    }
     const permissions = await this.getPermissions(projectID, user._id)
     if (!permissions.has(permission)) {
       throw new RoleDoesNotPermitOperationError(`Access denied`, user._id)
@@ -74,7 +71,7 @@ export class QuarterbackService implements IQuarterbackService {
       await DIContainer.sharedContainer.manuscriptRepository.getById(manuscriptID)
 
     if (!manuscript) {
-      throw new ValidationError('Manuscript not found', manuscriptID)
+      throw new MissingManuscriptError(manuscriptID)
     }
     return manuscript
   }

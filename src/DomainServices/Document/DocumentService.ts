@@ -13,46 +13,54 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ManuscriptDoc } from '@prisma/client'
+import { ManuscriptDoc, Prisma } from '@prisma/client'
 
 import type {
-  ICreateDocRequest,
-  IUpdateDocumentRequest,
+  ICreateDoc,
+  IUpdateDocument,
   ManuscriptDocWithSnapshots,
 } from '../../../types/quarterback/doc'
-import type { Maybe } from '../../../types/quarterback/utils'
 import prisma, { PrismaErrorCodes } from '../../DataAccess/prismaClient'
-import { MissingDocumentError } from '../../Errors'
+import { MissingDocumentError, MissingRecordError } from '../../Errors'
 import { IDocumentService } from './IDocumentService'
 
 export class DocumentService implements IDocumentService {
-  async findDocumentVersion(id: string): Promise<Maybe<{ version: number | null }>> {
-    const found = await prisma.manuscriptDoc.findFirst({
+  async findDocumentVersion(
+    documentID: string,
+    tx: Prisma.TransactionClient = prisma
+  ): Promise<number | null> {
+    const found = await tx.manuscriptDoc.findFirst({
       where: {
-        manuscript_model_id: id,
+        manuscript_model_id: documentID,
       },
       select: {
         version: true,
       },
     })
     if (!found) {
-      return { err: 'Document not found', code: 404 }
+      throw new MissingDocumentError(documentID)
     }
-    return { data: found }
+    return found.version
   }
-  async findDocument(id: string): Promise<Maybe<ManuscriptDoc>> {
-    const found = await prisma.manuscriptDoc.findUnique({
+  async findDocument(
+    documentID: string,
+    tx: Prisma.TransactionClient = prisma
+  ): Promise<ManuscriptDoc> {
+    const found = await tx.manuscriptDoc.findUnique({
       where: {
-        manuscript_model_id: id,
+        manuscript_model_id: documentID,
       },
     })
     if (!found) {
-      return { err: 'Document not found', code: 404 }
+      throw new MissingDocumentError(documentID)
     }
-    return { data: found }
+    return found
   }
-  async findDocumentWithSnapshot(documentID: string): Promise<Maybe<ManuscriptDocWithSnapshots>> {
-    const found = await prisma.manuscriptDoc.findUnique({
+  async findDocumentWithSnapshot(
+    documentID: string,
+    tx: Prisma.TransactionClient = prisma
+  ): Promise<ManuscriptDocWithSnapshots> {
+    const found = await tx.manuscriptDoc.findUnique({
       where: {
         manuscript_model_id: documentID,
       },
@@ -67,15 +75,16 @@ export class DocumentService implements IDocumentService {
       },
     })
     if (!found) {
-      return { err: 'Document not found', code: 404 }
+      throw new MissingDocumentError(documentID)
     }
-    return { data: found }
+    return found
   }
   async createDocument(
-    payload: ICreateDocRequest,
-    userID: string
-  ): Promise<Maybe<ManuscriptDocWithSnapshots>> {
-    const saved = await prisma.manuscriptDoc.create({
+    payload: ICreateDoc,
+    userID: string,
+    tx: Prisma.TransactionClient = prisma
+  ): Promise<ManuscriptDocWithSnapshots> {
+    const saved = await tx.manuscriptDoc.create({
       data: {
         manuscript_model_id: payload.manuscript_model_id,
         user_model_id: userID,
@@ -84,34 +93,42 @@ export class DocumentService implements IDocumentService {
         version: 0,
       },
     })
-    return { data: { ...saved, snapshots: [] } }
+    return { ...saved, snapshots: [] }
   }
   async updateDocument(
     documentID: string,
-    payload: IUpdateDocumentRequest
-  ): Promise<Maybe<ManuscriptDoc>> {
-    const saved = await prisma.manuscriptDoc.update({
-      data: payload,
-      where: {
-        manuscript_model_id: documentID,
-      },
-    })
-    if (!saved) {
-      return { err: 'Failed to update document', code: 500 }
-    }
-    return { data: saved }
-  }
-  async deleteDocument(documentID: string): Promise<Maybe<ManuscriptDoc>> {
+    payload: IUpdateDocument,
+    tx: Prisma.TransactionClient = prisma
+  ): Promise<ManuscriptDoc> {
     try {
-      const deleted = await prisma.manuscriptDoc.delete({
+      const saved = await tx.manuscriptDoc.update({
+        data: payload,
         where: {
           manuscript_model_id: documentID,
         },
       })
-      return { data: deleted }
+      return saved
     } catch (error) {
       if (error.code === PrismaErrorCodes.RecordMissing) {
-        throw new MissingDocumentError(documentID)
+        throw new MissingRecordError(documentID)
+      }
+      throw error
+    }
+  }
+  async deleteDocument(
+    documentID: string,
+    tx: Prisma.TransactionClient = prisma
+  ): Promise<ManuscriptDoc> {
+    try {
+      const deleted = await tx.manuscriptDoc.delete({
+        where: {
+          manuscript_model_id: documentID,
+        },
+      })
+      return deleted
+    } catch (error) {
+      if (error.code === PrismaErrorCodes.RecordMissing) {
+        throw new MissingRecordError(documentID)
       }
       throw error
     }
