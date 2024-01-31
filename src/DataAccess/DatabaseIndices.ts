@@ -29,6 +29,16 @@ export interface Index {
   script: string
 }
 
+const manuscriptDocIndexesObj = {
+  [BucketKey.ManuscriptDoc]: {
+    bucket: [{ fields: ['manuscript_model_id'] }, { fields: ['project_model_id'] }],
+  },
+} as any
+const manuscriptSnapshotIndexesObj = {
+  [BucketKey.ManuscriptSnapshot]: {
+    bucket: [{ fields: ['doc_id'] }],
+  },
+} as any
 // Object with sets of fields to be indexed
 const projectIndexesObj = {
   [BucketKey.Project]: {
@@ -114,6 +124,15 @@ function buildBucketIndex(bucketName: string, fields: string[]): Index {
       .join(',')}))`,
   }
 }
+function buildQuarterbackIndex(bucketName: string, fields: string[]): Index {
+  const indexName = `idx_${fields.join('_')}`
+  return {
+    name: indexName,
+    script: `CREATE INDEX IF NOT EXISTS "${indexName}" ON "${bucketName}" USING HASH ((${fields
+      .map((field) => `"${field}"`)
+      .join(',')}))`,
+  }
+}
 
 function buildArrayIndex(objectType: string, bucketName: string, field: string): Index {
   const indexName = `${objectType}__${field}`
@@ -157,6 +176,24 @@ export function indices(bucketKey: BucketKey): Index[] {
     }
   }
 
+  if (manuscriptDocIndexesObj[bucketKey]) {
+    for (const objectType of Object.keys(manuscriptDocIndexesObj[bucketKey])) {
+      for (const fieldSets of manuscriptDocIndexesObj[bucketKey][objectType]) {
+        const index = buildQuarterbackIndex(bucketName, fieldSets.fields)
+
+        indicesArray.push(index)
+      }
+    }
+  }
+  if (manuscriptSnapshotIndexesObj[bucketKey]) {
+    for (const objectType of Object.keys(manuscriptSnapshotIndexesObj[bucketKey])) {
+      for (const fieldSets of manuscriptSnapshotIndexesObj[bucketKey][objectType]) {
+        const index = buildQuarterbackIndex(bucketName, fieldSets.fields)
+
+        indicesArray.push(index)
+      }
+    }
+  }
   if (arrayIndexesObj[bucketKey]) {
     for (const objectType of Object.keys(arrayIndexesObj[bucketKey])) {
       for (const fieldSets of arrayIndexesObj[bucketKey][objectType]) {

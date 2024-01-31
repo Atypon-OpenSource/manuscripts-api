@@ -1,5 +1,5 @@
 /*!
- * © 2022 Atypon Systems LLC
+ * © 2020 Atypon Systems LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,17 @@
  * limitations under the License.
  */
 
-import { PrismaClient } from '@prisma/client'
+import { Manuscript } from '@manuscripts/json-schema'
 
-const prisma = new PrismaClient()
+import { Snapshot } from '../../Models/SnapshotModel'
+import { QuarterbackPermission } from './QuarterbackService'
 
-export default prisma
-
-export enum PrismaErrorCodes {
-  RecordMissing = 'P2025',
+export interface IQuarterbackService {
+  validateUserAccess(
+    user: Express.User,
+    projectID: string,
+    permission: QuarterbackPermission
+  ): Promise<void>
+  getManuscriptFromSnapshot(snapshot: Snapshot): Promise<Manuscript>
+  getPermissions(projectID: string, userID: string): Promise<ReadonlySet<QuarterbackPermission>>
 }

@@ -1,5 +1,5 @@
 /*!
- * © 2022 Atypon Systems LLC
+ * © 2023 Atypon Systems LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Prisma } from '@prisma/client'
+import { Step } from 'prosemirror-transform'
 
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
-
-export default prisma
-
-export enum PrismaErrorCodes {
-  RecordMissing = 'P2025',
+export type IReceiveSteps = {
+  steps: Prisma.JsonValue[]
+  clientID: number
+  version: number
 }
+
+export type History = {
+  steps: Step[] | Prisma.JsonValue[]
+  clientIDs: number[]
+  version: number
+}
+
+export type DocumentHistory = History & { doc: Prisma.JsonValue | undefined }

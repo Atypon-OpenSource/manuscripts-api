@@ -183,8 +183,25 @@ export class ProjectService {
   }
 
   public async deleteProject(projectID: string): Promise<void> {
-    //todo log
+    const manuscriptID = await this.getManuscriptID(projectID)
+    if (manuscriptID) {
+      await this.deleteManuscriptResources(manuscriptID)
+    }
     await this.containerRepository.removeWithAllResources(projectID)
+  }
+
+  private async getManuscriptID(projectID: string): Promise<string | null> {
+    const models = await this.containerRepository.getContainerResources(projectID, null, [
+      ObjectTypes.Manuscript,
+    ])
+    return models[0]._id
+  }
+
+  private async deleteManuscriptResources(manuscriptID: string) {
+    await Promise.all([
+      DIContainer.sharedContainer.snapshotService.deleteAllManuscriptSnapshots(manuscriptID),
+      DIContainer.sharedContainer.documentService.deleteDocument(manuscriptID),
+    ])
   }
 
   public async getProject(projectID: string): Promise<Project> {

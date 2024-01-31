@@ -1,5 +1,5 @@
 /*!
- * © 2022 Atypon Systems LLC
+ * © 2023 Atypon Systems LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { JSDOM } from 'jsdom'
 
-import { PrismaClient } from '@prisma/client'
+export const defineGlobals = (): void => {
+  const { window } = new JSDOM()
 
-const prisma = new PrismaClient()
-
-export default prisma
-
-export enum PrismaErrorCodes {
-  RecordMissing = 'P2025',
+  Object.defineProperties(globalThis, {
+    window: {
+      value: window,
+    },
+    document: {
+      value: window.document,
+    },
+    DOMParser: {
+      value: window.DOMParser,
+    },
+    Element: {
+      value: window.Element,
+    },
+    Node: {
+      value: window.Node,
+    },
+    XMLSerializer: {
+      value: window.XMLSerializer,
+    },
+    XPathResult: {
+      value: window.XPathResult,
+    },
+  })
 }
