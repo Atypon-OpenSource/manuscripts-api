@@ -32,34 +32,31 @@ export class CollaborationService {
   private readonly DEFAULT_DOC_VERSION = 0
 
   public async receiveSteps(documentID: string, payload: IReceiveSteps): Promise<History> {
-    return prisma.$transaction(
-      async (tx) => {
-        const found = await this.documentService.findDocument(documentID, tx)
-        this.validateDocumentVersionForUpdate(found.version || 0, payload.version)
-        const updatedDoc = this.applyStepsToDocument(payload.steps, found.doc)
-        await this.documentService.updateDocument(
-          documentID,
-          {
-            doc: updatedDoc,
-            version: payload.version + payload.steps.length,
-          },
-          tx
-        )
-        await this.documentHistoryService.createDocumentHistory(
-          documentID,
-          payload.steps,
-          payload.version + payload.steps.length,
-          payload.clientID.toString(),
-          tx
-        )
-        return {
-          steps: payload.steps,
-          clientIDs: Array(payload.steps.length).fill(payload.clientID),
+    return prisma.$transaction(async (tx) => {
+      const found = await this.documentService.findDocument(documentID, tx)
+      this.validateDocumentVersionForUpdate(found.version || 0, payload.version)
+      const updatedDoc = this.applyStepsToDocument(payload.steps, found.doc)
+      await this.documentService.updateDocument(
+        documentID,
+        {
+          doc: updatedDoc,
           version: payload.version + payload.steps.length,
-        }
-      },
-      { isolationLevel: Prisma.TransactionIsolationLevel.Serializable }
-    )
+        },
+        tx
+      )
+      await this.documentHistoryService.createDocumentHistory(
+        documentID,
+        payload.steps,
+        payload.version + payload.steps.length,
+        payload.clientID.toString(),
+        tx
+      )
+      return {
+        steps: payload.steps,
+        clientIDs: Array(payload.steps.length).fill(payload.clientID),
+        version: payload.version + payload.steps.length,
+      }
+    })
   }
 
   private validateDocumentVersionForUpdate(docVersion: number, version: number): void {
