@@ -415,10 +415,10 @@ export async function insertProject(
   return req.send(body)
 }
 
-export async function getCollaborators(headers: object, params: any): Promise<supertest.Response> {
+export async function getUserProfiles(headers: object, params: any): Promise<supertest.Response> {
   const server: IServer = await createServer()
   return supertest(server.app)
-    .get(`/api/v1/project/${params.containerID}/collaborators`)
+    .get(`/api/v1/project/${params.containerID}/userProfiles`)
     .set(headers)
 }
 

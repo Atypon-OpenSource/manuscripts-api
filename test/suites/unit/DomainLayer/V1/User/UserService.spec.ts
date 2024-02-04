@@ -20,7 +20,6 @@ import { Chance } from 'chance'
 
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
 import {
-  EmailServiceError,
   InvalidCredentialsError,
   InvalidPasswordError,
   MissingUserStatusError,
@@ -130,29 +129,6 @@ describe('User - markUserForDeletion', () => {
 
     await userService.markUserForDeletion('userId', '12345')
     expect(userService.userRepository.patch).toHaveBeenCalled()
-  })
-
-  test('should fail to send email', async () => {
-    const userService: any = DIContainer.sharedContainer.userService
-    userService.userRepository = {
-      getById: async () => Promise.resolve(validUser1),
-      patch: jest.fn(),
-    }
-
-    userService.userStatusRepository = {
-      statusForUserId: async () => Promise.resolve(validUserStatus),
-      fullyQualifiedId: (id: string) => `UserStatus|${id}`,
-    }
-
-    userService.emailService = {
-      sendAccountDeletionNotification: jest.fn(() =>
-        Promise.reject(new EmailServiceError('foo', null))
-      ),
-    }
-
-    return expect(userService.markUserForDeletion('userId', '12345')).rejects.toThrow(
-      EmailServiceError
-    )
   })
 })
 

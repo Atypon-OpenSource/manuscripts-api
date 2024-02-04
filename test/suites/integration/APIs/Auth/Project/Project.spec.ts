@@ -25,12 +25,12 @@ import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
 import {
   basicLogin,
   deleteModel,
-  getCollaborators,
+  getUserProfiles,
   importManuscript,
   insertProject,
   loadProject,
-  saveProject,
-} from '../../../../../api'
+  saveProject
+} from "../../../../../api";
 import { validBody } from '../../../../../data/fixtures/credentialsRequestPayload'
 import {
   authorizationHeader,
@@ -331,7 +331,7 @@ describe('ContainerService - get collaborators', () => {
     await createProject('MPProject:valid-project-id-12')
 
     const authHeader = authorizationHeader(loginResponse.body.token)
-    const collaboratorsResponse = await getCollaborators(
+    const collaboratorsResponse = await getUserProfiles(
       {
         ...ValidContentTypeAcceptJsonHeader,
         ...authHeader,

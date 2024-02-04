@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Manuscript, Model, Project, UserCollaborator } from '@manuscripts/json-schema'
+import { Manuscript, Model, Project, UserProfile } from '@manuscripts/json-schema'
 
 import { DIContainer } from '../../../DIContainer/DIContainer'
 import { ProjectPermission } from '../../../DomainServices/ProjectService'
@@ -118,13 +118,13 @@ export class ProjectController extends BaseController {
     return DIContainer.sharedContainer.projectService.importJats(zip, projectID, templateID)
   }
 
-  async getCollaborators(user: Express.User, projectID: string): Promise<UserCollaborator[]> {
+  async getUserProfiles(user: Express.User, projectID: string): Promise<UserProfile[]> {
     const permissions = await this.getPermissions(projectID, user._id)
     if (!permissions.has(ProjectPermission.READ)) {
       throw new RoleDoesNotPermitOperationError(`Access denied`, user._id)
     }
 
-    return await DIContainer.sharedContainer.userService.getCollaborators(projectID)
+    return await DIContainer.sharedContainer.userService.getProjectUserProfiles(projectID)
   }
 
   async getArchive(

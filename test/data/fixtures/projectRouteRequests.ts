@@ -67,7 +67,7 @@ export const createManuscriptRequest = {
   },
 }
 
-export const getCollaboratorsRequest = {
+export const getUserProfilesRequest = {
   user: validUser,
   params: {
     projectID: validProject._id,

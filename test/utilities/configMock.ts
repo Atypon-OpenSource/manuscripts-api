@@ -44,7 +44,6 @@ jest.mock('../../src/Config/Config', () => {
       enableNonConnectAuth: true,
     },
     email: {
-      fromAddress: 'no-reply@manuscriptsapp.com',
       fromBaseURL: 'http://localhost:3000',
     },
     server: {

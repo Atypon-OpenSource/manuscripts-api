@@ -47,7 +47,7 @@ export const saveProjectSchema: Joi.SchemaMap = {
   }),
 }
 
-export const projectCollaboratorsSchema: Joi.SchemaMap = {
+export const projectUserProfilesSchema: Joi.SchemaMap = {
   headers: Joi.object({
     accept: appJsonAndCharset,
   }).options({ allowUnknown: true }),

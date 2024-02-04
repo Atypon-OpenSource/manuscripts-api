@@ -33,24 +33,17 @@ import {
   NoTokenError,
   ValidationError,
 } from '../../Errors'
-import { SingleUseTokenType } from '../../Models/SingleUseTokenModels'
 import { UserActivityEventType } from '../../Models/UserEventModels'
 import { ConnectSignupCredentials, SignupCredentials, User } from '../../Models/UserModels'
-import { getExpirationTime } from '../../Utilities/JWT/LoginTokenPayload'
 import { AuthService } from '../Auth/AuthService'
-import { EmailService } from '../Email/EmailService'
 import { ISyncService } from '../Sync/ISyncService'
 import { UserActivityTrackingService } from '../UserActivity/UserActivityTrackingService'
 import { IUserRegistrationService } from './IUserRegistrationService'
-
-/** Account verification token timeout. */
-const VERIFICATION_TOKEN_TIMEOUT = () => getExpirationTime(24)
 
 export class UserRegistrationService implements IUserRegistrationService {
   constructor(
     private userRepository: IUserRepository,
     private userEmailRepository: IUserEmailRepository,
-    private emailService: EmailService,
     private singleUseTokenRepository: ISingleUseTokenRepository,
     private activityTrackingService: UserActivityTrackingService,
     private userStatusRepository: IUserStatusRepository,
@@ -123,10 +116,6 @@ export class UserRegistrationService implements IUserRegistrationService {
 
     await this.createUserDetails(newUser, skipVerification, password)
 
-    if (!skipVerification) {
-      await this.sendAccountVerification(newUser)
-    }
-
     // tslint:disable-next-line: no-floating-promises
     this.activityTrackingService.createEvent(
       newUser._id,
@@ -174,15 +163,6 @@ export class UserRegistrationService implements IUserRegistrationService {
     }
   }
 
-  public async sendAccountVerification(user: User) {
-    const tokenId = await this.singleUseTokenRepository.ensureTokenExists(
-      user,
-      SingleUseTokenType.VerifyEmailToken,
-      VERIFICATION_TOKEN_TIMEOUT()
-    )
-    await this.emailService.sendAccountVerification(user, tokenId)
-  }
-
   public async verify(tokenId: string): Promise<void> {
     const userVerificationToken = await this.singleUseTokenRepository.getById(tokenId)
 
@@ -224,8 +204,6 @@ export class UserRegistrationService implements IUserRegistrationService {
     if (userStatus.isVerified) {
       throw new ValidationError('User email address already verified', null)
     }
-
-    await this.sendAccountVerification(user)
     // tslint:disable-next-line: no-floating-promises
     this.activityTrackingService.createEvent(
       user._id,
