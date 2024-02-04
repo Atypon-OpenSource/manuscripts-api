@@ -205,7 +205,10 @@ export class DIContainer {
     this.quarterback = new QuarterbackService()
     this.configService = new ConfigService(config.data.path)
     this.documentHistoryService = new DocumentHistoryService()
-    this.collaborationService = new CollaborationService()
+    this.collaborationService = new CollaborationService(
+      this.documentService,
+      this.documentHistoryService
+    )
   }
 
   /**

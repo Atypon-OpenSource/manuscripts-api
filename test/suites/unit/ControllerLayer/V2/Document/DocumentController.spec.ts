@@ -52,7 +52,7 @@ const mockDoc = {
 }
 const mockReceiveSteps = {
   steps: [],
-  clientID: '123',
+  clientID: 123,
   version: 1,
 }
 const EMPTY_PERMISSIONS = new Set<QuarterbackPermission>()
@@ -302,8 +302,9 @@ describe('DocumentController', () => {
     })
     it('should call quarterback.validateUserAccess', async () => {
       quarterbackService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
+      documentService.findDocument = jest.fn().mockResolvedValue({})
+      collaborationService.getHistoriesFromVersion = jest.fn().mockReturnValue({})
       const spy = jest.spyOn(quarterbackService, 'validateUserAccess')
-      collaborationService.getDocumentHistory = jest.fn().mockReturnValue({ data: {} })
       await documentController.getDocumentHistory('projectID', 'manuscriptID', {} as any)
       expect(spy).toHaveBeenCalled()
     })
@@ -323,7 +324,7 @@ describe('DocumentController', () => {
     it('should call quarterback.validateUserAccess', async () => {
       quarterbackService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
       const spy = jest.spyOn(quarterbackService, 'validateUserAccess')
-      collaborationService.getCombinedHistoriesFromVersion = jest.fn().mockReturnValue({ data: {} })
+      collaborationService.getHistoriesFromVersion = jest.fn().mockReturnValue({ data: {} })
       await documentController.getStepsFromVersion('projectID', 'manuscriptID', '1', {} as any)
       expect(spy).toHaveBeenCalled()
     })

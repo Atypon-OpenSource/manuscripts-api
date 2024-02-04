@@ -20,7 +20,7 @@ import { DIContainer } from '../../../DIContainer/DIContainer'
 import { ProjectPermission } from '../../../DomainServices/ProjectService'
 import {
   MissingContainerError,
-  MissingDocumentError,
+  MissingRecordError,
   RoleDoesNotPermitOperationError,
 } from '../../../Errors'
 import { ProjectUserRole } from '../../../Models/ContainerModels'
@@ -173,7 +173,7 @@ export class ProjectController extends BaseController {
       }
       await DIContainer.sharedContainer.projectService.deleteProject(projectID)
     } catch (error) {
-      if (!(error instanceof MissingContainerError || error instanceof MissingDocumentError)) {
+      if (!(error instanceof MissingContainerError || error instanceof MissingRecordError)) {
         throw error
       }
     }

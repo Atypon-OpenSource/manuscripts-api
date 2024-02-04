@@ -20,7 +20,6 @@ import { StatusCodes } from 'http-status-codes'
 import type { Client, StepsData } from '../../../../types/quarterback/doc'
 import { AuthStrategy } from '../../../Auth/Passport/AuthStrategy'
 import { BaseRoute } from '../../BaseRoute'
-import { queueRequests } from '../RequestQueue'
 import { DocumentController } from './DocumentController'
 import {
   createDocumentSchema,
@@ -35,43 +34,11 @@ import {
 export class DocumentRoute extends BaseRoute {
   private documentController = new DocumentController()
   private _documentClientsMap = new Map<string, Client[]>()
-  get documentsClientsMap() {
-    return this._documentClientsMap
-  }
-  private addClient(newClient: Client, manuscriptID: string) {
-    const clients = this._documentClientsMap.get(manuscriptID) || []
-    clients.push(newClient)
-    this.documentsClientsMap.set(manuscriptID, clients)
-  }
-  private sendDataToClients(data: StepsData, manuscriptID: string) {
-    const clientsForDocument = this.documentsClientsMap.get(manuscriptID)
-    clientsForDocument?.forEach((client) => {
-      client.res.write(`data: ${JSON.stringify(data)}\n\n`)
-    })
-  }
-  private removeClientByID(clientID: number, manuscriptID: string) {
-    const clients = this.documentsClientsMap.get(manuscriptID) || []
-    const index = clients.findIndex((client) => client.id === clientID)
-    if (index !== -1) {
-      clients.splice(index, 1)
-      this.documentsClientsMap.set(manuscriptID, clients)
-    }
-  }
-  private manageClientConnection(req: Request, res: Response) {
-    const newClient: Client = {
-      id: Date.now(),
-      res,
-    }
-    const { manuscriptID } = req.params
-    this.addClient(newClient, manuscriptID)
-
-    req.on('close', () => {
-      this.removeClientByID(newClient.id, manuscriptID)
-    })
-  }
-
   private get basePath(): string {
     return '/doc'
+  }
+  private get documentsClientsMap() {
+    return this._documentClientsMap
   }
 
   public create(router: Router): void {
@@ -127,7 +94,7 @@ export class DocumentRoute extends BaseRoute {
         AuthStrategy.JWTAuth,
         (req: Request, res: Response, next: NextFunction) => {
           return this.runWithErrorHandling(async () => {
-            await queueRequests(req, res, this.receiveSteps.bind(this))
+            await this.receiveSteps(req, res)
           }, next)
         }
       )
@@ -138,7 +105,7 @@ export class DocumentRoute extends BaseRoute {
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
-          await queueRequests(req, res, this.listen.bind(this))
+          await this.listen(req, res)
         }, next)
       }
     )
@@ -149,7 +116,7 @@ export class DocumentRoute extends BaseRoute {
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
-          await queueRequests(req, res, this.getStepFromVersion.bind(this))
+          await this.getStepFromVersion(req, res)
         }, next)
       }
     )
@@ -159,48 +126,27 @@ export class DocumentRoute extends BaseRoute {
     const { projectID } = req.params
     const payload = req.body
     const user = req.user
-    const result = await this.documentController.createDocument(projectID, payload, user)
-    if ('err' in result && 'code' in result) {
-      res.status(result.code).send(result.err)
-    } else {
-      res.json(result.data)
-    }
+    const doucment = await this.documentController.createDocument(projectID, payload, user)
+    res.json(doucment)
   }
   private async updateDocument(req: Request, res: Response) {
     const { projectID, manuscriptID } = req.params
     const payload = req.body
     const user = req.user
-    const result = await this.documentController.updateDocument(
-      projectID,
-      manuscriptID,
-      payload,
-      user
-    )
-    if ('err' in result && 'code' in result) {
-      res.status(result.code).send(result.err)
-    } else {
-      res.sendStatus(StatusCodes.OK).end()
-    }
+    await this.documentController.updateDocument(projectID, manuscriptID, payload, user)
+    res.sendStatus(StatusCodes.OK).end()
   }
   private async getDocument(req: Request, res: Response) {
     const { projectID, manuscriptID } = req.params
     const user = req.user
-    const result = await this.documentController.getDocument(projectID, manuscriptID, user)
-    if ('err' in result && 'code' in result) {
-      res.status(result.code).send(result.err)
-    } else {
-      res.json(result.data)
-    }
+    const document = await this.documentController.getDocument(projectID, manuscriptID, user)
+    res.json(document)
   }
   private async deleteDocument(req: Request, res: Response) {
     const { projectID, manuscriptID } = req.params
     const user = req.user
-    const result = await this.documentController.deleteDocument(projectID, manuscriptID, user)
-    if ('err' in result && 'code' in result) {
-      res.status(result.code).send(result.err)
-    } else {
-      res.sendStatus(StatusCodes.OK).end()
-    }
+    await this.documentController.deleteDocument(projectID, manuscriptID, user)
+    res.sendStatus(StatusCodes.OK).end()
   }
   private async receiveSteps(req: Request, res: Response) {
     const { manuscriptID, projectID } = req.params
@@ -212,34 +158,20 @@ export class DocumentRoute extends BaseRoute {
       payload,
       user
     )
-    if ('err' in result && 'code' in result) {
-      res.status(result.code).send(result.err)
-    } else {
-      res.sendStatus(StatusCodes.OK).end()
-      this.sendDataToClients(
-        {
-          steps: result.data.steps,
-          clientIDs: result.data.clientIDs,
-          version: result.data.version,
-        },
-        manuscriptID
-      )
-    }
+    res.sendStatus(StatusCodes.OK).end()
+    this.sendDataToClients(result, manuscriptID)
   }
   private async listen(req: Request, res: Response) {
     const { manuscriptID, projectID } = req.params
     const user = req.user
     const result = await this.documentController.getDocumentHistory(projectID, manuscriptID, user)
-    if ('err' in result && 'code' in result) {
-      res.status(result.code).send(result.err)
-    } else {
-      res.setHeader('Content-Type', 'text/event-stream')
-      res.setHeader('Connection', 'keep-alive')
-      res.setHeader('Cache-Control', 'no-cache')
-      const data = `data: ${JSON.stringify(result.data)}\n\n`
-      res.write(data)
-      this.manageClientConnection(req, res)
-    }
+
+    res.setHeader('Content-Type', 'text/event-stream')
+    res.setHeader('Connection', 'keep-alive')
+    res.setHeader('Cache-Control', 'no-cache')
+    const data = this.formatDataForSSE(result)
+    res.write(data)
+    this.manageClientConnection(req, res)
   }
 
   private async getStepFromVersion(req: Request, res: Response) {
@@ -251,10 +183,40 @@ export class DocumentRoute extends BaseRoute {
       versionID,
       user
     )
-    if ('err' in result && 'code' in result) {
-      res.status(result.code).send(result.err)
-    } else {
-      res.status(StatusCodes.OK).send(result.data)
+    res.status(StatusCodes.OK).send(result)
+  }
+  private addClient(newClient: Client, manuscriptID: string) {
+    const clients = this._documentClientsMap.get(manuscriptID) || []
+    clients.push(newClient)
+    this.documentsClientsMap.set(manuscriptID, clients)
+  }
+  private sendDataToClients(data: StepsData, manuscriptID: string) {
+    const clientsForDocument = this.documentsClientsMap.get(manuscriptID)
+    clientsForDocument?.forEach((client) => {
+      client.res.write(`data: ${JSON.stringify(data)}\n\n`)
+    })
+  }
+  private removeClientByID(clientID: number, manuscriptID: string) {
+    const clients = this.documentsClientsMap.get(manuscriptID) || []
+    const index = clients.findIndex((client) => client.id === clientID)
+    if (index !== -1) {
+      clients.splice(index, 1)
+      this.documentsClientsMap.set(manuscriptID, clients)
     }
+  }
+  private manageClientConnection(req: Request, res: Response) {
+    const newClient: Client = {
+      id: Date.now(),
+      res,
+    }
+    const { manuscriptID } = req.params
+    this.addClient(newClient, manuscriptID)
+
+    req.on('close', () => {
+      this.removeClientByID(newClient.id, manuscriptID)
+    })
+  }
+  private formatDataForSSE<T>(data: T) {
+    return `data: ${JSON.stringify(data)}\n\n`
   }
 }

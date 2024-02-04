@@ -26,14 +26,14 @@ export type ManuscriptDocWithSnapshots = ManuscriptDoc & {
 }
 
 export type IGetDocumentResponse = ManuscriptDocWithSnapshots
-export interface ICreateDocRequest {
+export interface ICreateDoc {
   manuscript_model_id: string
   project_model_id: string
   doc: Doc
 }
 export type ICreateDocResponse = ManuscriptDocWithSnapshots
 
-export type IUpdateDocumentRequest = {
+export type IUpdateDocument = {
   doc: Doc
   version?: number
 }
