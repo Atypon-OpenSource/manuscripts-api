@@ -38,7 +38,7 @@ export class JwtAuthStrategy {
         if (!user) {
           return done(null, false)
         }
-        if (jwt.expiry < timestamp()) {
+        if (jwt.expiry && jwt.expiry < timestamp()) {
           return done(null, false)
         }
         return done(null, user)
