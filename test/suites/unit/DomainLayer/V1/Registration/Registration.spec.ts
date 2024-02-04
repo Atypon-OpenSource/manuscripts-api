@@ -366,13 +366,12 @@ describe('Registration - connectSignup', () => {
   test('should fail if user already exist', () => {
     const userRegistrationService: any = DIContainer.sharedContainer.userRegistrationService
     userRegistrationService.userRepository = {
-      getOne: async () => Promise.resolve({ connectUserID: 'valid-connectId', ...userList[0] }),
+      getOne: async () => Promise.resolve({ connectUserID: 'valid-connectId', ...userList[1] }),
     }
-    const chance = new Chance()
     const cred: ConnectSignupCredentials = {
-      email: chance.email(),
-      name: chance.string(),
-      connectUserID: chance.string(),
+      email: userList[1].email,
+      name: userList[1].name as string,
+      connectUserID: userList[1].connectUserID as string,
     }
     return expect(userRegistrationService.connectSignup(cred)).rejects.toThrow(DuplicateEmailError)
   })

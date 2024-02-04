@@ -24,10 +24,6 @@ import { config } from '../../Config/Config'
  */
 export interface LoginTokenPayload {
   /**
-   * Token's unique id.
-   */
-  tokenId: string
-  /**
    * User's unique id.
    */
   userId: string
@@ -92,8 +88,6 @@ export function isLoginTokenPayload(obj: string | object | null): obj is LoginTo
   }
 
   return (
-    (obj as any).tokenId &&
-    typeof (obj as any).tokenId === 'string' &&
     (obj as any).userId &&
     typeof (obj as any).userId === 'string' &&
     (obj as any).appId &&

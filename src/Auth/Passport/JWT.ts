@@ -19,6 +19,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt'
 
 import { config } from '../../Config/Config'
 import { DIContainer } from '../../DIContainer/DIContainer'
+// import { timestamp } from '../../Utilities/JWT/LoginTokenPayload'
 import { AuthStrategyTypes } from './AuthStrategy'
 
 export class JwtAuthStrategy {
@@ -33,19 +34,13 @@ export class JwtAuthStrategy {
     passport.use(
       AuthStrategyTypes.jwt,
       new Strategy(opts, async (jwt, done) => {
-        const id = DIContainer.sharedContainer.userTokenRepository.fullyQualifiedId(jwt.tokenId)
-        const token = await DIContainer.sharedContainer.userTokenRepository.getById(id)
-
-        if (!token) {
-          return done(null, false)
-        }
-
         const user = await DIContainer.sharedContainer.userRepository.getById(jwt.userId)
-
         if (!user) {
           return done(null, false)
         }
-
+        // if (jwt.expiry < timestamp()) {
+        //   return done(null, false)
+        // }
         return done(null, user)
       })
     )

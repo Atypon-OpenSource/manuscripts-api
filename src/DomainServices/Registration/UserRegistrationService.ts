@@ -63,34 +63,44 @@ export class UserRegistrationService implements IUserRegistrationService {
     const user = await this.userRepository.getOne({
       email,
     })
-    if (!user) {
-      try {
-        const userEmailID = this.userEmailID(email)
-        await this.userEmailRepository.create({ _id: userEmailID })
-      } catch (error) {
-        throw new DuplicateEmailError(email)
+
+    if (user) {
+      if (user.connectUserID != connectUserID) {
+        await this.updateConnectID(user, connectUserID)
+        return
       }
-
-      const newUser = await this.userRepository.create({ email, name, connectUserID })
-
-      await this.createUserDetails(newUser, true)
-
-      // tslint:disable-next-line: no-floating-promises
-      this.activityTrackingService.createEvent(
-        newUser._id,
-        UserActivityEventType.Registration,
-        null,
-        null
-      ) // intentional fire and forget.
-      return
+      throw new DuplicateEmailError(user.email)
     }
 
-    if (user.connectUserID !== connectUserID) {
-      user.connectUserID = connectUserID
-      await this.userRepository.update(user)
-      return
+    try {
+      const userEmailID = this.userEmailID(email)
+      await this.userEmailRepository.create({ _id: userEmailID })
+    } catch (error) {
+      throw new DuplicateEmailError(email)
     }
-    throw new DuplicateEmailError(user.email)
+
+    const newUser = await this.userRepository.create({ email, name, connectUserID })
+
+    await this.createUserDetails(newUser, true)
+
+    // tslint:disable-next-line: no-floating-promises
+    this.activityTrackingService.createEvent(
+      newUser._id,
+      UserActivityEventType.Registration,
+      null,
+      null
+    ) // intentional fire and forget.
+  }
+
+  private async updateConnectID(user: User, connectUserID: string) {
+    user.connectUserID = connectUserID
+    await this.userRepository.update(user)
+    this.activityTrackingService.createEvent(
+      user._id,
+      UserActivityEventType.UpdateConnectID,
+      null,
+      null
+    )
   }
 
   public async signup(credentials: SignupCredentials): Promise<void> {

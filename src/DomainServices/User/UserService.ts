@@ -26,7 +26,6 @@ import { ISingleUseTokenRepository } from '../../DataAccess/Interfaces/ISingleUs
 import { IUserProfileRepository } from '../../DataAccess/Interfaces/IUserProfileRepository'
 import { IUserRepository } from '../../DataAccess/Interfaces/IUserRepository'
 import { IUserStatusRepository } from '../../DataAccess/Interfaces/IUserStatusRepository'
-import { IUserTokenRepository } from '../../DataAccess/Interfaces/IUserTokenRepository'
 import { UserProfileLike } from '../../DataAccess/Interfaces/Models'
 import { InvitationRepository } from '../../DataAccess/InvitationRepository/InvitationRepository'
 import { ProjectRepository } from '../../DataAccess/ProjectRepository/ProjectRepository'
@@ -36,7 +35,6 @@ import {
   InvalidCredentialsError,
   InvalidPasswordError,
   MissingUserStatusError,
-  NoTokenError,
   ValidationError,
 } from '../../Errors'
 import { UserActivityEventType } from '../../Models/UserEventModels'
@@ -53,7 +51,6 @@ export class UserService implements IUserService {
     private singleUseTokenRepository: ISingleUseTokenRepository,
     private activityTrackingService: UserActivityTrackingService,
     private userStatusRepository: IUserStatusRepository,
-    private userTokenRepository: IUserTokenRepository,
     private invitationRepository: InvitationRepository,
     private containerInvitationRepository: ContainerInvitationRepository,
     private containerRequestRepository: ContainerRequestRepository,
@@ -114,7 +111,6 @@ export class UserService implements IUserService {
     await this.userProfileRepository.purge(userProfileId)
     await this.syncService.removeUserStatus(user._id)
     await this.singleUseTokenRepository.remove({ userId: user._id })
-    await this.userTokenRepository.remove({ userId: user._id })
 
     await this.invitationRepository.removeByUserIdAndEmail(user._id, user.email)
     await this.containerInvitationRepository.removeByUserIdAndEmail(user._id, user.email)
@@ -221,14 +217,6 @@ export class UserService implements IUserService {
         throw new InvalidCredentialsError(`User not found.`)
       }
     } else if (isLoginTokenPayload(payload)) {
-      const id = this.userTokenRepository.fullyQualifiedId(payload.tokenId)
-
-      const userToken = await this.userTokenRepository.getById(id)
-
-      if (!userToken) {
-        throw new NoTokenError(id)
-      }
-
       const user = await this.userRepository.getById(payload.userId)
 
       if (!user) {

@@ -318,10 +318,6 @@ export interface IUpdateUser {
  */
 export interface UserToken {
   /**
-   * Token's unique id.
-   */
-  _id: string
-  /**
    * User's id.
    */
   userId: string

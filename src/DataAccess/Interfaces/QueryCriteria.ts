@@ -49,16 +49,6 @@ export interface UserQueryCriteria extends QueryCriteria {
 /**
  * Represents criteria for a user token query.
  */
-export interface UserTokenQueryCriteria extends QueryCriteria {
-  /**
-   * User's unique id.
-   */
-  userId?: string
-  /**
-   * User's device unique id.
-   */
-  deviceId?: string
-}
 
 export interface InvitationTokenQueryCriteria extends QueryCriteria {
   /**
