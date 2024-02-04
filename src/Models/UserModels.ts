@@ -17,63 +17,7 @@
 import moment from 'moment'
 
 import { BucketKey } from '../Config/ConfigurationTypes'
-import { ValidationError } from '../Errors'
 import { ContainerRole } from './ContainerModels'
-import { UserActivityEventType } from './UserEventModels'
-
-export type IdentifiableUser = { _id: string; email?: string }
-
-export function isIdentifiableUser(user?: any): user is IdentifiableUser {
-  return typeof user !== 'undefined' && typeof user._id === 'string'
-}
-
-export function ensureValidUser(user?: any): IdentifiableUser {
-  if (!isIdentifiableUser(user)) {
-    throw new ValidationError('User undefined or lacks id', user)
-  }
-  return user
-}
-
-/**
- * Represents user's reset password credentials.
- */
-export interface ResetPasswordCredentials {
-  /**
-   * The single use reset password.
-   */
-  tokenId: string
-  /**
-   * User's new password.
-   */
-  newPassword: string
-  /**
-   * Device id.
-   */
-  deviceId: string
-  /**
-   * Application id.
-   */
-  appId: string
-}
-
-export interface ChangePasswordCredentials {
-  /**
-   * User's Id.
-   */
-  userId: string
-  /**
-   * User's current password.
-   */
-  currentPassword: string
-  /**
-   * User's new password.
-   */
-  newPassword: string
-  /**
-   * Device id.
-   */
-  deviceId: string
-}
 
 /**
  * Represents user's login credentials.
@@ -392,8 +336,6 @@ export interface UserStatus {
 
 export function isBlocked(userStatus: UserStatus, date: Date): boolean {
   return userStatus.blockUntil !== null && moment(date).diff(userStatus.blockUntil) <= 0
-    ? true
-    : false
 }
 
 export interface UpdateUserStatus {
@@ -403,16 +345,4 @@ export interface UpdateUserStatus {
   isVerified?: boolean
   blockUntil?: Date | null
   createdAt?: Date
-}
-
-export interface UserStatusViewFunctionDocument {
-  _type: string
-  eventType: UserActivityEventType
-  userId: string
-  timestamp: number
-}
-
-export interface CreatedIAMDetails {
-  user: User
-  userStatus: UserStatus
 }

@@ -26,7 +26,6 @@ export class SGService implements ISGService {
   constructor() {
     this.repoMap = {
       MPProject: 'projectRepository',
-      MPCollaboration: 'collaborationsRepository',
       MPUserProfile: 'userProfileRepository',
       MPContainerInvitation: 'containerInvitationRepository',
       MPInvitation: 'invitationRepository',

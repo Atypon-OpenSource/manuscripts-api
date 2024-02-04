@@ -22,7 +22,7 @@ module.exports = {
     "coverageThreshold": {
         "global": {
             "branches": 80,
-            "functions": 87,
+            "functions": 86,
             "lines": 80
         }
     },
@@ -49,13 +49,11 @@ module.exports = {
         "!src/DataAccess/**Repository/**",
         "!src/DataAccess/QueryKind.ts",
         "!src/DomainServices/UserActivity/UserActivityTrackingService.ts",
-        "!src/DataAccess/applyMiddleware.ts",
         "!src/DomainServices/Pressroom/PressroomService.ts",
         "!src/DomainServices/Document/DocumentService.ts",
         "!src/DomainServices/Snapshot/SnapshotService.ts",
         "!src/DomainServices/DocumentHistory/DocumentHistoryService.ts",
         "!src/DomainServices/Shackles/ShacklesService.ts",
         "!src/DomainServices/Expiration/ExpirationService.ts",
-        "!src/DomainServices/eventing.ts",
     ]
 }

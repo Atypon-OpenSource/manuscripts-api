@@ -78,13 +78,3 @@ export interface SingleUseTokenQueryCriteria extends QueryCriteria {
    */
   tokenType?: SingleUseTokenType
 }
-
-/**
- * Represents criteria for a Collaboration query.
- */
-export interface CollaborationsQueryCriteria extends QueryCriteria {
-  /**
-   * Collaboration unique id.
-   */
-  _id?: string
-}

@@ -139,12 +139,7 @@ export class ContainersController extends ContainedBaseController {
       throw new RoleDoesNotPermitOperationError(`Access denied`, userId)
     }
 
-    await DIContainer.sharedContainer.containerService.addContainerUser(
-      containerID,
-      role,
-      userId,
-      addingUser
-    )
+    await DIContainer.sharedContainer.containerService.addContainerUser(containerID, role, userId)
   }
 
   async loadProject(req: Request) {

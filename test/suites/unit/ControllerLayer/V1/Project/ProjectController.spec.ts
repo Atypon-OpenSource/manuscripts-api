@@ -40,6 +40,7 @@ import { authorizationHeader } from '../../../../../data/fixtures/headers'
 import { validManuscript1 } from '../../../../../data/fixtures/manuscripts'
 import { validProject } from '../../../../../data/fixtures/projects'
 import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
+import { validUserProfile } from "../../../../../data/fixtures/UserRepository";
 
 jest.setTimeout(TEST_TIMEOUT)
 
@@ -546,22 +547,23 @@ describe('ProjectController', () => {
     })
   })
 
-  describe('collaborators', () => {
-    test('should get collaborators', async () => {
+  describe('userProfiles', () => {
+    test('should get userProfiles', async () => {
       const controller: any = new ProjectController()
+      const projRepo: any = DIContainer.sharedContainer.projectRepository
+      const userProfileRepo: any = DIContainer.sharedContainer.userProfileRepository
       ContainerService.userIdForSync = jest.fn((id) => id)
+      projRepo.getById = jest.fn(() => validProject)
+      userProfileRepo.getByUserId = jest.fn(() => validUserProfile)
       controller.getPermissions = jest.fn(() => {
         return new Set([ProjectPermission.UPDATE, ProjectPermission.READ, ProjectPermission.DELETE])
       })
-      DIContainer.sharedContainer.userCollaboratorRepository.getByContainerId = jest.fn(
-        (_id: string) => ['foo'] as any
-      )
-      const collaborators = await controller.collaborators({
+      const profiles = await controller.userProfiles({
         headers: authorizationHeader(validJWTToken),
         params: { projectId: 'MPProject:abc' },
       })
 
-      expect(collaborators.length).toBeGreaterThan(0)
+      expect(profiles.length).toBeGreaterThan(0)
     })
 
     test('should fail projectId must be provided', async () => {
@@ -570,12 +572,9 @@ describe('ProjectController', () => {
       controller.getPermissions = jest.fn(() => {
         return new Set([ProjectPermission.UPDATE, ProjectPermission.DELETE])
       })
-      DIContainer.sharedContainer.userCollaboratorRepository.getByContainerId = jest.fn(
-        (_id: string) => ['foo'] as any
-      )
 
       await expect(
-        controller.collaborators({
+        controller.userProfiles({
           headers: authorizationHeader(validJWTToken),
           params: {},
         })
@@ -588,12 +587,9 @@ describe('ProjectController', () => {
       controller.getPermissions = jest.fn(() => {
         return new Set([ProjectPermission.UPDATE, ProjectPermission.DELETE])
       })
-      DIContainer.sharedContainer.userCollaboratorRepository.getByContainerId = jest.fn(
-        (_id: string) => ['foo'] as any
-      )
 
       await expect(
-        controller.collaborators({
+        controller.userProfiles({
           headers: authorizationHeader(chance.string()),
           params: { projectId: 'MPProject:abc' },
         })
@@ -606,12 +602,9 @@ describe('ProjectController', () => {
       controller.getPermissions = jest.fn(() => {
         return new Set([])
       })
-      DIContainer.sharedContainer.userCollaboratorRepository.getByContainerId = jest.fn(
-        (_id: string) => ['foo'] as any
-      )
 
       await expect(
-        controller.collaborators({
+        controller.userProfiles({
           headers: authorizationHeader(validJWTToken),
           params: { projectId: 'MPProject:abc' },
         })

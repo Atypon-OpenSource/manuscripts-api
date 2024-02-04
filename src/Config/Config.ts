@@ -127,7 +127,6 @@ export class Configuration implements ConfigurationContainer {
     }
 
     this.email = {
-      fromAddress: getString(env.APP_FROM_EMAIL, 'APP_FROM_EMAIL'),
       fromBaseURL: normalizeURL(getString(env.APP_BASE_URL, 'APP_BASE_URL')),
     }
 

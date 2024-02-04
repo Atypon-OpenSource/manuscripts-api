@@ -69,7 +69,6 @@ const userIndexesObj = {
     ['InvitationToken']: [{ fields: ['expiry'], indexType: 'BTREE' }],
     ['UserEvent']: [{ fields: ['expiry'], indexType: 'BTREE' }],
     ['User']: [{ fields: ['deleteAt'], indexType: 'BTREE' }],
-    [ObjectTypes.UserCollaborator]: [{ fields: ['projects'], indexType: 'GIN' }],
   } as any,
 } as any
 

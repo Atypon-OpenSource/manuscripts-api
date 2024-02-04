@@ -30,6 +30,7 @@ export interface IContainerService {
   /**
    * Create container.
    * @param token User's token
+   * @param _id projectId
    */
   createContainer(token: string, _id: string | null): Promise<Container>
 
@@ -42,13 +43,7 @@ export interface IContainerService {
    * Adds user to container.
    * @returns a boolean indicating the success or the failure of adding the user.
    */
-  addContainerUser(
-    containerId: string,
-    role: ContainerRole,
-    userId: string,
-    addingUser: User | null,
-    skipEmail?: boolean
-  ): Promise<boolean>
+  addContainerUser(containerId: string, role: ContainerRole, userId: string): Promise<boolean>
 
   /**
    * Updates user role in a container.
@@ -57,7 +52,6 @@ export interface IContainerService {
 
   /**
    * Manage the role of a user in the container.
-   * @param user Managing user object.
    * @param containerId The id of the container.
    * @param managedUserId The id of the managed user.
    * @param newRole The new role of a user, could be null for deleting the user from the container.
@@ -97,6 +91,7 @@ export interface IContainerService {
 
   /**
    * Gets access token for specified scope.
+   * @param userID User ID
    * @param scope The name of the specified scope.
    * @param containerID The identifier of the container.
    */
@@ -109,8 +104,9 @@ export interface IContainerService {
   /**
    * Creates a Manuscript
    * @param userId the ID of the user
-   * @param containerId the ID of the container
+   * @param containerID the ID of the container
    * @param manuscriptID the ID of the manuscript
+   * @param templateId the ID of the template
    */
   createManuscript(
     userId: string,
@@ -152,6 +148,8 @@ export interface IContainerService {
    * Adds createdAt, updatedAt, containerID, manuscriptID attributes
    * validates against schema
    * @param docs list of Models
+   * @param containerID
+   * @param manuscriptID
    * @return an array with validated objects
    */
   processManuscriptModels(docs: Model[], containerID: string, manuscriptID: string): Promise<any>

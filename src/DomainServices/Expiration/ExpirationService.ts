@@ -14,51 +14,19 @@
  * limitations under the License.
  */
 
-import { ContainerInvitationRepository } from '../../DataAccess/ContainerInvitationRepository/ContainerInvitationRepository'
-import { IInvitationTokenRepository } from '../../DataAccess/Interfaces/IInvitationTokenRepository'
 import { IUserEventRepository } from '../../DataAccess/Interfaces/IUserEventRepository'
-import { InvitationRepository } from '../../DataAccess/InvitationRepository/InvitationRepository'
 
 export class ExpirationService {
-  constructor(
-    private userEventRepository: IUserEventRepository,
-    private invitationRepository: InvitationRepository,
-    private invitationTokenRepository: IInvitationTokenRepository,
-    private containerInvitationRepository: ContainerInvitationRepository
-  ) {}
+  constructor(private userEventRepository: IUserEventRepository) {}
 
   public async clearExpiredDocuments(): Promise<void> {
     await this.clearEvents()
-    await this.clearInvitations()
-    await this.clearInvitationTokens()
-    await this.clearContainerInvitations()
   }
 
   private async clearEvents(): Promise<void> {
     const expiredDocs = await this.userEventRepository.getExpired()
     for (const doc of expiredDocs) {
       await this.userEventRepository.remove({ _id: doc._id })
-    }
-  }
-
-  private async clearInvitations(): Promise<void> {
-    const expiredDocs = await this.invitationRepository.getExpired()
-    for (const doc of expiredDocs) {
-      await this.invitationRepository.remove(doc._id)
-    }
-  }
-
-  private async clearInvitationTokens(): Promise<void> {
-    const expiredDocs = await this.invitationTokenRepository.getExpired()
-    for (const doc of expiredDocs) {
-      await this.invitationTokenRepository.remove({ id: doc._id })
-    }
-  }
-
-  private async clearContainerInvitations(): Promise<void> {
-    const expiredDocs = await this.containerInvitationRepository.getExpired()
-    for (const doc of expiredDocs) {
-      await this.containerInvitationRepository.remove(doc._id)
     }
   }
 }

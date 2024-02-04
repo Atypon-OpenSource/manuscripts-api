@@ -26,15 +26,6 @@ jest.mock('../../../../../../src/DomainServices/Sync/SyncService', () => {
   }
 })
 
-jest.mock('email-templates', () =>
-  jest.fn().mockImplementation(() => {
-    return {
-      send: jest.fn(() => Promise.resolve({})),
-      render: jest.fn(() => Promise.resolve({})),
-    }
-  })
-)
-
 import Chance from 'chance'
 
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
@@ -53,7 +44,6 @@ import { ConnectSignupCredentials } from '../../../../../../src/Models/UserModel
 import { userList } from '../../../../../data/dump/user'
 import { validUserStatus } from '../../../../../data/fixtures/authServiceUser'
 import { validBody } from '../../../../../data/fixtures/credentialsRequestPayload'
-import { userSignupList } from '../../../../../data/fixtures/signupCredentials'
 import { validUserProfile } from '../../../../../data/fixtures/UserRepository'
 import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
 
@@ -136,91 +126,6 @@ describe('Registration - Signup', () => {
     return expect(userRegistrationService.signup(userList[3])).rejects.toThrow(
       ConflictingUnverifiedUserExistsError
     )
-  })
-
-  test('should send email if user not exist and verifyEmailToken does not exist in db', async () => {
-    const userRegistrationService: any = DIContainer.sharedContainer.userRegistrationService
-
-    const ensureTokenExists: any =
-      DIContainer.sharedContainer.singleUseTokenRepository.ensureTokenExists
-
-    userRegistrationService.userRepository = {
-      getOne: async () => Promise.resolve(null),
-      create: async () => Promise.resolve(userList[1]),
-    }
-
-    userRegistrationService.userEmailRepository = {
-      create: () => Promise.resolve(),
-    }
-
-    userRegistrationService.emailService = {
-      sendAccountVerification: jest.fn(),
-    }
-
-    userRegistrationService.singleUseTokenRepository = {
-      getOne: async () => Promise.resolve(null),
-      create: jest.fn(() => Promise.resolve({ _id: 'foo' })),
-      ensureTokenExists: ensureTokenExists,
-      fullyQualifiedId: (id: string) => `SingleUseToken|${id}`,
-    }
-
-    userRegistrationService.userStatusRepository = {
-      create: async () => Promise.resolve(null),
-    }
-
-    userRegistrationService.userEventRepository = {
-      create: async () => Promise.resolve(null),
-    }
-
-    await userRegistrationService.signup(userSignupList[2])
-
-    expect(userRegistrationService.emailService.sendAccountVerification).toHaveBeenCalled()
-
-    expect(userRegistrationService.singleUseTokenRepository.create).toHaveBeenCalled()
-  })
-
-  test('should send email if user not exist and verifyEmailToken exist in db', async () => {
-    const userRegistrationService: any = DIContainer.sharedContainer.userRegistrationService
-
-    const ensureTokenExists: any =
-      DIContainer.sharedContainer.singleUseTokenRepository.ensureTokenExists
-
-    userRegistrationService.userRepository = {
-      getOne: async () => Promise.resolve(null),
-      create: async () => Promise.resolve(userList[1]),
-    }
-
-    userRegistrationService.userEmailRepository = {
-      create: () => Promise.resolve(),
-    }
-
-    userRegistrationService.emailService = {
-      sendAccountVerification: jest.fn(),
-    }
-
-    const token = {
-      _id: 'foo',
-      userId: 'bar',
-      tokenType: SingleUseTokenType.VerifyEmailToken,
-      createdAt: new Date(1900, 1, 1).getTime(),
-      updatedAt: new Date().getTime(),
-    }
-
-    userRegistrationService.singleUseTokenRepository = {
-      getOne: () => Promise.resolve(token),
-      patch: jest.fn(),
-      ensureTokenExists: ensureTokenExists,
-      fullyQualifiedId: (id: string) => `SingleUseToken|${id}`,
-    }
-
-    userRegistrationService.userStatusRepository = {
-      create: async () => Promise.resolve(null),
-    }
-
-    await userRegistrationService.signup(userSignupList[2])
-
-    expect(userRegistrationService.singleUseTokenRepository.patch).toHaveBeenCalled()
-    expect(userRegistrationService.emailService.sendAccountVerification).toHaveBeenCalled()
   })
 
   test('should signup user without sending verification', async () => {
