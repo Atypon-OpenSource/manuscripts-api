@@ -19,7 +19,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt'
 
 import { config } from '../../Config/Config'
 import { DIContainer } from '../../DIContainer/DIContainer'
-// import { timestamp } from '../../Utilities/JWT/LoginTokenPayload'
+import { timestamp } from '../../Utilities/JWT/LoginTokenPayload'
 import { AuthStrategyTypes } from './AuthStrategy'
 
 export class JwtAuthStrategy {
@@ -38,9 +38,9 @@ export class JwtAuthStrategy {
         if (!user) {
           return done(null, false)
         }
-        // if (jwt.expiry < timestamp()) {
-        //   return done(null, false)
-        // }
+        if (jwt.expiry < timestamp()) {
+          return done(null, false)
+        }
         return done(null, user)
       })
     )
