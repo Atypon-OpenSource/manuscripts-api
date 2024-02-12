@@ -16,28 +16,31 @@
 
 import { ManuscriptDocHistory, Prisma } from '@prisma/client'
 
-import type { Maybe } from '../../../types/quarterback/utils'
 import prisma from '../../DataAccess/prismaClient'
+import { MissingDocumentHistoryError } from '../../Errors'
+import { IDocumentHistoryService } from './IDocumentHistoryService'
 
-export class DocumentHistoryService {
-  async clearDocumentHistory(documentID: string) {
-    const deleted = await prisma.manuscriptDocHistory.deleteMany({
+export class DocumentHistoryService implements IDocumentHistoryService {
+  async clearDocumentHistory(
+    documentID: string,
+    tx: Prisma.TransactionClient = prisma
+  ): Promise<number> {
+    const { count } = await tx.manuscriptDocHistory.deleteMany({
       where: {
         doc_id: documentID,
       },
     })
-    if (!deleted) {
-      return { err: 'Failed to clear document history', code: 500 }
-    }
-    return { data: deleted }
+
+    return count
   }
   async createDocumentHistory(
     documentID: string,
     steps: Prisma.JsonValue[],
     version: number,
-    clientID: string
-  ) {
-    const saved = await prisma.manuscriptDocHistory.create({
+    clientID: string,
+    tx: Prisma.TransactionClient = prisma
+  ): Promise<ManuscriptDocHistory> {
+    const saved = await tx.manuscriptDocHistory.create({
       data: {
         doc_id: documentID,
         steps: steps,
@@ -45,13 +48,13 @@ export class DocumentHistoryService {
         client_id: clientID,
       },
     })
-    if (!saved) {
-      return { err: 'Failed to save document history', code: 500 }
-    }
-    return { data: saved }
+    return saved
   }
-  async findLatestDocumentHistory(documentID: string): Promise<Maybe<ManuscriptDocHistory>> {
-    const histories = await prisma.manuscriptDocHistory.findFirst({
+  async findLatestDocumentHistory(
+    documentID: string,
+    tx: Prisma.TransactionClient = prisma
+  ): Promise<ManuscriptDocHistory> {
+    const found = await tx.manuscriptDocHistory.findFirst({
       where: {
         doc_id: documentID,
       },
@@ -59,13 +62,17 @@ export class DocumentHistoryService {
         version: 'desc',
       },
     })
-    if (!histories) {
-      return { err: 'No history found', code: 404 }
+    if (!found) {
+      throw new MissingDocumentHistoryError(documentID)
     }
-    return { data: histories }
+    return found
   }
-  async findDocumentHistories(documentID: string, fromVersion = 0) {
-    const histories = await prisma.manuscriptDocHistory.findMany({
+  async findDocumentHistories(
+    documentID: string,
+    fromVersion = 0,
+    tx: Prisma.TransactionClient = prisma
+  ): Promise<ManuscriptDocHistory[]> {
+    const found = await tx.manuscriptDocHistory.findMany({
       where: {
         doc_id: documentID,
         version: {
@@ -76,9 +83,6 @@ export class DocumentHistoryService {
         version: 'asc',
       },
     })
-    if (!histories) {
-      return { err: 'No history found', code: 404 }
-    }
-    return { data: histories }
+    return found
   }
 }

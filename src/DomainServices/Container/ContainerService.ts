@@ -28,7 +28,6 @@ import { v4 as uuid_v4 } from 'uuid'
 
 import { config } from '../../Config/Config'
 import { ScopedAccessTokenConfiguration } from '../../Config/ConfigurationTypes'
-import { ContainerInvitationRepository } from '../../DataAccess/ContainerInvitationRepository/ContainerInvitationRepository'
 import { IManuscriptRepository } from '../../DataAccess/Interfaces/IManuscriptRepository'
 import { IUserRepository } from '../../DataAccess/Interfaces/IUserRepository'
 import { IUserStatusRepository } from '../../DataAccess/Interfaces/IUserStatusRepository'
@@ -56,7 +55,6 @@ import { Container, ContainerRepository, ContainerRole } from '../../Models/Cont
 import { UserActivityEventType } from '../../Models/UserEventModels'
 import { isBlocked, User } from '../../Models/UserModels'
 import { isLoginTokenPayload, timestamp } from '../../Utilities/JWT/LoginTokenPayload'
-import { EmailService } from '../Email/EmailService'
 import { IUserService } from '../User/IUserService'
 import { UserService } from '../User/UserService'
 import { UserActivityTrackingService } from '../UserActivity/UserActivityTrackingService'
@@ -69,8 +67,6 @@ export class ContainerService implements IContainerService {
     private activityTrackingService: UserActivityTrackingService,
     private userStatusRepository: IUserStatusRepository,
     private containerRepository: ContainerRepository,
-    private containerInvitationRepository: ContainerInvitationRepository,
-    private emailService: EmailService,
     private manuscriptRepository: IManuscriptRepository,
     private manuscriptNoteRepository: ManuscriptNoteRepository,
     private templateRepository: TemplateRepository
@@ -180,13 +176,11 @@ export class ContainerService implements IContainerService {
   public async addContainerUser(
     containerID: string,
     role: ContainerRole,
-    userId: string,
-    addingUser: User,
-    skipEmail?: boolean
+    userId: string
   ): Promise<boolean> {
     const container = await this.getContainer(containerID)
 
-    const addedUser = await this.getValidUser(userId)
+    await this.getValidUser(userId)
 
     this.ensureValidRole(role)
 
@@ -208,10 +202,6 @@ export class ContainerService implements IContainerService {
         proofers,
         annotators
       )
-
-      if (!skipEmail) {
-        await this.notifyForAddingUser(container, role, addedUser, addingUser)
-      }
 
       return true
     }
@@ -245,7 +235,6 @@ export class ContainerService implements IContainerService {
     )
 
     const title = ContainerService.containerTitle(container)
-    await this.handleInvitations(role, user, containerID)
 
     await this.updateContainerTitleAndCollaborators(
       containerID,
@@ -344,16 +333,6 @@ export class ContainerService implements IContainerService {
     }
 
     return { owners, writers, viewers, editors, proofers, annotators }
-  }
-
-  private async handleInvitations(
-    role: ContainerRole | null,
-    user: User,
-    containerID: string
-  ): Promise<void> {
-    if (!role && user._id !== '*') {
-      await this.containerInvitationRepository.deleteInvitations(containerID, user)
-    }
   }
 
   public async updateContainerTitleAndCollaborators(
@@ -537,53 +516,6 @@ export class ContainerService implements IContainerService {
     }
 
     return jwt.sign(payload, scopeInfo.secret, options as any)
-  }
-
-  private async notifyForAddingUser(
-    container: Container,
-    role: ContainerRole,
-    addedUser: User,
-    addingUser: User | null
-  ) {
-    const otherOwners = container.owners
-      .filter(
-        (owner) =>
-          owner !== ContainerService.userIdForSync(addedUser._id) &&
-          (!addingUser || owner !== ContainerService.userIdForSync(addingUser._id))
-      )
-      .map((owner) => ContainerService.userIdForDatabase(owner))
-
-    await this.emailService.sendContainerInvitationAcceptance(
-      addedUser,
-      addingUser,
-      container,
-      role
-    )
-
-    await this.announceAddedContributorToOwners(addedUser, addingUser, otherOwners, container, role)
-  }
-
-  private async announceAddedContributorToOwners(
-    addedUser: User,
-    addingUser: User | null,
-    ownersId: string[],
-    container: Container,
-    role: ContainerRole
-  ): Promise<void> {
-    for (const ownerId of ownersId) {
-      const owner = await this.userRepository.getById(ownerId)
-      if (!owner) {
-        continue
-      }
-
-      await this.emailService.sendOwnerNotificationOfCollaborator(
-        owner,
-        addedUser,
-        addingUser,
-        container,
-        role
-      )
-    }
   }
 
   public static compareRoles(role1: ContainerRole, role2: ContainerRole) {

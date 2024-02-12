@@ -71,7 +71,6 @@ export type AuthConfiguration = {
  * Represents email sending configuration.
  */
 export type EmailConfiguration = {
-  readonly fromAddress: string
   readonly fromBaseURL: string
 }
 

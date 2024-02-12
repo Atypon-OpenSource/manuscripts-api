@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { UserCollaborator } from '@manuscripts/json-schema'
+import { UserProfile } from '@manuscripts/json-schema'
 
 import { UserProfileLike } from '../../DataAccess/Interfaces/Models'
 
@@ -25,5 +25,5 @@ export interface IUserService {
   clearUsersData(): Promise<void>
   profile(token: string): Promise<UserProfileLike | null>
   authenticateUser(token: string): Promise<void>
-  getCollaborators(containerId: string): Promise<UserCollaborator[]>
+  getProjectUserProfiles(containerId: string): Promise<UserProfile[]>
 }

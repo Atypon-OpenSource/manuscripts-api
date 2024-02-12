@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { manuscriptIDTypes, Model, UserCollaborator } from '@manuscripts/json-schema'
+import { manuscriptIDTypes, Model, UserProfile } from '@manuscripts/json-schema'
 import decompress from 'decompress'
 import { Request } from 'express'
 import * as fs from 'fs'
@@ -301,7 +301,7 @@ export class ProjectController extends BaseController {
     return await DIContainer.sharedContainer.projectRepository.bulkInsert(docs)
   }
 
-  async collaborators(req: Request): Promise<UserCollaborator[]> {
+  async userProfiles(req: Request): Promise<UserProfile[]> {
     const { projectId } = req.params
 
     if (!projectId) {
@@ -318,7 +318,7 @@ export class ProjectController extends BaseController {
       throw new RoleDoesNotPermitOperationError(`Access denied`, payload.userId)
     }
 
-    return await DIContainer.sharedContainer.userService.getCollaborators(projectId)
+    return await DIContainer.sharedContainer.userService.getProjectUserProfiles(projectId)
   }
 
   async deleteModel(req: Request): Promise<void> {

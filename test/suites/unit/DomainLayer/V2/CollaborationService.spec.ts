@@ -18,13 +18,14 @@ import '../../../../utilities/dbMock.ts'
 import '../../../../utilities/configMock.ts'
 
 import { schema } from '@manuscripts/transform'
-import { Prisma } from '@prisma/client'
+import { Prisma, PrismaClient } from '@prisma/client'
 import { Step } from 'prosemirror-transform'
 
 import { DIContainer } from '../../../../../src/DIContainer/DIContainer'
 import { CollaborationService } from '../../../../../src/DomainServices/Collaboration/CollaborationService'
 import { DocumentService } from '../../../../../src/DomainServices/Document/DocumentService'
 import { DocumentHistoryService } from '../../../../../src/DomainServices/DocumentHistory/DocumentHistoryService'
+import { MissingDocumentError, VersionMismatchError } from '../../../../../src/Errors'
 import { TEST_TIMEOUT } from '../../../../utilities/testSetup'
 
 jest.setTimeout(TEST_TIMEOUT)
@@ -32,6 +33,7 @@ jest.setTimeout(TEST_TIMEOUT)
 let documentService: DocumentService
 let documentHistoryService: DocumentHistoryService
 let collaborationService: CollaborationService
+let mockPrisma: jest.Mocked<PrismaClient>
 
 beforeEach(async () => {
   ;(DIContainer as any)._sharedContainer = null
@@ -39,6 +41,17 @@ beforeEach(async () => {
   documentService = DIContainer.sharedContainer.documentService
   documentHistoryService = DIContainer.sharedContainer.documentHistoryService
   collaborationService = DIContainer.sharedContainer.collaborationService
+  mockPrisma = new PrismaClient() as any
+  mockPrisma.$transaction = jest.fn()
+})
+jest.mock('@prisma/client', () => {
+  const mPrismaClient = {
+    $use: jest.fn(),
+  }
+  const mPrisma = {
+    TransactionIsolationLevel: { Serializable: 'SERIALIZABLE' },
+  }
+  return { PrismaClient: jest.fn(() => mPrismaClient), Prisma: mPrisma }
 })
 afterEach(() => {
   jest.clearAllMocks()
@@ -64,148 +77,98 @@ const hydrateSteps = (jsonSteps: Prisma.JsonValue[]): Step[] => {
 
 describe('CollaborationService', () => {
   describe('receiveSteps', () => {
-    it('should return an error if the document is not found', async () => {
+    it('should throw an error if the document is not found', async () => {
+      mockPrisma.$transaction.mockImplementation(async (callback) => {
+        return await callback(mockPrisma)
+      })
       documentService.findDocument = jest
         .fn()
-        .mockResolvedValueOnce({ err: 'Document not found', code: 404 })
-      const result = await collaborationService.receiveSteps('documentID', {
-        steps: [],
-        version: 0,
-        clientID: 'clientID',
-      })
-      expect(result).toEqual({ err: 'Document not found', code: 404 })
+        .mockRejectedValue(new MissingDocumentError('documentID'))
+      await expect(
+        collaborationService.receiveSteps('documentID', {
+          steps: [],
+          version: 0,
+          clientID: 123,
+        })
+      ).rejects.toThrow(new MissingDocumentError('documentID'))
     })
-    it('should return an error if the version is not the latest', async () => {
-      documentService.findDocument = jest.fn().mockResolvedValueOnce({ data: { version: 1 } })
-      const result = await collaborationService.receiveSteps('documentID', {
-        steps: [],
-        version: 0,
-        clientID: 'clientID',
+    it('should throw an error if the version is not the latest', async () => {
+      mockPrisma.$transaction.mockImplementation(async (callback) => {
+        return await callback(mockPrisma)
       })
-      expect(result).toEqual({
-        err: 'Update denied, version is 1, and client version is 0',
-        code: 409,
-      })
+      documentService.findDocument = jest.fn().mockResolvedValue({ version: 1 })
+      collaborationService['applyStepsToDocument'] = jest.fn()
+      await expect(
+        collaborationService.receiveSteps('documentID', {
+          steps: [],
+          version: 0,
+          clientID: 123,
+        })
+      ).rejects.toThrow(new VersionMismatchError(1))
     })
-    it('should return an error if the document history creation fails', async () => {
-      documentService.findDocument = jest.fn().mockResolvedValueOnce({ data: { version: 0 } })
-      collaborationService['applyStepsToDocument'] = jest
-        .fn()
-        .mockResolvedValue({ data: { version: 0 } })
+    it('should throw an error if the document history creation fails', async () => {
+      mockPrisma.$transaction.mockImplementation(async (callback) => {
+        return await callback(mockPrisma)
+      })
+      documentService.findDocument = jest.fn().mockResolvedValue({})
+      documentService.updateDocument = jest.fn().mockResolvedValue({})
+      collaborationService['applyStepsToDocument'] = jest.fn()
+      documentService.findDocumentVersion = jest.fn().mockResolvedValue(0)
       documentHistoryService.createDocumentHistory = jest
         .fn()
-        .mockResolvedValueOnce({ err: 'Failed to save document history', code: 500 })
-      const result = await collaborationService.receiveSteps('documentID', {
-        steps: [],
-        version: 0,
-        clientID: 'clientID',
-      })
-      expect(result).toEqual({ err: 'Failed to save document history', code: 500 })
+        .mockRejectedValue(new Error('Failed to create document history'))
+      await expect(
+        collaborationService.receiveSteps('documentID', {
+          steps: [],
+          version: 0,
+          clientID: 123,
+        })
+      ).rejects.toThrow(new Error('Failed to create document history'))
     })
     it('should return the history if the document history creation succeeds', async () => {
-      documentService.findDocument = jest.fn().mockResolvedValueOnce({ data: { version: 0 } })
-      collaborationService['applyStepsToDocument'] = jest.fn().mockResolvedValue({ data: {} })
-      documentHistoryService.createDocumentHistory = jest.fn().mockResolvedValueOnce({ data: {} })
+      mockPrisma.$transaction.mockImplementation(async (callback) => {
+        return await callback(mockPrisma)
+      })
+      documentService.findDocument = jest.fn().mockResolvedValue({})
+      documentService.findDocumentVersion = jest.fn().mockResolvedValue(0)
+      documentService.updateDocument = jest.fn().mockResolvedValue({})
+      collaborationService['applyStepsToDocument'] = jest.fn().mockResolvedValue({})
+      documentHistoryService.createDocumentHistory = jest.fn().mockResolvedValue({})
       const result = await collaborationService.receiveSteps('documentID', {
         steps: ['step1'],
         version: 0,
-        clientID: '123',
+        clientID: 123,
       })
       expect(result).toEqual({
-        data: {
-          steps: ['step1'],
-          clientIDs: [123],
-          version: 1,
-        },
+        steps: ['step1'],
+        clientIDs: [123],
+        version: 1,
       })
     })
   })
-
-  describe('getDocumentHistory', () => {
-    it('should return an error if the document is not found', async () => {
-      documentService.findDocument = jest
-        .fn()
-        .mockResolvedValue({ err: 'Document not found', code: 404 })
-      const result = await collaborationService.getDocumentHistory('documentID', 0)
-      expect(result).toEqual({ err: 'Document not found', code: 404 })
-    })
-    it('should return default initial document and history if the document history is not found', async () => {
-      documentService.findDocument = jest.fn().mockResolvedValueOnce({ data: {} })
-      documentHistoryService.findDocumentHistories = jest
-        .fn()
-        .mockResolvedValue({ err: 'No history found', code: 404 })
-      const result = await collaborationService.getDocumentHistory('documentID', 0)
-      expect(result).toEqual({
-        data: {
-          steps: [],
-          clientIDs: [],
-          version: 0,
-          doc: undefined,
-        },
-      })
-    })
-    it('should return the document and history if the document history is found', async () => {
-      documentService.findDocument = jest.fn().mockResolvedValueOnce({ data: {} })
-      documentHistoryService.findDocumentHistories = jest
-        .fn()
-        .mockResolvedValueOnce({ data: [{ steps: [step], client_id: '123', version: 1 }] })
-      documentService.findDocumentVersion = jest
-        .fn()
-        .mockResolvedValueOnce({ data: { version: 1 } })
-      const result = await collaborationService.getDocumentHistory('documentID', 0)
-      expect(result).toEqual({
-        data: {
-          steps: hydrateSteps([step]),
-          clientIDs: [123],
-          version: 1,
-          doc: undefined,
-        },
-      })
-    })
-  })
-  describe('getCombinedHistoriesFromVersion', () => {
-    it('should return an error if the document history is not found', async () => {
-      documentHistoryService.findDocumentHistories = jest
-        .fn()
-        .mockResolvedValue({ err: 'No history found', code: 404 })
-      const result = await collaborationService.getCombinedHistoriesFromVersion('documentID', 0)
-      expect(result).toEqual({ err: 'No history found', code: 404 })
-    })
+  describe('getHistoriesFromVersion', () => {
     it('should return the combined histories if the document history is found', async () => {
       documentHistoryService.findDocumentHistories = jest
         .fn()
-        .mockResolvedValue({ data: [{ steps: [step], client_id: '123', version: 1 }] })
-      documentService.findDocumentVersion = jest
-        .fn()
-        .mockResolvedValueOnce({ data: { version: 1 } })
-      const result = await collaborationService.getCombinedHistoriesFromVersion('documentID', 0)
+        .mockResolvedValue([{ steps: [step], client_id: '123', version: 1 }])
+      documentService.findDocumentVersion = jest.fn().mockResolvedValueOnce(1)
+      const result = await collaborationService.getHistoriesFromVersion('documentID', 0)
       expect(result).toEqual({
-        data: {
-          steps: hydrateSteps([step]),
-          clientIDs: [123],
-          version: 1,
-        },
+        steps: hydrateSteps([step]),
+        clientIDs: [123],
+        version: 1,
       })
     })
   })
   describe('getCombinedHistories', () => {
-    it('should return an error if the document history is not found', async () => {
-      documentHistoryService.findDocumentHistories = jest
-        .fn()
-        .mockResolvedValue({ err: 'No history found', code: 404 })
-      const result = await collaborationService['getCombinedHistories']('documentID', 0)
-      expect(result).toEqual({ err: 'No history found', code: 404 })
-    })
     it('should return the combined histories if the document history is found', async () => {
       documentHistoryService.findDocumentHistories = jest
         .fn()
-        .mockResolvedValue({ data: [{ steps: [step], client_id: '123', version: 1 }] })
+        .mockResolvedValue([{ steps: [step], client_id: '123', version: 1 }])
       const result = await collaborationService['getCombinedHistories']('documentID', 0)
       expect(result).toEqual({
-        data: {
-          steps: [step],
-          clientIDs: [123],
-        },
+        steps: [step],
+        clientIDs: [123],
       })
     })
   })

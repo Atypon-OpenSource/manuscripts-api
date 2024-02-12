@@ -203,21 +203,21 @@ describe('ProjectController', () => {
       expect(projectService.createManuscript).toHaveBeenCalledWith(projectID, templateID)
     })
   })
-  describe('getCollaborators', () => {
+  describe('getUserProfiles', () => {
     it('should throw error if user lacks READ permission', async () => {
       controller.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.UPDATE]))
 
-      await expect(controller.getCollaborators(user, projectID)).rejects.toThrow(
+      await expect(controller.getUserProfiles(user, projectID)).rejects.toThrow(
         new RoleDoesNotPermitOperationError('Access denied', user._id)
       )
     })
 
-    it('should call userService.getCollaborators with correct params', async () => {
-      DIContainer.sharedContainer.userService.getCollaborators = jest.fn().mockResolvedValue([])
+    it('should call userService.getUserProfiles with correct params', async () => {
+      DIContainer.sharedContainer.userService.getProjectUserProfiles = jest.fn().mockResolvedValue([])
       controller.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.READ]))
 
-      await controller.getCollaborators(user, projectID)
-      expect(DIContainer.sharedContainer.userService.getCollaborators).toHaveBeenCalledWith(
+      await controller.getUserProfiles(user, projectID)
+      expect(DIContainer.sharedContainer.userService.getProjectUserProfiles).toHaveBeenCalledWith(
         projectID
       )
     })
