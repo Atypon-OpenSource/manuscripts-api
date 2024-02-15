@@ -221,7 +221,7 @@ export class ProjectService {
     // that belongs to the project
     await this.validateManuscriptIDs(projectID, models)
 
-    return await this.containerRepository.bulkUpsert(models)
+    await this.containerRepository.bulkUpsert(models)
   }
   public async replaceProject(projectID: string, manuscriptID: string, models: Model[]) {
     this.validateContainerIDs(projectID, models)
