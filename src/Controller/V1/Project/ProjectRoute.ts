@@ -88,7 +88,7 @@ export class ProjectRoute extends BaseRoute {
 
     router.post(
       `${this.basePath}/:projectId/manuscripts/:manuscriptId/save`,
-      celebrate(replaceProjectSchema),
+      // celebrate(replaceProjectSchema),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {

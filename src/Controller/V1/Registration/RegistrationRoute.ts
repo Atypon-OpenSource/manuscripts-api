@@ -21,7 +21,7 @@ import { StatusCodes } from 'http-status-codes'
 import { AuthStrategy } from '../../../Auth/Passport/AuthStrategy'
 import { BaseRoute } from '../../BaseRoute'
 import { RegistrationController } from './RegistrationController'
-import { connectSignupSchema } from './RegistrationSchema'
+import { connectSignupSchema, signupSchema } from './RegistrationSchema'
 
 export class RegistrationRoute extends BaseRoute {
   private registrationController = new RegistrationController()
@@ -44,6 +44,18 @@ export class RegistrationRoute extends BaseRoute {
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           await this.registrationController.connectSignup(req)
+          res.status(StatusCodes.NO_CONTENT).end()
+        }, next)
+      }
+    )
+
+    router.post(
+      `${this.basePath}/signup`,
+      // celebrate(signupSchema, {}),
+      AuthStrategy.JsonHeadersValidation,
+      (req: Request, res: Response, next: NextFunction) => {
+        return this.runWithErrorHandling(async () => {
+          await this.registrationController.signup(req)
           res.status(StatusCodes.NO_CONTENT).end()
         }, next)
       }
