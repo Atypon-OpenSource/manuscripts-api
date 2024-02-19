@@ -41,6 +41,18 @@ export class ProjectController extends BaseController {
     //todo validate and check fine-grained access
     await DIContainer.sharedContainer.projectService.updateProject(projectID, data)
   }
+  async replaceProject(
+    data: Model[],
+    user: Express.User,
+    projectID: string,
+    manuscriptID: string
+  ): Promise<void> {
+    const permissions = await this.getPermissions(projectID, user._id)
+    if (!permissions.has(ProjectPermission.UPDATE)) {
+      throw new RoleDoesNotPermitOperationError(`Access denied`, user._id)
+    }
+    await DIContainer.sharedContainer.projectService.replaceProject(projectID, manuscriptID, data)
+  }
 
   async isProjectCacheValid(
     projectID: string,
