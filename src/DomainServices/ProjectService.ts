@@ -223,6 +223,17 @@ export class ProjectService {
 
     await this.containerRepository.bulkUpsert(models)
   }
+  public async replaceProject(projectID: string, manuscriptID: string, models: Model[]) {
+    this.validateContainerIDs(projectID, models)
+    await this.validateManuscriptIDs(projectID, models)
+    const docs = await DIContainer.sharedContainer.containerService.processManuscriptModels(
+      models,
+      projectID,
+      manuscriptID
+    )
+    await DIContainer.sharedContainer.projectRepository.removeAllResources(projectID)
+    return await DIContainer.sharedContainer.projectRepository.bulkInsert(docs)
+  }
 
   public async getProjectModels(projectID: string, manuscriptID?: string): Promise<Model[]> {
     return await this.containerRepository.getContainerResources(projectID, manuscriptID || null)
