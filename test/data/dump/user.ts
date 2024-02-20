@@ -14,79 +14,80 @@
  * limitations under the License.
  */
 
-import { INewUser } from '../../../src/Models/UserModels'
-import { SingleUseTokenType, NewSingleUseToken } from '../../../src/Models/SingleUseTokenModels'
 import checksum from 'checksum'
+
+import { NewSingleUseToken, SingleUseTokenType } from '../../../src/Models/SingleUseTokenModels'
+import { INewUser } from '../../../src/Models/UserModels'
 
 export const userList: INewUser[] = []
 
 userList.push({
   _id: checksum('valid-sub', { algorithm: 'sha1' }),
   name: 'Valid System User',
-  email: 'valid-sub-user@manuscriptsapp.com'
+  email: 'valid-sub-user@manuscriptsapp.com',
 })
 
 userList.push({
   _id: 'valid-user@manuscriptsapp.com',
   name: 'Valid System User',
   email: 'valid-user@manuscriptsapp.com',
-  connectUserID: 'valid-connect-user-id'
+  connectUserID: 'valid-connect-user-id',
 })
 
 userList.push({
   _id: 'valid-user-6@manuscriptsapp.com',
   name: 'Valid System User',
   email: 'valid-user-6@manuscriptsapp.com',
-  connectUserID: 'valid-connect-user-6-id'
+  connectUserID: 'valid-connect-user-6-id',
 })
 
 userList.push({
   _id: 'valid-user-7@manuscriptsapp.com',
   name: 'Valid System User',
   email: 'valid-user-7@manuscriptsapp.com',
-  connectUserID: 'valid-connect-user-7-id'
+  connectUserID: 'valid-connect-user-7-id',
 })
 
 userList.push({
   _id: 'valid-user-3@manuscriptsapp.com',
   name: 'Valid System User',
-  email: 'valid-user-3@manuscriptsapp.com'
+  email: 'valid-user-3@manuscriptsapp.com',
 })
 
 userList.push({
   _id: 'valid-google@manuscriptsapp.com',
   name: 'Valid System User',
-  email: 'valid-google@manuscriptsapp.com'
+  email: 'valid-google@manuscriptsapp.com',
 })
 
 userList.push({
   _id: 'valid-user-2@manuscriptsapp.com',
   name: 'Valid System User',
-  email: 'valid-user-2@manuscriptsapp.com'
+  email: 'valid-user-2@manuscriptsapp.com',
 })
 
 userList.push({
-  _id:  'valid-user-1@manuscriptsapp.com',
+  _id: 'valid-user-1@manuscriptsapp.com',
   name: 'Valid System User',
-  email: 'valid-user-1@manuscriptsapp.com'
+  email: 'valid-user-1@manuscriptsapp.com',
 })
 
 userList.push({
   _id: 'valid-user2@manuscriptsapp.com',
   name: 'Valid System User',
-  email: 'valid-user2@manuscriptsapp.com'
+  email: 'valid-user2@manuscriptsapp.com',
 })
 
 userList.push({
   _id: 'valid-user-blocked@manuscriptsapp.com',
   email: 'valid-user-blocked@manuscriptsapp.com',
-  name: 'Valid Blocked User'
+  name: 'Valid Blocked User',
 })
 
 userList.push({
   _id: 'valid-google2@manuscriptsapp.com',
   name: 'Valid System User',
-  email: 'valid-google2@manuscriptsapp.com'
+  email: 'valid-google2@manuscriptsapp.com',
 })
 
 export const singleUseTokens: NewSingleUseToken[] = []
@@ -95,33 +96,33 @@ singleUseTokens.push({
   _id: 'foobarbaz',
   userId: 'User|valid-user@manuscriptsapp.com',
   tokenType: SingleUseTokenType.ResetPasswordToken,
-  createdAt: new Date(1900, 1, 1).getTime()
+  createdAt: new Date(1900, 1, 1).getTime(),
 })
 
 singleUseTokens.push({
   _id: 'foofoobaz',
   userId: '9f33d224-b015-45ba-b02c-2197e0c3c47c',
   tokenType: SingleUseTokenType.ResetPasswordToken,
-  createdAt: new Date(1900, 1, 1).getTime()
+  createdAt: new Date(1900, 1, 1).getTime(),
 })
 
 singleUseTokens.push({
   _id: 'foobarbaz2',
   userId: 'User|valid-user@manuscriptsapp.com',
   tokenType: SingleUseTokenType.VerifyEmailToken,
-  createdAt: new Date(1900, 1, 1).getTime()
+  createdAt: new Date(1900, 1, 1).getTime(),
 })
 
 singleUseTokens.push({
   _id: 'foobarbaz3',
   userId: '9f33d224-b015-45ba-b02c-2197e0c3c47c',
   tokenType: SingleUseTokenType.VerifyEmailToken,
-  createdAt: new Date(1900, 1, 1).getTime()
+  createdAt: new Date(1900, 1, 1).getTime(),
 })
 
 singleUseTokens.push({
   _id: 'foobarbaz4',
   userId: '9f33d224-b015-45ba-b02c-2197e0c3c47h',
   tokenType: SingleUseTokenType.ResetPasswordToken,
-  createdAt: new Date(1900, 1, 1).getTime()
+  createdAt: new Date(1900, 1, 1).getTime(),
 })

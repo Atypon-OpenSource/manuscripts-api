@@ -22,7 +22,6 @@ import { config } from '../../Config/Config'
 import { IUserProfileRepository } from '../../DataAccess/Interfaces/IUserProfileRepository'
 import { IUserRepository } from '../../DataAccess/Interfaces/IUserRepository'
 import { IUserStatusRepository } from '../../DataAccess/Interfaces/IUserStatusRepository'
-import { IUserTokenRepository } from '../../DataAccess/Interfaces/IUserTokenRepository'
 import {
   AccountNotFoundError,
   InvalidCredentialsError,
@@ -70,7 +69,6 @@ type BearerHeaderValue = string
 export class AuthService implements IAuthService {
   constructor(
     private userRepository: IUserRepository,
-    private userTokenRepository: IUserTokenRepository,
     private userProfileRepository: IUserProfileRepository,
     private activityTrackingService: UserActivityTrackingService,
     private syncService: ISyncService,
@@ -238,7 +236,7 @@ export class AuthService implements IAuthService {
     hasExpiry: boolean
   ) {
     await this.ensureUserProfileExists(user)
-    const userToken = await this.ensureUserTokenExists(
+    const userToken = await this.generateUserToken(
       user._id,
       user.connectUserID,
       appId,
@@ -260,7 +258,7 @@ export class AuthService implements IAuthService {
     return { userToken }
   }
 
-  private async ensureUserTokenExists(
+  private async generateUserToken(
     userId: string,
     connectUserID: string | undefined,
     appId: string,
@@ -268,50 +266,27 @@ export class AuthService implements IAuthService {
     hasExpiry: boolean,
     email?: string
   ): Promise<UserToken> {
-    const criteria = {
+    let expiryTime: number | null = null
+    if (hasExpiry) {
+      expiryTime = AUTH_TOKEN_TIMEOUT()
+    }
+    const token = generateLoginToken(
+      {
+        userId,
+        connectUserID,
+        userProfileId: UserService.profileID(userId),
+        appId,
+        email,
+      },
+      expiryTime
+    )
+
+    const userToken = {
       userId,
+      hasExpiry,
       deviceId,
       appId,
-    }
-
-    let userToken = await this.userTokenRepository.getOne(criteria)
-
-    if (!userToken) {
-      let expiryTime: number | null = null
-      const tokenId = checksum(`${userId}-${deviceId}-${appId}`, {
-        algorithm: 'sha1',
-      })
-
-      if (hasExpiry) {
-        expiryTime = AUTH_TOKEN_TIMEOUT()
-      }
-
-      const token = generateLoginToken(
-        {
-          tokenId,
-          userId,
-          connectUserID,
-          userProfileId: UserService.profileID(userId),
-          appId,
-          email,
-        },
-        expiryTime
-      )
-
-      userToken = {
-        _id: tokenId,
-        userId,
-        hasExpiry,
-        deviceId,
-        appId,
-        token,
-      }
-
-      await this.userTokenRepository.create(userToken)
-    }
-
-    if (userToken.hasExpiry) {
-      await this.userTokenRepository.touch(userToken._id, AUTH_TOKEN_TIMEOUT())
+      token,
     }
 
     return userToken
