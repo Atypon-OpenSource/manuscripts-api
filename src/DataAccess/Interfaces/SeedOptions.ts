@@ -23,7 +23,6 @@ export interface SeedOptions {
   projectInvitations?: boolean
   invitationTokens?: boolean
   userProfiles?: boolean
-  userTokens?: boolean
   containerRequest?: boolean
   submission?: boolean
   manuscript?: boolean

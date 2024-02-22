@@ -58,6 +58,10 @@ export class UserRegistrationService implements IUserRegistrationService {
     })
 
     if (user) {
+      if (user.connectUserID != connectUserID) {
+        await this.updateConnectID(user, connectUserID)
+        return
+      }
       throw new DuplicateEmailError(user.email)
     }
 
@@ -79,6 +83,17 @@ export class UserRegistrationService implements IUserRegistrationService {
       null,
       null
     ) // intentional fire and forget.
+  }
+
+  private async updateConnectID(user: User, connectUserID: string) {
+    user.connectUserID = connectUserID
+    await this.userRepository.update(user)
+    this.activityTrackingService.createEvent(
+      user._id,
+      UserActivityEventType.UpdateConnectID,
+      null,
+      null
+    )
   }
 
   public async signup(credentials: SignupCredentials): Promise<void> {
