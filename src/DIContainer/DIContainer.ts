@@ -26,7 +26,6 @@ import { IUserEmailRepository } from '../DataAccess/Interfaces/IUserEmailReposit
 import { IUserEventRepository } from '../DataAccess/Interfaces/IUserEventRepository'
 import { IUserRepository } from '../DataAccess/Interfaces/IUserRepository'
 import { IUserStatusRepository } from '../DataAccess/Interfaces/IUserStatusRepository'
-import { IUserTokenRepository } from '../DataAccess/Interfaces/IUserTokenRepository'
 import { ManuscriptNoteRepository } from '../DataAccess/ManuscriptNoteRepository/ManuscriptNoteRepository'
 import { ManuscriptRepository } from '../DataAccess/ManuscriptRepository/ManuscriptRepository'
 import { ProjectRepository } from '../DataAccess/ProjectRepository/ProjectRepository'
@@ -38,7 +37,6 @@ import { UserEventRepository } from '../DataAccess/UserEventRepository/UserEvent
 import { UserProfileRepository } from '../DataAccess/UserProfileRepository/UserProfileRepository'
 import { UserRepository } from '../DataAccess/UserRepository/UserRepository'
 import { UserStatusRepository } from '../DataAccess/UserStatusRepository/UserStatusRepository'
-import { UserTokenRepository } from '../DataAccess/UserTokenRepository/UserTokenRepository'
 import { AuthService } from '../DomainServices/Auth/AuthService'
 import { IAuthService } from '../DomainServices/Auth/IAuthService'
 import { CollaborationService } from '../DomainServices/Collaboration/CollaborationService'
@@ -94,7 +92,6 @@ export class DIContainer {
 
   readonly server: IServer
   readonly userRepository: IUserRepository
-  readonly userTokenRepository: IUserTokenRepository
   readonly userEmailRepository: IUserEmailRepository
   readonly singleUseTokenRepository: ISingleUseTokenRepository
   readonly applicationRepository: IClientApplicationRepository
@@ -139,7 +136,6 @@ export class DIContainer {
     this.applicationRepository = new ClientApplicationRepository(this.userBucket)
     this.server = new Server(this.userBucket)
     this.userRepository = new UserRepository(this.userBucket)
-    this.userTokenRepository = new UserTokenRepository(this.userBucket)
     this.userEmailRepository = new UserEmailRepository(this.userBucket)
     this.singleUseTokenRepository = new SingleUseTokenRepository(this.userBucket)
     this.userEventRepository = new UserEventRepository(this.userBucket)
@@ -171,7 +167,6 @@ export class DIContainer {
       this.singleUseTokenRepository,
       this.activityTrackingService,
       this.userStatusRepository,
-      this.userTokenRepository,
       this.syncService,
       this.userProfileRepository,
       this.projectRepository
@@ -195,7 +190,6 @@ export class DIContainer {
     this.snapshotService = new SnapshotService()
     this.authService = new AuthService(
       this.userRepository,
-      this.userTokenRepository,
       this.userProfileRepository,
       this.activityTrackingService,
       this.syncService,

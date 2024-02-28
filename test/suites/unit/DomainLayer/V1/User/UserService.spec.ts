@@ -314,10 +314,6 @@ describe('User - deleteUser', () => {
       remove: jest.fn(),
     }
 
-    userService.userTokenRepository = {
-      remove: jest.fn(),
-    }
-
     userService.invitationRepository = {
       removeByUserIdAndEmail: jest.fn(),
     }
@@ -342,7 +338,6 @@ describe('User - deleteUser', () => {
     expect(deleted).toBeTruthy()
     expect(userService.syncService.removeUserStatus).toHaveBeenCalled()
     expect(userService.singleUseTokenRepository.remove).toHaveBeenCalled()
-    expect(userService.userTokenRepository.remove).toHaveBeenCalled()
     expect(userService.userStatusRepository.remove).toHaveBeenCalled()
   })
 })
@@ -371,9 +366,6 @@ describe('User - authenticateUser', () => {
     const userService: any = DIContainer.sharedContainer.userService
     userService.isScopedTokenPayload = jest.fn(() => false)
     userService.isLoginTokenPayload = jest.fn(() => true)
-    const tokenRepo: any = DIContainer.sharedContainer.userTokenRepository
-    tokenRepo.fullyQualifiedId = jest.fn(() => Promise.resolve(validUser1._id))
-    tokenRepo.getById = jest.fn(() => Promise.resolve(validUserToken))
     const userRepo: any = DIContainer.sharedContainer.userRepository
     userRepo.getById = jest.fn(() => Promise.resolve(validUser1))
     userService.userProfileRepository = {

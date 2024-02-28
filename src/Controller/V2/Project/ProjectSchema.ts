@@ -46,6 +46,24 @@ export const saveProjectSchema: Joi.SchemaMap = {
     ),
   }),
 }
+export const replaceProjectSchema: Joi.SchemaMap = {
+  headers: Joi.object({
+    accept: appJsonAndCharset,
+    'content-type': Joi.string().required(),
+  }).options({ allowUnknown: true }),
+  params: Joi.object({
+    projectID: Joi.string().required(),
+    manuscriptID: Joi.string().required(),
+  }),
+  body: Joi.object({
+    data: Joi.array().items(
+      allowUnknownObjectsSchema.object({
+        _id: Joi.string().required(),
+        objectType: Joi.string().required(),
+      })
+    ),
+  }),
+}
 
 export const projectUserProfilesSchema: Joi.SchemaMap = {
   headers: Joi.object({
