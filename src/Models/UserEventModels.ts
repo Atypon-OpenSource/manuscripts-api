@@ -27,6 +27,7 @@ export enum UserActivityEventType {
   SuccessfulLogin = 'SuccessfulLogin',
   RequestEmailVerification = 'RequestEmailVerification',
   ProjectCreated = 'ProjectCreated',
+  UpdateConnectID = 'UpdateConnectID',
 }
 
 export interface UserActivityEvent {

@@ -88,12 +88,6 @@ async function createUserProfiles(): Promise<void> {
   }
 }
 
-async function createUserTokens(): Promise<void> {
-  for (const userToken of userTokensList) {
-    await DIContainer.sharedContainer.userTokenRepository.create(_.clone(userToken))
-  }
-}
-
 async function createProjects(): Promise<void> {
   for (const project of projectsList) {
     await DIContainer.sharedContainer.projectRepository.create(_.clone(project))
@@ -187,10 +181,6 @@ export async function seed(options: SeedOptions): Promise<void> {
 
   if (options.userProfiles) {
     storagePromises.push(createUserProfiles())
-  }
-
-  if (options.userTokens) {
-    storagePromises.push(createUserTokens())
   }
 
   if (options.containerRequest) {

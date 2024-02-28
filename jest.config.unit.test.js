@@ -37,7 +37,6 @@ module.exports = {
         "!src/Controller/**/*Route.ts",
         "!src/Controller/**/*Schema.ts",
         "!src/Controller/V2/Config/ConfigController.ts",
-        "!src/Controller/V2/RequestQueue.ts",
         "!src/Auth/Passport/**",
         "!src/Controller/RouteLoader.ts",
         "!src/**/Interfaces/*",

@@ -24,7 +24,6 @@ import { ISingleUseTokenRepository } from '../../DataAccess/Interfaces/ISingleUs
 import { IUserProfileRepository } from '../../DataAccess/Interfaces/IUserProfileRepository'
 import { IUserRepository } from '../../DataAccess/Interfaces/IUserRepository'
 import { IUserStatusRepository } from '../../DataAccess/Interfaces/IUserStatusRepository'
-import { IUserTokenRepository } from '../../DataAccess/Interfaces/IUserTokenRepository'
 import { UserProfileLike } from '../../DataAccess/Interfaces/Models'
 import { ProjectRepository } from '../../DataAccess/ProjectRepository/ProjectRepository'
 import { DIContainer } from '../../DIContainer/DIContainer'
@@ -33,7 +32,6 @@ import {
   InvalidCredentialsError,
   InvalidPasswordError,
   MissingUserStatusError,
-  NoTokenError,
   RecordNotFoundError,
   ValidationError,
 } from '../../Errors'
@@ -50,7 +48,6 @@ export class UserService implements IUserService {
     private singleUseTokenRepository: ISingleUseTokenRepository,
     private activityTrackingService: UserActivityTrackingService,
     private userStatusRepository: IUserStatusRepository,
-    private userTokenRepository: IUserTokenRepository,
     private syncService: ISyncService,
     private userProfileRepository: IUserProfileRepository,
     private projectRepository: ProjectRepository
@@ -102,7 +99,6 @@ export class UserService implements IUserService {
     await this.userProfileRepository.purge(userProfileId)
     await this.syncService.removeUserStatus(user._id)
     await this.singleUseTokenRepository.remove({ userId: user._id })
-    await this.userTokenRepository.remove({ userId: user._id })
 
     await this.userStatusRepository.remove({
       _id: this.userStatusRepository.userStatusId(user._id),
@@ -202,14 +198,6 @@ export class UserService implements IUserService {
         throw new InvalidCredentialsError(`User not found.`)
       }
     } else if (isLoginTokenPayload(payload)) {
-      const id = this.userTokenRepository.fullyQualifiedId(payload.tokenId)
-
-      const userToken = await this.userTokenRepository.getById(id)
-
-      if (!userToken) {
-        throw new NoTokenError(id)
-      }
-
       const user = await this.userRepository.getById(payload.userId)
 
       if (!user) {

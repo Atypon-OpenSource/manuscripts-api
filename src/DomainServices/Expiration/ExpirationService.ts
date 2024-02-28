@@ -15,30 +15,18 @@
  */
 
 import { IUserEventRepository } from '../../DataAccess/Interfaces/IUserEventRepository'
-import { IUserTokenRepository } from '../../DataAccess/Interfaces/IUserTokenRepository'
 
 export class ExpirationService {
-  constructor(
-    private userEventRepository: IUserEventRepository,
-    private userTokenRepository: IUserTokenRepository
-  ) {}
+  constructor(private userEventRepository: IUserEventRepository) {}
 
   public async clearExpiredDocuments(): Promise<void> {
     await this.clearEvents()
-    await this.clearUserTokens()
   }
 
   private async clearEvents(): Promise<void> {
     const expiredDocs = await this.userEventRepository.getExpired()
     for (const doc of expiredDocs) {
       await this.userEventRepository.remove({ _id: doc._id })
-    }
-  }
-
-  private async clearUserTokens(): Promise<void> {
-    const expiredDocs = await this.userTokenRepository.getExpired()
-    for (const doc of expiredDocs) {
-      await this.userTokenRepository.remove({ id: doc._id })
     }
   }
 }
