@@ -1294,10 +1294,10 @@
     eslint-config-prettier "^8.5.0"
     prettier "^2.8.1"
 
-"@manuscripts/json-schema@2.2.3-LEAN-3376-2":
-  version "2.2.3-LEAN-3376-2"
-  resolved "https://registry.yarnpkg.com/@manuscripts/json-schema/-/json-schema-2.2.3-LEAN-3376-2.tgz#c3e46a13e55240b6245d959f99582539efbbaa47"
-  integrity sha512-eof/cSSDmSYB/XqFoKL948vPB1wt4EpUgV+I+ZzM/MP5mfxIXR5Aq6HW1Gr3qoI5UBBMpBlBo4IObt/r1+RbNQ==
+"@manuscripts/json-schema@2.2.3-LEAN-3377-0":
+  version "2.2.3-LEAN-3377-0"
+  resolved "https://registry.yarnpkg.com/@manuscripts/json-schema/-/json-schema-2.2.3-LEAN-3377-0.tgz#d400245cd048339f0dcf910d239f792853ef18fc"
+  integrity sha512-Lj/H1K+HkK6bi6oNUmrahl7srm2PZP7Z778MNyjn4BmLkGX2qazLF1d6eK8hEV6lFkLEVIcPtqgIU8Yc3v4/MQ==
   dependencies:
     ajv "^8.12.0"
     deepmerge "^4.3.1"
@@ -1312,24 +1312,24 @@
     deepmerge "^4.3.1"
     uuid "^9.0.0"
 
-"@manuscripts/library@1.3.2-LEAN-3376-1":
-  version "1.3.2-LEAN-3376-1"
-  resolved "https://registry.yarnpkg.com/@manuscripts/library/-/library-1.3.2-LEAN-3376-1.tgz#0ca0052e828880d2a5d2260acf50f34b25d4be5a"
-  integrity sha512-D0w9FJ515Y/7EHYhxzWo+KUbmBThg1zbZDtI2HBbM+7GV+zWr1hBUVoLSUBrRD54HCDUBkWXdC6WzZMx0eCWnw==
+"@manuscripts/library@1.3.2-LEAN-3377-0":
+  version "1.3.2-LEAN-3377-0"
+  resolved "https://registry.yarnpkg.com/@manuscripts/library/-/library-1.3.2-LEAN-3377-0.tgz#a8c5594487991f7057ce68b4857f0c25a161e986"
+  integrity sha512-+1Bx5FT+Z4USp0g6K1rTYnRIypLeqM+hCCVS8QaFVj7fGjgF4/kWJQt/15xM0gsABgVYNZ+zAsRzdyt+HfzUIg==
   dependencies:
-    "@manuscripts/json-schema" "2.2.3-LEAN-3376-2"
+    "@manuscripts/json-schema" "2.2.3-LEAN-3377-0"
     astrocite-bibtex "^0.16.4"
     astrocite-ris "^0.16.4"
     citeproc "^2.4.62"
     fontoxpath "^3.28.2"
 
-"@manuscripts/transform@2.1.1-LEAN-3376-2":
-  version "2.1.1-LEAN-3376-2"
-  resolved "https://registry.yarnpkg.com/@manuscripts/transform/-/transform-2.1.1-LEAN-3376-2.tgz#4144d9feff70d9c7ba9f47319aa4622b77b6eecf"
-  integrity sha512-CPAAj4OquDMr4aaaLei9mwQvDjVaxqzwsmxq/gr7zCtWtptT8xq6AMugyg/Vs5zsKYkzsisqcs1tnCY9G6BrIw==
+"@manuscripts/transform@2.1.1-LEAN-3377-2":
+  version "2.1.1-LEAN-3377-2"
+  resolved "https://registry.yarnpkg.com/@manuscripts/transform/-/transform-2.1.1-LEAN-3377-2.tgz#beb435cd8bb21815361a7c09ca70f16325235dc2"
+  integrity sha512-BYSOL4OjxMwqldIxOjVBUJ2mYv2yF9EE9+DwD/Fo8jw3KNOEly2DC6CxComCm85YfdEZCHoVyTsCJv3zrQQGaA==
   dependencies:
-    "@manuscripts/json-schema" "2.2.3-LEAN-3376-2"
-    "@manuscripts/library" "1.3.2-LEAN-3376-1"
+    "@manuscripts/json-schema" "2.2.3-LEAN-3377-0"
+    "@manuscripts/library" "1.3.2-LEAN-3377-0"
     debug "^4.3.4"
     jszip "^3.10.1"
     mathjax-full "^3.2.2"
