@@ -220,17 +220,7 @@ export class ProjectService {
     // this will validate that the models reference a single, existing manuscript
     // that belongs to the project
     await this.validateManuscriptIDs(projectID, models)
-
-    await this.containerRepository.bulkUpsert(models)
-  }
-  public async replaceProject(projectID: string, manuscriptID: string, models: Model[]) {
-    this.validateContainerIDs(projectID, models)
-    await this.validateManuscriptIDs(projectID, models)
-    const docs = await DIContainer.sharedContainer.containerService.processManuscriptModels(
-      models,
-      projectID,
-      manuscriptID
-    )
+    const docs = await this.processManuscriptModels(models, projectID)
     await DIContainer.sharedContainer.projectRepository.removeAllResources(projectID)
     return await DIContainer.sharedContainer.projectRepository.bulkInsert(docs)
   }
@@ -428,6 +418,24 @@ export class ProjectService {
       if (error) {
         throw new SyncError(error, m)
       }
+    })
+  }
+  private async processManuscriptModels(docs: Model[], containerID: string) {
+    const createdAt = Math.round(Date.now() / 1000)
+    return docs.map((doc) => {
+      const updatedDoc = {
+        ...doc,
+        createdAt,
+        updatedAt: createdAt,
+        containerID,
+      }
+
+      const errorMessage = validate(updatedDoc)
+      if (errorMessage) {
+        throw new SyncError(errorMessage, updatedDoc)
+      }
+
+      return updatedDoc
     })
   }
 }
