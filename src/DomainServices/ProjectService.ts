@@ -421,8 +421,8 @@ export class ProjectService {
     })
   }
   private processManuscriptModels(docs: Model[]) {
-    const updatedAt = Math.round(Date.now() / 1000)
-    const models = docs.map((doc) => ({ ...doc, updatedAt }))
+    const createdAt = Math.round(Date.now() / 1000)
+    const models = docs.map((doc) => ({ ...doc, createdAt, updatedAt: createdAt }))
     this.validate(models)
     return models
   }
