@@ -43,6 +43,8 @@ import { validUser2 } from '../../../../data/fixtures/UserRepository'
 import { validUser } from '../../../../data/fixtures/userServiceUser'
 import { TEST_TIMEOUT } from '../../../../utilities/testSetup'
 
+//todo revisit these tests, cleanup & more precise tests needed
+
 jest.setTimeout(TEST_TIMEOUT)
 
 let projectService: ProjectService
@@ -346,25 +348,26 @@ describe('projectService', () => {
       )
     })
     it('should update project if manuscript belongs to project, manuscript exists, no multiple manuscriptIDs and a valid containerID', async () => {
-      const models = [
-        {
-          containerID: projectID,
-          manuscriptID: manuscriptID,
-          objectType: ObjectTypes.Project,
-          createdAt: 20,
-          updatedAt: 21,
-        },
-        {
-          containerID: projectID,
-          manuscriptID: manuscriptID,
-          objectType: ObjectTypes.Project,
-          createdAt: 20,
-          updatedAt: 21,
-        },
-      ]
+      const manuscript = {
+        _id: 'MPManuscript:test-manuscript',
+        objectType: ObjectTypes.Manuscript,
+        containerID: projectID,
+        createdAt: 20,
+      }
+      const paragraph = {
+        _id: 'MPParagraphElement:test-paragraph',
+        objectType: ObjectTypes.ParagraphElement,
+        contents: 'Test paragraph',
+        elementType: 'p',
+        containerID: projectID,
+        manuscriptID: manuscriptID,
+        createdAt: 20,
+      }
+      const models = [manuscript, paragraph]
       manuscriptRepository.getById = jest.fn().mockResolvedValue({ containerID: projectID })
-      containerRepository.bulkUpsert = jest.fn().mockResolvedValue({})
-      // @ts-ignore
+      projectRepository.removeAllResources = jest.fn()
+      projectRepository.bulkInsert = jest.fn()
+      //@ts-ignore
       await expect(projectService.updateProject(projectID, models)).resolves.not.toThrow()
     })
   })

@@ -220,7 +220,7 @@ export class ProjectService {
     // this will validate that the models reference a single, existing manuscript
     // that belongs to the project
     await this.validateManuscriptIDs(projectID, models)
-    const docs = await this.processManuscriptModels(models, projectID)
+    const docs = this.processManuscriptModels(models)
     await DIContainer.sharedContainer.projectRepository.removeAllResources(projectID)
     return await DIContainer.sharedContainer.projectRepository.bulkInsert(docs)
   }
@@ -420,22 +420,10 @@ export class ProjectService {
       }
     })
   }
-  private async processManuscriptModels(docs: Model[], containerID: string) {
-    const createdAt = Math.round(Date.now() / 1000)
-    return docs.map((doc) => {
-      const updatedDoc = {
-        ...doc,
-        createdAt,
-        updatedAt: createdAt,
-        containerID,
-      }
-
-      const errorMessage = validate(updatedDoc)
-      if (errorMessage) {
-        throw new SyncError(errorMessage, updatedDoc)
-      }
-
-      return updatedDoc
-    })
+  private processManuscriptModels(docs: Model[]) {
+    const updatedAt = Math.round(Date.now() / 1000)
+    const models = docs.map((doc) => ({ ...doc, updatedAt }))
+    this.validate(models)
+    return models
   }
 }
