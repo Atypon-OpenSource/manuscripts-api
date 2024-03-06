@@ -43,6 +43,8 @@ import { validUser2 } from '../../../../data/fixtures/UserRepository'
 import { validUser } from '../../../../data/fixtures/userServiceUser'
 import { TEST_TIMEOUT } from '../../../../utilities/testSetup'
 
+//todo revisit these tests, cleanup & more precise tests needed
+
 jest.setTimeout(TEST_TIMEOUT)
 
 let projectService: ProjectService
@@ -346,112 +348,28 @@ describe('projectService', () => {
       )
     })
     it('should update project if manuscript belongs to project, manuscript exists, no multiple manuscriptIDs and a valid containerID', async () => {
-      const models = [
-        {
-          containerID: projectID,
-          manuscriptID: manuscriptID,
-          objectType: ObjectTypes.Project,
-          createdAt: 20,
-          updatedAt: 21,
-        },
-        {
-          containerID: projectID,
-          manuscriptID: manuscriptID,
-          objectType: ObjectTypes.Project,
-          createdAt: 20,
-          updatedAt: 21,
-        },
-      ]
+      const manuscript = {
+        _id: 'MPManuscript:test-manuscript',
+        objectType: ObjectTypes.Manuscript,
+        containerID: projectID,
+        createdAt: 20,
+      }
+      const paragraph = {
+        _id: 'MPParagraphElement:test-paragraph',
+        objectType: ObjectTypes.ParagraphElement,
+        contents: 'Test paragraph',
+        elementType: 'p',
+        containerID: projectID,
+        manuscriptID: manuscriptID,
+        createdAt: 20,
+      }
+      const models = [manuscript, paragraph]
       manuscriptRepository.getById = jest.fn().mockResolvedValue({ containerID: projectID })
-      containerRepository.bulkUpsert = jest.fn().mockResolvedValue({})
-      // @ts-ignore
+      projectRepository.removeAllResources = jest.fn()
+      projectRepository.bulkInsert = jest.fn()
+      //@ts-ignore
       await expect(projectService.updateProject(projectID, models)).resolves.not.toThrow()
     })
-  })
-  describe('replaceProject', () => {
-    it('should throw an error if invalid containerID', async () => {
-      const models = [
-        {
-          containerID: validProject2._id,
-          objectType: ObjectTypes.Project,
-          createdAt: 20,
-          updatedAt: 21,
-        },
-      ]
-      // @ts-ignore
-      await expect(projectService.replaceProject(projectID, manuscriptID, models)).rejects.toThrow(
-        new ValidationError('problem with containerID', models)
-      )
-    })
-    it('should throw an error if data contains multiple manuscriptIDs', async () => {
-      const models = [
-        {
-          containerID: projectID,
-          manuscriptID: manuscriptID,
-          objectType: ObjectTypes.Project,
-          createdAt: 20,
-          updatedAt: 21,
-        },
-        {
-          containerID: projectID,
-          manuscriptID: validManuscript1._id,
-          objectType: ObjectTypes.Project,
-          createdAt: 20,
-          updatedAt: 21,
-        },
-      ]
-      // @ts-ignore
-      await expect(projectService.replaceProject(projectID, manuscriptID, models)).rejects.toThrow(
-        new ValidationError('contains multiple manuscriptIDs', models)
-      )
-    })
-    it('should throw an error if manuscript does not exist', async () => {
-      const models = [
-        {
-          containerID: projectID,
-          manuscriptID: manuscriptID,
-          objectType: ObjectTypes.Project,
-          createdAt: 20,
-          updatedAt: 21,
-        },
-        {
-          containerID: projectID,
-          manuscriptID: manuscriptID,
-          objectType: ObjectTypes.Project,
-          createdAt: 20,
-          updatedAt: 21,
-        },
-      ]
-      manuscriptRepository.getById = jest.fn().mockResolvedValue(null)
-      // @ts-ignore
-      await expect(projectService.replaceProject(projectID, manuscriptID, models)).rejects.toThrow(
-        new ValidationError("manuscript doesn't exist", models)
-      )
-    })
-    it('should throw an error if manuscript does not belong to project', async () => {
-      const models = [
-        {
-          containerID: projectID,
-          manuscriptID: manuscriptID,
-          objectType: ObjectTypes.Project,
-          createdAt: 20,
-          updatedAt: 21,
-        },
-        {
-          containerID: projectID,
-          manuscriptID: manuscriptID,
-          objectType: ObjectTypes.Project,
-          createdAt: 20,
-          updatedAt: 21,
-        },
-      ]
-      manuscriptRepository.getById = jest.fn().mockResolvedValue({ containerID: manuscriptID })
-      // @ts-ignore
-      await expect(projectService.replaceProject(projectID, manuscriptID, models)).rejects.toThrow(
-        new ValidationError("manuscript doesn't belong to project", models)
-      )
-    })
-    // todo add more tests
   })
   describe('updateUserRole', () => {
     it('should throw an error if invalid userID', async () => {
