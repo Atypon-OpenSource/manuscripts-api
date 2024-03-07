@@ -35,7 +35,6 @@ import {
   loadManuscriptSchema,
   loadProjectSchema,
   projectUserProfilesSchema,
-  replaceProjectSchema,
   saveProjectSchema,
 } from './ProjectSchema'
 
@@ -66,17 +65,6 @@ export class ProjectRoute extends BaseRoute {
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           await this.updateProject(req, res)
-        }, next)
-      }
-    )
-    router.put(
-      `${this.basePath}/:projectID/manuscript/:manuscriptID/replace`,
-      celebrate(replaceProjectSchema),
-      AuthStrategy.JsonHeadersValidation,
-      AuthStrategy.JWTAuth,
-      (req: Request, res: Response, next: NextFunction) => {
-        return this.runWithErrorHandling(async () => {
-          await this.replaceProject(req, res)
         }, next)
       }
     )
@@ -196,23 +184,6 @@ export class ProjectRoute extends BaseRoute {
       throw new ValidationError('No user found', user)
     }
     const manuscript = await this.projectController.updateProject(data, user, projectID)
-    res.status(StatusCodes.OK).send(manuscript)
-  }
-
-  private async replaceProject(req: Request, res: Response) {
-    const { projectID, manuscriptID } = req.params
-    const { data } = req.body
-    const { user } = req
-
-    if (!user) {
-      throw new ValidationError('No user found', user)
-    }
-    const manuscript = await this.projectController.replaceProject(
-      data,
-      user,
-      projectID,
-      manuscriptID
-    )
     res.status(StatusCodes.OK).send(manuscript)
   }
 
