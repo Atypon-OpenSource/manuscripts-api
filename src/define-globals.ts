@@ -40,5 +40,8 @@ export const defineGlobals = (): void => {
     XPathResult: {
       value: window.XPathResult,
     },
+    navigator: {
+      value: window.navigator,
+    },
   })
 }
