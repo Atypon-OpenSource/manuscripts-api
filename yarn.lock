@@ -1294,33 +1294,33 @@
     eslint-config-prettier "^8.5.0"
     prettier "^2.8.1"
 
-"@manuscripts/json-schema@^2.2.5-LEAN-3376-0":
-  version "2.2.5-LEAN-3376-0"
-  resolved "https://registry.yarnpkg.com/@manuscripts/json-schema/-/json-schema-2.2.5-LEAN-3376-0.tgz#bc2eab109302aed1bc8e5f4dfe8a63de0c202fab"
-  integrity sha512-qRH3nMgSINiYNekAzDfNNCQc646uFbXdwqKGJgGYQOsqO6jw5jIl13Cdrdluhw27vu8RC4cTLvU4FWKp9uN89w==
+"@manuscripts/json-schema@^2.2.6":
+  version "2.2.6"
+  resolved "https://registry.yarnpkg.com/@manuscripts/json-schema/-/json-schema-2.2.6.tgz#383b4f74bcfb6b3795255c092965a0052f8466d1"
+  integrity sha512-Lz7zJClr8r6pyzwe1rNc9TBMKXIFpZyyBfylWPZ6Rfxx1NX44iA7ROj1/F2l/Qs9QeP7nXX5k+nR+VqLUf7l/A==
   dependencies:
     ajv "^8.12.0"
     deepmerge "^4.3.1"
     uuid "^9.0.0"
 
-"@manuscripts/library@^1.3.4-LEAN-3376-0":
-  version "1.3.4-LEAN-3376-0"
-  resolved "https://registry.yarnpkg.com/@manuscripts/library/-/library-1.3.4-LEAN-3376-0.tgz#3d155eab9ddc2b274462bfd3bfd6b630798c1deb"
-  integrity sha512-wK0A9No1PKurpiqfxf6DvxZnAdV2OZFcgg55qFivsha71pqrXpemyns8RSyPxphSfCiGwR3frfXoJO1HC4JI5A==
+"@manuscripts/library@^1.3.5":
+  version "1.3.5"
+  resolved "https://registry.yarnpkg.com/@manuscripts/library/-/library-1.3.5.tgz#eea1c1343431c8de325ca7280dd04542f57f178e"
+  integrity sha512-vI9PQSMGkmlvBBD/Lyqoh8jx+9ML9/4e7Qdrfj1aE+gaZzGR4REj2hWhKhj+PLd2sjBp8lKyWl0XE/gS+4pwLA==
   dependencies:
-    "@manuscripts/json-schema" "^2.2.5-LEAN-3376-0"
+    "@manuscripts/json-schema" "^2.2.6"
     astrocite-bibtex "^0.16.4"
     astrocite-ris "^0.16.4"
     citeproc "^2.4.62"
     fontoxpath "^3.28.2"
 
-"@manuscripts/transform@^2.1.5-LEAN-3376-1":
-  version "2.1.5-LEAN-3376-1"
-  resolved "https://registry.yarnpkg.com/@manuscripts/transform/-/transform-2.1.5-LEAN-3376-1.tgz#c2ffe9b210977ad5358fd8d46ed9a255c0bbfd29"
-  integrity sha512-AMsqDMCQPuFW5x8p+dt9qa+bn5aPLFLEXjoiCQ6DsVGUg+6KvimceDaR5OmRT7rsJpOjKVO09uT0sqsJqshZLQ==
+"@manuscripts/transform@^2.1.6":
+  version "2.1.6"
+  resolved "https://registry.yarnpkg.com/@manuscripts/transform/-/transform-2.1.6.tgz#6ba4d11216f5c3a00d1e9acbff5741045ea8fdd6"
+  integrity sha512-tU9UiMmdY1cGaLS6R1A8VSHvfflCQW5yGLZdw9POW8saGliB59P+NR0q2YahPVA/Glluevw3/QsbkksSmdMc7g==
   dependencies:
-    "@manuscripts/json-schema" "^2.2.5-LEAN-3376-0"
-    "@manuscripts/library" "^1.3.4-LEAN-3376-0"
+    "@manuscripts/json-schema" "^2.2.6"
+    "@manuscripts/library" "^1.3.5"
     debug "^4.3.4"
     jszip "^3.10.1"
     mime "^3.0.0"
