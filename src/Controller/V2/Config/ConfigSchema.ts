@@ -21,7 +21,7 @@ import { appJsonAndCharset } from '../../BaseSchema'
 export const configSchema: Joi.SchemaMap = {
   headers: Joi.object({
     accept: appJsonAndCharset,
-  }).options({ allowUnknown: true }),
+  }),
   query: Joi.object({
     id: Joi.string().required(),
   }),
@@ -30,7 +30,7 @@ export const configSchema: Joi.SchemaMap = {
 export const defaultSchema: Joi.SchemaMap = {
   headers: Joi.object({
     accept: appJsonAndCharset,
-  }).options({ allowUnknown: true }),
+  }),
   query: Joi.object({
     id: Joi.string().required(),
   }),
@@ -39,7 +39,7 @@ export const defaultSchema: Joi.SchemaMap = {
 export const templateSchema: Joi.SchemaMap = {
   headers: Joi.object({
     accept: appJsonAndCharset,
-  }).options({ allowUnknown: true }),
+  }),
   query: Joi.object({
     id: Joi.string()
       .regex(/^MPManuscriptTemplate:.+$/)
@@ -50,7 +50,7 @@ export const templateSchema: Joi.SchemaMap = {
 export const bundleSchema: Joi.SchemaMap = {
   headers: Joi.object({
     accept: appJsonAndCharset,
-  }).options({ allowUnknown: true }),
+  }),
   query: Joi.object({
     id: Joi.string()
       .regex(/^MPBundle:.+$/)

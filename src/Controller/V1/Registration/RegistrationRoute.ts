@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { celebrate } from 'celebrate'
 import { NextFunction, Request, Response, Router } from 'express'
 import { StatusCodes } from 'http-status-codes'
 
 import { AuthStrategy } from '../../../Auth/Passport/AuthStrategy'
+import { celebrate } from '../../../Utilities/celebrate'
 import { BaseRoute } from '../../BaseRoute'
 import { RegistrationController } from './RegistrationController'
 import { connectSignupSchema } from './RegistrationSchema'
@@ -38,7 +38,7 @@ export class RegistrationRoute extends BaseRoute {
   public create(router: Router): void {
     router.post(
       `${this.basePath}/connect/signup`,
-      celebrate(connectSignupSchema, {}),
+      celebrate(connectSignupSchema),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.applicationValidation(),
       (req: Request, res: Response, next: NextFunction) => {
