@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { celebrate } from 'celebrate'
 import { NextFunction, Request, Response, Router } from 'express'
 import { StatusCodes } from 'http-status-codes'
 
 import type { Client, StepsData } from '../../../../types/quarterback/doc'
 import { AuthStrategy } from '../../../Auth/Passport/AuthStrategy'
+import { celebrate } from '../../../Utilities/celebrate'
 import { BaseRoute } from '../../BaseRoute'
 import { DocumentController } from './DocumentController'
 import {

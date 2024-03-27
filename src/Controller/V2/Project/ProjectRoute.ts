@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { celebrate } from 'celebrate'
 import { NextFunction, Request, Response, Router } from 'express'
 import { remove } from 'fs-extra'
 import { StatusCodes } from 'http-status-codes'
@@ -23,6 +22,7 @@ import multer from 'multer'
 import { AuthStrategy } from '../../../Auth/Passport/AuthStrategy'
 import { ValidationError } from '../../../Errors'
 import { ProjectUserRole } from '../../../Models/ContainerModels'
+import { celebrate } from '../../../Utilities/celebrate'
 import { BaseRoute } from '../../BaseRoute'
 import { ProjectController } from './ProjectController'
 import {

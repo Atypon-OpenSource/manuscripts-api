@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { celebrate } from 'celebrate'
 import { NextFunction, Request, Response, Router } from 'express'
 import { StatusCodes } from 'http-status-codes'
 
 import { DIContainer } from '../../../DIContainer/DIContainer'
+import { celebrate } from '../../../Utilities/celebrate'
 import { BaseRoute } from '../../BaseRoute'
 import { ServerStatus } from './ServerStatus'
 import { appVersionSchema } from './ServerStatusSchema'
@@ -37,7 +37,7 @@ export class ServerStatusRoute extends BaseRoute {
   public create(router: Router): void {
     router.get(
       `${this.basePath}/version`,
-      celebrate(appVersionSchema, {}),
+      celebrate(appVersionSchema),
       ServerStatusRoute.getVersion
     )
     router.get(`${this.basePath}/alive`, async (_req, res: Response) => {
