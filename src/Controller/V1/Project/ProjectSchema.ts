@@ -48,10 +48,12 @@ export const saveProjectSchema: Joi.SchemaMap = {
     projectId: Joi.string().required(),
   }),
   body: Joi.object({
-    data: Joi.array().items({
-      _id: Joi.string().required(),
-      objectType: Joi.string().required(),
-    }),
+    data: Joi.array().items(
+      Joi.object({
+        _id: Joi.string().required(),
+        objectType: Joi.string().required(),
+      })
+    ),
   }),
 }
 
