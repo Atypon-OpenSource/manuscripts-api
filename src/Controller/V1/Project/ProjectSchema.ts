@@ -18,6 +18,12 @@ import * as Joi from 'joi'
 
 import { appJsonAndCharset, jsonHeadersSchema } from '../../BaseSchema'
 
+const allowUnknownObjectsSchema = Joi.defaults((schema) =>
+  schema.options({
+    allowUnknown: true,
+  })
+)
+
 export const createSchema: Joi.SchemaMap = {
   headers: jsonHeadersSchema.headers,
   body: Joi.object({
@@ -32,7 +38,7 @@ export const addSchema: Joi.SchemaMap = {
   headers: Joi.object({
     accept: appJsonAndCharset,
     'content-type': Joi.string().required(),
-  }),
+  }).options({ allowUnknown: true }),
   body: Joi.object({
     manuscriptId: Joi.string(),
     templateId: Joi.string(),
@@ -43,13 +49,13 @@ export const saveProjectSchema: Joi.SchemaMap = {
   headers: Joi.object({
     accept: appJsonAndCharset,
     'content-type': Joi.string().required(),
-  }),
+  }).options({ allowUnknown: true }),
   params: Joi.object({
     projectId: Joi.string().required(),
   }),
   body: Joi.object({
     data: Joi.array().items(
-      Joi.object({
+      allowUnknownObjectsSchema.object({
         _id: Joi.string().required(),
         objectType: Joi.string().required(),
       })
@@ -61,30 +67,32 @@ export const replaceProjectSchema: Joi.SchemaMap = {
   headers: Joi.object({
     accept: appJsonAndCharset,
     'content-type': Joi.string().required(),
-  }),
+  }).options({ allowUnknown: true }),
   params: Joi.object({
     projectId: Joi.string().required(),
     manuscriptId: Joi.string().required(),
   }),
   body: Joi.object({
-    data: Joi.array().items({
-      _id: Joi.string().required(),
-      objectType: Joi.string().required(),
-    }),
+    data: Joi.array().items(
+      allowUnknownObjectsSchema.object({
+        _id: Joi.string().required(),
+        objectType: Joi.string().required(),
+      })
+    ),
   }),
 }
 
 export const projectUserProfilesSchema: Joi.SchemaMap = {
   headers: Joi.object({
     accept: appJsonAndCharset,
-  }),
+  }).options({ allowUnknown: true }),
 }
 
 export const deleteModelSchema: Joi.SchemaMap = {
   headers: Joi.object({
     accept: appJsonAndCharset,
     'content-type': Joi.string().required(),
-  }),
+  }).options({ allowUnknown: true }),
   params: Joi.object({
     projectId: Joi.string().required(),
     manuscriptId: Joi.string().required(),
