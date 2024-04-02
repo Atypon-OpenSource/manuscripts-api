@@ -17,11 +17,6 @@ import * as Joi from 'joi'
 
 import { appJsonAndCharset, jsonHeadersSchema } from '../../BaseSchema'
 
-const allowUnknownObjectsSchema = Joi.defaults((schema) =>
-  schema.options({
-    allowUnknown: true,
-  })
-)
 export const createProjectSchema: Joi.SchemaMap = {
   headers: jsonHeadersSchema.headers,
   body: Joi.object({
@@ -33,13 +28,13 @@ export const saveProjectSchema: Joi.SchemaMap = {
   headers: Joi.object({
     accept: appJsonAndCharset,
     'content-type': Joi.string().required(),
-  }).options({ allowUnknown: true }),
+  }),
   params: Joi.object({
     projectID: Joi.string().required(),
   }),
   body: Joi.object({
     data: Joi.array().items(
-      allowUnknownObjectsSchema.object({
+      Joi.object({
         _id: Joi.string().required(),
         objectType: Joi.string().required(),
       })
@@ -50,7 +45,7 @@ export const saveProjectSchema: Joi.SchemaMap = {
 export const projectUserProfilesSchema: Joi.SchemaMap = {
   headers: Joi.object({
     accept: appJsonAndCharset,
-  }).options({ allowUnknown: true }),
+  }),
   params: Joi.object({
     projectID: Joi.string().required(),
   }),
@@ -59,7 +54,7 @@ export const projectUserProfilesSchema: Joi.SchemaMap = {
 export const deleteSchema: Joi.SchemaMap = {
   headers: Joi.object({
     accept: appJsonAndCharset,
-  }).options({ allowUnknown: true }),
+  }),
   params: Joi.object({
     projectID: Joi.string().required(),
   }),
@@ -67,7 +62,7 @@ export const deleteSchema: Joi.SchemaMap = {
 export const addUserSchema: Joi.SchemaMap = {
   headers: Joi.object({
     accept: appJsonAndCharset,
-  }).options({ allowUnknown: true }),
+  }),
   body: Joi.object({
     userID: Joi.string().required(),
     role: Joi.string().required(),
@@ -80,7 +75,7 @@ export const addUserSchema: Joi.SchemaMap = {
 export const getArchiveSchema: Joi.SchemaMap = {
   headers: Joi.object({
     accept: appJsonAndCharset,
-  }).options({ allowUnknown: true }),
+  }),
   params: Joi.object({
     projectID: Joi.string().required(),
     manuscriptID: Joi.string(),
@@ -94,7 +89,7 @@ export const loadProjectSchema: Joi.SchemaMap = {
   headers: Joi.object({
     accept: appJsonAndCharset,
     'if-modified-since': Joi.date(),
-  }).options({ allowUnknown: true }),
+  }),
   params: Joi.object({
     projectID: Joi.string().required(),
   }),
@@ -107,7 +102,7 @@ export const loadManuscriptSchema: Joi.SchemaMap = {
   headers: Joi.object({
     accept: appJsonAndCharset,
     'if-modified-since': Joi.date(),
-  }).options({ allowUnknown: true }),
+  }),
   params: Joi.object({
     projectID: Joi.string().required(),
     manuscriptID: Joi.string().required(),

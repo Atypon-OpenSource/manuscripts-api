@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { celebrate } from 'celebrate'
 import { NextFunction, Request, Response, Router } from 'express'
 import { StatusCodes } from 'http-status-codes'
 
 import { AuthStrategy } from '../../../Auth/Passport/AuthStrategy'
+import { celebrate } from '../../../Utilities/celebrate'
 import { BaseRoute } from '../../BaseRoute'
 import { UserController } from './UserController'
 import { userSchema } from './UserSchema'
@@ -57,7 +57,7 @@ export class UserRoute extends BaseRoute {
 
     router.get(
       `${this.basePath}`,
-      celebrate(userSchema, {}),
+      celebrate(userSchema),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
