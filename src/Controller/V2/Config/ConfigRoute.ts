@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { celebrate } from 'celebrate'
 import { NextFunction, Request, Response, Router } from 'express'
 import { StatusCodes } from 'http-status-codes'
 
 import { AuthStrategy } from '../../../Auth/Passport/AuthStrategy'
+import { celebrate } from '../../../Utilities/celebrate'
 import { BaseRoute } from '../../BaseRoute'
 import { ConfigController } from './ConfigController'
 import { bundleSchema, configSchema, defaultSchema, templateSchema } from './ConfigSchema'

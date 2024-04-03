@@ -1,5 +1,5 @@
 /*!
- * © 2020 Atypon Systems LLC
+ * © 2024 Atypon Systems LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-import * as Joi from 'joi'
+import { CelebrateOptions, celebrator } from 'celebrate'
+import { ValidationOptions } from 'joi'
 
-import { appJsonAndCharset } from '../../BaseSchema'
+const opts: CelebrateOptions = {}
+const joiOpts: ValidationOptions = { allowUnknown: true }
 
-export const userSchema: Joi.SchemaMap = {
-  headers: Joi.object({
-    accept: appJsonAndCharset,
-  }),
-}
+export const celebrate = celebrator(opts, joiOpts)

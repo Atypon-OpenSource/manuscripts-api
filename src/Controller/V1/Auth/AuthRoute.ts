@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { celebrate } from 'celebrate'
 import { NextFunction, Request, Response, Router } from 'express'
 import { StatusCodes } from 'http-status-codes'
 
 import { AuthStrategy } from '../../../Auth/Passport/AuthStrategy'
+import { celebrate } from '../../../Utilities/celebrate'
 import { BaseRoute } from '../../BaseRoute'
 import { AuthController } from './AuthController'
 import {
@@ -42,7 +42,7 @@ export class AuthRoute extends BaseRoute {
   public create(router: Router): void {
     router.post(
       `${this.basePath}/login`,
-      celebrate(credentialsSchema, {}),
+      celebrate(credentialsSchema),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.applicationValidation(),
       (req: Request, res: Response, next: NextFunction) => {
@@ -55,7 +55,7 @@ export class AuthRoute extends BaseRoute {
 
     router.post(
       `${this.basePath}/token/:connectUserID`,
-      celebrate(serverToServerTokenAuthSchema, {}),
+      celebrate(serverToServerTokenAuthSchema),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.applicationValidation(),
       (req: Request, res: Response, next: NextFunction) => {
@@ -70,7 +70,7 @@ export class AuthRoute extends BaseRoute {
     router.get(
       `/authorization/:scope`,
       AuthStrategy.JWTAuth,
-      celebrate(authorizationTokenSchema, {}),
+      celebrate(authorizationTokenSchema),
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           const token = await this.authController.createAuthorizationToken(req)
