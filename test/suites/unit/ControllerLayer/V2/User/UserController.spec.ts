@@ -18,7 +18,7 @@ import '../../../../../utilities/dbMock'
 
 import { Chance } from 'chance'
 
-import { UserController } from '../../../../../../src/Controller/V1/User/UserController'
+import { UserController } from '../../../../../../src/Controller/V2/User/UserController'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
 import { ValidationError } from '../../../../../../src/Errors'
 import { log } from '../../../../../../src/Utilities/Logger'
