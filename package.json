@@ -1,6 +1,6 @@
 {
   "name": "@manuscripts/api",
-  "version": "1.7.11-LEAN-3321-1",
+  "version": "1.7.12",
   "description": "Manuscripts API server",
   "license": "Apache-2.0",
   "main": "dist/index",
@@ -28,8 +28,8 @@
     "lint"
   ],
   "dependencies": {
-    "@manuscripts/json-schema": "^2.2.6",
-    "@manuscripts/transform": "^2.1.9-LEAN-3321",
+    "@manuscripts/json-schema": "^2.2.7",
+    "@manuscripts/transform": "2.1.10-LEAN-3321",
     "@prisma/client": "^4.8.1",
     "bcrypt": "^5.1.0",
     "celebrate": "^15.0.1",
