@@ -19,7 +19,7 @@ defineGlobals()
 import { schedule } from 'node-cron'
 
 import { config } from './Config/Config'
-import { ServerStatus } from './Controller/V1/ServerStatus/ServerStatus'
+import { ServerStatus } from './Controller/V2/ServerStatus/ServerStatus'
 import { SQLDatabase } from './DataAccess/SQLDatabase'
 import { DIContainer } from './DIContainer/DIContainer'
 import { log } from './Utilities/Logger'

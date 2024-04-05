@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ServerStatus } from '../../../../../../src/Controller/V1/ServerStatus/ServerStatus'
+import { ServerStatus } from '../../../../../../src/Controller/V2/ServerStatus/ServerStatus'
 
 const pjson = require('../../../../../../package.json')
 

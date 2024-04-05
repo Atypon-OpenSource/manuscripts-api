@@ -26,7 +26,7 @@ import {
   APP_ID_HEADER_KEY,
   APP_SECRET_HEADER_KEY,
   AuthController,
-} from '../../../../../../src/Controller/V1/Auth/AuthController'
+} from '../../../../../../src/Controller/V2/Auth/AuthController'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
 import { ContainerService } from '../../../../../../src/DomainServices/Container/ContainerService'
 import {

@@ -19,7 +19,7 @@ import { StatusCodes } from 'http-status-codes'
 import passport from 'passport'
 
 import { config } from '../../Config/Config'
-import { APP_ID_HEADER_KEY, APP_SECRET_HEADER_KEY } from '../../Controller/V1/Auth/AuthController'
+import { APP_ID_HEADER_KEY, APP_SECRET_HEADER_KEY } from '../../Controller/V2/Auth/AuthController'
 import { DIContainer } from '../../DIContainer/DIContainer'
 import {
   InvalidClientApplicationError,
