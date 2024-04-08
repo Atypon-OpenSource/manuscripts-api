@@ -18,7 +18,7 @@ import '../../../../../utilities/dbMock'
 
 import { Chance } from 'chance'
 
-import { RegistrationController } from '../../../../../../src/Controller/V1/Registration/RegistrationController'
+import { RegistrationController } from '../../../../../../src/Controller/V2/Registration/RegistrationController'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
 import { ValidationError } from '../../../../../../src/Errors'
 import { validBody2 } from '../../../../../data/fixtures/credentialsRequestPayload'

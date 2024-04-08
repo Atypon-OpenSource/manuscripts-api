@@ -24,7 +24,6 @@ import { PassportAuth } from '../Auth/Passport/Passport'
 import { config } from '../Config/Config'
 import { Environment } from '../Config/ConfigurationTypes'
 import { initRouter } from '../Controller/InitRouter'
-import { getRoutes as getRoutesV1 } from '../Controller/V1/Routes'
 import { getRoutes as getRoutesV2 } from '../Controller/V2/Routes'
 import { SQLDatabase } from '../DataAccess/SQLDatabase'
 import { ForbiddenOriginError, IllegalStateError, isStatusCoded } from '../Errors'
@@ -102,12 +101,10 @@ export class Server implements IServer {
   }
 
   private loadRoutes() {
-    const routerV1 = initRouter(getRoutesV1())
     const routerV2 = initRouter(getRoutesV2())
     generateDocs(this.app)
 
     // use router middleware
-    this.app.use('/api/v1', routerV1)
     this.app.use('/api/v2', routerV2)
     this.app.get('/', (_req, res: express.Response) => {
       return res.redirect('/api/v2/app/version')
