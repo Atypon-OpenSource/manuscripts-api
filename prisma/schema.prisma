@@ -38,12 +38,3 @@ model ManuscriptSnapshot {
   doc       ManuscriptDoc @relation("ManuscriptSnapshotToManuscriptDoc", fields: [doc_id], references: [manuscript_model_id], onDelete: Cascade)
   doc_id    String
 }
-
-model ManuscriptDocHistory {
-  doc_id    String
-  version   Int
-  client_id String
-  steps     Json[]
-
-  @@id([doc_id, version])
-}
