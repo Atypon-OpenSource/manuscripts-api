@@ -36,7 +36,7 @@ beforeEach(async () => {
   await DIContainer.init()
   documentService = DIContainer.sharedContainer.documentService
   quarterbackService = DIContainer.sharedContainer.quarterback
-  collaborationService = DIContainer.sharedContainer.collaborationService
+  collaborationService = DIContainer.sharedContainer.authorityService
 })
 afterEach(() => {
   jest.clearAllMocks()

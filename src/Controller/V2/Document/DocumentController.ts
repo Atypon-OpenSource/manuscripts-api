@@ -87,10 +87,7 @@ export class DocumentController extends BaseController {
       projectID,
       QuarterbackPermission.WRITE
     )
-    return await DIContainer.sharedContainer.collaborationService.receiveSteps(
-      manuscriptID,
-      payload
-    )
+    return await DIContainer.sharedContainer.authorityService.receiveSteps(manuscriptID, payload)
   }
 
   async stepsSince(
@@ -107,6 +104,6 @@ export class DocumentController extends BaseController {
       projectID,
       QuarterbackPermission.READ
     )
-    return await DIContainer.sharedContainer.collaborationService.getEvents(manuscriptID, versionID)
+    return await DIContainer.sharedContainer.authorityService.getEvents(manuscriptID, versionID)
   }
 }

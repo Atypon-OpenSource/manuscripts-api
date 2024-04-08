@@ -104,7 +104,7 @@ export class DIContainer {
   readonly userProfileRepository: UserProfileRepository
   readonly projectService: ProjectService
   readonly documentService: IDocumentService
-  readonly collaborationService: Authority
+  readonly authorityService: Authority
   readonly snapshotService: ISnapshotService
   readonly configService: ConfigService
   readonly pressroomService: IPressroomService
@@ -180,7 +180,7 @@ export class DIContainer {
     this.pressroomService = new PressroomService(config.pressroom.baseurl, config.pressroom.apiKey)
     this.quarterback = new QuarterbackService()
     this.configService = new ConfigService(config.data.path)
-    this.collaborationService = new Authority(this.documentService)
+    this.authorityService = new Authority(this.documentService)
   }
 
   /**

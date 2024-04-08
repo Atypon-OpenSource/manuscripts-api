@@ -40,7 +40,7 @@ beforeEach(async () => {
   await DIContainer.init()
   documentService = DIContainer.sharedContainer.documentService
   documentHistoryService = DIContainer.sharedContainer.documentHistoryService
-  collaborationService = DIContainer.sharedContainer.collaborationService
+  collaborationService = DIContainer.sharedContainer.authorityService
   mockPrisma = new PrismaClient() as any
   mockPrisma.$transaction = jest.fn()
 })
