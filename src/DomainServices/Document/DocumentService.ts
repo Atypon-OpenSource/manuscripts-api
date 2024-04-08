@@ -13,40 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ManuscriptDoc, Prisma } from '@prisma/client'
+import { ManuscriptDoc } from '@prisma/client'
 
-import type {
-  ICreateDoc,
-  IUpdateDocument,
-  ManuscriptDocWithSnapshots,
-} from '../../../types/quarterback/doc'
+import type { ICreateDoc, ManuscriptDocWithSnapshots } from '../../../types/quarterback/doc'
 import prisma, { PrismaErrorCodes } from '../../DataAccess/prismaClient'
 import { MissingDocumentError, MissingRecordError } from '../../Errors'
 import { IDocumentService } from './IDocumentService'
 
 export class DocumentService implements IDocumentService {
-  async findDocumentVersion(
-    documentID: string,
-    tx: Prisma.TransactionClient = prisma
-  ): Promise<number | null> {
-    const found = await tx.manuscriptDoc.findFirst({
-      where: {
-        manuscript_model_id: documentID,
-      },
-      select: {
-        version: true,
-      },
-    })
-    if (!found) {
-      throw new MissingDocumentError(documentID)
-    }
-    return found.version
-  }
-  async findDocument(
-    documentID: string,
-    tx: Prisma.TransactionClient = prisma
-  ): Promise<ManuscriptDoc> {
-    const found = await tx.manuscriptDoc.findUnique({
+  async findDocument(documentID: string): Promise<ManuscriptDoc> {
+    const found = await prisma.manuscriptDoc.findUnique({
       where: {
         manuscript_model_id: documentID,
       },
@@ -56,11 +32,8 @@ export class DocumentService implements IDocumentService {
     }
     return found
   }
-  async findDocumentWithSnapshot(
-    documentID: string,
-    tx: Prisma.TransactionClient = prisma
-  ): Promise<ManuscriptDocWithSnapshots> {
-    const found = await tx.manuscriptDoc.findUnique({
+  async findDocumentWithSnapshot(documentID: string): Promise<ManuscriptDocWithSnapshots> {
+    const found = await prisma.manuscriptDoc.findUnique({
       where: {
         manuscript_model_id: documentID,
       },
@@ -79,29 +52,22 @@ export class DocumentService implements IDocumentService {
     }
     return found
   }
-  async createDocument(
-    payload: ICreateDoc,
-    userID: string,
-    tx: Prisma.TransactionClient = prisma
-  ): Promise<ManuscriptDocWithSnapshots> {
-    const saved = await tx.manuscriptDoc.create({
+  async createDocument(payload: ICreateDoc, userID: string): Promise<ManuscriptDocWithSnapshots> {
+    const saved = await prisma.manuscriptDoc.create({
       data: {
         manuscript_model_id: payload.manuscript_model_id,
         user_model_id: userID,
         project_model_id: payload.project_model_id,
         doc: payload.doc,
         version: 0,
+        steps: [],
       },
     })
     return { ...saved, snapshots: [] }
   }
-  async updateDocument(
-    documentID: string,
-    payload: IUpdateDocument,
-    tx: Prisma.TransactionClient = prisma
-  ): Promise<ManuscriptDoc> {
+  async updateDocument(documentID: string, payload: any): Promise<ManuscriptDoc> {
     try {
-      const saved = await tx.manuscriptDoc.update({
+      const saved = await prisma.manuscriptDoc.update({
         data: payload,
         where: {
           manuscript_model_id: documentID,
@@ -115,12 +81,9 @@ export class DocumentService implements IDocumentService {
       throw error
     }
   }
-  async deleteDocument(
-    documentID: string,
-    tx: Prisma.TransactionClient = prisma
-  ): Promise<ManuscriptDoc> {
+  async deleteDocument(documentID: string): Promise<ManuscriptDoc> {
     try {
-      const deleted = await tx.manuscriptDoc.delete({
+      const deleted = await prisma.manuscriptDoc.delete({
         where: {
           manuscript_model_id: documentID,
         },

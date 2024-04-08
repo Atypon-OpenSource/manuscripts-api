@@ -18,8 +18,8 @@ import '../../../../utilities/dbMock.ts'
 import '../../../../utilities/configMock.ts'
 
 import { DIContainer } from '../../../../../src/DIContainer/DIContainer'
-import { ContainerService } from '../../../../../src/DomainServices/Container/ContainerService'
-import { ProjectService } from '../../../../../src/DomainServices/ProjectService'
+import { ProjectService } from '../../../../../src/DomainServices/Container/ContainerService'
+import { ProjectService } from '../../../../../src/DomainServices/Project/ProjectService'
 import {
   QuarterbackPermission,
   QuarterbackService,
@@ -27,7 +27,7 @@ import {
 import { ContainerRole } from '../../../../../src/Models/ContainerModels'
 
 let quarterbackService: QuarterbackService
-let containerService: ContainerService
+let containerService: ProjectService
 let projectService: ProjectService
 beforeEach(async () => {
   ;(DIContainer as any)._sharedContainer = null

@@ -17,7 +17,7 @@
 import moment from 'moment'
 
 import { BucketKey } from '../Config/ConfigurationTypes'
-import { ContainerRole } from './ContainerModels'
+import { ProjectUserRole } from './ProjectModels'
 
 /**
  * Represents user's login credentials.
@@ -302,7 +302,7 @@ export interface InvitationToken {
   /**
    * Invited user invitation role.
    */
-  permittedRole: ContainerRole
+  permittedRole: ProjectUserRole
   /**
    * Container related JWT token
    */

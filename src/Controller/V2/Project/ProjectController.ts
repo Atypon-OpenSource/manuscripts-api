@@ -17,13 +17,12 @@
 import { Manuscript, Model, Project, UserProfile } from '@manuscripts/json-schema'
 
 import { DIContainer } from '../../../DIContainer/DIContainer'
-import { ProjectPermission } from '../../../DomainServices/ProjectService'
 import {
   MissingContainerError,
   MissingRecordError,
   RoleDoesNotPermitOperationError,
 } from '../../../Errors'
-import { ProjectUserRole } from '../../../Models/ContainerModels'
+import { ProjectPermission, ProjectUserRole } from '../../../Models/ProjectModels'
 import { BaseController } from '../../BaseController'
 
 export class ProjectController extends BaseController {

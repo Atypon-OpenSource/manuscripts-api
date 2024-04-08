@@ -21,11 +21,10 @@ import { Model, ObjectTypes } from '@manuscripts/json-schema'
 import { ProjectController } from '../../../../../../src/Controller/V2/Project/ProjectController'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
 import {
-  ProjectPermission,
   ProjectService,
-} from '../../../../../../src/DomainServices/ProjectService'
+} from '../../../../../../src/DomainServices/Project/ProjectService'
 import { RoleDoesNotPermitOperationError } from '../../../../../../src/Errors'
-import { ProjectUserRole } from '../../../../../../src/Models/ContainerModels'
+import { ProjectPermission, ProjectUserRole } from '../../../../../../src/Models/ProjectModels'
 import { templates } from '../../../../../data/dump/templates'
 import { ValidHeaderWithApplicationKey } from '../../../../../data/fixtures/headers'
 import { validProject } from '../../../../../data/fixtures/projects'
@@ -213,7 +212,9 @@ describe('ProjectController', () => {
     })
 
     it('should call userService.getUserProfiles with correct params', async () => {
-      DIContainer.sharedContainer.userService.getProjectUserProfiles = jest.fn().mockResolvedValue([])
+      DIContainer.sharedContainer.userService.getProjectUserProfiles = jest
+        .fn()
+        .mockResolvedValue([])
       controller.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.READ]))
 
       await controller.getUserProfiles(user, projectID)

@@ -20,7 +20,7 @@ import fs from 'fs'
 import path from 'path'
 
 import { DIContainer } from '../../../../../src/DIContainer/DIContainer'
-import { ConfigService } from '../../../../../src/DomainServices/ConfigService'
+import { ConfigService } from '../../../../../src/DomainServices/Config/ConfigService'
 import { sectionCategories } from '../../../../data/fixtures/section-categories'
 
 let configService: ConfigService

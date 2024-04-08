@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ContainerRole } from '../../Models/ContainerModels'
+import { ProjectUserRole } from '../../Models/ProjectModels'
 import { SingleUseTokenType } from '../../Models/SingleUseTokenModels'
 
 export interface QueryCriteria {
@@ -58,7 +58,7 @@ export interface InvitationTokenQueryCriteria extends QueryCriteria {
   /**
    * Invited role.
    */
-  permittedRole?: ContainerRole
+  permittedRole?: ProjectUserRole
 }
 
 /**

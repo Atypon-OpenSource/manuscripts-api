@@ -19,7 +19,7 @@ import jwt from 'jsonwebtoken'
 
 import { config } from '../../../Config/Config'
 import { DIContainer } from '../../../DIContainer/DIContainer'
-import { ContainerService } from '../../../DomainServices/Container/ContainerService'
+import { ProjectService } from '../../../DomainServices/Project/ProjectService'
 import {
   InvalidClientApplicationError,
   InvalidCredentialsError,
@@ -110,9 +110,9 @@ export class AuthController extends BaseController {
       throw new ValidationError('scope should be string', scope)
     }
 
-    const scopeInfo = ContainerService.findScope(scope, config.scopes)
+    const scopeInfo = ProjectService.findScope(scope, config.scopes)
 
-    const syncUserID = ContainerService.userIdForSync(user._id)
+    const syncUserID = ProjectService.userIDForSync(user._id)
 
     const payload = {
       iss: config.API.hostname,

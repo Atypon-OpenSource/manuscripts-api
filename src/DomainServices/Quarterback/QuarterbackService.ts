@@ -18,7 +18,7 @@ import { Manuscript } from '@manuscripts/json-schema'
 
 import { DIContainer } from '../../DIContainer/DIContainer'
 import { MissingManuscriptError, RoleDoesNotPermitOperationError } from '../../Errors'
-import { ContainerRole } from '../../Models/ContainerModels'
+import { ProjectUserRole } from '../../Models/ProjectModels'
 import { Snapshot } from '../../Models/SnapshotModel'
 import { IQuarterbackService } from './IQuarterbackService'
 
@@ -40,15 +40,15 @@ export class QuarterbackService implements IQuarterbackService {
     userID: string
   ): Promise<ReadonlySet<QuarterbackPermission>> {
     const project = await DIContainer.sharedContainer.projectService.getProject(projectID)
-    const role = DIContainer.sharedContainer.containerService.getUserRole(project, userID)
+    const role = DIContainer.sharedContainer.projectService.getUserRole(project, userID)
     switch (role) {
-      case ContainerRole.Owner:
-      case ContainerRole.Writer:
-      case ContainerRole.Editor:
-      case ContainerRole.Annotator:
-      case ContainerRole.Proofer:
+      case ProjectUserRole.Owner:
+      case ProjectUserRole.Writer:
+      case ProjectUserRole.Editor:
+      case ProjectUserRole.Annotator:
+      case ProjectUserRole.Proofer:
         return new Set([QuarterbackPermission.READ, QuarterbackPermission.WRITE])
-      case ContainerRole.Viewer:
+      case ProjectUserRole.Viewer:
         return new Set([QuarterbackPermission.READ])
     }
     return EMPTY_PERMISSIONS

@@ -39,22 +39,18 @@ import { UserRepository } from '../DataAccess/UserRepository/UserRepository'
 import { UserStatusRepository } from '../DataAccess/UserStatusRepository/UserStatusRepository'
 import { AuthService } from '../DomainServices/Auth/AuthService'
 import { IAuthService } from '../DomainServices/Auth/IAuthService'
-import { CollaborationService } from '../DomainServices/Collaboration/CollaborationService'
-import { ConfigService } from '../DomainServices/ConfigService'
-import { ContainerService } from '../DomainServices/Container/ContainerService'
+import { Authority } from '../DomainServices/Authority/Authority'
+import { ConfigService } from '../DomainServices/Config/ConfigService'
 import { DocumentService } from '../DomainServices/Document/DocumentService'
 import { IDocumentService } from '../DomainServices/Document/IDocumentService'
-import { DocumentHistoryService } from '../DomainServices/DocumentHistory/DocumentHistoryService'
 import { ExpirationService } from '../DomainServices/Expiration/ExpirationService'
 import { IPressroomService } from '../DomainServices/Pressroom/IPressroomService'
 import { PressroomService } from '../DomainServices/Pressroom/PressroomService'
-import { ProjectService } from '../DomainServices/ProjectService'
+import { ProjectService } from '../DomainServices/Project/ProjectService'
 import { IQuarterbackService } from '../DomainServices/Quarterback/IQuarterbackService'
 import { QuarterbackService } from '../DomainServices/Quarterback/QuarterbackService'
 import { IUserRegistrationService } from '../DomainServices/Registration/IUserRegistrationService'
 import { UserRegistrationService } from '../DomainServices/Registration/UserRegistrationService'
-import { ISGService } from '../DomainServices/SG/ISGService'
-import { SGService } from '../DomainServices/SG/SGService'
 import { ISnapshotService } from '../DomainServices/Snapshot/ISnapshotService'
 import { SnapshotService } from '../DomainServices/Snapshot/SnapshotService'
 import { ISyncService } from '../DomainServices/Sync/ISyncService'
@@ -97,7 +93,6 @@ export class DIContainer {
   readonly applicationRepository: IClientApplicationRepository
   readonly expirationService: ExpirationService
   readonly syncService: ISyncService
-  readonly sgService: ISGService
   readonly authService: IAuthService
   readonly userRegistrationService: IUserRegistrationService
   readonly activityTrackingService: UserActivityTrackingService
@@ -107,11 +102,9 @@ export class DIContainer {
   readonly invitationTokenRepository: IInvitationTokenRepository
   readonly projectRepository: ProjectRepository
   readonly userProfileRepository: UserProfileRepository
-  readonly containerService: ContainerService
   readonly projectService: ProjectService
   readonly documentService: IDocumentService
-  readonly collaborationService: CollaborationService
-  readonly documentHistoryService: DocumentHistoryService
+  readonly collaborationService: Authority
   readonly snapshotService: ISnapshotService
   readonly configService: ConfigService
   readonly pressroomService: IPressroomService
@@ -146,7 +139,6 @@ export class DIContainer {
     this.userStatusRepository = new UserStatusRepository(this.userBucket)
     this.userProfileRepository = new UserProfileRepository(BucketKey.Project, this.dataBucket)
     this.syncService = new SyncService(this.userStatusRepository, this.userProfileRepository)
-    this.sgService = new SGService()
     this.userRegistrationService = new UserRegistrationService(
       this.userRepository,
       this.userEmailRepository,
@@ -171,16 +163,6 @@ export class DIContainer {
       this.userProfileRepository,
       this.projectRepository
     )
-    this.containerService = new ContainerService(
-      this.userRepository,
-      this.userService,
-      this.activityTrackingService,
-      this.userStatusRepository,
-      this.projectRepository,
-      this.manuscriptRepository,
-      this.manuscriptNotesRepository,
-      this.templateRepository
-    )
     this.projectService = new ProjectService(
       this.projectRepository,
       this.manuscriptRepository,
@@ -198,11 +180,7 @@ export class DIContainer {
     this.pressroomService = new PressroomService(config.pressroom.baseurl, config.pressroom.apiKey)
     this.quarterback = new QuarterbackService()
     this.configService = new ConfigService(config.data.path)
-    this.documentHistoryService = new DocumentHistoryService()
-    this.collaborationService = new CollaborationService(
-      this.documentService,
-      this.documentHistoryService
-    )
+    this.collaborationService = new Authority(this.documentService)
   }
 
   /**

@@ -24,3 +24,24 @@ export interface PatchProject {
   annotators?: string[]
   proofers?: string[]
 }
+export enum ProjectPermission {
+  READ,
+  UPDATE,
+  DELETE,
+  UPDATE_ROLES,
+  CREATE_MANUSCRIPT,
+}
+export interface ArchiveOptions {
+  getAttachments?: boolean
+  onlyIDs?: boolean
+  includeExt: boolean | true
+  types?: string[]
+}
+export enum ProjectUserRole {
+  Owner = 'Owner',
+  Writer = 'Writer',
+  Viewer = 'Viewer',
+  Editor = 'Editor',
+  Proofer = 'Proofer',
+  Annotator = 'Annotator',
+}

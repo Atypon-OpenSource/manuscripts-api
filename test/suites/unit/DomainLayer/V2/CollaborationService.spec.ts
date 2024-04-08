@@ -22,7 +22,7 @@ import { Prisma, PrismaClient } from '@prisma/client'
 import { Step } from 'prosemirror-transform'
 
 import { DIContainer } from '../../../../../src/DIContainer/DIContainer'
-import { CollaborationService } from '../../../../../src/DomainServices/Collaboration/CollaborationService'
+import { Authority } from '../../../../../src/DomainServices/Authority/Authority.js'
 import { DocumentService } from '../../../../../src/DomainServices/Document/DocumentService'
 import { DocumentHistoryService } from '../../../../../src/DomainServices/DocumentHistory/DocumentHistoryService'
 import { MissingDocumentError, VersionMismatchError } from '../../../../../src/Errors'
@@ -32,7 +32,7 @@ jest.setTimeout(TEST_TIMEOUT)
 
 let documentService: DocumentService
 let documentHistoryService: DocumentHistoryService
-let collaborationService: CollaborationService
+let collaborationService: Authority
 let mockPrisma: jest.Mocked<PrismaClient>
 
 beforeEach(async () => {
@@ -152,7 +152,7 @@ describe('CollaborationService', () => {
         .fn()
         .mockResolvedValue([{ steps: [step], client_id: '123', version: 1 }])
       documentService.findDocumentVersion = jest.fn().mockResolvedValueOnce(1)
-      const result = await collaborationService.getHistoriesFromVersion('documentID', 0)
+      const result = await collaborationService.getEvents('documentID', 0)
       expect(result).toEqual({
         steps: hydrateSteps([step]),
         clientIDs: [123],

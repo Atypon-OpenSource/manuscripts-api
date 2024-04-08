@@ -21,7 +21,7 @@ import multer from 'multer'
 
 import { AuthStrategy } from '../../../Auth/Passport/AuthStrategy'
 import { ValidationError } from '../../../Errors'
-import { ProjectUserRole } from '../../../Models/ContainerModels'
+import { ProjectUserRole } from '../../../Models/ProjectModels'
 import { celebrate } from '../../../Utilities/celebrate'
 import { BaseRoute } from '../../BaseRoute'
 import { ProjectController } from './ProjectController'

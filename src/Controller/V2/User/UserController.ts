@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
+import { Project } from '@manuscripts/json-schema'
 import { Request } from 'express'
 
 import { UserProfileLike } from '../../../DataAccess/Interfaces/Models'
 import { DIContainer } from '../../../DIContainer/DIContainer'
 import { ValidationError } from '../../../Errors'
-import { Container } from '../../../Models/ContainerModels'
 import { isString } from '../../../util'
 import { authorizationBearerToken, BaseController } from '../../BaseController'
 
@@ -60,7 +60,7 @@ export class UserController extends BaseController {
     return DIContainer.sharedContainer.userService.profile(token)
   }
 
-  async userContainers(req: Request): Promise<Container[]> {
+  async userContainers(req: Request): Promise<Project[]> {
     if (!req.user) {
       throw new ValidationError('No user found', req.user)
     }

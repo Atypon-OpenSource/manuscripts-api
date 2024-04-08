@@ -17,7 +17,7 @@
 import '../../../../../utilities/dbMock'
 
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
-import { ContainerService } from '../../../../../../src/DomainServices/Container/ContainerService'
+import { ProjectService } from '../../../../../../src/DomainServices/Container/ContainerService'
 import { ContainerRole } from '../../../../../../src/Models/ContainerModels'
 
 beforeEach(() => {
@@ -27,15 +27,15 @@ beforeEach(() => {
 
 describe('ContainerService - compareRoles', () => {
   test('Should return 0 if the roles are equal', () => {
-    expect(ContainerService.compareRoles(ContainerRole.Viewer, ContainerRole.Viewer)).toBe(0)
+    expect(ProjectService.compareRoles(ContainerRole.Viewer, ContainerRole.Viewer)).toBe(0)
   })
 
   test('Should return 1 if the first role is better', () => {
-    expect(ContainerService.compareRoles(ContainerRole.Owner, ContainerRole.Viewer)).toBe(1)
+    expect(ProjectService.compareRoles(ContainerRole.Owner, ContainerRole.Viewer)).toBe(1)
   })
 
   test('Should return -1 if the first role is worse', () => {
-    expect(ContainerService.compareRoles(ContainerRole.Writer, ContainerRole.Owner)).toBe(-1)
+    expect(ProjectService.compareRoles(ContainerRole.Writer, ContainerRole.Owner)).toBe(-1)
   })
 })
 

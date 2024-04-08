@@ -19,7 +19,7 @@ import '../../../../../utilities/configMock'
 
 import { DocumentController } from '../../../../../../src/Controller/V2/Document/DocumentController'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
-import { CollaborationService } from '../../../../../../src/DomainServices/Collaboration/CollaborationService'
+import { Authority } from '../../../../../../src/DomainServices/Authority/Authority'
 import { DocumentService } from '../../../../../../src/DomainServices/Document/DocumentService'
 import {
   QuarterbackPermission,
@@ -30,7 +30,7 @@ jest.setTimeout(TEST_TIMEOUT)
 
 let documentService: DocumentService
 let quarterbackService: QuarterbackService
-let collaborationService: CollaborationService
+let collaborationService: Authority
 beforeEach(async () => {
   ;(DIContainer as any)._sharedContainer = null
   await DIContainer.init()
@@ -303,7 +303,7 @@ describe('DocumentController', () => {
     it('should call quarterback.validateUserAccess', async () => {
       quarterbackService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
       documentService.findDocument = jest.fn().mockResolvedValue({})
-      collaborationService.getHistoriesFromVersion = jest.fn().mockReturnValue({})
+      collaborationService.getEvents = jest.fn().mockReturnValue({})
       const spy = jest.spyOn(quarterbackService, 'validateUserAccess')
       await documentController.getDocumentHistory('projectID', 'manuscriptID', {} as any)
       expect(spy).toHaveBeenCalled()
@@ -324,7 +324,7 @@ describe('DocumentController', () => {
     it('should call quarterback.validateUserAccess', async () => {
       quarterbackService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
       const spy = jest.spyOn(quarterbackService, 'validateUserAccess')
-      collaborationService.getHistoriesFromVersion = jest.fn().mockReturnValue({ data: {} })
+      collaborationService.getEvents = jest.fn().mockReturnValue({ data: {} })
       await documentController.getStepsFromVersion('projectID', 'manuscriptID', '1', {} as any)
       expect(spy).toHaveBeenCalled()
     })

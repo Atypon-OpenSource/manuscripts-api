@@ -25,8 +25,11 @@ import { IManuscriptRepository } from '../../../../../src/DataAccess/Interfaces/
 import { ProjectRepository } from '../../../../../src/DataAccess/ProjectRepository/ProjectRepository'
 import { UserRepository } from '../../../../../src/DataAccess/UserRepository/UserRepository'
 import { DIContainer } from '../../../../../src/DIContainer/DIContainer'
-import { ConfigService } from '../../../../../src/DomainServices/ConfigService'
-import { ProjectPermission, ProjectService } from '../../../../../src/DomainServices/ProjectService'
+import { ConfigService } from '../../../../../src/DomainServices/Config/ConfigService'
+import {
+  ProjectPermission,
+  ProjectService,
+} from '../../../../../src/DomainServices/Project/ProjectService'
 import {
   InvalidScopeNameError,
   MissingContainerError,

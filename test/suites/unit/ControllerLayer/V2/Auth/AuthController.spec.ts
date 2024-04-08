@@ -28,7 +28,7 @@ import {
   AuthController,
 } from '../../../../../../src/Controller/V2/Auth/AuthController'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
-import { ContainerService } from '../../../../../../src/DomainServices/Container/ContainerService'
+import { ProjectService } from '../../../../../../src/DomainServices/Container/ContainerService'
 import {
   InvalidClientApplicationError,
   InvalidCredentialsError,
@@ -240,7 +240,7 @@ describe('scoped authorization token', () => {
   })
 
   test('should call jwt.sign', async () => {
-    ContainerService.findScope = (): ScopedAccessTokenConfiguration => {
+    ProjectService.findScope = (): ScopedAccessTokenConfiguration => {
       return {
         expiry: 0,
         identifier: 'identifier',
@@ -250,7 +250,7 @@ describe('scoped authorization token', () => {
         secret: 'secret',
       }
     }
-    ContainerService.userIdForSync = () => validUser._id
+    ProjectService.userIDForSync = () => validUser._id
     jwt.sign = jest.fn()
     const req: any = {
       params: {

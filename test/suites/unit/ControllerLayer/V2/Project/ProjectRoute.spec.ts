@@ -23,7 +23,7 @@ import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
 import {
   ProjectPermission,
   ProjectService,
-} from '../../../../../../src/DomainServices/ProjectService'
+} from '../../../../../../src/DomainServices/Project/ProjectService'
 import { RoleDoesNotPermitOperationError, ValidationError } from '../../../../../../src/Errors'
 import { ProjectUserRole } from '../../../../../../src/Models/ContainerModels'
 import {
@@ -32,8 +32,8 @@ import {
   deleteProjectRequest,
   generateAccessTokenRequest,
   getArchiveRequest,
-  getUserProfilesRequest,
   getProjectModelsRequest,
+  getUserProfilesRequest,
   removeUser,
   updateProjectRequest,
   updateUserRoleRequest,
@@ -343,7 +343,9 @@ describe('ProjectRoute', () => {
       const projectID = getUserProfilesRequest.params.projectID
       const permissions = new Set([ProjectPermission.READ])
       projectService.getPermissions = jest.fn().mockResolvedValue(permissions)
-      DIContainer.sharedContainer.userService.getProjectUserProfiles = jest.fn().mockResolvedValue([])
+      DIContainer.sharedContainer.userService.getProjectUserProfiles = jest
+        .fn()
+        .mockResolvedValue([])
 
       // @ts-ignore
       await route.getProjectUserProfiles(getUserProfilesRequest, res)
