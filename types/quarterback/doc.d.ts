@@ -34,7 +34,7 @@ export interface ICreateDoc {
 export type ICreateDocResponse = ManuscriptDocWithSnapshots
 
 export type IUpdateDocument = {
-  doc: Doc
+  doc?: Doc
   version?: number
   steps?: unknown[]
 }

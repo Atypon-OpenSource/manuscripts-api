@@ -30,7 +30,7 @@ export class Authority {
     documentID: string,
     { version, clientID, steps }: IReceiveSteps
   ): Promise<History> {
-    return await prisma.$transaction(async (tx) => {
+    return prisma.$transaction(async (tx) => {
       const found = await this.transactionProvider(tx).findDocument(documentID)
       this.validateDocumentVersionForUpdate(found.version, version)
       const { doc, modifiedSteps } = this.applyStepsToDocument(
@@ -52,17 +52,18 @@ export class Authority {
   }
 
   public async getEvents(documentID: string, versionID: number): Promise<History> {
-    const document = await this.documentService.findDocument(documentID)
-    const steps = document.steps.slice(versionID)
+    const found = await this.documentService.findDocument(documentID)
+    const startIndex = found.steps.length - (found.version - versionID)
+    const steps = found.steps.slice(startIndex)
     const clientIDs = steps
       .filter((step): step is { clientID: string } => typeof step === 'object' && step !== null)
       .map((step) => parseInt(step.clientID))
 
     return {
-      document,
+      document: found.doc,
       steps: this.hydrateSteps(steps),
       clientIDs,
-      version: document.version,
+      version: found.version,
     }
   }
 

@@ -92,26 +92,11 @@ export class DocumentController extends BaseController {
       payload
     )
   }
-  async getDocumentHistory(
-    projectID: string,
-    manuscriptID: string,
-    user: Express.User | undefined
-  ) {
-    if (!user) {
-      throw new ValidationError('No user found', user)
-    }
-    await DIContainer.sharedContainer.quarterback.validateUserAccess(
-      user,
-      projectID,
-      QuarterbackPermission.READ
-    )
-    return await DIContainer.sharedContainer.collaborationService.getEvents(manuscriptID, 0)
-  }
 
-  async getStepsFromVersion(
+  async stepsSince(
     projectID: string,
     manuscriptID: string,
-    versionID: string,
+    versionID: number,
     user: Express.User | undefined
   ) {
     if (!user) {
@@ -122,11 +107,6 @@ export class DocumentController extends BaseController {
       projectID,
       QuarterbackPermission.READ
     )
-    const { steps, clientIDs, version } =
-      await DIContainer.sharedContainer.collaborationService.getEvents(
-        manuscriptID,
-        parseInt(versionID)
-      )
-    return { steps, clientIDs, version }
+    return await DIContainer.sharedContainer.collaborationService.getEvents(manuscriptID, versionID)
   }
 }

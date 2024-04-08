@@ -116,7 +116,7 @@ export class DocumentRoute extends BaseRoute {
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
-          await this.getStepFromVersion(req, res)
+          await this.stepsSince(req, res)
         }, next)
       }
     )
@@ -164,23 +164,26 @@ export class DocumentRoute extends BaseRoute {
   private async listen(req: Request, res: Response) {
     const { manuscriptID, projectID } = req.params
     const user = req.user
-    const result = await this.documentController.getDocumentHistory(projectID, manuscriptID, user)
-
+    const result = await this.documentController.stepsSince(projectID, manuscriptID, 0, user)
+    const data = this.formatDataForSSE({
+      clientIDs: result.clientIDs,
+      version: result.version,
+      steps: result.steps,
+    })
     res.setHeader('Content-Type', 'text/event-stream')
     res.setHeader('Connection', 'keep-alive')
     res.setHeader('Cache-Control', 'no-cache')
-    const data = this.formatDataForSSE(result)
     res.write(data)
     this.manageClientConnection(req, res)
   }
 
-  private async getStepFromVersion(req: Request, res: Response) {
+  private async stepsSince(req: Request, res: Response) {
     const { manuscriptID, projectID, versionID } = req.params
     const user = req.user
-    const result = await this.documentController.getStepsFromVersion(
+    const result = await this.documentController.stepsSince(
       projectID,
       manuscriptID,
-      versionID,
+      parseInt(versionID),
       user
     )
     res.status(StatusCodes.OK).send(result)

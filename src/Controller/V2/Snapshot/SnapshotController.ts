@@ -94,6 +94,6 @@ export class SnapshotController extends BaseController {
     return snapshot
   }
   private async resetDocumentHistory(documentID: string) {
-    await DIContainer.sharedContainer.documentHistoryService.clearDocumentHistory(documentID)
+    await DIContainer.sharedContainer.documentService.updateDocument(documentID, { steps: [] })
   }
 }

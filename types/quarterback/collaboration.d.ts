@@ -16,8 +16,6 @@
 import { Prisma } from '@prisma/client'
 import { Step } from 'prosemirror-transform'
 
-import type { Doc } from './doc'
-
 export type IReceiveSteps = {
   steps: Prisma.JsonObject[]
   clientID: number
@@ -28,7 +26,7 @@ export type History = {
   steps: Step[] | Prisma.JsonValue[]
   clientIDs: number[]
   version: number
-  document?: Doc
+  document?: Prisma.JsonValue
 }
 
 export type DocumentHistory = History & { doc: Prisma.JsonValue | undefined }
