@@ -318,20 +318,20 @@ describe('DocumentController', () => {
   describe('getStepsFromVersion', () => {
     it('should throw an error if no user is found', async () => {
       await expect(
-        documentController.stepsSince('projectID', 'manuscriptID', '1', undefined)
+        documentController.getEvents('projectID', 'manuscriptID', '1', undefined)
       ).rejects.toThrow('No user found')
     })
     it('should call quarterback.validateUserAccess', async () => {
       quarterbackService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
       const spy = jest.spyOn(quarterbackService, 'validateUserAccess')
       collaborationService.getEvents = jest.fn().mockReturnValue({ data: {} })
-      await documentController.stepsSince('projectID', 'manuscriptID', '1', {} as any)
+      await documentController.getEvents('projectID', 'manuscriptID', '1', {} as any)
       expect(spy).toHaveBeenCalled()
     })
     it('should throw an error if the user does not have permission to read', async () => {
       quarterbackService.getPermissions = jest.fn().mockResolvedValue(EMPTY_PERMISSIONS)
       await expect(
-        documentController.stepsSince('projectID', 'manuscriptID', '1', {} as any)
+        documentController.getEvents('projectID', 'manuscriptID', '1', {} as any)
       ).rejects.toThrow('Access denied')
     })
   })

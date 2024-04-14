@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import { PrismaClient } from '@prisma/client'
+
 import { config } from '../Config/Config'
 import { BucketKey } from '../Config/ConfigurationTypes'
 import { ClientApplicationRepository } from '../DataAccess/ClientApplicationRepository/ClientApplicationRepository'
@@ -85,7 +87,7 @@ export class DIContainer {
       return DIContainer._sharedContainer
     }
   }
-
+  readonly prisma: PrismaClient
   readonly server: IServer
   readonly userRepository: IUserRepository
   readonly userEmailRepository: IUserEmailRepository
@@ -126,6 +128,7 @@ export class DIContainer {
     readonly dataBucket: SQLDatabase,
     readonly enableActivityTracking: boolean
   ) {
+    this.prisma = new PrismaClient()
     this.applicationRepository = new ClientApplicationRepository(this.userBucket)
     this.server = new Server(this.userBucket)
     this.userRepository = new UserRepository(this.userBucket)
@@ -168,8 +171,8 @@ export class DIContainer {
       this.manuscriptRepository,
       this.userRepository
     )
-    this.documentService = new DocumentService()
-    this.snapshotService = new SnapshotService()
+    this.documentService = new DocumentService(this.prisma.manuscriptDoc)
+    this.snapshotService = new SnapshotService(this.prisma.manuscriptSnapshot)
     this.authService = new AuthService(
       this.userRepository,
       this.userProfileRepository,

@@ -16,7 +16,7 @@
 
 import type { ICreateDoc, IUpdateDocument } from 'types/quarterback/doc'
 
-import type { IReceiveSteps } from '../../../../types/quarterback/collaboration'
+import type { IReceiveSteps } from '../../../../types/quarterback/authority'
 import { DIContainer } from '../../../DIContainer/DIContainer'
 import { QuarterbackPermission } from '../../../DomainServices/Quarterback/QuarterbackService'
 import { ValidationError } from '../../../Errors'
@@ -90,7 +90,7 @@ export class DocumentController extends BaseController {
     return await DIContainer.sharedContainer.authorityService.receiveSteps(manuscriptID, payload)
   }
 
-  async stepsSince(
+  async getEvents(
     projectID: string,
     manuscriptID: string,
     versionID: number,

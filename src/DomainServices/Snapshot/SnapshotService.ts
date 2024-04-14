@@ -14,16 +14,18 @@
  * limitations under the License.
  */
 
-import { ManuscriptSnapshot } from '@prisma/client'
+import { ManuscriptSnapshot, PrismaClient } from '@prisma/client'
 
 import type { SaveSnapshotModel, SnapshotLabel } from '../../../types/quarterback/snapshot'
-import prisma, { PrismaErrorCodes } from '../../DataAccess/prismaClient'
+import { PrismaErrorCodes } from '../../DataAccess/prismaClient'
 import { MissingRecordError, MissingSnapshotError } from '../../Errors'
 import { ISnapshotService } from './ISnapshotService'
 
 export class SnapshotService implements ISnapshotService {
+  constructor(private readonly prismaSnapshot: PrismaClient['manuscriptSnapshot']) {}
+
   async listSnapshotLabels(documentID: string): Promise<SnapshotLabel[]> {
-    const found = await prisma.manuscriptSnapshot.findMany({
+    const found = await this.prismaSnapshot.findMany({
       where: {
         doc_id: documentID,
       },
@@ -36,7 +38,7 @@ export class SnapshotService implements ISnapshotService {
     return found
   }
   async getSnapshot(snapshotID: string): Promise<ManuscriptSnapshot> {
-    const found = await prisma.manuscriptSnapshot.findUnique({
+    const found = await this.prismaSnapshot.findUnique({
       where: {
         id: snapshotID,
       },
@@ -48,7 +50,7 @@ export class SnapshotService implements ISnapshotService {
   }
   async saveSnapshot(payload: SaveSnapshotModel): Promise<ManuscriptSnapshot> {
     const { docID, snapshot, name } = payload
-    const saved = await prisma.manuscriptSnapshot.create({
+    const saved = await this.prismaSnapshot.create({
       data: {
         snapshot,
         doc_id: docID,
@@ -59,7 +61,7 @@ export class SnapshotService implements ISnapshotService {
   }
   async deleteSnapshot(snapshotID: string): Promise<ManuscriptSnapshot> {
     try {
-      const deleted = await prisma.manuscriptSnapshot.delete({
+      const deleted = await this.prismaSnapshot.delete({
         where: {
           id: snapshotID,
         },
@@ -73,7 +75,7 @@ export class SnapshotService implements ISnapshotService {
     }
   }
   async deleteAllManuscriptSnapshots(documentID: string): Promise<number> {
-    const { count } = await prisma.manuscriptSnapshot.deleteMany({
+    const { count } = await this.prismaSnapshot.deleteMany({
       where: {
         doc_id: documentID,
       },

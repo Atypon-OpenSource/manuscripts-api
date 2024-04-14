@@ -18,7 +18,8 @@ import { schema } from '@manuscripts/transform'
 import { Prisma } from '@prisma/client'
 import { Step } from 'prosemirror-transform'
 
-import type { History, IReceiveSteps, ModifiedStep } from '../../../types/quarterback/collaboration'
+import type { History, IReceiveSteps, ModifiedStep } from '../../../types/quarterback/authority'
+import type { IUpdateDocument } from '../../../types/quarterback/doc'
 import prisma, { PrismaErrorCodes } from '../../DataAccess/prismaClient'
 import { MissingDocumentError, MissingRecordError, VersionMismatchError } from '../../Errors'
 import { IDocumentService } from '../Document/IDocumentService'
@@ -32,7 +33,7 @@ export class Authority {
   ): Promise<History> {
     return prisma.$transaction(async (tx) => {
       const found = await this.transactionProvider(tx).findDocument(documentID)
-      this.validateDocumentVersionForUpdate(found.version, version)
+      this.checkVersion(found.version, version)
       const { doc, modifiedSteps } = this.applyStepsToDocument(
         steps,
         found.doc,
@@ -44,7 +45,7 @@ export class Authority {
         steps: found.steps.concat(modifiedSteps),
       })
       return {
-        steps: steps,
+        steps,
         clientIDs: Array(steps.length).fill(clientID),
         version: version + steps.length,
       }
@@ -60,14 +61,14 @@ export class Authority {
       .map((step) => parseInt(step.clientID))
 
     return {
-      document: found.doc,
+      doc: found.doc,
       steps: this.hydrateSteps(steps),
       clientIDs,
       version: found.version,
     }
   }
 
-  private validateDocumentVersionForUpdate(docVersion: number, version: number): void {
+  private checkVersion(docVersion: number, version: number): void {
     if (version != docVersion) {
       throw new VersionMismatchError(docVersion)
     }
@@ -100,7 +101,7 @@ export class Authority {
         }
         return found
       },
-      updateDocument: async (documentID: string, payload: any) => {
+      updateDocument: async (documentID: string, payload: IUpdateDocument) => {
         try {
           const saved = await tx.manuscriptDoc.update({
             data: payload,

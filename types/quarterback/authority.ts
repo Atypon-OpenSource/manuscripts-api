@@ -26,7 +26,7 @@ export type History = {
   steps: Step[] | Prisma.JsonValue[]
   clientIDs: number[]
   version: number
-  document?: Prisma.JsonValue
+  doc?: Prisma.JsonValue
 }
 
 export type DocumentHistory = History & { doc: Prisma.JsonValue | undefined }

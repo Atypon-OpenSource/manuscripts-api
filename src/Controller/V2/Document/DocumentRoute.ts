@@ -164,12 +164,8 @@ export class DocumentRoute extends BaseRoute {
   private async listen(req: Request, res: Response) {
     const { manuscriptID, projectID } = req.params
     const user = req.user
-    const result = await this.documentController.stepsSince(projectID, manuscriptID, 0, user)
-    const data = this.formatDataForSSE({
-      clientIDs: result.clientIDs,
-      version: result.version,
-      steps: result.steps,
-    })
+    const result = await this.documentController.getEvents(projectID, manuscriptID, 0, user)
+    const data = this.formatDataForSSE(result)
     res.setHeader('Content-Type', 'text/event-stream')
     res.setHeader('Connection', 'keep-alive')
     res.setHeader('Cache-Control', 'no-cache')
@@ -180,13 +176,13 @@ export class DocumentRoute extends BaseRoute {
   private async stepsSince(req: Request, res: Response) {
     const { manuscriptID, projectID, versionID } = req.params
     const user = req.user
-    const result = await this.documentController.stepsSince(
+    const { clientIDs, steps, version } = await this.documentController.getEvents(
       projectID,
       manuscriptID,
       parseInt(versionID),
       user
     )
-    res.status(StatusCodes.OK).send(result)
+    res.status(StatusCodes.OK).send({ clientIDs, version, steps })
   }
   private addClient(newClient: Client, manuscriptID: string) {
     const clients = this._documentClientsMap.get(manuscriptID) || []
