@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-import { PrismaClient } from '@prisma/client'
-
 import { config } from '../Config/Config'
 import { BucketKey } from '../Config/ConfigurationTypes'
 import { ClientApplicationRepository } from '../DataAccess/ClientApplicationRepository/ClientApplicationRepository'
+import { DocumentRepository } from '../DataAccess/DocumentRepository/DocumentRepository'
 import { IClientApplicationRepository } from '../DataAccess/Interfaces/IClientApplicationRepository'
 import { IInvitationTokenRepository } from '../DataAccess/Interfaces/IInvitationTokenRepository'
 import { IManuscriptRepository } from '../DataAccess/Interfaces/IManuscriptRepository'
@@ -30,8 +29,10 @@ import { IUserRepository } from '../DataAccess/Interfaces/IUserRepository'
 import { IUserStatusRepository } from '../DataAccess/Interfaces/IUserStatusRepository'
 import { ManuscriptNoteRepository } from '../DataAccess/ManuscriptNoteRepository/ManuscriptNoteRepository'
 import { ManuscriptRepository } from '../DataAccess/ManuscriptRepository/ManuscriptRepository'
+import prisma from '../DataAccess/prismaClient'
 import { ProjectRepository } from '../DataAccess/ProjectRepository/ProjectRepository'
 import { SingleUseTokenRepository } from '../DataAccess/SingleUseTokenRepository/SingleUseTokenRepository'
+import { SnapshotRepository } from '../DataAccess/SnapshotRepository/SnapshotRepository'
 import { SQLDatabase } from '../DataAccess/SQLDatabase'
 import { TemplateRepository } from '../DataAccess/TemplateRepository/TemplateRepository'
 import { UserEmailRepository } from '../DataAccess/UserEmailRepository/UserEmailRepository'
@@ -43,8 +44,6 @@ import { AuthService } from '../DomainServices/Auth/AuthService'
 import { IAuthService } from '../DomainServices/Auth/IAuthService'
 import { Authority } from '../DomainServices/Authority/Authority'
 import { ConfigService } from '../DomainServices/Config/ConfigService'
-import { DocumentService } from '../DomainServices/Document/DocumentService'
-import { IDocumentService } from '../DomainServices/Document/IDocumentService'
 import { ExpirationService } from '../DomainServices/Expiration/ExpirationService'
 import { IPressroomService } from '../DomainServices/Pressroom/IPressroomService'
 import { PressroomService } from '../DomainServices/Pressroom/PressroomService'
@@ -53,8 +52,6 @@ import { IQuarterbackService } from '../DomainServices/Quarterback/IQuarterbackS
 import { QuarterbackService } from '../DomainServices/Quarterback/QuarterbackService'
 import { IUserRegistrationService } from '../DomainServices/Registration/IUserRegistrationService'
 import { UserRegistrationService } from '../DomainServices/Registration/UserRegistrationService'
-import { ISnapshotService } from '../DomainServices/Snapshot/ISnapshotService'
-import { SnapshotService } from '../DomainServices/Snapshot/SnapshotService'
 import { ISyncService } from '../DomainServices/Sync/ISyncService'
 import { SyncService } from '../DomainServices/Sync/SyncService'
 import { IUserService } from '../DomainServices/User/IUserService'
@@ -87,7 +84,6 @@ export class DIContainer {
       return DIContainer._sharedContainer
     }
   }
-  readonly prisma: PrismaClient
   readonly server: IServer
   readonly userRepository: IUserRepository
   readonly userEmailRepository: IUserEmailRepository
@@ -105,9 +101,9 @@ export class DIContainer {
   readonly projectRepository: ProjectRepository
   readonly userProfileRepository: UserProfileRepository
   readonly projectService: ProjectService
-  readonly documentService: IDocumentService
+  readonly documentRepository: DocumentRepository
   readonly authorityService: Authority
-  readonly snapshotService: ISnapshotService
+  readonly snapshotRepository: SnapshotRepository
   readonly configService: ConfigService
   readonly pressroomService: IPressroomService
   readonly quarterback: IQuarterbackService
@@ -128,7 +124,6 @@ export class DIContainer {
     readonly dataBucket: SQLDatabase,
     readonly enableActivityTracking: boolean
   ) {
-    this.prisma = new PrismaClient()
     this.applicationRepository = new ClientApplicationRepository(this.userBucket)
     this.server = new Server(this.userBucket)
     this.userRepository = new UserRepository(this.userBucket)
@@ -171,8 +166,8 @@ export class DIContainer {
       this.manuscriptRepository,
       this.userRepository
     )
-    this.documentService = new DocumentService(this.prisma.manuscriptDoc)
-    this.snapshotService = new SnapshotService(this.prisma.manuscriptSnapshot)
+    this.documentRepository = new DocumentRepository(prisma)
+    this.snapshotRepository = new SnapshotRepository(prisma)
     this.authService = new AuthService(
       this.userRepository,
       this.userProfileRepository,
@@ -183,7 +178,7 @@ export class DIContainer {
     this.pressroomService = new PressroomService(config.pressroom.baseurl, config.pressroom.apiKey)
     this.quarterback = new QuarterbackService()
     this.configService = new ConfigService(config.data.path)
-    this.authorityService = new Authority(this.documentService)
+    this.authorityService = new Authority(this.documentRepository)
   }
 
   /**

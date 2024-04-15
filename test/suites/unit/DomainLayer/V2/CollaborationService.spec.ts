@@ -23,14 +23,14 @@ import { Step } from 'prosemirror-transform'
 
 import { DIContainer } from '../../../../../src/DIContainer/DIContainer'
 import { Authority } from '../../../../../src/DomainServices/Authority/Authority.js'
-import { DocumentService } from '../../../../../src/DomainServices/Document/DocumentService'
+import { DocumentRepository } from '../../../../../src/DataAccess/DocumentRepository/DocumentRepository.js'
 import { DocumentHistoryService } from '../../../../../src/DomainServices/DocumentHistory/DocumentHistoryService'
 import { MissingDocumentError, VersionMismatchError } from '../../../../../src/Errors'
 import { TEST_TIMEOUT } from '../../../../utilities/testSetup'
 
 jest.setTimeout(TEST_TIMEOUT)
 
-let documentService: DocumentService
+let documentService: DocumentRepository
 let documentHistoryService: DocumentHistoryService
 let collaborationService: Authority
 let mockPrisma: jest.Mocked<PrismaClient>
@@ -38,7 +38,7 @@ let mockPrisma: jest.Mocked<PrismaClient>
 beforeEach(async () => {
   ;(DIContainer as any)._sharedContainer = null
   await DIContainer.init()
-  documentService = DIContainer.sharedContainer.documentService
+  documentService = DIContainer.sharedContainer.documentRepository
   documentHistoryService = DIContainer.sharedContainer.documentHistoryService
   collaborationService = DIContainer.sharedContainer.authorityService
   mockPrisma = new PrismaClient() as any

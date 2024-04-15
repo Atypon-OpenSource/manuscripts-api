@@ -18,20 +18,20 @@ import '../../../../../utilities/configMock'
 
 import { SnapshotController } from '../../../../../../src/Controller/V2/Snapshot/SnapshotController'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
-import { DocumentService } from '../../../../../../src/DomainServices/Document/DocumentService'
+import { DocumentRepository } from '../../../../../../src/DataAccess/DocumentRepository/DocumentRepository'
 import { DocumentHistoryService } from '../../../../../../src/DomainServices/DocumentHistory/DocumentHistoryService'
 import {
   QuarterbackPermission,
   QuarterbackService,
 } from '../../../../../../src/DomainServices/Quarterback/QuarterbackService'
-import { SnapshotService } from '../../../../../../src/DomainServices/Snapshot/SnapshotService'
+import { SnapshotRepository } from '../../../../../../src/DataAccess/SnapshotRepository/SnapshotRepository'
 import { MissingSnapshotError, ValidationError } from '../../../../../../src/Errors'
 import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
 jest.setTimeout(TEST_TIMEOUT)
 
-let snapshotService: SnapshotService
+let snapshotService: SnapshotRepository
 let quarterbackService: QuarterbackService
-let documentService: DocumentService
+let documentService: DocumentRepository
 let documentHistoryService: DocumentHistoryService
 
 const EMPTY_PERMISSIONS = new Set<QuarterbackPermission>()
@@ -69,8 +69,8 @@ const mockSnapshotLabel = {
 beforeEach(async () => {
   ;(DIContainer as any)._sharedContainer = null
   await DIContainer.init()
-  snapshotService = DIContainer.sharedContainer.snapshotService
-  documentService = DIContainer.sharedContainer.documentService
+  snapshotService = DIContainer.sharedContainer.snapshotRepository
+  documentService = DIContainer.sharedContainer.documentRepository
   quarterbackService = DIContainer.sharedContainer.quarterback
   documentHistoryService = DIContainer.sharedContainer.documentHistoryService
 })

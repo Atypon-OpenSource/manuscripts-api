@@ -20,7 +20,7 @@ import '../../../../../utilities/configMock'
 import { DocumentController } from '../../../../../../src/Controller/V2/Document/DocumentController'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
 import { Authority } from '../../../../../../src/DomainServices/Authority/Authority'
-import { DocumentService } from '../../../../../../src/DomainServices/Document/DocumentService'
+import { DocumentRepository } from '../../../../../../src/DataAccess/DocumentRepository/DocumentRepository'
 import {
   QuarterbackPermission,
   QuarterbackService,
@@ -28,13 +28,13 @@ import {
 import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
 jest.setTimeout(TEST_TIMEOUT)
 
-let documentService: DocumentService
+let documentService: DocumentRepository
 let quarterbackService: QuarterbackService
 let collaborationService: Authority
 beforeEach(async () => {
   ;(DIContainer as any)._sharedContainer = null
   await DIContainer.init()
-  documentService = DIContainer.sharedContainer.documentService
+  documentService = DIContainer.sharedContainer.documentRepository
   quarterbackService = DIContainer.sharedContainer.quarterback
   collaborationService = DIContainer.sharedContainer.authorityService
 })

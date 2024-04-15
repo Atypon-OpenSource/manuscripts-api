@@ -191,8 +191,8 @@ export class ProjectService {
 
   private async deleteManuscriptResources(manuscriptID: string) {
     await Promise.all([
-      DIContainer.sharedContainer.snapshotService.deleteAllManuscriptSnapshots(manuscriptID),
-      DIContainer.sharedContainer.documentService.deleteDocument(manuscriptID),
+      DIContainer.sharedContainer.snapshotRepository.deleteAllManuscriptSnapshots(manuscriptID),
+      DIContainer.sharedContainer.documentRepository.deleteDocument(manuscriptID),
     ])
   }
 

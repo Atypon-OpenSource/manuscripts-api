@@ -37,7 +37,7 @@ export type IUpdateDocument = {
   doc?: Doc
   version?: number
   steps?: JsonValue[]
-}
+} & ({ doc: Doc } | { version: number } | { steps: JsonValue[] })
 
 export type Client = {
   id: number

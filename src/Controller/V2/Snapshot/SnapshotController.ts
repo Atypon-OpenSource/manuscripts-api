@@ -36,12 +36,12 @@ export class SnapshotController extends BaseController {
       projectID,
       QuarterbackPermission.WRITE
     )
-    const document = await DIContainer.sharedContainer.documentService.findDocumentWithSnapshot(
+    const document = await DIContainer.sharedContainer.documentRepository.findDocumentWithSnapshot(
       payload.docID
     )
     const snapshotModel = { docID: payload.docID, name: payload.name, snapshot: document.doc }
     await this.resetDocumentHistory(payload.docID)
-    return await DIContainer.sharedContainer.snapshotService.saveSnapshot(snapshotModel)
+    return await DIContainer.sharedContainer.snapshotRepository.saveSnapshot(snapshotModel)
   }
   async deleteSnapshot(snapshotID: string, user: Express.User | undefined) {
     if (!user) {
@@ -56,7 +56,7 @@ export class SnapshotController extends BaseController {
       manuscript.containerID,
       QuarterbackPermission.WRITE
     )
-    return await DIContainer.sharedContainer.snapshotService.deleteSnapshot(snapshotID)
+    return await DIContainer.sharedContainer.snapshotRepository.deleteSnapshot(snapshotID)
   }
   async getSnapshot(snapshotID: string, user: Express.User | undefined) {
     if (!user) {
@@ -71,7 +71,7 @@ export class SnapshotController extends BaseController {
       manuscript.containerID,
       QuarterbackPermission.READ
     )
-    return await DIContainer.sharedContainer.snapshotService.getSnapshot(snapshotID)
+    return await DIContainer.sharedContainer.snapshotRepository.getSnapshot(snapshotID)
   }
   async listSnapshotLabels(
     projectID: string,
@@ -86,14 +86,14 @@ export class SnapshotController extends BaseController {
       projectID,
       QuarterbackPermission.READ
     )
-    return await DIContainer.sharedContainer.snapshotService.listSnapshotLabels(manuscriptID)
+    return await DIContainer.sharedContainer.snapshotRepository.listSnapshotLabels(manuscriptID)
   }
   private async fetchSnapshot(snapshotID: string) {
-    const result = await DIContainer.sharedContainer.snapshotService.getSnapshot(snapshotID)
+    const result = await DIContainer.sharedContainer.snapshotRepository.getSnapshot(snapshotID)
     const snapshot: Snapshot = JSON.parse(JSON.stringify(result))
     return snapshot
   }
   private async resetDocumentHistory(documentID: string) {
-    await DIContainer.sharedContainer.documentService.updateDocument(documentID, { steps: [] })
+    await DIContainer.sharedContainer.documentRepository.updateDocument(documentID, { steps: [] })
   }
 }

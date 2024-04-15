@@ -29,6 +29,6 @@
     "./types/crypto-random-string/index.d.ts",
     "./types/quarterback/snapshot.d.ts",
     "./types/quarterback/doc.d.ts",
-    "./types/quarterback/authority.ts", 
+    "./types/quarterback/authority.d.ts", 
   ]
 }

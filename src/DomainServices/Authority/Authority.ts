@@ -19,41 +19,40 @@ import { Prisma } from '@prisma/client'
 import { Step } from 'prosemirror-transform'
 
 import type { History, IReceiveSteps, ModifiedStep } from '../../../types/quarterback/authority'
-import type { IUpdateDocument } from '../../../types/quarterback/doc'
-import prisma, { PrismaErrorCodes } from '../../DataAccess/prismaClient'
-import { MissingDocumentError, MissingRecordError, VersionMismatchError } from '../../Errors'
-import { IDocumentService } from '../Document/IDocumentService'
-
+import { DocumentRepository } from '../../DataAccess/DocumentRepository/DocumentRepository'
+import prisma from '../../DataAccess/prismaClient'
+import { VersionMismatchError } from '../../Errors'
 export class Authority {
-  constructor(private readonly documentService: IDocumentService) {}
+  constructor(private readonly documentRepository: DocumentRepository) {}
 
-  public async receiveSteps(
-    documentID: string,
-    { version, clientID, steps }: IReceiveSteps
-  ): Promise<History> {
+  public async receiveSteps(documentID: string, receiveSteps: IReceiveSteps): Promise<History> {
     return prisma.$transaction(async (tx) => {
-      const found = await this.transactionProvider(tx).findDocument(documentID)
-      this.checkVersion(found.version, version)
+      const found = await this.documentRepository.findDocument(documentID, tx)
+      this.checkVersion(found.version, receiveSteps.version)
       const { doc, modifiedSteps } = this.applyStepsToDocument(
-        steps,
+        receiveSteps.steps,
         found.doc,
-        clientID.toString()
+        receiveSteps.clientID.toString()
       )
-      await this.transactionProvider(tx).updateDocument(documentID, {
-        doc: doc,
-        version: version + steps.length,
-        steps: found.steps.concat(modifiedSteps),
-      })
+      await this.documentRepository.updateDocument(
+        documentID,
+        {
+          doc: doc,
+          version: receiveSteps.version + receiveSteps.steps.length,
+          steps: found.steps.concat(modifiedSteps),
+        },
+        tx
+      )
       return {
-        steps,
-        clientIDs: Array(steps.length).fill(clientID),
-        version: version + steps.length,
+        steps: receiveSteps.steps,
+        clientIDs: Array(receiveSteps.steps.length).fill(receiveSteps.clientID),
+        version: receiveSteps.version + receiveSteps.steps.length,
       }
     })
   }
 
   public async getEvents(documentID: string, versionID: number): Promise<History> {
-    const found = await this.documentService.findDocument(documentID)
+    const found = await this.documentRepository.findDocument(documentID)
     const startIndex = found.steps.length - (found.version - versionID)
     const steps = found.steps.slice(startIndex)
     const clientIDs = steps
@@ -88,37 +87,6 @@ export class Authority {
     return { doc: pmDocument.toJSON(), modifiedSteps }
   }
 
-  private transactionProvider(tx: Prisma.TransactionClient) {
-    return {
-      findDocument: async (documentID: string) => {
-        const found = await tx.manuscriptDoc.findUnique({
-          where: {
-            manuscript_model_id: documentID,
-          },
-        })
-        if (!found) {
-          throw new MissingDocumentError(documentID)
-        }
-        return found
-      },
-      updateDocument: async (documentID: string, payload: IUpdateDocument) => {
-        try {
-          const saved = await tx.manuscriptDoc.update({
-            data: payload,
-            where: {
-              manuscript_model_id: documentID,
-            },
-          })
-          return saved
-        } catch (error) {
-          if (error.code === PrismaErrorCodes.RecordMissing) {
-            throw new MissingRecordError(documentID)
-          }
-          throw error
-        }
-      },
-    }
-  }
   private hydrateSteps(jsonSteps: Prisma.JsonValue[]): Step[] {
     return jsonSteps.map((step: Prisma.JsonValue) => Step.fromJSON(schema, step)) as Step[]
   }

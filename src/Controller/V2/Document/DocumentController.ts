@@ -31,7 +31,7 @@ export class DocumentController extends BaseController {
       projectID,
       QuarterbackPermission.WRITE
     )
-    return await DIContainer.sharedContainer.documentService.createDocument(payload, user._id)
+    return await DIContainer.sharedContainer.documentRepository.createDocument(payload, user._id)
   }
 
   async getDocument(projectID: string, manuscriptID: string, user: Express.User | undefined) {
@@ -43,7 +43,9 @@ export class DocumentController extends BaseController {
       projectID,
       QuarterbackPermission.READ
     )
-    return await DIContainer.sharedContainer.documentService.findDocumentWithSnapshot(manuscriptID)
+    return await DIContainer.sharedContainer.documentRepository.findDocumentWithSnapshot(
+      manuscriptID
+    )
   }
 
   async deleteDocument(projectID: string, manuscriptID: string, user: Express.User | undefined) {
@@ -55,7 +57,7 @@ export class DocumentController extends BaseController {
       projectID,
       QuarterbackPermission.WRITE
     )
-    return DIContainer.sharedContainer.documentService.deleteDocument(manuscriptID)
+    return DIContainer.sharedContainer.documentRepository.deleteDocument(manuscriptID)
   }
   async updateDocument(
     projectID: string,
@@ -71,7 +73,7 @@ export class DocumentController extends BaseController {
       projectID,
       QuarterbackPermission.WRITE
     )
-    return DIContainer.sharedContainer.documentService.updateDocument(manuscriptID, payload)
+    return DIContainer.sharedContainer.documentRepository.updateDocument(manuscriptID, payload)
   }
   async receiveSteps(
     projectID: string,
