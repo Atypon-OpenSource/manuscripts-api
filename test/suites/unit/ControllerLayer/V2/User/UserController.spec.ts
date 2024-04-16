@@ -168,7 +168,7 @@ describe('UserController - userContainers', () => {
     projectRepository.getUserContainers = jest.fn()
 
     const userController = new UserController()
-    await userController.userContainers(req)
+    await userController.userProjects(req)
 
     return expect(projectRepository.getUserContainers).toHaveBeenCalled()
   })

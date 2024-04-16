@@ -73,7 +73,7 @@ export class UserRoute extends BaseRoute {
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
-          res.send(await this.userController.userContainers(req))
+          res.send(await this.userController.userProjects(req))
         }, next)
       }
     )

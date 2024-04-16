@@ -60,7 +60,7 @@ export class UserController extends BaseController {
     return DIContainer.sharedContainer.userService.profile(token)
   }
 
-  async userContainers(req: Request): Promise<Project[]> {
+  async userProjects(req: Request): Promise<Project[]> {
     if (!req.user) {
       throw new ValidationError('No user found', req.user)
     }
