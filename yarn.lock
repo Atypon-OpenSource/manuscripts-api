@@ -1314,10 +1314,10 @@
     citeproc "^2.4.62"
     fontoxpath "^3.28.2"
 
-"@manuscripts/transform@^2.1.11":
-  version "2.1.11"
-  resolved "https://registry.yarnpkg.com/@manuscripts/transform/-/transform-2.1.11.tgz#94aab0f15203d337bf8269a1ad6c2fc679accef9"
-  integrity sha512-0QZrguM+aVUHT2170jGJcFDHB/y9VSweWu1DoNyyKabx2EyAFAXC/YgFJWPvmfXIUsUmwZxfoYa/mf/dBVphoA==
+"@manuscripts/transform@2.1.12-LEAN-3509-0":
+  version "2.1.12-LEAN-3509-0"
+  resolved "https://registry.yarnpkg.com/@manuscripts/transform/-/transform-2.1.12-LEAN-3509-0.tgz#330e6675499db5516fe05064dbd3d4cf136dac5c"
+  integrity sha512-uKnUVdvaPnjX9gUH/AiW+TX1nTW0P0KQDL9ds0pP2GD6qDtsbZVWs/61enWJkd0JKqNmpiCw4pazrWqcfsaqRw==
   dependencies:
     "@manuscripts/json-schema" "^2.2.7"
     "@manuscripts/library" "^1.3.6"
