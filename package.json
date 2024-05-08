@@ -1,6 +1,6 @@
 {
   "name": "@manuscripts/api",
-  "version": "1.8.2-LEAN-3514.0",
+  "version": "1.9.0",
   "description": "Manuscripts API server",
   "license": "Apache-2.0",
   "main": "dist/index",
@@ -29,7 +29,7 @@
   ],
   "dependencies": {
     "@manuscripts/json-schema": "^2.2.7",
-    "@manuscripts/transform": "2.2.2-LEAN-3514.1",
+    "@manuscripts/transform": "2.3.0",
     "@prisma/client": "^4.8.1",
     "bcrypt": "^5.1.0",
     "celebrate": "^15.0.1",
