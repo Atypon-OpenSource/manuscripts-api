@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import '../../../../../utilities/dbMock'
 import '../../../../../utilities/configMock'
+import '../../../../../utilities/dbMock'
 
 import { SnapshotController } from '../../../../../../src/Controller/V2/Snapshot/SnapshotController'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
@@ -23,7 +23,7 @@ import { DocumentHistoryService } from '../../../../../../src/DomainServices/Doc
 import {
   QuarterbackPermission,
   QuarterbackService,
-} from '../../../../../../src/DomainServices/Quarterback/QuarterbackService'
+} from '../../../../../../src/DomainServices/QuarterbackService'
 import { SnapshotService } from '../../../../../../src/DomainServices/Snapshot/SnapshotService'
 import { MissingSnapshotError, ValidationError } from '../../../../../../src/Errors'
 import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
@@ -71,7 +71,7 @@ beforeEach(async () => {
   await DIContainer.init()
   snapshotService = DIContainer.sharedContainer.snapshotService
   documentService = DIContainer.sharedContainer.documentService
-  quarterbackService = DIContainer.sharedContainer.quarterback
+  quarterbackService = DIContainer.sharedContainer.quarterbackService
   documentHistoryService = DIContainer.sharedContainer.documentHistoryService
 })
 afterEach(() => {

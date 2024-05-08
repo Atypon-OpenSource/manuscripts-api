@@ -14,56 +14,23 @@
  * limitations under the License.
  */
 
+import { Project } from '@manuscripts/json-schema'
 import { Request } from 'express'
 
-import { UserProfileLike } from '../../../DataAccess/Interfaces/Models'
 import { DIContainer } from '../../../DIContainer/DIContainer'
 import { ValidationError } from '../../../Errors'
-import { Container } from '../../../Models/ContainerModels'
-import { isString } from '../../../util'
 import { authorizationBearerToken, BaseController } from '../../BaseController'
 
 export class UserController extends BaseController {
-  /**
-   * Sets the user deleteAt property.
-   */
-  async markUserForDeletion(req: Request): Promise<void> {
-    const { user } = req
-    const { password } = req.body
-
-    if (!user) {
-      throw new ValidationError('user not found', req.user)
-    }
-
-    if (password && !isString(req.body.password)) {
-      throw new ValidationError('Password must be a string', req.body)
-    }
-
-    return DIContainer.sharedContainer.userService.markUserForDeletion(user._id, password)
-  }
-
-  /**
-   * Sets the user deleteAt property to undefined.
-   */
-  async unmarkUserForDeletion(req: Request): Promise<void> {
-    const { user } = req
-
-    if (!user) {
-      throw new ValidationError('user not found', req.user)
-    }
-
-    return DIContainer.sharedContainer.userService.unmarkUserForDeletion(user._id)
-  }
-
-  async getProfile(req: Request): Promise<UserProfileLike | null> {
+  async getProfile(req: Request): Promise<any | null> {
     const token = authorizationBearerToken(req)
-    return DIContainer.sharedContainer.userService.profile(token)
+    return await DIContainer.sharedContainer.userService.profile(token)
   }
 
-  async userContainers(req: Request): Promise<Container[]> {
+  async userProjects(req: Request): Promise<Project[]> {
     if (!req.user) {
       throw new ValidationError('No user found', req.user)
     }
-    return DIContainer.sharedContainer.projectRepository.getUserContainers(req.user._id)
+    return await DIContainer.sharedContainer.userService.getUserProjects(req.user.userID)
   }
 }

@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import '../../../../../utilities/dbMock'
 import '../../../../../utilities/configMock'
+import '../../../../../utilities/dbMock'
 
 import { Chance } from 'chance'
 import { describe } from 'jest-circus'
@@ -65,7 +65,7 @@ describe('AuthController - login', () => {
     }
 
     const authController = new AuthController()
-    const authUser = await authController.login(req)
+    const authUser = await authController.serverToServerAuthToken(req)
     expect(authService.login).toHaveBeenCalledWith({
       ...req.body,
       appId: req.headers[APP_ID_HEADER_KEY],
@@ -92,7 +92,7 @@ describe('AuthController - login', () => {
     }
 
     const authController = new AuthController()
-    await expect(authController.login(req)).rejects.toThrow(ValidationError)
+    await expect(authController.serverToServerAuthToken(req)).rejects.toThrow(ValidationError)
   })
 
   test('should fail if appId is not string', () => {
@@ -109,7 +109,9 @@ describe('AuthController - login', () => {
       },
     }
     const authController = new AuthController()
-    return expect(authController.login(req)).rejects.toThrow(InvalidClientApplicationError)
+    return expect(authController.serverToServerAuthToken(req)).rejects.toThrow(
+      InvalidClientApplicationError
+    )
   })
 
   test('should not call login function', () => {
@@ -128,7 +130,7 @@ describe('AuthController - login', () => {
     }
 
     const authController = new AuthController()
-    return expect(authController.login(req)).rejects.toThrow(ValidationError)
+    return expect(authController.serverToServerAuthToken(req)).rejects.toThrow(ValidationError)
   })
 
   test('should not call login function if the email is not string', () => {
@@ -147,7 +149,7 @@ describe('AuthController - login', () => {
     }
 
     const authController = new AuthController()
-    return expect(authController.login(req)).rejects.toThrow(ValidationError)
+    return expect(authController.serverToServerAuthToken(req)).rejects.toThrow(ValidationError)
   })
 })
 

@@ -35,7 +35,7 @@ class ScopedJwtAuthStrategy {
     passport.use(
       AuthStrategyTypes.scopedJwt,
       new Strategy(opts, async (payload, done) => {
-        const user = await DIContainer.sharedContainer.userRepository.getById(
+        const user = await DIContainer.sharedContainer.userClient.findByID(
           payload.sub.replace('_', '|')
         )
         if (!user) {

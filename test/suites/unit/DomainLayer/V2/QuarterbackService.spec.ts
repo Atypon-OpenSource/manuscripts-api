@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import '../../../../utilities/dbMock.ts'
 import '../../../../utilities/configMock.ts'
+import '../../../../utilities/dbMock.ts'
 
 import { DIContainer } from '../../../../../src/DIContainer/DIContainer'
 import { ContainerService } from '../../../../../src/DomainServices/Container/ContainerService'
@@ -23,7 +23,7 @@ import { ProjectService } from '../../../../../src/DomainServices/ProjectService
 import {
   QuarterbackPermission,
   QuarterbackService,
-} from '../../../../../src/DomainServices/Quarterback/QuarterbackService'
+} from '../../../../../src/DomainServices/QuarterbackService.js'
 import { ContainerRole } from '../../../../../src/Models/ContainerModels'
 
 let quarterbackService: QuarterbackService
@@ -32,7 +32,7 @@ let projectService: ProjectService
 beforeEach(async () => {
   ;(DIContainer as any)._sharedContainer = null
   await DIContainer.init()
-  quarterbackService = DIContainer.sharedContainer.quarterback
+  quarterbackService = DIContainer.sharedContainer.quarterbackService
   containerService = DIContainer.sharedContainer.containerService
   projectService = DIContainer.sharedContainer.projectService
 })

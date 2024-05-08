@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import '../../../../../utilities/dbMock'
 import '../../../../../utilities/configMock'
+import '../../../../../utilities/dbMock'
 
 import { DocumentController } from '../../../../../../src/Controller/V2/Document/DocumentController'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
@@ -24,7 +24,7 @@ import { DocumentService } from '../../../../../../src/DomainServices/Document/D
 import {
   QuarterbackPermission,
   QuarterbackService,
-} from '../../../../../../src/DomainServices/Quarterback/QuarterbackService'
+} from '../../../../../../src/DomainServices/QuarterbackService'
 import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
 jest.setTimeout(TEST_TIMEOUT)
 
@@ -35,7 +35,7 @@ beforeEach(async () => {
   ;(DIContainer as any)._sharedContainer = null
   await DIContainer.init()
   documentService = DIContainer.sharedContainer.documentService
-  quarterbackService = DIContainer.sharedContainer.quarterback
+  quarterbackService = DIContainer.sharedContainer.quarterbackService
   collaborationService = DIContainer.sharedContainer.collaborationService
 })
 afterEach(() => {

@@ -9,8 +9,32 @@ generator client {
 }
 
 model User {
-  id   String @id @default(uuid())
+  id  String? @default(uuid())
   data Json?
+  userID   String @id @default(uuid())
+  given String
+  family String
+  connectUserID String @unique
+  email         String @unique
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt 
+  @@index(userID)
+  @@index(connectUserID)
+}
+
+model Event {
+  id   String @id @default(uuid())
+  type EventType
+  userID  String?
+  projectID String?
+  createdAt           DateTime             @default(now())
+}
+
+enum EventType  {
+  Registration 
+  ProjectCreated 
+  UpdateConnectID 
+  Login
 }
 
 model Project {
@@ -23,10 +47,11 @@ model ManuscriptDoc {
   user_model_id       String
   project_model_id    String
   doc                 Json
-  version             Int?                 @default(0)
+  version             Int                  @default(0)
   createdAt           DateTime             @default(now())
   updatedAt           DateTime             @updatedAt
   snapshots           ManuscriptSnapshot[] @relation("ManuscriptSnapshotToManuscriptDoc")
+  steps               Json[]               @default([])
 }
 
 model ManuscriptSnapshot {

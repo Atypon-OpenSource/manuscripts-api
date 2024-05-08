@@ -14,64 +14,61 @@
  * limitations under the License.
  */
 
-import type { Snapshot } from 'src/Models/SnapshotModel'
-import type { ISaveSnapshotRequest } from 'types/quarterback/snapshot'
+import type { SaveSnapshotRequest, Snapshot } from 'src/Models/SnapshotModel'
 
 import { DIContainer } from '../../../DIContainer/DIContainer'
-import { QuarterbackPermission } from '../../../DomainServices/Quarterback/QuarterbackService'
+import { QuarterbackPermission } from '../../../DomainServices/QuarterbackService'
 import { ValidationError } from '../../../Errors'
 import { BaseController } from '../../BaseController'
 
 export class SnapshotController extends BaseController {
   async createSnapshot(
     projectID: string,
-    payload: ISaveSnapshotRequest,
+    payload: SaveSnapshotRequest,
     user: Express.User | undefined
   ) {
     if (!user) {
       throw new ValidationError('No user found', user)
     }
-    await DIContainer.sharedContainer.quarterback.validateUserAccess(
+    await DIContainer.sharedContainer.quarterbackService.validateUserAccess(
       user,
       projectID,
       QuarterbackPermission.WRITE
     )
-    const document = await DIContainer.sharedContainer.documentService.findDocumentWithSnapshot(
+    const document = await DIContainer.sharedContainer.documentClient.findDocumentWithSnapshot(
       payload.docID
     )
     const snapshotModel = { docID: payload.docID, name: payload.name, snapshot: document.doc }
     await this.resetDocumentHistory(payload.docID)
-    return await DIContainer.sharedContainer.snapshotService.saveSnapshot(snapshotModel)
+    return await DIContainer.sharedContainer.snapshotClient.saveSnapshot(snapshotModel)
   }
   async deleteSnapshot(snapshotID: string, user: Express.User | undefined) {
     if (!user) {
       throw new ValidationError('No user found', user)
     }
     const snapshot = await this.fetchSnapshot(snapshotID)
-    const manuscript = await DIContainer.sharedContainer.quarterback.getManuscriptFromSnapshot(
-      snapshot
-    )
-    await DIContainer.sharedContainer.quarterback.validateUserAccess(
+    const manuscript =
+      await DIContainer.sharedContainer.quarterbackService.getManuscriptFromSnapshot(snapshot)
+    await DIContainer.sharedContainer.quarterbackService.validateUserAccess(
       user,
       manuscript.containerID,
       QuarterbackPermission.WRITE
     )
-    return await DIContainer.sharedContainer.snapshotService.deleteSnapshot(snapshotID)
+    return await DIContainer.sharedContainer.snapshotClient.deleteSnapshot(snapshotID)
   }
   async getSnapshot(snapshotID: string, user: Express.User | undefined) {
     if (!user) {
       throw new ValidationError('No user found', user)
     }
     const snapshot = await this.fetchSnapshot(snapshotID)
-    const manuscript = await DIContainer.sharedContainer.quarterback.getManuscriptFromSnapshot(
-      snapshot
-    )
-    await DIContainer.sharedContainer.quarterback.validateUserAccess(
+    const manuscript =
+      await DIContainer.sharedContainer.quarterbackService.getManuscriptFromSnapshot(snapshot)
+    await DIContainer.sharedContainer.quarterbackService.validateUserAccess(
       user,
       manuscript.containerID,
       QuarterbackPermission.READ
     )
-    return await DIContainer.sharedContainer.snapshotService.getSnapshot(snapshotID)
+    return await DIContainer.sharedContainer.snapshotClient.getSnapshot(snapshotID)
   }
   async listSnapshotLabels(
     projectID: string,
@@ -81,19 +78,19 @@ export class SnapshotController extends BaseController {
     if (!user) {
       throw new ValidationError('No user found', user)
     }
-    await DIContainer.sharedContainer.quarterback.validateUserAccess(
+    await DIContainer.sharedContainer.quarterbackService.validateUserAccess(
       user,
       projectID,
       QuarterbackPermission.READ
     )
-    return await DIContainer.sharedContainer.snapshotService.listSnapshotLabels(manuscriptID)
+    return await DIContainer.sharedContainer.snapshotClient.listSnapshotLabels(manuscriptID)
   }
   private async fetchSnapshot(snapshotID: string) {
-    const result = await DIContainer.sharedContainer.snapshotService.getSnapshot(snapshotID)
+    const result = await DIContainer.sharedContainer.snapshotClient.getSnapshot(snapshotID)
     const snapshot: Snapshot = JSON.parse(JSON.stringify(result))
     return snapshot
   }
   private async resetDocumentHistory(documentID: string) {
-    await DIContainer.sharedContainer.documentHistoryService.clearDocumentHistory(documentID)
+    await DIContainer.sharedContainer.documentClient.updateDocument(documentID, { steps: [] })
   }
 }

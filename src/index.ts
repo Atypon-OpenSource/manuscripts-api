@@ -16,11 +16,9 @@
 
 import { defineGlobals } from './define-globals'
 defineGlobals()
-import { schedule } from 'node-cron'
 
 import { config } from './Config/Config'
 import { ServerStatus } from './Controller/V2/ServerStatus/ServerStatus'
-import { SQLDatabase } from './DataAccess/SQLDatabase'
 import { DIContainer } from './DIContainer/DIContainer'
 import { log } from './Utilities/Logger'
 
@@ -30,14 +28,7 @@ process.on('unhandledRejection', (reason, promise) => {
 
 function main() {
   log.debug('Initializing Manuscripts.io container…')
-  SQLDatabase.ensureDBExtensions()
-    .then(() => {
-      return DIContainer.init(true)
-    })
-    .catch((error) => {
-      log.error(error)
-      return DIContainer.init(true)
-    })
+  DIContainer.init()
     .then(async () => {
       const container = DIContainer.sharedContainer
       container.server.bootstrap()
@@ -46,17 +37,6 @@ function main() {
     // eslint-disable-next-line promise/always-return
     .then(() => {
       log.info(`Manuscripts.io ${ServerStatus.version} started 🚀`)
-    })
-    // eslint-disable-next-line promise/always-return
-    .then(() => {
-      schedule('0 1 * * *', async () => {
-        log.debug('clearUsersData every day')
-        await DIContainer.sharedContainer.userService.clearUsersData()
-      })
-      schedule('0 1 * * *', async () => {
-        log.debug('clearExpiredDocuments every day')
-        await DIContainer.sharedContainer.expirationService.clearExpiredDocuments()
-      })
     })
     .catch((error) => {
       log.error('An error occurred while bootstrapping app:', error)

@@ -25,7 +25,6 @@ import { config } from '../Config/Config'
 import { Environment } from '../Config/ConfigurationTypes'
 import { initRouter } from '../Controller/InitRouter'
 import { getRoutes as getRoutesV2 } from '../Controller/V2/Routes'
-import { SQLDatabase } from '../DataAccess/SQLDatabase'
 import { ForbiddenOriginError, IllegalStateError, isStatusCoded } from '../Errors'
 import generateDocs from '../Utilities/Docs/swagger'
 import { log } from '../Utilities/Logger'
@@ -39,8 +38,6 @@ import { configurePromClientRegistry } from './PromClientRegistryConfig'
  */
 export class Server implements IServer {
   public app: express.Application
-
-  constructor(public database: SQLDatabase) {}
 
   public bootstrap(): void {
     this.app = express()

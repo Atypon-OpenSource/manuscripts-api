@@ -14,21 +14,19 @@
  * limitations under the License.
  */
 
+import { User } from '@prisma/client'
 import { NextFunction, Request, Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
 import passport from 'passport'
 
 import { config } from '../../Config/Config'
 import { APP_ID_HEADER_KEY, APP_SECRET_HEADER_KEY } from '../../Controller/V2/Auth/AuthController'
-import { DIContainer } from '../../DIContainer/DIContainer'
 import {
   InvalidClientApplicationError,
   InvalidCredentialsError,
   InvalidJsonHeadersError,
-  InvalidServerCredentialsError,
   ValidationError,
 } from '../../Errors'
-import { User } from '../../Models/UserModels'
 import { isString } from '../../util'
 import { ScopedJwtAuthStrategy } from './ScopedJWT'
 
@@ -59,7 +57,7 @@ export class AuthStrategy {
           req.user = user
           return next()
         }
-        return next(new InvalidCredentialsError('Invalid token.'))
+        return next(new InvalidCredentialsError('Invalid bt.'))
       })(req, res, next)
     }
   }
@@ -69,27 +67,24 @@ export class AuthStrategy {
    */
   public static applicationValidation() {
     return async (req: Request, _res: Response, next: NextFunction): Promise<void> => {
-      const applicationRepository = DIContainer.sharedContainer.applicationRepository
-
-      let appId = req.headers[APP_ID_HEADER_KEY]
+      let appID = req.headers[APP_ID_HEADER_KEY]
       let appSecret = req.headers[APP_SECRET_HEADER_KEY]
 
-      if (!appId) {
-        appId = req.query[APP_ID_HEADER_KEY] as string
+      if (!appID) {
+        appID = req.query[APP_ID_HEADER_KEY] as string
         appSecret = req.query[APP_SECRET_HEADER_KEY] as string
       }
 
-      if (!isString(appId)) {
-        return next(new InvalidClientApplicationError(appId))
+      if (!isString(appID) || !isString(appSecret)) {
+        return next(new InvalidClientApplicationError(appID))
       }
 
-      const application = await applicationRepository.getById(appId)
+      const application = config.apps.knownClientApplications.find(
+        (app) => app._id === appID && app.secret === appSecret
+      )
+
       if (!application) {
-        return next(new InvalidClientApplicationError(appId))
-      } else if (appSecret && application.secret !== null) {
-        if (!isString(appSecret) || application.secret !== appSecret) {
-          return next(new InvalidServerCredentialsError(appId))
-        }
+        return next(new InvalidClientApplicationError(appID))
       }
 
       next()

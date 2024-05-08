@@ -18,13 +18,7 @@ import { createHash } from 'crypto'
 import { pem2jwk } from 'pem-jwk'
 
 import { ScopedAccessTokenConfiguration } from '../Config/ConfigurationTypes'
-import { QueryCriteria } from '../DataAccess/Interfaces/QueryCriteria'
 import { ValidationError } from '../Errors'
-
-/**
- * Represents criteria for an application query.
- */
-export type ClientApplicationQueryCriteria = QueryCriteria
 
 /**
  * Represents all acceptable fields for client application objects (client application = manuscripts-api client).
