@@ -10,10 +10,10 @@ generator client {
 model User {
   id  String @unique@default(uuid())
   data Json?
-  given String
-  family String
-  connectUserID String @unique
-  email         String @unique
+  given String        @default("")
+  family String       @default("")
+  connectUserID String @unique @default("")
+  email         String @unique @default("")
   createdAt           DateTime             @default(now())
   updatedAt           DateTime             @updatedAt 
 }
