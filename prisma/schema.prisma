@@ -12,8 +12,8 @@ model User {
   data Json?
   given String
   family String
-  connectUserID String 
-  email         String 
+  connectUserID String @unique
+  email         String @unique
   createdAt           DateTime             @default(now())
   updatedAt           DateTime             @updatedAt 
   @@index(connectUserID)
