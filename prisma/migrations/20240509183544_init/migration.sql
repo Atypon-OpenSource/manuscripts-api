@@ -6,7 +6,6 @@
   - A unique constraint covering the columns `[connectUserID]` on the table `User` will be added. If there are existing duplicate values, this will fail.
   - A unique constraint covering the columns `[email]` on the table `User` will be added. If there are existing duplicate values, this will fail.
   - Made the column `version` on table `ManuscriptDoc` required. This step will fail if there are existing NULL values in that column.
-  - Added the required column `updatedAt` to the `User` table without a default value. This is not possible if the table is not empty.
 
 */
 -- CreateEnum
@@ -23,7 +22,7 @@ ADD COLUMN     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 ADD COLUMN     "email" TEXT NOT NULL DEFAULT '',
 ADD COLUMN     "family" TEXT NOT NULL DEFAULT '',
 ADD COLUMN     "given" TEXT NOT NULL DEFAULT '',
-ADD COLUMN     "updatedAt" TIMESTAMP(3) NOT NULL;
+ADD COLUMN     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP;
 
 -- CreateTable
 CREATE TABLE "Event" (
