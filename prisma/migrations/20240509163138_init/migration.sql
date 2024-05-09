@@ -41,13 +41,13 @@ CREATE TABLE "Event" (
 );
 
 -- CreateIndex
-CREATE INDEX "ManuscriptDoc_project_model_id_idx" ON "ManuscriptDoc"("project_model_id");
+CREATE INDEX IF NOT EXISTS "ManuscriptDoc_project_model_id_idx" ON "ManuscriptDoc"("project_model_id");
 
 -- CreateIndex
-CREATE INDEX "ManuscriptSnapshot_doc_id_idx" ON "ManuscriptSnapshot"("doc_id");
+CREATE INDEX IF NOT EXISTS  "ManuscriptSnapshot_doc_id_idx" ON "ManuscriptSnapshot"("doc_id");
 
 -- CreateIndex
-CREATE INDEX "Project_data_idx" ON "Project" USING GIN ("data" jsonb_path_ops);
+CREATE INDEX  IF NOT EXISTS "Project_data_idx" ON "Project" USING GIN ("data" jsonb_path_ops);
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_id_key" ON "User"("id");
@@ -56,10 +56,10 @@ CREATE UNIQUE INDEX "User_id_key" ON "User"("id");
 CREATE UNIQUE INDEX "User_connectUserID_key" ON "User"("connectUserID");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+CREATE UNIQUE INDEX  "User_email_key" ON "User"("email");
 
 -- CreateIndex
-CREATE INDEX "User_connectUserID_idx" ON "User"("connectUserID");
+CREATE INDEX  IF NOT EXISTS  "User_connectUserID_idx" ON "User"("connectUserID");
 
 -- CreateIndex
-CREATE INDEX "User_email_idx" ON "User"("email");
+CREATE INDEX  IF NOT EXISTS " "User_email_idx" ON "User"("email");
