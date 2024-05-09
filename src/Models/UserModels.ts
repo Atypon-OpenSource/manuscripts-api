@@ -15,7 +15,7 @@
  */
 
 export interface User {
-  userID: string
+  id: string
   given: string
   family: string
   email: string
@@ -50,5 +50,5 @@ export type TokenPayload = {
   email: string
   deviceID: string
   appID: string
-  userID: string
+  id: string
 }

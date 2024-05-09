@@ -5,21 +5,19 @@ datasource db {
 
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["filterJson", "extendedIndexes"]
 }
 
 model User {
-  id  String? @default(uuid())
+  id  String @unique@default(uuid())
   data Json?
-  userID   String @id @default(uuid())
   given String
   family String
   connectUserID String @unique
   email         String @unique
   createdAt           DateTime             @default(now())
   updatedAt           DateTime             @updatedAt 
-  @@index(userID)
   @@index(connectUserID)
+  @@index(email)
 }
 
 model Event {
@@ -39,7 +37,8 @@ enum EventType  {
 
 model Project {
   id   String @id @default(uuid())
-  data Json?
+  data Json? 
+  @@index([data(ops: JsonbPathOps)], type: Gin)
 }
 
 model ManuscriptDoc {
@@ -52,6 +51,8 @@ model ManuscriptDoc {
   updatedAt           DateTime             @updatedAt
   snapshots           ManuscriptSnapshot[] @relation("ManuscriptSnapshotToManuscriptDoc")
   steps               Json[]               @default([])
+
+  @@index(project_model_id)
 }
 
 model ManuscriptSnapshot {
@@ -61,6 +62,8 @@ model ManuscriptSnapshot {
   createdAt DateTime      @default(now())
   doc       ManuscriptDoc @relation("ManuscriptSnapshotToManuscriptDoc", fields: [doc_id], references: [manuscript_model_id], onDelete: Cascade)
   doc_id    String
+
+  @@index(doc_id)
 }
 
 model ManuscriptDocHistory {

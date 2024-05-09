@@ -25,14 +25,15 @@ import { ProjectService } from './ProjectService'
 export class AuthenticationService {
   constructor(private readonly userRepoistory: UserClient) {}
   public async serverToServerAuthToken({ deviceID, appID, connectUserID }: UserCredentials) {
+    console.log('hereqweq')
     const user = await this.userRepoistory.findByConnectID(connectUserID)
     if (!user) {
       throw new AccountNotFoundError(connectUserID)
     }
-    const { userID, email } = user
+    const { id, email } = user
     const token = this.generateUserToken({
       email,
-      userID,
+      id,
       deviceID,
       appID,
     })
@@ -42,7 +43,7 @@ export class AuthenticationService {
     const scopeInfo = ProjectService.findScope(scope, config.scopes)
     const payload = {
       iss: config.API.hostname,
-      sub: user.userID,
+      sub: user.id,
       aud: scopeInfo.name,
       email: user.email,
     }

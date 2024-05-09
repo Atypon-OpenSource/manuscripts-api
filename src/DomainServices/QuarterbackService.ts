@@ -58,9 +58,9 @@ export class QuarterbackService {
     projectID: string,
     permission: QuarterbackPermission
   ) {
-    const permissions = await this.getPermissions(projectID, user.userID)
+    const permissions = await this.getPermissions(projectID, user.id)
     if (!permissions.has(permission)) {
-      throw new RoleDoesNotPermitOperationError(`Access denied`, user.userID)
+      throw new RoleDoesNotPermitOperationError(`Access denied`, user.id)
     }
   }
 

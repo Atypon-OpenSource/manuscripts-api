@@ -52,7 +52,7 @@ export class UserExtender {
     return async (payload: CreateUser) => {
       const user = await this.prisma.user.create({
         data: {
-          userID: this.userID(),
+          id: this.userID(),
           ...payload,
         },
       })
@@ -80,10 +80,10 @@ export class UserExtender {
     }
   }
   private static findByID() {
-    return async (userID: string) => {
+    return async (id: string) => {
       const user = await this.prisma.user.findUnique({
         where: {
-          userID,
+          id,
         },
       })
       return user
@@ -91,10 +91,10 @@ export class UserExtender {
   }
 
   private static updateConnectID() {
-    return async (userID: string, connectUserID: string) => {
+    return async (id: string, connectUserID: string) => {
       const updated = await this.prisma.user.update({
         where: {
-          userID,
+          id,
         },
         data: {
           connectUserID,

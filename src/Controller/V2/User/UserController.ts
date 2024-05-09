@@ -31,6 +31,6 @@ export class UserController extends BaseController {
     if (!req.user) {
       throw new ValidationError('No user found', req.user)
     }
-    return await DIContainer.sharedContainer.userService.getUserProjects(req.user.userID)
+    return await DIContainer.sharedContainer.userService.getUserProjects(req.user.id)
   }
 }

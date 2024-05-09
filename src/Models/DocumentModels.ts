@@ -13,8 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ManuscriptDoc } from '@prisma/client'
-import { JsonValue } from '@prisma/client/runtime/library'
+import { ManuscriptDoc, Prisma } from '@prisma/client'
 import { Response } from 'express'
 
 import { SnapshotLabel } from './SnapshotModel'
@@ -45,5 +44,5 @@ export type StepsData = {
 export type UpdateDocument = {
   doc?: Doc
   version?: number
-  steps?: JsonValue[]
-} & ({ doc: Doc } | { version: number } | { steps: JsonValue[] })
+  steps?: Prisma.JsonValue[]
+} & ({ doc: Doc } | { version: number } | { steps: Prisma.JsonValue[] })

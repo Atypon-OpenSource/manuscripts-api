@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import '../../../../../utilities/dbMock'
 import '../../../../../utilities/configMock'
+import '../../../../../utilities/dbMock'
 
 import { Model, ObjectTypes } from '@manuscripts/json-schema'
 
@@ -213,7 +213,9 @@ describe('ProjectController', () => {
     })
 
     it('should call userService.getUserProfiles with correct params', async () => {
-      DIContainer.sharedContainer.userService.getProjectUserProfiles = jest.fn().mockResolvedValue([])
+      DIContainer.sharedContainer.userService.getProjectUserProfiles = jest
+        .fn()
+        .mockResolvedValue([])
       controller.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.READ]))
 
       await controller.getUserProfiles(user, projectID)

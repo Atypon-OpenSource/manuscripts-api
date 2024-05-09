@@ -38,8 +38,8 @@ export class RegisterationService {
   }
   private async updateConnectUserID(user: User, connectUserID: string) {
     if (user.connectUserID !== connectUserID) {
-      await this.userRepository.updateConnectID(user.userID, connectUserID)
-      this.EventManager.emit(EventType.UpdateConnectID, user.userID)
+      await this.userRepository.updateConnectID(user.id, connectUserID)
+      this.EventManager.emit(EventType.UpdateConnectID, user.id)
     } else {
       throw new DuplicateEmailError(user.email)
     }
@@ -54,7 +54,7 @@ export class RegisterationService {
       email,
     }
     const user = await this.userRepository.createUser(userPayload)
-    this.EventManager.emit(EventType.Registration, user.userID)
+    this.EventManager.emit(EventType.Registration, user.id)
     return user
   }
   private splitName(name: string): NameParts {

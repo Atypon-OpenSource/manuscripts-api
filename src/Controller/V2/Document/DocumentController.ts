@@ -30,7 +30,7 @@ export class DocumentController extends BaseController {
       projectID,
       QuarterbackPermission.WRITE
     )
-    return await DIContainer.sharedContainer.documentClient.createDocument(payload, user.userID)
+    return await DIContainer.sharedContainer.documentClient.createDocument(payload, user.id)
   }
 
   async getDocument(projectID: string, manuscriptID: string, user: Express.User | undefined) {

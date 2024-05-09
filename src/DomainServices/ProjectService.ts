@@ -214,48 +214,49 @@ export class ProjectService {
     role: ProjectUserRole
   ): Promise<void> {
     const project = await this.getProject(projectID)
+    console.log('here11')
     const user = await DIContainer.sharedContainer.userClient.findByConnectID(connectUserID)
 
     if (!user) {
       throw new ValidationError('Invalid user id', user)
     }
 
-    if (user.userID === '*' && (role === 'Owner' || role === 'Writer')) {
-      throw new ValidationError('User can not be owner or writer', user.userID)
+    if (user.id === '*' && (role === 'Owner' || role === 'Writer')) {
+      throw new ValidationError('User can not be owner or writer', user.id)
     }
 
-    if (ProjectService.isOnlyOwner(project, user.userID)) {
+    if (ProjectService.isOnlyOwner(project, user.id)) {
       throw new UserRoleError('User is the only owner', role)
     }
 
     const updated = {
       _id: projectID,
-      owners: project.owners.filter((u) => u !== user.userID),
-      writers: project.writers.filter((u) => u !== user.userID),
-      viewers: project.viewers.filter((u) => u !== user.userID),
-      editors: project.editors ? project.editors.filter((u) => u !== user.userID) : [],
-      proofers: project.proofers ? project.proofers.filter((u) => u !== user.userID) : [],
-      annotators: project.annotators ? project.annotators.filter((u) => u !== user.userID) : [],
+      owners: project.owners.filter((u) => u !== user.id),
+      writers: project.writers.filter((u) => u !== user.id),
+      viewers: project.viewers.filter((u) => u !== user.id),
+      editors: project.editors ? project.editors.filter((u) => u !== user.id) : [],
+      proofers: project.proofers ? project.proofers.filter((u) => u !== user.id) : [],
+      annotators: project.annotators ? project.annotators.filter((u) => u !== user.id) : [],
     }
 
     switch (role) {
       case ProjectUserRole.Owner:
-        updated.owners.push(user.userID)
+        updated.owners.push(user.id)
         break
       case ProjectUserRole.Writer:
-        updated.writers.push(user.userID)
+        updated.writers.push(user.id)
         break
       case ProjectUserRole.Viewer:
-        updated.viewers.push(user.userID)
+        updated.viewers.push(user.id)
         break
       case ProjectUserRole.Editor:
-        updated.editors.push(user.userID)
+        updated.editors.push(user.id)
         break
       case ProjectUserRole.Proofer:
-        updated.proofers.push(user.userID)
+        updated.proofers.push(user.id)
         break
       case ProjectUserRole.Annotator:
-        updated.annotators.push(user.userID)
+        updated.annotators.push(user.id)
         break
     }
 

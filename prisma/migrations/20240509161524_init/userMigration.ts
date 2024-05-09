@@ -29,6 +29,7 @@ function splitName(name: string) {
 async function main() {
   await prisma.$transaction(async (tx) => {
     const users = await tx.user.findMany()
+    console.log(users.length)
     users.forEach(async (user) => {
       const data = user.data
       //@ts-ignore
@@ -47,7 +48,6 @@ async function main() {
           email,
           given,
           family,
-          userID: newID,
           id: newID,
         },
       })

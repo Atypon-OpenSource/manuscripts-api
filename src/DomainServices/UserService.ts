@@ -48,11 +48,12 @@ export class UserService {
     if (!this.isLoginTokenPayload(payload)) {
       throw new InvalidCredentialsError('Unexpected token payload.')
     }
-    const user = await this.userRepository.findByID(payload.userID)
+    const user = await this.userRepository.findByID(payload.id)
     return user
       ? {
           email: user.email,
-          userID: user.userID,
+          _id: user.id,
+          id: user.id,
           bibliographicName: {
             given: user.given,
             family: user.family,
@@ -69,8 +70,8 @@ export class UserService {
     }
 
     return (
-      (obj as any).userID &&
-      typeof (obj as any).userID === 'string' &&
+      (obj as any).id &&
+      typeof (obj as any).id === 'string' &&
       (obj as any).deviceID &&
       typeof (obj as any).deviceID === 'string' &&
       (obj as any).appID &&
@@ -100,7 +101,7 @@ export class UserService {
       if (!user) {
         throw new AccountNotFoundError(id)
       }
-      users.push(user)
+      users.push({ ...user, _id: user.id, userID: user.id })
     }
     return users
   }
