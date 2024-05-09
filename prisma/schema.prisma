@@ -16,8 +16,6 @@ model User {
   email         String @unique
   createdAt           DateTime             @default(now())
   updatedAt           DateTime             @updatedAt 
-  @@index(connectUserID)
-  @@index(email)
 }
 
 model Event {
@@ -38,7 +36,7 @@ enum EventType  {
 model Project {
   id   String @id @default(uuid())
   data Json? 
-  @@index([data(ops: JsonbPathOps)], type: Gin)
+  @@index([data(ops: JsonbPathOps)], type: Gin, map: "project_json_data_idx")
 }
 
 model ManuscriptDoc {
@@ -52,7 +50,7 @@ model ManuscriptDoc {
   snapshots           ManuscriptSnapshot[] @relation("ManuscriptSnapshotToManuscriptDoc")
   steps               Json[]               @default([])
 
-  @@index(project_model_id)
+  @@index(fields: [project_model_id], map: "project_model_id_idx_2")
 }
 
 model ManuscriptSnapshot {
@@ -63,7 +61,7 @@ model ManuscriptSnapshot {
   doc       ManuscriptDoc @relation("ManuscriptSnapshotToManuscriptDoc", fields: [doc_id], references: [manuscript_model_id], onDelete: Cascade)
   doc_id    String
 
-  @@index(doc_id)
+  @@index(fields: [doc_id],map: "doc_id_idx_2")
 }
 
 model ManuscriptDocHistory {

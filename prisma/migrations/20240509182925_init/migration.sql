@@ -22,12 +22,12 @@ ALTER COLUMN "version" SET NOT NULL;
 
 -- AlterTable
 ALTER TABLE "User" DROP CONSTRAINT "User_pkey",
-    ADD COLUMN "connectUserID" TEXT NOT NULL DEFAULT '', -- Default value as empty string
-    ADD COLUMN "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    ADD COLUMN "email" TEXT NOT NULL DEFAULT '', -- Default value as empty string
-    ADD COLUMN "family" TEXT NOT NULL DEFAULT '', -- Default value as empty string
-    ADD COLUMN "given" TEXT NOT NULL DEFAULT '', -- Default value as empty string
-    ADD COLUMN "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP;
+ADD COLUMN     "connectUserID" TEXT NOT NULL,
+ADD COLUMN     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ADD COLUMN     "email" TEXT NOT NULL,
+ADD COLUMN     "family" TEXT NOT NULL,
+ADD COLUMN     "given" TEXT NOT NULL,
+ADD COLUMN     "updatedAt" TIMESTAMP(3) NOT NULL;
 
 -- CreateTable
 CREATE TABLE "Event" (
@@ -41,25 +41,19 @@ CREATE TABLE "Event" (
 );
 
 -- CreateIndex
-CREATE INDEX IF NOT EXISTS "ManuscriptDoc_project_model_id_idx" ON "ManuscriptDoc"("project_model_id");
+CREATE INDEX "project_model_id_idx_2" ON "ManuscriptDoc"("project_model_id");
 
 -- CreateIndex
-CREATE INDEX IF NOT EXISTS  "ManuscriptSnapshot_doc_id_idx" ON "ManuscriptSnapshot"("doc_id");
+CREATE INDEX "doc_id_idx_2" ON "ManuscriptSnapshot"("doc_id");
 
 -- CreateIndex
-CREATE INDEX  IF NOT EXISTS "Project_data_idx" ON "Project" USING GIN ("data" jsonb_path_ops);
+CREATE INDEX "project_json_data_idx" ON "Project" USING GIN ("data" jsonb_path_ops);
 
 -- CreateIndex
-CREATE UNIQUE INDEX IF NOT EXISTS "User_id_key" ON "User"("id");
+CREATE UNIQUE INDEX "User_id_key" ON "User"("id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX IF NOT EXISTS "User_connectUserID_key" ON "User"("connectUserID");
+CREATE UNIQUE INDEX "User_connectUserID_key" ON "User"("connectUserID");
 
 -- CreateIndex
-CREATE UNIQUE INDEX IF NOT EXISTS "User_email_key" ON "User"("email");
-
--- CreateIndex
-CREATE INDEX  IF NOT EXISTS  "User_connectUserID_idx" ON "User"("connectUserID");
-
--- CreateIndex
-CREATE INDEX  IF NOT EXISTS  "User_email_idx" ON "User"("email");
+CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
