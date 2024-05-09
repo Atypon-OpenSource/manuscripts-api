@@ -32,39 +32,30 @@ async function main() {
   console.log('enterd')
   await prisma.$transaction(async (tx) => {
     const users = await tx.user.findMany()
-    users.forEach(async (user) => {
-      if (user.id.startsWith('User|')) {
+    for (const user of users) {
+      if (user.id.startsWith('User|' || 'User_')) {
         const data = user.data as JsonObject
         if (data && 'name' in data && 'email' in data && 'connectUserID' in data) {
           const newID = user.id.replace('|', '_')
-          const name = user['name']
+          const name = data.name as string
           const { given, family } = splitName(name)
-          const connectUserID = user['connectUserID']
-          const email = user['email']
+          const connectUserID = data.connectUserID as string
+          const email = data.email as string
           await tx.user.update({
             where: {
               id: user.id,
             },
-            data: {
-              connectUserID,
-              email,
-              given,
-              family,
-              id: newID,
-              data: {
-                id: newID,
-              },
-            },
-          })
-        } else {
-          await tx.user.delete({
-            where: {
-              id: user.id,
-            },
+            data: { connectUserID, family, id: newID, given, email, data: { id: newID } },
           })
         }
+      } else {
+        await tx.user.delete({
+          where: {
+            id: user.id,
+          },
+        })
       }
-    })
+    }
   })
 }
 
