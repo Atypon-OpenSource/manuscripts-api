@@ -50,13 +50,13 @@ CREATE INDEX IF NOT EXISTS  "ManuscriptSnapshot_doc_id_idx" ON "ManuscriptSnapsh
 CREATE INDEX  IF NOT EXISTS "Project_data_idx" ON "Project" USING GIN ("data" jsonb_path_ops);
 
 -- CreateIndex
-CREATE UNIQUE INDEX "User_id_key" ON "User"("id");
+CREATE UNIQUE INDEX IF NOT EXISTS "User_id_key" ON "User"("id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "User_connectUserID_key" ON "User"("connectUserID");
+CREATE UNIQUE INDEX IF NOT EXISTS "User_connectUserID_key" ON "User"("connectUserID");
 
 -- CreateIndex
-CREATE UNIQUE INDEX  "User_email_key" ON "User"("email");
+CREATE UNIQUE INDEX IF NOT EXISTS "User_email_key" ON "User"("email");
 
 -- CreateIndex
 CREATE INDEX  IF NOT EXISTS  "User_connectUserID_idx" ON "User"("connectUserID");
