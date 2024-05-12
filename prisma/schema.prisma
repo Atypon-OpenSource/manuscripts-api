@@ -12,8 +12,8 @@ model User {
   data          Json?
   given         String   @default("")
   family        String   @default("")
-  connectUserID String   @unique(map: "User_connectuserID_idx") 
-  email         String   @unique(map: "User_email_idx") 
+  connectUserID String   
+  email         String   
   createdAt     DateTime @default(now())
   updatedAt     DateTime @default(now()) @updatedAt
 }

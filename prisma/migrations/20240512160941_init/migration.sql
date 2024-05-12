@@ -2,8 +2,6 @@
   Warnings:
 
   - A unique constraint covering the columns `[id]` on the table `User` will be added. If there are existing duplicate values, this will fail.
-  - A unique constraint covering the columns `[connectUserID]` on the table `User` will be added. If there are existing duplicate values, this will fail.
-  - A unique constraint covering the columns `[email]` on the table `User` will be added. If there are existing duplicate values, this will fail.
   - Made the column `version` on table `ManuscriptDoc` required. This step will fail if there are existing NULL values in that column.
   - Added the required column `connectUserID` to the `User` table without a default value. This is not possible if the table is not empty.
   - Added the required column `email` to the `User` table without a default value. This is not possible if the table is not empty.
@@ -22,7 +20,7 @@ ADD COLUMN IF NOT EXISTS     "given" TEXT NOT NULL DEFAULT '',
 ADD COLUMN IF NOT EXISTS     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP;
 
 -- CreateTable
-CREATE TABLE IF NOT EXISTS "Event"  (
+CREATE TABLE IF NOT EXISTS "Event" (
     "id" TEXT NOT NULL,
     "type" TEXT NOT NULL,
     "userID" TEXT,
@@ -43,9 +41,3 @@ CREATE INDEX IF NOT EXISTS "Project_data_idx" ON "Project" USING GIN ("data" jso
 
 -- CreateIndex
 CREATE UNIQUE INDEX IF NOT EXISTS "User_id_key" ON "User"("id");
-
--- CreateIndex
-CREATE UNIQUE INDEX IF NOT EXISTS "User_connectuserID_idx" ON "User"("connectUserID");
-
--- CreateIndex
-CREATE UNIQUE INDEX IF NOT EXISTS "User_email_idx" ON "User"("email");

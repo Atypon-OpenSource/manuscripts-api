@@ -61,7 +61,7 @@ export class UserExtender {
   }
   private static findByEmail() {
     return async (email: string) => {
-      const user = await this.prisma.user.findUnique({
+      const user = await this.prisma.user.findFirst({
         where: {
           email,
         },
@@ -71,7 +71,7 @@ export class UserExtender {
   }
   private static findByConnectID() {
     return async (connectUserID: string) => {
-      const user = await this.prisma.user.findUnique({
+      const user = await this.prisma.user.findFirst({
         where: {
           connectUserID,
         },
