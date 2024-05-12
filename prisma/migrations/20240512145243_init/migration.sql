@@ -45,7 +45,7 @@ CREATE INDEX "Project_data_idx" ON "Project" USING GIN ("data" jsonb_path_ops);
 CREATE UNIQUE INDEX "User_id_key" ON "User"("id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "User_connectUserID_key" ON "User"("connectUserID");
+CREATE UNIQUE INDEX "User_connectuserID_idx" ON "User"("connectUserID");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+CREATE UNIQUE INDEX "User_email_idx" ON "User"("email");

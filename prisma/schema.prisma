@@ -4,31 +4,32 @@ datasource db {
 }
 
 generator client {
-  provider        = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 model User {
-  id  String @unique@default(uuid())
-  data Json?
-  given String        @default("")
-  family String       @default("")
-  connectUserID String @unique @default("")
-  email         String @unique @default("")
-  createdAt           DateTime             @default(now())
-  updatedAt           DateTime             @updatedAt @default(now())
+  id            String   @unique @default(uuid())
+  data          Json?
+  given         String   @default("")
+  family        String   @default("")
+  connectUserID String   @unique(map: "User_connectuserID_idx") @default("")
+  email         String   @unique(map: "User_email_idx") @default("")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @default(now()) @updatedAt
 }
 
 model Event {
-  id   String @id @default(uuid())
-  type String
-  userID  String?
+  id        String   @id @default(uuid())
+  type      String
+  userID    String?
   projectID String?
-  createdAt           DateTime             @default(now())
+  createdAt DateTime @default(now())
 }
 
 model Project {
   id   String @id @default(uuid())
-  data Json? 
+  data Json?
+
   @@index([data(ops: JsonbPathOps)], type: Gin)
 }
 
