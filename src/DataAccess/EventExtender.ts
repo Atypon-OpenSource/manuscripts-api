@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
-import { EventType, Prisma, PrismaClient } from '@prisma/client'
+import { Prisma, PrismaClient } from '@prisma/client'
 import { v4 as uuid_v4 } from 'uuid'
+
+import { Events } from '../Models/EventModels'
 
 export class EventExtender {
   static readonly EVENT_MODEL = 'event'
@@ -44,7 +46,7 @@ export class EventExtender {
   }
 
   private static createUserEvent() {
-    return async (userID: string, type: EventType) => {
+    return async (userID: string, type: Events) => {
       await this.prisma.event.create({
         data: {
           type,
@@ -55,7 +57,7 @@ export class EventExtender {
     }
   }
   private static createProjectEvent() {
-    return async (projectID: string, type: EventType) => {
+    return async (projectID: string, type: Events) => {
       await this.prisma.event.create({
         data: {
           type,

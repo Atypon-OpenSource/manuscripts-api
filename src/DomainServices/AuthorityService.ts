@@ -18,9 +18,9 @@ import { schema } from '@manuscripts/transform'
 import { Prisma } from '@prisma/client'
 import { Step } from 'prosemirror-transform'
 
-import { DB } from '../DataAccess/Repository'
 import { VersionMismatchError } from '../Errors'
 import { History, ModifiedStep, ReceiveSteps } from '../Models/AuthorityModels'
+import { DB } from '../Models/RepositoryModels'
 export class AuthorityService {
   constructor(private readonly repository: DB) {}
 

@@ -17,8 +17,8 @@
 import { Prisma, PrismaClient } from '@prisma/client'
 
 import { MissingRecordError, MissingSnapshotError } from '../Errors'
+import { PrismaErrorCodes } from '../Models/RepositoryModels'
 import { SaveSnapshotModel } from '../Models/SnapshotModel'
-import { PrismaErrorCodes } from './Repository'
 
 export class SnapshotExtender {
   static readonly SNAPSHOT_MODEL = 'manuscriptSnapshot'

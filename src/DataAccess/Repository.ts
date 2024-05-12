@@ -15,7 +15,6 @@
  */
 
 import { PrismaClient } from '@prisma/client'
-import { DefaultArgs } from '@prisma/client/runtime'
 
 import { log } from '../Utilities/Logger'
 import { DocumentExtender } from './DocumentExtender'
@@ -25,23 +24,7 @@ import { SnapshotExtender } from './SnapshotExtender'
 import { UserExtender } from './UserExtender'
 
 export class Repository {
-  private readonly prisma: PrismaClient<
-    {
-      log: (
-        | {
-            emit: 'event'
-            level: 'query'
-          }
-        | {
-            emit: 'event'
-            level: 'info'
-          }
-      )[]
-    },
-    'info' | 'query',
-    false,
-    DefaultArgs
-  >
+  private readonly prisma: PrismaClient
   private readonly _documentExtension: ReturnType<typeof DocumentExtender.getExtension>
   private readonly _snapshotExtension: ReturnType<typeof SnapshotExtender.getExtension>
   private readonly _projectExtension: ReturnType<typeof ProjectExtender.getExtension>
@@ -51,21 +34,7 @@ export class Repository {
   private readonly _repository: ReturnType<typeof this.initRepository>
 
   constructor() {
-    this.prisma = new PrismaClient({
-      log: [
-        {
-          emit: 'event',
-          level: 'query',
-        },
-        {
-          emit: 'event',
-          level: 'info',
-        },
-      ],
-    })
-    this.prisma.$on('query', async (e) => {
-      console.log(`QUERY: ${e.query} ${e.params}`)
-    })
+    this.prisma = new PrismaClient()
     this._documentExtension = this.initDocumentRepository()
     this._snapshotExtension = this.initSnapshotRepository()
     this._projectExtension = this.initProjectRepository()
@@ -79,7 +48,6 @@ export class Repository {
     await this.prisma.$connect().catch(function (err: any) {
       log.error(`An error occurred while connecting to db`, err)
     })
-    //@ts-ignore
   }
 
   public get DB() {
@@ -130,14 +98,4 @@ export class Repository {
   public get eventClient() {
     return this.DB.event
   }
-}
-export type DB = typeof Repository.prototype.DB
-export type DocumentClient = typeof Repository.prototype.documentClient
-export type ProjectClient = typeof Repository.prototype.projectClient
-export type UserClient = typeof Repository.prototype.userClient
-export type SnapshotClient = typeof Repository.prototype.snapshotClient
-export type EventClient = typeof Repository.prototype.eventClient
-
-export enum PrismaErrorCodes {
-  RecordMissing = 'P2025',
 }

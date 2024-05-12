@@ -15,14 +15,7 @@
  */
 
 import { config } from '../Config/Config'
-import {
-  DocumentClient,
-  EventClient,
-  ProjectClient,
-  Repository,
-  SnapshotClient,
-  UserClient,
-} from '../DataAccess/Repository'
+import { Repository } from '../DataAccess/Repository'
 import { AuthenticationService } from '../DomainServices/AuthenticationService'
 import { AuthorityService } from '../DomainServices/AuthorityService'
 import { ConfigService } from '../DomainServices/ConfigService'
@@ -32,6 +25,13 @@ import { ProjectService } from '../DomainServices/ProjectService'
 import { QuarterbackService } from '../DomainServices/QuarterbackService'
 import { RegisterationService } from '../DomainServices/RegisterationService'
 import { UserService } from '../DomainServices/UserService'
+import {
+  DocumentClient,
+  EventClient,
+  ProjectClient,
+  SnapshotClient,
+  UserClient,
+} from '../Models/RepositoryModels'
 import { IServer } from '../Server/IServer'
 import { Server } from '../Server/Server'
 

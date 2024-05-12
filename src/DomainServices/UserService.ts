@@ -33,8 +33,8 @@
 import { User } from '@prisma/client'
 import jwt from 'jsonwebtoken'
 
-import { ProjectClient, UserClient } from '../DataAccess/Repository'
 import { AccountNotFoundError, InvalidCredentialsError, RecordNotFoundError } from '../Errors'
+import { ProjectClient, UserClient } from '../Models/RepositoryModels'
 import { TokenPayload } from '../Models/UserModels'
 
 export class UserService {

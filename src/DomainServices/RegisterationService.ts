@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-import { EventType, User } from '@prisma/client'
+import { User } from '@prisma/client'
 
-import { UserClient } from '../DataAccess/Repository'
 import { DuplicateEmailError } from '../Errors'
+import { Events } from '../Models/EventModels'
+import { UserClient } from '../Models/RepositoryModels'
 import { ConnectSignupCredentials, NameParts } from '../Models/UserModels'
 import { EventManager } from './EventService'
 
 export class RegisterationService {
   constructor(
     private readonly userRepository: UserClient,
-    private readonly EventManager: EventManager
+    private readonly eventManager: EventManager
   ) {}
   public async connectSignup(credentials: ConnectSignupCredentials): Promise<User> {
     const { email, connectUserID } = credentials
@@ -39,7 +40,7 @@ export class RegisterationService {
   private async updateConnectUserID(user: User, connectUserID: string) {
     if (user.connectUserID !== connectUserID) {
       await this.userRepository.updateConnectID(user.id, connectUserID)
-      this.EventManager.emit(EventType.UpdateConnectID, user.id)
+      this.eventManager.emit(Events.UpdateConnectID, user.id)
     } else {
       throw new DuplicateEmailError(user.email)
     }
@@ -54,7 +55,7 @@ export class RegisterationService {
       email,
     }
     const user = await this.userRepository.createUser(userPayload)
-    this.EventManager.emit(EventType.Registration, user.id)
+    this.eventManager.emit(Events.Registeration, user.id)
     return user
   }
   private splitName(name: string): NameParts {

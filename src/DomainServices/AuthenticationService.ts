@@ -17,15 +17,14 @@
 import jwt from 'jsonwebtoken'
 
 import { config } from '../Config/Config'
-import { UserClient } from '../DataAccess/Repository'
 import { AccountNotFoundError } from '../Errors'
+import { UserClient } from '../Models/RepositoryModels'
 import { TokenPayload, UserCredentials } from '../Models/UserModels'
 import { ProjectService } from './ProjectService'
 
 export class AuthenticationService {
   constructor(private readonly userRepoistory: UserClient) {}
   public async serverToServerAuthToken({ deviceID, appID, connectUserID }: UserCredentials) {
-    console.log('hereqweq')
     const user = await this.userRepoistory.findByConnectID(connectUserID)
     if (!user) {
       throw new AccountNotFoundError(connectUserID)

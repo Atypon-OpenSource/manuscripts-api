@@ -30,7 +30,7 @@
   "dependencies": {
     "@manuscripts/json-schema": "^2.2.7",
     "@manuscripts/transform": "2.3.2",
-    "@prisma/client": "^4.8.1",
+    "@prisma/client": "^5.13.0",
     "bcrypt": "^5.1.0",
     "celebrate": "^15.0.1",
     "checksum": "^1.0.0",

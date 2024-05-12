@@ -8,9 +8,6 @@
   - Made the column `version` on table `ManuscriptDoc` required. This step will fail if there are existing NULL values in that column.
 
 */
--- CreateEnum
-CREATE TYPE "EventType" AS ENUM ('Registration', 'ProjectCreated', 'UpdateConnectID', 'Login');
-
 -- AlterTable
 ALTER TABLE "ManuscriptDoc" ADD COLUMN     "steps" JSONB[] DEFAULT ARRAY[]::JSONB[],
 ALTER COLUMN "version" SET NOT NULL;
@@ -27,7 +24,7 @@ ADD COLUMN     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP;
 -- CreateTable
 CREATE TABLE "Event" (
     "id" TEXT NOT NULL,
-    "type" "EventType" NOT NULL,
+    "type" TEXT NOT NULL,
     "userID" TEXT,
     "projectID" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -36,13 +33,13 @@ CREATE TABLE "Event" (
 );
 
 -- CreateIndex
-CREATE INDEX "project_model_id_idx_2" ON "ManuscriptDoc"("project_model_id");
+CREATE INDEX "ManuscriptDoc_project_model_id_idx" ON "ManuscriptDoc"("project_model_id");
 
 -- CreateIndex
-CREATE INDEX "doc_id_idx_2" ON "ManuscriptSnapshot"("doc_id");
+CREATE INDEX "ManuscriptSnapshot_doc_id_idx" ON "ManuscriptSnapshot"("doc_id");
 
 -- CreateIndex
-CREATE INDEX "project_json_data_idx" ON "Project" USING GIN ("data" jsonb_path_ops);
+CREATE INDEX "Project_data_idx" ON "Project" USING GIN ("data" jsonb_path_ops);
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_id_key" ON "User"("id");

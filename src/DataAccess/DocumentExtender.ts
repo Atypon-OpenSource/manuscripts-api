@@ -18,7 +18,7 @@ import { Prisma, PrismaClient } from '@prisma/client'
 
 import { MissingDocumentError, MissingRecordError } from '../Errors'
 import { CreateDoc } from '../Models/DocumentModels'
-import { PrismaErrorCodes } from './Repository'
+import { PrismaErrorCodes } from '../Models/RepositoryModels'
 
 export class DocumentExtender {
   static readonly DOCUMENT_MODEL = 'manuscriptDoc'

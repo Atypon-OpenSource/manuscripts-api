@@ -20,23 +20,16 @@ model User {
 
 model Event {
   id   String @id @default(uuid())
-  type EventType
+  type String
   userID  String?
   projectID String?
   createdAt           DateTime             @default(now())
 }
 
-enum EventType  {
-  Registration 
-  ProjectCreated 
-  UpdateConnectID 
-  Login
-}
-
 model Project {
   id   String @id @default(uuid())
   data Json? 
-  @@index([data(ops: JsonbPathOps)], type: Gin, map: "project_json_data_idx")
+  @@index([data(ops: JsonbPathOps)], type: Gin)
 }
 
 model ManuscriptDoc {
@@ -50,7 +43,7 @@ model ManuscriptDoc {
   snapshots           ManuscriptSnapshot[] @relation("ManuscriptSnapshotToManuscriptDoc")
   steps               Json[]               @default([])
 
-  @@index(fields: [project_model_id], map: "project_model_id_idx_2")
+  @@index(fields: [project_model_id])
 }
 
 model ManuscriptSnapshot {
@@ -61,7 +54,7 @@ model ManuscriptSnapshot {
   doc       ManuscriptDoc @relation("ManuscriptSnapshotToManuscriptDoc", fields: [doc_id], references: [manuscript_model_id], onDelete: Cascade)
   doc_id    String
 
-  @@index(fields: [doc_id],map: "doc_id_idx_2")
+  @@index(fields: [doc_id])
 }
 
 model ManuscriptDocHistory {

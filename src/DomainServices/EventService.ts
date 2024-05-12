@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { EventType } from '@prisma/client'
 import EventEmitter from 'events'
 
-import { EventClient } from '../DataAccess/Repository'
+import { Events } from '../Models/EventModels'
+import { EventClient } from '../Models/RepositoryModels'
 import { log } from '../Utilities/Logger'
 
 export class EventManager extends EventEmitter {
@@ -27,12 +27,12 @@ export class EventManager extends EventEmitter {
   }
 
   private registerListeners() {
-    this.on(EventType.Registration, this.onUserEvent(EventType.Registration))
-    this.on(EventType.Login, this.onUserEvent(EventType.Login))
-    this.on(EventType.UpdateConnectID, this.onUserEvent(EventType.UpdateConnectID))
+    this.on(Events.Registeration, this.onUserEvent(Events.Registeration))
+    this.on(Events.Login, this.onUserEvent(Events.Login))
+    this.on(Events.UpdateConnectID, this.onUserEvent(Events.UpdateConnectID))
   }
 
-  private onUserEvent(type: EventType) {
+  private onUserEvent(type: Events) {
     return (userID: string) => {
       this.eventClient.createUserEvent(userID, type)
       log.debug(`Logged user activity event: ${userID} - ${type}`)

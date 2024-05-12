@@ -32,7 +32,6 @@ import tempy from 'tempy'
 
 import { config } from '../Config/Config'
 import { ScopedAccessTokenConfiguration } from '../Config/ConfigurationTypes'
-import { ProjectClient } from '../DataAccess/Repository'
 import { DIContainer } from '../DIContainer/DIContainer'
 import {
   InvalidScopeNameError,
@@ -43,6 +42,7 @@ import {
   ValidationError,
 } from '../Errors'
 import { ArchiveOptions, ProjectPermission, ProjectUserRole } from '../Models/ProjectModels'
+import { ProjectClient } from '../Models/RepositoryModels'
 
 const EMPTY_PERMISSIONS = new Set<ProjectPermission>()
 
