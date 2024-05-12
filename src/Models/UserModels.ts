@@ -52,3 +52,38 @@ export type TokenPayload = {
   appID: string
   id: string
 }
+
+export type OldTokenPayload = {
+  /**
+   * User's unique id.
+   */
+  userId: string
+  /**
+   * User's connect id.
+   */
+  connectUserID?: string
+  /**
+   * User's profile IDs.
+   */
+  userProfileId: string
+  /**
+   * Application's unique id.
+   */
+  appId: string
+  /**
+   * Token expiry
+   */
+  expiry?: number
+  /**
+   * User's email.
+   */
+  email?: string
+  /**
+   * audience.
+   */
+  aud: string
+  /**
+   * issuer.
+   */
+  iss: string
+}

@@ -34,7 +34,8 @@ export class JwtAuthStrategy {
     passport.use(
       AuthStrategyTypes.jwt,
       new Strategy(opts, async (jwt, done) => {
-        const user = await DIContainer.sharedContainer.userClient.findByID(jwt.id)
+        const id = jwt.id || jwt.userId.replace('|', '_')
+        const user = await DIContainer.sharedContainer.userClient.findByID(id)
         if (!user) {
           return done(null, false)
         }

@@ -48,7 +48,9 @@ export class UserService {
     if (!this.isLoginTokenPayload(payload)) {
       throw new InvalidCredentialsError('Unexpected token payload.')
     }
-    const user = await this.userRepository.findByID(payload.id)
+    //@TODO: Remove `payload.userId` once this is deployed on all dev environments
+    //@ts-ignore
+    const user = await this.userRepository.findByID(payload.id || payload.userId)
     return user
       ? {
           email: user.email,
@@ -68,14 +70,18 @@ export class UserService {
     if (typeof obj === 'string') {
       return false
     }
-
+    //@TODO: remove the `or` statement after this is released and used by all envs
     return (
-      (obj as any).id &&
-      typeof (obj as any).id === 'string' &&
-      (obj as any).deviceID &&
-      typeof (obj as any).deviceID === 'string' &&
-      (obj as any).appID &&
-      typeof (obj as any).appID === 'string'
+      ((obj as any).id &&
+        typeof (obj as any).id === 'string' &&
+        (obj as any).deviceID &&
+        typeof (obj as any).deviceID === 'string' &&
+        (obj as any).appID &&
+        typeof (obj as any).appID === 'string') ||
+      ((obj as any).userId &&
+        typeof (obj as any).userId === 'string' &&
+        (obj as any).appId &&
+        typeof (obj as any).appId === 'string')
     )
   }
 
