@@ -8,7 +8,7 @@ generator client {
 }
 
 model User {
-  id            String   @unique @default(uuid())
+  id            String   @id @unique @default(uuid())
   data          Json?
   given         String   @default("")
   family        String   @default("")
