@@ -87,7 +87,6 @@ export class DIContainer {
   constructor(readonly repository: Repository) {
     this.server = new Server()
 
-    this.projectService = new ProjectService(repository.projectClient)
     this.pressroomService = new PressroomService(config.pressroom.baseurl, config.pressroom.apiKey)
     this.quarterbackService = new QuarterbackService()
     this.eventclient = repository.eventClient
@@ -101,6 +100,15 @@ export class DIContainer {
     this.documentClient = repository.documentClient
     this.snapshotClient = repository.snapshotClient
     this.userClient = repository.userClient
+    //or we can send repo.DB?
+    this.projectService = new ProjectService(
+      repository.projectClient,
+      repository.userClient,
+      repository.snapshotClient,
+      repository.documentClient,
+      this.pressroomService,
+      this.configService
+    )
 
     // this.eventService = new EventService(this.eventRepo)
   }

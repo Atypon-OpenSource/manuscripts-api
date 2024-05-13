@@ -16,7 +16,7 @@
 
 import EventEmitter from 'events'
 
-import { Events } from '../Models/EventModels'
+import { UserEvents } from '../Models/EventModels'
 import { EventClient } from '../Models/RepositoryModels'
 import { log } from '../Utilities/Logger'
 
@@ -27,15 +27,16 @@ export class EventManager extends EventEmitter {
   }
 
   private registerListeners() {
-    this.on(Events.Registeration, this.onUserEvent(Events.Registeration))
-    this.on(Events.Login, this.onUserEvent(Events.Login))
-    this.on(Events.UpdateConnectID, this.onUserEvent(Events.UpdateConnectID))
+    this.on(UserEvents.Registeration, this.onUserEvent)
+    this.on(UserEvents.UpdateConnectID, this.onUserEvent)
   }
 
-  private onUserEvent(type: Events) {
-    return (userID: string) => {
-      this.eventClient.createUserEvent(userID, type)
-      log.debug(`Logged user activity event: ${userID} - ${type}`)
-    }
+  private onUserEvent(type: UserEvents, userID: string) {
+    this.eventClient.createUserEvent(userID, type)
+    log.debug(`Logged user activity event: ${type} - ${userID}`)
+  }
+
+  public emitUserEvent(type: UserEvents, userID: string) {
+    this.emit(type, type, userID)
   }
 }

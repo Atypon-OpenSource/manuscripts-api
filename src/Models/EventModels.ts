@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-export enum Events {
+export enum UserEvents {
   Registeration = 'registeration',
   UpdateConnectID = 'updateConnectID',
-  Login = 'login',
 }

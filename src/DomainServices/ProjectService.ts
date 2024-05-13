@@ -32,7 +32,6 @@ import tempy from 'tempy'
 
 import { config } from '../Config/Config'
 import { ScopedAccessTokenConfiguration } from '../Config/ConfigurationTypes'
-import { DIContainer } from '../DIContainer/DIContainer'
 import {
   InvalidScopeNameError,
   MissingContainerError,
@@ -42,12 +41,26 @@ import {
   ValidationError,
 } from '../Errors'
 import { ArchiveOptions, ProjectPermission, ProjectUserRole } from '../Models/ProjectModels'
-import { ProjectClient } from '../Models/RepositoryModels'
+import {
+  DocumentClient,
+  ProjectClient,
+  SnapshotClient,
+  UserClient,
+} from '../Models/RepositoryModels'
+import { ConfigService } from './ConfigService'
+import { PressroomService } from './PressroomService'
 
 const EMPTY_PERMISSIONS = new Set<ProjectPermission>()
 
 export class ProjectService {
-  constructor(private projectRepository: ProjectClient) {}
+  constructor(
+    private readonly projectRepository: ProjectClient,
+    private readonly userClient: UserClient,
+    private readonly snapshotClient: SnapshotClient,
+    private readonly documentClient: DocumentClient,
+    private readonly pressroomService: PressroomService,
+    private readonly configService: ConfigService
+  ) {}
   public static findScope(
     scope: string,
     configScopes: ReadonlyArray<ScopedAccessTokenConfiguration>
@@ -65,7 +78,7 @@ export class ProjectService {
   }
   public async createManuscript(projectID: string, templateID?: string) {
     if (templateID) {
-      const exists = await DIContainer.sharedContainer.configService.hasDocument(templateID)
+      const exists = await this.configService.hasDocument(templateID)
       if (!exists) {
         throw new MissingTemplateError(templateID)
       }
@@ -80,7 +93,7 @@ export class ProjectService {
     templateID?: string
   ): Promise<Manuscript> {
     if (templateID) {
-      const exists = await DIContainer.sharedContainer.configService.hasDocument(templateID)
+      const exists = await this.configService.hasDocument(templateID)
       if (!exists) {
         throw new MissingTemplateError(templateID)
       }
@@ -179,8 +192,8 @@ export class ProjectService {
 
   private async deleteManuscriptResources(manuscriptID: string) {
     await Promise.all([
-      DIContainer.sharedContainer.snapshotClient.deleteAllManuscriptSnapshots(manuscriptID),
-      DIContainer.sharedContainer.documentClient.deleteDocument(manuscriptID),
+      this.snapshotClient.deleteAllManuscriptSnapshots(manuscriptID),
+      this.documentClient.deleteDocument(manuscriptID),
     ])
   }
 
@@ -215,7 +228,7 @@ export class ProjectService {
   ): Promise<void> {
     const project = await this.getProject(projectID)
     console.log('here11')
-    const user = await DIContainer.sharedContainer.userClient.findByConnectID(connectUserID)
+    const user = await this.userClient.findByConnectID(connectUserID)
 
     if (!user) {
       throw new ValidationError('Invalid user id', user)
@@ -358,7 +371,7 @@ export class ProjectService {
   private async convert(path: string): Promise<Readable> {
     const stream = fs.createReadStream(path)
     try {
-      return await DIContainer.sharedContainer.pressroomService.importJATS(stream)
+      return await this.pressroomService.importJATS(stream)
     } finally {
       stream.close()
     }

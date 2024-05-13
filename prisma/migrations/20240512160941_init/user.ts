@@ -49,7 +49,6 @@ async function main() {
               id: newID,
               given,
               email,
-              data: undefined,
             },
           })
         }

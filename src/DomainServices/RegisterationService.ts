@@ -17,7 +17,7 @@
 import { User } from '@prisma/client'
 
 import { DuplicateEmailError } from '../Errors'
-import { Events } from '../Models/EventModels'
+import { UserEvents } from '../Models/EventModels'
 import { UserClient } from '../Models/RepositoryModels'
 import { ConnectSignupCredentials, NameParts } from '../Models/UserModels'
 import { EventManager } from './EventService'
@@ -40,7 +40,7 @@ export class RegisterationService {
   private async updateConnectUserID(user: User, connectUserID: string) {
     if (user.connectUserID !== connectUserID) {
       await this.userRepository.updateConnectID(user.id, connectUserID)
-      this.eventManager.emit(Events.UpdateConnectID, user.id)
+      this.eventManager.emitUserEvent(UserEvents.UpdateConnectID, user.id)
     } else {
       throw new DuplicateEmailError(user.email)
     }
@@ -55,7 +55,7 @@ export class RegisterationService {
       email,
     }
     const user = await this.userRepository.createUser(userPayload)
-    this.eventManager.emit(Events.Registeration, user.id)
+    this.eventManager.emitUserEvent(UserEvents.Registeration, user.id)
     return user
   }
   private splitName(name: string): NameParts {
