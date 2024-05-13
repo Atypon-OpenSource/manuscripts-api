@@ -30,6 +30,7 @@
  * limitations under the License.
  */
 
+import { ObjectTypes, UserProfile } from '@manuscripts/json-schema'
 import { User } from '@prisma/client'
 import jwt from 'jsonwebtoken'
 
@@ -48,20 +49,8 @@ export class UserService {
     if (!this.isLoginTokenPayload(payload)) {
       throw new InvalidCredentialsError('Unexpected token payload.')
     }
-    //@TODO: Remove `payload.userId` once this is deployed on all dev environments
-    //@ts-ignore
-    const user = await this.userRepository.findByID(payload.id || payload.userId)
-    return user
-      ? {
-          email: user.email,
-          _id: user.id,
-          id: user.id,
-          bibliographicName: {
-            given: user.given,
-            family: user.family,
-          },
-        }
-      : null
+    const user = await this.userRepository.findByID(payload.id)
+    return user ? this.createUserProfile(user) : null
   }
   private isLoginTokenPayload(obj: string | object | null): obj is TokenPayload {
     if (!obj) {
@@ -70,22 +59,17 @@ export class UserService {
     if (typeof obj === 'string') {
       return false
     }
-    //@TODO: remove the `or` statement after this is released and used by all envs
     return (
-      ((obj as any).id &&
-        typeof (obj as any).id === 'string' &&
-        (obj as any).deviceID &&
-        typeof (obj as any).deviceID === 'string' &&
-        (obj as any).appID &&
-        typeof (obj as any).appID === 'string') ||
-      ((obj as any).userId &&
-        typeof (obj as any).userId === 'string' &&
-        (obj as any).appId &&
-        typeof (obj as any).appId === 'string')
+      (obj as any).id &&
+      typeof (obj as any).id === 'string' &&
+      (obj as any).deviceID &&
+      typeof (obj as any).deviceID === 'string' &&
+      (obj as any).appID &&
+      typeof (obj as any).appID === 'string'
     )
   }
 
-  public async getProjectUserProfiles(projectID: string): Promise<User[]> {
+  public async getProjectUserProfiles(projectID: string): Promise<UserProfile[]> {
     const project = await this.projectRepository.getProject(projectID)
 
     if (!project) {
@@ -107,12 +91,29 @@ export class UserService {
       if (!user) {
         throw new AccountNotFoundError(id)
       }
-      users.push({ ...user, _id: user.id, userID: user.id })
+      users.push(this.createUserProfile(user))
     }
     return users
   }
 
   public async getUserProjects(userID: string) {
     return await this.projectRepository.userProjects(userID)
+  }
+
+  private createUserProfile(user: User): UserProfile {
+    return {
+      _id: user.id,
+      bibliographicName: {
+        family: user.family,
+        given: user.given,
+        objectType: ObjectTypes.BibliographicName,
+        _id: user.id.replace('User_', `${ObjectTypes.BibliographicName}:`),
+      },
+      email: user.email,
+      userID: user.id,
+      objectType: ObjectTypes.UserProfile,
+      createdAt: user.createdAt.getTime(),
+      updatedAt: user.updatedAt.getTime(),
+    }
   }
 }

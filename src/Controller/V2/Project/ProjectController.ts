@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-import { Manuscript, Model, Project } from '@manuscripts/json-schema'
-import { User } from '@prisma/client'
+import { Manuscript, Model, Project, UserProfile } from '@manuscripts/json-schema'
 
 import { DIContainer } from '../../../DIContainer/DIContainer'
 import {
@@ -111,7 +110,7 @@ export class ProjectController extends BaseController {
     return DIContainer.sharedContainer.projectService.importJats(zip, projectID, templateID)
   }
 
-  async getUserProfiles(user: Express.User, projectID: string): Promise<User[]> {
+  async getUserProfiles(user: Express.User, projectID: string): Promise<UserProfile[]> {
     const permissions = await this.getPermissions(projectID, user.id)
     if (!permissions.has(ProjectPermission.READ)) {
       throw new RoleDoesNotPermitOperationError(`Access denied`, user.id)
