@@ -20,15 +20,13 @@ describe('LoginTokenPayyload', () => {
   test('ensures that the isLoginTokenPayload type guard behaves correctly', () => {
     const nullToken = null
     const stringToken = 'foo'
-    const invalidObjTokenB = { userId: 3, appId: 'bar' }
-    const invalidObjTokenC = { userId: 'bar', appId: 4 }
+    const invalidObjTokenB = { userId: 3 }
     const invalidObjTokenD = {}
-    const validToken = { userId: 'bar', appId: 'foobar' }
+    const validToken = { userId: 'bar' }
 
     expect(isLoginTokenPayload(nullToken)).toBeFalsy()
     expect(isLoginTokenPayload(stringToken)).toBeFalsy()
     expect(isLoginTokenPayload(invalidObjTokenB)).toBeFalsy()
-    expect(isLoginTokenPayload(invalidObjTokenC)).toBeFalsy()
     expect(isLoginTokenPayload(invalidObjTokenD)).toBeFalsy()
     expect(isLoginTokenPayload(validToken)).toBeTruthy()
   })

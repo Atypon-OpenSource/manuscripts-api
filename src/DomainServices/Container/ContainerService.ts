@@ -26,8 +26,6 @@ import JSZip from 'jszip'
 import * as _ from 'lodash'
 import { v4 as uuid_v4 } from 'uuid'
 
-import { config } from '../../Config/Config'
-import { ScopedAccessTokenConfiguration } from '../../Config/ConfigurationTypes'
 import { IManuscriptRepository } from '../../DataAccess/Interfaces/IManuscriptRepository'
 import { IUserRepository } from '../../DataAccess/Interfaces/IUserRepository'
 import { IUserStatusRepository } from '../../DataAccess/Interfaces/IUserStatusRepository'
@@ -37,7 +35,6 @@ import { DIContainer } from '../../DIContainer/DIContainer'
 import {
   ConflictingRecordError,
   InvalidCredentialsError,
-  InvalidScopeNameError,
   MissingContainerError,
   MissingProductionNoteError,
   MissingTemplateError,
@@ -105,12 +102,7 @@ export class ContainerService implements IContainerService {
       containerID,
       ContainerService.userIdForSync(user._id)
     )
-    this.activityTrackingService.createEvent(
-      user._id,
-      UserActivityEventType.SuccessfulLogin,
-      null,
-      null
-    )
+    this.activityTrackingService.createEvent(user._id, UserActivityEventType.SuccessfulLogin, null)
 
     return newContainer
   }
@@ -475,47 +467,6 @@ export class ContainerService implements IContainerService {
       contentType: doc._attachments[attachmentID].content_type,
       body: await this.containerRepository.getAttachmentBody(documentID, attachmentID),
     }
-  }
-
-  public static findScope(
-    scope: string,
-    configScopes: ReadonlyArray<ScopedAccessTokenConfiguration>
-  ): ScopedAccessTokenConfiguration {
-    const scopeInfo = configScopes.find((s) => s.name === scope)
-
-    if (!scopeInfo) {
-      throw new InvalidScopeNameError(scope)
-    }
-
-    return scopeInfo
-  }
-  public async accessToken(userID: string, scope: string, containerID: string): Promise<any> {
-    const userSyncId = ContainerService.userIdForSync(userID)
-    const container = await this.getContainer(containerID)
-    const isContributor = ContainerService.isContainerUser(container, userID)
-
-    if (!isContributor) {
-      throw new ValidationError('User must be a contributor in the container', userID)
-    }
-
-    const scopeInfo = ContainerService.findScope(scope, config.scopes)
-
-    const payload = {
-      iss: config.API.hostname,
-      sub: userSyncId,
-      containerID,
-      aud: scopeInfo.name,
-    }
-
-    const options = {
-      header: {
-        kid: scopeInfo.identifier,
-      },
-      algorithm: scopeInfo.publicKeyPEM === null ? 'HS256' : 'RS256',
-      expiresIn: `${scopeInfo.expiry}m`,
-    }
-
-    return jwt.sign(payload, scopeInfo.secret, options as any)
   }
 
   public static compareRoles(role1: ContainerRole, role2: ContainerRole) {

@@ -17,15 +17,10 @@
 import { Request } from 'express'
 
 import { DIContainer } from '../../../DIContainer/DIContainer'
-import { InvalidClientApplicationError, InvalidCredentialsError } from '../../../Errors'
+import { InvalidCredentialsError } from '../../../Errors'
 import { AuthorizedUser } from '../../../Models/UserModels'
 import { isString } from '../../../util'
 import { BaseController } from '../../BaseController'
-
-/**
- * The app-id header key.
- */
-export const APP_ID_HEADER_KEY = 'manuscripts-app-id'
 
 /**
  * The app-secret header key.
@@ -34,12 +29,6 @@ export const APP_SECRET_HEADER_KEY = 'manuscripts-app-secret'
 
 export class AuthController extends BaseController {
   async serverToServerTokenAuth(req: Request): Promise<AuthorizedUser> {
-    const appId = req.headers[APP_ID_HEADER_KEY]
-
-    if (!isString(appId)) {
-      throw new InvalidClientApplicationError(appId)
-    }
-
     const { deviceId } = req.body
     const { connectUserID } = req.params
 
@@ -53,7 +42,6 @@ export class AuthController extends BaseController {
     return DIContainer.sharedContainer.authService.serverToServerTokenAuth({
       connectUserID: connectUserID,
       deviceId,
-      appId,
     })
   }
 }

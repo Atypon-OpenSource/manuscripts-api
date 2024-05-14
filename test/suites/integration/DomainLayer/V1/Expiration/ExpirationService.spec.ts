@@ -47,7 +47,6 @@ describe('Expiration', () => {
     activityTrackingService.createEvent(
       validUser1._id,
       UserActivityEventType.SuccessfulLogin,
-      'appId',
       'deviceId'
     )
     await activityTrackingService.awaitCreation()

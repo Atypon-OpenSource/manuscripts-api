@@ -16,7 +16,6 @@
 
 import supertest from 'supertest'
 
-import { getContainerType } from '../src/Controller/ContainedBaseController'
 import { IServer } from '../src/Server/IServer'
 import { createServer } from './utilities/server'
 
@@ -46,14 +45,6 @@ export async function connectSignup(body: any, headers: object): Promise<superte
 export async function logout(headers: object): Promise<supertest.Response> {
   const server = await createServer()
   return supertest(server.app).post('/api/v1/auth/logout').set(headers).send()
-}
-
-export async function authorizationToken(
-  headers: object,
-  params: any
-): Promise<supertest.Response> {
-  const server = await createServer()
-  return supertest(server.app).get(`/api/v1/authorization/${params.scope}`).set(headers).send()
 }
 
 // Containers Invitation
@@ -269,18 +260,6 @@ export async function getAttachment(
     .get(`/api/v1/container/${params.containerType}/attachment/${params.id}`)
     .set(headers)
     .send(body)
-}
-
-export async function accessToken(headers: object, params: any): Promise<supertest.Response> {
-  const server: IServer = await createServer()
-  return supertest(server.app)
-    .get(
-      `/api/v1/container/${getContainerType(params.containerID)}/${params.containerID}/${
-        params.scope
-      }`
-    )
-    .set(headers)
-    .send()
 }
 
 export async function pickerBundle(headers: object, params: any): Promise<supertest.Response> {

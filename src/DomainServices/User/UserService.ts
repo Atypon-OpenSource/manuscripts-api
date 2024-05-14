@@ -37,7 +37,6 @@ import {
 } from '../../Errors'
 import { UserActivityEventType } from '../../Models/UserEventModels'
 import { getExpirationTime, isLoginTokenPayload } from '../../Utilities/JWT/LoginTokenPayload'
-import { isScopedTokenPayload } from '../../Utilities/JWT/ScopedTokenPayload'
 import { ISyncService } from '../Sync/ISyncService'
 import { UserActivityTrackingService } from '../UserActivity/UserActivityTrackingService'
 import { IUserService } from './IUserService'
@@ -107,12 +106,7 @@ export class UserService implements IUserService {
 
     if (userDeleted) {
       // tslint:disable-next-line: no-floating-promises
-      this.activityTrackingService.createEvent(
-        user._id,
-        UserActivityEventType.DeleteAccount,
-        null,
-        null
-      )
+      this.activityTrackingService.createEvent(user._id, UserActivityEventType.DeleteAccount, null)
     }
 
     return userDeleted
@@ -192,12 +186,7 @@ export class UserService implements IUserService {
 
   public async authenticateUser(token: string): Promise<void> {
     const payload = jwt.decode(token)
-    if (isScopedTokenPayload(payload)) {
-      const user = await this.userRepository.getById(payload.sub.replace('_', '|'))
-      if (!user) {
-        throw new InvalidCredentialsError(`User not found.`)
-      }
-    } else if (isLoginTokenPayload(payload)) {
+    if (isLoginTokenPayload(payload)) {
       const user = await this.userRepository.getById(payload.userId)
 
       if (!user) {

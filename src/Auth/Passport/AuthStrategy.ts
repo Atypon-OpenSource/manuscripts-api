@@ -24,16 +24,12 @@ import { InvalidJsonHeadersError, InvalidServerCredentialsError } from '../../Er
 import { User } from '../../Models/UserModels'
 import { isString } from '../../util'
 
-export enum AuthStrategyTypes {
-  jwt = 'jwt',
-}
-
 export class AuthStrategy {
   /**
    * Express authentication middleware.
    */
   public static JWTAuth(req: Request, res: Response, next: NextFunction) {
-    passport.authenticate(AuthStrategyTypes.jwt, {}, (error: Error, user: User) => {
+    passport.authenticate('jwt', {}, (error: Error, user: User) => {
       AuthStrategy.userValidationCallback(error, user, req, res, next)
     })(req, res, next)
   }

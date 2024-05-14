@@ -49,7 +49,6 @@ export class UserActivityTrackingService {
   createEvent(
     userId: string,
     eventType: UserActivityEventType,
-    appId: string | null,
     deviceId: string | null
   ): Promise<UserActivityEvent> | null {
     if (this.enabled) {
@@ -57,7 +56,6 @@ export class UserActivityTrackingService {
         userId,
         createdAt: new Date(),
         eventType,
-        appId,
         deviceId,
         expiry: this.eventLifetime,
       }

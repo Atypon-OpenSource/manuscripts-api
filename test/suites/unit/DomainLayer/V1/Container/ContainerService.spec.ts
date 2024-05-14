@@ -18,14 +18,12 @@ import '../../../../../utilities/dbMock'
 import '../../../../../utilities/configMock'
 
 import { Chance } from 'chance'
-import jwt from 'jsonwebtoken'
 
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
 import { ContainerService } from '../../../../../../src/DomainServices/Container/ContainerService'
 import {
   ConflictingRecordError,
   InvalidCredentialsError,
-  InvalidScopeNameError,
   MissingContainerError,
   MissingProductionNoteError,
   MissingTemplateError,
@@ -1161,45 +1159,6 @@ describe('containerService - getAttachment', () => {
   })
 })
 
-describe('ContainerService - accessToken', () => {
-  test('should return accessToken for specified scope', async () => {
-    const containerService: any =
-      DIContainer.sharedContainer.containerService
-
-    containerService.getContainer = () => Promise.resolve({ owners: ['User_test'], writers: [], viewers: [] })
-
-    const accessToken = await containerService.accessToken(
-      'User|test',
-      'jupyterhub',
-      'MPProject:foobarbaz'
-    )
-    const payload = jwt.decode(accessToken.replace('Bearer ', '')) as any
-
-    expect(payload.iss).toBe('https://api-server.atypon.com')
-  })
-
-  test('should fail if the user is not a contributor in the container', async () => {
-    const containerService: any =
-      DIContainer.sharedContainer.containerService
-
-    containerService.getContainer = () => Promise.resolve({ owners: [], writers: [], viewers: [] })
-
-    return expect(
-      containerService.accessToken('User|test', 'jupyterhub', 'MPProject:foobarbaz')
-    ).rejects.toThrow(ValidationError)
-  })
-
-  test('should fail if the scope name is invalid', async () => {
-    const containerService: any =
-      DIContainer.sharedContainer.containerService
-
-    containerService.getContainer = () => Promise.resolve({ owners: ['User_test'] })
-
-    return expect(
-      containerService.accessToken('User|test', 'something-random', 'MPProject:foobarbaz')
-    ).rejects.toThrow(InvalidScopeNameError)
-  })
-})
 
 describe('ContainerService - createManuscript', () => {
   test('should fail if user not contributor', async () => {

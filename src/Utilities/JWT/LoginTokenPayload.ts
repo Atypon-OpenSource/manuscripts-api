@@ -36,10 +36,6 @@ export interface LoginTokenPayload {
    */
   userProfileId: string
   /**
-   * Application's unique id.
-   */
-  appId: string
-  /**
    * Token expiry
    */
   expiry?: number
@@ -87,12 +83,7 @@ export function isLoginTokenPayload(obj: string | object | null): obj is LoginTo
     return false
   }
 
-  return (
-    (obj as any).userId &&
-    typeof (obj as any).userId === 'string' &&
-    (obj as any).appId &&
-    typeof (obj as any).appId === 'string'
-  )
+  return (obj as any).userId && typeof (obj as any).userId === 'string'
 }
 
 export function timestamp() {
