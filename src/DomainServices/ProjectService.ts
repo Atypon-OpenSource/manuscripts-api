@@ -227,7 +227,6 @@ export class ProjectService {
     role: ProjectUserRole
   ): Promise<void> {
     const project = await this.getProject(projectID)
-    console.log('here11')
     const user = await this.userClient.findByConnectID(connectUserID)
 
     if (!user) {

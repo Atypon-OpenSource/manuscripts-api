@@ -16,6 +16,13 @@
 
 import { PrismaClient } from '@prisma/client'
 
+import {
+  DocumentExtension,
+  EventExtension,
+  ProjectExtension,
+  SnapshotExtension,
+  UserExtension,
+} from '../Models/RepositoryModels'
 import { log } from '../Utilities/Logger'
 import { DocumentExtender } from './DocumentExtender'
 import { EventExtender } from './EventExtender'
@@ -24,63 +31,48 @@ import { SnapshotExtender } from './SnapshotExtender'
 import { UserExtender } from './UserExtender'
 
 export class Repository {
-  private readonly prisma: PrismaClient
-  private readonly _documentExtension: ReturnType<typeof DocumentExtender.getExtension>
-  private readonly _snapshotExtension: ReturnType<typeof SnapshotExtender.getExtension>
-  private readonly _projectExtension: ReturnType<typeof ProjectExtender.getExtension>
-  private readonly _userExtension: ReturnType<typeof UserExtender.getExtension>
-  private readonly _eventExtension: ReturnType<typeof EventExtender.getExtension>
+  private readonly repository: ReturnType<typeof this.initRepository>
+  private documentExtension: DocumentExtension
+  private snapshotExtension: SnapshotExtension
+  private projectExtension: ProjectExtension
+  private userExtension: UserExtension
+  private eventExtension: EventExtension
 
-  private readonly _repository: ReturnType<typeof this.initRepository>
-
-  constructor() {
-    this.prisma = new PrismaClient()
-    this._documentExtension = this.initDocumentRepository()
-    this._snapshotExtension = this.initSnapshotRepository()
-    this._projectExtension = this.initProjectRepository()
-    this._userExtension = this.initUserRepository()
-    this._eventExtension = this.initEventRepository()
-
-    this._repository = this.initRepository()
+  constructor(
+    private readonly prisma: PrismaClient,
+    private readonly documentExtender: DocumentExtender,
+    private readonly snapshotExtender: SnapshotExtender,
+    private readonly projectExtender: ProjectExtender,
+    private readonly userExtender: UserExtender,
+    private readonly eventExtender: EventExtender
+  ) {
+    this.initExtensions()
+    this.repository = this.initRepository()
   }
 
   public async connectClient() {
-    await this.prisma.$connect().catch(function (err: any) {
+    await this.DB.$connect().catch(function (err: any) {
       log.error(`An error occurred while connecting to db`, err)
     })
   }
 
   public get DB() {
-    return this._repository
+    return this.repository
   }
-
+  private initExtensions() {
+    this.documentExtension = this.documentExtender.getExtension()
+    this.snapshotExtension = this.snapshotExtender.getExtension()
+    this.projectExtension = this.projectExtender.getExtension()
+    this.userExtension = this.userExtender.getExtension()
+    this.eventExtension = this.eventExtender.getExtension()
+  }
   private initRepository() {
     return this.prisma
-      .$extends(this._documentExtension)
-      .$extends(this._snapshotExtension)
-      .$extends(this._projectExtension)
-      .$extends(this._userExtension)
-      .$extends(this._eventExtension)
-  }
-
-  private initDocumentRepository() {
-    return DocumentExtender.getExtension(this.prisma)
-  }
-
-  private initSnapshotRepository() {
-    return SnapshotExtender.getExtension(this.prisma)
-  }
-
-  private initProjectRepository() {
-    return ProjectExtender.getExtension(this.prisma)
-  }
-
-  private initUserRepository() {
-    return UserExtender.getExtension(this.prisma)
-  }
-
-  private initEventRepository() {
-    return EventExtender.getExtension(this.prisma)
+      .$extends(this.documentExtension)
+      .$extends(this.snapshotExtension)
+      .$extends(this.projectExtension)
+      .$extends(this.userExtension)
+      .$extends(this.eventExtension)
   }
 
   public get documentClient() {

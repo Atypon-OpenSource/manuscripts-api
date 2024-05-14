@@ -15,7 +15,7 @@
  */
 
 import { DIContainer } from '../../../DIContainer/DIContainer'
-import { QuarterbackPermission } from '../../../DomainServices/QuarterbackService'
+import { DocumentPermission } from '../../../DomainServices/DocumentService'
 import { ValidationError } from '../../../Errors'
 import { ReceiveSteps } from '../../../Models/AuthorityModels'
 import { CreateDoc, UpdateDocument } from '../../../Models/DocumentModels'
@@ -25,10 +25,10 @@ export class DocumentController extends BaseController {
     if (!user) {
       throw new ValidationError('No user found', user)
     }
-    await DIContainer.sharedContainer.quarterbackService.validateUserAccess(
+    await DIContainer.sharedContainer.documentService.validateUserAccess(
       user,
       projectID,
-      QuarterbackPermission.WRITE
+      DocumentPermission.WRITE
     )
     return await DIContainer.sharedContainer.documentClient.createDocument(payload, user.id)
   }
@@ -37,10 +37,10 @@ export class DocumentController extends BaseController {
     if (!user) {
       throw new ValidationError('No user found', user)
     }
-    await DIContainer.sharedContainer.quarterbackService.validateUserAccess(
+    await DIContainer.sharedContainer.documentService.validateUserAccess(
       user,
       projectID,
-      QuarterbackPermission.READ
+      DocumentPermission.READ
     )
     return await DIContainer.sharedContainer.documentClient.findDocumentWithSnapshot(manuscriptID)
   }
@@ -49,10 +49,10 @@ export class DocumentController extends BaseController {
     if (!user) {
       throw new ValidationError('No user found', user)
     }
-    await DIContainer.sharedContainer.quarterbackService.validateUserAccess(
+    await DIContainer.sharedContainer.documentService.validateUserAccess(
       user,
       projectID,
-      QuarterbackPermission.WRITE
+      DocumentPermission.WRITE
     )
     return DIContainer.sharedContainer.documentClient.deleteDocument(manuscriptID)
   }
@@ -65,10 +65,10 @@ export class DocumentController extends BaseController {
     if (!user) {
       throw new ValidationError('No user found', user)
     }
-    await DIContainer.sharedContainer.quarterbackService.validateUserAccess(
+    await DIContainer.sharedContainer.documentService.validateUserAccess(
       user,
       projectID,
-      QuarterbackPermission.WRITE
+      DocumentPermission.WRITE
     )
     return DIContainer.sharedContainer.documentClient.updateDocument(manuscriptID, payload)
   }
@@ -81,10 +81,10 @@ export class DocumentController extends BaseController {
     if (!user) {
       throw new ValidationError('No user found', user)
     }
-    await DIContainer.sharedContainer.quarterbackService.validateUserAccess(
+    await DIContainer.sharedContainer.documentService.validateUserAccess(
       user,
       projectID,
-      QuarterbackPermission.WRITE
+      DocumentPermission.WRITE
     )
     return await DIContainer.sharedContainer.authorityService.receiveSteps(manuscriptID, payload)
   }
@@ -98,10 +98,10 @@ export class DocumentController extends BaseController {
     if (!user) {
       throw new ValidationError('No user found', user)
     }
-    await DIContainer.sharedContainer.quarterbackService.validateUserAccess(
+    await DIContainer.sharedContainer.documentService.validateUserAccess(
       user,
       projectID,
-      QuarterbackPermission.READ
+      DocumentPermission.READ
     )
     return await DIContainer.sharedContainer.authorityService.getEvents(manuscriptID, versionID)
   }

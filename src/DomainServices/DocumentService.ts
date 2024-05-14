@@ -21,7 +21,7 @@ import { MissingManuscriptError, RoleDoesNotPermitOperationError } from '../Erro
 import { ProjectUserRole } from '../Models/ProjectModels'
 import { Snapshot } from '../Models/SnapshotModel'
 
-export enum QuarterbackPermission {
+export enum DocumentPermission {
   READ,
   WRITE,
 }
@@ -31,13 +31,13 @@ export interface SnapshotLabelResult {
   name: string
   createdAt: number
 }
-const EMPTY_PERMISSIONS = new Set<QuarterbackPermission>()
+const EMPTY_PERMISSIONS = new Set<DocumentPermission>()
 
-export class QuarterbackService {
+export class DocumnetService {
   async getPermissions(
     projectID: string,
     userID: string
-  ): Promise<ReadonlySet<QuarterbackPermission>> {
+  ): Promise<ReadonlySet<DocumentPermission>> {
     const project = await DIContainer.sharedContainer.projectService.getProject(projectID)
     const role = DIContainer.sharedContainer.projectService.getUserRole(project, userID)
     switch (role) {
@@ -46,9 +46,9 @@ export class QuarterbackService {
       case ProjectUserRole.Editor:
       case ProjectUserRole.Annotator:
       case ProjectUserRole.Proofer:
-        return new Set([QuarterbackPermission.READ, QuarterbackPermission.WRITE])
+        return new Set([DocumentPermission.READ, DocumentPermission.WRITE])
       case ProjectUserRole.Viewer:
-        return new Set([QuarterbackPermission.READ])
+        return new Set([DocumentPermission.READ])
     }
     return EMPTY_PERMISSIONS
   }
@@ -56,7 +56,7 @@ export class QuarterbackService {
   public async validateUserAccess(
     user: Express.User,
     projectID: string,
-    permission: QuarterbackPermission
+    permission: DocumentPermission
   ) {
     const permissions = await this.getPermissions(projectID, user.id)
     if (!permissions.has(permission)) {

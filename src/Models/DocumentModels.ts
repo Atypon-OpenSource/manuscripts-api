@@ -44,5 +44,5 @@ export type StepsData = {
 export type UpdateDocument = {
   doc?: Doc
   version?: number
-  steps?: Prisma.JsonValue[]
-} & ({ doc: Doc } | { version: number } | { steps: Prisma.JsonValue[] })
+  steps?: Prisma.JsonObject[]
+} & ({ doc: Doc } | { version: number } | { steps: Prisma.JsonObject[] })

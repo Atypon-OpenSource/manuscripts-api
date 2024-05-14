@@ -14,33 +14,48 @@
  * limitations under the License.
  */
 
-import { Prisma, PrismaClient } from '@prisma/client'
+import { ManuscriptDoc, Prisma, PrismaClient } from '@prisma/client'
 
 import { MissingDocumentError, MissingRecordError } from '../Errors'
-import { CreateDoc } from '../Models/DocumentModels'
-import { PrismaErrorCodes } from '../Models/RepositoryModels'
+import { CreateDoc, UpdateDocument } from '../Models/DocumentModels'
+import { DocumentExtension, PrismaErrorCodes } from '../Models/RepositoryModels'
 
 export class DocumentExtender {
-  static readonly DOCUMENT_MODEL = 'manuscriptDoc'
-  private static prisma: PrismaClient
-  private static extensions: ReturnType<typeof this.buildExtensions>
+  readonly DOCUMENT_MODEL = 'manuscriptDoc'
+  private extensions: ReturnType<typeof this.buildExtensions>
 
-  static getExtension(prisma: PrismaClient) {
-    this.prisma = prisma
+  constructor(private readonly prisma: PrismaClient) {}
+
+  getExtension() {
     this.extensions = this.buildExtensions()
+    const x = this.buildExtensions()
+    const mode = this.createModel('manuscriptDoc', x)
+    this.extendTwo(mode)
     return this.extend()
   }
-  private static buildExtensions() {
+  private buildExtensions() {
     return {
-      findDocument: this.findDocument(),
-      findDocumentWithSnapshot: this.findDocumentWithSnapshot(),
-      createDocument: this.createDocument(),
-      updateDocument: this.updateDocument(),
-      deleteDocument: this.deleteDocument(),
+      findDocument: this.findDocument,
+      findDocumentWithSnapshot: this.findDocumentWithSnapshot,
+      createDocument: this.createDocument,
+      updateDocument: this.updateDocument,
+      deleteDocument: this.deleteDocument,
     }
   }
 
-  private static extend() {
+  private createModel(name: string, model: ReturnType<typeof this.buildExtensions>) {
+    return {
+      name,
+      model: {
+        [name]: model,
+      },
+    }
+  }
+  private extendTwo(extnesion){
+    return Prisma.defineExtension(extnesion)
+  }
+
+  private extend() {
     return Prisma.defineExtension({
       name: this.DOCUMENT_MODEL,
       model: {
@@ -48,92 +63,82 @@ export class DocumentExtender {
       },
     })
   }
+  private findDocument = async (documentID: string): Promise<ManuscriptDoc> => {
+    const found = await this.prisma.manuscriptDoc.findUnique({
+      where: {
+        manuscript_model_id: documentID,
+      },
+    })
+    if (!found) {
+      throw new MissingDocumentError(documentID)
+    }
+    return found
+  }
 
-  private static findDocument() {
-    return async (documentID: string) => {
-      const found = await this.prisma.manuscriptDoc.findUnique({
+  private findDocumentWithSnapshot = async (documentID: string) => {
+    const found = await this.prisma.manuscriptDoc.findUnique({
+      where: {
+        manuscript_model_id: documentID,
+      },
+      include: {
+        snapshots: {
+          select: {
+            id: true,
+            name: true,
+            createdAt: true,
+          },
+        },
+      },
+    })
+    if (!found) {
+      throw new MissingDocumentError(documentID)
+    }
+    return found
+  }
+  private createDocument = async (payload: CreateDoc, userID: string) => {
+    const saved = await this.prisma.manuscriptDoc.create({
+      data: {
+        manuscript_model_id: payload.manuscript_model_id,
+        user_model_id: userID,
+        project_model_id: payload.project_model_id,
+        doc: payload.doc,
+        version: 0,
+      },
+    })
+
+    return { ...saved, snapshots: [] }
+  }
+
+  private updateDocument = async (documentID: string, payload: UpdateDocument) => {
+    try {
+      const saved = await this.prisma.manuscriptDoc.update({
+        data: payload,
         where: {
           manuscript_model_id: documentID,
         },
       })
-      if (!found) {
-        throw new MissingDocumentError(documentID)
+      return saved
+    } catch (error) {
+      if (error.code === PrismaErrorCodes.RecordMissing) {
+        throw new MissingRecordError(documentID)
       }
-      return found
+      throw error
     }
   }
-  private static findDocumentWithSnapshot() {
-    return async (documentID: string) => {
-      const found = await this.prisma.manuscriptDoc.findUnique({
+
+  private deleteDocument = async (documentID: string) => {
+    try {
+      const deleted = await this.prisma.manuscriptDoc.delete({
         where: {
           manuscript_model_id: documentID,
         },
-        include: {
-          snapshots: {
-            select: {
-              id: true,
-              name: true,
-              createdAt: true,
-            },
-          },
-        },
       })
-      if (!found) {
-        throw new MissingDocumentError(documentID)
+      return deleted
+    } catch (error) {
+      if (error.code === PrismaErrorCodes.RecordMissing) {
+        throw new MissingRecordError(documentID)
       }
-      return found
-    }
-  }
-  private static createDocument() {
-    return async (payload: CreateDoc, userID: string) => {
-      const saved = await this.prisma.manuscriptDoc.create({
-        data: {
-          manuscript_model_id: payload.manuscript_model_id,
-          user_model_id: userID,
-          project_model_id: payload.project_model_id,
-          doc: payload.doc,
-          version: 0,
-        },
-      })
-
-      return { ...saved, snapshots: [] }
-    }
-  }
-
-  private static updateDocument() {
-    return async (documentID: string, payload: any) => {
-      try {
-        const saved = await this.prisma.manuscriptDoc.update({
-          data: payload,
-          where: {
-            manuscript_model_id: documentID,
-          },
-        })
-        return saved
-      } catch (error) {
-        if (error.code === PrismaErrorCodes.RecordMissing) {
-          throw new MissingRecordError(documentID)
-        }
-        throw error
-      }
-    }
-  }
-
-  private static deleteDocument() {
-    return async (documentID: string) => {
-      try {
-        const deleted = await this.prisma.manuscriptDoc.delete({
-          where: {
-            manuscript_model_id: documentID,
-          },
-        })
-        return deleted
-      } catch (error) {
-        if (error.code === PrismaErrorCodes.RecordMissing) {
-          throw new MissingRecordError(documentID)
-        }
-        throw error
-      }
+      throw error
     }
   }
 }

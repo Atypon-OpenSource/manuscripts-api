@@ -20,23 +20,21 @@ import { v4 as uuid_v4 } from 'uuid'
 import { UserEvents } from '../Models/EventModels'
 
 export class EventExtender {
-  static readonly EVENT_MODEL = 'event'
-  private static prisma: PrismaClient
-  private static extensions: ReturnType<typeof this.buildExtensions>
+  readonly EVENT_MODEL = 'event'
+  private extensions: ReturnType<typeof this.buildExtensions>
 
-  static getExtension(prisma: PrismaClient) {
-    this.prisma = prisma
+  constructor(private readonly prisma: PrismaClient) {}
+
+  getExtension() {
     this.extensions = this.buildExtensions()
     return this.extend()
   }
-  private static buildExtensions() {
+  private buildExtensions() {
     return {
-      createUserEvent: this.createUserEvent(),
-      createProjectEvent: this.createProjectEvent(),
+      createUserEvent: this.createUserEvent,
     }
   }
-
-  private static extend() {
+  private extend() {
     return Prisma.defineExtension({
       name: this.EVENT_MODEL,
       model: {
@@ -45,30 +43,17 @@ export class EventExtender {
     })
   }
 
-  private static createUserEvent() {
-    return async (userID: string, type: UserEvents) => {
-      await this.prisma.event.create({
-        data: {
-          type,
-          userID,
-          id: this.EventID(),
-        },
-      })
-    }
-  }
-  private static createProjectEvent() {
-    return async (projectID: string, type: UserEvents) => {
-      await this.prisma.event.create({
-        data: {
-          type,
-          projectID,
-          id: this.EventID(),
-        },
-      })
-    }
+  private createUserEvent = async (userID: string, type: UserEvents) => {
+    await this.prisma.event.create({
+      data: {
+        type,
+        userID,
+        id: this.EventID(),
+      },
+    })
   }
 
-  private static EventID() {
+  private EventID() {
     return `Event_${uuid_v4()}`
   }
 }

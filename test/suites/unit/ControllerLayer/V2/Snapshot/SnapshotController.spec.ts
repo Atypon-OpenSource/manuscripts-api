@@ -21,20 +21,20 @@ import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
 import { DocumentService } from '../../../../../../src/DomainServices/Document/DocumentService'
 import { DocumentHistoryService } from '../../../../../../src/DomainServices/DocumentHistory/DocumentHistoryService'
 import {
-  QuarterbackPermission,
-  QuarterbackService,
-} from '../../../../../../src/DomainServices/QuarterbackService'
+  DocumentPermission,
+  DocumnetService,
+} from '../../../../../../src/DomainServices/DocumentService'
 import { SnapshotService } from '../../../../../../src/DomainServices/Snapshot/SnapshotService'
 import { MissingSnapshotError, ValidationError } from '../../../../../../src/Errors'
 import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
 jest.setTimeout(TEST_TIMEOUT)
 
 let snapshotService: SnapshotService
-let quarterbackService: QuarterbackService
+let quarterbackService: DocumnetService
 let documentService: DocumentService
 let documentHistoryService: DocumentHistoryService
 
-const EMPTY_PERMISSIONS = new Set<QuarterbackPermission>()
+const EMPTY_PERMISSIONS = new Set<DocumentPermission>()
 
 const mockDoc = {
   doc: {
@@ -71,7 +71,7 @@ beforeEach(async () => {
   await DIContainer.init()
   snapshotService = DIContainer.sharedContainer.snapshotService
   documentService = DIContainer.sharedContainer.documentService
-  quarterbackService = DIContainer.sharedContainer.quarterbackService
+  quarterbackService = DIContainer.sharedContainer.documentService
   documentHistoryService = DIContainer.sharedContainer.documentHistoryService
 })
 afterEach(() => {
@@ -232,7 +232,7 @@ describe('SnapshotController', () => {
         .mockResolvedValue({ random: 'manuscript' })
       quarterbackService.getPermissions = jest
         .fn()
-        .mockResolvedValue(new Set([QuarterbackPermission.READ]))
+        .mockResolvedValue(new Set([DocumentPermission.READ]))
       await expect(
         snapshotController.deleteSnapshot('snapshotID', { _id: 'random_user_id' } as any)
       ).rejects.toThrow('Access denied')
@@ -316,7 +316,7 @@ describe('SnapshotController', () => {
     it('should throw an error if the user does not have write access', async () => {
       quarterbackService.getPermissions = jest
         .fn()
-        .mockResolvedValue(new Set([QuarterbackPermission.READ]))
+        .mockResolvedValue(new Set([DocumentPermission.READ]))
       await expect(
         snapshotController.createSnapshot('projectID', { docID: 'docID', name: 'name' }, {
           _id: 'random_user_id',

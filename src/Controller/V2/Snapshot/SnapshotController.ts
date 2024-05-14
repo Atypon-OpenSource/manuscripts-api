@@ -17,7 +17,7 @@
 import type { SaveSnapshotRequest, Snapshot } from 'src/Models/SnapshotModel'
 
 import { DIContainer } from '../../../DIContainer/DIContainer'
-import { QuarterbackPermission } from '../../../DomainServices/QuarterbackService'
+import { DocumentPermission } from '../../../DomainServices/DocumentService'
 import { ValidationError } from '../../../Errors'
 import { BaseController } from '../../BaseController'
 
@@ -30,10 +30,10 @@ export class SnapshotController extends BaseController {
     if (!user) {
       throw new ValidationError('No user found', user)
     }
-    await DIContainer.sharedContainer.quarterbackService.validateUserAccess(
+    await DIContainer.sharedContainer.documentService.validateUserAccess(
       user,
       projectID,
-      QuarterbackPermission.WRITE
+      DocumentPermission.WRITE
     )
     const document = await DIContainer.sharedContainer.documentClient.findDocumentWithSnapshot(
       payload.docID
@@ -47,12 +47,13 @@ export class SnapshotController extends BaseController {
       throw new ValidationError('No user found', user)
     }
     const snapshot = await this.fetchSnapshot(snapshotID)
-    const manuscript =
-      await DIContainer.sharedContainer.quarterbackService.getManuscriptFromSnapshot(snapshot)
-    await DIContainer.sharedContainer.quarterbackService.validateUserAccess(
+    const manuscript = await DIContainer.sharedContainer.documentService.getManuscriptFromSnapshot(
+      snapshot
+    )
+    await DIContainer.sharedContainer.documentService.validateUserAccess(
       user,
       manuscript.containerID,
-      QuarterbackPermission.WRITE
+      DocumentPermission.WRITE
     )
     return await DIContainer.sharedContainer.snapshotClient.deleteSnapshot(snapshotID)
   }
@@ -61,12 +62,13 @@ export class SnapshotController extends BaseController {
       throw new ValidationError('No user found', user)
     }
     const snapshot = await this.fetchSnapshot(snapshotID)
-    const manuscript =
-      await DIContainer.sharedContainer.quarterbackService.getManuscriptFromSnapshot(snapshot)
-    await DIContainer.sharedContainer.quarterbackService.validateUserAccess(
+    const manuscript = await DIContainer.sharedContainer.documentService.getManuscriptFromSnapshot(
+      snapshot
+    )
+    await DIContainer.sharedContainer.documentService.validateUserAccess(
       user,
       manuscript.containerID,
-      QuarterbackPermission.READ
+      DocumentPermission.READ
     )
     return await DIContainer.sharedContainer.snapshotClient.getSnapshot(snapshotID)
   }
@@ -78,10 +80,10 @@ export class SnapshotController extends BaseController {
     if (!user) {
       throw new ValidationError('No user found', user)
     }
-    await DIContainer.sharedContainer.quarterbackService.validateUserAccess(
+    await DIContainer.sharedContainer.documentService.validateUserAccess(
       user,
       projectID,
-      QuarterbackPermission.READ
+      DocumentPermission.READ
     )
     return await DIContainer.sharedContainer.snapshotClient.listSnapshotLabels(manuscriptID)
   }

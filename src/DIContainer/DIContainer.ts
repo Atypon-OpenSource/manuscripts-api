@@ -14,15 +14,22 @@
  * limitations under the License.
  */
 
+import { PrismaClient } from '@prisma/client'
+
 import { config } from '../Config/Config'
+import { DocumentExtender } from '../DataAccess/DocumentExtender'
+import { EventExtender } from '../DataAccess/EventExtender'
+import { ProjectExtender } from '../DataAccess/ProjectExtender'
 import { Repository } from '../DataAccess/Repository'
+import { SnapshotExtender } from '../DataAccess/SnapshotExtender'
+import { UserExtender } from '../DataAccess/UserExtender'
 import { AuthenticationService } from '../DomainServices/AuthenticationService'
 import { AuthorityService } from '../DomainServices/AuthorityService'
 import { ConfigService } from '../DomainServices/ConfigService'
+import { DocumnetService } from '../DomainServices/DocumentService'
 import { EventManager } from '../DomainServices/EventService'
 import { PressroomService } from '../DomainServices/PressroomService'
 import { ProjectService } from '../DomainServices/ProjectService'
-import { QuarterbackService } from '../DomainServices/QuarterbackService'
 import { RegisterationService } from '../DomainServices/RegisterationService'
 import { UserService } from '../DomainServices/UserService'
 import {
@@ -66,7 +73,7 @@ export class DIContainer {
   readonly userService: UserService
   readonly configService: ConfigService
   readonly pressroomService: PressroomService
-  readonly quarterbackService: QuarterbackService
+  readonly documentService: DocumnetService
   readonly authenticationService: AuthenticationService
   readonly registerationService: RegisterationService
   readonly projectClient: ProjectClient
@@ -88,7 +95,7 @@ export class DIContainer {
     this.server = new Server()
 
     this.pressroomService = new PressroomService(config.pressroom.baseurl, config.pressroom.apiKey)
-    this.quarterbackService = new QuarterbackService()
+    this.documentService = new DocumnetService()
     this.eventclient = repository.eventClient
     this.eventManager = new EventManager(this.eventclient)
     this.authenticationService = new AuthenticationService(repository.userClient)
@@ -109,8 +116,6 @@ export class DIContainer {
       this.pressroomService,
       this.configService
     )
-
-    // this.eventService = new EventService(this.eventRepo)
   }
 
   /**
@@ -127,7 +132,20 @@ export class DIContainer {
     if (DIContainer._sharedContainer !== null) {
       throw new ContainerReinitializationError()
     }
-    const repository = new Repository()
+    const prisma = new PrismaClient()
+    const documentExtender = new DocumentExtender(prisma)
+    const snapshotExtender = new SnapshotExtender(prisma)
+    const eventExtender = new EventExtender(prisma)
+    const projectExtender = new ProjectExtender(prisma)
+    const userExtender = new UserExtender(prisma)
+    const repository = new Repository(
+      prisma,
+      documentExtender,
+      snapshotExtender,
+      projectExtender,
+      userExtender,
+      eventExtender
+    )
     await repository.connectClient()
     DIContainer._sharedContainer = new DIContainer(repository)
     return DIContainer._sharedContainer

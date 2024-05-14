@@ -19,20 +19,20 @@ import '../../../../utilities/dbMock.ts'
 
 import { DIContainer } from '../../../../../src/DIContainer/DIContainer'
 import { ContainerService } from '../../../../../src/DomainServices/Container/ContainerService'
-import { ProjectService } from '../../../../../src/DomainServices/ProjectService'
 import {
-  QuarterbackPermission,
-  QuarterbackService,
-} from '../../../../../src/DomainServices/QuarterbackService.js'
+  DocumentPermission,
+  DocumnetService,
+} from '../../../../../src/DomainServices/DocumentService.js'
+import { ProjectService } from '../../../../../src/DomainServices/ProjectService'
 import { ContainerRole } from '../../../../../src/Models/ContainerModels'
 
-let quarterbackService: QuarterbackService
+let quarterbackService: DocumnetService
 let containerService: ContainerService
 let projectService: ProjectService
 beforeEach(async () => {
   ;(DIContainer as any)._sharedContainer = null
   await DIContainer.init()
-  quarterbackService = DIContainer.sharedContainer.quarterbackService
+  quarterbackService = DIContainer.sharedContainer.documentService
   containerService = DIContainer.sharedContainer.containerService
   projectService = DIContainer.sharedContainer.projectService
 })
@@ -46,43 +46,31 @@ describe('QuarterbackService', () => {
       const user = { _id: 'random_user_id' } as any
       quarterbackService.getPermissions = jest
         .fn()
-        .mockResolvedValue(new Set([QuarterbackPermission.READ, QuarterbackPermission.WRITE]))
+        .mockResolvedValue(new Set([DocumentPermission.READ, DocumentPermission.WRITE]))
 
       await expect(
-        quarterbackService.validateUserAccess(user, 'random_project_id', QuarterbackPermission.READ)
+        quarterbackService.validateUserAccess(user, 'random_project_id', DocumentPermission.READ)
       ).resolves.not.toThrow()
 
       await expect(
-        quarterbackService.validateUserAccess(
-          user,
-          'random_project_id',
-          QuarterbackPermission.WRITE
-        )
+        quarterbackService.validateUserAccess(user, 'random_project_id', DocumentPermission.WRITE)
       ).resolves.not.toThrow()
     })
     it('should throw an error if user does not have access', async () => {
       const user = { _id: 'random_user_id' } as any
       quarterbackService.getPermissions = jest
         .fn()
-        .mockResolvedValue(new Set([QuarterbackPermission.READ]))
+        .mockResolvedValue(new Set([DocumentPermission.READ]))
 
       await expect(
-        quarterbackService.validateUserAccess(
-          user,
-          'random_project_id',
-          QuarterbackPermission.WRITE
-        )
+        quarterbackService.validateUserAccess(user, 'random_project_id', DocumentPermission.WRITE)
       ).rejects.toThrow()
     })
     it('should throw an error if user is not found', async () => {
       const user = undefined as any
 
       await expect(
-        quarterbackService.validateUserAccess(
-          user,
-          'random_project_id',
-          QuarterbackPermission.WRITE
-        )
+        quarterbackService.validateUserAccess(user, 'random_project_id', DocumentPermission.WRITE)
       ).rejects.toThrow()
     })
   })
@@ -94,7 +82,7 @@ describe('QuarterbackService', () => {
       const role = ContainerRole.Owner
       containerService.getUserRole = jest.fn().mockReturnValue(role)
       projectService.getProject = jest.fn().mockResolvedValue(project)
-      const expectedPermissions = new Set([QuarterbackPermission.READ, QuarterbackPermission.WRITE])
+      const expectedPermissions = new Set([DocumentPermission.READ, DocumentPermission.WRITE])
       await expect(quarterbackService.getPermissions(projectID, userID)).resolves.toEqual(
         expectedPermissions
       )

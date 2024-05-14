@@ -16,6 +16,7 @@
 
 import { schema } from '@manuscripts/transform'
 import { Prisma } from '@prisma/client'
+import { JsonObject } from '@prisma/client/runtime/library'
 import { Step } from 'prosemirror-transform'
 
 import { VersionMismatchError } from '../Errors'
@@ -36,7 +37,7 @@ export class AuthorityService {
       await tx.manuscriptDoc.updateDocument(documentID, {
         doc: doc,
         version: receiveSteps.version + receiveSteps.steps.length,
-        steps: found.steps.concat(modifiedSteps),
+        steps: (found.steps as JsonObject[]).concat(modifiedSteps),
       })
       return {
         steps: receiveSteps.steps,

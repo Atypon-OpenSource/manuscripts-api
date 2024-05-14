@@ -22,20 +22,20 @@ import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
 import { CollaborationService } from '../../../../../../src/DomainServices/Collaboration/CollaborationService'
 import { DocumentService } from '../../../../../../src/DomainServices/Document/DocumentService'
 import {
-  QuarterbackPermission,
-  QuarterbackService,
-} from '../../../../../../src/DomainServices/QuarterbackService'
+  DocumentPermission,
+  DocumnetService,
+} from '../../../../../../src/DomainServices/DocumentService'
 import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
 jest.setTimeout(TEST_TIMEOUT)
 
 let documentService: DocumentService
-let quarterbackService: QuarterbackService
+let quarterbackService: DocumnetService
 let collaborationService: CollaborationService
 beforeEach(async () => {
   ;(DIContainer as any)._sharedContainer = null
   await DIContainer.init()
   documentService = DIContainer.sharedContainer.documentService
-  quarterbackService = DIContainer.sharedContainer.quarterbackService
+  quarterbackService = DIContainer.sharedContainer.documentService
   collaborationService = DIContainer.sharedContainer.collaborationService
 })
 afterEach(() => {
@@ -55,7 +55,7 @@ const mockReceiveSteps = {
   clientID: 123,
   version: 1,
 }
-const EMPTY_PERMISSIONS = new Set<QuarterbackPermission>()
+const EMPTY_PERMISSIONS = new Set<DocumentPermission>()
 
 const mockCreateDocRequest = {
   manuscript_model_id: 'random_manuscript_id',
@@ -112,7 +112,7 @@ describe('DocumentController', () => {
     it('should throw an error if the user does not have permission to write', async () => {
       quarterbackService.getPermissions = jest
         .fn()
-        .mockResolvedValue(new Set([QuarterbackPermission.READ]))
+        .mockResolvedValue(new Set([DocumentPermission.READ]))
       await expect(
         documentController.createDocument('projectID', mockCreateDocRequest, {
           _id: 'random_user_id',
@@ -209,7 +209,7 @@ describe('DocumentController', () => {
     it('should throw an error if the user does not have permission to write', async () => {
       quarterbackService.getPermissions = jest
         .fn()
-        .mockResolvedValue(new Set([QuarterbackPermission.READ]))
+        .mockResolvedValue(new Set([DocumentPermission.READ]))
       await expect(
         documentController.deleteDocument('projectID', 'manuscriptID', {
           _id: 'random_user_id',
@@ -259,7 +259,7 @@ describe('DocumentController', () => {
     it('should throw an error if the user does not have permission to write', async () => {
       quarterbackService.getPermissions = jest
         .fn()
-        .mockResolvedValue(new Set([QuarterbackPermission.READ]))
+        .mockResolvedValue(new Set([DocumentPermission.READ]))
       await expect(
         documentController.updateDocument('projectID', 'manuscriptID', mockDoc, {
           _id: 'random_user_id',
@@ -288,7 +288,7 @@ describe('DocumentController', () => {
     it('should throw an error if the user does not have permission to write', async () => {
       quarterbackService.getPermissions = jest
         .fn()
-        .mockResolvedValue(new Set([QuarterbackPermission.READ]))
+        .mockResolvedValue(new Set([DocumentPermission.READ]))
       await expect(
         documentController.receiveSteps('projectID', 'manuscriptID', mockReceiveSteps, {} as any)
       ).rejects.toThrow('Access denied')

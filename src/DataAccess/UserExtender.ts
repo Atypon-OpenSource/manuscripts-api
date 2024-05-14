@@ -20,26 +20,26 @@ import { v4 as uuid_v4 } from 'uuid'
 import { CreateUser } from '../Models/UserModels'
 
 export class UserExtender {
-  static readonly USER_MODEL = 'user'
-  private static prisma: PrismaClient
-  private static extensions: ReturnType<typeof this.buildExtensions>
+  readonly USER_MODEL = 'user'
+  private extensions: ReturnType<typeof this.buildExtensions>
 
-  static getExtension(prisma: PrismaClient) {
-    this.prisma = prisma
+  constructor(private readonly prisma: PrismaClient) {}
+
+  getExtension() {
     this.extensions = this.buildExtensions()
     return this.extend()
   }
-  private static buildExtensions() {
+  private buildExtensions() {
     return {
-      createUser: this.createUser(),
-      findByEmail: this.findByEmail(),
-      findByConnectID: this.findByConnectID(),
-      findByID: this.findByID(),
-      updateConnectID: this.updateConnectID(),
+      createUser: this.createUser,
+      findByEmail: this.findByEmail,
+      findByConnectID: this.findByConnectID,
+      findByID: this.findByID,
+      updateConnectID: this.updateConnectID,
     }
   }
 
-  private static extend() {
+  private extend() {
     return Prisma.defineExtension({
       name: this.USER_MODEL,
       model: {
@@ -48,62 +48,53 @@ export class UserExtender {
     })
   }
 
-  private static createUser() {
-    return async (payload: CreateUser) => {
-      const user = await this.prisma.user.create({
-        data: {
-          id: this.userID(),
-          ...payload,
-        },
-      })
-      return user
-    }
+  private createUser = async (payload: CreateUser) => {
+    const user = await this.prisma.user.create({
+      data: {
+        id: this.userID(),
+        ...payload,
+      },
+    })
+    return user
   }
-  private static findByEmail() {
-    return async (email: string) => {
-      const user = await this.prisma.user.findFirst({
-        where: {
-          email,
-        },
-      })
-      return user
-    }
+  private findByEmail = async (email: string) => {
+    const user = await this.prisma.user.findFirst({
+      where: {
+        email,
+      },
+    })
+    return user
   }
-  private static findByConnectID() {
-    return async (connectUserID: string) => {
-      const user = await this.prisma.user.findFirst({
-        where: {
-          connectUserID,
-        },
-      })
-      return user
-    }
+  private findByConnectID = async (connectUserID: string) => {
+    const user = await this.prisma.user.findFirst({
+      where: {
+        connectUserID,
+      },
+    })
+    return user
   }
-  private static findByID() {
-    return async (id: string) => {
-      const user = await this.prisma.user.findUnique({
-        where: {
-          id,
-        },
-      })
-      return user
-    }
+  private findByID = async (id: string) => {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id,
+      },
+    })
+    return user
   }
 
-  private static updateConnectID() {
-    return async (id: string, connectUserID: string) => {
-      const updated = await this.prisma.user.update({
-        where: {
-          id,
-        },
-        data: {
-          connectUserID,
-        },
-      })
-      return updated
-    }
+  private updateConnectID = async (id: string, connectUserID: string) => {
+    const updated = await this.prisma.user.update({
+      where: {
+        id,
+      },
+      data: {
+        connectUserID,
+      },
+    })
+    return updated
   }
-  private static userID() {
+
+  private userID() {
     return `User_${uuid_v4()}`
   }
 }

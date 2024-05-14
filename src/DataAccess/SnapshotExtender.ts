@@ -21,26 +21,26 @@ import { PrismaErrorCodes } from '../Models/RepositoryModels'
 import { SaveSnapshotModel } from '../Models/SnapshotModel'
 
 export class SnapshotExtender {
-  static readonly SNAPSHOT_MODEL = 'manuscriptSnapshot'
-  private static prisma: PrismaClient
-  private static extensions: ReturnType<typeof this.buildExtensions>
+  readonly SNAPSHOT_MODEL = 'manuscriptSnapshot'
+  private extensions: ReturnType<typeof this.buildExtensions>
 
-  static getExtension(prisma: PrismaClient) {
-    this.prisma = prisma
+  constructor(private readonly prisma: PrismaClient) {}
+
+  getExtension() {
     this.extensions = this.buildExtensions()
     return this.extend()
   }
-  private static buildExtensions() {
+  private buildExtensions() {
     return {
-      listSnapshotLabels: this.listSnapshotLabels(),
-      getSnapshot: this.getSnapshot(),
-      saveSnapshot: this.saveSnapshot(),
-      deleteSnapshot: this.deleteSnapshot(),
-      deleteAllManuscriptSnapshots: this.deleteAllManuscriptSnapshots(),
+      listSnapshotLabels: this.listSnapshotLabels,
+      getSnapshot: this.getSnapshot,
+      saveSnapshot: this.saveSnapshot,
+      deleteSnapshot: this.deleteSnapshot,
+      deleteAllManuscriptSnapshots: this.deleteAllManuscriptSnapshots,
     }
   }
 
-  private static extend() {
+  private extend() {
     return Prisma.defineExtension({
       name: this.SNAPSHOT_MODEL,
       model: {
@@ -49,76 +49,66 @@ export class SnapshotExtender {
     })
   }
 
-  private static listSnapshotLabels() {
-    return async (documentID: string) => {
-      const found = await this.prisma.manuscriptSnapshot.findMany({
-        where: {
-          doc_id: documentID,
-        },
-        select: {
-          id: true,
-          name: true,
-          createdAt: true,
-        },
-      })
-      return found
-    }
+  private listSnapshotLabels = async (documentID: string) => {
+    const found = await this.prisma.manuscriptSnapshot.findMany({
+      where: {
+        doc_id: documentID,
+      },
+      select: {
+        id: true,
+        name: true,
+        createdAt: true,
+      },
+    })
+    return found
   }
 
-  private static getSnapshot() {
-    return async (snapshotID: string) => {
-      const found = await this.prisma.manuscriptSnapshot.findUnique({
+  private getSnapshot = async (snapshotID: string) => {
+    const found = await this.prisma.manuscriptSnapshot.findUnique({
+      where: {
+        id: snapshotID,
+      },
+    })
+    if (!found) {
+      throw new MissingSnapshotError(snapshotID)
+    }
+    return found
+  }
+
+  private saveSnapshot = async (payload: SaveSnapshotModel) => {
+    const { docID, snapshot, name } = payload
+    const saved = await this.prisma.manuscriptSnapshot.create({
+      data: {
+        snapshot,
+        doc_id: docID,
+        name,
+      },
+    })
+    return saved
+  }
+
+  private deleteSnapshot = async (snapshotID: string) => {
+    try {
+      const deleted = await this.prisma.manuscriptSnapshot.delete({
         where: {
           id: snapshotID,
         },
       })
-      if (!found) {
-        throw new MissingSnapshotError(snapshotID)
+      return deleted
+    } catch (error) {
+      if (error.code === PrismaErrorCodes.RecordMissing) {
+        throw new MissingRecordError(snapshotID)
       }
-      return found
+      throw error
     }
   }
 
-  private static saveSnapshot() {
-    return async (payload: SaveSnapshotModel) => {
-      const { docID, snapshot, name } = payload
-      const saved = await this.prisma.manuscriptSnapshot.create({
-        data: {
-          snapshot,
-          doc_id: docID,
-          name,
-        },
-      })
-      return saved
-    }
-  }
-
-  private static deleteSnapshot() {
-    return async (snapshotID: string) => {
-      try {
-        const deleted = await this.prisma.manuscriptSnapshot.delete({
-          where: {
-            id: snapshotID,
-          },
-        })
-        return deleted
-      } catch (error) {
-        if (error.code === PrismaErrorCodes.RecordMissing) {
-          throw new MissingRecordError(snapshotID)
-        }
-        throw error
-      }
-    }
-  }
-
-  private static deleteAllManuscriptSnapshots() {
-    return async (documentID: string) => {
-      const { count } = await this.prisma.manuscriptSnapshot.deleteMany({
-        where: {
-          doc_id: documentID,
-        },
-      })
-      return count
-    }
+  private deleteAllManuscriptSnapshots = async (documentID: string) => {
+    const { count } = await this.prisma.manuscriptSnapshot.deleteMany({
+      where: {
+        doc_id: documentID,
+      },
+    })
+    return count
   }
 }
