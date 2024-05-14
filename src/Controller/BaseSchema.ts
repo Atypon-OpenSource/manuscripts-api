@@ -39,11 +39,3 @@ export const appSecretHeadersSchema: Joi.SchemaMap = {
     [APP_SECRET_HEADER_KEY]: appSecretSchema,
   }),
 }
-
-export const appIdHeadersSchema: Joi.SchemaMap = {
-  headers: Joi.object({
-    accept: appJsonAndCharset,
-    'content-type': appJsonAndCharset,
-    [APP_ID_HEADER_KEY]: appIdSchema,
-  }),
-}

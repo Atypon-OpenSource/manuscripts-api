@@ -445,7 +445,7 @@ export class IAMIssuerError extends Error implements StatusCoded {
 export class InvalidServerCredentialsError extends Error implements StatusCoded {
   readonly internalErrorCode = InternalErrorCode.InvalidServerCredentialsError
   readonly statusCode = StatusCodes.UNAUTHORIZED
-  constructor(message: string) {
+  constructor(message?: string) {
     super(message)
     this.name = 'InvalidServerCredentialsError'
     Object.setPrototypeOf(this, new.target.prototype)

@@ -21,11 +21,7 @@ import { AuthStrategy } from '../../../Auth/Passport/AuthStrategy'
 import { celebrate } from '../../../Utilities/celebrate'
 import { BaseRoute } from '../../BaseRoute'
 import { AuthController } from './AuthController'
-import {
-  authorizationTokenSchema,
-  credentialsSchema,
-  serverToServerTokenAuthSchema,
-} from './AuthSchema'
+import { serverToServerTokenAuthSchema } from './AuthSchema'
 
 export class AuthRoute extends BaseRoute {
   private authController = new AuthController()
@@ -41,44 +37,15 @@ export class AuthRoute extends BaseRoute {
 
   public create(router: Router): void {
     router.post(
-      `${this.basePath}/login`,
-      celebrate(credentialsSchema),
-      AuthStrategy.JsonHeadersValidation,
-      AuthStrategy.applicationValidation(),
-      (req: Request, res: Response, next: NextFunction) => {
-        return this.runWithErrorHandling(async () => {
-          const { token, user } = await this.authController.login(req)
-          res.status(StatusCodes.OK).json({ token, recover: !!user.deleteAt }).end()
-        }, next)
-      }
-    )
-
-    router.post(
       `${this.basePath}/token/:connectUserID`,
       celebrate(serverToServerTokenAuthSchema),
       AuthStrategy.JsonHeadersValidation,
-      AuthStrategy.applicationValidation(),
+      AuthStrategy.secretValidation(),
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           const { token } = await this.authController.serverToServerTokenAuth(req)
 
           res.status(StatusCodes.OK).json({ token }).end()
-        }, next)
-      }
-    )
-
-    router.get(
-      `/authorization/:scope`,
-      AuthStrategy.JWTAuth,
-      celebrate(authorizationTokenSchema),
-      (req: Request, res: Response, next: NextFunction) => {
-        return this.runWithErrorHandling(async () => {
-          const token = await this.authController.createAuthorizationToken(req)
-
-          res.format({
-            text: () => res.send(token),
-            json: () => res.send({ token }),
-          })
         }, next)
       }
     )
