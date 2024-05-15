@@ -18,7 +18,7 @@ import { ManuscriptDoc, Prisma, PrismaClient } from '@prisma/client'
 
 import { MissingDocumentError, MissingRecordError } from '../Errors'
 import { CreateDoc, UpdateDocument } from '../Models/DocumentModels'
-import { DocumentExtension, PrismaErrorCodes } from '../Models/RepositoryModels'
+import { PrismaErrorCodes } from '../Models/RepositoryModels'
 
 export class DocumentExtender {
   readonly DOCUMENT_MODEL = 'manuscriptDoc'
@@ -28,9 +28,6 @@ export class DocumentExtender {
 
   getExtension() {
     this.extensions = this.buildExtensions()
-    const x = this.buildExtensions()
-    const mode = this.createModel('manuscriptDoc', x)
-    this.extendTwo(mode)
     return this.extend()
   }
   private buildExtensions() {
@@ -41,18 +38,6 @@ export class DocumentExtender {
       updateDocument: this.updateDocument,
       deleteDocument: this.deleteDocument,
     }
-  }
-
-  private createModel(name: string, model: ReturnType<typeof this.buildExtensions>) {
-    return {
-      name,
-      model: {
-        [name]: model,
-      },
-    }
-  }
-  private extendTwo(extnesion){
-    return Prisma.defineExtension(extnesion)
   }
 
   private extend() {
