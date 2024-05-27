@@ -72,7 +72,7 @@ export class Server implements IServer {
     }
 
     this.app.use((_, res, next) => {
-      res.header('Transform-Version', getVersion())
+      res.setHeader('Transform-Version', getVersion())
       next()
     })
 
