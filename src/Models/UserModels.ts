@@ -37,11 +37,6 @@ export interface Credentials {
    * Device id.
    */
   deviceId: string
-
-  /**
-   * Application id.
-   */
-  appId: string
 }
 
 export interface ServerToServerAuthCredentials {
@@ -59,11 +54,6 @@ export interface ServerToServerAuthCredentials {
    * Device id.
    */
   deviceId: string
-
-  /**
-   * Application id.
-   */
-  appId: string
 }
 
 /**
@@ -277,10 +267,6 @@ export interface UserToken {
    * Device's unique id.
    */
   deviceId: string
-  /**
-   * Application's id.
-   */
-  appId: string
 }
 
 export interface UserEmail {

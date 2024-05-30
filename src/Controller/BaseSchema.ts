@@ -16,10 +16,9 @@
 
 import * as Joi from 'joi'
 
-import { APP_ID_HEADER_KEY, APP_SECRET_HEADER_KEY } from './V2/Auth/AuthController'
+import { APP_SECRET_HEADER_KEY } from './V2/Auth/AuthController'
 
 export const emailSchema: Joi.StringSchema = Joi.string().max(100).email({ minDomainSegments: 2 })
-export const appIdSchema: Joi.StringSchema = Joi.string().max(100).required()
 export const deviceIdSchema: Joi.StringSchema = Joi.string().max(100).required()
 export const appSecretSchema: Joi.StringSchema = Joi.string().required()
 export const appJsonAndCharset: Joi.StringSchema = Joi.string().required()
@@ -35,15 +34,6 @@ export const appSecretHeadersSchema: Joi.SchemaMap = {
   headers: Joi.object({
     accept: appJsonAndCharset,
     'content-type': appJsonAndCharset,
-    [APP_ID_HEADER_KEY]: appIdSchema,
     [APP_SECRET_HEADER_KEY]: appSecretSchema,
-  }),
-}
-
-export const appIdHeadersSchema: Joi.SchemaMap = {
-  headers: Joi.object({
-    accept: appJsonAndCharset,
-    'content-type': appJsonAndCharset,
-    [APP_ID_HEADER_KEY]: appIdSchema,
   }),
 }

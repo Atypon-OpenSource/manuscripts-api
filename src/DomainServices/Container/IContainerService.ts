@@ -90,13 +90,6 @@ export interface IContainerService {
   ): Promise<Model[]>
 
   /**
-   * Gets access token for specified scope.
-   * @param userID User ID
-   * @param scope The name of the specified scope.
-   * @param containerID The identifier of the container.
-   */
-  accessToken(userID: string, scope: string, containerID: string): Promise<void>
-  /**
    * Ensures if the role is valid.
    */
   ensureValidRole(role: ContainerRole): void

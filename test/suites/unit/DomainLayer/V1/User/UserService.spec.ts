@@ -28,7 +28,6 @@ import {
 import { timestamp } from '../../../../../../src/Utilities/JWT/LoginTokenPayload'
 import { validJWTToken, validUserStatus } from '../../../../../data/fixtures/authServiceUser'
 import { validUser1 } from '../../../../../data/fixtures/UserRepository'
-import { validUserToken } from '../../../../../data/fixtures/UserTokenRepository'
 import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
 
 jest.setTimeout(TEST_TIMEOUT)
@@ -364,7 +363,6 @@ describe('User - getProfile', () => {
 describe('User - authenticateUser', () => {
   test('should authenticate user', async () => {
     const userService: any = DIContainer.sharedContainer.userService
-    userService.isScopedTokenPayload = jest.fn(() => false)
     userService.isLoginTokenPayload = jest.fn(() => true)
     const userRepo: any = DIContainer.sharedContainer.userRepository
     userRepo.getById = jest.fn(() => Promise.resolve(validUser1))

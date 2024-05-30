@@ -112,13 +112,6 @@ export const loadManuscriptSchema: Joi.SchemaMap = {
   }),
 }
 
-export const accessTokenSchema: Joi.SchemaMap = {
-  params: Joi.object({
-    projectID: Joi.string().required(),
-    scope: Joi.string().required(),
-  }),
-}
-
 export const createManuscriptSchema: Joi.SchemaMap = {
   params: Joi.object({
     projectID: Joi.string().required(),

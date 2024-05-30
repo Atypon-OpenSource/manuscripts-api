@@ -55,5 +55,6 @@ module.exports = {
         "!src/DomainServices/DocumentHistory/DocumentHistoryService.ts",
         "!src/DomainServices/Shackles/ShacklesService.ts",
         "!src/DomainServices/Expiration/ExpirationService.ts",
+        "!src/DomainServices/SG/SGService.ts",
     ]
 }

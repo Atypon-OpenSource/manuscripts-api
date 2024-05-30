@@ -49,42 +49,6 @@ jest.mock('../../src/Config/Config', () => {
     server: {
       allowedCORSOrigins: ['http://localhost:8080'],
     },
-    apps: {
-      knownClientApplications: [
-        {
-          _id: 'ClientApplication|com.manuscripts.Manuscripts',
-          _type: 'Application',
-          secret: 'foobar',
-          name: 'Manuscripts',
-        },
-      ],
-    },
-    scopes: [
-      {
-        name: 'jupyterhub',
-        secret: 'madeup-secret',
-        publicKeyPEM: null,
-        publicKeyJWK: null,
-        expiry: 15,
-        identifier: 'derp',
-      },
-      {
-        name: 'file-picker',
-        secret: 'random-secret',
-        publicKeyPEM: null,
-        publicKeyJWK: null,
-        expiry: 15,
-        identifier: 'iden',
-      },
-      {
-        name: 'shackles',
-        secret: 'random-secret',
-        publicKeyPEM: null,
-        publicKeyJWK: null,
-        expiry: 15,
-        identifier: 'iden',
-      },
-    ],
 
     pressroom: {
       baseurl: 'https://pressroom-js-dev.manuscripts.io',
