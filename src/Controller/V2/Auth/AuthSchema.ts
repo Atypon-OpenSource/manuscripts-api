@@ -16,28 +16,7 @@
 
 import * as Joi from 'joi'
 
-import {
-  appIdHeadersSchema,
-  appSecretHeadersSchema,
-  deviceIdSchema,
-  emailSchema,
-} from '../../BaseSchema'
-
-export const credentialsSchema: Joi.SchemaMap = {
-  body: Joi.object({
-    deviceId: deviceIdSchema,
-    email: emailSchema.required(),
-    password: Joi.string().max(100).required(),
-  }),
-  headers: appIdHeadersSchema.headers,
-}
-
-export const serverToServerAuthSchema: Joi.SchemaMap = {
-  body: Joi.object({
-    deviceId: deviceIdSchema,
-  }),
-  headers: appSecretHeadersSchema.headers,
-}
+import { appSecretHeadersSchema, deviceIdSchema } from '../../BaseSchema'
 
 export const serverToServerTokenAuthSchema: Joi.SchemaMap = {
   body: Joi.object({
@@ -47,10 +26,4 @@ export const serverToServerTokenAuthSchema: Joi.SchemaMap = {
     connectUserID: Joi.string().required(),
   },
   headers: appSecretHeadersSchema.headers,
-}
-
-export const authorizationTokenSchema: Joi.SchemaMap = {
-  params: Joi.object({
-    scope: Joi.string().required(),
-  }),
 }

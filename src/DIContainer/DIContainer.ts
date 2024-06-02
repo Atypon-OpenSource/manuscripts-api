@@ -16,8 +16,6 @@
 
 import { config } from '../Config/Config'
 import { BucketKey } from '../Config/ConfigurationTypes'
-import { ClientApplicationRepository } from '../DataAccess/ClientApplicationRepository/ClientApplicationRepository'
-import { IClientApplicationRepository } from '../DataAccess/Interfaces/IClientApplicationRepository'
 import { IInvitationTokenRepository } from '../DataAccess/Interfaces/IInvitationTokenRepository'
 import { IManuscriptRepository } from '../DataAccess/Interfaces/IManuscriptRepository'
 import { RepositoryLike, SGRepositoryLike } from '../DataAccess/Interfaces/IndexedRepository'
@@ -94,7 +92,6 @@ export class DIContainer {
   readonly userRepository: IUserRepository
   readonly userEmailRepository: IUserEmailRepository
   readonly singleUseTokenRepository: ISingleUseTokenRepository
-  readonly applicationRepository: IClientApplicationRepository
   readonly expirationService: ExpirationService
   readonly syncService: ISyncService
   readonly sgService: ISGService
@@ -133,7 +130,6 @@ export class DIContainer {
     readonly dataBucket: SQLDatabase,
     readonly enableActivityTracking: boolean
   ) {
-    this.applicationRepository = new ClientApplicationRepository(this.userBucket)
     this.server = new Server(this.userBucket)
     this.userRepository = new UserRepository(this.userBucket)
     this.userEmailRepository = new UserEmailRepository(this.userBucket)
@@ -232,10 +228,6 @@ export class DIContainer {
     await manuscriptSnapshotBucket.loadDatabaseModels()
 
     DIContainer._sharedContainer = new DIContainer(userBucket, dataBucket, enableActivityTracking)
-
-    await DIContainer._sharedContainer.applicationRepository.ensureApplicationsExist(
-      (config.apps && config.apps.knownClientApplications) || []
-    )
 
     return DIContainer._sharedContainer
   }

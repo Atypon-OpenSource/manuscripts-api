@@ -14,49 +14,45 @@
  * limitations under the License.
  */
 
-import { validApplication } from './applications'
-
 export const ValidHeaderWithApplicationKey: any = {
-  'Accept': 'application/json',
+  Accept: 'application/json',
   'Content-Type': 'application/json',
-  'manuscripts-app-id': validApplication._id,
-  'manuscripts-app-secret': validApplication.secret
+  'manuscripts-app-secret': 'Valid secret',
 }
 
 export const ValidHeaderWithCharsetAndApplicationKey: any = {
-  'Accept': 'application/json; charset=UTF-8',
+  Accept: 'application/json; charset=UTF-8',
   'Content-Type': 'application/json; charset=UTF-8',
-  'manuscripts-app-id': validApplication._id,
-  'manuscripts-app-secret': validApplication.secret
+  'manuscripts-app-secret': 'Valid secret',
 }
 
 export const ValidContentTypeAcceptJsonHeader: any = {
-  'Accept': 'application/json',
-  'Content-Type': 'application/json'
+  Accept: 'application/json',
+  'Content-Type': 'application/json',
 }
 
 export const ValidContentTypeAcceptWithCharsetJsonHeader: any = {
-  'Accept': 'application/json; charset=UTF-8',
-  'Content-Type': 'application/json; charset=UTF-8'
+  Accept: 'application/json; charset=UTF-8',
+  'Content-Type': 'application/json; charset=UTF-8',
 }
 
 export const EmptyContentTypeAcceptJsonHeader: any = {
-  'Accept': '',
-  'Content-Type': ''
+  Accept: '',
+  'Content-Type': '',
 }
 
 export const EmptyAcceptJsonHeader: any = {
-  'Accept': '',
-  'Content-Type': 'application/json'
+  Accept: '',
+  'Content-Type': 'application/json',
 }
 
 export const InValidAcceptJsonHeader: any = {
-  'Accept': 'invalid/json',
-  'Content-Type': 'application/json'
+  Accept: 'invalid/json',
+  'Content-Type': 'application/json',
 }
 
-export function authorizationHeader (token: string): any {
+export function authorizationHeader(token: string): any {
   return {
-    authorization: 'Bearer ' + token
+    authorization: 'Bearer ' + token,
   }
 }

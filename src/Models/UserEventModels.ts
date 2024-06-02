@@ -35,6 +35,5 @@ export interface UserActivityEvent {
   userId: string
   createdAt: Date
   deviceId: string | null
-  appId: string | null
   eventType: UserActivityEventType
 }

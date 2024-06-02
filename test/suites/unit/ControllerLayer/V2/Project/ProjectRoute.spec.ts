@@ -30,10 +30,9 @@ import {
   createManuscriptRequest,
   createProjectRequest,
   deleteProjectRequest,
-  generateAccessTokenRequest,
   getArchiveRequest,
-  getUserProfilesRequest,
   getProjectModelsRequest,
+  getUserProfilesRequest,
   removeUser,
   updateProjectRequest,
   updateUserRoleRequest,
@@ -343,7 +342,9 @@ describe('ProjectRoute', () => {
       const projectID = getUserProfilesRequest.params.projectID
       const permissions = new Set([ProjectPermission.READ])
       projectService.getPermissions = jest.fn().mockResolvedValue(permissions)
-      DIContainer.sharedContainer.userService.getProjectUserProfiles = jest.fn().mockResolvedValue([])
+      DIContainer.sharedContainer.userService.getProjectUserProfiles = jest
+        .fn()
+        .mockResolvedValue([])
 
       // @ts-ignore
       await route.getProjectUserProfiles(getUserProfilesRequest, res)
@@ -413,42 +414,6 @@ describe('ProjectRoute', () => {
         }
       )
       expect(res.status).toHaveBeenCalledWith(StatusCodes.OK)
-    })
-  })
-  describe('generateAccessToken', () => {
-    it('should throw error if user is missing', async () => {
-      await expect(
-        // @ts-ignore
-        route.generateAccessToken(removeUser(generateAccessTokenRequest), res)
-      ).rejects.toThrow(new ValidationError('No user found', null))
-    })
-
-    it('should throw error if user lacks READ permission', async () => {
-      const permissions = new Set([ProjectPermission.UPDATE])
-      projectService.getPermissions = jest.fn().mockResolvedValue(permissions)
-
-      await expect(
-        // @ts-ignore
-        route.generateAccessToken(generateAccessTokenRequest, res)
-      ).rejects.toThrow(
-        new RoleDoesNotPermitOperationError('Access denied', generateAccessTokenRequest.user._id)
-      )
-    })
-
-    it('should return OK if called correctly', async () => {
-      const permissions = new Set([ProjectPermission.READ])
-      projectService.getPermissions = jest.fn().mockResolvedValue(permissions)
-      projectService.generateAccessToken = jest.fn().mockResolvedValue('access_token')
-
-      // @ts-ignore
-      await route.generateAccessToken(generateAccessTokenRequest, res)
-
-      expect(projectService.generateAccessToken).toHaveBeenCalledWith(
-        generateAccessTokenRequest.params.projectID,
-        generateAccessTokenRequest.user._id,
-        generateAccessTokenRequest.params.scope
-      )
-      expect(res.send).toHaveBeenCalledWith('access_token')
     })
   })
   describe('deleteProject', () => {

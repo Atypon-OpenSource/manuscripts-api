@@ -61,14 +61,6 @@ export class UserEventRepository
           }
         },
       },
-      appId: {
-        type: 'string',
-        validator: (val: string) => {
-          if (val) {
-            maxLength(val, 100, 'appId')
-          }
-        },
-      },
       eventType: {
         type: 'number',
       },

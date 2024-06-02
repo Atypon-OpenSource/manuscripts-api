@@ -116,7 +116,7 @@ export class AuthService implements IAuthService {
   public async login(credentials: Credentials): Promise<AuthorizedUser> {
     AuthService.ensureNonConnectAuthEnabled()
     const email = AuthService.normalizeEmail(credentials.email)
-    const { appId, password, deviceId } = credentials
+    const { password, deviceId } = credentials
 
     const user = await this.userRepository.getOne({ email })
 
@@ -124,7 +124,7 @@ export class AuthService implements IAuthService {
       throw new AccountNotFoundError(email)
     }
 
-    const userStatus = await this.ensureValidUserStatus(user, appId, deviceId, false)
+    const userStatus = await this.ensureValidUserStatus(user, deviceId, false)
 
     const isMatched = password && (await compare(password, userStatus.password))
 
@@ -139,7 +139,7 @@ export class AuthService implements IAuthService {
       ...(user.deleteAt && { deleteAt: user.deleteAt }),
     }
 
-    const { userToken } = await this.createUserSessions(userModel, appId, deviceId, false)
+    const { userToken } = await this.createUserSessions(userModel, deviceId, false)
 
     return { token: userToken.token, user: userModel }
   }
@@ -147,24 +147,23 @@ export class AuthService implements IAuthService {
   public async serverToServerTokenAuth(
     credentials: ServerToServerAuthCredentials
   ): Promise<AuthorizedUser> {
-    const { connectUserID, appId, deviceId } = credentials
+    const { connectUserID, deviceId } = credentials
     const user = await this.userRepository.getOne({ connectUserID })
 
     if (!user) {
       throw new AccountNotFoundError(connectUserID)
     }
 
-    return this.createUserSessionAndToken(user, appId, deviceId, false, true)
+    return this.createUserSessionAndToken(user, deviceId, false, true)
   }
 
   private async createUserSessionAndToken(
     user: User,
-    appId: string,
     deviceId: string,
     isAdmin: boolean,
     verifyUser?: boolean | false
   ) {
-    await this.ensureValidUserStatus(user, appId, deviceId, isAdmin, verifyUser)
+    await this.ensureValidUserStatus(user, deviceId, isAdmin, verifyUser)
 
     const userModel: User = {
       _id: user._id,
@@ -172,7 +171,7 @@ export class AuthService implements IAuthService {
       email: user.email,
     }
 
-    const { userToken } = await this.createUserSessions(userModel, appId, deviceId, false)
+    const { userToken } = await this.createUserSessions(userModel, deviceId, false)
 
     return { user: userModel, token: userToken.token }
   }
@@ -187,7 +186,6 @@ export class AuthService implements IAuthService {
 
   private async ensureValidUserStatus(
     user: User,
-    appId: string,
     deviceId: string,
     isAdmin: boolean,
     verifyUser?: boolean | false
@@ -210,7 +208,6 @@ export class AuthService implements IAuthService {
       this.activityTrackingService.createEvent(
         user._id,
         UserActivityEventType.StatusNotFound,
-        appId,
         deviceId
       )
       throw new MissingUserStatusError(user._id)
@@ -229,17 +226,11 @@ export class AuthService implements IAuthService {
     return userStatus
   }
 
-  private async createUserSessions(
-    user: User,
-    appId: string,
-    deviceId: string,
-    hasExpiry: boolean
-  ) {
+  private async createUserSessions(user: User, deviceId: string, hasExpiry: boolean) {
     await this.ensureUserProfileExists(user)
     const userToken = await this.generateUserToken(
       user._id,
       user.connectUserID,
-      appId,
       deviceId,
       hasExpiry,
       user.email
@@ -251,7 +242,6 @@ export class AuthService implements IAuthService {
     this.activityTrackingService.createEvent(
       user._id,
       UserActivityEventType.SuccessfulLogin,
-      appId,
       deviceId
     )
 
@@ -261,7 +251,6 @@ export class AuthService implements IAuthService {
   private async generateUserToken(
     userId: string,
     connectUserID: string | undefined,
-    appId: string,
     deviceId: string,
     hasExpiry: boolean,
     email?: string
@@ -275,7 +264,6 @@ export class AuthService implements IAuthService {
         userId,
         connectUserID,
         userProfileId: UserService.profileID(userId),
-        appId,
         email,
       },
       expiryTime
@@ -285,7 +273,6 @@ export class AuthService implements IAuthService {
       userId,
       hasExpiry,
       deviceId,
-      appId,
       token,
     }
 

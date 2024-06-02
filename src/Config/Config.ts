@@ -19,16 +19,11 @@ import { existsSync } from 'fs'
 import * as path from 'path'
 
 import { ConfigurationError } from '../Errors'
-import {
-  clientApplicationsFromSplitString,
-  scopeConfigurationsFromSplitString,
-} from '../Models/ClientApplicationModels'
 import { isNumber, isString } from '../util'
 import { log } from '../Utilities/Logger'
 import {
   APIConfiguration,
   AuthConfiguration,
-  ClientApplicationsConfiguration,
   ConfigurationContainer,
   DatabaseConfiguration,
   DataConfiguration,
@@ -36,7 +31,6 @@ import {
   Environment,
   EnvironmentLike,
   ExternalAPIConfiguration,
-  ScopedAccessTokenConfiguration,
   ServerConfiguration,
 } from './ConfigurationTypes'
 import { normalizeURL } from './normalize-url'
@@ -80,8 +74,6 @@ export class Configuration implements ConfigurationContainer {
   readonly auth: AuthConfiguration
   readonly email: EmailConfiguration
   readonly server: ServerConfiguration
-  readonly apps: ClientApplicationsConfiguration
-  readonly scopes: ScopedAccessTokenConfiguration[]
   readonly pressroom: ExternalAPIConfiguration
   readonly data: DataConfiguration
 
@@ -143,20 +135,6 @@ export class Configuration implements ConfigurationContainer {
         )
       ), // get unique values from potentially duplicated ones.
     }
-
-    this.apps = {
-      knownClientApplications: clientApplicationsFromSplitString(
-        getString(env.APP_CLIENT_APPLICATIONS, 'APP_CLIENT_APPLICATIONS'),
-        ';',
-        ','
-      ),
-    }
-
-    this.scopes = scopeConfigurationsFromSplitString(
-      getString(env.APP_CONTAINER_TOKEN_SCOPES, 'APP_CONTAINER_TOKEN_SCOPES'),
-      ';',
-      ','
-    )
 
     this.pressroom = {
       baseurl: getString(env.APP_PRESSROOM_BASE_URL, 'APP_PRESSROOM_BASE_URL'),

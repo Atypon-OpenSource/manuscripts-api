@@ -77,23 +77,13 @@ export class UserRegistrationService implements IUserRegistrationService {
     await this.createUserDetails(newUser, true)
 
     // tslint:disable-next-line: no-floating-promises
-    this.activityTrackingService.createEvent(
-      newUser._id,
-      UserActivityEventType.Registration,
-      null,
-      null
-    ) // intentional fire and forget.
+    this.activityTrackingService.createEvent(newUser._id, UserActivityEventType.Registration, null) // intentional fire and forget.
   }
 
   private async updateConnectID(user: User, connectUserID: string) {
     user.connectUserID = connectUserID
     await this.userRepository.update(user)
-    this.activityTrackingService.createEvent(
-      user._id,
-      UserActivityEventType.UpdateConnectID,
-      null,
-      null
-    )
+    this.activityTrackingService.createEvent(user._id, UserActivityEventType.UpdateConnectID, null)
   }
 
   public async signup(credentials: SignupCredentials): Promise<void> {
@@ -132,12 +122,7 @@ export class UserRegistrationService implements IUserRegistrationService {
     await this.createUserDetails(newUser, skipVerification, password)
 
     // tslint:disable-next-line: no-floating-promises
-    this.activityTrackingService.createEvent(
-      newUser._id,
-      UserActivityEventType.Registration,
-      null,
-      null
-    ) // intentional fire and forget.
+    this.activityTrackingService.createEvent(newUser._id, UserActivityEventType.Registration, null) // intentional fire and forget.
   }
 
   private userEmailID(email: string) {
@@ -162,12 +147,7 @@ export class UserRegistrationService implements IUserRegistrationService {
 
     if (!userStatus) {
       // tslint:disable-next-line: no-floating-promises
-      this.activityTrackingService.createEvent(
-        user._id,
-        UserActivityEventType.StatusNotFound,
-        null,
-        null
-      )
+      this.activityTrackingService.createEvent(user._id, UserActivityEventType.StatusNotFound, null)
       throw new MissingUserStatusError(user._id)
     }
 
@@ -200,7 +180,6 @@ export class UserRegistrationService implements IUserRegistrationService {
     this.activityTrackingService.createEvent(
       userVerificationToken.userId,
       UserActivityEventType.EmailVerified,
-      null,
       null
     ) // intentional fire and forget.
   }
@@ -223,7 +202,6 @@ export class UserRegistrationService implements IUserRegistrationService {
     this.activityTrackingService.createEvent(
       user._id,
       UserActivityEventType.RequestEmailVerification,
-      null,
       null
     ) // intentional fire and forget.
   }

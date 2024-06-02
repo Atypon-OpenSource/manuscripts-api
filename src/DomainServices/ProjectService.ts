@@ -25,18 +25,15 @@ import decompress from 'decompress'
 import fs from 'fs'
 import { remove } from 'fs-extra'
 import getStream from 'get-stream'
-import jwt, { Algorithm } from 'jsonwebtoken'
 import JSZip from 'jszip'
 import { Readable } from 'stream'
 import tempy from 'tempy'
 import { v4 as uuid_v4 } from 'uuid'
 
-import { config } from '../Config/Config'
 import { IManuscriptRepository } from '../DataAccess/Interfaces/IManuscriptRepository'
 import { IUserRepository } from '../DataAccess/Interfaces/IUserRepository'
 import { DIContainer } from '../DIContainer/DIContainer'
 import {
-  InvalidScopeNameError,
   MissingContainerError,
   MissingTemplateError,
   SyncError,
@@ -291,37 +288,6 @@ export class ProjectService {
     }
 
     await this.containerRepository.patch(projectID, updated)
-  }
-
-  public async generateAccessToken(
-    projectID: string,
-    userID: string,
-    scope: string
-  ): Promise<string> {
-    const scopeInfo = config.scopes.find((s) => s.name === scope)
-
-    if (!scopeInfo) {
-      throw new InvalidScopeNameError(scope)
-    }
-
-    const payload = {
-      iss: config.API.hostname,
-      sub: userID,
-      containerID: projectID,
-      aud: scopeInfo.name,
-    }
-
-    const algorithm: Algorithm = scopeInfo.publicKeyPEM === null ? 'HS256' : 'RS256'
-
-    const options = {
-      header: {
-        kid: scopeInfo.identifier,
-        alg: algorithm,
-      },
-      expiresIn: `${scopeInfo.expiry}m`,
-    }
-
-    return jwt.sign(payload, scopeInfo.secret, options)
   }
 
   public async getPermissions(

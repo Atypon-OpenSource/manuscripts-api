@@ -18,68 +18,59 @@ export const validCredentials = {
   email: 'valid-user@manuscriptsapp.com',
   password: '12345',
   deviceId: 'deviceId',
-  appId: '9a9090d9-6f95-420c-b903-543f32b5140f',
-  appSecret: 'Valid secret'
+  appSecret: 'Valid secret',
 }
 
 export const invalidCredentials = {
   email: 'invalid-user@manuscriptsapp.com',
   password: '123456789',
   deviceId: 'deviceId',
-  appId: '9a9090d9-6f95-420c-b903-543f32b5140f',
-  appSecret: 'Valid secret'
+  appSecret: 'Valid secret',
 }
 
 export const validEmailCredentials = {
   email: 'valid-user@manuscriptsapp.com',
   password: '123456',
   deviceId: 'deviceId',
-  appId: '9a9090d9-6f95-420c-b903-543f32b5140f',
-  appSecret: 'Valid secret'
+  appSecret: 'Valid secret',
 }
 
 export const invalidPasswordCredentials = {
   email: 'valid-user@manuscriptsapp.com',
   password: '123456789',
   deviceId: 'deviceId',
-  appId: '9a9090d9-6f95-420c-b903-543f32b5140f',
-  appSecret: 'Valid secret'
+  appSecret: 'Valid secret',
 }
 
 export const invalidTokenCredentials = {
   email: 'valid-user@manuscriptsapp.com',
   deviceId: 'deviceId',
-  appId: '9a9090d9-6f95-420c-b903-543f32b5140f',
-  token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.not-valid-signature'
+  token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.not-valid-signature',
 }
 
 export const validTokenCredentials = {
   email: 'valid-user@manuscriptsapp.com',
   deviceId: 'deviceId',
-  appId: '9a9090d9-6f95-420c-b903-543f32b5140f',
-  token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.iyS3EfaK9Kqh2JUbp-nx9fh3YqLZHSGJOJBGX9uwc2Q'
+  token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.iyS3EfaK9Kqh2JUbp-nx9fh3YqLZHSGJOJBGX9uwc2Q',
 }
 
 export const emptyEmailCredentials = {
   email: '',
   password: 'Script@123@M@nu',
   deviceId: 'deviceId',
-  appId: '9a9090d9-6f95-420c-b903-543f32b5140f',
-  appSecret: 'Valid secret'
+  appSecret: 'Valid secret',
 }
 
 export const emptyPasswordCredentials = {
   email: 'valid-user@manuscriptsapp.com',
   password: '',
   deviceId: 'deviceId',
-  appId: '9a9090d9-6f95-420c-b903-543f32b5140f',
-  appSecret: 'Valid secret'
+  appSecret: 'Valid secret',
 }
 
 export const emptyCredentialsElements = {
   email: '',
   password: '',
   deviceId: 'deviceId',
-  appId: '9a9090d9-6f95-420c-b903-543f32b5140f',
-  appSecret: 'Valid secret'
+  appSecret: 'Valid secret',
 }
