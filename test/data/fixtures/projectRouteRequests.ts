@@ -88,14 +88,6 @@ export const getArchiveRequest = {
   },
 }
 
-export const generateAccessTokenRequest = {
-  user: validUser,
-  params: {
-    projectID: validProject._id,
-    scope: 'pressroom',
-  },
-}
-
 export const deleteProjectRequest = {
   user: validUser,
   params: {

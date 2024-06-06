@@ -290,7 +290,6 @@ describe('AuthService - createEvent', () => {
           resolve({
             userId: '123',
             userActivity: UserActivityEventType.EmailVerified,
-            appId: null,
             deviceId: null,
           })
         )
@@ -302,14 +301,12 @@ describe('AuthService - createEvent', () => {
     const activity = await activityTrackingService.createEvent(
       '123',
       UserActivityEventType.EmailVerified,
-      null,
       null
     )
 
     expect(activity).toEqual({
       userId: '123',
       userActivity: UserActivityEventType.EmailVerified,
-      appId: null,
       deviceId: null,
     })
   })
@@ -363,7 +360,6 @@ describe('AuthService - serverToServerTokenAuth', () => {
     const authService: any = DIContainer.sharedContainer.authService
     authService.createUserSessionAndToken = jest.fn()
     const credentials: ServerToServerAuthCredentials = {
-      appId: 'app-id',
       connectUserID: 'invalid-connectId',
       deviceId: 'valid-deviceId',
     }
@@ -377,7 +373,6 @@ describe('AuthService - serverToServerTokenAuth', () => {
     authService.userRepository.getOne = jest.fn(() => validBody)
     authService.createUserSessionAndToken = jest.fn()
     const credentials: ServerToServerAuthCredentials = {
-      appId: 'app-id',
       connectUserID: 'invalid-connectId',
       deviceId: 'valid-deviceId',
     }
@@ -394,7 +389,7 @@ describe('AuthService - createUserSessionAndToken', () => {
       return { userToken: { token: 'token' } }
     })
 
-    await authService.createUserSessionAndToken(validUser, 'appId', 'deviceId', false, true)
+    await authService.createUserSessionAndToken(validUser, 'deviceId', false, true)
     expect(authService.createUserSessions).toHaveBeenCalled()
   })
 })

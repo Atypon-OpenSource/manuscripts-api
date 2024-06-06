@@ -17,10 +17,8 @@ import '../../../../utilities/dbMock.ts'
 import '../../../../utilities/configMock.ts'
 
 import { ObjectTypes } from '@manuscripts/json-schema'
-import jwt from 'jsonwebtoken'
 import { v4 as uuid_v4 } from 'uuid'
 
-import { config } from '../../../../../src/Config/Config'
 import { IManuscriptRepository } from '../../../../../src/DataAccess/Interfaces/IManuscriptRepository'
 import { ProjectRepository } from '../../../../../src/DataAccess/ProjectRepository/ProjectRepository'
 import { UserRepository } from '../../../../../src/DataAccess/UserRepository/UserRepository'
@@ -28,7 +26,6 @@ import { DIContainer } from '../../../../../src/DIContainer/DIContainer'
 import { ConfigService } from '../../../../../src/DomainServices/ConfigService'
 import { ProjectPermission, ProjectService } from '../../../../../src/DomainServices/ProjectService'
 import {
-  InvalidScopeNameError,
   MissingContainerError,
   MissingTemplateError,
   SyncError,
@@ -440,35 +437,6 @@ describe('projectService', () => {
         annotators: [],
         proofers: [],
       })
-    })
-  })
-  describe('generateAccessToken', () => {
-    it('should generate access token successfully with valid scope', async () => {
-      const scope = 'pressroom'
-      const scopeInfo = {
-        name: 'pressroom',
-        publicKeyPEM: null,
-        identifier: 'identifier',
-        expiry: 30,
-        secret: 'secret',
-      }
-      config.scopes.find = jest.fn().mockResolvedValue(scopeInfo)
-      jwt.sign = jest.fn().mockResolvedValue('access_token')
-      const result = await projectService.generateAccessToken(projectID, userID, scope)
-      expect(config.scopes.find).toHaveBeenCalledTimes(1)
-      expect(jwt.sign).toHaveBeenCalledTimes(1)
-      expect(result).toBe('access_token')
-    })
-
-    it('should throw InvalidScopeNameError for invalid scope', async () => {
-      const scope = 'invalidScope'
-
-      // @ts-ignore
-      jest.spyOn(config.scopes, 'find').mockReturnValue(null)
-
-      await expect(projectService.generateAccessToken(projectID, userID, scope)).rejects.toThrow(
-        new InvalidScopeNameError(scope)
-      )
     })
   })
   describe('getPermissions', () => {

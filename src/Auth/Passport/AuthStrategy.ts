@@ -19,79 +19,30 @@ import { StatusCodes } from 'http-status-codes'
 import passport from 'passport'
 
 import { config } from '../../Config/Config'
-import { APP_ID_HEADER_KEY, APP_SECRET_HEADER_KEY } from '../../Controller/V2/Auth/AuthController'
-import { DIContainer } from '../../DIContainer/DIContainer'
-import {
-  InvalidClientApplicationError,
-  InvalidCredentialsError,
-  InvalidJsonHeadersError,
-  InvalidServerCredentialsError,
-  ValidationError,
-} from '../../Errors'
+import { APP_SECRET_HEADER_KEY } from '../../Controller/V2/Auth/AuthController'
+import { InvalidJsonHeadersError, InvalidServerCredentialsError } from '../../Errors'
 import { User } from '../../Models/UserModels'
 import { isString } from '../../util'
-import { ScopedJwtAuthStrategy } from './ScopedJWT'
-
-export enum AuthStrategyTypes {
-  scopedJwt = 'scopedJwt',
-  jwt = 'jwt',
-}
 
 export class AuthStrategy {
   /**
    * Express authentication middleware.
    */
   public static JWTAuth(req: Request, res: Response, next: NextFunction) {
-    passport.authenticate(AuthStrategyTypes.jwt, {}, (error: Error, user: User) => {
+    passport.authenticate('jwt', {}, (error: Error, user: User) => {
       AuthStrategy.userValidationCallback(error, user, req, res, next)
     })(req, res, next)
-  }
-
-  public static scopedJWTAuth(scopeName: string) {
-    return (req: Request, res: Response, next: NextFunction) => {
-      const scope = config.scopes.find((s) => s.name === scopeName)
-      if (!scope) {
-        throw new ValidationError('scope not found', scopeName)
-      }
-      ScopedJwtAuthStrategy.use({ scope: scope })
-      passport.authenticate(AuthStrategyTypes.scopedJwt, (error: Error, user: any) => {
-        if (user && !error) {
-          req.user = user
-          return next()
-        }
-        return next(new InvalidCredentialsError('Invalid token.'))
-      })(req, res, next)
-    }
   }
 
   /**
    * Returns anExpress Middleware function that reads application ID and application secret values from headers or query parameters, and validates them
    */
-  public static applicationValidation() {
+  public static secretValidation() {
     return async (req: Request, _res: Response, next: NextFunction): Promise<void> => {
-      const applicationRepository = DIContainer.sharedContainer.applicationRepository
-
-      let appId = req.headers[APP_ID_HEADER_KEY]
-      let appSecret = req.headers[APP_SECRET_HEADER_KEY]
-
-      if (!appId) {
-        appId = req.query[APP_ID_HEADER_KEY] as string
-        appSecret = req.query[APP_SECRET_HEADER_KEY] as string
+      const appSecret = req.headers[APP_SECRET_HEADER_KEY]
+      if (!isString(appSecret) || config.auth.serverSecret !== appSecret) {
+        return next(new InvalidServerCredentialsError())
       }
-
-      if (!isString(appId)) {
-        return next(new InvalidClientApplicationError(appId))
-      }
-
-      const application = await applicationRepository.getById(appId)
-      if (!application) {
-        return next(new InvalidClientApplicationError(appId))
-      } else if (appSecret && application.secret !== null) {
-        if (!isString(appSecret) || application.secret !== appSecret) {
-          return next(new InvalidServerCredentialsError(appId))
-        }
-      }
-
       next()
     }
   }

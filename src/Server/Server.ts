@@ -116,11 +116,6 @@ export class Server implements IServer {
       return res.redirect('/api/v2/app/version')
     })
 
-    this.app.get(`/.well-known/jwks.json`, (_req: express.Request, res: express.Response) => {
-      const keys = config.scopes.map((s) => ({ ...s.publicKeyJWK, kid: s.identifier }))
-      res.send({ keys })
-    })
-
     // catch any error and forward to error handler
     // eslint-disable-next-line @typescript-eslint/ban-types
     this.app.use((req: express.Request, res: express.Response, _next: Function) => {

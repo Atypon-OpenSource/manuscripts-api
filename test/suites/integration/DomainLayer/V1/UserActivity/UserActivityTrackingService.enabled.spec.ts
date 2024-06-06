@@ -41,7 +41,6 @@ describe('UserActivityTrackingService', () => {
     activityTrackingService.createEvent(
       validUser1._id,
       UserActivityEventType.SuccessfulLogin,
-      'appId',
       'deviceId'
     )
     await activityTrackingService.awaitCreation()
@@ -60,13 +59,11 @@ describe('UserActivityTrackingService', () => {
     activityTrackingService.createEvent(
       validUser1._id,
       UserActivityEventType.SuccessfulLogin,
-      'appId',
       'deviceId'
     )
     activityTrackingService.createEvent(
       validUser2._id,
       UserActivityEventType.Logout,
-      'appId',
       'deviceId'
     )
     await activityTrackingService.awaitCreation()
@@ -84,7 +81,6 @@ describe('UserActivityTrackingService', () => {
     activityTrackingService.createEvent(
       undefined as any,
       UserActivityEventType.SuccessfulLogin,
-      'appId',
       'deviceId'
     )
     await activityTrackingService.awaitCreation()
@@ -100,13 +96,11 @@ describe('UserActivityTrackingService', () => {
     activityTrackingService.createEvent(
       validUser1._id,
       UserActivityEventType.SuccessfulLogin,
-      'appId',
       'deviceId'
     )
     activityTrackingService.createEvent(
       undefined as any,
       UserActivityEventType.SuccessfulLogin,
-      'appId',
       'deviceId'
     )
     await activityTrackingService.awaitCreation()
