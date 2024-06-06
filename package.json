@@ -1,6 +1,6 @@
 {
   "name": "@manuscripts/api",
-  "version": "1.9.4",
+  "version": "1.9.5",
   "description": "Manuscripts API server",
   "license": "Apache-2.0",
   "main": "dist/index",
@@ -28,9 +28,9 @@
     "lint"
   ],
   "dependencies": {
-    "@manuscripts/json-schema": "^2.2.7",
-    "@manuscripts/transform": "2.3.4",
-    "@prisma/client": "^4.8.1",
+    "@manuscripts/json-schema": "2.2.8",
+    "@manuscripts/transform": "2.3.5",
+    "@prisma/client": "^4.13.0",
     "bcrypt": "^5.1.0",
     "celebrate": "^15.0.1",
     "checksum": "^1.0.0",
@@ -134,7 +134,7 @@
     "p-retry": "^4.1.0",
     "pre-commit": "^1.2.2",
     "prettier": "^2.8.1",
-    "prisma": "^4.8.1",
+    "prisma": "^4.13.0",
     "recursive-readdir": "^2.2.3",
     "supertest": "^6.3.3",
     "ts-node": "^10.9.1",
