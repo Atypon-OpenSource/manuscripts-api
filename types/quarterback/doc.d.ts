@@ -36,7 +36,7 @@ export type ICreateDocResponse = ManuscriptDocWithSnapshots
 
 export type IUpdateDocument = {
   doc: Doc
-  schema_version: number
+  schema_version: string
   version?: number
 }
 
