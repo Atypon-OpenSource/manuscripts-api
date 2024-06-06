@@ -16,7 +16,6 @@
 import { NextFunction, Request, Response, Router } from 'express'
 import { StatusCodes } from 'http-status-codes'
 
-import type { Client, StepsData } from '../../../../types/quarterback/doc'
 import { AuthStrategy } from '../../../Auth/Passport/AuthStrategy'
 import { celebrate } from '../../../Utilities/celebrate'
 import { BaseRoute } from '../../BaseRoute'
@@ -33,13 +32,13 @@ import {
 
 export class DocumentRoute extends BaseRoute {
   private documentController = new DocumentController()
-  private _documentClientsMap = new Map<string, Client[]>()
+  // private _documentClientsMap = new Map<string, Client[]>()
   private get basePath(): string {
     return '/doc'
   }
-  private get documentsClientsMap() {
-    return this._documentClientsMap
-  }
+  // private get documentsClientsMap() {
+  //   return this._documentClientsMap
+  // }
 
   public create(router: Router): void {
     router.post(
@@ -158,20 +157,13 @@ export class DocumentRoute extends BaseRoute {
       payload,
       user
     )
-    res.sendStatus(StatusCodes.OK).end()
-    this.sendDataToClients(result, manuscriptID)
+    res.json(result)
   }
   private async listen(req: Request, res: Response) {
     const { manuscriptID, projectID } = req.params
     const user = req.user
     const result = await this.documentController.getDocumentHistory(projectID, manuscriptID, user)
-
-    res.setHeader('Content-Type', 'text/event-stream')
-    res.setHeader('Connection', 'keep-alive')
-    res.setHeader('Cache-Control', 'no-cache')
-    const data = this.formatDataForSSE(result)
-    res.write(data)
-    this.manageClientConnection(req, res)
+    res.json(result)
   }
 
   private async getStepFromVersion(req: Request, res: Response) {
@@ -184,39 +176,5 @@ export class DocumentRoute extends BaseRoute {
       user
     )
     res.status(StatusCodes.OK).send(result)
-  }
-  private addClient(newClient: Client, manuscriptID: string) {
-    const clients = this._documentClientsMap.get(manuscriptID) || []
-    clients.push(newClient)
-    this.documentsClientsMap.set(manuscriptID, clients)
-  }
-  private sendDataToClients(data: StepsData, manuscriptID: string) {
-    const clientsForDocument = this.documentsClientsMap.get(manuscriptID)
-    clientsForDocument?.forEach((client) => {
-      client.res.write(`data: ${JSON.stringify(data)}\n\n`)
-    })
-  }
-  private removeClientByID(clientID: number, manuscriptID: string) {
-    const clients = this.documentsClientsMap.get(manuscriptID) || []
-    const index = clients.findIndex((client) => client.id === clientID)
-    if (index !== -1) {
-      clients.splice(index, 1)
-      this.documentsClientsMap.set(manuscriptID, clients)
-    }
-  }
-  private manageClientConnection(req: Request, res: Response) {
-    const newClient: Client = {
-      id: Date.now(),
-      res,
-    }
-    const { manuscriptID } = req.params
-    this.addClient(newClient, manuscriptID)
-
-    req.on('close', () => {
-      this.removeClientByID(newClient.id, manuscriptID)
-    })
-  }
-  private formatDataForSSE<T>(data: T) {
-    return `data: ${JSON.stringify(data)}\n\n`
   }
 }
