@@ -73,6 +73,7 @@ export class Configuration implements ConfigurationContainer {
   readonly DB: DatabaseConfiguration
   readonly auth: AuthConfiguration
   readonly email: EmailConfiguration
+  readonly APP_DATABASE_URL: any
   readonly server: ServerConfiguration
   readonly pressroom: ExternalAPIConfiguration
   readonly data: DataConfiguration
@@ -120,6 +121,10 @@ export class Configuration implements ConfigurationContainer {
 
     this.email = {
       fromBaseURL: normalizeURL(getString(env.APP_BASE_URL, 'APP_BASE_URL')),
+    }
+
+    this.APP_DATABASE_URL = {
+      url: getString(env.APP_DATABASE_URL, 'APP_DATABASE_URL'),
     }
 
     const host = this.email.fromBaseURL.replace(/https{0,1}\/\//, '')

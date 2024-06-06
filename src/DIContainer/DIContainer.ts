@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Client } from 'pg'
 
 import { config } from '../Config/Config'
 import { BucketKey } from '../Config/ConfigurationTypes'
@@ -62,6 +63,7 @@ import { UserService } from '../DomainServices/User/UserService'
 import { UserActivityTrackingService } from '../DomainServices/UserActivity/UserActivityTrackingService'
 import { IServer } from '../Server/IServer'
 import { Server } from '../Server/Server'
+import { log } from '../Utilities/Logger'
 
 export class UninitializedContainerError extends Error {
   constructor() {
@@ -212,6 +214,16 @@ export class DIContainer {
    * The server is then retrieved from the container and bootstrapped.
    */
   static async init(enableActivityTracking = false) {
+    try {
+      const client = new Client({
+        connectionString: config.APP_DATABASE_URL.url,
+      })
+      await client.connect()
+      log.info('Connected to DB directly')
+    } catch (error) {
+      log.error('Cant even connect to DB directly', error)
+    }
+
     if (DIContainer._sharedContainer !== null) {
       throw new ContainerReinitializationError()
     }
@@ -228,6 +240,7 @@ export class DIContainer {
     await manuscriptSnapshotBucket.loadDatabaseModels()
 
     DIContainer._sharedContainer = new DIContainer(userBucket, dataBucket, enableActivityTracking)
+ 
 
     return DIContainer._sharedContainer
   }

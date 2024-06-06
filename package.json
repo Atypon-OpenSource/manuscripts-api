@@ -1,6 +1,6 @@
 {
   "name": "@manuscripts/api",
-  "version": "1.9.5",
+  "version": "1.9.5-LEAN",
   "description": "Manuscripts API server",
   "license": "Apache-2.0",
   "main": "dist/index",
@@ -61,6 +61,7 @@
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.1",
     "pem-jwk": "^2.0.0",
+    "pg": "^8.12.0",
     "prom-client": "^14.2.0",
     "prosemirror-transform": "^1.7.4",
     "qs": "^6.11.0",
@@ -103,6 +104,7 @@
     "@types/passport": "^1.0.11",
     "@types/passport-jwt": "^3.0.8",
     "@types/pem-jwk": "^2.0.0",
+    "@types/pg": "^8.11.6",
     "@types/qs": "^6.9.7",
     "@types/supertest": "^2.0.10",
     "@types/swagger-ui-express": "^4.1.3",
