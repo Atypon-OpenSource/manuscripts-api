@@ -133,15 +133,6 @@ export class ProjectController extends BaseController {
     return await DIContainer.sharedContainer.projectService.makeArchive(projectID, options)
   }
 
-  async generateAccessToken(scope: string, user: Express.User, projectID: string): Promise<string> {
-    const permissions = await this.getPermissions(projectID, user.id)
-    if (!permissions.has(ProjectPermission.READ)) {
-      throw new RoleDoesNotPermitOperationError(`Access denied`, user.id)
-    }
-
-    return DIContainer.sharedContainer.projectService.generateAccessToken(projectID, user.id, scope)
-  }
-
   async deleteProject(projectID: string, user: Express.User): Promise<void> {
     try {
       const permissions = await this.getPermissions(projectID, user.id)

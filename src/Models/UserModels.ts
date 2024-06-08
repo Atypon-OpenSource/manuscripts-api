@@ -42,13 +42,11 @@ export type NameParts = {
 
 export type UserCredentials = {
   deviceID: string
-  appID: string
   connectUserID: string
 }
 
 export type TokenPayload = {
   email: string
   deviceID: string
-  appID: string
   id: string
 }

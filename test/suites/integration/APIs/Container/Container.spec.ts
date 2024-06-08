@@ -231,7 +231,6 @@ describe('containerService - addContainerUser', () => {
       validProject._id,
       ContainerRole.Owner,
       validUser1._id,
-      validUser2
     )
 
     return expect(didAdd).toBeTruthy()
@@ -244,7 +243,6 @@ describe('containerService - addContainerUser', () => {
       validProject._id,
       ContainerRole.Writer,
       validUser1._id,
-      validUser2
     )
 
     return expect(didAdd).toBeTruthy()
@@ -257,7 +255,6 @@ describe('containerService - addContainerUser', () => {
       validProject._id,
       ContainerRole.Viewer,
       validUser1._id,
-      validUser2
     )
 
     return expect(didAdd).toBeTruthy()
@@ -517,71 +514,6 @@ describe('containerService - manageUserRole', () => {
 
     expect(response.status).toBe(StatusCodes.OK)
   })
-
-  test('should successfully remove invitation if new role is null', async () => {
-    const loginResponse: supertest.Response = await basicLogin(
-      validBody,
-      ValidHeaderWithApplicationKey
-    )
-
-    expect(loginResponse.status).toBe(StatusCodes.OK)
-
-    const randomId = chance.integer()
-
-    await DIContainer.sharedContainer.containerInvitationRepository.create({
-      _id: `MPContainerInvitation:valid-project-id-${randomId}`,
-      invitedUserEmail: 'valid-user-2@manuscriptsapp.com',
-      invitingUserID: 'User_invitingUser',
-      invitingUserProfile: {
-        _id: 'MPUserProfile:invitingUser',
-        userID: 'User_invitingUser',
-        objectType: 'MPUserProfile',
-        bibliographicName: {
-          _id: 'MPBibliographicName:valid-bibliographic-name',
-          objectType: 'MPBibliographicName',
-          given: 'Kavin',
-        },
-        createdAt: 123,
-        updatedAt: 123,
-      },
-      objectType: 'MPContainerInvitation',
-      containerID: 'MPProject:valid-project-id-4',
-      role: ContainerRole.Writer,
-    } as any)
-
-    const beforeInvitation =
-      await DIContainer.sharedContainer.containerInvitationRepository.getById(
-        `MPContainerInvitation:valid-project-id-${randomId}`
-      )
-
-    expect(beforeInvitation).not.toBeNull()
-
-    const authHeader = authorizationHeader(loginResponse.body.token)
-    await createProject('MPProject:valid-project-id-4')
-    const response: supertest.Response = await manageUserRole(
-      {
-        ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader,
-      },
-      {
-        managedUserId: 'User|valid-user-2@manuscriptsapp.com',
-        newRole: null,
-      },
-      {
-        containerID: 'MPProject:valid-project-id-4',
-      }
-    )
-
-    const afterInvitation = await DIContainer.sharedContainer.containerInvitationRepository.getById(
-      `MPContainerInvitation:valid-project-id-${randomId}`
-    )
-
-    expect(afterInvitation).toBeNull()
-    expect(response.status).toBe(StatusCodes.OK)
-    await DIContainer.sharedContainer.containerInvitationRepository.purge(
-      `MPContainerInvitation:valid-project-id-${randomId}`
-    )
-  })
 })
 
 describe('ContainerService - getArchive', () => {
@@ -810,43 +742,6 @@ describe('ContainerService - loadProject', () => {
       (model: Model) => model.objectType === ObjectTypes.ManuscriptNote
     )
     expect(manuscriptsNotes.length).toBeGreaterThan(0)
-  })
-})
-
-describe('ContainerService - accessToken', () => {
-  beforeEach(async () => {
-    await drop()
-    await dropBucket(BucketKey.Project)
-    await seed({ users: true, applications: true })
-    await seedAccounts()
-    await DIContainer.sharedContainer.syncService.createUserProfile({
-      _id: `User|${validBody.email}`,
-      name: 'foobar',
-      email: validBody.email,
-    })
-  })
-
-  test('should return the access token', async () => {
-    const loginResponse: supertest.Response = await basicLogin(
-      validBody,
-      ValidHeaderWithApplicationKey
-    )
-
-    expect(loginResponse.status).toBe(StatusCodes.OK)
-
-    const authHeader = authorizationHeader(loginResponse.body.token)
-    await createProject('MPProject:valid-project-id-2')
-    const response: supertest.Response = await accessToken(
-      {
-        ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader,
-      },
-      {
-        containerID: 'MPProject:valid-project-id-2',
-        scope: 'jupyterhub',
-      }
-    )
-    expect(response.status).toBe(StatusCodes.OK)
   })
 })
 
@@ -1107,4 +1002,3 @@ describe('ContainerService - getProductionNotes', () => {
     expect(JSON.parse(getProductionNoteResponse.text).length).toBeGreaterThan(0)
   })
 })
-

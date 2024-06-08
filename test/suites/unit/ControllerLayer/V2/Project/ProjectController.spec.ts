@@ -54,7 +54,6 @@ describe('ProjectController', () => {
   const templateID = templates[0]._id
   const onlyIDs = 'true'
   const accept = ValidHeaderWithApplicationKey['Accept']
-  const scope = 'pressroom'
   const data: Model[] = [
     {
       _id: validProject._id,
@@ -243,23 +242,6 @@ describe('ProjectController', () => {
         onlyIDs: true,
         includeExt: true,
       })
-    })
-  })
-  describe('generateAccessToken', () => {
-    it('should throw error if user lacks READ permission', async () => {
-      controller.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.UPDATE]))
-
-      await expect(controller.generateAccessToken(scope, user, projectID)).rejects.toThrow(
-        new RoleDoesNotPermitOperationError('Access denied', user._id)
-      )
-    })
-
-    it('should call projectService.generateAccessToken with correct params', async () => {
-      projectService.generateAccessToken = jest.fn().mockResolvedValue('access_token')
-      controller.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.READ]))
-
-      await controller.generateAccessToken(scope, user, projectID)
-      expect(projectService.generateAccessToken).toHaveBeenCalledWith(projectID, userID, scope)
     })
   })
   describe('deleteProject', () => {

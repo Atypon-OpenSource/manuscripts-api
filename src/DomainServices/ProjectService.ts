@@ -25,15 +25,11 @@ import decompress from 'decompress'
 import fs from 'fs'
 import { remove } from 'fs-extra'
 import getStream from 'get-stream'
-import jwt, { Algorithm } from 'jsonwebtoken'
 import JSZip from 'jszip'
 import { Readable } from 'stream'
 import tempy from 'tempy'
 
-import { config } from '../Config/Config'
-import { ScopedAccessTokenConfiguration } from '../Config/ConfigurationTypes'
 import {
-  InvalidScopeNameError,
   MissingContainerError,
   MissingTemplateError,
   SyncError,
@@ -61,18 +57,7 @@ export class ProjectService {
     private readonly pressroomService: PressroomService,
     private readonly configService: ConfigService
   ) {}
-  public static findScope(
-    scope: string,
-    configScopes: ReadonlyArray<ScopedAccessTokenConfiguration>
-  ): ScopedAccessTokenConfiguration {
-    const scopeInfo = configScopes.find((s) => s.name === scope)
 
-    if (!scopeInfo) {
-      throw new InvalidScopeNameError(scope)
-    }
-
-    return scopeInfo
-  }
   public async createProject(userID: string, title?: string): Promise<Project> {
     return await this.projectRepository.createProject(userID, title)
   }
@@ -275,37 +260,6 @@ export class ProjectService {
     await this.projectRepository.patch(projectID, updated)
   }
 
-  public async generateAccessToken(
-    projectID: string,
-    userID: string,
-    scope: string
-  ): Promise<string> {
-    const scopeInfo = config.scopes.find((s) => s.name === scope)
-
-    if (!scopeInfo) {
-      throw new InvalidScopeNameError(scope)
-    }
-
-    const payload = {
-      iss: config.API.hostname,
-      sub: userID,
-      containerID: projectID,
-      aud: scopeInfo.name,
-    }
-
-    const algorithm: Algorithm = scopeInfo.publicKeyPEM === null ? 'HS256' : 'RS256'
-
-    const options = {
-      header: {
-        kid: scopeInfo.identifier,
-        alg: algorithm,
-      },
-      expiresIn: `${scopeInfo.expiry}m`,
-    }
-
-    return jwt.sign(payload, scopeInfo.secret, options)
-  }
-
   public async getPermissions(
     projectID: string,
     userID: string
@@ -420,36 +374,36 @@ export class ProjectService {
       return null
     }
   }
-  public static isOwner(container: Project, userID: string) {
-    return container.owners.indexOf(userID) > -1
+  public static isOwner(project: Project, userID: string) {
+    return project.owners.indexOf(userID) > -1
   }
 
-  public static isWriter(container: Project, userID: string): boolean {
-    return container.writers.indexOf(userID) > -1
+  public static isWriter(project: Project, userID: string): boolean {
+    return project.writers.indexOf(userID) > -1
   }
 
-  public static isViewer(container: Project, userID: string): boolean {
-    return container.viewers.indexOf(userID) > -1
+  public static isViewer(project: Project, userID: string): boolean {
+    return project.viewers.indexOf(userID) > -1
   }
 
-  public static isEditor(container: Project, userID: string): boolean {
-    const editors = container.editors
+  public static isEditor(project: Project, userID: string): boolean {
+    const editors = project.editors
     if (editors && editors.length) {
       return editors.indexOf(userID) > -1
     }
     return false
   }
 
-  public static isAnnotator(container: Project, userID: string): boolean {
-    const annotators = container.annotators
+  public static isAnnotator(project: Project, userID: string): boolean {
+    const annotators = project.annotators
     if (annotators && annotators.length) {
       return annotators.indexOf(userID) > -1
     }
     return false
   }
 
-  public static isProofer(container: Project, userID: string): boolean {
-    const proofers = container.proofers
+  public static isProofer(project: Project, userID: string): boolean {
+    const proofers = project.proofers
     if (proofers && proofers.length) {
       return proofers.indexOf(userID) > -1
     }

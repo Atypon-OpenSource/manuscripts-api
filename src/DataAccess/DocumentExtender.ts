@@ -86,6 +86,7 @@ export class DocumentExtender {
         manuscript_model_id: payload.manuscript_model_id,
         user_model_id: userID,
         project_model_id: payload.project_model_id,
+        schema_version: payload.schema_version,
         doc: payload.doc,
         version: 0,
       },

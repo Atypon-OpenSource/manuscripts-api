@@ -19,11 +19,6 @@ import { UserCredentials } from '../../../Models/UserModels'
 import { BaseController } from '../../BaseController'
 
 /**
- * The app-id header key.
- */
-export const APP_ID_HEADER_KEY = 'manuscripts-app-id'
-
-/**
  * The app-secret header key.
  */
 export const APP_SECRET_HEADER_KEY = 'manuscripts-app-secret'
@@ -31,9 +26,5 @@ export const APP_SECRET_HEADER_KEY = 'manuscripts-app-secret'
 export class AuthController extends BaseController {
   async serverToServerAuthToken(payload: UserCredentials): Promise<string> {
     return await DIContainer.sharedContainer.authenticationService.serverToServerAuthToken(payload)
-  }
-
-  async createAuthorizationToken(scope: string, user: Express.User): Promise<string> {
-    return DIContainer.sharedContainer.authenticationService.createAuthorizationToken(scope, user)
   }
 }

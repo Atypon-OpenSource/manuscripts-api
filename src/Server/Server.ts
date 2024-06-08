@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { getVersion } from '@manuscripts/transform'
 import cors from 'cors'
 import express from 'express'
 import promBundle from 'express-prom-bundle'
@@ -67,6 +68,11 @@ export class Server implements IServer {
       )
     }
 
+    this.app.use((_, res, next) => {
+      res.setHeader('Transform-Version', getVersion())
+      next()
+    })
+
     this.app.use(
       cors({
         origin: (requestOrigin, callback) => {
@@ -105,11 +111,6 @@ export class Server implements IServer {
     this.app.use('/api/v2', routerV2)
     this.app.get('/', (_req, res: express.Response) => {
       return res.redirect('/api/v2/app/version')
-    })
-
-    this.app.get(`/.well-known/jwks.json`, (_req: express.Request, res: express.Response) => {
-      const keys = config.scopes.map((s) => ({ ...s.publicKeyJWK, kid: s.identifier }))
-      res.send({ keys })
     })
 
     // catch any error and forward to error handler

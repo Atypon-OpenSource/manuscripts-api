@@ -20,16 +20,6 @@ jest.mock('../../../../../../src/DataAccess/SQLRepository', () => ({
     patchStatusWithUserId: jest.fn(),
   })),
 }))
-
-jest.mock(
-  '../../../../../../src/DataAccess/ClientApplicationRepository/ClientApplicationRepository',
-  () => ({
-    ClientApplicationRepository: jest.fn(() => ({
-      ensureApplicationsExist: jest.fn(),
-    })),
-  })
-)
-
 import '../../../../../utilities/dbMock'
 import '../../../../../utilities/configMock'
 
@@ -58,7 +48,6 @@ describe('syncService', () => {
       hasExpiry: false,
       token: 'baz',
       deviceId: 'potato',
-      appId: 'blah',
     }
 
     test('creates user status', async () => {
@@ -125,7 +114,6 @@ describe('syncService', () => {
       hasExpiry: false,
       token: 'baz',
       deviceId: 'potato',
-      appId: 'blah',
     }
 
     test('remove user status', async () => {

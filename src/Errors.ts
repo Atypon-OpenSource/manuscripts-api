@@ -334,19 +334,6 @@ export class InvalidBackchannelLogoutError extends Error implements StatusCoded 
   }
 }
 
-export class InvalidScopeNameError extends Error implements StatusCoded {
-  readonly internalErrorCode = InternalErrorCode.InvalidScopeNameError
-  readonly invalidValue: any
-  readonly statusCode = StatusCodes.BAD_REQUEST
-
-  constructor(invalidValue: any) {
-    super(`The scope '${invalidValue}' is invalid.`)
-    this.invalidValue = invalidValue
-    this.name = 'InvalidScopeNameError'
-    Object.setPrototypeOf(this, new.target.prototype)
-  }
-}
-
 export class UserRoleError extends Error implements StatusCoded {
   readonly internalErrorCode = InternalErrorCode.UserRoleError
   readonly invalidValue: any
@@ -406,7 +393,7 @@ export class IAMIssuerError extends Error implements StatusCoded {
 export class InvalidServerCredentialsError extends Error implements StatusCoded {
   readonly internalErrorCode = InternalErrorCode.InvalidServerCredentialsError
   readonly statusCode = StatusCodes.UNAUTHORIZED
-  constructor(message: string) {
+  constructor(message?: string) {
     super(message)
     this.name = 'InvalidServerCredentialsError'
     Object.setPrototypeOf(this, new.target.prototype)
@@ -451,16 +438,6 @@ export class NoTokenError extends Error implements StatusCoded {
     super(`Token does not exist in the database for ID '${ID}'`)
     this.ID = ID
     this.name = 'NoTokenError'
-    Object.setPrototypeOf(this, new.target.prototype)
-  }
-}
-
-export class InvalidClientApplicationError extends Error implements StatusCoded {
-  readonly internalErrorCode = InternalErrorCode.InvalidClientApplicationError
-  readonly statusCode = StatusCodes.UNAUTHORIZED
-  constructor(appID: string | string[] | undefined, deviceID?: string) {
-    super(`Invalid application ID ${appID} (device ID: ${deviceID})`)
-    this.name = 'InvalidClientApplicationError'
     Object.setPrototypeOf(this, new.target.prototype)
   }
 }

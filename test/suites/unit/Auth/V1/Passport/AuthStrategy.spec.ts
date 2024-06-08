@@ -19,7 +19,6 @@ import { Chance } from 'chance'
 import { StatusCodes } from 'http-status-codes'
 
 import { AuthStrategy } from '../../../../../../src/Auth/Passport/AuthStrategy'
-import { ValidationError } from '../../../../../../src/Errors'
 
 jest.mock('passport', () => {
   const originalModule = jest.requireActual('passport')
@@ -86,23 +85,5 @@ describe('AuthStrategy', () => {
 
     expect(req.user).toEqual(user)
     expect(next).toHaveBeenCalled()
-  })
-
-  test('should fail if scope is not found', () => {
-    const req: any = {}
-    const { res, next } = getMockRes()
-    const scopedAuth = AuthStrategy.scopedJWTAuth('invalid-scope')
-    expect(() => scopedAuth(req, res, next)).toThrow(ValidationError)
-  })
-
-  test('should pass scopedJWT authenticate', () => {
-    const req: any = {}
-    const { res, next } = getMockRes()
-    const scopedAuth = AuthStrategy.scopedJWTAuth('file-picker')
-    scopedAuth(req, res, next)
-    expect(next).toHaveBeenCalled()
-    expect(req.user).toEqual({
-      _id: 'd5108332658149c4c2b276e1b16a1f8dca7fd6af',
-    })
   })
 })

@@ -26,7 +26,6 @@ import { celebrate } from '../../../Utilities/celebrate'
 import { BaseRoute } from '../../BaseRoute'
 import { ProjectController } from './ProjectController'
 import {
-  accessTokenSchema,
   addUserSchema,
   createManuscriptSchema,
   createProjectSchema,
@@ -136,17 +135,6 @@ export class ProjectRoute extends BaseRoute {
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           await this.getArchive(req, res)
-        }, next)
-      }
-    )
-
-    router.get(
-      `${this.basePath}/:projectID/:scope`,
-      celebrate(accessTokenSchema),
-      AuthStrategy.JWTAuth,
-      (req: Request, res: Response, next: NextFunction) => {
-        return this.runWithErrorHandling(async () => {
-          await this.generateAccessToken(req, res)
         }, next)
       }
     )
@@ -287,17 +275,6 @@ export class ProjectRoute extends BaseRoute {
       res.set('Content-Type', 'application/json')
     }
     res.status(StatusCodes.OK).send(Buffer.from(archive))
-  }
-
-  private async generateAccessToken(req: Request, res: Response) {
-    const { projectID, scope } = req.params
-    const { user } = req
-
-    if (!user) {
-      throw new ValidationError('No user found', user)
-    }
-
-    res.send(await this.projectController.generateAccessToken(scope, user, projectID))
   }
 
   private async deleteProject(req: Request, res: Response) {

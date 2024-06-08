@@ -40,7 +40,7 @@ export class RegistrationRoute extends BaseRoute {
       `${this.basePath}/connect/signup`,
       celebrate(connectSignupSchema),
       AuthStrategy.JsonHeadersValidation,
-      AuthStrategy.applicationValidation(),
+      AuthStrategy.secretValidation(),
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           await this.connectSignup(req, res)

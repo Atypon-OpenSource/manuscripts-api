@@ -14,10 +14,6 @@
  * limitations under the License.
  */
 
-import { RSA_JWK } from 'pem-jwk'
-
-import { ClientApplication } from '../Models/ClientApplicationModels'
-
 export enum Environment {
   Test = 'test',
   Development = 'development',
@@ -47,15 +43,6 @@ export type DatabaseConfiguration = {
   readonly buckets: { [name in BucketKey]: string }
 }
 
-export type ScopedAccessTokenConfiguration = {
-  readonly name: string
-  readonly secret: string
-  readonly publicKeyPEM: string | null
-  readonly publicKeyJWK: RSA_JWK | null
-  readonly expiry: number
-  readonly identifier: string // maps to the "kid" property when represented in JWK.
-}
-
 /**
  * Represents authentication configuration.
  */
@@ -72,10 +59,6 @@ export type AuthConfiguration = {
  */
 export type EmailConfiguration = {
   readonly fromBaseURL: string
-}
-
-export type ClientApplicationsConfiguration = {
-  readonly knownClientApplications: Array<ClientApplication>
 }
 
 export type ServerConfiguration = {
@@ -99,8 +82,6 @@ export interface ConfigurationContainer {
   readonly auth: AuthConfiguration
   readonly email: EmailConfiguration
   readonly server: ServerConfiguration
-  readonly apps: ClientApplicationsConfiguration
-  readonly scopes: ScopedAccessTokenConfiguration[]
   readonly pressroom: ExternalAPIConfiguration
   readonly data: DataConfiguration
 }

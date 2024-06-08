@@ -20,11 +20,10 @@ import { config } from '../Config/Config'
 import { AccountNotFoundError } from '../Errors'
 import { UserClient } from '../Models/RepositoryModels'
 import { TokenPayload, UserCredentials } from '../Models/UserModels'
-import { ProjectService } from './ProjectService'
 
 export class AuthenticationService {
   constructor(private readonly userRepoistory: UserClient) {}
-  public async serverToServerAuthToken({ deviceID, appID, connectUserID }: UserCredentials) {
+  public async serverToServerAuthToken({ deviceID, connectUserID }: UserCredentials) {
     const user = await this.userRepoistory.findByConnectID(connectUserID)
     if (!user) {
       throw new AccountNotFoundError(connectUserID)
@@ -34,24 +33,10 @@ export class AuthenticationService {
       email,
       id,
       deviceID,
-      appID,
     })
     return token
   }
-  public createAuthorizationToken(scope: string, user: Express.User) {
-    const scopeInfo = ProjectService.findScope(scope, config.scopes)
-    const payload = {
-      iss: config.API.hostname,
-      sub: user.id,
-      aud: scopeInfo.name,
-      email: user.email,
-    }
-    return jwt.sign(payload, scopeInfo.secret, {
-      algorithm: scopeInfo.publicKeyPEM === null ? 'HS256' : 'RS256',
-      keyid: scopeInfo.identifier,
-      expiresIn: `${scopeInfo.expiry}m`,
-    })
-  }
+
   private generateUserToken(payload: TokenPayload) {
     const fullPayload = {
       ...payload,

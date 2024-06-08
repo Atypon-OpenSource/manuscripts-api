@@ -20,7 +20,6 @@ import { ExtractJwt, Strategy } from 'passport-jwt'
 import { config } from '../../Config/Config'
 import { DIContainer } from '../../DIContainer/DIContainer'
 import { timestamp } from '../../Utilities/JWT/LoginTokenPayload'
-import { AuthStrategyTypes } from './AuthStrategy'
 
 export class JwtAuthStrategy {
   public static use(): void {
@@ -32,7 +31,7 @@ export class JwtAuthStrategy {
     }
 
     passport.use(
-      AuthStrategyTypes.jwt,
+      'jwt',
       new Strategy(opts, async (jwt, done) => {
         const id = jwt.id
         const user = await DIContainer.sharedContainer.userClient.findByID(id)

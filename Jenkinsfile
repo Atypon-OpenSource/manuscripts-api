@@ -8,7 +8,7 @@ pipeline {
         stage('Build') {
             agent {
                 docker {
-                    image 'node:18'
+                    image 'node:lts-iron'
                     args '--userns=host \
                           --security-opt seccomp:unconfined \
                           -v /home/ci/.cache/yarn:/.cache/yarn \
