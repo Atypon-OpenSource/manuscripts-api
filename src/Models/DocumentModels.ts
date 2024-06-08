@@ -24,19 +24,11 @@ export type ManuscriptDocWithSnapshots = ManuscriptDoc & {
   snapshots: SnapshotLabel[]
 }
 
-export type GetDocumentResponse = ManuscriptDocWithSnapshots
 export type CreateDoc = {
   manuscript_model_id: string
   project_model_id: string
   schema_version: string
   doc: Doc
-}
-export type ICreateDocResponse = ManuscriptDocWithSnapshots
-
-export type IUpdateDocument = {
-  doc: Doc
-  schema_version: string
-  version?: number
 }
 
 export type Client = {
@@ -53,4 +45,10 @@ export type UpdateDocument = {
   doc?: Doc
   version?: number
   steps?: Prisma.JsonObject[]
-} & ({ doc: Doc } | { version: number } | { steps: Prisma.JsonObject[] })
+  schema_version?: string
+} & (
+  | { doc: Doc }
+  | { version: number }
+  | { steps: Prisma.JsonObject[] }
+  | { schema_version: string }
+)

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { schema } from '@manuscripts/transform'
+import { getVersion, schema } from '@manuscripts/transform'
 import { Prisma } from '@prisma/client'
 import { JsonObject } from '@prisma/client/runtime/library'
 import { Step } from 'prosemirror-transform'
@@ -38,6 +38,7 @@ export class AuthorityService {
         doc: doc,
         version: receiveSteps.version + receiveSteps.steps.length,
         steps: (found.steps as JsonObject[]).concat(modifiedSteps),
+        schema_version: getVersion(),
       })
       return {
         steps: receiveSteps.steps,
