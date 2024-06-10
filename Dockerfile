@@ -1,4 +1,4 @@
-FROM node:16-bullseye-slim AS node
+FROM node:iron-bullseye-slim AS node
 
 FROM node AS build
 WORKDIR /usr/src/app
