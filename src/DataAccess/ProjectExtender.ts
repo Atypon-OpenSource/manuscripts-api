@@ -22,6 +22,7 @@ import { v4 as uuid_v4 } from 'uuid'
 import { DatabaseError, ValidationError } from '../Errors'
 import { timestamp } from '../Utilities/JWT/LoginTokenPayload'
 
+// TODO: change containerID to projectID
 export class ProjectExtender {
   constructor(private readonly prisma: PrismaClient) {}
   readonly PROJECT_MODEL = 'project'
@@ -115,6 +116,7 @@ export class ProjectExtender {
   }
 
   private removeWithAllResources = async (projectID: string) => {
+    //containerID is the same as projectID
     await this.prisma.project.deleteMany({
       where: {
         OR: [
@@ -140,6 +142,7 @@ export class ProjectExtender {
   }
 
   private removeAll = async (projectID: string) => {
+    //containerID is the same as projectID
     await this.prisma.project.deleteMany({
       where: {
         data: {
@@ -154,7 +157,7 @@ export class ProjectExtender {
     if (!project) {
       return null
     }
-
+    //containerID is the same as projectID
     const results = await this.prisma.project.findMany({
       where: {
         data: {
@@ -178,7 +181,7 @@ export class ProjectExtender {
     if (!project) {
       return null
     }
-
+    //containerID is the same as projectID
     const results = await this.prisma.project.findMany({
       where: {
         data: {
@@ -211,8 +214,8 @@ export class ProjectExtender {
     const documentToUpdate = {
       id: patchedDocument._id,
       data: {
-        updatedAt: timestamp(),
         ...patchedDocument,
+        updatedAt: timestamp(),
       },
     } as any
 
@@ -250,6 +253,7 @@ export class ProjectExtender {
   private createManuscriptModel(projectID: string, prototype?: string) {
     const createdAt = timestamp()
     const manuscriptID = this.manuscriptID()
+    //containerID is the same as projectID
     return {
       id: manuscriptID,
       data: {

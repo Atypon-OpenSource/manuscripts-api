@@ -63,9 +63,7 @@ export class UserService {
       (obj as any).id &&
       typeof (obj as any).id === 'string' &&
       (obj as any).deviceID &&
-      typeof (obj as any).deviceID === 'string' &&
-      (obj as any).appID &&
-      typeof (obj as any).appID === 'string'
+      typeof (obj as any).deviceID === 'string'
     )
   }
 
