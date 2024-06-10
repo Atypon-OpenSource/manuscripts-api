@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { getVersion } from '@manuscripts/transform'
 import cors from 'cors'
 import express from 'express'
 import promBundle from 'express-prom-bundle'
@@ -69,6 +70,11 @@ export class Server implements IServer {
         'APP_ALLOWED_CORS_ORIGINS=*'
       )
     }
+
+    this.app.use((_, res, next) => {
+      res.setHeader('Transform-Version', getVersion())
+      next()
+    })
 
     this.app.use(
       cors({
