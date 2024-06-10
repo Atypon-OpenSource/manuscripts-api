@@ -84,8 +84,6 @@ export class DocumentService implements IDocumentService {
     userID: string,
     tx: Prisma.TransactionClient = prisma
   ): Promise<ManuscriptDocWithSnapshots> {
-    // console.log('============ payload =============')
-    // console.log(payload.schema_version)
     const saved = await tx.manuscriptDoc.create({
       data: {
         manuscript_model_id: payload.manuscript_model_id,
