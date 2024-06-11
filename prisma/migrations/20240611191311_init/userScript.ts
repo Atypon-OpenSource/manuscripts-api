@@ -52,12 +52,6 @@ async function main() {
             },
           })
         }
-      } else {
-        await tx.user.delete({
-          where: {
-            id: user.id,
-          },
-        })
       }
     }
   })
