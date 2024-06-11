@@ -19,6 +19,7 @@ import { v4 as uuid_v4 } from 'uuid'
 
 import { CreateUser } from '../Models/UserModels'
 
+//TODO: Remove default values for email & connectUserID in schema.prisma, and make them unique
 export class UserExtender {
   readonly USER_MODEL = 'user'
   private extensions: ReturnType<typeof this.buildExtensions>

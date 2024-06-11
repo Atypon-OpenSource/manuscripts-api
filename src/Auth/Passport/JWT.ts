@@ -30,11 +30,11 @@ export class JwtAuthStrategy {
       issuer: config.API.hostname,
       audience: config.email.fromBaseURL,
     }
-
     passport.use(
       'jwt',
       new Strategy(opts, async (jwt, done) => {
         try {
+          // TODO: remove the OR statement after this is deployed everywhere
           const id = jwt.id || jwt.userId?.toString().replace('|', '_')
           const user = await DIContainer.sharedContainer.userClient.findByID(id)
           if (!user) {
