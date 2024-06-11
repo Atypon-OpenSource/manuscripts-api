@@ -36,7 +36,7 @@ import jwt from 'jsonwebtoken'
 
 import { AccountNotFoundError, InvalidCredentialsError, RecordNotFoundError } from '../Errors'
 import { ProjectClient, UserClient } from '../Models/RepositoryModels'
-import { TokenPayload } from '../Models/UserModels'
+import { isLoginTokenPayload } from '../Utilities/JWT/LoginTokenPayload'
 
 export class UserService {
   constructor(
@@ -46,25 +46,11 @@ export class UserService {
 
   public async profile(token: string) {
     const payload = jwt.decode(token)
-    if (!this.isLoginTokenPayload(payload)) {
+    if (!isLoginTokenPayload(payload)) {
       throw new InvalidCredentialsError('Unexpected token payload.')
     }
     const user = await this.userRepository.findByID(payload.id)
     return user ? this.createUserProfile(user) : null
-  }
-  private isLoginTokenPayload(obj: string | object | null): obj is TokenPayload {
-    if (!obj) {
-      return false
-    }
-    if (typeof obj === 'string') {
-      return false
-    }
-    return (
-      (obj as any).id &&
-      typeof (obj as any).id === 'string' &&
-      (obj as any).deviceID &&
-      typeof (obj as any).deviceID === 'string'
-    )
   }
 
   public async getProjectUserProfiles(projectID: string): Promise<UserProfile[]> {
@@ -105,7 +91,7 @@ export class UserService {
         family: user.family,
         given: user.given,
         objectType: ObjectTypes.BibliographicName,
-        _id: user.id.replace('User_', `${ObjectTypes.BibliographicName}:`),
+        _id: `${ObjectTypes.BibliographicName}:${user.id.replace('User_', '')}`,
       },
       email: user.email,
       userID: user.id,

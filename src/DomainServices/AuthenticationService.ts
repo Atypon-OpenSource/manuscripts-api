@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-import jwt from 'jsonwebtoken'
-
-import { config } from '../Config/Config'
 import { AccountNotFoundError } from '../Errors'
 import { UserClient } from '../Models/RepositoryModels'
-import { TokenPayload, UserCredentials } from '../Models/UserModels'
+import { UserCredentials } from '../Models/UserModels'
+import { generateUserToken } from '../Utilities/JWT/LoginTokenPayload'
 
 export class AuthenticationService {
   constructor(private readonly userRepoistory: UserClient) {}
@@ -29,20 +27,11 @@ export class AuthenticationService {
       throw new AccountNotFoundError(connectUserID)
     }
     const { id, email } = user
-    const token = this.generateUserToken({
+    const token = generateUserToken({
       email,
       id,
       deviceID,
     })
     return token
-  }
-
-  private generateUserToken(payload: TokenPayload) {
-    const fullPayload = {
-      ...payload,
-      aud: config.email.fromBaseURL,
-      iss: config.API.hostname,
-    }
-    return jwt.sign(fullPayload, config.auth.jwtSecret)
   }
 }

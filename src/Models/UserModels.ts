@@ -44,9 +44,3 @@ export type UserCredentials = {
   deviceID: string
   connectUserID: string
 }
-
-export type TokenPayload = {
-  email: string
-  deviceID: string
-  id: string
-}
