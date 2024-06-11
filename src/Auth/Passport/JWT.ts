@@ -20,6 +20,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt'
 import { config } from '../../Config/Config'
 import { DIContainer } from '../../DIContainer/DIContainer'
 import { timestamp } from '../../Utilities/JWT/LoginTokenPayload'
+import { log } from '../../Utilities/Logger'
 
 export class JwtAuthStrategy {
   public static use(): void {
@@ -33,15 +34,20 @@ export class JwtAuthStrategy {
     passport.use(
       'jwt',
       new Strategy(opts, async (jwt, done) => {
-        const id = jwt.id
-        const user = await DIContainer.sharedContainer.userClient.findByID(id)
-        if (!user) {
+        try {
+          const id = jwt.id || jwt.userId?.toString().replace('|', '_')
+          const user = await DIContainer.sharedContainer.userClient.findByID(id)
+          if (!user) {
+            return done(null, false)
+          }
+          if (jwt.expiry && jwt.expiry < timestamp()) {
+            return done(null, false)
+          }
+          return done(null, user)
+        } catch (error) {
+          log.error('Error in JWT strategy', error)
           return done(null, false)
         }
-        if (jwt.expiry && jwt.expiry < timestamp()) {
-          return done(null, false)
-        }
-        return done(null, user)
       })
     )
   }
