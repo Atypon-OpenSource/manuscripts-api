@@ -13,12 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+const mockTransactionClient = {
+  manuscriptDoc: {
+    findDocument: jest.fn().mockResolvedValue({
+      version: 0,
+      steps: [],
+    }),
+    updateDocument: jest.fn(),
+  },
+}
 jest.mock('../../src/DataAccess/Repository', () => {
   return {
     Repository: jest.fn(() => ({
       connectClient: jest.fn(),
-      getDB: jest.fn(),
+     getDB: jest.fn(() => {
+        return {
+          $transaction: jest.fn((fn: (tx: any) => Promise<any>) => fn({
+            manuscriptDoc: {
+              findDocument: jest.fn(), // Use the mock function here
+              updateDocument: jest.fn(),
+            },
+          })),
+          manuscriptDoc: {
+            findDocument: jest.fn(), // Also mock it here for consistency
+            updateDocument: jest.fn(),
+          },
+        }
+      }),
       documentClient: jest.fn(),
       projectClient: jest.fn(),
       userClient: jest.fn(),

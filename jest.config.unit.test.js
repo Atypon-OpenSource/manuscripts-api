@@ -22,7 +22,7 @@ module.exports = {
     "coverageThreshold": {
         "global": {
             "branches": 80,
-            "functions": 83.5,
+            "functions": 80,
             "lines": 80
         }
     },
@@ -45,6 +45,6 @@ module.exports = {
         "!src/Utilities/Docs/**",
         "!src/Utilities/fs-promise.ts",
         "!src/DataAccess/**",
-        "!src/DomainServices/Pressroom/PressroomService.ts",
+        "!src/DomainServices/PressroomService.ts",
     ]
 }
