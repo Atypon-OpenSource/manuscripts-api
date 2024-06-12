@@ -39,10 +39,10 @@ async function main() {
       const data = user.data
       if (data && 'name' in data && 'email' in data && 'connectUserID' in data) {
         const newID = user.id.replace('|', '_')
-        const name = data.name 
+        const name = data.name
         const { given, family } = splitName(name)
-        const connectUserID = data.connectUserID 
-        const email = data.email 
+        const connectUserID = data.connectUserID
+        const email = data.email
         await tx.user.update({
           where: {
             id: user.id,
@@ -58,7 +58,7 @@ async function main() {
         console.log(`user updated: ${user.id} -> ${newID}`)
       }
     }
-  }, {timeout: 600000})
+  }, { timeout: 100000 })
 }
 // eslint-disable-next-line promise/catch-or-return
 main()
@@ -66,6 +66,7 @@ main()
     console.error(e)
     process.exit(1)
   })
-  .finally(async () =>{ await prisma.$disconnect() 
+  .finally(async () => {
+    await prisma.$disconnect()
     console.log('done with users')
   })

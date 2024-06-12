@@ -20,42 +20,25 @@ async function main() {
   console.log('starting document history script...')
   await prisma.$transaction(async (tx) => {
     const documents = await tx.manuscriptDoc.findMany({
-      select:{
-          manuscript_model_id:true,
+      select: {
+        manuscript_model_id: true,
+        user_model_id: true
       }
-  })
-      for (const document of documents) {
-      const histories = await tx.manuscriptDocHistory.findMany({
-        where: {
-          doc_id: document.manuscript_model_id,
-          version: {
-            gt: 0,
-          },
-        },
-        orderBy: {
-          version: 'asc',
-        },
-      })
-      const updatedSteps = []
-      for (const history of histories) {
-        const steps = history.steps 
-        steps.forEach((step) => {
-          if (step && typeof step === 'object') {
-            updatedSteps.push({ ...step, clientID: history.client_id })
-          }
-        })
-      }
+    })
+    let i = 0
+    const documentsLength = documents.length
+    for (const document of documents) {
+      console.log(`updating document ${i++} of ${documentsLength}`)
       await tx.manuscriptDoc.update({
         where: {
           manuscript_model_id: document.manuscript_model_id,
         },
         data: {
-          steps: updatedSteps,
           user_model_id: document.user_model_id.replace('|', '_'),
         },
       })
     }
-  }, {timeout: 600000})
+  }, { timeout: 800000 })
 }
 // eslint-disable-next-line promise/catch-or-return
 main()
@@ -63,6 +46,7 @@ main()
     console.error(e)
     process.exit(1)
   })
-  .finally(async () =>{ await prisma.$disconnect() 
+  .finally(async () => {
+    await prisma.$disconnect()
     console.log('done with document history')
   })
