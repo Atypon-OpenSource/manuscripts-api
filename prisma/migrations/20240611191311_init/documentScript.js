@@ -20,6 +20,11 @@ async function main() {
   console.log('starting document history script...')
   await prisma.$transaction(async (tx) => {
     const documents = await tx.manuscriptDoc.findMany({
+      where: {
+        user_model_id: {
+          startsWith: 'User|',
+        }
+      },
       select: {
         manuscript_model_id: true,
         user_model_id: true
