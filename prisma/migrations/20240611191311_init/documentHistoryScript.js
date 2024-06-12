@@ -17,9 +17,14 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient()
 
 async function main() {
+  console.log('starting document history script...')
   await prisma.$transaction(async (tx) => {
-    const documents = await tx.manuscriptDoc.findMany()
-    for (const document of documents) {
+    const documents = await tx.manuscriptDoc.findMany({
+      select:{
+          manuscript_model_id:true,
+      }
+  })
+      for (const document of documents) {
       const histories = await tx.manuscriptDocHistory.findMany({
         where: {
           doc_id: document.manuscript_model_id,
@@ -50,7 +55,7 @@ async function main() {
         },
       })
     }
-  })
+  }, {timeout: 600000})
 }
 // eslint-disable-next-line promise/catch-or-return
 main()

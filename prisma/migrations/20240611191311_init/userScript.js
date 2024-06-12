@@ -26,6 +26,7 @@ function splitName(name) {
 }
 
 async function main() {
+  console.log('starting users script..')
   await prisma.$transaction(async (tx) => {
     const users = await tx.user.findMany({
       where: {
@@ -57,7 +58,7 @@ async function main() {
         console.log(`user updated: ${user.id} -> ${newID}`)
       }
     }
-  })
+  }, {timeout: 600000})
 }
 // eslint-disable-next-line promise/catch-or-return
 main()
