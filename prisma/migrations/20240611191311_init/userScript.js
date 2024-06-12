@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { PrismaClient } from '@prisma/client'
-import { JsonObject } from 'prisma/prisma-client/runtime/library'
-
+const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient()
-function splitName(name: string) {
+function splitName(name) {
   const trimmedName = name.trim()
   const nameParts = trimmedName.split(' ')
   if (nameParts.length === 1) {
@@ -29,29 +27,34 @@ function splitName(name: string) {
 
 async function main() {
   await prisma.$transaction(async (tx) => {
-    const users = await tx.user.findMany()
+    const users = await tx.user.findMany({
+      where: {
+        id: {
+          startsWith: 'User|',
+        },
+      },
+    })
     for (const user of users) {
-      if (user.id.startsWith('User|' || 'User_')) {
-        const data = user.data as JsonObject
-        if (data && 'name' in data && 'email' in data && 'connectUserID' in data) {
-          const newID = user.id.replace('|', '_')
-          const name = data.name as string
-          const { given, family } = splitName(name)
-          const connectUserID = data.connectUserID as string
-          const email = data.email as string
-          await tx.user.update({
-            where: {
-              id: user.id,
-            },
-            data: {
-              connectUserID,
-              family,
-              id: newID,
-              given,
-              email,
-            },
-          })
-        }
+      const data = user.data
+      if (data && 'name' in data && 'email' in data && 'connectUserID' in data) {
+        const newID = user.id.replace('|', '_')
+        const name = data.name 
+        const { given, family } = splitName(name)
+        const connectUserID = data.connectUserID 
+        const email = data.email 
+        await tx.user.update({
+          where: {
+            id: user.id,
+          },
+          data: {
+            connectUserID,
+            family,
+            id: newID,
+            given,
+            email,
+          },
+        })
+        console.log(`user updated: ${user.id} -> ${newID}`)
       }
     }
   })
@@ -62,4 +65,6 @@ main()
     console.error(e)
     process.exit(1)
   })
-  .finally(async () => await prisma.$disconnect())
+  .finally(async () =>{ await prisma.$disconnect() 
+    console.log('done with users')
+  })

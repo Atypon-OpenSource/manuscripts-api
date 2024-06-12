@@ -24,7 +24,7 @@ import { BaseController } from '../../BaseController'
 export const APP_SECRET_HEADER_KEY = 'manuscripts-app-secret'
 
 export class AuthController extends BaseController {
-  async serverToServerAuthToken(payload: UserCredentials): Promise<string> {
-    return await DIContainer.sharedContainer.authenticationService.serverToServerAuthToken(payload)
+  async serverToServerTokenAuth(payload: UserCredentials): Promise<string> {
+    return await DIContainer.sharedContainer.authenticationService.serverToServerTokenAuth(payload)
   }
 }

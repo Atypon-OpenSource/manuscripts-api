@@ -21,7 +21,7 @@ import { generateUserToken } from '../Utilities/JWT/LoginTokenPayload'
 
 export class AuthenticationService {
   constructor(private readonly userRepoistory: UserClient) {}
-  public async serverToServerAuthToken({ deviceID, connectUserID }: UserCredentials) {
+  public async serverToServerTokenAuth({ deviceID, connectUserID }: UserCredentials) {
     const user = await this.userRepoistory.findByConnectID(connectUserID)
     if (!user) {
       throw new AccountNotFoundError(connectUserID)

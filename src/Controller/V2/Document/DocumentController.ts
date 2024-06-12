@@ -93,7 +93,8 @@ export class DocumentController extends BaseController {
     projectID: string,
     manuscriptID: string,
     versionID: number,
-    user: Express.User | undefined
+    user: Express.User | undefined,
+    withDocument = true
   ) {
     if (!user) {
       throw new ValidationError('No user found', user)
@@ -103,6 +104,10 @@ export class DocumentController extends BaseController {
       projectID,
       DocumentPermission.READ
     )
-    return await DIContainer.sharedContainer.authorityService.getEvents(manuscriptID, versionID)
+    return await DIContainer.sharedContainer.authorityService.getEvents(
+      manuscriptID,
+      versionID,
+      withDocument
+    )
   }
 }

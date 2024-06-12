@@ -33,7 +33,7 @@ export interface SnapshotLabelResult {
 }
 const EMPTY_PERMISSIONS = new Set<DocumentPermission>()
 
-export class DocumnetService {
+export class DocumentService {
   async getPermissions(
     projectID: string,
     userID: string

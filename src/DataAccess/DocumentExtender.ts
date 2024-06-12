@@ -37,6 +37,7 @@ export class DocumentExtender {
       createDocument: this.createDocument,
       updateDocument: this.updateDocument,
       deleteDocument: this.deleteDocument,
+      findHistory: this.findHistory,
     }
   }
 
@@ -52,6 +53,22 @@ export class DocumentExtender {
     const found = await this.prisma.manuscriptDoc.findUnique({
       where: {
         manuscript_model_id: documentID,
+      },
+    })
+    if (!found) {
+      throw new MissingDocumentError(documentID)
+    }
+    return found
+  }
+
+  private findHistory = async (documentID: string) => {
+    const found = await this.prisma.manuscriptDoc.findUnique({
+      where: {
+        manuscript_model_id: documentID,
+      },
+      select: {
+        steps: true,
+        version: true,
       },
     })
     if (!found) {

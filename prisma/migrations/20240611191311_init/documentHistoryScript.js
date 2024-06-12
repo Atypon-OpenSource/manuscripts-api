@@ -13,9 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { PrismaClient } from '@prisma/client'
-import { JsonObject } from 'prisma/prisma-client/runtime/library'
-
+const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient()
 
 async function main() {
@@ -33,9 +31,9 @@ async function main() {
           version: 'asc',
         },
       })
-      const updatedSteps: JsonObject[] = []
+      const updatedSteps = []
       for (const history of histories) {
-        const steps = history.steps as JsonObject[]
+        const steps = history.steps 
         steps.forEach((step) => {
           if (step && typeof step === 'object') {
             updatedSteps.push({ ...step, clientID: history.client_id })
@@ -60,4 +58,6 @@ main()
     console.error(e)
     process.exit(1)
   })
-  .finally(async () => await prisma.$disconnect())
+  .finally(async () =>{ await prisma.$disconnect() 
+    console.log('done with document history')
+  })

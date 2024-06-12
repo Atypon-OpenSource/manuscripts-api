@@ -50,7 +50,6 @@ export function timestamp() {
 }
 
 export function isLoginTokenPayload(obj: string | object | null): obj is LoginTokenPayload {
-  console.log(obj)
   if (!obj) {
     return false
   }

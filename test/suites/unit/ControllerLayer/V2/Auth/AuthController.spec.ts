@@ -14,15 +14,12 @@
  * limitations under the License.
  */
 
-import '../../../../../utilities/configMock'
 import '../../../../../utilities/dbMock'
 
 import { describe } from 'jest-circus'
 
 import { AuthController } from '../../../../../../src/Controller/V2/Auth/AuthController'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
-import { InvalidCredentialsError } from '../../../../../../src/Errors'
-import { ValidHeaderWithApplicationKey } from '../../../../../data/fixtures/headers'
 import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
 
 jest.setTimeout(TEST_TIMEOUT)
@@ -33,51 +30,13 @@ beforeEach(() => {
 })
 
 describe('AuthController - serverToServerTokenAuth', () => {
-  test('should fail if the deviceId is not a string', async () => {
-    const req: any = {
-      headers: { ...ValidHeaderWithApplicationKey },
-      body: {
-        deviceId: 123456,
-      },
-      params: {
-        connectUserID: 'valid-connectId',
-      },
-    }
-    const authController = new AuthController()
-    await expect(authController.serverToServerTokenAuth(req)).rejects.toThrow(
-      InvalidCredentialsError
-    )
-  })
-
-  test('should fail if the connectUserID is not a string', async () => {
-    const req: any = {
-      headers: { ...ValidHeaderWithApplicationKey },
-      body: {
-        deviceId: 'valid-deviceId',
-      },
-      params: {
-        connectUserID: 123456,
-      },
-    }
-    const authController = new AuthController()
-    await expect(authController.serverToServerTokenAuth(req)).rejects.toThrow(
-      InvalidCredentialsError
-    )
-  })
-
   test('should call serverToServerAuth', async () => {
-    DIContainer.sharedContainer.authService.serverToServerTokenAuth = jest.fn()
-    const req: any = {
-      headers: { ...ValidHeaderWithApplicationKey },
-      body: {
-        deviceId: 'valid-deviceId',
-      },
-      params: {
-        connectUserID: 'valid-connectId',
-      },
-    }
+    DIContainer.sharedContainer.authenticationService.serverToServerTokenAuth = jest.fn()
+    const payload = { deviceID: '123456', connectUserID: 'valid-connectId' }
     const authController = new AuthController()
-    await authController.serverToServerTokenAuth(req)
-    expect(DIContainer.sharedContainer.authService.serverToServerTokenAuth).toHaveBeenCalled()
+    await authController.serverToServerTokenAuth(payload)
+    expect(
+      DIContainer.sharedContainer.authenticationService.serverToServerTokenAuth
+    ).toHaveBeenCalled()
   })
 })

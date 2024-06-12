@@ -180,7 +180,8 @@ export class DocumentRoute extends BaseRoute {
       projectID,
       manuscriptID,
       parseInt(versionID),
-      user
+      user,
+      false
     )
     res.status(StatusCodes.OK).send({ clientIDs, version, steps })
   }

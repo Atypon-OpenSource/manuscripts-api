@@ -26,7 +26,7 @@ import { UserExtender } from '../DataAccess/UserExtender'
 import { AuthenticationService } from '../DomainServices/AuthenticationService'
 import { AuthorityService } from '../DomainServices/AuthorityService'
 import { ConfigService } from '../DomainServices/ConfigService'
-import { DocumnetService } from '../DomainServices/DocumentService'
+import { DocumentService } from '../DomainServices/DocumentService'
 import { EventManager } from '../DomainServices/EventService'
 import { PressroomService } from '../DomainServices/PressroomService'
 import { ProjectService } from '../DomainServices/ProjectService'
@@ -41,6 +41,8 @@ import {
 } from '../Models/RepositoryModels'
 import { IServer } from '../Server/IServer'
 import { Server } from '../Server/Server'
+
+const prisma = new PrismaClient()
 
 export class UninitializedContainerError extends Error {
   constructor() {
@@ -73,7 +75,7 @@ export class DIContainer {
   readonly userService: UserService
   readonly configService: ConfigService
   readonly pressroomService: PressroomService
-  readonly documentService: DocumnetService
+  readonly documentService: DocumentService
   readonly authenticationService: AuthenticationService
   readonly registerationService: RegisterationService
   readonly projectClient: ProjectClient
@@ -95,7 +97,7 @@ export class DIContainer {
     this.server = new Server()
 
     this.pressroomService = new PressroomService(config.pressroom.baseurl, config.pressroom.apiKey)
-    this.documentService = new DocumnetService()
+    this.documentService = new DocumentService()
     this.eventclient = repository.eventClient
     this.eventManager = new EventManager(this.eventclient)
     this.authenticationService = new AuthenticationService(repository.userClient)
@@ -132,7 +134,6 @@ export class DIContainer {
     if (DIContainer._sharedContainer !== null) {
       throw new ContainerReinitializationError()
     }
-    const prisma = new PrismaClient()
     const documentExtender = new DocumentExtender(prisma)
     const snapshotExtender = new SnapshotExtender(prisma)
     const eventExtender = new EventExtender(prisma)

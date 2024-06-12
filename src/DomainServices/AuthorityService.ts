@@ -15,7 +15,7 @@
  */
 
 import { getVersion, schema } from '@manuscripts/transform'
-import { Prisma } from '@prisma/client'
+import { ManuscriptDoc, Prisma } from '@prisma/client'
 import { JsonObject } from '@prisma/client/runtime/library'
 import { Step } from 'prosemirror-transform'
 
@@ -48,19 +48,32 @@ export class AuthorityService {
     })
   }
 
-  public async getEvents(documentID: string, versionID: number): Promise<History> {
-    const found = await this.repository.manuscriptDoc.findDocument(documentID)
+  public async getEvents(
+    documentID: string,
+    versionID: number,
+    withDocument: boolean
+  ): Promise<History> {
+    let found: { steps: Prisma.JsonValue[]; version: number } | ManuscriptDoc
+    if (withDocument) {
+      found = await this.repository.manuscriptDoc.findDocument(documentID)
+    } else {
+      found = await this.repository.manuscriptDoc.findHistory(documentID)
+    }
     const startIndex = found.steps.length - (found.version - versionID)
     const steps = found.steps.slice(startIndex)
     const clientIDs = steps
       .filter((step): step is { clientID: string } => typeof step === 'object' && step !== null)
       .map((step: { clientID: string }) => parseInt(step.clientID))
 
-    return {
-      doc: found.doc,
+    const history = {
       steps: this.hydrateSteps(steps),
       clientIDs,
       version: found.version,
+    }
+    if ('doc' in found) {
+      return { doc: found.doc, ...history }
+    } else {
+      return history
     }
   }
 

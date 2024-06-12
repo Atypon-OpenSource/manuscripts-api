@@ -13,7 +13,7 @@
     "build-app": "tsc --project tsconfig.build.json",
     "generate-prisma": "prisma generate",
     "migrate-prisma": "prisma migrate dev --name init",
-    "migrate-prisma-deploy": "prisma migrate deploy && ts-node -r tsconfig-paths/register ./prisma/migrations/20240611191311_init/runScripts.ts",
+    "migrate-prisma-deploy": "prisma migrate deploy && node ./prisma/migrations/20240611191311_init/documentHistoryScript.js && node ./prisma/migrations/20240611191311_init/userScript.js",
     "lint": "eslint src --ext .js,.ts",
     "typecheck": "tsc --noEmit",
     "test": "run-s test:unit test:int",

@@ -14,40 +14,16 @@
  * limitations under the License.
  */
 
-jest.mock('../../src/DataAccess/SQLDatabase', () => {
+jest.mock('../../src/DataAccess/Repository', () => {
   return {
-    SQLDatabase: jest.fn(() => ({
-      loadDatabaseModels: jest.fn(),
-      createDesignDocument: jest.fn(),
-      getDesignDocument: jest.fn(),
-      documentMapper: {
-        ensureIndices: jest.fn((_DeferBuild: boolean, callback: any) => {
-          callback(null)
-        }),
-        model: jest.fn(),
-        models: {
-          User: {
-            create: jest.fn(),
-            getById: jest.fn(),
-            fromData: jest.fn(),
-          },
-        },
-      },
-      bucket: {
-        insert: jest.fn((_doc: any) => Promise.resolve(null)),
-        query: jest.fn((_query: any) => Promise.resolve([])),
-        findMany: jest.fn((_query: any) => Promise.resolve([])),
-        remove: jest.fn((_query: any) => Promise.resolve([])),
-        count: jest.fn((_query: any) => Promise.resolve(0)),
-        findFirst: jest.fn((_query: any) => Promise.resolve(null)),
-        findUnique: jest.fn((_query: any) => Promise.resolve(null)),
-        touch: jest.fn((_key: any | Buffer, _expiry: number, _options: any, callback: any) =>
-          callback(null, null)
-        ),
-        replace: jest.fn((_id: string, _document: any) => Promise.resolve(null)),
-        upsert: jest.fn((_id: string, _document: any) => Promise.resolve(null)),
-        _name: 'BUCKET_NAME',
-      },
+    Repository: jest.fn(() => ({
+      connectClient: jest.fn(),
+      getDB: jest.fn(),
+      documentClient: jest.fn(),
+      projectClient: jest.fn(),
+      userClient: jest.fn(),
+      snapshotClient: jest.fn(),
+      eventClient: jest.fn(),
     })),
   }
 })

@@ -13,19 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import '../../../../../utilities/dbMock'
 import '../../../../../utilities/configMock'
+import '../../../../../utilities/dbMock'
 
 import { StatusCodes } from 'http-status-codes'
 
 import { ProjectRoute } from '../../../../../../src/Controller/V2/Project/ProjectRoute'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
-import {
-  ProjectPermission,
-  ProjectService,
-} from '../../../../../../src/DomainServices/ProjectService'
+import { ProjectService } from '../../../../../../src/DomainServices/ProjectService'
 import { RoleDoesNotPermitOperationError, ValidationError } from '../../../../../../src/Errors'
-import { ProjectUserRole } from '../../../../../../src/Models/ContainerModels'
+import { ProjectPermission, ProjectUserRole } from '../../../../../../src/Models/ProjectModels'
 import {
   createManuscriptRequest,
   createProjectRequest,
@@ -380,15 +377,11 @@ describe('ProjectRoute', () => {
       // @ts-ignore
       await route.getArchive(getArchiveRequest, res)
 
-      expect(projectService.makeArchive).toHaveBeenCalledWith(
-        getArchiveRequest.params.projectID,
-        getArchiveRequest.params.manuscriptID,
-        {
-          getAttachments: true,
-          onlyIDs: true,
-          includeExt: true,
-        }
-      )
+      expect(projectService.makeArchive).toHaveBeenCalledWith(getArchiveRequest.params.projectID, {
+        getAttachments: true,
+        onlyIDs: true,
+        includeExt: true,
+      })
       expect(res.status).toHaveBeenCalledWith(StatusCodes.OK)
     })
 
@@ -404,15 +397,11 @@ describe('ProjectRoute', () => {
       // @ts-ignore
       await route.getArchive(request, res)
 
-      expect(projectService.makeArchive).toHaveBeenCalledWith(
-        getArchiveRequest.params.projectID,
-        undefined,
-        {
-          getAttachments: true,
-          onlyIDs: true,
-          includeExt: true,
-        }
-      )
+      expect(projectService.makeArchive).toHaveBeenCalledWith(getArchiveRequest.params.projectID, {
+        getAttachments: true,
+        onlyIDs: true,
+        includeExt: true,
+      })
       expect(res.status).toHaveBeenCalledWith(StatusCodes.OK)
     })
   })

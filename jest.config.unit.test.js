@@ -44,17 +44,7 @@ module.exports = {
         "!src/Utilities/Logger/**",
         "!src/Utilities/Docs/**",
         "!src/Utilities/fs-promise.ts",
-        "!src/DataAccess/SQLDatabase.ts",
-        "!src/DataAccess/DatabaseIndices.ts",
-        "!src/DataAccess/**Repository/**",
-        "!src/DataAccess/QueryKind.ts",
-        "!src/DomainServices/UserActivity/UserActivityTrackingService.ts",
+        "!src/DataAccess/**",
         "!src/DomainServices/Pressroom/PressroomService.ts",
-        "!src/DomainServices/Document/DocumentService.ts",
-        "!src/DomainServices/Snapshot/SnapshotService.ts",
-        "!src/DomainServices/DocumentHistory/DocumentHistoryService.ts",
-        "!src/DomainServices/Shackles/ShacklesService.ts",
-        "!src/DomainServices/Expiration/ExpirationService.ts",
-        "!src/DomainServices/SG/SGService.ts",
     ]
 }

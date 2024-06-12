@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import '../../../../utilities/dbMock.ts'
 import '../../../../utilities/configMock.ts'
+import '../../../../utilities/dbMock.ts'
 
 import { schema } from '@manuscripts/transform'
 import { Prisma, PrismaClient } from '@prisma/client'
@@ -81,7 +81,7 @@ describe('CollaborationService', () => {
       mockPrisma.$transaction.mockImplementation(async (callback) => {
         return await callback(mockPrisma)
       })
-      documentService.findDocument = jest
+      DIContainer.sharedContainer.repository.DB.manuscriptDoc.findDocument = jest
         .fn()
         .mockRejectedValue(new MissingDocumentError('documentID'))
       await expect(

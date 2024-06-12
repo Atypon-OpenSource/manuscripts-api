@@ -17,60 +17,57 @@
 import '../../../../utilities/configMock.ts'
 import '../../../../utilities/dbMock.ts'
 
-import { DIContainer } from '../../../../../src/DIContainer/DIContainer'
-import { ContainerService } from '../../../../../src/DomainServices/Container/ContainerService'
+import { DIContainer } from '../../../../../src/DIContainer/DIContainer.ts'
 import {
   DocumentPermission,
-  DocumnetService,
-} from '../../../../../src/DomainServices/DocumentService.js'
-import { ProjectService } from '../../../../../src/DomainServices/ProjectService'
-import { ContainerRole } from '../../../../../src/Models/ContainerModels'
+  DocumentService,
+} from '../../../../../src/DomainServices/DocumentService'
+import { ProjectService } from '../../../../../src/DomainServices/ProjectService.ts'
+import { ProjectUserRole } from '../../../../../src/Models/ProjectModels'
 
-let quarterbackService: DocumnetService
-let containerService: ContainerService
+let documentService: DocumentService
 let projectService: ProjectService
 beforeEach(async () => {
   ;(DIContainer as any)._sharedContainer = null
   await DIContainer.init()
-  quarterbackService = DIContainer.sharedContainer.documentService
-  containerService = DIContainer.sharedContainer.containerService
+  documentService = DIContainer.sharedContainer.documentService
   projectService = DIContainer.sharedContainer.projectService
 })
 afterEach(() => {
   jest.clearAllMocks()
 })
 
-describe('QuarterbackService', () => {
+describe('DocumentService', () => {
   describe('validateUserAccess', () => {
     it('should not throw an error if user has access', async () => {
-      const user = { _id: 'random_user_id' } as any
-      quarterbackService.getPermissions = jest
+      const user = { id: 'random_user_id' } as any
+      documentService.getPermissions = jest
         .fn()
         .mockResolvedValue(new Set([DocumentPermission.READ, DocumentPermission.WRITE]))
 
       await expect(
-        quarterbackService.validateUserAccess(user, 'random_project_id', DocumentPermission.READ)
+        documentService.validateUserAccess(user, 'random_project_id', DocumentPermission.READ)
       ).resolves.not.toThrow()
 
       await expect(
-        quarterbackService.validateUserAccess(user, 'random_project_id', DocumentPermission.WRITE)
+        documentService.validateUserAccess(user, 'random_project_id', DocumentPermission.WRITE)
       ).resolves.not.toThrow()
     })
     it('should throw an error if user does not have access', async () => {
-      const user = { _id: 'random_user_id' } as any
-      quarterbackService.getPermissions = jest
+      const user = { id: 'random_user_id' } as any
+      documentService.getPermissions = jest
         .fn()
         .mockResolvedValue(new Set([DocumentPermission.READ]))
 
       await expect(
-        quarterbackService.validateUserAccess(user, 'random_project_id', DocumentPermission.WRITE)
+        documentService.validateUserAccess(user, 'random_project_id', DocumentPermission.WRITE)
       ).rejects.toThrow()
     })
     it('should throw an error if user is not found', async () => {
       const user = undefined as any
 
       await expect(
-        quarterbackService.validateUserAccess(user, 'random_project_id', DocumentPermission.WRITE)
+        documentService.validateUserAccess(user, 'random_project_id', DocumentPermission.WRITE)
       ).rejects.toThrow()
     })
   })
@@ -79,57 +76,55 @@ describe('QuarterbackService', () => {
       const projectID = 'random_project_id'
       const userID = 'random_user_id'
       const project = { _id: projectID } as any
-      const role = ContainerRole.Owner
-      containerService.getUserRole = jest.fn().mockReturnValue(role)
+      const role = ProjectUserRole.Owner
+      projectService.getUserRole = jest.fn().mockReturnValue(role)
       projectService.getProject = jest.fn().mockResolvedValue(project)
       const expectedPermissions = new Set([DocumentPermission.READ, DocumentPermission.WRITE])
-      await expect(quarterbackService.getPermissions(projectID, userID)).resolves.toEqual(
+      await expect(documentService.getPermissions(projectID, userID)).resolves.toEqual(
         expectedPermissions
       )
-      expect(containerService.getUserRole).toHaveBeenCalledWith(project, userID)
+      expect(projectService.getUserRole).toHaveBeenCalledWith(project, userID)
     })
     it('should return an empty set if the user has no permissions', async () => {
       const projectID = 'random_project_id'
       const userID = 'random_user_id'
       const project = { _id: projectID } as any
       const role = undefined
-      containerService.getUserRole = jest.fn().mockReturnValue(role)
+      projectService.getUserRole = jest.fn().mockReturnValue(role)
       projectService.getProject = jest.fn().mockResolvedValue(project)
       const expectedPermissions = new Set([])
-      await expect(quarterbackService.getPermissions(projectID, userID)).resolves.toEqual(
+      await expect(documentService.getPermissions(projectID, userID)).resolves.toEqual(
         expectedPermissions
       )
-      expect(containerService.getUserRole).toHaveBeenCalledWith(project, userID)
+      expect(projectService.getUserRole).toHaveBeenCalledWith(project, userID)
     })
     it('should return an empty set if the user is not found', async () => {
       const projectID = 'random_project_id'
       const userID = 'random_user_id'
       const project = { _id: projectID } as any
       const role = null
-      containerService.getUserRole = jest.fn().mockReturnValue(role)
+      projectService.getUserRole = jest.fn().mockReturnValue(role)
       projectService.getProject = jest.fn().mockResolvedValue(project)
       const expectedPermissions = new Set([])
-      await expect(quarterbackService.getPermissions(projectID, userID)).resolves.toEqual(
+      await expect(documentService.getPermissions(projectID, userID)).resolves.toEqual(
         expectedPermissions
       )
-      expect(containerService.getUserRole).toHaveBeenCalledWith(project, userID)
+      expect(projectService.getUserRole).toHaveBeenCalledWith(project, userID)
     })
   })
   describe('getManuscriptFromSnapshot', () => {
     it('should return the manuscript from the snapshot', async () => {
       const snapshot = { doc_id: 'random_manuscript_id' } as any
       const manuscript = { _id: snapshot.doc_id } as any
-      DIContainer.sharedContainer.manuscriptRepository.getById = jest
-        .fn()
-        .mockResolvedValue(manuscript)
-      await expect(quarterbackService.getManuscriptFromSnapshot(snapshot)).resolves.toStrictEqual(
+      DIContainer.sharedContainer.projectClient.getProject = jest.fn().mockResolvedValue(manuscript)
+      await expect(documentService.getManuscriptFromSnapshot(snapshot)).resolves.toStrictEqual(
         manuscript
       )
     })
     it('should throw an error if the manuscript is not found', async () => {
       const snapshot = { doc_id: 'random_manuscript_id' } as any
-      DIContainer.sharedContainer.manuscriptRepository.getById = jest.fn().mockResolvedValue(null)
-      await expect(quarterbackService.getManuscriptFromSnapshot(snapshot)).rejects.toThrow()
+      DIContainer.sharedContainer.projectClient.getProject = jest.fn().mockResolvedValue(null)
+      await expect(documentService.getManuscriptFromSnapshot(snapshot)).rejects.toThrow()
     })
   })
 })

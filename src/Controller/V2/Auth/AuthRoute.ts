@@ -52,7 +52,7 @@ export class AuthRoute extends BaseRoute {
   private async serverToServerTokenAuth(req: Request, res: Response) {
     const { deviceId } = req.body
     const { connectUserID } = req.params
-    const token = await this.authController.serverToServerAuthToken({
+    const token = await this.authController.serverToServerTokenAuth({
       deviceID: deviceId,
       connectUserID,
     })
