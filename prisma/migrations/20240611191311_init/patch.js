@@ -16,36 +16,27 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient()
 
+const documentQuery = `UPDATE manuscriptDoc
+                       SET user_model_id = REPLACE(user_model_id, '|', '_')
+                       WHERE user_model_id LIKE 'User|%';
+                       `
+
+const userQuery = `UPDATE "User"
+                   SET
+                    "id" = REPLACE("id", '|', '_'),
+                    "given" = SPLIT_PART(data->>'name', ' ', 1),
+                    "family" = SPLIT_PART(data->>'name', ' ', 2),
+                    "connectUserID" = data->>'connectUserID',
+                    "email" = data->>'email'
+                   WHERE
+                   "id" LIKE 'User|%'`
+                   
 async function main() {
-  console.log('starting document history script...')
   await prisma.$transaction(async (tx) => {
-    const documents = await tx.manuscriptDoc.findMany({
-      where: {
-        user_model_id: {
-          startsWith: 'User|',
-        }
-      },
-      select: {
-        manuscript_model_id: true,
-        user_model_id: true
-      }
-    })
-    let i = 0
-    const documentsLength = documents.length
-    for (const document of documents) {
-      console.log(`updating document ${i++} of ${documentsLength}`)
-      await tx.manuscriptDoc.update({
-        where: {
-          manuscript_model_id: document.manuscript_model_id,
-        },
-        data: {
-          user_model_id: document.user_model_id.replace('|', '_'),
-        },
-      })
-    }
-  }, { timeout: 800000 })
+    await tx.$executeRaw(documentQuery)
+    await tx.$executeRaw(userQuery)
+  })
 }
-// eslint-disable-next-line promise/catch-or-return
 main()
   .catch(async (e) => {
     console.error(e)
@@ -53,5 +44,4 @@ main()
   })
   .finally(async () => {
     await prisma.$disconnect()
-    console.log('done with document history')
   })
