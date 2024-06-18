@@ -16,7 +16,7 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient()
 
-const documentQuery = `UPDATE manuscriptDoc
+const documentQuery = `UPDATE "ManuscriptDoc"
                        SET user_model_id = REPLACE(user_model_id, '|', '_')
                        WHERE user_model_id LIKE 'User|%';
                        `
@@ -33,8 +33,8 @@ const userQuery = `UPDATE "User"
                    
 async function main() {
   await prisma.$transaction(async (tx) => {
-    await tx.$executeRaw(documentQuery)
-    await tx.$executeRaw(userQuery)
+    await tx.$executeRawUnsafe(documentQuery)
+    await tx.$executeRawUnsafe(userQuery)
   })
 }
 main()
