@@ -34,8 +34,10 @@ const userQuery = `UPDATE "User"
 async function main() {
   await prisma.$transaction(async (tx) => {
     await tx.$executeRawUnsafe(documentQuery)
+    console.log('Document table updated')
     await tx.$executeRawUnsafe(userQuery)
-  })
+    console.log('User table updated')
+  }, {timeout: 850000})
 }
 main()
   .catch(async (e) => {
