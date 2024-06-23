@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+import { getVersion } from '@manuscripts/transform'
 import { ManuscriptDoc, Prisma } from '@prisma/client'
 
 import type {
@@ -23,6 +25,7 @@ import type {
 import prisma, { PrismaErrorCodes } from '../../DataAccess/prismaClient'
 import { MissingDocumentError, MissingRecordError } from '../../Errors'
 import { IDocumentService } from './IDocumentService'
+import maybeMigrate from './maybe-migrate'
 
 export class DocumentService implements IDocumentService {
   async findDocumentVersion(
@@ -76,6 +79,10 @@ export class DocumentService implements IDocumentService {
     })
     if (!found) {
       throw new MissingDocumentError(documentID)
+    }
+    if (found.schema_version !== getVersion()) {
+      const { doc, schema_version } = await maybeMigrate(found)
+      return { ...found, doc, schema_version }
     }
     return found
   }
