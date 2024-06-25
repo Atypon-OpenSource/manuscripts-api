@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { schema } from '@manuscripts/transform'
+import { getVersion, schema } from '@manuscripts/transform'
 import { ManuscriptDocHistory, Prisma } from '@prisma/client'
 import { Step } from 'prosemirror-transform'
 
@@ -41,6 +41,7 @@ export class CollaborationService {
         {
           doc: updatedDoc,
           version: payload.version + payload.steps.length,
+          schema_version: getVersion(),
         },
         tx
       )

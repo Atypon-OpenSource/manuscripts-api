@@ -30,12 +30,14 @@ export interface ICreateDoc {
   manuscript_model_id: string
   project_model_id: string
   doc: Doc
+  schema_version: string
 }
 export type ICreateDocResponse = ManuscriptDocWithSnapshots
 
 export type IUpdateDocument = {
   doc: Doc
   version?: number
+  schema_version?: string
 }
 
 export type Client = {

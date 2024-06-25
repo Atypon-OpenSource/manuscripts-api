@@ -24,6 +24,7 @@ export const createDocumentSchema: Joi.SchemaMap = {
     manuscript_model_id: Joi.string().required(),
     project_model_id: Joi.string().required(),
     doc: Joi.object().required(),
+    schema_version: Joi.string().required(),
   }),
 }
 export const updateDocumentSchema: Joi.SchemaMap = {
@@ -33,6 +34,7 @@ export const updateDocumentSchema: Joi.SchemaMap = {
   }),
   body: Joi.object({
     doc: Joi.object().required(),
+    schema_version: Joi.string().required(),
   }),
 }
 export const getDocumentSchema: Joi.SchemaMap = {
