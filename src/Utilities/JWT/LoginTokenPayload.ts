@@ -25,7 +25,7 @@ import { config } from '../../Config/Config'
 export type LoginTokenPayload = {
   email: string
   deviceID: string
-  id: string
+  userID: string
   aud: string
   iat: number
   iss: string
@@ -57,8 +57,8 @@ export function isLoginTokenPayload(obj: string | object | null): obj is LoginTo
     return false
   }
   return (
-    (obj as any).id &&
-    typeof (obj as any).id === 'string' &&
+    (obj as any).userID &&
+    typeof (obj as any).userID === 'string' &&
     (obj as any).deviceID &&
     typeof (obj as any).deviceID === 'string'
   )

@@ -29,7 +29,7 @@ export class AuthenticationService {
     const { id, email } = user
     const token = generateUserToken({
       email,
-      id,
+      userID: id,
       deviceID,
     })
     return token

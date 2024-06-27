@@ -33,7 +33,7 @@ export class UserService {
     if (!isLoginTokenPayload(payload)) {
       throw new InvalidCredentialsError('Unexpected token payload.')
     }
-    const user = await this.userRepository.findByID(payload.id)
+    const user = await this.userRepository.findByID(payload.userID)
     return user ? this.createUserProfile(user) : null
   }
 

@@ -35,7 +35,7 @@ export class JwtAuthStrategy {
       new Strategy(opts, async (jwt, done) => {
         try {
           // TODO: remove the OR statement after this is deployed everywhere
-          const id = jwt.id || jwt.userId?.toString().replace('|', '_')
+          const id = jwt.userID || jwt.userId?.toString().replace('|', '_')
           const user = await DIContainer.sharedContainer.userClient.findByID(id)
           if (!user) {
             return done(null, false)
