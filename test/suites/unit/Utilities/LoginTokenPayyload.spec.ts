@@ -22,7 +22,7 @@ describe('LoginTokenPayyload', () => {
     const stringToken = 'foo'
     const invalidObjTokenB = { id: 3 }
     const invalidObjTokenD = {}
-    const validToken = { id: 'bar', deviceID: 'baz' }
+    const validToken = { userID: 'bar', deviceID: 'baz' }
 
     expect(isLoginTokenPayload(nullToken)).toBeFalsy()
     expect(isLoginTokenPayload(stringToken)).toBeFalsy()

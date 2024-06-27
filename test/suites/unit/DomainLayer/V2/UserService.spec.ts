@@ -26,7 +26,7 @@ import { TEST_TIMEOUT } from '../../../../utilities/testSetup'
 
 jest.setTimeout(TEST_TIMEOUT)
 jest.mock('jsonwebtoken', () => ({
-  decode: jest.fn().mockReturnValue({ id: 'User_1', deviceID: 'device123' }),
+  decode: jest.fn().mockReturnValue({ userID: 'User_1', deviceID: 'device123' }),
 }))
 beforeEach(() => {
   ;(DIContainer as any)._sharedContainer = null

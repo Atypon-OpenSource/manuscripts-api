@@ -56,7 +56,7 @@ describe('AuthenticationService', () => {
     expect(userClient.findByConnectID).toHaveBeenCalledWith('user123')
     expect(generateUserToken).toHaveBeenCalledWith({
       email: mockUser.email,
-      id: mockUser.id,
+      userID: mockUser.id,
       deviceID: 'device123',
     })
   })
