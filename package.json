@@ -28,8 +28,8 @@
     "lint"
   ],
   "dependencies": {
-    "@manuscripts/json-schema": "2.2.8",
-    "@manuscripts/transform": "2.3.9",
+    "@manuscripts/json-schema": "2.2.9-LEAN-3307.0",
+    "@manuscripts/transform": "2.3.9-LEAN-3307.1",
     "@prisma/client": "^5.13.0",
     "bcrypt": "^5.1.0",
     "celebrate": "^15.0.1",
