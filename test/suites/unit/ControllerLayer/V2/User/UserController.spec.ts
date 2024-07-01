@@ -32,144 +32,79 @@ beforeEach(() => {
   ;(DIContainer as any)._sharedContainer = null
   return DIContainer.init()
 })
-
 describe('UserController', () => {
-  test('should call markUserForDeletion()', async () => {
-    const userService: any = DIContainer.sharedContainer.userService
-    const req: any = {
-      body: {},
-      user: { _id: 'foo' },
-    }
+  describe('UserController - getProfile', () => {
+    test('should call profile()', async () => {
+      const userService: any = DIContainer.sharedContainer.userService
+      const chance = new Chance()
+      const req: any = {
+        headers: authorizationHeader(chance.string()),
+      }
 
-    userService.markUserForDeletion = jest.fn(() => {
-      log.debug('markUserForDeletion function called')
+      userService.profile = jest.fn(() => {
+        log.debug('getProfile function called')
+        return Promise.resolve(null)
+      })
+
+      const userController: UserController = new UserController()
+      await userController.getProfile(req)
+
+      expect(userService.profile).toHaveBeenCalled()
     })
 
-    const userController: UserController = new UserController()
-    await userController.markUserForDeletion(req)
+    test('getProfile should fail if the token is not a bearer token', () => {
+      const chance = new Chance()
+      const req: any = {
+        headers: {
+          authorization: chance.string(),
+        },
+      }
 
-    expect(userService.markUserForDeletion).toHaveBeenCalled()
-  })
-
-  test('should call unmarkUserForDeletion()', async () => {
-    const userService: any = DIContainer.sharedContainer.userService
-    const req: any = {
-      user: { _id: 'foo' },
-    }
-
-    userService.unmarkUserForDeletion = jest.fn(() => {
-      log.debug('unmarkUserForDeletion function called')
+      const userController: UserController = new UserController()
+      return expect(userController.getProfile(req)).rejects.toThrow(ValidationError)
     })
 
-    const userController: UserController = new UserController()
-    await userController.unmarkUserForDeletion(req)
+    test('getProfile should fail if the token is undefined', () => {
+      const req: any = {
+        headers: {
+          authorization: undefined,
+        },
+      }
 
-    expect(userService.unmarkUserForDeletion).toHaveBeenCalled()
-  })
-
-  test('unmarkUserForDeletion should fail if user not found', () => {
-    const req: any = {
-      body: {},
-    }
-
-    const userController: UserController = new UserController()
-    return expect(userController.unmarkUserForDeletion(req)).rejects.toThrow(ValidationError)
-  })
-
-  test('markUserForDeletion should fail if the password defined but it is not a string', () => {
-    const chance = new Chance()
-    const req: any = {
-      body: {
-        password: chance.integer(),
-      },
-      user: { _id: 'foo' },
-    }
-
-    const userController: UserController = new UserController()
-    return expect(userController.markUserForDeletion(req)).rejects.toThrow(ValidationError)
-  })
-
-  test('markUserForDeletion should fail if user not found', () => {
-    const req: any = {
-      body: {},
-    }
-
-    const userController: UserController = new UserController()
-    return expect(userController.markUserForDeletion(req)).rejects.toThrow(ValidationError)
-  })
-})
-
-describe('UserController - getProfile', () => {
-  test('should call profile()', async () => {
-    const userService: any = DIContainer.sharedContainer.userService
-    const chance = new Chance()
-    const req: any = {
-      headers: authorizationHeader(chance.string()),
-    }
-
-    userService.profile = jest.fn(() => {
-      log.debug('getProfile function called')
-      return Promise.resolve(null)
+      const userController: UserController = new UserController()
+      return expect(userController.getProfile(req)).rejects.toThrow(ValidationError)
     })
 
-    const userController: UserController = new UserController()
-    await userController.getProfile(req)
+    test('getProfile should fail if the token is array', () => {
+      const chance = new Chance()
+      const req: any = {
+        headers: {
+          authorization: [chance.string(), chance.string()],
+        },
+      }
 
-    expect(userService.profile).toHaveBeenCalled()
+      const userController: UserController = new UserController()
+      return expect(userController.getProfile(req)).rejects.toThrow(ValidationError)
+    })
   })
 
-  test('getProfile should fail if the token is not a bearer token', () => {
-    const chance = new Chance()
-    const req: any = {
-      headers: {
-        authorization: chance.string(),
-      },
-    }
+  describe('UserController - userContainers', () => {
+    test('should call getUserContainers', async () => {
+      const req: any = {
+        headers: {
+          authorization: 'Bearer ' + new Chance().string(),
+        },
+        user: validUser,
+      }
 
-    const userController: UserController = new UserController()
-    return expect(userController.getProfile(req)).rejects.toThrow(ValidationError)
-  })
+      const projectClient = DIContainer.sharedContainer.projectClient
 
-  test('getProfile should fail if the token is undefined', () => {
-    const req: any = {
-      headers: {
-        authorization: undefined,
-      },
-    }
+      projectClient.userProjects = jest.fn()
 
-    const userController: UserController = new UserController()
-    return expect(userController.getProfile(req)).rejects.toThrow(ValidationError)
-  })
+      const userController = new UserController()
+      await userController.userProjects(req)
 
-  test('getProfile should fail if the token is array', () => {
-    const chance = new Chance()
-    const req: any = {
-      headers: {
-        authorization: [chance.string(), chance.string()],
-      },
-    }
-
-    const userController: UserController = new UserController()
-    return expect(userController.getProfile(req)).rejects.toThrow(ValidationError)
-  })
-})
-
-describe('UserController - userContainers', () => {
-  test('should call getUserContainers', async () => {
-    const req: any = {
-      headers: {
-        authorization: 'Bearer ' + new Chance().string(),
-      },
-      user: validUser,
-    }
-
-    const projectRepository = DIContainer.sharedContainer.projectRepository
-
-    projectRepository.getUserContainers = jest.fn()
-
-    const userController = new UserController()
-    await userController.userContainers(req)
-
-    return expect(projectRepository.getUserContainers).toHaveBeenCalled()
+      return expect(projectClient.userProjects).toHaveBeenCalled()
+    })
   })
 })

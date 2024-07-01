@@ -17,7 +17,6 @@
 import { NextFunction, Request, Response, Router } from 'express'
 import { StatusCodes } from 'http-status-codes'
 
-import { DIContainer } from '../../../DIContainer/DIContainer'
 import { celebrate } from '../../../Utilities/celebrate'
 import { BaseRoute } from '../../BaseRoute'
 import { ServerStatus } from './ServerStatus'
@@ -41,7 +40,6 @@ export class ServerStatusRoute extends BaseRoute {
       ServerStatusRoute.getVersion
     )
     router.get(`${this.basePath}/alive`, async (_req, res: Response) => {
-      await DIContainer.sharedContainer.userBucket.ensureAlive()
       res.redirect('../version')
     })
   }

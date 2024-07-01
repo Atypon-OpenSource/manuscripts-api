@@ -16,8 +16,8 @@
 import { NextFunction, Request, Response, Router } from 'express'
 import { StatusCodes } from 'http-status-codes'
 
-import type { Client, StepsData } from '../../../../types/quarterback/doc'
 import { AuthStrategy } from '../../../Auth/Passport/AuthStrategy'
+import { Client, StepsData } from '../../../Models/DocumentModels'
 import { celebrate } from '../../../Utilities/celebrate'
 import { BaseRoute } from '../../BaseRoute'
 import { DocumentController } from './DocumentController'
@@ -116,7 +116,7 @@ export class DocumentRoute extends BaseRoute {
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
-          await this.getStepFromVersion(req, res)
+          await this.stepsSince(req, res)
         }, next)
       }
     )
@@ -164,26 +164,26 @@ export class DocumentRoute extends BaseRoute {
   private async listen(req: Request, res: Response) {
     const { manuscriptID, projectID } = req.params
     const user = req.user
-    const result = await this.documentController.getDocumentHistory(projectID, manuscriptID, user)
-
+    const result = await this.documentController.getEvents(projectID, manuscriptID, 0, user)
+    const data = this.formatDataForSSE(result)
     res.setHeader('Content-Type', 'text/event-stream')
     res.setHeader('Connection', 'keep-alive')
     res.setHeader('Cache-Control', 'no-cache')
-    const data = this.formatDataForSSE(result)
     res.write(data)
     this.manageClientConnection(req, res)
   }
 
-  private async getStepFromVersion(req: Request, res: Response) {
+  private async stepsSince(req: Request, res: Response) {
     const { manuscriptID, projectID, versionID } = req.params
     const user = req.user
-    const result = await this.documentController.getStepsFromVersion(
+    const { clientIDs, steps, version } = await this.documentController.getEvents(
       projectID,
       manuscriptID,
-      versionID,
-      user
+      parseInt(versionID),
+      user,
+      false
     )
-    res.status(StatusCodes.OK).send(result)
+    res.status(StatusCodes.OK).send({ clientIDs, version, steps })
   }
   private addClient(newClient: Client, manuscriptID: string) {
     const clients = this._documentClientsMap.get(manuscriptID) || []

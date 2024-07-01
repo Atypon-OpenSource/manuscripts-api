@@ -14,12 +14,8 @@
  * limitations under the License.
  */
 
-import { Request } from 'express'
-
 import { DIContainer } from '../../../DIContainer/DIContainer'
-import { InvalidCredentialsError } from '../../../Errors'
-import { AuthorizedUser } from '../../../Models/UserModels'
-import { isString } from '../../../util'
+import { UserCredentials } from '../../../Models/UserModels'
 import { BaseController } from '../../BaseController'
 
 /**
@@ -28,20 +24,7 @@ import { BaseController } from '../../BaseController'
 export const APP_SECRET_HEADER_KEY = 'manuscripts-app-secret'
 
 export class AuthController extends BaseController {
-  async serverToServerTokenAuth(req: Request): Promise<AuthorizedUser> {
-    const { deviceId } = req.body
-    const { connectUserID } = req.params
-
-    if (!isString(deviceId)) {
-      throw new InvalidCredentialsError('Device id must be string.')
-    }
-
-    if (!isString(connectUserID)) {
-      throw new InvalidCredentialsError('connectUserID must be string.')
-    }
-    return DIContainer.sharedContainer.authService.serverToServerTokenAuth({
-      connectUserID: connectUserID,
-      deviceId,
-    })
+  async serverToServerTokenAuth(payload: UserCredentials): Promise<string> {
+    return await DIContainer.sharedContainer.authenticationService.serverToServerTokenAuth(payload)
   }
 }

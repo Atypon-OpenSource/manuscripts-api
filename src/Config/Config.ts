@@ -25,7 +25,6 @@ import {
   APIConfiguration,
   AuthConfiguration,
   ConfigurationContainer,
-  DatabaseConfiguration,
   DataConfiguration,
   EmailConfiguration,
   Environment,
@@ -70,7 +69,6 @@ function getNumber(value: any, key: string, allowMissing?: boolean): number {
 
 export class Configuration implements ConfigurationContainer {
   readonly API: APIConfiguration
-  readonly DB: DatabaseConfiguration
   readonly auth: AuthConfiguration
   readonly email: EmailConfiguration
   readonly server: ServerConfiguration
@@ -102,20 +100,6 @@ export class Configuration implements ConfigurationContainer {
       enableNonConnectAuth: Boolean(
         getNumber(env.APP_ENABLE_NON_CONNECT_AUTH, 'APP_ENABLE_NON_CONNECT_AUTH')
       ),
-    }
-
-    const buckets = {
-      user: getString(env.APP_USER_BUCKET, 'APP_USER_BUCKET'),
-      project: getString(env.APP_DATA_BUCKET, 'APP_DATA_BUCKET'),
-      manuscriptDoc: getString(env.APP_MANUSCRIPT_DOC_BUCKET, 'APP_MANUSCRIPT_DOC_BUCKET'),
-      manuscriptSnapshot: getString(
-        env.APP_MANUSCRIPT_SNAPSHOT_BUCKET,
-        'APP_MANUSCRIPT_SNAPSHOT_BUCKET'
-      ),
-    }
-
-    this.DB = {
-      buckets,
     }
 
     this.email = {

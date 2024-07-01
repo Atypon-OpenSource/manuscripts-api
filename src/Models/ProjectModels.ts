@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-export interface PatchProject {
+export type PatchProject = {
   _id: string
   title?: string
   owners?: string[]
@@ -23,4 +23,25 @@ export interface PatchProject {
   editors?: string[]
   annotators?: string[]
   proofers?: string[]
+}
+export enum ProjectUserRole {
+  Owner = 'Owner',
+  Writer = 'Writer',
+  Viewer = 'Viewer',
+  Editor = 'Editor',
+  Proofer = 'Proofer',
+  Annotator = 'Annotator',
+}
+export enum ProjectPermission {
+  READ,
+  UPDATE,
+  DELETE,
+  UPDATE_ROLES,
+  CREATE_MANUSCRIPT,
+}
+export type ArchiveOptions = {
+  getAttachments?: boolean
+  onlyIDs?: boolean
+  includeExt: boolean | true
+  types?: string[]
 }

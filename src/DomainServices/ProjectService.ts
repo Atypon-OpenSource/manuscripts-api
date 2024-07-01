@@ -28,11 +28,7 @@ import getStream from 'get-stream'
 import JSZip from 'jszip'
 import { Readable } from 'stream'
 import tempy from 'tempy'
-import { v4 as uuid_v4 } from 'uuid'
 
-import { IManuscriptRepository } from '../DataAccess/Interfaces/IManuscriptRepository'
-import { IUserRepository } from '../DataAccess/Interfaces/IUserRepository'
-import { DIContainer } from '../DIContainer/DIContainer'
 import {
   MissingContainerError,
   MissingTemplateError,
@@ -40,54 +36,40 @@ import {
   UserRoleError,
   ValidationError,
 } from '../Errors'
-import { ContainerRepository, ProjectUserRole } from '../Models/ContainerModels'
-import { ContainerService } from './Container/ContainerService'
-import { ArchiveOptions } from './Container/IContainerService'
-
-export enum ProjectPermission {
-  READ,
-  UPDATE,
-  DELETE,
-  UPDATE_ROLES,
-  CREATE_MANUSCRIPT,
-}
+import { ArchiveOptions, ProjectPermission, ProjectUserRole } from '../Models/ProjectModels'
+import {
+  DocumentClient,
+  ProjectClient,
+  SnapshotClient,
+  UserClient,
+} from '../Models/RepositoryModels'
+import { ConfigService } from './ConfigService'
+import { PressroomService } from './PressroomService'
 
 const EMPTY_PERMISSIONS = new Set<ProjectPermission>()
 
 export class ProjectService {
   constructor(
-    private containerRepository: ContainerRepository,
-    private manuscriptRepository: IManuscriptRepository,
-    private userRepository: IUserRepository
+    private readonly projectRepository: ProjectClient,
+    private readonly userClient: UserClient,
+    private readonly snapshotClient: SnapshotClient,
+    private readonly documentClient: DocumentClient,
+    private readonly pressroomService: PressroomService,
+    private readonly configService: ConfigService
   ) {}
 
   public async createProject(userID: string, title?: string): Promise<Project> {
-    const project = {
-      _id: uuid_v4(),
-      objectType: ObjectTypes.Project as const,
-      title: title,
-      owners: [ContainerService.userIdForSync(userID)],
-      writers: [],
-      viewers: [],
-    }
-
-    return await this.containerRepository.create(project)
+    return await this.projectRepository.createProject(userID, title)
   }
-
   public async createManuscript(projectID: string, templateID?: string) {
     if (templateID) {
-      const exists = await DIContainer.sharedContainer.configService.hasDocument(templateID)
+      const exists = await this.configService.hasDocument(templateID)
       if (!exists) {
         throw new MissingTemplateError(templateID)
       }
     }
 
-    return await this.manuscriptRepository.create({
-      _id: uuid_v4(),
-      objectType: ObjectTypes.Manuscript,
-      containerID: projectID,
-      prototype: templateID,
-    })
+    return await this.projectRepository.createManuscript(projectID, templateID)
   }
 
   public async importJats(
@@ -96,7 +78,7 @@ export class ProjectService {
     templateID?: string
   ): Promise<Manuscript> {
     if (templateID) {
-      const exists = await DIContainer.sharedContainer.configService.hasDocument(templateID)
+      const exists = await this.configService.hasDocument(templateID)
       if (!exists) {
         throw new MissingTemplateError(templateID)
       }
@@ -144,26 +126,22 @@ export class ProjectService {
     }
 
     this.validate(models)
-
-    await DIContainer.sharedContainer.projectRepository.bulkInsert(models)
+    await this.projectRepository.bulkInsert(models)
 
     await remove(root)
 
     return manuscript
   }
 
-  public async makeArchive(projectID: string, manuscriptID?: string, options?: ArchiveOptions) {
+  public async makeArchive(projectID: string, options?: ArchiveOptions) {
     const onlyIDs = options?.onlyIDs || false
     const getAttachments = options?.getAttachments || false
 
     let resources
     if (!onlyIDs) {
-      resources = await this.containerRepository.getContainerResources(
-        projectID,
-        manuscriptID || null
-      )
+      resources = await this.projectRepository.getProjectResources(projectID)
     } else {
-      resources = await this.containerRepository.getContainerResourcesIDs(projectID)
+      resources = await this.projectRepository.getProjectResourcesIDs(projectID)
     }
 
     const index = { version: '2.0', data: resources }
@@ -184,28 +162,30 @@ export class ProjectService {
     if (manuscriptID) {
       await this.deleteManuscriptResources(manuscriptID)
     }
-    await this.containerRepository.removeWithAllResources(projectID)
+    await this.projectRepository.removeWithAllResources(projectID)
   }
 
   private async getManuscriptID(projectID: string): Promise<string | null> {
-    const models = await this.containerRepository.getContainerResources(projectID, null, [
+    const models = await this.projectRepository.getProjectResources(projectID, [
       ObjectTypes.Manuscript,
     ])
+    if (!models) {
+      throw new MissingContainerError(projectID)
+    }
     return models[0]._id
   }
 
   private async deleteManuscriptResources(manuscriptID: string) {
     await Promise.all([
-      DIContainer.sharedContainer.snapshotService.deleteAllManuscriptSnapshots(manuscriptID),
-      DIContainer.sharedContainer.documentService.deleteDocument(manuscriptID),
+      this.snapshotClient.deleteAllManuscriptSnapshots(manuscriptID),
+      this.documentClient.deleteDocument(manuscriptID),
     ])
   }
 
   public async getProject(projectID: string): Promise<Project> {
-    const project = await this.containerRepository.getById(projectID)
-
+    const project = await this.projectRepository.getProject(projectID)
     if (!project) {
-      throw new MissingContainerError(project)
+      throw new MissingContainerError(projectID)
     }
 
     return project
@@ -218,12 +198,12 @@ export class ProjectService {
     // that belongs to the project
     await this.validateManuscriptIDs(projectID, models)
     const docs = this.processManuscriptModels(models)
-    await DIContainer.sharedContainer.projectRepository.removeAllResources(projectID)
-    return await DIContainer.sharedContainer.projectRepository.bulkInsert(docs)
+    await this.projectRepository.removeAll(projectID)
+    return await this.projectRepository.bulkInsert(docs)
   }
 
-  public async getProjectModels(projectID: string, manuscriptID?: string): Promise<Model[]> {
-    return await this.containerRepository.getContainerResources(projectID, manuscriptID || null)
+  public async getProjectModels(projectID: string): Promise<Model[] | null> {
+    return await this.projectRepository.getProjectResources(projectID)
   }
 
   public async updateUserRole(
@@ -232,71 +212,60 @@ export class ProjectService {
     role: ProjectUserRole
   ): Promise<void> {
     const project = await this.getProject(projectID)
-    const user = await this.userRepository.getOne({ connectUserID: connectUserID })
+    const user = await this.userClient.findByConnectID(connectUserID)
 
     if (!user) {
       throw new ValidationError('Invalid user id', user)
     }
 
-    if (user._id === '*' && (role === 'Owner' || role === 'Writer')) {
-      throw new ValidationError('User can not be owner or writer', user._id)
+    if (user.id === '*' && (role === 'Owner' || role === 'Writer')) {
+      throw new ValidationError('User can not be owner or writer', user.id)
     }
-    const userIdForSync = ContainerService.userIdForSync(user._id)
 
-    if (
-      ProjectService.isOnlyOwner(project, user._id) ||
-      ProjectService.isOnlyOwner(project, userIdForSync)
-    ) {
+    if (ProjectService.isOnlyOwner(project, user.id)) {
       throw new UserRoleError('User is the only owner', role)
     }
 
     const updated = {
       _id: projectID,
-      owners: project.owners.filter((u) => u !== user._id && u !== userIdForSync),
-      writers: project.writers.filter((u) => u !== user._id && u !== userIdForSync),
-      viewers: project.viewers.filter((u) => u !== user._id && u !== userIdForSync),
-      editors: project.editors
-        ? project.editors.filter((u) => u !== user._id && u !== userIdForSync)
-        : [],
-      proofers: project.proofers
-        ? project.proofers.filter((u) => u !== user._id && u !== userIdForSync)
-        : [],
-      annotators: project.annotators
-        ? project.annotators.filter((u) => u !== user._id && u !== userIdForSync)
-        : [],
+      owners: project.owners.filter((u) => u !== user.id),
+      writers: project.writers.filter((u) => u !== user.id),
+      viewers: project.viewers.filter((u) => u !== user.id),
+      editors: project.editors ? project.editors.filter((u) => u !== user.id) : [],
+      proofers: project.proofers ? project.proofers.filter((u) => u !== user.id) : [],
+      annotators: project.annotators ? project.annotators.filter((u) => u !== user.id) : [],
     }
 
     switch (role) {
       case ProjectUserRole.Owner:
-        updated.owners.push(userIdForSync)
+        updated.owners.push(user.id)
         break
       case ProjectUserRole.Writer:
-        updated.writers.push(userIdForSync)
+        updated.writers.push(user.id)
         break
       case ProjectUserRole.Viewer:
-        updated.viewers.push(userIdForSync)
+        updated.viewers.push(user.id)
         break
       case ProjectUserRole.Editor:
-        updated.editors.push(userIdForSync)
+        updated.editors.push(user.id)
         break
       case ProjectUserRole.Proofer:
-        updated.proofers.push(userIdForSync)
+        updated.proofers.push(user.id)
         break
       case ProjectUserRole.Annotator:
-        updated.annotators.push(userIdForSync)
+        updated.annotators.push(user.id)
         break
     }
 
-    await this.containerRepository.patch(projectID, updated)
+    await this.projectRepository.patch(projectID, updated)
   }
 
   public async getPermissions(
     projectID: string,
     userID: string
   ): Promise<ReadonlySet<ProjectPermission>> {
-    const userIdForSync = ContainerService.userIdForSync(userID)
     const project = await this.getProject(projectID)
-    if (project.owners.includes(userID) || project.owners.includes(userIdForSync)) {
+    if (project.owners.includes(userID)) {
       return new Set([
         ProjectPermission.READ,
         ProjectPermission.UPDATE,
@@ -304,22 +273,19 @@ export class ProjectService {
         ProjectPermission.UPDATE_ROLES,
         ProjectPermission.CREATE_MANUSCRIPT,
       ])
-    } else if (project.viewers.includes(userID) || project.viewers.includes(userIdForSync)) {
+    } else if (project.viewers.includes(userID)) {
       return new Set([ProjectPermission.READ])
-    } else if (project.writers.includes(userID) || project.writers.includes(userIdForSync)) {
+    } else if (project.writers.includes(userID)) {
       return new Set([
         ProjectPermission.READ,
         ProjectPermission.UPDATE,
         ProjectPermission.CREATE_MANUSCRIPT,
       ])
-    } else if (project.editors?.includes(userID) || project.editors?.includes(userIdForSync)) {
+    } else if (project.editors?.includes(userID)) {
       return new Set([ProjectPermission.READ, ProjectPermission.UPDATE])
-    } else if (
-      project.annotators?.includes(userID) ||
-      project.annotators?.includes(userIdForSync)
-    ) {
+    } else if (project.annotators?.includes(userID)) {
       return new Set([ProjectPermission.READ, ProjectPermission.UPDATE])
-    } else if (project.proofers?.includes(userID) || project.proofers?.includes(userIdForSync)) {
+    } else if (project.proofers?.includes(userID)) {
       return new Set([ProjectPermission.READ, ProjectPermission.UPDATE])
     }
     return EMPTY_PERMISSIONS
@@ -345,9 +311,7 @@ export class ProjectService {
       throw new ValidationError(`contains multiple manuscriptIDs`, models)
     } else if (manuscriptIDs.size === 1) {
       const manuscriptID = manuscriptIDs.values().next().value
-      const manuscript = await DIContainer.sharedContainer.manuscriptRepository.getById(
-        manuscriptID
-      )
+      const manuscript = await this.projectRepository.getProject(manuscriptID)
       if (!manuscript) {
         throw new ValidationError(`manuscript doesn't exist`, models)
       }
@@ -360,7 +324,7 @@ export class ProjectService {
   private async convert(path: string): Promise<Readable> {
     const stream = fs.createReadStream(path)
     try {
-      return await DIContainer.sharedContainer.pressroomService.importJATS(stream)
+      return await this.pressroomService.importJATS(stream)
     } finally {
       stream.close()
     }
@@ -391,5 +355,58 @@ export class ProjectService {
     const models = docs.map((doc) => ({ ...doc, createdAt, updatedAt: createdAt }))
     this.validate(models)
     return models
+  }
+
+  public getUserRole(project: Project, userID: string): ProjectUserRole | null {
+    if (ProjectService.isOwner(project, userID)) {
+      return ProjectUserRole.Owner
+    } else if (ProjectService.isWriter(project, userID)) {
+      return ProjectUserRole.Writer
+    } else if (ProjectService.isViewer(project, userID)) {
+      return ProjectUserRole.Viewer
+    } else if (ProjectService.isEditor(project, userID)) {
+      return ProjectUserRole.Editor
+    } else if (ProjectService.isAnnotator(project, userID)) {
+      return ProjectUserRole.Annotator
+    } else if (ProjectService.isProofer(project, userID)) {
+      return ProjectUserRole.Proofer
+    } else {
+      return null
+    }
+  }
+  public static isOwner(project: Project, userID: string) {
+    return project.owners.indexOf(userID) > -1
+  }
+
+  public static isWriter(project: Project, userID: string): boolean {
+    return project.writers.indexOf(userID) > -1
+  }
+
+  public static isViewer(project: Project, userID: string): boolean {
+    return project.viewers.indexOf(userID) > -1
+  }
+
+  public static isEditor(project: Project, userID: string): boolean {
+    const editors = project.editors
+    if (editors && editors.length) {
+      return editors.indexOf(userID) > -1
+    }
+    return false
+  }
+
+  public static isAnnotator(project: Project, userID: string): boolean {
+    const annotators = project.annotators
+    if (annotators && annotators.length) {
+      return annotators.indexOf(userID) > -1
+    }
+    return false
+  }
+
+  public static isProofer(project: Project, userID: string): boolean {
+    const proofers = project.proofers
+    if (proofers && proofers.length) {
+      return proofers.indexOf(userID) > -1
+    }
+    return false
   }
 }

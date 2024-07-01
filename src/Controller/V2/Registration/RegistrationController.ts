@@ -14,20 +14,11 @@
  * limitations under the License.
  */
 
-import { Request } from 'express'
-
 import { DIContainer } from '../../../DIContainer/DIContainer'
-import { ValidationError } from '../../../Errors'
-import { isString } from '../../../util'
 import { BaseController } from '../../BaseController'
 
 export class RegistrationController extends BaseController {
-  async connectSignup(req: Request): Promise<void> {
-    const { email, name, connectUserID } = req.body
-
-    if (!isString(email) || !isString(connectUserID) || !isString(name)) {
-      throw new ValidationError('email, name, connectUserID should be strings.', req.body)
-    }
+  async connectSignup(email: string, name: string, connectUserID: string): Promise<void> {
     const credentials = {
       connectUserID,
       name,
@@ -35,7 +26,6 @@ export class RegistrationController extends BaseController {
       isVerified: false,
       createdAt: new Date().getTime(),
     }
-
-    return DIContainer.sharedContainer.userRegistrationService.connectSignup(credentials)
+    await DIContainer.sharedContainer.registerationService.connectSignup(credentials)
   }
 }

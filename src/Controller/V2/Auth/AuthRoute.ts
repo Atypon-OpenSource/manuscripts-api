@@ -43,11 +43,19 @@ export class AuthRoute extends BaseRoute {
       AuthStrategy.secretValidation(),
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
-          const { token } = await this.authController.serverToServerTokenAuth(req)
-
-          res.status(StatusCodes.OK).json({ token }).end()
+          await this.serverToServerTokenAuth(req, res)
         }, next)
       }
     )
+  }
+
+  private async serverToServerTokenAuth(req: Request, res: Response) {
+    const { deviceId } = req.body
+    const { connectUserID } = req.params
+    const token = await this.authController.serverToServerTokenAuth({
+      deviceID: deviceId,
+      connectUserID,
+    })
+    res.status(StatusCodes.OK).json({ token }).end()
   }
 }

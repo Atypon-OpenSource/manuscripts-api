@@ -43,10 +43,16 @@ export class RegistrationRoute extends BaseRoute {
       AuthStrategy.secretValidation(),
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
-          await this.registrationController.connectSignup(req)
-          res.status(StatusCodes.NO_CONTENT).end()
+          await this.connectSignup(req, res)
         }, next)
       }
     )
+  }
+
+  private async connectSignup(req: Request, res: Response) {
+    const { email, name, connectUserID } = req.body
+
+    await this.registrationController.connectSignup(email, name, connectUserID)
+    res.status(StatusCodes.NO_CONTENT).end()
   }
 }
