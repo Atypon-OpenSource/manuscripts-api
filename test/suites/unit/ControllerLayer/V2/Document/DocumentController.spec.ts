@@ -14,33 +14,34 @@
  * limitations under the License.
  */
 
+// import '../../../../../utilities/configMock'
 import '../../../../../utilities/dbMock'
-import '../../../../../utilities/configMock'
 
 import { DocumentController } from '../../../../../../src/Controller/V2/Document/DocumentController'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
-import { CollaborationService } from '../../../../../../src/DomainServices/Collaboration/CollaborationService'
-import { DocumentService } from '../../../../../../src/DomainServices/Document/DocumentService'
+import { AuthorityService } from '../../../../../../src/DomainServices/AuthorityService'
 import {
-  QuarterbackPermission,
-  QuarterbackService,
-} from '../../../../../../src/DomainServices/Quarterback/QuarterbackService'
+  DocumentPermission,
+  DocumentService,
+} from '../../../../../../src/DomainServices/DocumentService'
+import { DocumentClient } from '../../../../../../src/Models/RepositoryModels'
 import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
-jest.setTimeout(TEST_TIMEOUT)
 
 let documentService: DocumentService
-let quarterbackService: QuarterbackService
-let collaborationService: CollaborationService
+let authorityService: AuthorityService
+let documentClient: DocumentClient
+let documentController: DocumentController
+
 beforeEach(async () => {
   ;(DIContainer as any)._sharedContainer = null
   await DIContainer.init()
   documentService = DIContainer.sharedContainer.documentService
-  quarterbackService = DIContainer.sharedContainer.quarterback
-  collaborationService = DIContainer.sharedContainer.collaborationService
+  documentClient = DIContainer.sharedContainer.documentClient
+  documentService = DIContainer.sharedContainer.documentService
+  authorityService = DIContainer.sharedContainer.authorityService
+  documentController = new DocumentController()
 })
-afterEach(() => {
-  jest.clearAllMocks()
-})
+jest.setTimeout(TEST_TIMEOUT)
 
 const mockDoc = {
   doc: {
@@ -55,67 +56,64 @@ const mockReceiveSteps = {
   clientID: 123,
   version: 1,
 }
-const EMPTY_PERMISSIONS = new Set<QuarterbackPermission>()
+const EMPTY_PERMISSIONS = new Set<DocumentPermission>()
 
 const mockCreateDocRequest = {
   manuscript_model_id: 'random_manuscript_id',
   project_model_id: 'random_project_id',
   doc: mockDoc,
+  schema_version: '0',
 }
 
 describe('DocumentController', () => {
-  let documentController: DocumentController
-  beforeEach(() => {
-    documentController = new DocumentController()
-  })
   describe('createDocument', () => {
     it('should throw an error if no user is found', async () => {
       await expect(
         documentController.createDocument('projectID', mockCreateDocRequest, undefined)
       ).rejects.toThrow('No user found')
     })
-    it('should call quarterback.validateUserAccess', async () => {
-      quarterbackService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
-      const spy = jest.spyOn(quarterbackService, 'validateUserAccess')
-      documentService.createDocument = jest.fn()
+    it('should call document.validateUserAccess', async () => {
+      documentService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
+      const spy = jest.spyOn(documentService, 'validateUserAccess')
+      documentClient.createDocument = jest.fn()
       await documentController.createDocument('projectID', mockCreateDocRequest, {
-        _id: 'random_user_id',
+        id: 'random_user_id',
       } as any)
       expect(spy).toHaveBeenCalled()
     })
-    it('should call documentService.createDocument', async () => {
-      quarterbackService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
-      documentService.createDocument = jest.fn()
-      const spy = jest.spyOn(documentService, 'createDocument')
+    it('should call documentClient.createDocument', async () => {
+      documentService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
+      documentClient.createDocument = jest.fn()
+      const spy = jest.spyOn(documentClient, 'createDocument')
       await documentController.createDocument('projectID', mockCreateDocRequest, {
-        _id: 'random_user_id',
+        id: 'random_user_id',
       } as any)
       expect(spy).toHaveBeenCalled()
     })
-    it('should call documentService.createDocument with the correct arguments', async () => {
-      quarterbackService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
-      documentService.createDocument = jest.fn()
-      const spy = jest.spyOn(documentService, 'createDocument')
+    it('should call documentClient.createDocument with the correct arguments', async () => {
+      documentService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
+      documentClient.createDocument = jest.fn()
+      const spy = jest.spyOn(documentClient, 'createDocument')
       await documentController.createDocument('projectID', mockCreateDocRequest, {
-        _id: 'random_user_id',
+        id: 'random_user_id',
       } as any)
       expect(spy).toHaveBeenCalledWith(mockCreateDocRequest, 'random_user_id')
     })
     it('should return the document', async () => {
-      quarterbackService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
-      documentService.createDocument = jest.fn().mockReturnValue(mockCreateDocRequest.doc)
+      documentService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
+      documentClient.createDocument = jest.fn().mockReturnValue(mockCreateDocRequest.doc)
       const result = await documentController.createDocument('projectID', mockCreateDocRequest, {
-        _id: 'random_user_id',
+        id: 'random_user_id',
       } as any)
       expect(result).toEqual(mockCreateDocRequest.doc)
     })
     it('should throw an error if the user does not have permission to write', async () => {
-      quarterbackService.getPermissions = jest
+      documentService.getPermissions = jest
         .fn()
-        .mockResolvedValue(new Set([QuarterbackPermission.READ]))
+        .mockResolvedValue(new Set([DocumentPermission.READ]))
       await expect(
         documentController.createDocument('projectID', mockCreateDocRequest, {
-          _id: 'random_user_id',
+          id: 'random_user_id',
         } as any)
       ).rejects.toThrow('Access denied')
     })
@@ -126,48 +124,48 @@ describe('DocumentController', () => {
         documentController.getDocument('projectID', 'manuscriptID', undefined)
       ).rejects.toThrow('No user found')
     })
-    it('should call quarterback.validateUserAccess', async () => {
-      quarterbackService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
-      const spy = jest.spyOn(quarterbackService, 'validateUserAccess')
-      documentService.findDocumentWithSnapshot = jest.fn().mockReturnValue({ data: {} })
+    it('should call document.validateUserAccess', async () => {
+      documentService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
+      const spy = jest.spyOn(documentService, 'validateUserAccess')
+      documentClient.findDocumentWithSnapshot = jest.fn().mockReturnValue({ data: {} })
       await documentController.getDocument('projectID', 'manuscriptID', {
-        _id: 'random_user_id',
+        id: 'random_user_id',
       } as any)
       expect(spy).toHaveBeenCalled()
     })
-    it('should call documentService.findDocumentWithSnapshot', async () => {
-      quarterbackService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
-      documentService.findDocumentWithSnapshot = jest.fn().mockResolvedValue({ data: {} })
-      const spy = jest.spyOn(documentService, 'findDocumentWithSnapshot')
+    it('should call documentClient.findDocumentWithSnapshot', async () => {
+      documentService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
+      documentClient.findDocumentWithSnapshot = jest.fn().mockResolvedValue({ data: {} })
+      const spy = jest.spyOn(documentClient, 'findDocumentWithSnapshot')
 
       await documentController.getDocument('projectID', 'manuscriptID', {
-        _id: 'random_user_id',
+        id: 'random_user_id',
       } as any)
       expect(spy).toHaveBeenCalled()
     })
-    it('should call documentService.findDocumentWithSnapshot with the correct arguments', async () => {
-      quarterbackService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
-      documentService.findDocumentWithSnapshot = jest.fn().mockResolvedValue({ data: {} })
-      const spy = jest.spyOn(documentService, 'findDocumentWithSnapshot')
+    it('should call documentClient.findDocumentWithSnapshot with the correct arguments', async () => {
+      documentService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
+      documentClient.findDocumentWithSnapshot = jest.fn().mockResolvedValue({ data: {} })
+      const spy = jest.spyOn(documentClient, 'findDocumentWithSnapshot')
       await documentController.getDocument('projectID', 'manuscriptID', {
-        _id: 'random_user_id',
+        id: 'random_user_id',
       } as any)
       expect(spy).toHaveBeenCalledWith('manuscriptID')
     })
     it('should return the document', async () => {
-      quarterbackService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
-      documentService.findDocumentWithSnapshot = jest.fn().mockReturnValue(mockCreateDocRequest.doc)
+      documentService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
+      documentClient.findDocumentWithSnapshot = jest.fn().mockReturnValue(mockCreateDocRequest.doc)
 
       const result = await documentController.getDocument('projectID', 'manuscriptID', {
-        _id: 'random_user_id',
+        id: 'random_user_id',
       } as any)
       expect(result).toEqual(mockCreateDocRequest.doc)
     })
     it('should throw an error if the user does not have permission to read', async () => {
-      quarterbackService.getPermissions = jest.fn().mockResolvedValue(EMPTY_PERMISSIONS)
+      documentService.getPermissions = jest.fn().mockResolvedValue(EMPTY_PERMISSIONS)
       await expect(
         documentController.getDocument('projectID', 'manuscriptID', {
-          _id: 'random_user_id',
+          id: 'random_user_id',
         } as any)
       ).rejects.toThrow('Access denied')
     })
@@ -178,41 +176,41 @@ describe('DocumentController', () => {
         documentController.deleteDocument('projectID', 'manuscriptID', undefined)
       ).rejects.toThrow('No user found')
     })
-    it('should call quarterback.validateUserAccess', async () => {
-      quarterbackService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
-      const spy = jest.spyOn(quarterbackService, 'validateUserAccess')
-      documentService.deleteDocument = jest.fn()
+    it('should call document.validateUserAccess', async () => {
+      documentService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
+      const spy = jest.spyOn(documentService, 'validateUserAccess')
+      documentClient.deleteDocument = jest.fn()
 
       await documentController.deleteDocument('projectID', 'manuscriptID', {
-        _id: 'random_user_id',
+        id: 'random_user_id',
       } as any)
       expect(spy).toHaveBeenCalled()
     })
-    it('should call documentService.deleteDocument', async () => {
-      quarterbackService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
-      documentService.deleteDocument = jest.fn()
-      const spy = jest.spyOn(documentService, 'deleteDocument')
+    it('should call documentClient.deleteDocument', async () => {
+      documentService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
+      documentClient.deleteDocument = jest.fn()
+      const spy = jest.spyOn(documentClient, 'deleteDocument')
       await documentController.deleteDocument('projectID', 'manuscriptID', {
-        _id: 'random_user_id',
+        id: 'random_user_id',
       } as any)
       expect(spy).toHaveBeenCalled()
     })
     it('should call documentService.deleteDocument with the correct arguments', async () => {
-      quarterbackService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
-      documentService.deleteDocument = jest.fn()
-      const spy = jest.spyOn(documentService, 'deleteDocument')
+      documentService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
+      documentClient.deleteDocument = jest.fn()
+      const spy = jest.spyOn(documentClient, 'deleteDocument')
       await documentController.deleteDocument('projectID', 'manuscriptID', {
-        _id: 'random_user_id',
+        id: 'random_user_id',
       } as any)
       expect(spy).toHaveBeenCalledWith('manuscriptID')
     })
     it('should throw an error if the user does not have permission to write', async () => {
-      quarterbackService.getPermissions = jest
+      documentService.getPermissions = jest
         .fn()
-        .mockResolvedValue(new Set([QuarterbackPermission.READ]))
+        .mockResolvedValue(new Set([DocumentPermission.READ]))
       await expect(
         documentController.deleteDocument('projectID', 'manuscriptID', {
-          _id: 'random_user_id',
+          id: 'random_user_id',
         } as any)
       ).rejects.toThrow('Access denied')
     })
@@ -228,41 +226,41 @@ describe('DocumentController', () => {
         )
       ).rejects.toThrow('No user found')
     })
-    it('should call quarterback.validateUserAccess', async () => {
-      quarterbackService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
-      const spy = jest.spyOn(quarterbackService, 'validateUserAccess')
-      documentService.updateDocument = jest.fn()
+    it('should call document.validateUserAccess', async () => {
+      documentService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
+      const spy = jest.spyOn(documentService, 'validateUserAccess')
+      documentClient.updateDocument = jest.fn()
 
       await documentController.updateDocument('projectID', 'manuscriptID', mockCreateDocRequest, {
-        _id: 'random_user_id',
+        id: 'random_user_id',
       } as any)
       expect(spy).toHaveBeenCalled()
     })
-    it('should call documentService.updateDocument', async () => {
-      quarterbackService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
-      documentService.updateDocument = jest.fn()
-      const spy = jest.spyOn(documentService, 'updateDocument')
+    it('should call documentClient.updateDocument', async () => {
+      documentService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
+      documentClient.updateDocument = jest.fn()
+      const spy = jest.spyOn(documentClient, 'updateDocument')
       await documentController.updateDocument('projectID', 'manuscriptID', mockDoc, {
-        _id: 'random_user_id',
+        id: 'random_user_id',
       } as any)
       expect(spy).toHaveBeenCalled()
     })
-    it('should call documentService.updateDocument with the correct arguments', async () => {
-      quarterbackService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
-      documentService.updateDocument = jest.fn()
-      const spy = jest.spyOn(documentService, 'updateDocument')
+    it('should documentClient documentService.updateDocument with the correct arguments', async () => {
+      documentService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
+      documentClient.updateDocument = jest.fn()
+      const spy = jest.spyOn(documentClient, 'updateDocument')
       await documentController.updateDocument('projectID', 'manuscriptID', mockDoc, {
-        _id: 'random_user_id',
+        id: 'random_user_id',
       } as any)
       expect(spy).toHaveBeenCalledWith('manuscriptID', mockDoc)
     })
     it('should throw an error if the user does not have permission to write', async () => {
-      quarterbackService.getPermissions = jest
+      documentService.getPermissions = jest
         .fn()
-        .mockResolvedValue(new Set([QuarterbackPermission.READ]))
+        .mockResolvedValue(new Set([DocumentPermission.READ]))
       await expect(
         documentController.updateDocument('projectID', 'manuscriptID', mockDoc, {
-          _id: 'random_user_id',
+          id: 'random_user_id',
         } as any)
       ).rejects.toThrow('Access denied')
     })
@@ -273,10 +271,10 @@ describe('DocumentController', () => {
         documentController.receiveSteps('projectID', 'manuscriptID', mockReceiveSteps, undefined)
       ).rejects.toThrow('No user found')
     })
-    it('should call quarterback.validateUserAccess', async () => {
-      quarterbackService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
-      const spy = jest.spyOn(quarterbackService, 'validateUserAccess')
-      collaborationService.receiveSteps = jest.fn()
+    it('should call document.validateUserAccess', async () => {
+      documentService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
+      const spy = jest.spyOn(documentService, 'validateUserAccess')
+      authorityService.receiveSteps = jest.fn()
       await documentController.receiveSteps(
         'projectID',
         'manuscriptID',
@@ -286,52 +284,11 @@ describe('DocumentController', () => {
       expect(spy).toHaveBeenCalled()
     })
     it('should throw an error if the user does not have permission to write', async () => {
-      quarterbackService.getPermissions = jest
+      documentService.getPermissions = jest
         .fn()
-        .mockResolvedValue(new Set([QuarterbackPermission.READ]))
+        .mockResolvedValue(new Set([DocumentPermission.READ]))
       await expect(
         documentController.receiveSteps('projectID', 'manuscriptID', mockReceiveSteps, {} as any)
-      ).rejects.toThrow('Access denied')
-    })
-  })
-  describe('getDocumentHistory', () => {
-    it('should throw an error if no user is found', async () => {
-      await expect(
-        documentController.getDocumentHistory('projectID', 'manuscriptID', undefined)
-      ).rejects.toThrow('No user found')
-    })
-    it('should call quarterback.validateUserAccess', async () => {
-      quarterbackService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
-      documentService.findDocument = jest.fn().mockResolvedValue({})
-      collaborationService.getHistoriesFromVersion = jest.fn().mockReturnValue({})
-      const spy = jest.spyOn(quarterbackService, 'validateUserAccess')
-      await documentController.getDocumentHistory('projectID', 'manuscriptID', {} as any)
-      expect(spy).toHaveBeenCalled()
-    })
-    it('should throw an error if the user does not have permission to read', async () => {
-      quarterbackService.getPermissions = jest.fn().mockResolvedValue(EMPTY_PERMISSIONS)
-      await expect(
-        documentController.getDocumentHistory('projectID', 'manuscriptID', {} as any)
-      ).rejects.toThrow('Access denied')
-    })
-  })
-  describe('getStepsFromVersion', () => {
-    it('should throw an error if no user is found', async () => {
-      await expect(
-        documentController.getStepsFromVersion('projectID', 'manuscriptID', '1', undefined)
-      ).rejects.toThrow('No user found')
-    })
-    it('should call quarterback.validateUserAccess', async () => {
-      quarterbackService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
-      const spy = jest.spyOn(quarterbackService, 'validateUserAccess')
-      collaborationService.getHistoriesFromVersion = jest.fn().mockReturnValue({ data: {} })
-      await documentController.getStepsFromVersion('projectID', 'manuscriptID', '1', {} as any)
-      expect(spy).toHaveBeenCalled()
-    })
-    it('should throw an error if the user does not have permission to read', async () => {
-      quarterbackService.getPermissions = jest.fn().mockResolvedValue(EMPTY_PERMISSIONS)
-      await expect(
-        documentController.getStepsFromVersion('projectID', 'manuscriptID', '1', {} as any)
       ).rejects.toThrow('Access denied')
     })
   })

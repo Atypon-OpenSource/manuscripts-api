@@ -79,7 +79,6 @@ export interface DataConfiguration {
 }
 export interface ConfigurationContainer {
   readonly API: APIConfiguration
-  readonly DB: DatabaseConfiguration
   readonly auth: AuthConfiguration
   readonly email: EmailConfiguration
   readonly server: ServerConfiguration

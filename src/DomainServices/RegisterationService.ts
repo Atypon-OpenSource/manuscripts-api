@@ -1,0 +1,70 @@
+/*!
+ * © 2024 Atypon Systems LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import { User } from '@prisma/client'
+
+import { DuplicateEmailError } from '../Errors'
+import { UserEvents } from '../Models/EventModels'
+import { UserClient } from '../Models/RepositoryModels'
+import { ConnectSignupCredentials, NameParts } from '../Models/UserModels'
+import { EventManager } from './EventService'
+
+export class RegisterationService {
+  constructor(
+    private readonly userRepository: UserClient,
+    private readonly eventManager: EventManager
+  ) {}
+  public async connectSignup(credentials: ConnectSignupCredentials): Promise<User> {
+    const { email, connectUserID } = credentials
+    let user = await this.userRepository.findByEmail(email)
+    if (user) {
+      await this.updateConnectUserID(user, connectUserID)
+    } else {
+      user = await this.createUser(credentials)
+    }
+    return user
+  }
+  private async updateConnectUserID(user: User, connectUserID: string) {
+    if (user.connectUserID !== connectUserID) {
+      await this.userRepository.updateConnectID(user.id, connectUserID)
+      this.eventManager.emitUserEvent(UserEvents.UpdateConnectID, user.id)
+    } else {
+      throw new DuplicateEmailError(user.email)
+    }
+  }
+  private async createUser(credentials: ConnectSignupCredentials) {
+    const { given, family } = this.splitName(credentials.name)
+    const { connectUserID, email } = credentials
+    const userPayload = {
+      given,
+      family,
+      connectUserID,
+      email,
+    }
+    const user = await this.userRepository.createUser(userPayload)
+    this.eventManager.emitUserEvent(UserEvents.Registeration, user.id)
+    return user
+  }
+  private splitName(name: string): NameParts {
+    const trimmedName = name.trim()
+    const nameParts = trimmedName.split(' ')
+    if (nameParts.length === 1) {
+      return { given: nameParts[0], family: '' }
+    } else {
+      return { given: nameParts[0], family: nameParts[nameParts.length - 1] }
+    }
+  }
+}

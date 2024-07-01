@@ -14,27 +14,23 @@
  * limitations under the License.
  */
 import '../../../../../utilities/dbMock'
-import '../../../../../utilities/configMock'
 
 import { SnapshotController } from '../../../../../../src/Controller/V2/Snapshot/SnapshotController'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
-import { DocumentService } from '../../../../../../src/DomainServices/Document/DocumentService'
-import { DocumentHistoryService } from '../../../../../../src/DomainServices/DocumentHistory/DocumentHistoryService'
 import {
-  QuarterbackPermission,
-  QuarterbackService,
-} from '../../../../../../src/DomainServices/Quarterback/QuarterbackService'
-import { SnapshotService } from '../../../../../../src/DomainServices/Snapshot/SnapshotService'
+  DocumentPermission,
+  DocumentService,
+} from '../../../../../../src/DomainServices/DocumentService'
 import { MissingSnapshotError, ValidationError } from '../../../../../../src/Errors'
+import { DocumentClient, SnapshotClient } from '../../../../../../src/Models/RepositoryModels'
 import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
 jest.setTimeout(TEST_TIMEOUT)
 
-let snapshotService: SnapshotService
-let quarterbackService: QuarterbackService
+let snapshotClient: SnapshotClient
 let documentService: DocumentService
-let documentHistoryService: DocumentHistoryService
+let documentClient: DocumentClient
 
-const EMPTY_PERMISSIONS = new Set<QuarterbackPermission>()
+const EMPTY_PERMISSIONS = new Set<DocumentPermission>()
 
 const mockDoc = {
   doc: {
@@ -69,10 +65,9 @@ const mockSnapshotLabel = {
 beforeEach(async () => {
   ;(DIContainer as any)._sharedContainer = null
   await DIContainer.init()
-  snapshotService = DIContainer.sharedContainer.snapshotService
+  snapshotClient = DIContainer.sharedContainer.snapshotClient
   documentService = DIContainer.sharedContainer.documentService
-  quarterbackService = DIContainer.sharedContainer.quarterback
-  documentHistoryService = DIContainer.sharedContainer.documentHistoryService
+  documentClient = DIContainer.sharedContainer.documentClient
 })
 afterEach(() => {
   jest.clearAllMocks()
@@ -89,39 +84,39 @@ describe('SnapshotController', () => {
         snapshotController.listSnapshotLabels('projectID', 'manuscriptID', undefined)
       ).rejects.toThrow('No user found')
     })
-    it('should call quarterback.validateUserAccess', async () => {
-      quarterbackService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
-      const spy = jest.spyOn(quarterbackService, 'validateUserAccess')
-      snapshotService.listSnapshotLabels = jest.fn()
+    it('should call document.validateUserAccess', async () => {
+      documentService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
+      const spy = jest.spyOn(documentService, 'validateUserAccess')
+      snapshotClient.listSnapshotLabels = jest.fn()
       await snapshotController.listSnapshotLabels('projectID', 'manuscriptID', {
-        _id: 'random_user_id',
+        id: 'random_user_id',
       } as any)
       expect(spy).toHaveBeenCalled()
     })
     it('should call snapshotService.listSnapshotLabels', async () => {
-      quarterbackService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
-      snapshotService.listSnapshotLabels = jest.fn()
-      const spy = jest.spyOn(snapshotService, 'listSnapshotLabels')
+      documentService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
+      snapshotClient.listSnapshotLabels = jest.fn()
+      const spy = jest.spyOn(snapshotClient, 'listSnapshotLabels')
       await snapshotController.listSnapshotLabels('projectID', 'manuscriptID', {
-        _id: 'random_user_id',
+        id: 'random_user_id',
       } as any)
       expect(spy).toHaveBeenCalled()
     })
     it('should throw an error if the user does not have read access', async () => {
-      quarterbackService.getPermissions = jest.fn().mockResolvedValue(EMPTY_PERMISSIONS)
+      documentService.getPermissions = jest.fn().mockResolvedValue(EMPTY_PERMISSIONS)
       await expect(
         snapshotController.listSnapshotLabels('projectID', 'manuscriptID', {
-          _id: 'random_user_id',
+          id: 'random_user_id',
         } as any)
       ).rejects.toThrow('Access denied')
     })
     it('should return the result of snapshotService.listSnapshotLabels', async () => {
-      quarterbackService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
-      snapshotService.listSnapshotLabels = jest
+      documentService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
+      snapshotClient.listSnapshotLabels = jest
         .fn()
         .mockReturnValue(Promise.resolve(mockSnapshotLabel))
       const result = await snapshotController.listSnapshotLabels('projectID', 'manuscriptID', {
-        _id: 'random_user_id',
+        id: 'random_user_id',
       } as any)
       expect(result).toBe(mockSnapshotLabel)
     })
@@ -132,68 +127,68 @@ describe('SnapshotController', () => {
         'No user found'
       )
     })
-    it('should call quarterback.validateUserAccess', async () => {
-      quarterbackService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
-      const spy = jest.spyOn(quarterbackService, 'validateUserAccess')
-      snapshotService.getSnapshot = jest.fn()
+    it('should call document.validateUserAccess', async () => {
+      documentService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
+      const spy = jest.spyOn(documentService, 'validateUserAccess')
+      snapshotClient.getSnapshot = jest.fn()
       snapshotController['fetchSnapshot'] = jest.fn().mockReturnValue(Promise.resolve(mockSnapshot))
-      quarterbackService.getManuscriptFromSnapshot = jest
+      documentService.getManuscriptFromSnapshot = jest
         .fn()
         .mockResolvedValue({ random: 'manuscript' })
-      await snapshotController.getSnapshot('snapshotID', { _id: 'random_user_id' } as any)
+      await snapshotController.getSnapshot('snapshotID', { id: 'random_user_id' } as any)
       expect(spy).toHaveBeenCalled()
     })
     it('should call snapshotService.getSnapshot', async () => {
-      quarterbackService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
+      documentService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
       snapshotController['fetchSnapshot'] = jest.fn().mockReturnValue(Promise.resolve(mockSnapshot))
-      snapshotService.getSnapshot = jest.fn()
+      snapshotClient.getSnapshot = jest.fn()
 
-      quarterbackService.getManuscriptFromSnapshot = jest
+      documentService.getManuscriptFromSnapshot = jest
         .fn()
         .mockResolvedValue({ random: 'manuscript' })
-      const spy = jest.spyOn(snapshotService, 'getSnapshot')
-      await snapshotController.getSnapshot('snapshotID', { _id: 'random_user_id' } as any)
+      const spy = jest.spyOn(snapshotClient, 'getSnapshot')
+      await snapshotController.getSnapshot('snapshotID', { id: 'random_user_id' } as any)
       expect(spy).toHaveBeenCalled()
     })
     it('should throw an error if the user does not have read access', async () => {
       snapshotController['fetchSnapshot'] = jest.fn().mockReturnValue(Promise.resolve(mockSnapshot))
-      quarterbackService.getManuscriptFromSnapshot = jest
+      documentService.getManuscriptFromSnapshot = jest
         .fn()
         .mockResolvedValue({ random: 'manuscript' })
-      quarterbackService.getPermissions = jest.fn().mockResolvedValue(EMPTY_PERMISSIONS)
+      documentService.getPermissions = jest.fn().mockResolvedValue(EMPTY_PERMISSIONS)
       await expect(
-        snapshotController.getSnapshot('snapshotID', { _id: 'random_user_id' } as any)
+        snapshotController.getSnapshot('snapshotID', { id: 'random_user_id' } as any)
       ).rejects.toThrow('Access denied')
     })
     it('should return the result of snapshotService.getSnapshot', async () => {
       snapshotController['fetchSnapshot'] = jest.fn().mockReturnValue(Promise.resolve(mockSnapshot))
-      quarterbackService.getManuscriptFromSnapshot = jest
+      documentService.getManuscriptFromSnapshot = jest
         .fn()
         .mockResolvedValue({ random: 'manuscript' })
-      quarterbackService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
-      snapshotService.getSnapshot = jest.fn().mockReturnValue(Promise.resolve(mockSnapshot))
+      documentService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
+      snapshotClient.getSnapshot = jest.fn().mockReturnValue(Promise.resolve(mockSnapshot))
       const result = await snapshotController.getSnapshot('snapshotID', {
-        _id: 'random_user_id',
+        id: 'random_user_id',
       } as any)
       expect(result).toBe(mockSnapshot)
     })
     it('should throw an error if the manuscript is not found', async () => {
       snapshotController['fetchSnapshot'] = jest.fn().mockReturnValue(Promise.resolve(null))
-      quarterbackService.getManuscriptFromSnapshot = jest
+      documentService.getManuscriptFromSnapshot = jest
         .fn()
         .mockRejectedValue(new ValidationError('Manuscript not found', 'random_manuscript_id'))
-      quarterbackService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
+      documentService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
       await expect(
-        snapshotController.getSnapshot('snapshotID', { _id: 'random_user_id' } as any)
+        snapshotController.getSnapshot('snapshotID', { id: 'random_user_id' } as any)
       ).rejects.toThrow('Validation error: Manuscript not found')
     })
     it('should throw an error if the snapshot is not found', async () => {
-      snapshotService.getSnapshot = jest
+      snapshotClient.getSnapshot = jest
         .fn()
         .mockRejectedValue(new MissingSnapshotError('snapshotID'))
-      quarterbackService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
+      documentService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
       await expect(
-        snapshotController.getSnapshot('snapshotID', { _id: 'random_user_id' } as any)
+        snapshotController.getSnapshot('snapshotID', { id: 'random_user_id' } as any)
       ).rejects.toThrow(new MissingSnapshotError('snapshotID'))
     })
   })
@@ -203,69 +198,69 @@ describe('SnapshotController', () => {
         'No user found'
       )
     })
-    it('should call quarterback.validateUserAccess', async () => {
-      quarterbackService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
-      const spy = jest.spyOn(quarterbackService, 'validateUserAccess')
-      snapshotService.deleteSnapshot = jest.fn()
+    it('should call document.validateUserAccess', async () => {
+      documentService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
+      const spy = jest.spyOn(documentService, 'validateUserAccess')
+      snapshotClient.deleteSnapshot = jest.fn()
       snapshotController['fetchSnapshot'] = jest.fn().mockReturnValue(Promise.resolve(mockSnapshot))
-      quarterbackService.getManuscriptFromSnapshot = jest
+      documentService.getManuscriptFromSnapshot = jest
         .fn()
         .mockResolvedValue({ random: 'manuscript' })
-      await snapshotController.deleteSnapshot('snapshotID', { _id: 'random_user_id' } as any)
+      await snapshotController.deleteSnapshot('snapshotID', { id: 'random_user_id' } as any)
       expect(spy).toHaveBeenCalled()
     })
     it('should call snapshotService.deleteSnapshot', async () => {
-      quarterbackService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
+      documentService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
       snapshotController['fetchSnapshot'] = jest.fn().mockReturnValue(Promise.resolve(mockSnapshot))
-      quarterbackService.getManuscriptFromSnapshot = jest
+      documentService.getManuscriptFromSnapshot = jest
         .fn()
         .mockResolvedValue({ random: 'manuscript' })
-      snapshotService.deleteSnapshot = jest.fn()
-      const spy = jest.spyOn(snapshotService, 'deleteSnapshot')
-      await snapshotController.deleteSnapshot('snapshotID', { _id: 'random_user_id' } as any)
+      snapshotClient.deleteSnapshot = jest.fn()
+      const spy = jest.spyOn(snapshotClient, 'deleteSnapshot')
+      await snapshotController.deleteSnapshot('snapshotID', { id: 'random_user_id' } as any)
       expect(spy).toHaveBeenCalled()
     })
     it('should throw an error if the user does not have write access', async () => {
       snapshotController['fetchSnapshot'] = jest.fn().mockReturnValue(Promise.resolve(mockSnapshot))
-      quarterbackService.getManuscriptFromSnapshot = jest
+      documentService.getManuscriptFromSnapshot = jest
         .fn()
         .mockResolvedValue({ random: 'manuscript' })
-      quarterbackService.getPermissions = jest
+      documentService.getPermissions = jest
         .fn()
-        .mockResolvedValue(new Set([QuarterbackPermission.READ]))
+        .mockResolvedValue(new Set([DocumentPermission.READ]))
       await expect(
-        snapshotController.deleteSnapshot('snapshotID', { _id: 'random_user_id' } as any)
+        snapshotController.deleteSnapshot('snapshotID', { id: 'random_user_id' } as any)
       ).rejects.toThrow('Access denied')
     })
     it('should return the result of snapshotService.deleteSnapshot', async () => {
       snapshotController['fetchSnapshot'] = jest.fn().mockReturnValue(Promise.resolve(mockSnapshot))
-      quarterbackService.getManuscriptFromSnapshot = jest
+      documentService.getManuscriptFromSnapshot = jest
         .fn()
         .mockResolvedValue({ random: 'manuscript' })
-      quarterbackService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
-      snapshotService.deleteSnapshot = jest.fn().mockReturnValue(Promise.resolve(mockSnapshot))
+      documentService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
+      snapshotClient.deleteSnapshot = jest.fn().mockReturnValue(Promise.resolve(mockSnapshot))
       const result = await snapshotController.deleteSnapshot('snapshotID', {
-        _id: 'random_user_id',
+        id: 'random_user_id',
       } as any)
       expect(result).toBe(mockSnapshot)
     })
     it('should throw an error if the manuscript is not found', async () => {
       snapshotController['fetchSnapshot'] = jest.fn().mockReturnValue(Promise.resolve(null))
-      quarterbackService.getManuscriptFromSnapshot = jest
+      documentService.getManuscriptFromSnapshot = jest
         .fn()
         .mockRejectedValue(new ValidationError('Manuscript not found', 'random_manuscript_id'))
-      quarterbackService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
+      documentService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
       await expect(
-        snapshotController.deleteSnapshot('snapshotID', { _id: 'random_user_id' } as any)
+        snapshotController.deleteSnapshot('snapshotID', { id: 'random_user_id' } as any)
       ).rejects.toThrow('Validation error: Manuscript not found')
     })
     it('should throw an error if the snapshot is not found', async () => {
-      quarterbackService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
-      snapshotService.getSnapshot = jest
+      documentService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
+      snapshotClient.getSnapshot = jest
         .fn()
         .mockRejectedValue(new MissingSnapshotError('snapshotID'))
       await expect(
-        snapshotController.deleteSnapshot('snapshotID', { _id: 'random_user_id' } as any)
+        snapshotController.deleteSnapshot('snapshotID', { id: 'random_user_id' } as any)
       ).rejects.toThrow(new MissingSnapshotError('snapshotID'))
     })
   })
@@ -275,65 +270,61 @@ describe('SnapshotController', () => {
         snapshotController.createSnapshot('projectID', { docID: 'docID', name: 'name' }, undefined)
       ).rejects.toThrow('No user found')
     })
-    it('should call quarterback.validateUserAccess', async () => {
-      quarterbackService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
-      const spy = jest.spyOn(quarterbackService, 'validateUserAccess')
-      documentHistoryService.createDocumentHistory = jest.fn().mockReturnValue({ data: {} })
-      documentService.findDocumentWithSnapshot = jest.fn().mockResolvedValue({ data: mockDoc })
-      documentHistoryService.clearDocumentHistory = jest.fn().mockReturnValue(Promise.resolve())
-      snapshotService.saveSnapshot = jest.fn()
+    it('should call document.validateUserAccess', async () => {
+      documentService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
+      const spy = jest.spyOn(documentService, 'validateUserAccess')
+      documentClient.findDocumentWithSnapshot = jest.fn().mockResolvedValue({ data: mockDoc })
+      documentClient.updateDocument = jest.fn()
+      snapshotClient.saveSnapshot = jest.fn()
       await snapshotController.createSnapshot('projectID', { docID: 'docID', name: 'name' }, {
-        _id: 'random_user_id',
+        id: 'random_user_id',
       } as any)
       expect(spy).toHaveBeenCalled()
     })
-    it('should call documentService.findDocumentWithSnapshot', async () => {
-      quarterbackService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
-      documentService.findDocumentWithSnapshot = jest.fn().mockResolvedValue({ data: mockDoc })
-      documentHistoryService.createDocumentHistory = jest.fn().mockReturnValue({ data: {} })
-      documentHistoryService.clearDocumentHistory = jest.fn().mockReturnValue(Promise.resolve())
+    it('should call documentClient.findDocumentWithSnapshot', async () => {
+      documentService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
+      documentClient.findDocumentWithSnapshot = jest.fn().mockResolvedValue({ data: mockDoc })
+      documentClient.updateDocument = jest.fn()
 
-      const spy = jest.spyOn(documentService, 'findDocumentWithSnapshot')
-      snapshotService.saveSnapshot = jest.fn()
+      const spy = jest.spyOn(documentClient, 'findDocumentWithSnapshot')
+      snapshotClient.saveSnapshot = jest.fn()
       await snapshotController.createSnapshot('projectID', { docID: 'docID', name: 'name' }, {
-        _id: 'random_user_id',
+        id: 'random_user_id',
       } as any)
       expect(spy).toHaveBeenCalled()
     })
     it('should call snapshotService.saveSnapshot', async () => {
-      quarterbackService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
-      documentService.findDocumentWithSnapshot = jest.fn().mockResolvedValue({ data: mockDoc })
-      documentHistoryService.createDocumentHistory = jest.fn().mockReturnValue({ data: {} })
-      snapshotService.saveSnapshot = jest.fn()
-      documentHistoryService.clearDocumentHistory = jest.fn().mockReturnValue(Promise.resolve())
+      documentService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
+      documentClient.findDocumentWithSnapshot = jest.fn().mockResolvedValue({ data: mockDoc })
+      snapshotClient.saveSnapshot = jest.fn()
+      documentClient.updateDocument = jest.fn()
 
-      const spy = jest.spyOn(snapshotService, 'saveSnapshot')
+      const spy = jest.spyOn(snapshotClient, 'saveSnapshot')
       await snapshotController.createSnapshot('projectID', { docID: 'docID', name: 'name' }, {
-        _id: 'random_user_id',
+        id: 'random_user_id',
       } as any)
       expect(spy).toHaveBeenCalled()
     })
     it('should throw an error if the user does not have write access', async () => {
-      quarterbackService.getPermissions = jest
+      documentService.getPermissions = jest
         .fn()
-        .mockResolvedValue(new Set([QuarterbackPermission.READ]))
+        .mockResolvedValue(new Set([DocumentPermission.READ]))
       await expect(
         snapshotController.createSnapshot('projectID', { docID: 'docID', name: 'name' }, {
-          _id: 'random_user_id',
+          id: 'random_user_id',
         } as any)
       ).rejects.toThrow('Access denied')
     })
     it('should return the result of snapshotService.saveSnapshot', async () => {
-      quarterbackService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
-      documentService.findDocumentWithSnapshot = jest.fn().mockResolvedValue({ data: mockDoc })
-      documentHistoryService.createDocumentHistory = jest.fn().mockReturnValue({ data: {} })
-      documentHistoryService.clearDocumentHistory = jest.fn().mockReturnValue(Promise.resolve())
-      snapshotService.saveSnapshot = jest.fn().mockResolvedValue(mockSnapshot)
+      documentService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
+      documentClient.findDocumentWithSnapshot = jest.fn().mockResolvedValue({ data: mockDoc })
+      documentClient.updateDocument = jest.fn()
+      snapshotClient.saveSnapshot = jest.fn().mockResolvedValue(mockSnapshot)
       const result = await snapshotController.createSnapshot(
         'projectID',
         { docID: 'docID', name: 'name' },
         {
-          _id: 'random_user_id',
+          id: 'random_user_id',
         } as any
       )
       expect(result).toBe(mockSnapshot)
@@ -341,17 +332,17 @@ describe('SnapshotController', () => {
   })
   describe('fetchSnapshot', () => {
     it('should call snapshotService.getSnapshot', async () => {
-      snapshotService.getSnapshot = jest.fn().mockResolvedValue({ data: mockSnapshot })
+      snapshotClient.getSnapshot = jest.fn().mockResolvedValue({ data: mockSnapshot })
       await snapshotController['fetchSnapshot']('random_snapshot_id')
-      expect(snapshotService.getSnapshot).toHaveBeenCalled()
+      expect(snapshotClient.getSnapshot).toHaveBeenCalled()
     })
     it('should return the result of snapshotService.getSnapshot', async () => {
-      snapshotService.getSnapshot = jest.fn().mockResolvedValue(mockSnapshot)
+      snapshotClient.getSnapshot = jest.fn().mockResolvedValue(mockSnapshot)
       const result = await snapshotController['fetchSnapshot']('random_snapshot_id')
       expect(result).toStrictEqual(mockSnapshot)
     })
     it('should throw an error if the snapshot is not found', async () => {
-      snapshotService.getSnapshot = jest
+      snapshotClient.getSnapshot = jest
         .fn()
         .mockRejectedValue(new MissingSnapshotError('random_snapshot_id'))
       await expect(snapshotController['fetchSnapshot']('random_snapshot_id')).rejects.toThrow(

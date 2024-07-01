@@ -19,7 +19,7 @@ import { StatusCodes } from 'http-status-codes'
 
 import { BucketKey } from './Config/ConfigurationTypes'
 import { InternalErrorCode } from './InternalErrorCodes'
-import { User, UserStatus } from './Models/UserModels'
+import { User } from './Models/UserModels'
 import { isString } from './util'
 
 /** An error-like object that has a code. Used amongst error types to describe those error types that have their own natural HTTP status code. */
@@ -330,45 +330,6 @@ export class InvalidBackchannelLogoutError extends Error implements StatusCoded 
     super(`Invalid backchannel logout error: ${message}`)
     this.invalidValue = invalidValue
     this.name = 'InvalidBackchannelLogoutError'
-    Object.setPrototypeOf(this, new.target.prototype)
-  }
-}
-
-export class MissingUserStatusError extends Error implements StatusCoded {
-  readonly internalErrorCode = InternalErrorCode.MissingUserStatusError
-  readonly statusCode = StatusCodes.UNAUTHORIZED
-  readonly user: User
-  constructor(userID: string) {
-    super(`User status for user '${userID}' is not found.`)
-    this.name = 'MissingUserStatusError'
-    Object.setPrototypeOf(this, new.target.prototype)
-  }
-}
-
-export class UserBlockedError extends Error implements StatusCoded {
-  readonly internalErrorCode = InternalErrorCode.UserBlockedError
-  readonly statusCode = StatusCodes.FORBIDDEN
-  readonly user: User
-  readonly userStatus: UserStatus
-  constructor(user: User, userStatus: UserStatus) {
-    super(`User '${user._id}' account is blocked.`)
-    this.user = user
-    this.userStatus = userStatus
-    this.name = 'UserBlockedError'
-    Object.setPrototypeOf(this, new.target.prototype)
-  }
-}
-
-export class UserNotVerifiedError extends Error implements StatusCoded {
-  readonly internalErrorCode = InternalErrorCode.UserNotVerifiedError
-  readonly statusCode = StatusCodes.FORBIDDEN
-  readonly user: User
-  readonly userStatus: UserStatus
-  constructor(user: User, userStatus: UserStatus) {
-    super(`User '${user._id}' account is not verified.`)
-    this.user = user
-    this.userStatus = userStatus
-    this.name = 'UserNotVerifiedError'
     Object.setPrototypeOf(this, new.target.prototype)
   }
 }

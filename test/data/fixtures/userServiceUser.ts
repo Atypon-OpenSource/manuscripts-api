@@ -17,9 +17,11 @@
 import { User } from '../../../src/Models/UserModels'
 
 export const validUser: User = {
-  _id: 'User|9f338224-b0d5-45aa-b02c-21c7e0c3c07b',
-  name: 'System User',
-  email: 'valid-user-new@manuscriptsapp.com'
+  id: 'User|9f338224-b0d5-45aa-b02c-21c7e0c3c07b',
+  given: 'System',
+  family: 'User',
+  email: 'valid-user-new@manuscriptsapp.com',
+  connectUserID: '123-123-123',
 }
 
 export const userList: User[] = []
@@ -27,11 +29,11 @@ export const userList: User[] = []
 userList.push({
   _id: '9f338224-b0d5-45aa-b02c-21c7e0c3c07a',
   name: 'Valid System User',
-  email: 'valid-user@manuscriptsapp.com'
+  email: 'valid-user@manuscriptsapp.com',
 })
 
 userList.push({
   _id: '9f338224-b0d5-45aa-b02c-21c7e0c3c07b',
   name: 'System User',
-  email: 'valid-user-new@manuscriptsapp.com'
+  email: 'valid-user-new@manuscriptsapp.com',
 })

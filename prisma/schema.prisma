@@ -4,18 +4,33 @@ datasource db {
 }
 
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["filterJson", "extendedIndexes"]
+  provider = "prisma-client-js"
 }
 
 model User {
-  id   String @id @default(uuid())
-  data Json?
+  id            String   @id @unique @default(uuid())
+  data          Json?
+  given         String   @default("")
+  family        String   @default("")
+  connectUserID String   @default("")
+  email         String   @default("")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @default(now()) @updatedAt
+}
+
+model Event {
+  id        String   @id @default(uuid())
+  type      String
+  userID    String?
+  projectID String?
+  createdAt DateTime @default(now())
 }
 
 model Project {
   id   String @id @default(uuid())
   data Json?
+
+  @@index([data(ops: JsonbPathOps)], type: Gin)
 }
 
 model ManuscriptDoc {
@@ -23,11 +38,14 @@ model ManuscriptDoc {
   user_model_id       String
   project_model_id    String
   doc                 Json
-  version             Int?                 @default(0)
+  version             Int                 @default(0)
   schema_version      String?       
   createdAt           DateTime             @default(now())
   updatedAt           DateTime             @updatedAt
   snapshots           ManuscriptSnapshot[] @relation("ManuscriptSnapshotToManuscriptDoc")
+  steps               Json[]               @default([])
+
+  @@index(fields: [project_model_id])
 }
 
 model ManuscriptSnapshot {
@@ -37,6 +55,8 @@ model ManuscriptSnapshot {
   createdAt DateTime      @default(now())
   doc       ManuscriptDoc @relation("ManuscriptSnapshotToManuscriptDoc", fields: [doc_id], references: [manuscript_model_id], onDelete: Cascade)
   doc_id    String
+
+  @@index(fields: [doc_id])
 }
 
 model ManuscriptDocHistory {
