@@ -34,9 +34,9 @@ async function maybeMigrate(
   const migratedDoc = migrateFor(cloneDeep(doc), schema_version)
 
   // backing up old doc
-  await tx.manuscriptDoc.create({
+  await tx.migrationBackup.create({
     data: {
-      manuscript_model_id: manuscript_model_id + '-' + schema_version,
+      manuscript_model_id: manuscript_model_id,
       user_model_id,
       project_model_id,
       schema_version,
