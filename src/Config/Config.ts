@@ -29,7 +29,6 @@ import {
   EmailConfiguration,
   Environment,
   EnvironmentLike,
-  ExternalAPIConfiguration,
   ServerConfiguration,
 } from './ConfigurationTypes'
 import { normalizeURL } from './normalize-url'
@@ -72,7 +71,6 @@ export class Configuration implements ConfigurationContainer {
   readonly auth: AuthConfiguration
   readonly email: EmailConfiguration
   readonly server: ServerConfiguration
-  readonly pressroom: ExternalAPIConfiguration
   readonly data: DataConfiguration
 
   constructor(env: EnvironmentLike) {
@@ -118,11 +116,6 @@ export class Configuration implements ConfigurationContainer {
           ).concat(additionalOrigins)
         )
       ), // get unique values from potentially duplicated ones.
-    }
-
-    this.pressroom = {
-      baseurl: getString(env.APP_PRESSROOM_BASE_URL, 'APP_PRESSROOM_BASE_URL'),
-      apiKey: getString(env.APP_PRESSROOM_APIKEY, 'APP_PRESSROOM_APIKEY'),
     }
 
     this.data = {
