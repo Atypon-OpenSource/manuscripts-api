@@ -15,7 +15,6 @@
  */
 
 import { Manuscript, Model, Project, UserProfile } from '@manuscripts/json-schema'
-import { getVersion } from '@manuscripts/transform'
 
 import { DIContainer } from '../../../DIContainer/DIContainer'
 import {
@@ -23,7 +22,6 @@ import {
   MissingRecordError,
   RoleDoesNotPermitOperationError,
 } from '../../../Errors'
-import { CreateDoc } from '../../../Models/DocumentModels'
 import { ProjectPermission, ProjectUserRole } from '../../../Models/ProjectModels'
 import { BaseController } from '../../BaseController'
 
@@ -109,29 +107,12 @@ export class ProjectController extends BaseController {
       throw new RoleDoesNotPermitOperationError(`Access denied`, user.id)
     }
 
-    const result = await DIContainer.sharedContainer.projectService.importJats(
+    return await DIContainer.sharedContainer.projectService.importJats(
+      user.id,
       zip,
       projectID,
       templateID
     )
-
-    const manuscriptID = result._id
-
-    const { article } = await DIContainer.sharedContainer.projectService.getArticleModelMap(
-      projectID,
-      manuscriptID
-    )
-
-    //creating base document for trackchanges
-    const createDoc: CreateDoc = {
-      manuscript_model_id: manuscriptID,
-      project_model_id: projectID,
-      doc: article,
-      schema_version: getVersion(),
-    }
-    await DIContainer.sharedContainer.documentClient.createDocument(createDoc, user.id)
-
-    return result
   }
 
   async getUserProfiles(user: Express.User, projectID: string): Promise<UserProfile[]> {

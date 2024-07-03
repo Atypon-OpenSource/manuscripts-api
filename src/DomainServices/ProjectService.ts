@@ -25,6 +25,7 @@ import {
 } from '@manuscripts/json-schema'
 import {
   Decoder,
+  getVersion,
   hasObjectType,
   JATSExporter,
   ManuscriptNode,
@@ -38,6 +39,7 @@ import JSZip from 'jszip'
 import { Readable } from 'stream'
 import tempy from 'tempy'
 
+import { DIContainer } from '../DIContainer/DIContainer'
 import {
   MissingContainerError,
   MissingTemplateError,
@@ -46,6 +48,7 @@ import {
   UserRoleError,
   ValidationError,
 } from '../Errors'
+import { CreateDoc } from '../Models/DocumentModels'
 import { ArchiveOptions, ProjectPermission, ProjectUserRole } from '../Models/ProjectModels'
 import {
   DocumentClient,
@@ -80,6 +83,7 @@ export class ProjectService {
   }
 
   public async importJats(
+    userID: string,
     file: Express.Multer.File,
     projectID: string,
     templateID?: string
@@ -125,7 +129,31 @@ export class ProjectService {
 
     this.validate(models)
     await this.projectRepository.bulkInsert(models)
+    await this.createManuscriptDoc(models, manuscript, projectID, userID)
     return manuscript
+  }
+
+  private async createManuscriptDoc(
+    models: Model[],
+    manuscript: Manuscript,
+    projectID: string,
+    userID: string
+  ) {
+    const modelMap = DIContainer.sharedContainer.projectService.getContainedModelsMap(
+      models as ContainedModel[]
+    )
+    const article = DIContainer.sharedContainer.projectService.modelMapToManuscriptNode(
+      modelMap,
+      manuscript._id
+    )
+
+    const createDoc: CreateDoc = {
+      manuscript_model_id: manuscript._id,
+      project_model_id: projectID,
+      doc: article,
+      schema_version: getVersion(),
+    }
+    await DIContainer.sharedContainer.documentClient.createDocument(createDoc, userID)
   }
 
   public async makeArchive(projectID: string, options?: ArchiveOptions) {
@@ -336,8 +364,10 @@ export class ProjectService {
     citationStyle: string,
     locale: string
   ) {
-    const { article, modelMap } = await this.getArticleModelMap(projectID, manuscriptID)
-    return new JATSExporter().serializeToJATS(article.content, modelMap, manuscriptID, {
+    const containedModels = await this.getContainedModels(projectID)
+    const containedModelsMap = this.getContainedModelsMap(containedModels)
+    const article = this.modelMapToManuscriptNode(containedModelsMap, manuscriptID)
+    return new JATSExporter().serializeToJATS(article.content, containedModelsMap, manuscriptID, {
       csl: {
         style: citationStyle,
         locale,
@@ -345,26 +375,24 @@ export class ProjectService {
     })
   }
 
-  public async getArticleModelMap(projectID: string, manuscriptID: string) {
-    const projectResources: ContainedModel[] = (await this.getProjectModels(
-      projectID
-    )) as ContainedModel[]
-    const { article, modelMap } = this.createArticle(projectResources, manuscriptID)
-    return { article, modelMap }
+  public async getContainedModels(projectID: string) {
+    return (await this.getProjectModels(projectID)) as ContainedModel[]
+  }
+  public getContainedModelsMap(projectResources: ContainedModel[]) {
+    projectResources
+      .filter(hasObjectType<Section>(ObjectTypes.Section))
+      .forEach((section: Section) => {
+        section.generatedLabel = true
+      })
+    return new Map<string, ContainedModel>(projectResources.map((model) => [model._id, model]))
   }
 
-  private createArticle(
-    data: ContainedModel[],
+  public modelMapToManuscriptNode(
+    modelMap: Map<string, ContainedModel>,
     manuscriptID: string
-  ): { article: ManuscriptNode; modelMap: Map<string, ContainedModel> } {
-    const modelMap = new Map<string, ContainedModel>(data.map((model) => [model._id, model]))
-    data.filter(hasObjectType<Section>(ObjectTypes.Section)).forEach((section: Section) => {
-      section.generatedLabel = true
-    })
-
+  ): ManuscriptNode {
     const decoder = new Decoder(modelMap, false)
-    const article = decoder.createArticleNode(manuscriptID)
-    return { article, modelMap }
+    return decoder.createArticleNode(manuscriptID)
   }
   private async extract(
     zip: Readable
