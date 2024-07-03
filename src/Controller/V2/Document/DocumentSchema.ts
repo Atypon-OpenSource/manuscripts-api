@@ -60,12 +60,6 @@ export const receiveStepsSchema: Joi.SchemaMap = {
     version: Joi.number().required(),
   }),
 }
-export const listenSchema: Joi.SchemaMap = {
-  params: Joi.object({
-    projectID: Joi.string().required(),
-    manuscriptID: Joi.string().required(),
-  }),
-}
 export const getStepsFromVersionSchema: Joi.SchemaMap = {
   params: Joi.object({
     projectID: Joi.string().required(),

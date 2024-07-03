@@ -31,6 +31,7 @@ import { EventManager } from '../DomainServices/EventService'
 import { PressroomService } from '../DomainServices/PressroomService'
 import { ProjectService } from '../DomainServices/ProjectService'
 import { RegisterationService } from '../DomainServices/RegisterationService'
+import { SocketsService } from '../DomainServices/SocketsService'
 import { UserService } from '../DomainServices/UserService'
 import {
   DocumentClient,
@@ -84,6 +85,7 @@ export class DIContainer {
   readonly documentClient: DocumentClient
   readonly eventclient: EventClient
   readonly eventManager: EventManager
+  readonly socketsService: SocketsService
 
   /**
    * WARNING: internal method.
@@ -109,7 +111,6 @@ export class DIContainer {
     this.documentClient = repository.documentClient
     this.snapshotClient = repository.snapshotClient
     this.userClient = repository.userClient
-    //or we can send repo.DB?
     this.projectService = new ProjectService(
       repository.projectClient,
       repository.userClient,
@@ -118,6 +119,7 @@ export class DIContainer {
       this.pressroomService,
       this.configService
     )
+    this.socketsService = new SocketsService()
   }
 
   /**

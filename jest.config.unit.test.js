@@ -32,6 +32,7 @@ module.exports = {
         "!src/Config/*.ts",
         "!src/Errors.ts",
         "!src/Controller/BaseController.ts",
+        "!src/Controller/WebSocketController.ts",
         "!src/Controller/InitRouter.ts",
         "!src/Controller/**/Routes.ts",
         "!src/Controller/**/*Route.ts",
@@ -46,5 +47,7 @@ module.exports = {
         "!src/Utilities/fs-promise.ts",
         "!src/DataAccess/**",
         "!src/DomainServices/PressroomService.ts",
+        "!src/DomainServices/SocketsService.ts",
+        "!src/DomainServices/EventService.ts",
     ]
 }

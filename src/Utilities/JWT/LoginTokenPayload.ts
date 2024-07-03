@@ -17,6 +17,7 @@
 import jwt from 'jsonwebtoken'
 
 import { config } from '../../Config/Config'
+import { InvalidCredentialsError } from '../../Errors'
 
 /**
  * Represents the contents of a JWT token payload;
@@ -62,4 +63,12 @@ export function isLoginTokenPayload(obj: string | object | null): obj is LoginTo
     (obj as any).deviceID &&
     typeof (obj as any).deviceID === 'string'
   )
+}
+
+export function validateToken(token: string) {
+  const payload = jwt.decode(token)
+  if (!isLoginTokenPayload(payload)) {
+    throw new InvalidCredentialsError('Unexpected token payload.')
+  }
+  return payload
 }

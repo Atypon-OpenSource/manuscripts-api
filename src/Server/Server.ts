@@ -20,12 +20,14 @@ import express from 'express'
 import promBundle from 'express-prom-bundle'
 import logger from 'morgan'
 import * as path from 'path'
+import { WebSocketServer } from 'ws'
 
 import { PassportAuth } from '../Auth/Passport/Passport'
 import { config } from '../Config/Config'
 import { Environment } from '../Config/ConfigurationTypes'
 import { initRouter } from '../Controller/InitRouter'
 import { getRoutes as getRoutesV2 } from '../Controller/V2/Routes'
+import { WebSocketController } from '../Controller/WebSocketController'
 import { ForbiddenOriginError, IllegalStateError, isStatusCoded } from '../Errors'
 import generateDocs from '../Utilities/Docs/swagger'
 import { log } from '../Utilities/Logger'
@@ -39,11 +41,14 @@ import { configurePromClientRegistry } from './PromClientRegistryConfig'
  */
 export class Server implements IServer {
   public app: express.Application
+  private webSocketServer: WebSocketServer
+  private webSocketController: WebSocketController
 
   public bootstrap(): void {
     this.app = express()
     this.config()
     this.loadRoutes()
+    this.initWebSocketServer()
   }
 
   private config() {
@@ -139,21 +144,16 @@ export class Server implements IServer {
     })
   }
 
+  private initWebSocketServer() {
+    this.webSocketServer = new WebSocketServer({ noServer: true })
+    this.webSocketController = new WebSocketController(this.webSocketServer)
+  }
+
   /**
    * Starts web server on specific port.
    */
   public async start(port: number): Promise<void> {
     return new Promise<void>((resolve, reject) => {
-      /*this.app.listen(port, (error: Error) => {
-        if (error) {
-          log.error(`can't start server`, error)
-          reject(error)
-        } else {
-          log.info(`Server started on port ${port}`)
-          resolve()
-        }
-      })*/
-
       this.app
         .listen(port, () => {
           log.info(`Server started on port ${port}`)
@@ -163,6 +163,7 @@ export class Server implements IServer {
           log.error(`can't start server`, error)
           reject(error)
         })
+        .on('upgrade', this.webSocketController.handleUpgrade)
     })
   }
 }

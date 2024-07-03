@@ -26,7 +26,7 @@ export class DocumentController extends BaseController {
       throw new ValidationError('No user found', user)
     }
     await DIContainer.sharedContainer.documentService.validateUserAccess(
-      user,
+      user.id,
       projectID,
       DocumentPermission.WRITE
     )
@@ -38,7 +38,7 @@ export class DocumentController extends BaseController {
       throw new ValidationError('No user found', user)
     }
     await DIContainer.sharedContainer.documentService.validateUserAccess(
-      user,
+      user.id,
       projectID,
       DocumentPermission.READ
     )
@@ -50,7 +50,7 @@ export class DocumentController extends BaseController {
       throw new ValidationError('No user found', user)
     }
     await DIContainer.sharedContainer.documentService.validateUserAccess(
-      user,
+      user.id,
       projectID,
       DocumentPermission.WRITE
     )
@@ -66,7 +66,7 @@ export class DocumentController extends BaseController {
       throw new ValidationError('No user found', user)
     }
     await DIContainer.sharedContainer.documentService.validateUserAccess(
-      user,
+      user.id,
       projectID,
       DocumentPermission.WRITE
     )
@@ -82,11 +82,18 @@ export class DocumentController extends BaseController {
       throw new ValidationError('No user found', user)
     }
     await DIContainer.sharedContainer.documentService.validateUserAccess(
-      user,
+      user.id,
       projectID,
       DocumentPermission.WRITE
     )
-    return await DIContainer.sharedContainer.authorityService.receiveSteps(manuscriptID, payload)
+    const history = await DIContainer.sharedContainer.authorityService.receiveSteps(
+      manuscriptID,
+      payload
+    )
+    DIContainer.sharedContainer.socketsService.broadcast(
+      manuscriptID,
+      JSON.stringify({ type: 'steps', ...history })
+    )
   }
 
   async getEvents(
@@ -100,7 +107,7 @@ export class DocumentController extends BaseController {
       throw new ValidationError('No user found', user)
     }
     await DIContainer.sharedContainer.documentService.validateUserAccess(
-      user,
+      user.id,
       projectID,
       DocumentPermission.READ
     )
