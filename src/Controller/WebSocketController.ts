@@ -69,7 +69,9 @@ export class WebSocketController {
       return this.handleInvalidData(stream, ws, manuscriptID)
     }
     try {
-      await this.sendHistoryToSocket(manuscriptID, projectID, authToken, ws)
+      await this.documentService.validateTokenAccess(authToken, projectID, DocumentPermission.READ)
+      this.socketsService.setClient(manuscriptID, ws)
+      await this.sendHistoryToSocket(manuscriptID, ws)
     } catch (error) {
       log.error(`Error handling message: ${error}`)
       this.handleInvalidData(stream, ws, manuscriptID)
@@ -86,14 +88,7 @@ export class WebSocketController {
     return parsedMessage
   }
 
-  private sendHistoryToSocket = async (
-    manuscriptID: string,
-    projectID: string,
-    authToken: string,
-    ws: WebSocket
-  ) => {
-    await this.documentService.validateTokenAccess(authToken, projectID, DocumentPermission.READ)
-    this.socketsService.setClient(manuscriptID, ws)
+  private sendHistoryToSocket = async (manuscriptID: string, ws: WebSocket) => {
     const history = await this.authorityService.getEvents(manuscriptID, 0, true)
     this.socketsService.send(
       JSON.stringify({ ...history, 'Transformer-Version': getVersion() }),
