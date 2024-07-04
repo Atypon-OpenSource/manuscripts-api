@@ -46,6 +46,7 @@ export class WebSocketController {
     const manuscriptID = getManuscriptIDFromRequest(request)
     this.wss.emit('connection', ws, request)
     this.attachListeners(stream, ws, manuscriptID)
+    log.info(`Connection established for ${manuscriptID}`)
   }
 
   private attachListeners = (stream: Duplex, ws: WebSocket, manuscriptID: string) => {

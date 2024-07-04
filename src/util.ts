@@ -15,9 +15,6 @@
  */
 
 import { IncomingMessage } from 'http'
-import { WebSocket } from 'ws'
-
-import { log } from './Utilities/Logger'
 
 export function isString(value: any): value is string {
   return typeof value === 'string'
