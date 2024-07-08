@@ -91,7 +91,7 @@ export const exportJatsSchema: Joi.SchemaMap = {
   }),
   params: Joi.object({
     projectID: Joi.string().required(),
-    manuscriptID: Joi.string(),
+    manuscriptID: Joi.string().required(),
   }),
   body: Joi.object({
     citationStyle: Joi.string().required(),

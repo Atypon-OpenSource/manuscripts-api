@@ -143,6 +143,7 @@ export class ProjectRoute extends BaseRoute {
     router.post(
       `${this.basePath}/:projectID/manuscript/:manuscriptID/export-jats`,
       celebrate(exportJatsSchema),
+      AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           await this.exportJats(req, res)
@@ -271,7 +272,7 @@ export class ProjectRoute extends BaseRoute {
 
   private async exportJats(req: Request, res: Response) {
     const { projectID, manuscriptID } = req.params
-    const { citationStyle, locale } = req.body
+    const { template, locale } = req.body
     const { user } = req
 
     if (!user) {
@@ -281,7 +282,7 @@ export class ProjectRoute extends BaseRoute {
     const jats = await this.projectController.exportJats(
       projectID,
       manuscriptID,
-      citationStyle,
+      template,
       locale,
       user
     )
