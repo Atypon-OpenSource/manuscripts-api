@@ -99,7 +99,6 @@ export class DIContainer {
     this.server = new Server()
 
     this.pressroomService = new PressroomService(config.pressroom.baseurl, config.pressroom.apiKey)
-    this.documentService = new DocumentService()
     this.eventclient = repository.eventClient
     this.eventManager = new EventManager(this.eventclient)
     this.authenticationService = new AuthenticationService(repository.userClient)
@@ -120,6 +119,7 @@ export class DIContainer {
       this.configService
     )
     this.socketsService = new SocketsService()
+    this.documentService = new DocumentService(this.socketsService, this.authorityService)
   }
 
   /**

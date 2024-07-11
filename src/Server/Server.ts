@@ -27,7 +27,7 @@ import { config } from '../Config/Config'
 import { Environment } from '../Config/ConfigurationTypes'
 import { initRouter } from '../Controller/InitRouter'
 import { getRoutes as getRoutesV2 } from '../Controller/V2/Routes'
-import { WebSocketController } from '../Controller/WebSocketController'
+import { DIContainer } from '../DIContainer/DIContainer'
 import { ForbiddenOriginError, IllegalStateError, isStatusCoded } from '../Errors'
 import generateDocs from '../Utilities/Docs/swagger'
 import { log } from '../Utilities/Logger'
@@ -42,7 +42,6 @@ import { configurePromClientRegistry } from './PromClientRegistryConfig'
 export class Server implements IServer {
   public app: express.Application
   private webSocketServer: WebSocketServer
-  private webSocketController: WebSocketController
 
   public bootstrap(): void {
     this.app = express()
@@ -146,7 +145,6 @@ export class Server implements IServer {
 
   private initWebSocketServer() {
     this.webSocketServer = new WebSocketServer({ noServer: true })
-    this.webSocketController = new WebSocketController(this.webSocketServer)
   }
 
   /**
@@ -163,7 +161,14 @@ export class Server implements IServer {
           log.error(`can't start server`, error)
           reject(error)
         })
-        .on('upgrade', this.webSocketController.handleUpgrade)
+        .on('upgrade', (req, socket, head) =>
+          DIContainer.sharedContainer.documentService.handleUpgrade(
+            this.webSocketServer,
+            req,
+            socket,
+            head
+          )
+        )
     })
   }
 }

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { Duplex } from 'stream'
 import { WebSocket } from 'ws'
 
 import { log } from '../Utilities/Logger'
@@ -38,7 +37,7 @@ export class SocketsService {
     if (socket) {
       this.send(message, socket)
     } else {
-      log.error(`No client found for ${manuscriptID}`)
+      log.error(`no client found for ${manuscriptID}`)
     }
   }
 
@@ -49,31 +48,12 @@ export class SocketsService {
       this.closeOrErrorHandler(ws)
     }
   }
-  public closeSocket(ws: WebSocket, manuscriptID?: string) {
-    try {
-      ws.removeAllListeners()
-      ws.close()
-    } catch (error) {
-      log.error(`Error closing socket: ${error}`)
-    }
-    if (manuscriptID) {
-      this.removeClient(manuscriptID)
-    }
-  }
-
-  public destroyStream(stream: Duplex) {
-    try {
-      stream.destroy()
-    } catch (error) {
-      log.error(`Error destroying duplex: ${error}`)
-    }
-  }
 
   private closeOrErrorHandler(webSocket: WebSocket) {
     try {
       webSocket.close()
-    } catch (err) {
-      log.error('error closing socket: ' + err)
+    } catch (error) {
+      log.error(`error closing socket: ${error}`)
     }
   }
 }

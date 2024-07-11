@@ -25,7 +25,6 @@ import {
   deleteDocumentSchema,
   getDocumentSchema,
   getStepsFromVersionSchema,
-  receiveStepsSchema,
   updateDocumentSchema,
 } from './DocumentSchema'
 
@@ -81,28 +80,17 @@ export class DocumentRoute extends BaseRoute {
         }, next)
       }
     ),
-      router.post(
-        `${this.basePath}/:projectID/manuscript/:manuscriptID/steps`,
-        celebrate(receiveStepsSchema),
+      router.get(
+        `${this.basePath}/:projectID/manuscript/:manuscriptID/version/:versionID`,
+        celebrate(getStepsFromVersionSchema),
         AuthStrategy.JsonHeadersValidation,
         AuthStrategy.JWTAuth,
         (req: Request, res: Response, next: NextFunction) => {
           return this.runWithErrorHandling(async () => {
-            await this.receiveSteps(req, res)
+            await this.stepsSince(req, res)
           }, next)
         }
       )
-    router.get(
-      `${this.basePath}/:projectID/manuscript/:manuscriptID/version/:versionID`,
-      celebrate(getStepsFromVersionSchema),
-      AuthStrategy.JsonHeadersValidation,
-      AuthStrategy.JWTAuth,
-      (req: Request, res: Response, next: NextFunction) => {
-        return this.runWithErrorHandling(async () => {
-          await this.stepsSince(req, res)
-        }, next)
-      }
-    )
   }
 
   private async createDocument(req: Request, res: Response) {
@@ -129,13 +117,6 @@ export class DocumentRoute extends BaseRoute {
     const { projectID, manuscriptID } = req.params
     const user = req.user
     await this.documentController.deleteDocument(projectID, manuscriptID, user)
-    res.sendStatus(StatusCodes.OK).end()
-  }
-  private async receiveSteps(req: Request, res: Response) {
-    const { manuscriptID, projectID } = req.params
-    const user = req.user
-    const payload = req.body
-    await this.documentController.receiveSteps(projectID, manuscriptID, payload, user)
     res.sendStatus(StatusCodes.OK).end()
   }
 
