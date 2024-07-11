@@ -272,7 +272,7 @@ export class ProjectRoute extends BaseRoute {
 
   private async exportJats(req: Request, res: Response) {
     const { projectID, manuscriptID } = req.params
-    const { template, locale } = req.body
+    const { citationStyle, locale } = req.body
     const { user } = req
 
     if (!user) {
@@ -282,7 +282,7 @@ export class ProjectRoute extends BaseRoute {
     const jats = await this.projectController.exportJats(
       projectID,
       manuscriptID,
-      template,
+      citationStyle,
       locale,
       user
     )
