@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as Joi from 'joi'
+import Joi from 'joi'
 
 export const createDocumentSchema: Joi.SchemaMap = {
   params: Joi.object({
@@ -49,20 +49,10 @@ export const deleteDocumentSchema: Joi.SchemaMap = {
     manuscriptID: Joi.string().required(),
   }),
 }
-export const getStepsFromVersionSchema: Joi.SchemaMap = {
+export const stepsSinceSchema: Joi.SchemaMap = {
   params: Joi.object({
     projectID: Joi.string().required(),
     manuscriptID: Joi.string().required(),
     versionID: Joi.string().required(),
   }),
-}
-
-export function validateListenUrl(url: string) {
-  const urlRegex =
-    /^\/api\/v2\/doc\/(MPProject:[0-9a-fA-F-]+)\/manuscript\/(MPManuscript:[0-9a-fA-F-]+)\/listen/
-  const match = url.match(urlRegex)
-  return {
-    projectID: match ? match[1] : undefined,
-    manuscriptID: match ? match[2] : undefined,
-  }
 }

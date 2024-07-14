@@ -49,5 +49,6 @@ module.exports = {
         "!src/DomainServices/PressroomService.ts",
         "!src/DomainServices/SocketsService.ts",
         "!src/DomainServices/EventService.ts",
+        "!src/DomainServices/DocumentService.ts",
     ]
 }

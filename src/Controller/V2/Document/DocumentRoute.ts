@@ -24,7 +24,7 @@ import {
   createDocumentSchema,
   deleteDocumentSchema,
   getDocumentSchema,
-  getStepsFromVersionSchema,
+  stepsSinceSchema,
   updateDocumentSchema,
 } from './DocumentSchema'
 
@@ -82,7 +82,7 @@ export class DocumentRoute extends BaseRoute {
     ),
       router.get(
         `${this.basePath}/:projectID/manuscript/:manuscriptID/version/:versionID`,
-        celebrate(getStepsFromVersionSchema),
+        celebrate(stepsSinceSchema),
         AuthStrategy.JsonHeadersValidation,
         AuthStrategy.JWTAuth,
         (req: Request, res: Response, next: NextFunction) => {
@@ -127,8 +127,7 @@ export class DocumentRoute extends BaseRoute {
       projectID,
       manuscriptID,
       parseInt(versionID),
-      user,
-      false
+      user
     )
     res.status(StatusCodes.OK).send({ clientIDs, version, steps })
   }

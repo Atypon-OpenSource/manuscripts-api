@@ -41,7 +41,7 @@ export class SocketsService {
     }
   }
 
-  public async send(message: string, ws: WebSocket) {
+  public send(message: string, ws: WebSocket) {
     try {
       ws.send(message)
     } catch (error) {

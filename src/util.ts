@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-import { IncomingMessage } from 'http'
-
 export function isString(value: any): value is string {
   return typeof value === 'string'
 }
@@ -45,17 +43,4 @@ export function removeEmptyValuesFromObj(o: { [index: string]: any }): { [index:
     }
   })
   return newObj
-}
-
-export function getManuscriptIDFromRequest(request: IncomingMessage): string {
-  const url = request.url
-  if (!url) {
-    throw new Error('No URL found')
-  }
-  const manuscriptIDPattern = /(MPManuscript:[^/]+)/
-  const match = url.match(manuscriptIDPattern)
-  if (!match) {
-    throw new Error('No manuscriptID in URL')
-  }
-  return match[1]
 }

@@ -14,19 +14,13 @@
  * limitations under the License.
  */
 
-import { Manuscript } from '@manuscripts/json-schema'
 import { getVersion } from '@manuscripts/transform'
 import { IncomingMessage } from 'http'
 import { Duplex } from 'stream'
 import { ErrorEvent, MessageEvent, WebSocket, WebSocketServer } from 'ws'
 
-import { validateListenUrl } from '../Controller/V2/Document/DocumentSchema'
 import { DIContainer } from '../DIContainer/DIContainer'
-import {
-  MissingManuscriptError,
-  RoleDoesNotPermitOperationError,
-  VersionMismatchError,
-} from '../Errors'
+import { MissingManuscriptError, RoleDoesNotPermitOperationError } from '../Errors'
 import { ReceiveSteps } from '../Models/AuthorityModels'
 import { ProjectUserRole } from '../Models/ProjectModels'
 import { Snapshot } from '../Models/SnapshotModel'
@@ -93,8 +87,7 @@ export class DocumentService {
 
   public async getManuscriptFromSnapshot(snapshot: Snapshot) {
     const manuscriptID = snapshot.doc_id
-    const manuscript: Manuscript | null =
-      await DIContainer.sharedContainer.projectClient.getProject(manuscriptID)
+    const manuscript = await DIContainer.sharedContainer.projectClient.getProject(manuscriptID)
 
     if (!manuscript) {
       throw new MissingManuscriptError(manuscriptID)
@@ -114,38 +107,26 @@ export class DocumentService {
       return
     }
 
-    const authToken = request.headers['sec-websocket-protocol']
-    const { manuscriptID, projectID } = validateListenUrl(url)
-
-    if (!manuscriptID || !projectID || !authToken) {
-      this.destroyStream(socket)
-      return
-    }
-    try {
-      this.validateTokenAccess(authToken, projectID, DocumentPermission.READ)
-    } catch (error) {
+    const { manuscriptID, projectID } = this.parseConnectionURL(url)
+    if (!manuscriptID || !projectID) {
       this.destroyStream(socket)
       return
     }
 
-    wss.handleUpgrade(request, socket, head, async (ws) =>
-      this.setupConnection(wss, socket, ws, request, manuscriptID)
-    )
+    wss.handleUpgrade(request, socket, head, async (ws) => {
+      this.attachListeners(socket, ws, manuscriptID)
+      wss.emit('connection', ws, request)
+    })
   }
-  private async setupConnection(
-    wss: WebSocketServer,
-    stream: Duplex,
-    ws: WebSocket,
-    request: IncomingMessage,
-    manuscriptID: string
-  ) {
-    wss.emit('connection', ws, request)
-    this.socketsService.setClient(manuscriptID, ws)
-    this.attachListeners(stream, ws, manuscriptID)
-    this.socketsService.send(JSON.stringify({ 'Transformer-Version': getVersion() }), ws)
-    log.info(`connection established for ${manuscriptID}`)
+  private parseConnectionURL(url: string) {
+    const urlRegex =
+      /^\/api\/v2\/doc\/(MPProject:[0-9a-fA-F-]+)\/manuscript\/(MPManuscript:[0-9a-fA-F-]+)\/listen/
+    const match = url.match(urlRegex)
+    return {
+      projectID: match ? match[1] : undefined,
+      manuscriptID: match ? match[2] : undefined,
+    }
   }
-
   private attachListeners(stream: Duplex, ws: WebSocket, manuscriptID: string) {
     ws.onerror = (error) => this.onError(ws, error)
     ws.onclose = () => this.onClose(ws, manuscriptID)
@@ -160,48 +141,58 @@ export class DocumentService {
     log.info(`connection closed for ${manuscriptID}`)
     this.closeSocket(ws, manuscriptID)
   }
-
-  private async receiveSteps(
-    projectID: string,
-    manuscriptID: string,
-    payload: ReceiveSteps,
-    token: string
-  ) {
-    await this.validateTokenAccess(token, projectID, DocumentPermission.WRITE)
-    const history = await this.authorityService.receiveSteps(manuscriptID, payload)
-    this.socketsService.broadcast(manuscriptID, JSON.stringify(history))
-  }
-
   private async onMessage(stream: Duplex, ws: WebSocket, message: MessageEvent) {
     const { manuscriptID, projectID, authToken, payload } = this.parseMessage(message)
-    if (
-      !manuscriptID ||
-      !projectID ||
-      !authToken ||
-      !payload ||
-      (payload && !this.isReceiveStepsPayload(payload))
-    ) {
-      return this.handleInvalidData(stream, ws, manuscriptID)
-    }
     try {
-      await this.receiveSteps(projectID, manuscriptID, payload, authToken)
-    } catch (error) {
-      if (error instanceof VersionMismatchError) {
-        this.socketsService.send(
-          JSON.stringify({ code: error.statusCode, error: error.message }),
-          ws
-        )
+      if (
+        manuscriptID &&
+        projectID &&
+        authToken &&
+        payload &&
+        this.isReceiveStepsPayload(payload)
+      ) {
+        await this.receiveSteps(manuscriptID, projectID, authToken, payload, ws)
+      } else if (manuscriptID && projectID && authToken) {
+        await this.setupConnection(manuscriptID, projectID, authToken, ws)
       } else {
-        this.handleInvalidData(stream, ws, manuscriptID)
-        log.error(`error handling message: ${error}`)
+        this.handleInvalidData(stream, ws)
       }
+    } catch (error) {
+      log.error(`error handling message: ${error}`)
+      this.handleInvalidData(stream, ws, manuscriptID)
+    }
+  }
+
+  private async setupConnection(
+    manuscriptID: string,
+    projectID: string,
+    authToken: string,
+    ws: WebSocket
+  ) {
+    await this.validateTokenAccess(authToken, projectID, DocumentPermission.READ)
+    this.socketsService.setClient(manuscriptID, ws)
+    this.socketsService.send(JSON.stringify({ 'Transformer-Version': getVersion() }), ws)
+  }
+
+  private async receiveSteps(
+    manuscriptID: string,
+    projectID: string,
+    authToken: string,
+    payload: ReceiveSteps,
+    ws: WebSocket
+  ) {
+    await this.validateTokenAccess(authToken, projectID, DocumentPermission.WRITE)
+    try {
+      const appliedSteps = await this.authorityService.receiveSteps(manuscriptID, payload)
+      this.socketsService.broadcast(manuscriptID, JSON.stringify(appliedSteps))
+    } catch (error) {
+      this.socketsService.send(JSON.stringify({ code: error.statusCode, error: error.message }), ws)
     }
   }
 
   private isReceiveStepsPayload(payload: any): payload is ReceiveSteps {
     return (
       Array.isArray(payload.steps) &&
-      payload.steps.every((step: object) => typeof step === 'object' && step !== null) &&
       typeof payload.clientID === 'number' &&
       typeof payload.version === 'number'
     )
