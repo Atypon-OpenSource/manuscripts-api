@@ -14,13 +14,23 @@
  * limitations under the License.
  */
 import {
+  ContainedModel,
   Manuscript,
   manuscriptIDTypes,
   Model,
   ObjectTypes,
   Project,
+  Section,
   validate,
 } from '@manuscripts/json-schema'
+import {
+  Decoder,
+  getVersion,
+  hasObjectType,
+  JATSExporter,
+  ManuscriptNode,
+  parseJATSArticle,
+} from '@manuscripts/transform'
 import decompress from 'decompress'
 import fs from 'fs'
 import { remove } from 'fs-extra'
@@ -29,13 +39,16 @@ import JSZip from 'jszip'
 import { Readable } from 'stream'
 import tempy from 'tempy'
 
+import { DIContainer } from '../DIContainer/DIContainer'
 import {
   MissingContainerError,
   MissingTemplateError,
+  RecordNotFoundError,
   SyncError,
   UserRoleError,
   ValidationError,
 } from '../Errors'
+import { CreateDoc } from '../Models/DocumentModels'
 import { ArchiveOptions, ProjectPermission, ProjectUserRole } from '../Models/ProjectModels'
 import {
   DocumentClient,
@@ -44,17 +57,14 @@ import {
   UserClient,
 } from '../Models/RepositoryModels'
 import { ConfigService } from './ConfigService'
-import { PressroomService } from './PressroomService'
 
 const EMPTY_PERMISSIONS = new Set<ProjectPermission>()
-
 export class ProjectService {
   constructor(
     private readonly projectRepository: ProjectClient,
     private readonly userClient: UserClient,
     private readonly snapshotClient: SnapshotClient,
     private readonly documentClient: DocumentClient,
-    private readonly pressroomService: PressroomService,
     private readonly configService: ConfigService
   ) {}
 
@@ -73,6 +83,7 @@ export class ProjectService {
   }
 
   public async importJats(
+    userID: string,
     file: Express.Multer.File,
     projectID: string,
     templateID?: string
@@ -84,18 +95,9 @@ export class ProjectService {
       }
     }
 
-    const zip = await this.convert(file.path)
-
-    const { root, files } = await this.extract(zip)
-
-    if (!files || !files['index.manuscript-json']) {
-      throw new ValidationError('JSON file not found', file.filename)
-    }
+    let models = await this.convert(file.path)
 
     const now = Math.round(Date.now() / 1000)
-
-    const index = files['index.manuscript-json'].data
-    let models = JSON.parse(index.toString()).data as Model[]
 
     let manuscript = models.find((m) => m.objectType === ObjectTypes.Manuscript) as Manuscript
 
@@ -127,10 +129,31 @@ export class ProjectService {
 
     this.validate(models)
     await this.projectRepository.bulkInsert(models)
-
-    await remove(root)
-
+    await this.createManuscriptDoc(models, manuscript, projectID, userID)
     return manuscript
+  }
+
+  private async createManuscriptDoc(
+    models: Model[],
+    manuscript: Manuscript,
+    projectID: string,
+    userID: string
+  ) {
+    const modelMap = DIContainer.sharedContainer.projectService.getContainedModelsMap(
+      models as ContainedModel[]
+    )
+    const article = DIContainer.sharedContainer.projectService.modelMapToManuscriptNode(
+      modelMap,
+      manuscript._id
+    )
+
+    const createDoc: CreateDoc = {
+      manuscript_model_id: manuscript._id,
+      project_model_id: projectID,
+      doc: article,
+      schema_version: getVersion(),
+    }
+    await DIContainer.sharedContainer.documentClient.createDocument(createDoc, userID)
   }
 
   public async makeArchive(projectID: string, options?: ArchiveOptions) {
@@ -321,15 +344,56 @@ export class ProjectService {
     }
   }
 
-  private async convert(path: string): Promise<Readable> {
+  private async convert(path: string): Promise<Model[]> {
     const stream = fs.createReadStream(path)
-    try {
-      return await this.pressroomService.importJATS(stream)
-    } finally {
-      stream.close()
+    const { root, files } = await this.extract(stream)
+    const lookupName = ['manuscript.XML', 'manuscript.xml']
+    if (!files[lookupName[0]] && !files[lookupName[1]]) {
+      throw new RecordNotFoundError('')
     }
+    const file = files[lookupName[0]] ?? files[lookupName[1]]
+    const doc = new DOMParser().parseFromString(file.data.toString(), 'application/xml')
+    const models = parseJATSArticle(doc)
+    await remove(root)
+    return models
   }
 
+  public async exportJats(
+    projectID: string,
+    manuscriptID: string,
+    citationStyle: string,
+    locale: string
+  ) {
+    const containedModels = await this.getContainedModels(projectID)
+    const containedModelsMap = this.getContainedModelsMap(containedModels)
+    const article = this.modelMapToManuscriptNode(containedModelsMap, manuscriptID)
+    return new JATSExporter().serializeToJATS(article.content, containedModelsMap, manuscriptID, {
+      csl: {
+        style: citationStyle,
+        locale,
+      },
+    })
+  }
+
+  public async getContainedModels(projectID: string) {
+    return (await this.getProjectModels(projectID)) as ContainedModel[]
+  }
+  public getContainedModelsMap(projectResources: ContainedModel[]) {
+    projectResources
+      .filter(hasObjectType<Section>(ObjectTypes.Section))
+      .forEach((section: Section) => {
+        section.generatedLabel = true
+      })
+    return new Map<string, ContainedModel>(projectResources.map((model) => [model._id, model]))
+  }
+
+  public modelMapToManuscriptNode(
+    modelMap: Map<string, ContainedModel>,
+    manuscriptID: string
+  ): ManuscriptNode {
+    const decoder = new Decoder(modelMap, false)
+    return decoder.createArticleNode(manuscriptID)
+  }
   private async extract(
     zip: Readable
   ): Promise<{ root: string; files: { [k: string]: decompress.File } }> {

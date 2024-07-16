@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import { templates } from '../dump/templates'
+import { CITATION_STYLE, LOCALE } from './JatsFixure'
 import { validManuscript } from './manuscripts'
 import { validProject } from './projects'
 import { validUser } from './userServiceUser'
@@ -92,6 +93,18 @@ export const deleteProjectRequest = {
   user: validUser,
   params: {
     projectID: validProject._id,
+  },
+}
+
+export const exportJatsRequest = {
+  user: validUser,
+  params: {
+    projectID: validProject._id,
+    manuscriptID: validManuscript._id,
+  },
+  body: {
+    citationStyle: CITATION_STYLE,
+    locale: LOCALE,
   },
 }
 

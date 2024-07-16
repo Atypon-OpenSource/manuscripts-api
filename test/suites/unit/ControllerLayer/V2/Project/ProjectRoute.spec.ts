@@ -23,10 +23,13 @@ import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
 import { ProjectService } from '../../../../../../src/DomainServices/ProjectService'
 import { RoleDoesNotPermitOperationError, ValidationError } from '../../../../../../src/Errors'
 import { ProjectPermission, ProjectUserRole } from '../../../../../../src/Models/ProjectModels'
+import { DocumentClient } from '../../../../../../src/Models/RepositoryModels'
+import { validManuscript } from '../../../../../data/fixtures/manuscripts'
 import {
   createManuscriptRequest,
   createProjectRequest,
   deleteProjectRequest,
+  exportJatsRequest,
   getArchiveRequest,
   getProjectModelsRequest,
   getUserProfilesRequest,
@@ -34,6 +37,7 @@ import {
   updateProjectRequest,
   updateUserRoleRequest,
 } from '../../../../../data/fixtures/projectRouteRequests'
+import { validProject } from '../../../../../data/fixtures/projects'
 import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
 
 jest.setTimeout(TEST_TIMEOUT)
@@ -56,11 +60,13 @@ describe('ProjectRoute', () => {
     set: jest.Mock
     send: jest.Mock
     end: jest.Mock
+    type: jest.Mock
   } = {
     status: jest.fn().mockReturnThis(),
     set: jest.fn().mockReturnThis(),
     send: jest.fn().mockReturnThis(),
     end: jest.fn().mockReturnThis(),
+    type: jest.fn().mockReturnThis(),
   }
   beforeEach(() => {
     route = new ProjectRoute()
@@ -302,9 +308,12 @@ describe('ProjectRoute', () => {
     })
 
     it('should return OK if called correctly with a file', async () => {
+      const docClient: DocumentClient = DIContainer.sharedContainer.documentClient
       const permissions = new Set([ProjectPermission.CREATE_MANUSCRIPT])
+      docClient.createDocument = jest.fn().mockResolvedValue({})
       projectService.importJats = jest.fn().mockResolvedValue({})
       projectService.getPermissions = jest.fn().mockResolvedValue(permissions)
+      projectService.getProjectModels = jest.fn().mockResolvedValue([validProject, validManuscript])
 
       const request = structuredClone(createManuscriptRequest)
       // @ts-ignore
@@ -436,6 +445,39 @@ describe('ProjectRoute', () => {
 
       expect(projectService.deleteProject).toHaveBeenCalledWith(projectID)
       expect(res.status).toHaveBeenCalledWith(StatusCodes.NO_CONTENT)
+    })
+  })
+  describe('exportJats', () => {
+    it('should throw error if user is missing', async () => {
+      await expect(
+        // @ts-ignore
+        route.exportJats(removeUser(exportJatsRequest), res)
+      ).rejects.toThrow(new ValidationError('No user found', null))
+    })
+
+    it('should return ok if called correctly', async () => {
+      const permissions = new Set([ProjectPermission.READ])
+      projectService.exportJats = jest.fn().mockResolvedValue('')
+      projectService.getPermissions = jest.fn().mockResolvedValue(permissions)
+      projectService.getArticleModelMap = jest.fn().mockResolvedValue({ article: {}, modelMap: {} })
+
+      // @ts-ignore
+      await route.exportJats(exportJatsRequest, res)
+      expect(projectService.exportJats).toHaveBeenCalled()
+    })
+
+    it('should fail if user lacks permissions', async () => {
+      const permissions = new Set([])
+      projectService.exportJats = jest.fn().mockResolvedValue('')
+      projectService.getPermissions = jest.fn().mockResolvedValue(permissions)
+      projectService.getArticleModelMap = jest.fn().mockResolvedValue({ article: {}, modelMap: {} })
+
+      await expect(
+        // @ts-ignore
+        route.exportJats(exportJatsRequest, res)
+      ).rejects.toThrow(
+        new RoleDoesNotPermitOperationError('Access denied', exportJatsRequest.user._id)
+      )
     })
   })
 })

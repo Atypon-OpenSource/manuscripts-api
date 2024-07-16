@@ -29,18 +29,3 @@ export function isNumber(value: any): value is number {
 export function isBoolean(value: any): value is boolean {
   return typeof value === 'boolean'
 }
-
-/**
- * Returns a new object with empty/null/undefined values removed from the passed object
- * @param o - object with keys as string
- */
-export function removeEmptyValuesFromObj(o: { [index: string]: any }): { [index: string]: any } {
-  const newObj: { [index: string]: any } = {}
-  Object.keys(o).forEach((key) => {
-    const val = o[key]
-    if (typeof val !== 'undefined' && val !== null && val.length !== 0) {
-      newObj[key] = o[key]
-    }
-  })
-  return newObj
-}
