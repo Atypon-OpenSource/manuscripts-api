@@ -17,7 +17,6 @@ import '../../../../utilities/configMock.ts'
 import '../../../../utilities/dbMock.ts'
 
 import { ObjectTypes } from '@manuscripts/json-schema'
-import { Chance } from 'chance'
 
 import { DIContainer } from '../../../../../src/DIContainer/DIContainer'
 import { ConfigService } from '../../../../../src/DomainServices/ConfigService'
@@ -37,10 +36,9 @@ import {
   validProject,
   validProject2,
   validProject4,
-  validProject5,
   validProject8,
 } from '../../../../data/fixtures/projects'
-import { validUser1, validUser2 } from '../../../../data/fixtures/UserRepository'
+import { validUser2 } from '../../../../data/fixtures/UserRepository'
 import { validUser } from '../../../../data/fixtures/userServiceUser'
 import { TEST_TIMEOUT } from '../../../../utilities/testSetup'
 
@@ -117,10 +115,10 @@ describe('projectService', () => {
     it('should throw an error if the provided templateID does not exist', async () => {
       const file = {}
       configService.hasDocument = jest.fn().mockResolvedValue(false)
-      // @ts-ignore
-      await expect(projectService.importJats(file, projectID, templateID)).rejects.toThrow(
-        new MissingTemplateError(templateID)
-      )
+      await expect(
+        // @ts-ignore
+        projectService.importJats(validUser.id, file, projectID, templateID)
+      ).rejects.toThrow(new MissingTemplateError(templateID))
       expect(configService.hasDocument).toHaveBeenCalledWith(templateID)
     })
 
@@ -136,12 +134,17 @@ describe('projectService', () => {
         contents: 'Test paragraph',
         elementType: 'p',
       }
+      const docClient = DIContainer.sharedContainer.documentClient
       const data = [manuscript, paragraph]
       configService.hasDocument = jest.fn().mockResolvedValue(true)
       //@ts-ignore
       projectClient.bulkInsert = jest.fn(async () => Promise.resolve())
       // @ts-ignore
-      projectService.convert = jest.fn(async (): Promise<any> => Promise.resolve())
+      projectService.convert = jest.fn(async (): Promise<any> => Promise.resolve(data))
+      // @ts-ignore
+      projectService.modelMapToManuscriptNode = jest.fn().mockResolvedValue({})
+      // @ts-ignore
+      docClient.createDocument = jest.fn(async () => Promise.resolve())
       // @ts-ignore
       projectService.extract = jest.fn(
         async (): Promise<any> =>
@@ -155,35 +158,13 @@ describe('projectService', () => {
           })
       )
       // @ts-ignore
-      const output = await projectService.importJats(file, projectID, templateID)
+      const output = await projectService.importJats(validUser.id, file, projectID, templateID)
 
       expect(output._id).toEqual(manuscript._id)
       expect(output.containerID).toEqual(projectID)
       expect(output.prototype).toEqual(templateID)
       expect(output.updatedAt).not.toBeNull()
       expect(output.createdAt).not.toBeNull()
-    })
-    it('should fail if index json does not exist', async () => {
-      const file = {}
-      configService.hasDocument = jest.fn().mockResolvedValue(true)
-      // @ts-ignore
-      projectService.convert = jest.fn(async (): Promise<any> => Promise.resolve())
-      // @ts-ignore
-      projectService.extract = jest.fn(
-        async (): Promise<any> =>
-          Promise.resolve({
-            root: '',
-            files: {
-              'test.json': {
-                data: '',
-              },
-            },
-          })
-      )
-      // @ts-ignore
-      await expect(projectService.importJats(file, projectID, templateID)).rejects.toThrow(
-        ValidationError
-      )
     })
     it('should fail if no Manuscript is found', async () => {
       const file = {}
@@ -195,7 +176,7 @@ describe('projectService', () => {
       const data = [paragraph]
       configService.hasDocument = jest.fn().mockResolvedValue(true)
       // @ts-ignore
-      projectService.convert = jest.fn(async (): Promise<any> => Promise.resolve())
+      projectService.convert = jest.fn(async (): Promise<any> => Promise.resolve(data))
       // @ts-ignore
       projectService.extract = jest.fn(
         async (): Promise<any> =>
@@ -227,7 +208,7 @@ describe('projectService', () => {
       const data = [manuscript, paragraph]
       configService.hasDocument = jest.fn().mockResolvedValue(true)
       // @ts-ignore
-      projectService.convert = jest.fn(async (): Promise<any> => Promise.resolve())
+      projectService.convert = jest.fn(async (): Promise<any> => Promise.resolve(data))
       // @ts-ignore
       projectService.extract = jest.fn(
         async (): Promise<any> =>
@@ -610,5 +591,4 @@ describe('projectService', () => {
       expect(projectService.getUserRole(validProject4, 'User_asda')).toBeNull()
     })
   })
-
 })

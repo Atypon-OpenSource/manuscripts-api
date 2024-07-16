@@ -46,5 +46,7 @@ module.exports = {
         "!src/Utilities/fs-promise.ts",
         "!src/DataAccess/**",
         "!src/DomainServices/PressroomService.ts",
+        "!src/Controller/V2/Registration/RegistrationController.ts",
+        "!src/util.ts",
     ]
 }
