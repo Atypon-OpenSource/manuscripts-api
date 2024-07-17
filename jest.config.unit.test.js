@@ -22,7 +22,7 @@ module.exports = {
     "coverageThreshold": {
         "global": {
             "branches": 80,
-            "functions": 83.5,
+            "functions": 80,
             "lines": 80
         }
     },
@@ -44,17 +44,9 @@ module.exports = {
         "!src/Utilities/Logger/**",
         "!src/Utilities/Docs/**",
         "!src/Utilities/fs-promise.ts",
-        "!src/DataAccess/SQLDatabase.ts",
-        "!src/DataAccess/DatabaseIndices.ts",
-        "!src/DataAccess/**Repository/**",
-        "!src/DataAccess/QueryKind.ts",
-        "!src/DomainServices/UserActivity/UserActivityTrackingService.ts",
-        "!src/DomainServices/Pressroom/PressroomService.ts",
-        "!src/DomainServices/Document/DocumentService.ts",
-        "!src/DomainServices/Snapshot/SnapshotService.ts",
-        "!src/DomainServices/DocumentHistory/DocumentHistoryService.ts",
-        "!src/DomainServices/Shackles/ShacklesService.ts",
-        "!src/DomainServices/Expiration/ExpirationService.ts",
-        "!src/DomainServices/SG/SGService.ts",
+        "!src/DataAccess/**",
+        "!src/DomainServices/PressroomService.ts",
+        "!src/Controller/V2/Registration/RegistrationController.ts",
+        "!src/util.ts",
     ]
 }

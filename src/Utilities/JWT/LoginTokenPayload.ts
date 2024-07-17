@@ -22,57 +22,31 @@ import { config } from '../../Config/Config'
  * Represents the contents of a JWT token payload;
  * A token payload is stored inside a UserToken object at its 'token' key.
  */
-export interface LoginTokenPayload {
-  /**
-   * User's unique id.
-   */
-  userId: string
-  /**
-   * User's connect id.
-   */
-  connectUserID?: string
-  /**
-   * User's profile IDs.
-   */
-  userProfileId: string
-  /**
-   * Token expiry
-   */
-  expiry?: number
-  /**
-   * User's email.
-   */
-  email?: string
-  /**
-   * audience.
-   */
+export type LoginTokenPayload = {
+  email: string
+  deviceID: string
+  userID: string
   aud: string
-  /**
-   * issuer.
-   */
+  iat: number
   iss: string
 }
 
-type LoginTokenPayloadLike = Pick<
+export type LoginTokenPayloadLike = Pick<
   LoginTokenPayload,
-  Exclude<keyof LoginTokenPayload, 'aud' | 'iss'>
+  Exclude<keyof LoginTokenPayload, 'aud' | 'iss' | 'iat'>
 >
 
-export const generateLoginToken = (
-  payload: LoginTokenPayloadLike,
-  expiryTime: number | null
-): string => {
-  const fullPayload: LoginTokenPayload = {
+export function generateUserToken(payload: LoginTokenPayloadLike) {
+  const fullPayload = {
     ...payload,
     aud: config.email.fromBaseURL,
     iss: config.API.hostname,
   }
-
-  if (expiryTime) {
-    fullPayload.expiry = expiryTime
-  }
-
   return jwt.sign(fullPayload, config.auth.jwtSecret)
+}
+
+export function timestamp() {
+  return new Date().getTime() / 1000
 }
 
 export function isLoginTokenPayload(obj: string | object | null): obj is LoginTokenPayload {
@@ -82,14 +56,10 @@ export function isLoginTokenPayload(obj: string | object | null): obj is LoginTo
   if (typeof obj === 'string') {
     return false
   }
-
-  return (obj as any).userId && typeof (obj as any).userId === 'string'
-}
-
-export function timestamp() {
-  return new Date().getTime() / 1000
-}
-
-export const getExpirationTime = (hours: number): number => {
-  return Math.floor(timestamp()) + hours * 60 * 60
+  return (
+    (obj as any).userID &&
+    typeof (obj as any).userID === 'string' &&
+    (obj as any).deviceID &&
+    typeof (obj as any).deviceID === 'string'
+  )
 }

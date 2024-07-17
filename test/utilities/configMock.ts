@@ -19,18 +19,6 @@ import { ConfigurationContainer } from '../../src/Config/ConfigurationTypes'
 
 jest.mock('../../src/Config/Config', () => {
   const config: ConfigurationContainer = {
-    DB: {
-      buckets: {
-        user: 'manuscripts_user',
-        data: 'bkt',
-        project: 'pro',
-      },
-      username: 'Administrator',
-      password: '123456',
-      bucketAdminPassword: 'zuippadui',
-      uri: 'couchbase://couchbase/',
-      bucketOptions: {},
-    },
     API: {
       port: 3000,
       oauthStateEncryptionKey: 'key-12345',
@@ -48,11 +36,6 @@ jest.mock('../../src/Config/Config', () => {
     },
     server: {
       allowedCORSOrigins: ['http://localhost:8080'],
-    },
-
-    pressroom: {
-      baseurl: 'https://pressroom-js-dev.manuscripts.io',
-      apiKey: 'something-random',
     },
     data: {
       path: __dirname + '/../../config',

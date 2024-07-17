@@ -70,20 +70,13 @@ export interface EnvironmentLike {
   [key: string]: string | undefined
 }
 
-export interface ExternalAPIConfiguration {
-  readonly baseurl: string
-  readonly apiKey: string
-}
-
 export interface DataConfiguration {
   readonly path: string
 }
 export interface ConfigurationContainer {
   readonly API: APIConfiguration
-  readonly DB: DatabaseConfiguration
   readonly auth: AuthConfiguration
   readonly email: EmailConfiguration
   readonly server: ServerConfiguration
-  readonly pressroom: ExternalAPIConfiguration
   readonly data: DataConfiguration
 }

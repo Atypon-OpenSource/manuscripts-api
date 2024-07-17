@@ -20,9 +20,9 @@ describe('LoginTokenPayyload', () => {
   test('ensures that the isLoginTokenPayload type guard behaves correctly', () => {
     const nullToken = null
     const stringToken = 'foo'
-    const invalidObjTokenB = { userId: 3 }
+    const invalidObjTokenB = { id: 3 }
     const invalidObjTokenD = {}
-    const validToken = { userId: 'bar' }
+    const validToken = { userID: 'bar', deviceID: 'baz' }
 
     expect(isLoginTokenPayload(nullToken)).toBeFalsy()
     expect(isLoginTokenPayload(stringToken)).toBeFalsy()

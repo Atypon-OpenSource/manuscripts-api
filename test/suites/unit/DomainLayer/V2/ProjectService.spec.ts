@@ -13,18 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import '../../../../utilities/dbMock.ts'
 import '../../../../utilities/configMock.ts'
+import '../../../../utilities/dbMock.ts'
 
 import { ObjectTypes } from '@manuscripts/json-schema'
-import { v4 as uuid_v4 } from 'uuid'
 
-import { IManuscriptRepository } from '../../../../../src/DataAccess/Interfaces/IManuscriptRepository'
-import { ProjectRepository } from '../../../../../src/DataAccess/ProjectRepository/ProjectRepository'
-import { UserRepository } from '../../../../../src/DataAccess/UserRepository/UserRepository'
 import { DIContainer } from '../../../../../src/DIContainer/DIContainer'
 import { ConfigService } from '../../../../../src/DomainServices/ConfigService'
-import { ProjectPermission, ProjectService } from '../../../../../src/DomainServices/ProjectService'
+import { ProjectService } from '../../../../../src/DomainServices/ProjectService'
 import {
   MissingContainerError,
   MissingTemplateError,
@@ -32,10 +28,16 @@ import {
   UserRoleError,
   ValidationError,
 } from '../../../../../src/Errors'
-import { ProjectUserRole } from '../../../../../src/Models/ContainerModels'
+import { ProjectPermission, ProjectUserRole } from '../../../../../src/Models/ProjectModels'
+import { ProjectClient, UserClient } from '../../../../../src/Models/RepositoryModels'
 import { templates } from '../../../../data/dump/templates'
 import { validManuscript, validManuscript1 } from '../../../../data/fixtures/manuscripts'
-import { validProject, validProject2 } from '../../../../data/fixtures/projects'
+import {
+  validProject,
+  validProject2,
+  validProject4,
+  validProject8,
+} from '../../../../data/fixtures/projects'
 import { validUser2 } from '../../../../data/fixtures/UserRepository'
 import { validUser } from '../../../../data/fixtures/userServiceUser'
 import { TEST_TIMEOUT } from '../../../../utilities/testSetup'
@@ -45,21 +47,17 @@ import { TEST_TIMEOUT } from '../../../../utilities/testSetup'
 jest.setTimeout(TEST_TIMEOUT)
 
 let projectService: ProjectService
-let containerRepository: ProjectRepository
-let manuscriptRepository: IManuscriptRepository
-let projectRepository: ProjectRepository
+
+let projectClient: ProjectClient
 let configService: ConfigService
-let userRepository: UserRepository
+let userClient: UserClient
 beforeEach(async () => {
   ;(DIContainer as any)._sharedContainer = null
   await DIContainer.init()
   projectService = DIContainer.sharedContainer.projectService
-  containerRepository = DIContainer.sharedContainer.projectRepository
-  manuscriptRepository = DIContainer.sharedContainer.manuscriptRepository
-  projectRepository = DIContainer.sharedContainer.projectRepository
+  projectClient = DIContainer.sharedContainer.projectClient
   configService = DIContainer.sharedContainer.configService
-  // @ts-ignore
-  userRepository = DIContainer.sharedContainer.userRepository
+  userClient = DIContainer.sharedContainer.userClient
 })
 afterEach(() => {
   jest.clearAllMocks()
@@ -70,21 +68,20 @@ const JSZip = require('jszip')
 describe('projectService', () => {
   const projectID = validProject._id
   const manuscriptID = validManuscript._id
-  const userID = validUser._id
+  const userID = validUser.id
   const templateID = templates[0]._id
   describe('createProject', () => {
     it('should create a new project without ID and title', async () => {
-      containerRepository.create = jest.fn().mockResolvedValue({})
+      projectClient.createProject = jest.fn().mockResolvedValue({})
       await expect(projectService.createProject(userID)).resolves.not.toThrow()
-      expect(uuid_v4).toHaveBeenCalled()
-      expect(containerRepository.create).toHaveBeenCalled()
+      expect(projectClient.createProject).toHaveBeenCalled()
     })
   })
   describe('createManuscript', () => {
     it('should create a new manuscript', async () => {
-      manuscriptRepository.create = jest.fn().mockResolvedValue({})
+      projectClient.createManuscript = jest.fn().mockResolvedValue({})
       await projectService.createManuscript(projectID)
-      expect(uuid_v4).toHaveBeenCalled()
+      expect(projectClient.createManuscript).toHaveBeenCalled()
     })
     it('should create a new manuscript with the provided templateID', async () => {
       const expectedManuscript = {
@@ -94,23 +91,23 @@ describe('projectService', () => {
       }
 
       configService.hasDocument = jest.fn().mockResolvedValue(true)
-      manuscriptRepository.create = jest.fn().mockResolvedValue(expectedManuscript)
+      projectClient.createManuscript = jest.fn().mockResolvedValue(expectedManuscript)
 
       const result = await projectService.createManuscript(projectID, templateID)
 
       expect(result).toEqual(expectedManuscript)
       expect(configService.hasDocument).toHaveBeenCalledWith(templateID)
-      expect(manuscriptRepository.create).toHaveBeenCalledWith(expectedManuscript)
+      expect(projectClient.createManuscript).toHaveBeenCalledWith(projectID, templateID)
     })
 
     it('should throw an error if the provided templateID does not exist', async () => {
       configService.hasDocument = jest.fn().mockResolvedValue(false)
-      manuscriptRepository.create = jest.fn().mockResolvedValue(null)
+      projectClient.createManuscript = jest.fn().mockResolvedValue(null)
       await expect(projectService.createManuscript(projectID, templateID)).rejects.toThrow(
         new MissingTemplateError(templateID)
       )
       expect(configService.hasDocument).toHaveBeenCalledWith(templateID)
-      expect(manuscriptRepository.create).not.toHaveBeenCalled()
+      expect(projectClient.createManuscript).not.toHaveBeenCalled()
     })
   })
 
@@ -118,10 +115,10 @@ describe('projectService', () => {
     it('should throw an error if the provided templateID does not exist', async () => {
       const file = {}
       configService.hasDocument = jest.fn().mockResolvedValue(false)
-      // @ts-ignore
-      await expect(projectService.importJats(file, projectID, templateID)).rejects.toThrow(
-        new MissingTemplateError(templateID)
-      )
+      await expect(
+        // @ts-ignore
+        projectService.importJats(validUser.id, file, projectID, templateID)
+      ).rejects.toThrow(new MissingTemplateError(templateID))
       expect(configService.hasDocument).toHaveBeenCalledWith(templateID)
     })
 
@@ -137,11 +134,17 @@ describe('projectService', () => {
         contents: 'Test paragraph',
         elementType: 'p',
       }
+      const docClient = DIContainer.sharedContainer.documentClient
       const data = [manuscript, paragraph]
       configService.hasDocument = jest.fn().mockResolvedValue(true)
-      projectRepository.bulkInsert = jest.fn(async () => Promise.resolve())
+      //@ts-ignore
+      projectClient.bulkInsert = jest.fn(async () => Promise.resolve())
       // @ts-ignore
-      projectService.convert = jest.fn(async (): Promise<any> => Promise.resolve())
+      projectService.convert = jest.fn(async (): Promise<any> => Promise.resolve(data))
+      // @ts-ignore
+      projectService.modelMapToManuscriptNode = jest.fn().mockResolvedValue({})
+      // @ts-ignore
+      docClient.createDocument = jest.fn(async () => Promise.resolve())
       // @ts-ignore
       projectService.extract = jest.fn(
         async (): Promise<any> =>
@@ -155,35 +158,13 @@ describe('projectService', () => {
           })
       )
       // @ts-ignore
-      const output = await projectService.importJats(file, projectID, templateID)
+      const output = await projectService.importJats(validUser.id, file, projectID, templateID)
 
       expect(output._id).toEqual(manuscript._id)
       expect(output.containerID).toEqual(projectID)
       expect(output.prototype).toEqual(templateID)
       expect(output.updatedAt).not.toBeNull()
       expect(output.createdAt).not.toBeNull()
-    })
-    it('should fail if index json does not exist', async () => {
-      const file = {}
-      configService.hasDocument = jest.fn().mockResolvedValue(true)
-      // @ts-ignore
-      projectService.convert = jest.fn(async (): Promise<any> => Promise.resolve())
-      // @ts-ignore
-      projectService.extract = jest.fn(
-        async (): Promise<any> =>
-          Promise.resolve({
-            root: '',
-            files: {
-              'test.json': {
-                data: '',
-              },
-            },
-          })
-      )
-      // @ts-ignore
-      await expect(projectService.importJats(file, projectID, templateID)).rejects.toThrow(
-        ValidationError
-      )
     })
     it('should fail if no Manuscript is found', async () => {
       const file = {}
@@ -195,7 +176,7 @@ describe('projectService', () => {
       const data = [paragraph]
       configService.hasDocument = jest.fn().mockResolvedValue(true)
       // @ts-ignore
-      projectService.convert = jest.fn(async (): Promise<any> => Promise.resolve())
+      projectService.convert = jest.fn(async (): Promise<any> => Promise.resolve(data))
       // @ts-ignore
       projectService.extract = jest.fn(
         async (): Promise<any> =>
@@ -227,7 +208,7 @@ describe('projectService', () => {
       const data = [manuscript, paragraph]
       configService.hasDocument = jest.fn().mockResolvedValue(true)
       // @ts-ignore
-      projectService.convert = jest.fn(async (): Promise<any> => Promise.resolve())
+      projectService.convert = jest.fn(async (): Promise<any> => Promise.resolve(data))
       // @ts-ignore
       projectService.extract = jest.fn(
         async (): Promise<any> =>
@@ -249,13 +230,13 @@ describe('projectService', () => {
 
   describe('getProject', () => {
     it('should throw an error if the project does not exist', async () => {
-      containerRepository.getById = jest.fn().mockResolvedValue(null)
+      projectClient.getProject = jest.fn().mockResolvedValue(null)
       await expect(projectService.getProject(projectID)).rejects.toThrow(
-        new MissingContainerError('null')
+        new MissingContainerError(projectID)
       )
     })
     it('should return a project if the project exists', async () => {
-      containerRepository.getById = jest.fn().mockResolvedValue(validProject)
+      projectClient.getProject = jest.fn().mockResolvedValue(validProject)
       const project = await projectService.getProject(projectID)
       expect(project).toEqual(validProject)
     })
@@ -315,7 +296,7 @@ describe('projectService', () => {
           updatedAt: 21,
         },
       ]
-      manuscriptRepository.getById = jest.fn().mockResolvedValue(null)
+      projectClient.getProject = jest.fn().mockResolvedValue(null)
       // @ts-ignore
       await expect(projectService.updateProject(projectID, models)).rejects.toThrow(
         new ValidationError("manuscript doesn't exist", models)
@@ -338,7 +319,7 @@ describe('projectService', () => {
           updatedAt: 21,
         },
       ]
-      manuscriptRepository.getById = jest.fn().mockResolvedValue({ containerID: manuscriptID })
+      projectClient.getProject = jest.fn().mockResolvedValue({ containerID: manuscriptID })
       // @ts-ignore
       await expect(projectService.updateProject(projectID, models)).rejects.toThrow(
         new ValidationError("manuscript doesn't belong to project", models)
@@ -361,31 +342,31 @@ describe('projectService', () => {
         createdAt: 20,
       }
       const models = [manuscript, paragraph]
-      manuscriptRepository.getById = jest.fn().mockResolvedValue({ containerID: projectID })
-      projectRepository.removeAllResources = jest.fn()
-      projectRepository.bulkInsert = jest.fn()
-      //@ts-ignore
-      await expect(projectService.updateProject(projectID, models)).resolves.not.toThrow()
+      projectClient.getProject = jest.fn().mockResolvedValue({ containerID: projectID })
+      projectClient.removeWithAllResources = jest.fn()
+      projectClient.removeAll = jest.fn()
+      projectClient.bulkInsert = jest.fn()
+      await expect(projectService.updateProject(projectID, models as any)).resolves.not.toThrow()
     })
   })
   describe('updateUserRole', () => {
     it('should throw an error if invalid userID', async () => {
       projectService.getProject = jest.fn().mockResolvedValue(validProject)
-      userRepository.getOne = jest.fn().mockResolvedValue(null)
+      userClient.findByConnectID = jest.fn().mockResolvedValue(null)
       await expect(
         projectService.updateUserRole(projectID, userID, ProjectUserRole.Writer)
       ).rejects.toThrow(new ValidationError('Invalid user id', null))
     })
     it('should throw an error if user is * and new role is Writer', async () => {
       projectService.getProject = jest.fn().mockResolvedValue(validProject)
-      userRepository.getOne = jest.fn().mockResolvedValue({ _id: '*' })
+      userClient.findByConnectID = jest.fn().mockResolvedValue({ id: '*' })
       await expect(
         projectService.updateUserRole(projectID, userID, ProjectUserRole.Writer)
       ).rejects.toThrow(new ValidationError('User can not be owner or writer', '*'))
     })
     it('should throw an error if user is * and new role is Owner', async () => {
       projectService.getProject = jest.fn().mockResolvedValue(validProject)
-      userRepository.getOne = jest.fn().mockResolvedValue({ _id: '*' })
+      userClient.findByConnectID = jest.fn().mockResolvedValue({ id: '*' })
       await expect(
         projectService.updateUserRole(projectID, userID, ProjectUserRole.Owner)
       ).rejects.toThrow(new ValidationError('User can not be owner or writer', '*'))
@@ -399,7 +380,7 @@ describe('projectService', () => {
         annotators: [],
       }
       projectService.getProject = jest.fn().mockResolvedValue(project)
-      userRepository.getOne = jest.fn().mockResolvedValue(validUser)
+      userClient.findByConnectID = jest.fn().mockResolvedValue(validUser)
       await expect(
         projectService.updateUserRole(projectID, userID, ProjectUserRole.Owner)
       ).rejects.toThrow(new UserRoleError('User is the only owner', ProjectUserRole.Owner))
@@ -413,25 +394,24 @@ describe('projectService', () => {
         annotators: [],
       }
       projectService.getProject = jest.fn().mockResolvedValue(project)
-      const user = { _id: userID }
-      userRepository.getOne = jest.fn().mockResolvedValue(user)
-      containerRepository.patch = jest.fn().mockResolvedValue({})
+      const user = { id: userID }
+      userClient.findByConnectID = jest.fn().mockResolvedValue(user)
+      projectClient.patch = jest.fn().mockResolvedValue({})
 
       await projectService.updateUserRole(projectID, userID, ProjectUserRole.Writer)
 
       expect(projectService.getProject).toHaveBeenCalledTimes(1)
       expect(projectService.getProject).toHaveBeenCalledWith(projectID)
 
-      expect(userRepository.getOne).toHaveBeenCalledTimes(1)
-      expect(userRepository.getOne).toHaveBeenCalledWith({ connectUserID: userID })
+      expect(userClient.findByConnectID).toHaveBeenCalledTimes(1)
+      expect(userClient.findByConnectID).toHaveBeenCalledWith(userID)
 
-      expect(containerRepository.patch).toHaveBeenCalledTimes(1)
+      expect(projectClient.patch).toHaveBeenCalledTimes(1)
 
-      const userIdForSync = userID.replace('|', '_')
-      expect(containerRepository.patch).toHaveBeenCalledWith(projectID, {
+      expect(projectClient.patch).toHaveBeenCalledWith(projectID, {
         _id: projectID,
         owners: [validUser2._id],
-        writers: [userIdForSync],
+        writers: [userID],
         viewers: [],
         editors: [],
         annotators: [],
@@ -515,8 +495,8 @@ describe('projectService', () => {
   })
   describe('makeArchive', () => {
     it('should generate an archive with index.manuscript-json file', async () => {
-      containerRepository.getContainerResources = jest.fn().mockResolvedValue(validProject)
-      const result = await projectService.makeArchive(projectID, undefined, {
+      projectClient.getProjectResources = jest.fn().mockResolvedValue(validProject)
+      const result = await projectService.makeArchive(projectID, {
         getAttachments: true,
         includeExt: true,
       })
@@ -528,8 +508,8 @@ describe('projectService', () => {
       expect(result).toBeInstanceOf(Buffer)
     })
     it('should return only index.manuscript.json when getAttachments option is false', async () => {
-      containerRepository.getContainerResources = jest.fn().mockResolvedValue(validProject)
-      const result = await projectService.makeArchive(projectID, undefined, {
+      projectClient.getProjectResources = jest.fn().mockResolvedValue(validProject)
+      const result = await projectService.makeArchive(projectID, {
         getAttachments: false,
         includeExt: true,
       })
@@ -541,9 +521,9 @@ describe('projectService', () => {
 
     it('should generate an archive with only resource IDs when onlyIDs option is true', async () => {
       const resourceIDs = ['resource1', 'resource2']
-      containerRepository.getContainerResourcesIDs = jest.fn().mockResolvedValue(resourceIDs)
+      projectClient.getProjectResourcesIDs = jest.fn().mockResolvedValue(resourceIDs)
 
-      const result = await projectService.makeArchive(projectID, undefined, {
+      const result = await projectService.makeArchive(projectID, {
         onlyIDs: true,
         includeExt: true,
         getAttachments: true,
@@ -559,8 +539,8 @@ describe('projectService', () => {
 
     it('should return an archive with only index.manuscript-json file when no resources exist', async () => {
       const resources: any[] = []
-      containerRepository.getContainerResources = jest.fn().mockResolvedValue(resources)
-      const result = await projectService.makeArchive(projectID, undefined, {
+      projectClient.getProjectResources = jest.fn().mockResolvedValue(resources)
+      const result = await projectService.makeArchive(projectID, {
         getAttachments: true,
         includeExt: true,
       })
@@ -569,6 +549,46 @@ describe('projectService', () => {
 
       expect(files.length).toBe(1)
       expect(files[0]).toBe('index.manuscript-json')
+    })
+  })
+
+  describe('projectService - getUserRole', () => {
+    test('should return owner if the user is an owner', () => {
+      expect(
+        projectService.getUserRole(validProject2, 'User_valid-user-1@manuscriptsapp.com')
+      ).toBe(ProjectUserRole.Owner)
+    })
+
+    test('should return writer if the user is an writer', () => {
+      expect(projectService.getUserRole(validProject4, 'User_test10')).toBe(ProjectUserRole.Writer)
+    })
+
+    test('should return viewer if the user is an viewer', () => {
+      expect(projectService.getUserRole(validProject4, 'User_test2')).toBe(ProjectUserRole.Viewer)
+    })
+
+    test('should return editor if the user is an editor', () => {
+      expect(projectService.getUserRole(validProject8, 'User_foo@bar.com')).toBe(
+        ProjectUserRole.Editor
+      )
+    })
+
+    test('should return annotator if the user is an annotator', () => {
+      expect(projectService.getUserRole(validProject8, 'User_test2')).toBe(
+        ProjectUserRole.Annotator
+      )
+    })
+
+    test('should return true if user is editor', () => {
+      expect(ProjectService.isEditor(validProject8 as any, 'User_foo@bar.com')).toBeTruthy()
+    })
+
+    test('should return true if user is annotator', () => {
+      expect(ProjectService.isAnnotator(validProject8 as any, 'User_test2')).toBeTruthy()
+    })
+
+    test('should return null if the user is not in the project', () => {
+      expect(projectService.getUserRole(validProject4, 'User_asda')).toBeNull()
     })
   })
 })

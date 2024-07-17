@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { User } from '@prisma/client'
 import { NextFunction, Request, Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
 import passport from 'passport'
@@ -21,7 +22,6 @@ import passport from 'passport'
 import { config } from '../../Config/Config'
 import { APP_SECRET_HEADER_KEY } from '../../Controller/V2/Auth/AuthController'
 import { InvalidJsonHeadersError, InvalidServerCredentialsError } from '../../Errors'
-import { User } from '../../Models/UserModels'
 import { isString } from '../../util'
 
 export class AuthStrategy {

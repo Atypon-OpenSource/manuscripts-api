@@ -1,0 +1,126 @@
+{
+  "uri": "default",
+  "stages": [
+    "Check in",
+    "Content prep",
+    "Proofing",
+    "Final checks",
+    "Published"
+  ],
+  "start-step-uri": "init",
+  "steps": [
+    {
+      "uri": "init",
+      "label": "Initialize Workflow",
+      "description": "Initialize Workflow Long Description",
+      "stage": "Check in",
+      "duration": 86400000,
+      "role": "system",
+      "transitions": {
+        "success": "prepare-for-conversion"
+      }
+    },
+    {
+      "uri": "prepare-for-conversion",
+      "label": "Prepare for Conversion",
+      "description": "Prepare for Conversion Long Description",
+      "stage": "Check in",
+      "duration": 86400000,
+      "role": "system",
+      "transitions": {
+        "success": "upload-to-editor",
+        "error": "package-adjustment"
+      }
+    },
+    {
+      "uri": "package-adjustment",
+      "label": "Package Adjustment",
+      "description": "CS Download files/package, fix, reupload and resume Long Description",
+      "stage": "Check in",
+      "duration": 86400000,
+      "role": "pe",
+      "transitions": {
+        "success": "prepare-for-conversion"
+      }
+    },
+    {
+      "uri": "upload-to-editor",
+      "label": "Upload to Editor",
+      "description": "Upload to Editor Long Description",
+      "stage": "Check in",
+      "duration": 86400000,
+      "role": "system",
+      "transitions": {
+        "copy-editing": "copy-editing",
+        "success": "copy-editing",
+        "invalid-content": "package-adjustment"
+      }
+    },
+    {
+      "uri": "copy-editing",
+      "label": "Copy Editing",
+      "description": "Copy Editing Long Description",
+      "stage": "Content prep",
+      "duration": 86400000,
+      "role": "ce",
+      "transitions": {
+        "success": "author-proofing"
+      }
+    },
+    {
+      "uri": "author-proofing",
+      "label": "Author Proofing",
+      "description": "Author Proofing Long Description",
+      "stage": "Proofing",
+      "duration": 86400000,
+      "role": "author",
+      "transitions": {
+        "success": "generate-output-package"
+      }
+    },
+    {
+      "uri": "generate-output-package",
+      "label": "Generate Output Package",
+      "description": "Generate Output Package Long Description",
+      "stage": "Final checks",
+      "duration": 86400000,
+      "role": "system",
+      "transitions": {
+        "success": "pe-final-checks"
+      }
+    },
+    {
+      "uri": "pe-final-checks",
+      "label": "Production Editor Final Checks",
+      "description": "Production Editor Final Checks Long Description",
+      "stage": "Final checks",
+      "duration": 86400000,
+      "role": "pe",
+      "transitions": {
+        "return-to-author": "author-proofing",
+        "copy-editing-required": "copy-editing",
+        "success": "publish"
+      }
+    },
+    {
+      "uri": "publish",
+      "label": "Publish Online",
+      "description": "Send package to CMS",
+      "stage": "Published",
+      "duration": 86400000,
+      "role": "system",
+      "transitions": {
+        "success": "end"
+      }
+    },
+    {
+      "uri": "end",
+      "label": "Published",
+      "description": "Published Long Description",
+      "stage": "Published",
+      "duration": 0,
+      "role": "system",
+      "transitions": {}
+    }
+  ]
+}

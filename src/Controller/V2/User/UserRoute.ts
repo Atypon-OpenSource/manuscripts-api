@@ -31,30 +31,6 @@ export class UserRoute extends BaseRoute {
   }
 
   public create(router: Router): void {
-    router.post(
-      `${this.basePath}/mark-for-deletion`,
-      AuthStrategy.JsonHeadersValidation,
-      AuthStrategy.JWTAuth,
-      (req: Request, res: Response, next: NextFunction) => {
-        return this.runWithErrorHandling(async () => {
-          await this.userController.markUserForDeletion(req)
-          res.status(StatusCodes.OK).end()
-        }, next)
-      }
-    )
-
-    router.post(
-      `${this.basePath}/unmark-for-deletion`,
-      AuthStrategy.JsonHeadersValidation,
-      AuthStrategy.JWTAuth,
-      (req: Request, res: Response, next: NextFunction) => {
-        return this.runWithErrorHandling(async () => {
-          await this.userController.unmarkUserForDeletion(req)
-          res.status(StatusCodes.OK).end()
-        }, next)
-      }
-    )
-
     router.get(
       `${this.basePath}`,
       celebrate(userSchema),
@@ -73,7 +49,7 @@ export class UserRoute extends BaseRoute {
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
-          res.send(await this.userController.userContainers(req))
+          res.send(await this.userController.userProjects(req))
         }, next)
       }
     )

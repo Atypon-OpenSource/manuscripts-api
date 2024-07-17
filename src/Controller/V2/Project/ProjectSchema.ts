@@ -85,6 +85,20 @@ export const getArchiveSchema: Joi.SchemaMap = {
   }),
 }
 
+export const exportJatsSchema: Joi.SchemaMap = {
+  headers: Joi.object({
+    accept: appJsonAndCharset,
+  }),
+  params: Joi.object({
+    projectID: Joi.string().required(),
+    manuscriptID: Joi.string().required(),
+  }),
+  body: Joi.object({
+    citationStyle: Joi.string().required(),
+    locale: Joi.string().required(),
+  }),
+}
+
 export const loadProjectSchema: Joi.SchemaMap = {
   headers: Joi.object({
     accept: appJsonAndCharset,

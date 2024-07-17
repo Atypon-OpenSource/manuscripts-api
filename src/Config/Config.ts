@@ -25,12 +25,10 @@ import {
   APIConfiguration,
   AuthConfiguration,
   ConfigurationContainer,
-  DatabaseConfiguration,
   DataConfiguration,
   EmailConfiguration,
   Environment,
   EnvironmentLike,
-  ExternalAPIConfiguration,
   ServerConfiguration,
 } from './ConfigurationTypes'
 import { normalizeURL } from './normalize-url'
@@ -70,11 +68,9 @@ function getNumber(value: any, key: string, allowMissing?: boolean): number {
 
 export class Configuration implements ConfigurationContainer {
   readonly API: APIConfiguration
-  readonly DB: DatabaseConfiguration
   readonly auth: AuthConfiguration
   readonly email: EmailConfiguration
   readonly server: ServerConfiguration
-  readonly pressroom: ExternalAPIConfiguration
   readonly data: DataConfiguration
 
   constructor(env: EnvironmentLike) {
@@ -104,20 +100,6 @@ export class Configuration implements ConfigurationContainer {
       ),
     }
 
-    const buckets = {
-      user: getString(env.APP_USER_BUCKET, 'APP_USER_BUCKET'),
-      project: getString(env.APP_DATA_BUCKET, 'APP_DATA_BUCKET'),
-      manuscriptDoc: getString(env.APP_MANUSCRIPT_DOC_BUCKET, 'APP_MANUSCRIPT_DOC_BUCKET'),
-      manuscriptSnapshot: getString(
-        env.APP_MANUSCRIPT_SNAPSHOT_BUCKET,
-        'APP_MANUSCRIPT_SNAPSHOT_BUCKET'
-      ),
-    }
-
-    this.DB = {
-      buckets,
-    }
-
     this.email = {
       fromBaseURL: normalizeURL(getString(env.APP_BASE_URL, 'APP_BASE_URL')),
     }
@@ -134,11 +116,6 @@ export class Configuration implements ConfigurationContainer {
           ).concat(additionalOrigins)
         )
       ), // get unique values from potentially duplicated ones.
-    }
-
-    this.pressroom = {
-      baseurl: getString(env.APP_PRESSROOM_BASE_URL, 'APP_PRESSROOM_BASE_URL'),
-      apiKey: getString(env.APP_PRESSROOM_APIKEY, 'APP_PRESSROOM_APIKEY'),
     }
 
     this.data = {

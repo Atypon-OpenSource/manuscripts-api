@@ -21,7 +21,7 @@ import multer from 'multer'
 
 import { AuthStrategy } from '../../../Auth/Passport/AuthStrategy'
 import { ValidationError } from '../../../Errors'
-import { ProjectUserRole } from '../../../Models/ContainerModels'
+import { ProjectUserRole } from '../../../Models/ProjectModels'
 import { celebrate } from '../../../Utilities/celebrate'
 import { BaseRoute } from '../../BaseRoute'
 import { ProjectController } from './ProjectController'
@@ -30,6 +30,7 @@ import {
   createManuscriptSchema,
   createProjectSchema,
   deleteSchema,
+  exportJatsSchema,
   getArchiveSchema,
   loadManuscriptSchema,
   loadProjectSchema,
@@ -139,6 +140,17 @@ export class ProjectRoute extends BaseRoute {
       }
     )
 
+    router.post(
+      `${this.basePath}/:projectID/manuscript/:manuscriptID/export-jats`,
+      celebrate(exportJatsSchema),
+      AuthStrategy.JWTAuth,
+      (req: Request, res: Response, next: NextFunction) => {
+        return this.runWithErrorHandling(async () => {
+          await this.exportJats(req, res)
+        }, next)
+      }
+    )
+
     router.delete(
       `${this.basePath}/:projectID`,
       celebrate(deleteSchema),
@@ -194,7 +206,7 @@ export class ProjectRoute extends BaseRoute {
 
   private async getManuscriptModels(req: Request, res: Response) {
     const modifiedSince = req.headers['if-modified-since']
-    const { projectID, manuscriptID } = req.params
+    const { projectID } = req.params
     if (await this.projectController.isProjectCacheValid(projectID, modifiedSince)) {
       res.status(StatusCodes.NOT_MODIFIED).end()
     } else {
@@ -203,12 +215,7 @@ export class ProjectRoute extends BaseRoute {
         throw new ValidationError('No user found', user)
       }
       const { types } = req.body
-      const models = await this.projectController.getProjectModels(
-        types,
-        user,
-        projectID,
-        manuscriptID
-      )
+      const models = await this.projectController.getProjectModels(types, user, projectID)
       res.set('Content-Type', 'application/json')
       res.status(StatusCodes.OK).send(models)
     }
@@ -263,8 +270,26 @@ export class ProjectRoute extends BaseRoute {
     res.status(StatusCodes.OK).send(userProfiles)
   }
 
-  private async getArchive(req: Request, res: Response) {
+  private async exportJats(req: Request, res: Response) {
     const { projectID, manuscriptID } = req.params
+    const { citationStyle, locale } = req.body
+    const { user } = req
+
+    if (!user) {
+      throw new ValidationError('No user found', user)
+    }
+
+    const jats = await this.projectController.exportJats(
+      projectID,
+      manuscriptID,
+      citationStyle,
+      locale,
+      user
+    )
+    res.status(StatusCodes.OK).type('application/xml').send(jats)
+  }
+  private async getArchive(req: Request, res: Response) {
+    const { projectID } = req.params
     const { onlyIDs } = req.query
     const { accept } = req.headers
     const { user } = req
@@ -273,13 +298,7 @@ export class ProjectRoute extends BaseRoute {
       throw new ValidationError('No user found', user)
     }
 
-    const archive = await this.projectController.getArchive(
-      onlyIDs,
-      accept,
-      user,
-      projectID,
-      manuscriptID
-    )
+    const archive = await this.projectController.getArchive(onlyIDs, accept, user, projectID)
     if (accept !== 'application/json') {
       res.set('Content-Type', 'application/zip')
     } else {

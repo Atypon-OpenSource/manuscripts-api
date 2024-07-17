@@ -1,0 +1,33 @@
+[
+  {
+    "uri": "submission1",
+    "doi": "10.5555/test",
+    "code": "test",
+    "articleType": "article",
+    "title": "Test Article",
+    "documentUri": "MPProject:f675f35d-0cb5-4307-bbed-1e3c4ee666b2#MPManuscript:F554148E-5761-4794-BA51-9EBE52BEB7CA",
+    "journalUri": "journal1",
+    "authorUri": "user1",
+    "createdDate": "2021-09-20T00:00:00",
+    "dueDate": "2021-10-20T00:00:00",
+    "attachments": [
+      {
+        "uri": "attachment1",
+        "name": "test.jpg",
+        "type": "figure"
+      }
+    ],
+    "steps": [
+      {
+        "uri": "step1",
+        "typeUri": "init",
+        "status": "new",
+        "assigneeUri": "system",
+        "createdDate": "2021-09-20T00:00:00",
+        "modifiedDate": "2021-09-20T00:00:00",
+        "dueDate": "2021-09-21T00:00:00",
+        "messages": []
+      }
+    ]
+  }
+]

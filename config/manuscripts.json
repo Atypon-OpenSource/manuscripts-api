@@ -1,0 +1,16 @@
+{
+  "manuscriptsFrontend": {
+    "baseUri": "http://localhost:8080"
+  },
+  "manuscriptsApi": {
+    "baseUri": "http://api:3000",
+    "credentials": {
+      "ownerConnectId": "177f434a-c7aa-461e-afb0-648222db4385",
+      "appId": "com.manuscripts.Manuscripts",
+      "secret": "manuscripts-server-secret-for-testing-only"
+    }
+  },
+  "pressroom": {
+    "baseUri": "http://pressroom:5000"
+  }
+}
