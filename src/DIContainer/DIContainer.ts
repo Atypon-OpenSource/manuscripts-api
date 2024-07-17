@@ -28,7 +28,6 @@ import { AuthorityService } from '../DomainServices/AuthorityService'
 import { ConfigService } from '../DomainServices/ConfigService'
 import { DocumentService } from '../DomainServices/DocumentService'
 import { EventManager } from '../DomainServices/EventService'
-import { PressroomService } from '../DomainServices/PressroomService'
 import { ProjectService } from '../DomainServices/ProjectService'
 import { RegisterationService } from '../DomainServices/RegisterationService'
 import { SocketsService } from '../DomainServices/SocketsService'
@@ -75,7 +74,6 @@ export class DIContainer {
   readonly authorityService: AuthorityService
   readonly userService: UserService
   readonly configService: ConfigService
-  readonly pressroomService: PressroomService
   readonly documentService: DocumentService
   readonly authenticationService: AuthenticationService
   readonly registerationService: RegisterationService
@@ -98,7 +96,6 @@ export class DIContainer {
   constructor(readonly repository: Repository) {
     this.server = new Server()
 
-    this.pressroomService = new PressroomService(config.pressroom.baseurl, config.pressroom.apiKey)
     this.eventclient = repository.eventClient
     this.eventManager = new EventManager(this.eventclient)
     this.authenticationService = new AuthenticationService(repository.userClient)
@@ -115,7 +112,6 @@ export class DIContainer {
       repository.userClient,
       repository.snapshotClient,
       repository.documentClient,
-      this.pressroomService,
       this.configService
     )
     this.socketsService = new SocketsService()

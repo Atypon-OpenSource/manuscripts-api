@@ -37,11 +37,6 @@ jest.mock('../../src/Config/Config', () => {
     server: {
       allowedCORSOrigins: ['http://localhost:8080'],
     },
-
-    pressroom: {
-      baseurl: 'https://pressroom-js-dev.manuscripts.io',
-      apiKey: 'something-random',
-    },
     data: {
       path: __dirname + '/../../config',
     },

@@ -50,5 +50,7 @@ module.exports = {
         "!src/DomainServices/SocketsService.ts",
         "!src/DomainServices/EventService.ts",
         "!src/DomainServices/DocumentService.ts",
+        "!src/Controller/V2/Registration/RegistrationController.ts",
+        "!src/util.ts",
     ]
 }

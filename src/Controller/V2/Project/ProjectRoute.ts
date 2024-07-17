@@ -30,6 +30,7 @@ import {
   createManuscriptSchema,
   createProjectSchema,
   deleteSchema,
+  exportJatsSchema,
   getArchiveSchema,
   loadManuscriptSchema,
   loadProjectSchema,
@@ -135,6 +136,17 @@ export class ProjectRoute extends BaseRoute {
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           await this.getArchive(req, res)
+        }, next)
+      }
+    )
+
+    router.post(
+      `${this.basePath}/:projectID/manuscript/:manuscriptID/export-jats`,
+      celebrate(exportJatsSchema),
+      AuthStrategy.JWTAuth,
+      (req: Request, res: Response, next: NextFunction) => {
+        return this.runWithErrorHandling(async () => {
+          await this.exportJats(req, res)
         }, next)
       }
     )
@@ -258,6 +270,24 @@ export class ProjectRoute extends BaseRoute {
     res.status(StatusCodes.OK).send(userProfiles)
   }
 
+  private async exportJats(req: Request, res: Response) {
+    const { projectID, manuscriptID } = req.params
+    const { citationStyle, locale } = req.body
+    const { user } = req
+
+    if (!user) {
+      throw new ValidationError('No user found', user)
+    }
+
+    const jats = await this.projectController.exportJats(
+      projectID,
+      manuscriptID,
+      citationStyle,
+      locale,
+      user
+    )
+    res.status(StatusCodes.OK).type('application/xml').send(jats)
+  }
   private async getArchive(req: Request, res: Response) {
     const { projectID } = req.params
     const { onlyIDs } = req.query

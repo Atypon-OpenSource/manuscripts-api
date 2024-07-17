@@ -107,7 +107,12 @@ export class ProjectController extends BaseController {
       throw new RoleDoesNotPermitOperationError(`Access denied`, user.id)
     }
 
-    return DIContainer.sharedContainer.projectService.importJats(zip, projectID, templateID)
+    return await DIContainer.sharedContainer.projectService.importJats(
+      user.id,
+      zip,
+      projectID,
+      templateID
+    )
   }
 
   async getUserProfiles(user: Express.User, projectID: string): Promise<UserProfile[]> {
@@ -118,6 +123,24 @@ export class ProjectController extends BaseController {
     return await DIContainer.sharedContainer.userService.getProjectUserProfiles(projectID)
   }
 
+  async exportJats(
+    projectID: string,
+    manuscriptID: string,
+    citationStyle: string,
+    locale: string,
+    user: Express.User
+  ): Promise<string> {
+    const permissions = await this.getPermissions(projectID, user.id)
+    if (!permissions.has(ProjectPermission.READ)) {
+      throw new RoleDoesNotPermitOperationError(`Access denied`, user.id)
+    }
+    return await DIContainer.sharedContainer.projectService.exportJats(
+      projectID,
+      manuscriptID,
+      citationStyle,
+      locale
+    )
+  }
   async getArchive(onlyIDs: any, accept: any, user: Express.User, projectID: string) {
     const permissions = await this.getPermissions(projectID, user.id)
     if (!permissions.has(ProjectPermission.READ)) {
