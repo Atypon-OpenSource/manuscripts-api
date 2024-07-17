@@ -68,11 +68,6 @@ export class Server implements IServer {
       )
     }
 
-    this.app.use((_, res, next) => {
-      res.setHeader('Transform-Version', getVersion())
-      next()
-    })
-
     this.app.use(
       cors({
         origin: (requestOrigin, callback) => {

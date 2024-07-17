@@ -97,9 +97,12 @@ export class DocumentExtender {
     if (!found) {
       throw new MissingDocumentError(documentID)
     }
-    if (found.schema_version !== getVersion()) {
-      const { doc, schema_version } = await maybeMigrate(found)
-      return { ...found, doc, schema_version }
+    if (found && found.schema_version !== getVersion()) {
+      const migrationResult = await maybeMigrate(found, this.prisma)
+      if (migrationResult) {
+        const { doc, schema_version } = migrationResult
+        return { ...found, doc, schema_version }
+      }
     }
     return found
   }

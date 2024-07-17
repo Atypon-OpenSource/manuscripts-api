@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-import { getVersion, migrateFor } from '@manuscripts/transform'
+import { getVersion, JSONNode, migrateFor } from '@manuscripts/transform'
 import { Prisma } from '@prisma/client'
 import { cloneDeep } from 'lodash'
-
-import prisma from '../../DataAccess/prismaClient'
 
 async function maybeMigrate(
   p: {
@@ -28,10 +26,13 @@ async function maybeMigrate(
     doc: Prisma.JsonValue
     schema_version: string | null
   },
-  tx: Prisma.TransactionClient = prisma
+  tx: Prisma.TransactionClient
 ) {
   const { manuscript_model_id, user_model_id, project_model_id, doc, schema_version } = p
-  const migratedDoc = migrateFor(cloneDeep(doc), schema_version)
+  if (!schema_version || !doc || typeof doc !== 'object') {
+    return
+  }
+  const migratedDoc = migrateFor(cloneDeep(doc as JSONNode), schema_version)
 
   // backing up old doc
   await tx.migrationBackup.create({
