@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { getVersion } from '@manuscripts/transform'
 import cors from 'cors'
 import express from 'express'
 import promBundle from 'express-prom-bundle'
