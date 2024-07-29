@@ -265,4 +265,31 @@ describe('DocumentController', () => {
       ).rejects.toThrow('Access denied')
     })
   })
+  describe('receiveSteps', () => {
+    it('should throw an error if no user is found', async () => {
+      await expect(
+        documentController.receiveSteps('projectID', 'manuscriptID', mockReceiveSteps, undefined)
+      ).rejects.toThrow('No user found')
+    })
+    it('should call document.validateUserAccess', async () => {
+      documentService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
+      const spy = jest.spyOn(documentService, 'validateUserAccess')
+      authorityService.receiveSteps = jest.fn()
+      await documentController.receiveSteps(
+        'projectID',
+        'manuscriptID',
+        mockReceiveSteps,
+        {} as any
+      )
+      expect(spy).toHaveBeenCalled()
+    })
+    it('should throw an error if the user does not have permission to write', async () => {
+      documentService.getPermissions = jest
+        .fn()
+        .mockResolvedValue(new Set([DocumentPermission.READ]))
+      await expect(
+        documentController.receiveSteps('projectID', 'manuscriptID', mockReceiveSteps, {} as any)
+      ).rejects.toThrow('Access denied')
+    })
+  })
 })
