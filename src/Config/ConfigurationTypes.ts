@@ -36,6 +36,7 @@ export enum BucketKey {
   User = 'user',
   Project = 'project',
   ManuscriptDoc = 'manuscriptDoc',
+  MigrationBackup = 'migrationBackup',
   ManuscriptSnapshot = 'manuscriptSnapshot',
 }
 

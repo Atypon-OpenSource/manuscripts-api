@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
+import { getVersion } from '@manuscripts/transform'
 import { ManuscriptDoc, Prisma, PrismaClient } from '@prisma/client'
 
 import { MissingDocumentError, MissingRecordError } from '../Errors'
 import { CreateDoc, UpdateDocument } from '../Models/DocumentModels'
 import { PrismaErrorCodes } from '../Models/RepositoryModels'
+import maybeMigrate from './maybe-migrate'
 
 export class DocumentExtender {
   readonly DOCUMENT_MODEL = 'manuscriptDoc'
@@ -94,6 +96,13 @@ export class DocumentExtender {
     })
     if (!found) {
       throw new MissingDocumentError(documentID)
+    }
+    if (found && found.schema_version !== getVersion()) {
+      const migrationResult = await maybeMigrate(found, this.prisma)
+      if (migrationResult) {
+        const { doc, schema_version } = migrationResult
+        return { ...found, doc, schema_version }
+      }
     }
     return found
   }

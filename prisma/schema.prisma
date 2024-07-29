@@ -48,6 +48,17 @@ model ManuscriptDoc {
   @@index(fields: [project_model_id])
 }
 
+model MigrationBackup {
+  manuscript_model_id String               @id @default(uuid())
+  user_model_id       String
+  project_model_id    String
+  doc                 Json
+  version             Int?                 @default(0)
+  schema_version      String?       
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+}
+
 model ManuscriptSnapshot {
   id        String        @id @default(uuid())
   name      String        @default("") @db.VarChar(500)

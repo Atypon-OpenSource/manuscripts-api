@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { getVersion } from '@manuscripts/transform'
 import { NextFunction, Request, Response, Router } from 'express'
 import { StatusCodes } from 'http-status-codes'
 
@@ -118,6 +119,30 @@ export class DocumentRoute extends BaseRoute {
     const user = req.user
     await this.documentController.deleteDocument(projectID, manuscriptID, user)
     res.sendStatus(StatusCodes.OK).end()
+  }
+  private async receiveSteps(req: Request, res: Response) {
+    const { manuscriptID, projectID } = req.params
+    const user = req.user
+    const payload = req.body
+    const result = await this.documentController.receiveSteps(
+      projectID,
+      manuscriptID,
+      payload,
+      user
+    )
+    res.sendStatus(StatusCodes.OK).end()
+    this.sendDataToClients(result, manuscriptID)
+  }
+  private async listen(req: Request, res: Response) {
+    const { manuscriptID, projectID } = req.params
+    const user = req.user
+    const result = await this.documentController.getEvents(projectID, manuscriptID, 0, user)
+    const data = this.formatDataForSSE({ ...result, transformVersion: getVersion() })
+    res.setHeader('Content-Type', 'text/event-stream')
+    res.setHeader('Connection', 'keep-alive')
+    res.setHeader('Cache-Control', 'no-cache')
+    res.write(data)
+    this.manageClientConnection(req, res)
   }
 
   private async stepsSince(req: Request, res: Response) {
