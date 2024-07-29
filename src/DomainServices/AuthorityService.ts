@@ -26,6 +26,7 @@ export class AuthorityService {
   constructor(private readonly repository: DB) {}
 
   public async receiveSteps(documentID: string, receiveSteps: ReceiveSteps): Promise<History> {
+    //TODO: check if the transaction is doing anything here, it doesn't look like its useful in anyway for our case
     return this.repository.$transaction(async (tx) => {
       const found = await tx.manuscriptDoc.findDocument(documentID)
       this.checkVersion(found.version, receiveSteps.version)

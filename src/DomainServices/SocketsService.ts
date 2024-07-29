@@ -33,7 +33,7 @@ export class SocketsService {
   }
 
   public broadcast(manuscriptID: string, message: string) {
-    const socket = this.clients.get(manuscriptID) as WebSocket
+    const socket = this.clients.get(manuscriptID)
     if (socket) {
       this.send(message, socket)
     } else {

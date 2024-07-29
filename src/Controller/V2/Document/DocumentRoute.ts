@@ -25,6 +25,7 @@ import {
   createDocumentSchema,
   deleteDocumentSchema,
   getDocumentSchema,
+  receiveStepsSchema,
   stepsSinceSchema,
   updateDocumentSchema,
 } from './DocumentSchema'
@@ -36,6 +37,15 @@ export class DocumentRoute extends BaseRoute {
   }
 
   public create(router: Router): void {
+    router.get(
+      `${this.basePath}/version`,
+      AuthStrategy.JsonHeadersValidation,
+      AuthStrategy.JWTAuth,
+      (_req: Request, res: Response) => {
+        res.status(StatusCodes.OK).json({ transformVersion: getVersion() }).end()
+      }
+    )
+
     router.post(
       `${this.basePath}/:projectID/manuscript/:manuscriptID`,
       celebrate(createDocumentSchema),
@@ -92,6 +102,17 @@ export class DocumentRoute extends BaseRoute {
           }, next)
         }
       )
+    router.post(
+      `${this.basePath}/:projectID/manuscript/:manuscriptID/steps`,
+      celebrate(receiveStepsSchema),
+      AuthStrategy.JsonHeadersValidation,
+      AuthStrategy.JWTAuth,
+      (req: Request, res: Response, next: NextFunction) => {
+        return this.runWithErrorHandling(async () => {
+          await this.receiveSteps(req, res)
+        }, next)
+      }
+    )
   }
 
   private async createDocument(req: Request, res: Response) {
@@ -130,19 +151,12 @@ export class DocumentRoute extends BaseRoute {
       payload,
       user
     )
-    res.sendStatus(StatusCodes.OK).end()
-    this.sendDataToClients(result, manuscriptID)
-  }
-  private async listen(req: Request, res: Response) {
-    const { manuscriptID, projectID } = req.params
-    const user = req.user
-    const result = await this.documentController.getEvents(projectID, manuscriptID, 0, user)
-    const data = this.formatDataForSSE({ ...result, transformVersion: getVersion() })
-    res.setHeader('Content-Type', 'text/event-stream')
-    res.setHeader('Connection', 'keep-alive')
-    res.setHeader('Cache-Control', 'no-cache')
-    res.write(data)
-    this.manageClientConnection(req, res)
+    if (process.env.NODE_ENV === 'development') {
+      this.documentController.broadcastSteps(manuscriptID, JSON.stringify(result))
+      res.sendStatus(StatusCodes.OK).end()
+    } else {
+      res.status(StatusCodes.OK).send(JSON.stringify(result))
+    }
   }
 
   private async stepsSince(req: Request, res: Response) {

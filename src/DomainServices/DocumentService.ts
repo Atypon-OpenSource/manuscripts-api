@@ -14,19 +14,16 @@
  * limitations under the License.
  */
 
-import { getVersion } from '@manuscripts/transform'
 import { IncomingMessage } from 'http'
 import { Duplex } from 'stream'
-import { ErrorEvent, MessageEvent, WebSocket, WebSocketServer } from 'ws'
+import { ErrorEvent, WebSocket, WebSocketServer } from 'ws'
 
 import { DIContainer } from '../DIContainer/DIContainer'
 import { MissingManuscriptError, RoleDoesNotPermitOperationError } from '../Errors'
-import { ReceiveSteps } from '../Models/AuthorityModels'
 import { ProjectUserRole } from '../Models/ProjectModels'
 import { Snapshot } from '../Models/SnapshotModel'
 import { validateToken } from '../Utilities/JWT/LoginTokenPayload'
 import { log } from '../Utilities/Logger'
-import { AuthorityService } from './AuthorityService'
 import { SocketsService } from './SocketsService'
 
 export enum DocumentPermission {
@@ -41,10 +38,7 @@ export interface SnapshotLabelResult {
 }
 const EMPTY_PERMISSIONS = new Set<DocumentPermission>()
 export class DocumentService {
-  constructor(
-    private readonly socketsService: SocketsService,
-    private readonly authorityService: AuthorityService
-  ) {}
+  constructor(private readonly socketsService: SocketsService) {}
 
   async getPermissions(
     projectID: string,
@@ -113,8 +107,10 @@ export class DocumentService {
       return
     }
 
-    wss.handleUpgrade(request, socket, head, async (ws) => {
+    wss.handleUpgrade(request, socket, head, (ws) => {
       this.attachListeners(socket, ws, manuscriptID)
+      this.socketsService.setClient(manuscriptID, ws)
+      console.log('client has been set')
       wss.emit('connection', ws, request)
     })
   }
@@ -127,10 +123,9 @@ export class DocumentService {
       manuscriptID: match ? match[2] : undefined,
     }
   }
-  private attachListeners(stream: Duplex, ws: WebSocket, manuscriptID: string) {
+  private attachListeners(_stream: Duplex, ws: WebSocket, manuscriptID: string) {
     ws.onerror = (error) => this.onError(ws, error)
     ws.onclose = () => this.onClose(ws, manuscriptID)
-    ws.onmessage = (message) => this.onMessage(stream, ws, message)
   }
 
   private onError(ws: WebSocket, error: ErrorEvent) {
@@ -141,79 +136,8 @@ export class DocumentService {
     log.info(`connection closed for ${manuscriptID}`)
     this.closeSocket(ws, manuscriptID)
   }
-  private async onMessage(stream: Duplex, ws: WebSocket, message: MessageEvent) {
-    const { manuscriptID, projectID, authToken, payload } = this.parseMessage(message)
-    try {
-      if (
-        manuscriptID &&
-        projectID &&
-        authToken &&
-        payload &&
-        this.isReceiveStepsPayload(payload)
-      ) {
-        await this.receiveSteps(manuscriptID, projectID, authToken, payload, ws)
-      } else if (manuscriptID && projectID && authToken) {
-        await this.setupConnection(manuscriptID, projectID, authToken, ws)
-      } else {
-        this.handleInvalidData(stream, ws)
-      }
-    } catch (error) {
-      log.error(`error handling message: ${error}`)
-      this.handleInvalidData(stream, ws, manuscriptID)
-    }
-  }
 
-  private async setupConnection(
-    manuscriptID: string,
-    projectID: string,
-    authToken: string,
-    ws: WebSocket
-  ) {
-    await this.validateTokenAccess(authToken, projectID, DocumentPermission.READ)
-    this.socketsService.setClient(manuscriptID, ws)
-    this.socketsService.send(JSON.stringify({ 'Transformer-Version': getVersion() }), ws)
-  }
-
-  private async receiveSteps(
-    manuscriptID: string,
-    projectID: string,
-    authToken: string,
-    payload: ReceiveSteps,
-    ws: WebSocket
-  ) {
-    await this.validateTokenAccess(authToken, projectID, DocumentPermission.WRITE)
-    try {
-      const appliedSteps = await this.authorityService.receiveSteps(manuscriptID, payload)
-      this.socketsService.broadcast(manuscriptID, JSON.stringify(appliedSteps))
-    } catch (error) {
-      this.socketsService.send(JSON.stringify({ code: error.statusCode, error: error.message }), ws)
-    }
-  }
-
-  private isReceiveStepsPayload(payload: any): payload is ReceiveSteps {
-    return (
-      Array.isArray(payload.steps) &&
-      typeof payload.clientID === 'number' &&
-      typeof payload.version === 'number'
-    )
-  }
-
-  private parseMessage(message: MessageEvent) {
-    let parsedMessage
-    if (typeof message.data === 'string') {
-      parsedMessage = JSON.parse(message.data)
-    } else {
-      parsedMessage = message.data
-    }
-    return parsedMessage
-  }
-
-  private handleInvalidData(stream: Duplex, ws: WebSocket, manuscriptID?: string) {
-    this.destroyStream(stream)
-    this.closeSocket(ws, manuscriptID)
-  }
-
-  public closeSocket(ws: WebSocket, manuscriptID?: string) {
+  private closeSocket(ws: WebSocket, manuscriptID?: string) {
     try {
       ws.removeAllListeners()
       ws.close()
@@ -226,7 +150,7 @@ export class DocumentService {
     }
   }
 
-  public destroyStream(stream: Duplex) {
+  private destroyStream(stream: Duplex) {
     try {
       stream.destroy()
     } catch (error) {
