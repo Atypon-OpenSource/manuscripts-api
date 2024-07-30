@@ -146,7 +146,7 @@ export class Server implements IServer {
    */
   public async start(port: number): Promise<void> {
     return new Promise<void>((resolve, reject) => {
-      const server = this.app
+      this.app
         .listen(port, () => {
           log.info(`Server started on port ${port}`)
           resolve()
@@ -155,9 +155,7 @@ export class Server implements IServer {
           log.error(`can't start server`, error)
           reject(error)
         })
-
-      if (process.env.NODE_ENV === 'development') {
-        server.on('upgrade', (req, socket, head) =>
+        .on('upgrade', (req, socket, head) =>
           DIContainer.sharedContainer.documentService.handleUpgrade(
             this.webSocketServer,
             req,
@@ -165,7 +163,6 @@ export class Server implements IServer {
             head
           )
         )
-      }
     })
   }
 }

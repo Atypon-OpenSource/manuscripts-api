@@ -36,8 +36,6 @@ export class SocketsService {
     const socket = this.clients.get(manuscriptID)
     if (socket) {
       this.send(message, socket)
-    } else {
-      log.error(`no client found for ${manuscriptID}`)
     }
   }
 

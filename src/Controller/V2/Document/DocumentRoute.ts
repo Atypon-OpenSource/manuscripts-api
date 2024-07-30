@@ -151,12 +151,8 @@ export class DocumentRoute extends BaseRoute {
       payload,
       user
     )
-    if (process.env.NODE_ENV === 'development') {
-      this.documentController.broadcastSteps(manuscriptID, JSON.stringify(result))
-      res.sendStatus(StatusCodes.OK).end()
-    } else {
-      res.status(StatusCodes.OK).send(JSON.stringify(result))
-    }
+    this.documentController.broadcastSteps(manuscriptID, JSON.stringify(result))
+    res.status(StatusCodes.OK).send(JSON.stringify(result))
   }
 
   private async stepsSince(req: Request, res: Response) {
