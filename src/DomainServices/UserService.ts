@@ -16,11 +16,10 @@
 
 import { ObjectTypes, UserProfile } from '@manuscripts/json-schema'
 import { User } from '@prisma/client'
-import jwt from 'jsonwebtoken'
 
-import { AccountNotFoundError, InvalidCredentialsError, RecordNotFoundError } from '../Errors'
+import { AccountNotFoundError, RecordNotFoundError } from '../Errors'
 import { ProjectClient, UserClient } from '../Models/RepositoryModels'
-import { isLoginTokenPayload } from '../Utilities/JWT/LoginTokenPayload'
+import { validateToken } from '../Utilities/JWT/LoginTokenPayload'
 
 export class UserService {
   constructor(
@@ -29,10 +28,7 @@ export class UserService {
   ) {}
 
   public async profile(token: string) {
-    const payload = jwt.decode(token)
-    if (!isLoginTokenPayload(payload)) {
-      throw new InvalidCredentialsError('Unexpected token payload.')
-    }
+    const payload = validateToken(token)
     const user = await this.userRepository.findByID(payload.userID)
     return user ? this.createUserProfile(user) : null
   }

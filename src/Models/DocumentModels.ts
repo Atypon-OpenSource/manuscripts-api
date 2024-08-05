@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import { ManuscriptDoc, Prisma } from '@prisma/client'
-import { Response } from 'express'
 
 import { SnapshotLabel } from './SnapshotModel'
 
@@ -29,11 +28,6 @@ export type CreateDoc = {
   project_model_id: string
   schema_version: string
   doc: Doc
-}
-
-export type Client = {
-  id: number
-  res: Response
 }
 export type StepsData = {
   steps: unknown[]

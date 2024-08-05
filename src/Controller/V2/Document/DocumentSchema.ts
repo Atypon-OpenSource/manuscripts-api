@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as Joi from 'joi'
+import Joi from 'joi'
 
 export const createDocumentSchema: Joi.SchemaMap = {
   params: Joi.object({
@@ -49,6 +49,14 @@ export const deleteDocumentSchema: Joi.SchemaMap = {
     manuscriptID: Joi.string().required(),
   }),
 }
+export const stepsSinceSchema: Joi.SchemaMap = {
+  params: Joi.object({
+    projectID: Joi.string().required(),
+    manuscriptID: Joi.string().required(),
+    versionID: Joi.string().required(),
+  }),
+}
+
 export const receiveStepsSchema: Joi.SchemaMap = {
   params: Joi.object({
     projectID: Joi.string().required(),
@@ -58,18 +66,5 @@ export const receiveStepsSchema: Joi.SchemaMap = {
     steps: Joi.array().items(Joi.object()),
     clientID: Joi.number().required(),
     version: Joi.number().required(),
-  }),
-}
-export const listenSchema: Joi.SchemaMap = {
-  params: Joi.object({
-    projectID: Joi.string().required(),
-    manuscriptID: Joi.string().required(),
-  }),
-}
-export const getStepsFromVersionSchema: Joi.SchemaMap = {
-  params: Joi.object({
-    projectID: Joi.string().required(),
-    manuscriptID: Joi.string().required(),
-    versionID: Joi.string().required(),
   }),
 }

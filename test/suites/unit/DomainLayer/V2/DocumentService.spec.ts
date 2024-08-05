@@ -46,11 +46,11 @@ describe('DocumentService', () => {
         .mockResolvedValue(new Set([DocumentPermission.READ, DocumentPermission.WRITE]))
 
       await expect(
-        documentService.validateUserAccess(user, 'random_project_id', DocumentPermission.READ)
+        documentService.validateUserAccess(user.id, 'random_project_id', DocumentPermission.READ)
       ).resolves.not.toThrow()
 
       await expect(
-        documentService.validateUserAccess(user, 'random_project_id', DocumentPermission.WRITE)
+        documentService.validateUserAccess(user.id, 'random_project_id', DocumentPermission.WRITE)
       ).resolves.not.toThrow()
     })
     it('should throw an error if user does not have access', async () => {
@@ -60,14 +60,16 @@ describe('DocumentService', () => {
         .mockResolvedValue(new Set([DocumentPermission.READ]))
 
       await expect(
-        documentService.validateUserAccess(user, 'random_project_id', DocumentPermission.WRITE)
+        documentService.validateUserAccess(user.id, 'random_project_id', DocumentPermission.WRITE)
       ).rejects.toThrow()
     })
     it('should throw an error if user is not found', async () => {
-      const user = undefined as any
+      const user = {
+        id: undefined as any,
+      }
 
       await expect(
-        documentService.validateUserAccess(user, 'random_project_id', DocumentPermission.WRITE)
+        documentService.validateUserAccess(user.id, 'random_project_id', DocumentPermission.WRITE)
       ).rejects.toThrow()
     })
   })
