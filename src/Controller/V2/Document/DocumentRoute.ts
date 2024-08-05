@@ -152,7 +152,7 @@ export class DocumentRoute extends BaseRoute {
       user
     )
     this.documentController.broadcastSteps(manuscriptID, result)
-    res.status(StatusCodes.OK).send(JSON.stringify(result))
+    res.status(StatusCodes.OK).send(result)
   }
 
   private async stepsSince(req: Request, res: Response) {
