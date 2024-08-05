@@ -151,7 +151,7 @@ export class DocumentRoute extends BaseRoute {
       payload,
       user
     )
-    this.documentController.broadcastSteps(manuscriptID, JSON.stringify(result))
+    this.documentController.broadcastSteps(manuscriptID, result)
     res.status(StatusCodes.OK).send(JSON.stringify(result))
   }
 
