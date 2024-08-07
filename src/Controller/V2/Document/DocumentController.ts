@@ -17,7 +17,7 @@
 import { DIContainer } from '../../../DIContainer/DIContainer'
 import { DocumentPermission } from '../../../DomainServices/DocumentService'
 import { ValidationError } from '../../../Errors'
-import { ReceiveSteps } from '../../../Models/AuthorityModels'
+import { History, ReceiveSteps } from '../../../Models/AuthorityModels'
 import { CreateDoc, UpdateDocument } from '../../../Models/DocumentModels'
 import { BaseController } from '../../BaseController'
 export class DocumentController extends BaseController {
@@ -107,7 +107,7 @@ export class DocumentController extends BaseController {
     return await DIContainer.sharedContainer.authorityService.receiveSteps(manuscriptID, payload)
   }
 
-  broadcastSteps(manuscriptID: string, result: string) {
+  broadcastSteps(manuscriptID: string, result: History) {
     DIContainer.sharedContainer.socketsService.broadcast(manuscriptID, JSON.stringify(result))
   }
 }
