@@ -17,7 +17,7 @@
 import { DIContainer } from '../../../DIContainer/DIContainer'
 import { DocumentPermission } from '../../../DomainServices/DocumentService'
 import { ValidationError } from '../../../Errors'
-import { ReceiveSteps } from '../../../Models/AuthorityModels'
+import { History, ReceiveSteps } from '../../../Models/AuthorityModels'
 import { CreateDoc, UpdateDocument } from '../../../Models/DocumentModels'
 import { BaseController } from '../../BaseController'
 export class DocumentController extends BaseController {
@@ -26,7 +26,7 @@ export class DocumentController extends BaseController {
       throw new ValidationError('No user found', user)
     }
     await DIContainer.sharedContainer.documentService.validateUserAccess(
-      user,
+      user.id,
       projectID,
       DocumentPermission.WRITE
     )
@@ -38,7 +38,7 @@ export class DocumentController extends BaseController {
       throw new ValidationError('No user found', user)
     }
     await DIContainer.sharedContainer.documentService.validateUserAccess(
-      user,
+      user.id,
       projectID,
       DocumentPermission.READ
     )
@@ -50,7 +50,7 @@ export class DocumentController extends BaseController {
       throw new ValidationError('No user found', user)
     }
     await DIContainer.sharedContainer.documentService.validateUserAccess(
-      user,
+      user.id,
       projectID,
       DocumentPermission.WRITE
     )
@@ -66,12 +66,30 @@ export class DocumentController extends BaseController {
       throw new ValidationError('No user found', user)
     }
     await DIContainer.sharedContainer.documentService.validateUserAccess(
-      user,
+      user.id,
       projectID,
       DocumentPermission.WRITE
     )
     return DIContainer.sharedContainer.documentClient.updateDocument(manuscriptID, payload)
   }
+
+  async getEvents(
+    projectID: string,
+    manuscriptID: string,
+    versionID: number,
+    user: Express.User | undefined
+  ) {
+    if (!user) {
+      throw new ValidationError('No user found', user)
+    }
+    await DIContainer.sharedContainer.documentService.validateUserAccess(
+      user.id,
+      projectID,
+      DocumentPermission.READ
+    )
+    return await DIContainer.sharedContainer.authorityService.getEvents(manuscriptID, versionID)
+  }
+
   async receiveSteps(
     projectID: string,
     manuscriptID: string,
@@ -82,32 +100,14 @@ export class DocumentController extends BaseController {
       throw new ValidationError('No user found', user)
     }
     await DIContainer.sharedContainer.documentService.validateUserAccess(
-      user,
+      user.id,
       projectID,
       DocumentPermission.WRITE
     )
     return await DIContainer.sharedContainer.authorityService.receiveSteps(manuscriptID, payload)
   }
 
-  async getEvents(
-    projectID: string,
-    manuscriptID: string,
-    versionID: number,
-    user: Express.User | undefined,
-    withDocument = true
-  ) {
-    if (!user) {
-      throw new ValidationError('No user found', user)
-    }
-    await DIContainer.sharedContainer.documentService.validateUserAccess(
-      user,
-      projectID,
-      DocumentPermission.READ
-    )
-    return await DIContainer.sharedContainer.authorityService.getEvents(
-      manuscriptID,
-      versionID,
-      withDocument
-    )
+  broadcastSteps(manuscriptID: string, result: History) {
+    DIContainer.sharedContainer.socketsService.broadcast(manuscriptID, JSON.stringify(result))
   }
 }

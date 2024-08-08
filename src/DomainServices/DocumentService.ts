@@ -14,12 +14,17 @@
  * limitations under the License.
  */
 
-import { Manuscript } from '@manuscripts/json-schema'
+import { IncomingMessage } from 'http'
+import { Duplex } from 'stream'
+import { ErrorEvent, WebSocket, WebSocketServer } from 'ws'
 
 import { DIContainer } from '../DIContainer/DIContainer'
 import { MissingManuscriptError, RoleDoesNotPermitOperationError } from '../Errors'
 import { ProjectUserRole } from '../Models/ProjectModels'
 import { Snapshot } from '../Models/SnapshotModel'
+import { validateToken } from '../Utilities/JWT/LoginTokenPayload'
+import { log } from '../Utilities/Logger'
+import { SocketsService } from './SocketsService'
 
 export enum DocumentPermission {
   READ,
@@ -32,8 +37,9 @@ export interface SnapshotLabelResult {
   createdAt: number
 }
 const EMPTY_PERMISSIONS = new Set<DocumentPermission>()
-
 export class DocumentService {
+  constructor(private readonly socketsService: SocketsService) {}
+
   async getPermissions(
     projectID: string,
     userID: string
@@ -54,24 +60,101 @@ export class DocumentService {
   }
 
   public async validateUserAccess(
-    user: Express.User,
+    userID: string,
     projectID: string,
     permission: DocumentPermission
   ) {
-    const permissions = await this.getPermissions(projectID, user.id)
+    const permissions = await this.getPermissions(projectID, userID)
     if (!permissions.has(permission)) {
-      throw new RoleDoesNotPermitOperationError(`Access denied`, user.id)
+      throw new RoleDoesNotPermitOperationError(`Access denied`, userID)
     }
+  }
+
+  public async validateTokenAccess(
+    token: string,
+    projectID: string,
+    permission: DocumentPermission
+  ) {
+    const { userID } = validateToken(token)
+    await this.validateUserAccess(userID, projectID, permission)
   }
 
   public async getManuscriptFromSnapshot(snapshot: Snapshot) {
     const manuscriptID = snapshot.doc_id
-    const manuscript: Manuscript | null =
-      await DIContainer.sharedContainer.projectClient.getProject(manuscriptID)
+    const manuscript = await DIContainer.sharedContainer.projectClient.getProject(manuscriptID)
 
     if (!manuscript) {
       throw new MissingManuscriptError(manuscriptID)
     }
     return manuscript
+  }
+
+  public async handleUpgrade(
+    wss: WebSocketServer,
+    request: IncomingMessage,
+    socket: Duplex,
+    head: Buffer
+  ) {
+    const url = request.url
+    if (!url) {
+      this.destroyStream(socket)
+      return
+    }
+
+    const { manuscriptID, projectID } = this.parseConnectionURL(url)
+    if (!manuscriptID || !projectID) {
+      this.destroyStream(socket)
+      return
+    }
+
+    wss.handleUpgrade(request, socket, head, (ws) => {
+      this.attachListeners(socket, ws, manuscriptID)
+      this.socketsService.setClient(manuscriptID, ws)
+      console.log('client has been set')
+      wss.emit('connection', ws, request)
+    })
+  }
+  private parseConnectionURL(url: string) {
+    const urlRegex =
+      /^\/api\/v2\/doc\/(MPProject:[0-9a-fA-F-]+)\/manuscript\/(MPManuscript:[0-9a-fA-F-]+)\/listen/
+    const match = url.match(urlRegex)
+    return {
+      projectID: match ? match[1] : undefined,
+      manuscriptID: match ? match[2] : undefined,
+    }
+  }
+  private attachListeners(_stream: Duplex, ws: WebSocket, manuscriptID: string) {
+    ws.onerror = (error) => this.onError(ws, error)
+    ws.onclose = () => this.onClose(ws, manuscriptID)
+  }
+
+  private onError(ws: WebSocket, error: ErrorEvent) {
+    log.error(`webSocket error: ${error}`)
+    this.closeSocket(ws)
+  }
+  private onClose = (ws: WebSocket, manuscriptID: string) => {
+    log.info(`connection closed for ${manuscriptID}`)
+    this.closeSocket(ws, manuscriptID)
+  }
+
+  private closeSocket(ws: WebSocket, manuscriptID?: string) {
+    try {
+      ws.removeAllListeners()
+      ws.close()
+    } catch (error) {
+      log.error(`error closing socket: ${error}`)
+    }
+    if (manuscriptID) {
+      this.socketsService.removeClient(manuscriptID)
+      log.info(`removed client for manuscript ${manuscriptID}`)
+    }
+  }
+
+  private destroyStream(stream: Duplex) {
+    try {
+      stream.destroy()
+    } catch (error) {
+      log.error(`error destroying duplex: ${error}`)
+    }
   }
 }
