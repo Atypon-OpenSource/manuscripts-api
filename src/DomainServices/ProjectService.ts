@@ -59,6 +59,7 @@ import {
 import { ConfigService } from './ConfigService'
 
 const EMPTY_PERMISSIONS = new Set<ProjectPermission>()
+const DEFAULT_LOCALE = 'en-US'
 export class ProjectService {
   constructor(
     private readonly projectRepository: ProjectClient,
@@ -358,15 +359,27 @@ export class ProjectService {
     return models
   }
 
-  public async exportJats(
-    projectID: string,
-    manuscriptID: string,
-    citationStyle: string,
-    locale: string
-  ) {
+  public async exportJats(projectID: string, manuscriptID: string) {
     const containedModels = await this.getContainedModels(projectID)
+    const manuscript = containedModels.find((model) => model.objectType === ObjectTypes.Manuscript)
+    if (!manuscript) {
+      throw new RecordNotFoundError('manuscript not found')
+    }
+    const templateID = (manuscript as Manuscript).prototype
+    if (!templateID) {
+      throw new ValidationError('manuscript template is empty', templateID)
+    }
     const containedModelsMap = this.getContainedModelsMap(containedModels)
     const article = this.modelMapToManuscriptNode(containedModelsMap, manuscriptID)
+
+    const citationStyle = await DIContainer.sharedContainer.configService.getDocument(templateID)
+    if (!citationStyle) {
+      throw new RecordNotFoundError('citationStyle not found')
+    }
+    const locale = await DIContainer.sharedContainer.configService.getDocument(DEFAULT_LOCALE)
+    if (!locale) {
+      throw new RecordNotFoundError('locale not found')
+    }
     return new JATSExporter().serializeToJATS(article.content, containedModelsMap, manuscriptID, {
       csl: {
         style: citationStyle,

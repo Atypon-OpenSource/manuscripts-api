@@ -272,7 +272,6 @@ export class ProjectRoute extends BaseRoute {
 
   private async exportJats(req: Request, res: Response) {
     const { projectID, manuscriptID } = req.params
-    const { citationStyle, locale } = req.body
     const { user } = req
 
     if (!user) {
@@ -282,8 +281,6 @@ export class ProjectRoute extends BaseRoute {
     const jats = await this.projectController.exportJats(
       projectID,
       manuscriptID,
-      citationStyle,
-      locale,
       user
     )
     res.status(StatusCodes.OK).type('application/xml').send(jats)

@@ -23,11 +23,11 @@ import { ConfigService } from '../../../../../src/DomainServices/ConfigService'
 import { ProjectService } from '../../../../../src/DomainServices/ProjectService'
 import {
   MissingContainerError,
-  MissingTemplateError,
+  MissingTemplateError, RecordNotFoundError,
   SyncError,
   UserRoleError,
-  ValidationError,
-} from '../../../../../src/Errors'
+  ValidationError
+} from "../../../../../src/Errors";
 import { ProjectPermission, ProjectUserRole } from '../../../../../src/Models/ProjectModels'
 import { ProjectClient, UserClient } from '../../../../../src/Models/RepositoryModels'
 import { templates } from '../../../../data/dump/templates'
@@ -589,6 +589,31 @@ describe('projectService', () => {
 
     test('should return null if the user is not in the project', () => {
       expect(projectService.getUserRole(validProject4, 'User_asda')).toBeNull()
+    })
+  })
+  describe('projectService - exportJats', () => {
+    const manuscript = { ...validManuscript, prototype: projectID }
+    const resources = [validProject, manuscript]
+    jest.mock('@manuscripts/transform')
+    test('should fail if manuscript not found', () => {
+      projectService.getContainedModels = jest.fn().mockResolvedValue([validProject])
+      expect(projectService.exportJats(validProject._id, validManuscript._id)).rejects.toThrow(
+        RecordNotFoundError
+      )
+    })
+    test('should fail if manuscript have no template', () => {
+      projectService.getContainedModels = jest.fn().mockResolvedValue([validProject, validManuscript])
+      expect(projectService.exportJats(validProject._id, validManuscript._id)).rejects.toThrow(
+        ValidationError
+      )
+    })
+    test('should fail if styles are not found', () => {
+      projectService.getContainedModels = jest.fn().mockResolvedValue(resources)
+      projectService.modelMapToManuscriptNode = jest.fn().mockResolvedValue({})
+      configService.getDocument = jest.fn().mockResolvedValue(false)
+      expect(projectService.exportJats(validProject._id, validManuscript._id)).rejects.toThrow(
+        RecordNotFoundError
+      )
     })
   })
 })
