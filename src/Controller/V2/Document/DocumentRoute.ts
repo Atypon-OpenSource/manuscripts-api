@@ -18,7 +18,6 @@ import { NextFunction, Request, Response, Router } from 'express'
 import { StatusCodes } from 'http-status-codes'
 
 import { AuthStrategy } from '../../../Auth/Passport/AuthStrategy'
-import { Client, StepsData } from '../../../Models/DocumentModels'
 import { celebrate } from '../../../Utilities/celebrate'
 import { BaseRoute } from '../../BaseRoute'
 import { DocumentController } from './DocumentController'
@@ -26,23 +25,27 @@ import {
   createDocumentSchema,
   deleteDocumentSchema,
   getDocumentSchema,
-  getStepsFromVersionSchema,
-  listenSchema,
   receiveStepsSchema,
+  stepsSinceSchema,
   updateDocumentSchema,
 } from './DocumentSchema'
 
 export class DocumentRoute extends BaseRoute {
   private documentController = new DocumentController()
-  private _documentClientsMap = new Map<string, Client[]>()
   private get basePath(): string {
     return '/doc'
   }
-  private get documentsClientsMap() {
-    return this._documentClientsMap
-  }
 
   public create(router: Router): void {
+    router.get(
+      `${this.basePath}/version`,
+      AuthStrategy.JsonHeadersValidation,
+      AuthStrategy.JWTAuth,
+      (_req: Request, res: Response) => {
+        res.status(StatusCodes.OK).json({ transformVersion: getVersion() }).end()
+      }
+    )
+
     router.post(
       `${this.basePath}/:projectID/manuscript/:manuscriptID`,
       celebrate(createDocumentSchema),
@@ -88,36 +91,25 @@ export class DocumentRoute extends BaseRoute {
         }, next)
       }
     ),
-      router.post(
-        `${this.basePath}/:projectID/manuscript/:manuscriptID/steps`,
-        celebrate(receiveStepsSchema),
+      router.get(
+        `${this.basePath}/:projectID/manuscript/:manuscriptID/version/:versionID`,
+        celebrate(stepsSinceSchema),
         AuthStrategy.JsonHeadersValidation,
         AuthStrategy.JWTAuth,
         (req: Request, res: Response, next: NextFunction) => {
           return this.runWithErrorHandling(async () => {
-            await this.receiveSteps(req, res)
+            await this.stepsSince(req, res)
           }, next)
         }
       )
-    router.get(
-      `${this.basePath}/:projectID/manuscript/:manuscriptID/listen`,
-      celebrate(listenSchema),
+    router.post(
+      `${this.basePath}/:projectID/manuscript/:manuscriptID/steps`,
+      celebrate(receiveStepsSchema),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
-          await this.listen(req, res)
-        }, next)
-      }
-    )
-    router.get(
-      `${this.basePath}/:projectID/manuscript/:manuscriptID/version/:versionID`,
-      celebrate(getStepsFromVersionSchema),
-      AuthStrategy.JsonHeadersValidation,
-      AuthStrategy.JWTAuth,
-      (req: Request, res: Response, next: NextFunction) => {
-        return this.runWithErrorHandling(async () => {
-          await this.stepsSince(req, res)
+          await this.receiveSteps(req, res)
         }, next)
       }
     )
@@ -159,19 +151,8 @@ export class DocumentRoute extends BaseRoute {
       payload,
       user
     )
-    res.sendStatus(StatusCodes.OK).end()
-    this.sendDataToClients(result, manuscriptID)
-  }
-  private async listen(req: Request, res: Response) {
-    const { manuscriptID, projectID } = req.params
-    const user = req.user
-    const result = await this.documentController.getEvents(projectID, manuscriptID, 0, user)
-    const data = this.formatDataForSSE({ ...result, transformVersion: getVersion() })
-    res.setHeader('Content-Type', 'text/event-stream')
-    res.setHeader('Connection', 'keep-alive')
-    res.setHeader('Cache-Control', 'no-cache')
-    res.write(data)
-    this.manageClientConnection(req, res)
+    this.documentController.broadcastSteps(manuscriptID, result)
+    res.status(StatusCodes.OK).send(result)
   }
 
   private async stepsSince(req: Request, res: Response) {
@@ -181,43 +162,8 @@ export class DocumentRoute extends BaseRoute {
       projectID,
       manuscriptID,
       parseInt(versionID),
-      user,
-      false
+      user
     )
     res.status(StatusCodes.OK).send({ clientIDs, version, steps })
-  }
-  private addClient(newClient: Client, manuscriptID: string) {
-    const clients = this._documentClientsMap.get(manuscriptID) || []
-    clients.push(newClient)
-    this.documentsClientsMap.set(manuscriptID, clients)
-  }
-  private sendDataToClients(data: StepsData, manuscriptID: string) {
-    const clientsForDocument = this.documentsClientsMap.get(manuscriptID)
-    clientsForDocument?.forEach((client) => {
-      client.res.write(`data: ${JSON.stringify(data)}\n\n`)
-    })
-  }
-  private removeClientByID(clientID: number, manuscriptID: string) {
-    const clients = this.documentsClientsMap.get(manuscriptID) || []
-    const index = clients.findIndex((client) => client.id === clientID)
-    if (index !== -1) {
-      clients.splice(index, 1)
-      this.documentsClientsMap.set(manuscriptID, clients)
-    }
-  }
-  private manageClientConnection(req: Request, res: Response) {
-    const newClient: Client = {
-      id: Date.now(),
-      res,
-    }
-    const { manuscriptID } = req.params
-    this.addClient(newClient, manuscriptID)
-
-    req.on('close', () => {
-      this.removeClientByID(newClient.id, manuscriptID)
-    })
-  }
-  private formatDataForSSE<T>(data: T) {
-    return `data: ${JSON.stringify(data)}\n\n`
   }
 }

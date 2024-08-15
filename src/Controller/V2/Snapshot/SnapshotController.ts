@@ -31,7 +31,7 @@ export class SnapshotController extends BaseController {
       throw new ValidationError('No user found', user)
     }
     await DIContainer.sharedContainer.documentService.validateUserAccess(
-      user,
+      user.id,
       projectID,
       DocumentPermission.WRITE
     )
@@ -51,7 +51,7 @@ export class SnapshotController extends BaseController {
       snapshot
     )
     await DIContainer.sharedContainer.documentService.validateUserAccess(
-      user,
+      user.id,
       manuscript.containerID,
       DocumentPermission.WRITE
     )
@@ -66,7 +66,7 @@ export class SnapshotController extends BaseController {
       snapshot
     )
     await DIContainer.sharedContainer.documentService.validateUserAccess(
-      user,
+      user.id,
       manuscript.containerID,
       DocumentPermission.READ
     )
@@ -81,7 +81,7 @@ export class SnapshotController extends BaseController {
       throw new ValidationError('No user found', user)
     }
     await DIContainer.sharedContainer.documentService.validateUserAccess(
-      user,
+      user.id,
       projectID,
       DocumentPermission.READ
     )

@@ -48,7 +48,7 @@ const step = {
       },
     ],
   },
-  clientID: '123'
+  clientID: '123',
 }
 
 describe('CollaborationService', () => {
@@ -124,24 +124,22 @@ describe('CollaborationService', () => {
     })
   })
   describe('getEvents', () => {
-    it('should fetch document with history when all info is correct', async () => {
+    it('should fetch history when all info is correct', async () => {
       const documentID = 'doc123'
       const versionID = 0
       const mockDocument = {
         steps: [step],
         version: 1,
-        doc: 'mockDoc',
       }
-      DIContainer.sharedContainer.repository.DB.manuscriptDoc.findDocument = jest
+      DIContainer.sharedContainer.repository.DB.manuscriptDoc.findHistory = jest
         .fn()
         .mockResolvedValue(mockDocument)
 
-      const result = await authorityService.getEvents(documentID, versionID, true)
+      const result = await authorityService.getEvents(documentID, versionID)
 
       expect(
-        DIContainer.sharedContainer.repository.DB.manuscriptDoc.findDocument
+        DIContainer.sharedContainer.repository.DB.manuscriptDoc.findHistory
       ).toHaveBeenCalledWith(documentID)
-      expect(result).toHaveProperty('doc', 'mockDoc')
       expect(result.steps.length).toBe(1)
       expect(result.clientIDs).toEqual([123])
     })
