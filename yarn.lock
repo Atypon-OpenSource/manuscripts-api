@@ -1303,21 +1303,21 @@
     deepmerge "^4.3.1"
     uuid "^9.0.0"
 
-"@manuscripts/library@1.3.11-LEAN-3828.1":
-  version "1.3.11-LEAN-3828.1"
-  resolved "https://registry.yarnpkg.com/@manuscripts/library/-/library-1.3.11-LEAN-3828.1.tgz#744489ad2485221b5556192724ae822014e1f2f9"
-  integrity sha512-t77iOKaRDU4wOkrvwycKOpM6w+MyLo4HDAa8TzqtBTzj4LHybOZiN7whskjMwTvazGuURetvVqc1OrZ8KY4Tdg==
+"@manuscripts/library@1.3.11":
+  version "1.3.11"
+  resolved "https://registry.yarnpkg.com/@manuscripts/library/-/library-1.3.11.tgz#76d6c8170c849aa6a010fcd504e79e494dd49ea4"
+  integrity sha512-FaTKYDXNvps1twUiyHOwbb0phgK44cqq5in4XTEP/wH5T24h6mQkFyxaaSSwxtYImVH7zvICxXS0XTI5d56jkg==
   dependencies:
     "@manuscripts/json-schema" "2.2.10"
     citeproc "^2.4.62"
 
-"@manuscripts/transform@2.3.24-LEAN-3828.0":
-  version "2.3.24-LEAN-3828.0"
-  resolved "https://registry.yarnpkg.com/@manuscripts/transform/-/transform-2.3.24-LEAN-3828.0.tgz#f771687c5108eb0ddb99fd991faf4bd507377301"
-  integrity sha512-rpeLs8X7CGTKwvKGm7nwCEX79PCFcRYXEQ8YQSSkkuvYjVdv6t1q/WCo35UMLHB6BnKtcb0VYJZQ3MfUO9BT8A==
+"@manuscripts/transform@2.3.24":
+  version "2.3.24"
+  resolved "https://registry.yarnpkg.com/@manuscripts/transform/-/transform-2.3.24.tgz#cf03c2018c86a1a6e9fce8eea83a278ba5286321"
+  integrity sha512-BY7Y2sjCZUj5HykW6ubApdlxYCQy6vj9QlwIZroKc5px+vONvw3XtlhN7c1kOFspGYzH0EKTcjxEJbzQP7WWlg==
   dependencies:
     "@manuscripts/json-schema" "2.2.10"
-    "@manuscripts/library" "1.3.11-LEAN-3828.1"
+    "@manuscripts/library" "1.3.11"
     debug "^4.3.4"
     jszip "^3.10.1"
     lodash "^4.17.21"
