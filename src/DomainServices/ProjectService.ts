@@ -71,15 +71,16 @@ export class ProjectService {
   public async createProject(userID: string, title?: string): Promise<Project> {
     return await this.projectRepository.createProject(userID, title)
   }
-  public async createManuscript(projectID: string, templateID?: string) {
+  public async createManuscript(projectID: string, userID: string, templateID?: string) {
     if (templateID) {
       const exists = await this.configService.hasDocument(templateID)
       if (!exists) {
         throw new MissingTemplateError(templateID)
       }
     }
-
-    return await this.projectRepository.createManuscript(projectID, templateID)
+    const manuscirpt = await this.projectRepository.createManuscript(projectID, templateID)
+    await this.createManuscriptDoc(Array.of(manuscirpt), manuscirpt, projectID, userID)
+    return manuscirpt
   }
 
   public async importJats(
@@ -139,21 +140,26 @@ export class ProjectService {
     projectID: string,
     userID: string
   ) {
+    console.log('got here')
     const modelMap = DIContainer.sharedContainer.projectService.getContainedModelsMap(
       models as ContainedModel[]
     )
+    console.log('got here 1')
     const article = DIContainer.sharedContainer.projectService.modelMapToManuscriptNode(
       modelMap,
       manuscript._id
     )
-
+    console.log('got here 2')
     const createDoc: CreateDoc = {
       manuscript_model_id: manuscript._id,
       project_model_id: projectID,
       doc: article,
       schema_version: getVersion(),
     }
+    console.log('got here 3')
+    console.log(userID)
     await DIContainer.sharedContainer.documentClient.createDocument(createDoc, userID)
+    console.log('got here 4')
   }
 
   public async makeArchive(projectID: string, options?: ArchiveOptions) {
