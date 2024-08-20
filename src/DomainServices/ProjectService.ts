@@ -78,9 +78,9 @@ export class ProjectService {
         throw new MissingTemplateError(templateID)
       }
     }
-    const manuscirpt = await this.projectRepository.createManuscript(projectID, templateID)
-    await this.createManuscriptDoc(Array.of(manuscirpt), manuscirpt, projectID, userID)
-    return manuscirpt
+    const manuscript = await this.projectRepository.createManuscript(projectID, templateID)
+    await this.createManuscriptDoc(Array.of(manuscript), manuscript, projectID, userID)
+    return manuscript
   }
 
   public async importJats(
