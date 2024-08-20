@@ -140,26 +140,20 @@ export class ProjectService {
     projectID: string,
     userID: string
   ) {
-    console.log('got here')
     const modelMap = DIContainer.sharedContainer.projectService.getContainedModelsMap(
       models as ContainedModel[]
     )
-    console.log('got here 1')
     const article = DIContainer.sharedContainer.projectService.modelMapToManuscriptNode(
       modelMap,
       manuscript._id
     )
-    console.log('got here 2')
     const createDoc: CreateDoc = {
       manuscript_model_id: manuscript._id,
       project_model_id: projectID,
       doc: article,
       schema_version: getVersion(),
     }
-    console.log('got here 3')
-    console.log(userID)
     await DIContainer.sharedContainer.documentClient.createDocument(createDoc, userID)
-    console.log('got here 4')
   }
 
   public async makeArchive(projectID: string, options?: ArchiveOptions) {
