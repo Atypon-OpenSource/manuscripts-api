@@ -372,10 +372,11 @@ export class ProjectService {
     const containedModelsMap = this.getContainedModelsMap(containedModels)
     const article = this.modelMapToManuscriptNode(containedModelsMap, manuscriptID)
 
-    const citationStyle = await DIContainer.sharedContainer.configService.getDocument(templateID)
-    if (!citationStyle) {
-      throw new RecordNotFoundError('citationStyle not found')
+    const template: any = await DIContainer.sharedContainer.configService.getDocument(templateID)
+    if (!template) {
+      throw new MissingTemplateError(templateID)
     }
+    const citationStyle = await this.citationStyleFromTemplate(template)
     const locale = await DIContainer.sharedContainer.configService.getDocument(DEFAULT_LOCALE)
     if (!locale) {
       throw new RecordNotFoundError('locale not found')
@@ -386,6 +387,18 @@ export class ProjectService {
         locale,
       },
     })
+  }
+
+  private async citationStyleFromTemplate(template: any) {
+    const templateJson: any = JSON.parse(template)
+    const bundle: any = await DIContainer.sharedContainer.configService.getDocument(
+      templateJson.bundle
+    )
+    const bundleJson: any = JSON.parse(bundle)
+    const citationStyle: any = await DIContainer.sharedContainer.configService.getDocument(
+      bundleJson.csl._id
+    )
+    return citationStyle
   }
 
   public async getContainedModels(projectID: string) {

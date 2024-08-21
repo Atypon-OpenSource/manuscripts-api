@@ -23,11 +23,12 @@ import { ConfigService } from '../../../../../src/DomainServices/ConfigService'
 import { ProjectService } from '../../../../../src/DomainServices/ProjectService'
 import {
   MissingContainerError,
-  MissingTemplateError, RecordNotFoundError,
+  MissingTemplateError,
+  RecordNotFoundError,
   SyncError,
   UserRoleError,
-  ValidationError
-} from "../../../../../src/Errors";
+  ValidationError,
+} from '../../../../../src/Errors'
 import { ProjectPermission, ProjectUserRole } from '../../../../../src/Models/ProjectModels'
 import { ProjectClient, UserClient } from '../../../../../src/Models/RepositoryModels'
 import { templates } from '../../../../data/dump/templates'
@@ -602,7 +603,9 @@ describe('projectService', () => {
       )
     })
     test('should fail if manuscript have no template', () => {
-      projectService.getContainedModels = jest.fn().mockResolvedValue([validProject, validManuscript])
+      projectService.getContainedModels = jest
+        .fn()
+        .mockResolvedValue([validProject, validManuscript])
       expect(projectService.exportJats(validProject._id, validManuscript._id)).rejects.toThrow(
         ValidationError
       )
@@ -612,7 +615,7 @@ describe('projectService', () => {
       projectService.modelMapToManuscriptNode = jest.fn().mockResolvedValue({})
       configService.getDocument = jest.fn().mockResolvedValue(false)
       expect(projectService.exportJats(validProject._id, validManuscript._id)).rejects.toThrow(
-        RecordNotFoundError
+        MissingTemplateError
       )
     })
   })
