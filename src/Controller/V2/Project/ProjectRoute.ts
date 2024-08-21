@@ -278,11 +278,7 @@ export class ProjectRoute extends BaseRoute {
       throw new ValidationError('No user found', user)
     }
 
-    const jats = await this.projectController.exportJats(
-      projectID,
-      manuscriptID,
-      user
-    )
+    const jats = await this.projectController.exportJats(projectID, manuscriptID, user)
     res.status(StatusCodes.OK).type('application/xml').send(jats)
   }
   private async getArchive(req: Request, res: Response) {

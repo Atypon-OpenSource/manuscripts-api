@@ -123,11 +123,7 @@ export class ProjectController extends BaseController {
     return await DIContainer.sharedContainer.userService.getProjectUserProfiles(projectID)
   }
 
-  async exportJats(
-    projectID: string,
-    manuscriptID: string,
-    user: Express.User
-  ): Promise<string> {
+  async exportJats(projectID: string, manuscriptID: string, user: Express.User): Promise<string> {
     const permissions = await this.getPermissions(projectID, user.id)
     if (!permissions.has(ProjectPermission.READ)) {
       throw new RoleDoesNotPermitOperationError(`Access denied`, user.id)
