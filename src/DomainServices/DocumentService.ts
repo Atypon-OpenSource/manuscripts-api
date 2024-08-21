@@ -109,8 +109,8 @@ export class DocumentService {
 
     wss.handleUpgrade(request, socket, head, (ws) => {
       this.attachListeners(socket, ws, manuscriptID)
-      this.socketsService.setClient(manuscriptID, ws)
-      console.log('client has been set')
+      this.socketsService.addClient(manuscriptID, ws)
+      log.info(`added client for manuscript ${manuscriptID}`)
       wss.emit('connection', ws, request)
     })
   }
@@ -145,7 +145,7 @@ export class DocumentService {
       log.error(`error closing socket: ${error}`)
     }
     if (manuscriptID) {
-      this.socketsService.removeClient(manuscriptID)
+      this.socketsService.removeClient(manuscriptID, ws)
       log.info(`removed client for manuscript ${manuscriptID}`)
     }
   }
