@@ -196,7 +196,7 @@ describe('ProjectController', () => {
         .mockResolvedValue(new Set([ProjectPermission.CREATE_MANUSCRIPT]))
 
       await controller.createManuscript(user, projectID, templateID)
-      expect(projectService.createManuscript).toHaveBeenCalledWith(projectID, templateID)
+      expect(projectService.createManuscript).toHaveBeenCalledWith(projectID, user.id, templateID)
     })
   })
   describe('getUserProfiles', () => {
