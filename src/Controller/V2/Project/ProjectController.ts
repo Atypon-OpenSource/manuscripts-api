@@ -92,8 +92,11 @@ export class ProjectController extends BaseController {
     if (!permissions.has(ProjectPermission.CREATE_MANUSCRIPT)) {
       throw new RoleDoesNotPermitOperationError(`Access denied`, user.id)
     }
-
-    return DIContainer.sharedContainer.projectService.createManuscript(projectID, templateID)
+    return DIContainer.sharedContainer.projectService.createManuscript(
+      projectID,
+      user.id,
+      templateID
+    )
   }
 
   async importJats(
