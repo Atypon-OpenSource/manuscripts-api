@@ -81,7 +81,10 @@ describe('projectService', () => {
   describe('createManuscript', () => {
     it('should create a new manuscript', async () => {
       projectClient.createManuscript = jest.fn().mockResolvedValue({})
-      await projectService.createManuscript(projectID)
+      projectService['createManuscriptDoc'] = jest.fn()
+
+      await projectService.createManuscript(projectID, userID)
+
       expect(projectClient.createManuscript).toHaveBeenCalled()
     })
     it('should create a new manuscript with the provided templateID', async () => {
@@ -93,8 +96,9 @@ describe('projectService', () => {
 
       configService.hasDocument = jest.fn().mockResolvedValue(true)
       projectClient.createManuscript = jest.fn().mockResolvedValue(expectedManuscript)
+      projectService['createManuscriptDoc'] = jest.fn()
 
-      const result = await projectService.createManuscript(projectID, templateID)
+      const result = await projectService.createManuscript(projectID, userID, templateID)
 
       expect(result).toEqual(expectedManuscript)
       expect(configService.hasDocument).toHaveBeenCalledWith(templateID)
@@ -104,7 +108,8 @@ describe('projectService', () => {
     it('should throw an error if the provided templateID does not exist', async () => {
       configService.hasDocument = jest.fn().mockResolvedValue(false)
       projectClient.createManuscript = jest.fn().mockResolvedValue(null)
-      await expect(projectService.createManuscript(projectID, templateID)).rejects.toThrow(
+      projectService['createManuscriptDoc'] = jest.fn()
+      await expect(projectService.createManuscript(projectID, userID, templateID)).rejects.toThrow(
         new MissingTemplateError(templateID)
       )
       expect(configService.hasDocument).toHaveBeenCalledWith(templateID)

@@ -1311,10 +1311,10 @@
     "@manuscripts/json-schema" "2.2.10"
     citeproc "^2.4.62"
 
-"@manuscripts/transform@2.3.24":
-  version "2.3.24"
-  resolved "https://registry.yarnpkg.com/@manuscripts/transform/-/transform-2.3.24.tgz#cf03c2018c86a1a6e9fce8eea83a278ba5286321"
-  integrity sha512-BY7Y2sjCZUj5HykW6ubApdlxYCQy6vj9QlwIZroKc5px+vONvw3XtlhN7c1kOFspGYzH0EKTcjxEJbzQP7WWlg==
+"@manuscripts/transform@2.3.25":
+  version "2.3.25"
+  resolved "https://registry.yarnpkg.com/@manuscripts/transform/-/transform-2.3.25.tgz#e1d8985d8ec2044311f807a5d8639aeffcf044cf"
+  integrity sha512-uk5TJG5DPbNB/8e82lXafNTeBmMbal+VSY99/MguR+4FEQflsQuqEEgndQ6Dh0+xvDEJ/bS42+teU0TTfPtQdQ==
   dependencies:
     "@manuscripts/json-schema" "2.2.10"
     "@manuscripts/library" "1.3.11"

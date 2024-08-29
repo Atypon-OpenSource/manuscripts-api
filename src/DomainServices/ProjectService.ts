@@ -72,15 +72,16 @@ export class ProjectService {
   public async createProject(userID: string, title?: string): Promise<Project> {
     return await this.projectRepository.createProject(userID, title)
   }
-  public async createManuscript(projectID: string, templateID?: string) {
+  public async createManuscript(projectID: string, userID: string, templateID?: string) {
     if (templateID) {
       const exists = await this.configService.hasDocument(templateID)
       if (!exists) {
         throw new MissingTemplateError(templateID)
       }
     }
-
-    return await this.projectRepository.createManuscript(projectID, templateID)
+    const manuscript = await this.projectRepository.createManuscript(projectID, templateID)
+    await this.createManuscriptDoc(Array.of(manuscript), manuscript, projectID, userID)
+    return manuscript
   }
 
   public async importJats(
@@ -147,7 +148,6 @@ export class ProjectService {
       modelMap,
       manuscript._id
     )
-
     const createDoc: CreateDoc = {
       manuscript_model_id: manuscript._id,
       project_model_id: projectID,
