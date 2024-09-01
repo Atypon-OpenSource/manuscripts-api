@@ -93,10 +93,6 @@ export const exportJatsSchema: Joi.SchemaMap = {
     projectID: Joi.string().required(),
     manuscriptID: Joi.string().required(),
   }),
-  body: Joi.object({
-    citationStyle: Joi.string().required(),
-    locale: Joi.string().required(),
-  }),
 }
 
 export const loadProjectSchema: Joi.SchemaMap = {
