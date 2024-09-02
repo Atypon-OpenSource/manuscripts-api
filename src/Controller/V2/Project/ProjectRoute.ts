@@ -272,20 +272,13 @@ export class ProjectRoute extends BaseRoute {
 
   private async exportJats(req: Request, res: Response) {
     const { projectID, manuscriptID } = req.params
-    const { citationStyle, locale } = req.body
     const { user } = req
 
     if (!user) {
       throw new ValidationError('No user found', user)
     }
 
-    const jats = await this.projectController.exportJats(
-      projectID,
-      manuscriptID,
-      citationStyle,
-      locale,
-      user
-    )
+    const jats = await this.projectController.exportJats(projectID, manuscriptID, user)
     res.status(StatusCodes.OK).type('application/xml').send(jats)
   }
   private async getArchive(req: Request, res: Response) {
