@@ -1,10 +1,6 @@
 {
   "name": "@manuscripts/api",
-<<<<<<< HEAD
-  "version": "1.11.10",
-=======
-  "version": "1.11.10-LEAN-3745.0",
->>>>>>> 2778a85 (Update package.json)
+  "version": "1.11.11",
   "description": "Manuscripts API server",
   "license": "Apache-2.0",
   "main": "dist/index",
