@@ -18,6 +18,7 @@ import { NextFunction, Request, Response, Router } from 'express'
 import { StatusCodes } from 'http-status-codes'
 
 import { AuthStrategy } from '../../../Auth/Passport/AuthStrategy'
+import { DIContainer } from '../../../DIContainer/DIContainer'
 import { celebrate } from '../../../Utilities/celebrate'
 import { BaseRoute } from '../../BaseRoute'
 import { DocumentController } from './DocumentController'
@@ -120,6 +121,7 @@ export class DocumentRoute extends BaseRoute {
     const payload = req.body
     const user = req.user
     const doucment = await this.documentController.createDocument(projectID, payload, user)
+    const snapshot = await DIContainer.sharedContainer.snapshotClient.create
     res.json(doucment)
   }
   private async updateDocument(req: Request, res: Response) {

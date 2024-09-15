@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { Prisma } from '@prisma/client'
 import type { SaveSnapshotRequest, Snapshot } from 'src/Models/SnapshotModel'
 
 import { DIContainer } from '../../../DIContainer/DIContainer'
@@ -40,6 +41,13 @@ export class SnapshotController extends BaseController {
     )
     const snapshotModel = { docID: payload.docID, name: payload.name, snapshot: document.doc }
     await this.resetDocumentHistory(payload.docID)
+    if (typeof document.doc === 'object' && Array.isArray(document.doc)) {
+      await DIContainer.sharedContainer.documentClient.createOriginalDocument(
+        document.doc,
+        document.manuscript_model_id
+      )
+    }
+
     return await DIContainer.sharedContainer.snapshotClient.saveSnapshot(snapshotModel)
   }
   async deleteSnapshot(snapshotID: string, user: Express.User | undefined) {

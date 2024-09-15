@@ -91,8 +91,12 @@ export class ProjectExtender {
     }
   }
 
-  private createManuscript = async (projectID: string, prototype?: string) => {
-    const model = this.createManuscriptModel(projectID, prototype)
+  private createManuscript = async (
+    projectID: string,
+    prototype?: string,
+    manuscriptID?: string
+  ) => {
+    const model = this.createManuscriptModel(projectID, prototype, manuscriptID)
     try {
       const res = await this.prisma.project.create({
         data: model,
@@ -250,9 +254,12 @@ export class ProjectExtender {
       },
     }
   }
-  private createManuscriptModel(projectID: string, prototype?: string) {
+  private createManuscriptModel(
+    projectID: string,
+    prototype?: string,
+    manuscriptID = this.manuscriptID()
+  ) {
     const createdAt = timestamp()
-    const manuscriptID = this.manuscriptID()
     //containerID is the same as projectID
     return {
       id: manuscriptID,

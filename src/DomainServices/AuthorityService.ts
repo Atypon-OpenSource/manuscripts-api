@@ -80,6 +80,7 @@ export class AuthorityService {
     const modifiedSteps: ModifiedStep[] = []
     let pmDocument = schema.nodeFromJSON(document)
     for (let i = 0; i < steps.length; i++) {
+      //@ts-ignore
       pmDocument = steps[i].apply(pmDocument).doc || pmDocument
       modifiedSteps.push({ ...jsonSteps[i], clientID })
     }
@@ -87,6 +88,7 @@ export class AuthorityService {
   }
 
   private hydrateSteps(jsonSteps: Prisma.JsonValue[]): Step[] {
+    //@ts-ignore
     return jsonSteps.map((step: Prisma.JsonValue) => Step.fromJSON(schema, step)) as Step[]
   }
 }
