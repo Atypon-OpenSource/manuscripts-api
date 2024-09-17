@@ -1320,10 +1320,10 @@
     "@manuscripts/json-schema" "2.2.10"
     citeproc "^2.4.62"
 
-"@manuscripts/transform@2.3.32-LEAN-3892.0":
-  version "2.3.32-LEAN-3892.0"
-  resolved "https://registry.yarnpkg.com/@manuscripts/transform/-/transform-2.3.32-LEAN-3892.0.tgz#323c454c271d1f6b905d22e79c497afefbc34623"
-  integrity sha512-Z6y5YhjlfDJoaVVHfNEI97c7rSEcGNoVAOWgTHb5HKB8tXKsJoiyhfaqOsXY3CQND/V4LroYqyPK7rxTdIWUNQ==
+"@manuscripts/transform@2.3.35":
+  version "2.3.35"
+  resolved "https://registry.yarnpkg.com/@manuscripts/transform/-/transform-2.3.35.tgz#1080b0811f52293e2d73a2560ec14b3041c86c9f"
+  integrity sha512-08t8w0VguTpQ7PNWxhyhOpJ/pM/yYDY7fZcMXYKom5o6ctPpENay2iLN9YLCNncqWe0NqhxMyG7PP8+JdfffyQ==
   dependencies:
     "@manuscripts/json-schema" "2.2.11"
     "@manuscripts/library" "1.3.11"
