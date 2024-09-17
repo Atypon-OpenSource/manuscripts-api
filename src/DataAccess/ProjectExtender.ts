@@ -38,6 +38,7 @@ export class ProjectExtender {
       userProjects: this.userProjects,
       createProject: this.createProject,
       createManuscript: this.createManuscript,
+      updateManuscript: this.updateManuscript,
       bulkInsert: this.bulkInsert,
       removeWithAllResources: this.removeWithAllResources,
       getProject: this.getProject,
@@ -105,6 +106,37 @@ export class ProjectExtender {
         JSON.stringify(model)
       )
     }
+  }
+
+  private updateManuscript = async (id: string, dataToPatch: any) => {
+    const document = await this.getProject(id)
+    if (!id) {
+      throw new ValidationError(`Document with id ${id} does not exist`, id)
+    }
+    const patchedDocument = _.mergeWith(
+      document,
+      dataToPatch,
+      (_documentValue: any, patchValue: any) => patchValue
+    ) as any
+
+    if (patchedDocument.objectType !== ObjectTypes.Manuscript) {
+      throw new ValidationError(`Object type mismatched`, patchedDocument.objectType)
+    }
+    const documentToUpdate = {
+      id: patchedDocument._id,
+      data: {
+        ...patchedDocument,
+        updatedAt: timestamp(),
+      },
+    } as any
+
+    const updatedModel = await this.prisma.project.update({
+      where: {
+        id,
+      },
+      data: documentToUpdate,
+    })
+    return this.buildModel(updatedModel)
   }
 
   private bulkInsert = async (docs: any) => {

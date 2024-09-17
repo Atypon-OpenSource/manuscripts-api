@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-import { Manuscript, Model, Project, UserProfile } from '@manuscripts/json-schema'
+import { Manuscript, Model, ObjectTypes, Project, UserProfile } from '@manuscripts/json-schema'
 
 import { DIContainer } from '../../../DIContainer/DIContainer'
 import {
   MissingContainerError,
   MissingRecordError,
+  RecordNotFoundError,
   RoleDoesNotPermitOperationError,
 } from '../../../Errors'
 import { ProjectPermission, ProjectUserRole } from '../../../Models/ProjectModels'
@@ -39,6 +40,20 @@ export class ProjectController extends BaseController {
 
     //todo validate and check fine-grained access
     await DIContainer.sharedContainer.projectService.updateProject(projectID, data)
+  }
+
+  async updateManuscript(user: Express.User, projectID: string, manuscriptID: string, doi: string) {
+    const permissions = await this.getPermissions(projectID, user.id)
+    if (!permissions.has(ProjectPermission.UPDATE)) {
+      throw new RoleDoesNotPermitOperationError(`Access denied`, user.id)
+    }
+    const models: Model[] = await this.getProjectModels([ObjectTypes.Manuscript], user, projectID)
+    if (!models || models.length == 0) {
+      throw new RecordNotFoundError(manuscriptID)
+    }
+    const manuscript = models[0] as Manuscript
+    manuscript.DOI = doi
+    await DIContainer.sharedContainer.projectService.updateManuscript(manuscript)
   }
 
   async isProjectCacheValid(
