@@ -21,8 +21,6 @@ export const createDocumentSchema: Joi.SchemaMap = {
     manuscriptID: Joi.string().required(),
   }),
   body: Joi.object({
-    manuscript_model_id: Joi.string().required(),
-    project_model_id: Joi.string().required(),
     schema_version: Joi.string().required(),
     doc: Joi.object().required(),
   }),

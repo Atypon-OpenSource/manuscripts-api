@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { getVersion } from '@manuscripts/transform'
+import { getVersion, manuscript } from '@manuscripts/transform'
 import { NextFunction, Request, Response, Router } from 'express'
 import { StatusCodes } from 'http-status-codes'
 
 import { AuthStrategy } from '../../../Auth/Passport/AuthStrategy'
-import { DIContainer } from '../../../DIContainer/DIContainer'
 import { celebrate } from '../../../Utilities/celebrate'
 import { BaseRoute } from '../../BaseRoute'
 import { DocumentController } from './DocumentController'
@@ -117,11 +116,10 @@ export class DocumentRoute extends BaseRoute {
   }
 
   private async createDocument(req: Request, res: Response) {
-    const { projectID } = req.params
-    const payload = req.body
+    const { projectID, manuscriptID } = req.params
+    const payload = { ...req.body, project_model_id: projectID, manuscript_model_id: manuscriptID }
     const user = req.user
-    const doucment = await this.documentController.createDocument(projectID, payload, user)
-    const snapshot = await DIContainer.sharedContainer.snapshotClient.create
+    const doucment = await this.documentController.createDocument(payload, user)
     res.json(doucment)
   }
   private async updateDocument(req: Request, res: Response) {

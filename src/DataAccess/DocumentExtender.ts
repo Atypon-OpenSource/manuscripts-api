@@ -18,7 +18,7 @@ import { getVersion } from '@manuscripts/transform'
 import { ManuscriptDoc, Prisma, PrismaClient } from '@prisma/client'
 
 import { MissingDocumentError, MissingRecordError } from '../Errors'
-import { CreateDoc, Doc, UpdateDocument } from '../Models/DocumentModels'
+import { CreateDoc, UpdateDocument } from '../Models/DocumentModels'
 import { PrismaErrorCodes } from '../Models/RepositoryModels'
 import maybeMigrate from './maybe-migrate'
 
@@ -40,7 +40,6 @@ export class DocumentExtender {
       updateDocument: this.updateDocument,
       deleteDocument: this.deleteDocument,
       findHistory: this.findHistory,
-      createOriginalDocument: this.createOriginalDocument,
     }
   }
 
@@ -116,26 +115,15 @@ export class DocumentExtender {
         schema_version: payload.schema_version,
         doc: payload.doc,
         version: 0,
+        snapshots: {
+          create: {
+            name: 'Initial',
+            snapshot: payload.doc,
+          },
+        },
       },
     })
-    await this.createOriginalDocument(payload.doc, payload.manuscript_model_id)
     return { ...saved, snapshots: [] }
-  }
-  private createOriginalDocument = async (doc: Doc, manuscriptID: string) => {
-    return await this.prisma.$transaction(async (tx) => {
-      await tx.originalDoc.deleteMany({
-        where: {
-          manuscript_model_id: manuscriptID,
-        },
-      })
-      const original = await this.prisma.originalDoc.create({
-        data: {
-          manuscript_model_id: manuscriptID,
-          doc,
-        },
-      })
-      return original
-    })
   }
 
   private updateDocument = async (documentID: string, payload: UpdateDocument) => {
