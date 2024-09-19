@@ -60,7 +60,7 @@ const EMPTY_PERMISSIONS = new Set<ProjectPermission>()
 const DEFAULT_LOCALE = 'en-US'
 export class ProjectService {
   constructor(
-    private readonly projectRepository: ProjectClient,
+    private readonly projectClient: ProjectClient,
     private readonly userClient: UserClient,
     private readonly snapshotClient: SnapshotClient,
     private readonly documentClient: DocumentClient,
@@ -68,7 +68,7 @@ export class ProjectService {
   ) {}
 
   public async createProject(userID: string, title?: string): Promise<Project> {
-    return await this.projectRepository.createProject(userID, title)
+    return await this.projectClient.createProject(userID, title)
   }
   public async createManuscript(projectID: string, templateID?: string) {
     if (templateID) {
@@ -77,7 +77,7 @@ export class ProjectService {
         throw new MissingTemplateError(templateID)
       }
     }
-    return await this.projectRepository.createManuscript(projectID, templateID)
+    return await this.projectClient.createManuscript(projectID, templateID)
   }
 
   public async importJats(
@@ -99,7 +99,7 @@ export class ProjectService {
 
     const { node, journal } = parseJATSArticle(jats, templateID)
 
-    const manuscript = {
+    const manuscriptModel = {
       _id: node.attrs.id,
       objectType: ObjectTypes.Manuscript,
       createdAt: now,
@@ -111,32 +111,34 @@ export class ProjectService {
       primaryLanguageCode: node.attrs.primaryLanguageCode,
     } as Manuscript
 
-    await this.projectRepository.bulkInsert([
+    await this.projectClient.bulkInsert([
       {
         ...journal,
         createdAt: now,
         updatedAt: now,
         containerID: projectID,
       },
-      manuscript,
+      manuscriptModel,
     ])
-    await this.createManuscriptDoc(manuscript, projectID, userID, node)
-    return manuscript
+
+    await this.documentClient.createDocument(
+      {
+        manuscript_model_id: manuscriptModel._id,
+        project_model_id: projectID,
+        doc: node,
+        schema_version: getVersion(),
+      },
+      userID
+    )
+
+    return manuscriptModel
   }
 
-  public async createManuscriptDoc(
-    manuscript: Manuscript,
-    projectID: string,
-    userID: string,
-    article?: ManuscriptNode
-  ) {
-    if (!article) {
-      article = createArticleNode(manuscript)
-    }
+  public async createManuscriptDoc(manuscript: Manuscript, projectID: string, userID: string) {
     const createDoc: CreateDoc = {
       manuscript_model_id: manuscript._id,
       project_model_id: projectID,
-      doc: article,
+      doc: createArticleNode(manuscript),
       schema_version: getVersion(),
     }
     await this.documentClient.createDocument(createDoc, userID)
@@ -148,9 +150,9 @@ export class ProjectService {
 
     let resources
     if (!onlyIDs) {
-      resources = await this.projectRepository.getProjectResources(projectID)
+      resources = await this.projectClient.getProjectResources(projectID)
     } else {
-      resources = await this.projectRepository.getProjectResourcesIDs(projectID)
+      resources = await this.projectClient.getProjectResourcesIDs(projectID)
     }
 
     const index = { version: '2.0', data: resources }
@@ -171,13 +173,11 @@ export class ProjectService {
     if (manuscriptID) {
       await this.deleteManuscriptResources(manuscriptID)
     }
-    await this.projectRepository.removeWithAllResources(projectID)
+    await this.projectClient.removeWithAllResources(projectID)
   }
 
   private async getManuscriptID(projectID: string): Promise<string | null> {
-    const models = await this.projectRepository.getProjectResources(projectID, [
-      ObjectTypes.Manuscript,
-    ])
+    const models = await this.projectClient.getProjectResources(projectID, [ObjectTypes.Manuscript])
     if (!models) {
       throw new MissingContainerError(projectID)
     }
@@ -192,7 +192,7 @@ export class ProjectService {
   }
 
   public async getProject(projectID: string): Promise<Project> {
-    const project = await this.projectRepository.getProject(projectID)
+    const project = await this.projectClient.getProject(projectID)
     if (!project) {
       throw new MissingContainerError(projectID)
     }
@@ -207,12 +207,12 @@ export class ProjectService {
     // that belongs to the project
     await this.validateManuscriptIDs(projectID, models)
     const docs = this.processManuscriptModels(models)
-    await this.projectRepository.removeAll(projectID)
-    return await this.projectRepository.bulkInsert(docs)
+    await this.projectClient.removeAll(projectID)
+    return await this.projectClient.bulkInsert(docs)
   }
 
   public async getProjectModels(projectID: string): Promise<Model[] | null> {
-    return await this.projectRepository.getProjectResources(projectID)
+    return await this.projectClient.getProjectResources(projectID)
   }
 
   public async updateUserRole(
@@ -266,7 +266,7 @@ export class ProjectService {
         break
     }
 
-    await this.projectRepository.patch(projectID, updated)
+    await this.projectClient.patch(projectID, updated)
   }
 
   public async getPermissions(
@@ -320,7 +320,7 @@ export class ProjectService {
       throw new ValidationError(`contains multiple manuscriptIDs`, models)
     } else if (manuscriptIDs.size === 1) {
       const manuscriptID = manuscriptIDs.values().next().value
-      const manuscript = await this.projectRepository.getProject(manuscriptID)
+      const manuscript = await this.projectClient.getProject(manuscriptID)
       if (!manuscript) {
         throw new ValidationError(`manuscript doesn't exist`, models)
       }
