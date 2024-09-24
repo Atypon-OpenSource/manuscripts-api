@@ -127,6 +127,7 @@ export const updateManuscriptDoiSchema: Joi.SchemaMap = {
   }),
   params: Joi.object({
     projectID: Joi.string().required(),
+    manuscriptID: Joi.string().required(),
   }),
   body: Joi.object({
     doi: Joi.string().required(),

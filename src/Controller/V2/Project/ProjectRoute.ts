@@ -92,7 +92,7 @@ export class ProjectRoute extends BaseRoute {
     )
 
     router.put(
-      `${this.basePath}/:projectID/manuscript`,
+      `${this.basePath}/:projectID/manuscript/:manuscriptID`,
       celebrate(updateManuscriptDoiSchema),
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {

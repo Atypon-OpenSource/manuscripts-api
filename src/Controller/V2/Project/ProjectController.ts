@@ -15,6 +15,7 @@
  */
 
 import { Manuscript, Model, ObjectTypes, Project, UserProfile } from '@manuscripts/json-schema'
+import { getVersion } from '@manuscripts/transform'
 
 import { DIContainer } from '../../../DIContainer/DIContainer'
 import {
@@ -23,6 +24,7 @@ import {
   RecordNotFoundError,
   RoleDoesNotPermitOperationError,
 } from '../../../Errors'
+import { UpdateDocument } from '../../../Models/DocumentModels'
 import { ProjectPermission, ProjectUserRole } from '../../../Models/ProjectModels'
 import { BaseController } from '../../BaseController'
 
@@ -54,6 +56,16 @@ export class ProjectController extends BaseController {
     const manuscript = models[0] as Manuscript
     manuscript.DOI = doi
     await DIContainer.sharedContainer.projectService.updateManuscript(manuscript)
+    const manuscriptDocument = await DIContainer.sharedContainer.documentClient.findDocument(
+      manuscriptID
+    )
+    const doc = manuscriptDocument.doc as any
+    doc.attrs.doi = doi
+    const updateDocPayload: UpdateDocument = {
+      doc: doc,
+      schema_version: getVersion(),
+    }
+    await DIContainer.sharedContainer.documentClient.updateDocument(manuscriptID, updateDocPayload)
   }
 
   async isProjectCacheValid(
