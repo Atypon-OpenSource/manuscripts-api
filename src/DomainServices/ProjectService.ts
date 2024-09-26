@@ -26,7 +26,6 @@ import {
   createArticleNode,
   getVersion,
   JATSExporter,
-  ManuscriptNode,
   parseJATSArticle,
   schema,
 } from '@manuscripts/transform'
