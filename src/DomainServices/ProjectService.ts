@@ -137,7 +137,13 @@ export class ProjectService {
     const createDoc: CreateDoc = {
       manuscript_model_id: manuscript._id,
       project_model_id: projectID,
-      doc: createArticleNode(manuscript),
+      doc: createArticleNode({
+        articleType: manuscript.articleType,
+        primaryLanguageCode: manuscript.primaryLanguageCode,
+        doi: manuscript.DOI,
+        id: manuscript._id,
+        prototype: manuscript.prototype,
+      }),
       schema_version: getVersion(),
     }
     await this.documentClient.createDocument(createDoc, userID)
