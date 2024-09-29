@@ -121,7 +121,18 @@ export const loadManuscriptSchema: Joi.SchemaMap = {
     types: Joi.array().items(Joi.string()),
   }),
 }
-
+export const updateManuscriptDoiSchema: Joi.SchemaMap = {
+  headers: Joi.object({
+    accept: appJsonAndCharset,
+  }),
+  params: Joi.object({
+    projectID: Joi.string().required(),
+    manuscriptID: Joi.string().required(),
+  }),
+  body: Joi.object({
+    doi: Joi.string().required(),
+  }),
+}
 export const createManuscriptSchema: Joi.SchemaMap = {
   params: Joi.object({
     projectID: Joi.string().required(),

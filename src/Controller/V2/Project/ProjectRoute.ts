@@ -36,6 +36,7 @@ import {
   loadProjectSchema,
   projectUserProfilesSchema,
   saveProjectSchema,
+  updateManuscriptDoiSchema,
 } from './ProjectSchema'
 
 export class ProjectRoute extends BaseRoute {
@@ -86,6 +87,17 @@ export class ProjectRoute extends BaseRoute {
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           await this.getManuscriptModels(req, res)
+        }, next)
+      }
+    )
+
+    router.put(
+      `${this.basePath}/:projectID/manuscript/:manuscriptID`,
+      celebrate(updateManuscriptDoiSchema),
+      AuthStrategy.JWTAuth,
+      (req: Request, res: Response, next: NextFunction) => {
+        return this.runWithErrorHandling(async () => {
+          await this.updateManuscriptDoi(req, res)
         }, next)
       }
     )
@@ -202,6 +214,17 @@ export class ProjectRoute extends BaseRoute {
       res.set('Content-Type', 'application/json')
       res.status(StatusCodes.OK).send(models)
     }
+  }
+
+  private async updateManuscriptDoi(req: Request, res: Response) {
+    const { projectID, manuscriptID } = req.params
+    const { doi } = req.body
+    const { user } = req
+    if (!user) {
+      throw new ValidationError('No user found', user)
+    }
+    await this.projectController.updateManuscript(user, projectID, manuscriptID, doi)
+    res.status(StatusCodes.NO_CONTENT).end()
   }
 
   private async getManuscriptModels(req: Request, res: Response) {
