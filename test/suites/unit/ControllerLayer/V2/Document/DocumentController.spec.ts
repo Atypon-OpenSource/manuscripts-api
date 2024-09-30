@@ -69,14 +69,14 @@ describe('DocumentController', () => {
   describe('createDocument', () => {
     it('should throw an error if no user is found', async () => {
       await expect(
-        documentController.createDocument('projectID', mockCreateDocRequest, undefined)
+        documentController.createDocument( mockCreateDocRequest, undefined)
       ).rejects.toThrow('No user found')
     })
     it('should call document.validateUserAccess', async () => {
       documentService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
       const spy = jest.spyOn(documentService, 'validateUserAccess')
       documentClient.createDocument = jest.fn()
-      await documentController.createDocument('projectID', mockCreateDocRequest, {
+      await documentController.createDocument(mockCreateDocRequest, {
         id: 'random_user_id',
       } as any)
       expect(spy).toHaveBeenCalled()
@@ -85,7 +85,7 @@ describe('DocumentController', () => {
       documentService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
       documentClient.createDocument = jest.fn()
       const spy = jest.spyOn(documentClient, 'createDocument')
-      await documentController.createDocument('projectID', mockCreateDocRequest, {
+      await documentController.createDocument(mockCreateDocRequest, {
         id: 'random_user_id',
       } as any)
       expect(spy).toHaveBeenCalled()
@@ -94,7 +94,7 @@ describe('DocumentController', () => {
       documentService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
       documentClient.createDocument = jest.fn()
       const spy = jest.spyOn(documentClient, 'createDocument')
-      await documentController.createDocument('projectID', mockCreateDocRequest, {
+      await documentController.createDocument(mockCreateDocRequest, {
         id: 'random_user_id',
       } as any)
       expect(spy).toHaveBeenCalledWith(mockCreateDocRequest, 'random_user_id')
@@ -102,7 +102,7 @@ describe('DocumentController', () => {
     it('should return the document', async () => {
       documentService.validateUserAccess = jest.fn().mockReturnValue(Promise.resolve())
       documentClient.createDocument = jest.fn().mockReturnValue(mockCreateDocRequest.doc)
-      const result = await documentController.createDocument('projectID', mockCreateDocRequest, {
+      const result = await documentController.createDocument( mockCreateDocRequest, {
         id: 'random_user_id',
       } as any)
       expect(result).toEqual(mockCreateDocRequest.doc)
@@ -112,7 +112,7 @@ describe('DocumentController', () => {
         .fn()
         .mockResolvedValue(new Set([DocumentPermission.READ]))
       await expect(
-        documentController.createDocument('projectID', mockCreateDocRequest, {
+        documentController.createDocument( mockCreateDocRequest, {
           id: 'random_user_id',
         } as any)
       ).rejects.toThrow('Access denied')

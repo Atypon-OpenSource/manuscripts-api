@@ -25,7 +25,6 @@ import {
   MissingContainerError,
   MissingTemplateError,
   RecordNotFoundError,
-  SyncError,
   UserRoleError,
   ValidationError,
 } from '../../../../../src/Errors'
@@ -41,6 +40,7 @@ import {
 } from '../../../../data/fixtures/projects'
 import { validUser2 } from '../../../../data/fixtures/UserRepository'
 import { validUser } from '../../../../data/fixtures/userServiceUser'
+import { readAndParseFixture } from '../../../../utilities/files'
 import { TEST_TIMEOUT } from '../../../../utilities/testSetup'
 
 //todo revisit these tests, cleanup & more precise tests needed
@@ -63,7 +63,6 @@ beforeEach(async () => {
 afterEach(() => {
   jest.clearAllMocks()
 })
-jest.mock('uuid')
 const JSZip = require('jszip')
 
 describe('projectService', () => {
@@ -83,7 +82,7 @@ describe('projectService', () => {
       projectClient.createManuscript = jest.fn().mockResolvedValue({})
       projectService['createManuscriptDoc'] = jest.fn()
 
-      await projectService.createManuscript(projectID, userID)
+      await projectService.createManuscript(projectID)
 
       expect(projectClient.createManuscript).toHaveBeenCalled()
     })
@@ -98,7 +97,7 @@ describe('projectService', () => {
       projectClient.createManuscript = jest.fn().mockResolvedValue(expectedManuscript)
       projectService['createManuscriptDoc'] = jest.fn()
 
-      const result = await projectService.createManuscript(projectID, userID, templateID)
+      const result = await projectService.createManuscript(projectID, templateID)
 
       expect(result).toEqual(expectedManuscript)
       expect(configService.hasDocument).toHaveBeenCalledWith(templateID)
@@ -109,7 +108,7 @@ describe('projectService', () => {
       configService.hasDocument = jest.fn().mockResolvedValue(false)
       projectClient.createManuscript = jest.fn().mockResolvedValue(null)
       projectService['createManuscriptDoc'] = jest.fn()
-      await expect(projectService.createManuscript(projectID, userID, templateID)).rejects.toThrow(
+      await expect(projectService.createManuscript(projectID, templateID)).rejects.toThrow(
         new MissingTemplateError(templateID)
       )
       expect(configService.hasDocument).toHaveBeenCalledWith(templateID)
@@ -130,107 +129,21 @@ describe('projectService', () => {
 
     it('should succeed if called correctly', async () => {
       const file = {}
-      const manuscript = {
-        _id: 'MPManuscript:test-manuscript',
-        objectType: ObjectTypes.Manuscript,
-      }
-      const paragraph = {
-        _id: 'MPParagraphElement:test-paragraph',
-        objectType: ObjectTypes.ParagraphElement,
-        contents: 'Test paragraph',
-        elementType: 'p',
-      }
       const docClient = DIContainer.sharedContainer.documentClient
-      const data = [manuscript, paragraph]
+      const jats = await readAndParseFixture('jats-sample.xml')
       configService.hasDocument = jest.fn().mockResolvedValue(true)
       //@ts-ignore
       projectClient.bulkInsert = jest.fn(async () => Promise.resolve())
       // @ts-ignore
-      projectService.convert = jest.fn(async (): Promise<any> => Promise.resolve(data))
-      // @ts-ignore
-      projectService.modelMapToManuscriptNode = jest.fn().mockResolvedValue({})
+      projectService.convert = jest.fn(() => Promise.resolve(jats))
       // @ts-ignore
       docClient.createDocument = jest.fn(async () => Promise.resolve())
       // @ts-ignore
-      projectService.extract = jest.fn(
-        async (): Promise<any> =>
-          Promise.resolve({
-            root: '',
-            files: {
-              'index.manuscript-json': {
-                data: `{"data": ${JSON.stringify(data)}}`,
-              },
-            },
-          })
-      )
-      // @ts-ignore
       const output = await projectService.importJats(validUser.id, file, projectID, templateID)
-
-      expect(output._id).toEqual(manuscript._id)
       expect(output.containerID).toEqual(projectID)
       expect(output.prototype).toEqual(templateID)
       expect(output.updatedAt).not.toBeNull()
       expect(output.createdAt).not.toBeNull()
-    })
-    it('should fail if no Manuscript is found', async () => {
-      const file = {}
-      const paragraph = {
-        _id: 'MPParagraphElement:test-paragraph',
-        objectType: ObjectTypes.ParagraphElement,
-        contents: 'Test paragraph',
-      }
-      const data = [paragraph]
-      configService.hasDocument = jest.fn().mockResolvedValue(true)
-      // @ts-ignore
-      projectService.convert = jest.fn(async (): Promise<any> => Promise.resolve(data))
-      // @ts-ignore
-      projectService.extract = jest.fn(
-        async (): Promise<any> =>
-          Promise.resolve({
-            root: '',
-            files: {
-              'index.manuscript-json': {
-                data: `{"data": ${JSON.stringify(data)}}`,
-              },
-            },
-          })
-      )
-      // @ts-ignore
-      await expect(projectService.importJats(file, projectID, templateID)).rejects.toThrow(
-        ValidationError
-      )
-    })
-    it('should fail if invalid model is used', async () => {
-      const file = {}
-      const manuscript = {
-        _id: 'MPManuscript:test-manuscript',
-        objectType: ObjectTypes.Manuscript,
-      }
-      const paragraph = {
-        _id: 'MPParagraphElement:test-paragraph',
-        objectType: ObjectTypes.ParagraphElement,
-        contents: 'Test paragraph',
-      }
-      const data = [manuscript, paragraph]
-      configService.hasDocument = jest.fn().mockResolvedValue(true)
-      // @ts-ignore
-      projectService.convert = jest.fn(async (): Promise<any> => Promise.resolve(data))
-      // @ts-ignore
-      projectService.extract = jest.fn(
-        async (): Promise<any> =>
-          Promise.resolve({
-            root: '',
-            files: {
-              'index.manuscript-json': {
-                data: `{"data": ${JSON.stringify(data)}}`,
-              },
-            },
-          })
-      )
-      // @ts-ignore
-      await expect(projectService.importJats(file, projectID, templateID)).rejects.toThrow(
-        SyncError
-      )
     })
   })
 
@@ -601,13 +514,10 @@ describe('projectService', () => {
     const manuscript = { ...validManuscript, prototype: projectID }
     const resources = [validProject, manuscript]
     jest.mock('@manuscripts/transform')
-    test('should fail if manuscript not found', () => {
-      projectService.getContainedModels = jest.fn().mockResolvedValue([validProject])
-      expect(projectService.exportJats(validProject._id, validManuscript._id)).rejects.toThrow(
-        RecordNotFoundError
-      )
-    })
-    test('should fail if manuscript have no template', () => {
+    test('should fail if manuscript document has no template', () => {
+      DIContainer.sharedContainer.snapshotClient.getMostRecentSnapshot = jest
+        .fn()
+        .mockResolvedValue({ snapshot: { attrs: {} } })
       projectService.getContainedModels = jest
         .fn()
         .mockResolvedValue([validProject, validManuscript])
@@ -615,12 +525,29 @@ describe('projectService', () => {
         ValidationError
       )
     })
-    test('should fail if styles are not found', () => {
+    test('should fail if template is not found', () => {
       projectService.getContainedModels = jest.fn().mockResolvedValue(resources)
-      projectService.modelMapToManuscriptNode = jest.fn().mockResolvedValue({})
+      DIContainer.sharedContainer.snapshotClient.getMostRecentSnapshot = jest
+        .fn()
+        .mockResolvedValue({ snapshot: { attrs: { prototype: '123' } } })
       configService.getDocument = jest.fn().mockResolvedValue(false)
       expect(projectService.exportJats(validProject._id, validManuscript._id)).rejects.toThrow(
         MissingTemplateError
+      )
+    })
+    test('should fail if styles are not found', () => {
+      projectService.getContainedModels = jest.fn().mockResolvedValue(resources)
+      DIContainer.sharedContainer.snapshotClient.getMostRecentSnapshot = jest
+        .fn()
+        .mockResolvedValue({ snapshot: { attrs: { prototype: '123' } } })
+
+      configService.getDocument = jest
+        .fn()
+        .mockResolvedValueOnce(JSON.stringify({ bundle: 'bundle-123' }))
+        .mockResolvedValueOnce(JSON.stringify({ csl: { _id: 'csl-123' } }))
+        .mockResolvedValueOnce(undefined)
+      expect(projectService.exportJats(validProject._id, validManuscript._id)).rejects.toThrow(
+        RecordNotFoundError
       )
     })
   })

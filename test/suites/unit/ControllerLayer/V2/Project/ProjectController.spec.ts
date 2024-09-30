@@ -190,13 +190,13 @@ describe('ProjectController', () => {
     })
 
     it('should call projectService.createManuscript with correct params', async () => {
-      projectService.createManuscript = jest.fn().mockResolvedValue({})
+      projectService.createManuscript = jest.fn().mockResolvedValue({ _id: 'manuscript-123' })
       controller.getPermissions = jest
         .fn()
         .mockResolvedValue(new Set([ProjectPermission.CREATE_MANUSCRIPT]))
-
+      DIContainer.sharedContainer.documentClient.createDocument = jest.fn()
       await controller.createArticleNode(user, projectID, templateID)
-      expect(projectService.createManuscript).toHaveBeenCalledWith(projectID, user.id, templateID)
+      expect(projectService.createManuscript).toHaveBeenCalledWith(projectID, templateID)
     })
   })
   describe('getUserProfiles', () => {
