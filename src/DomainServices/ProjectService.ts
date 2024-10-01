@@ -388,6 +388,9 @@ export class ProjectService {
       },
     })
   }
+  public async updateManuscript(manuscript: Manuscript) {
+    await this.projectRepository.updateManuscript(manuscript._id, manuscript)
+  }
 
   private async citationStyleFromTemplate(template: any) {
     const templateJson: any = JSON.parse(template)
