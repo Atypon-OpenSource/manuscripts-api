@@ -110,7 +110,7 @@ export class ProjectController extends BaseController {
     await DIContainer.sharedContainer.projectService.updateUserRole(projectID, connectUserID, role)
   }
 
-  async createManuscript(
+  async createArticleNode(
     user: Express.User,
     projectID: string,
     templateID?: string
@@ -119,11 +119,16 @@ export class ProjectController extends BaseController {
     if (!permissions.has(ProjectPermission.CREATE_MANUSCRIPT)) {
       throw new RoleDoesNotPermitOperationError(`Access denied`, user.id)
     }
-    return DIContainer.sharedContainer.projectService.createManuscript(
+    const manuscript = await DIContainer.sharedContainer.projectService.createManuscript(
       projectID,
-      user.id,
       templateID
     )
+    await DIContainer.sharedContainer.projectService.createManuscriptDoc(
+      manuscript,
+      projectID,
+      user.id
+    )
+    return manuscript
   }
 
   async importJats(

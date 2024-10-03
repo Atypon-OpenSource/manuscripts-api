@@ -296,15 +296,14 @@ describe('ProjectRoute', () => {
     it('should return OK if called correctly', async () => {
       const projectID = createManuscriptRequest.params.projectID
       const templateID = createManuscriptRequest.body.templateID
-      const userID = createManuscriptRequest.user.id
       const permissions = new Set([ProjectPermission.CREATE_MANUSCRIPT])
       projectService.createManuscript = jest.fn().mockResolvedValue({})
       projectService.getPermissions = jest.fn().mockResolvedValue(permissions)
-
+      projectService.createManuscriptDoc = jest.fn()
       // @ts-ignore
       await route.createManuscript(createManuscriptRequest, res)
 
-      expect(projectService.createManuscript).toHaveBeenCalledWith(projectID, userID, templateID)
+      expect(projectService.createManuscript).toHaveBeenCalledWith(projectID, templateID)
       expect(res.status).toHaveBeenCalledWith(StatusCodes.OK)
     })
 

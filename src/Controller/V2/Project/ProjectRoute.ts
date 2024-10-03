@@ -276,7 +276,7 @@ export class ProjectRoute extends BaseRoute {
       manuscript = await this.projectController.importJats(user, file, projectID, templateID)
       await remove(file.path)
     } else {
-      manuscript = await this.projectController.createManuscript(user, projectID, templateID)
+      manuscript = await this.projectController.createArticleNode(user, projectID, templateID)
     }
 
     res.status(StatusCodes.OK).send(manuscript)

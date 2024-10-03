@@ -21,13 +21,13 @@ import { History, ReceiveSteps } from '../../../Models/AuthorityModels'
 import { CreateDoc, UpdateDocument } from '../../../Models/DocumentModels'
 import { BaseController } from '../../BaseController'
 export class DocumentController extends BaseController {
-  async createDocument(projectID: string, payload: CreateDoc, user: Express.User | undefined) {
+  async createDocument(payload: CreateDoc, user: Express.User | undefined) {
     if (!user) {
       throw new ValidationError('No user found', user)
     }
     await DIContainer.sharedContainer.documentService.validateUserAccess(
       user.id,
-      projectID,
+      payload.project_model_id,
       DocumentPermission.WRITE
     )
     return await DIContainer.sharedContainer.documentClient.createDocument(payload, user.id)

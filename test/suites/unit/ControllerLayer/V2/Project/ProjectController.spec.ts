@@ -222,19 +222,19 @@ describe('ProjectController', () => {
     it('should throw error if user lacks CREATE_MANUSCRIPT permission', async () => {
       controller.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.READ]))
 
-      await expect(controller.createManuscript(user, projectID, templateID)).rejects.toThrow(
+      await expect(controller.createArticleNode(user, projectID, templateID)).rejects.toThrow(
         new RoleDoesNotPermitOperationError('Access denied', user.id)
       )
     })
 
     it('should call projectService.createManuscript with correct params', async () => {
-      projectService.createManuscript = jest.fn().mockResolvedValue({})
+      projectService.createManuscript = jest.fn().mockResolvedValue({ _id: 'manuscript-123' })
       controller.getPermissions = jest
         .fn()
         .mockResolvedValue(new Set([ProjectPermission.CREATE_MANUSCRIPT]))
-
-      await controller.createManuscript(user, projectID, templateID)
-      expect(projectService.createManuscript).toHaveBeenCalledWith(projectID, user.id, templateID)
+      DIContainer.sharedContainer.documentClient.createDocument = jest.fn()
+      await controller.createArticleNode(user, projectID, templateID)
+      expect(projectService.createManuscript).toHaveBeenCalledWith(projectID, templateID)
     })
   })
   describe('getUserProfiles', () => {
