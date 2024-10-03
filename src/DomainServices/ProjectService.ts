@@ -95,7 +95,6 @@ export class ProjectService {
     const jats = await this.convert(file.path)
 
     const now = Math.round(Date.now() / 1000)
-
     const { node, journal } = parseJATSArticle(jats, templateID)
 
     const manuscriptModel = {
@@ -377,6 +376,9 @@ export class ProjectService {
       journal,
       csl: { locale, style },
     })
+  }
+  public async updateManuscript(manuscript: Manuscript) {
+    await this.projectClient.updateManuscript(manuscript._id, manuscript)
   }
 
   private async citationStyleFromTemplate(template: any) {

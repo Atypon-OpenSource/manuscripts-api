@@ -21,10 +21,12 @@ import { Model, ObjectTypes } from '@manuscripts/json-schema'
 import { ProjectController } from '../../../../../../src/Controller/V2/Project/ProjectController'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
 import { ProjectService } from '../../../../../../src/DomainServices/ProjectService'
-import { RoleDoesNotPermitOperationError } from '../../../../../../src/Errors'
+import { RecordNotFoundError, RoleDoesNotPermitOperationError } from '../../../../../../src/Errors'
 import { ProjectPermission, ProjectUserRole } from '../../../../../../src/Models/ProjectModels'
+import { DocumentClient } from '../../../../../../src/Models/RepositoryModels'
 import { templates } from '../../../../../data/dump/templates'
 import { ValidHeaderWithApplicationKey } from '../../../../../data/fixtures/headers'
+import { validManuscript } from '../../../../../data/fixtures/manuscripts'
 import { validProject } from '../../../../../data/fixtures/projects'
 import { validUser } from '../../../../../data/fixtures/userServiceUser'
 import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
@@ -32,10 +34,12 @@ import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
 jest.setTimeout(TEST_TIMEOUT)
 
 let projectService: ProjectService
+let documentClient: DocumentClient
 beforeEach(async () => {
   ;(DIContainer as any)._sharedContainer = null
   await DIContainer.init()
   projectService = DIContainer.sharedContainer.projectService
+  documentClient = DIContainer.sharedContainer.documentClient
 })
 afterEach(() => {
   jest.clearAllMocks()
@@ -45,6 +49,8 @@ describe('ProjectController', () => {
   let controller: ProjectController
   const projectTitle = 'random_project_title'
   const projectID = validProject._id
+  const manuscriptID = validManuscript._id
+  const doi = '10.5555/test-doi'
   const user = validUser as Express.User
   const userID = user.id
   const role = ProjectUserRole.Owner
@@ -59,6 +65,13 @@ describe('ProjectController', () => {
       updatedAt: 21 / 12 / 2020,
     },
   ]
+  const manuscriptDoc = {
+    doc: {
+      attrs: {
+        doi: '',
+      },
+    },
+  }
   beforeEach(() => {
     controller = new ProjectController()
   })
@@ -98,6 +111,31 @@ describe('ProjectController', () => {
 
       projectService.updateProject = jest.fn().mockResolvedValue({})
       await expect(controller.updateProject(data, user, projectID)).resolves.not.toThrow()
+    })
+  })
+  describe('updateManuscriptDoi', () => {
+    it('should throw an error if user does not have UPDATE permission', async () => {
+      controller.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.READ]))
+      await expect(controller.updateManuscript(user, projectID, manuscriptID, doi)).rejects.toThrow(
+        new RoleDoesNotPermitOperationError('Access denied', user.id)
+      )
+    })
+
+    it('should throw an error if manuscript not found fails', async () => {
+      controller.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.UPDATE]))
+      controller.getProjectModels = jest.fn().mockResolvedValue([])
+      await expect(controller.updateManuscript(user, projectID, manuscriptID, doi)).rejects.toThrow(
+        RecordNotFoundError
+      )
+    })
+
+    it('should not throw an error when operation is successful', async () => {
+      controller.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.UPDATE]))
+      controller.getProjectModels = jest.fn().mockResolvedValue([validManuscript])
+      projectService.updateManuscript = jest.fn().mockResolvedValue({})
+      documentClient.findDocument = jest.fn().mockResolvedValue(manuscriptDoc)
+      documentClient.updateDocument = jest.fn().mockResolvedValue({})
+      await expect(controller.updateManuscript(user, projectID, manuscriptID, doi)).resolves.not.toThrow()
     })
   })
   describe('isProjectCachceValid', () => {
@@ -190,13 +228,13 @@ describe('ProjectController', () => {
     })
 
     it('should call projectService.createManuscript with correct params', async () => {
-      projectService.createManuscript = jest.fn().mockResolvedValue({})
+      projectService.createManuscript = jest.fn().mockResolvedValue({ _id: 'manuscript-123' })
       controller.getPermissions = jest
         .fn()
         .mockResolvedValue(new Set([ProjectPermission.CREATE_MANUSCRIPT]))
-
+      DIContainer.sharedContainer.documentClient.createDocument = jest.fn()
       await controller.createArticleNode(user, projectID, templateID)
-      expect(projectService.createManuscript).toHaveBeenCalledWith(projectID, user.id, templateID)
+      expect(projectService.createManuscript).toHaveBeenCalledWith(projectID, templateID)
     })
   })
   describe('getUserProfiles', () => {
