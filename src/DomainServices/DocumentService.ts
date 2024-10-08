@@ -89,6 +89,12 @@ export class DocumentService {
     return manuscript
   }
 
+  public async deleteOldBackups(date: Date) {
+    const dateToCompare = new Date(date)
+    dateToCompare.setDate(date.getDate() - 30)
+    await DIContainer.sharedContainer.documentClient.deleteBackupsOlderThan(dateToCompare)
+  }
+
   public async handleUpgrade(
     wss: WebSocketServer,
     request: IncomingMessage,
