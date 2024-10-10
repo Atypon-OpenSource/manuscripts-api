@@ -47,8 +47,9 @@ function main() {
         if (date instanceof Date) {
           await DIContainer.sharedContainer.repository.DB.$transaction(async (tx) => {
             //@ts-ignore
-            const acquireLock = DIContainer.sharedContainer.repository.acquireLock(tx)
-            if (acquireLock) {
+            const acquiredLock = DIContainer.sharedContainer.repository.acquireLock(tx)
+            if (acquiredLock) {
+              log.info('Deleting backups older than 30 days')
               const dateToCompare = new Date(date)
               dateToCompare.setDate(date.getDate() - 30)
               await tx.manuscriptDoc.deleteBackupsOlderThan(dateToCompare)
