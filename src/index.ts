@@ -45,8 +45,15 @@ function main() {
     .then(() => {
       schedule('* * 1 * *', async (date) => {
         if (date instanceof Date) {
-          log.info('Deleting 30 day old backups')
-          await DIContainer.sharedContainer.documentService.deleteOldBackups(date)
+          await DIContainer.sharedContainer.repository.DB.$transaction(async (tx) => {
+            //@ts-ignore
+            const acquireLock = DIContainer.sharedContainer.repository.acquireLock(tx)
+            if (acquireLock) {
+              const dateToCompare = new Date(date)
+              dateToCompare.setDate(date.getDate() - 30)
+              await tx.manuscriptDoc.deleteBackupsOlderThan(dateToCompare)
+            }
+          })
         }
       })
     })
