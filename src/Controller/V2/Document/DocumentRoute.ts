@@ -116,10 +116,10 @@ export class DocumentRoute extends BaseRoute {
   }
 
   private async createDocument(req: Request, res: Response) {
-    const { projectID } = req.params
-    const payload = req.body
+    const { projectID, manuscriptID } = req.params
+    const payload = { ...req.body, project_model_id: projectID, manuscript_model_id: manuscriptID }
     const user = req.user
-    const doucment = await this.documentController.createDocument(projectID, payload, user)
+    const doucment = await this.documentController.createDocument(payload, user)
     res.json(doucment)
   }
   private async updateDocument(req: Request, res: Response) {

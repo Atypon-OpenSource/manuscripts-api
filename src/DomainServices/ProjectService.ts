@@ -15,21 +15,19 @@
  */
 import {
   ContainedModel,
+  Journal,
   Manuscript,
-  manuscriptIDTypes,
   Model,
   ObjectTypes,
   Project,
-  Section,
   validate,
 } from '@manuscripts/json-schema'
 import {
-  Decoder,
+  createArticleNode,
   getVersion,
-  hasObjectType,
   JATSExporter,
-  ManuscriptNode,
   parseJATSArticle,
+  schema,
 } from '@manuscripts/transform'
 import decompress from 'decompress'
 import fs from 'fs'
@@ -39,7 +37,6 @@ import JSZip from 'jszip'
 import { Readable } from 'stream'
 import tempy from 'tempy'
 
-import { DIContainer } from '../DIContainer/DIContainer'
 import {
   MissingContainerError,
   MissingTemplateError,
@@ -62,7 +59,7 @@ const EMPTY_PERMISSIONS = new Set<ProjectPermission>()
 const DEFAULT_LOCALE = 'en-US'
 export class ProjectService {
   constructor(
-    private readonly projectRepository: ProjectClient,
+    private readonly projectClient: ProjectClient,
     private readonly userClient: UserClient,
     private readonly snapshotClient: SnapshotClient,
     private readonly documentClient: DocumentClient,
@@ -70,18 +67,16 @@ export class ProjectService {
   ) {}
 
   public async createProject(userID: string, title?: string): Promise<Project> {
-    return await this.projectRepository.createProject(userID, title)
+    return await this.projectClient.createProject(userID, title)
   }
-  public async createManuscript(projectID: string, userID: string, templateID?: string) {
+  public async createManuscript(projectID: string, templateID?: string) {
     if (templateID) {
       const exists = await this.configService.hasDocument(templateID)
       if (!exists) {
         throw new MissingTemplateError(templateID)
       }
     }
-    const manuscript = await this.projectRepository.createManuscript(projectID, templateID)
-    await this.createManuscriptDoc(Array.of(manuscript), manuscript, projectID, userID)
-    return manuscript
+    return await this.projectClient.createManuscript(projectID, templateID)
   }
 
   public async importJats(
@@ -97,64 +92,60 @@ export class ProjectService {
       }
     }
 
-    let models = await this.convert(file.path)
+    const jats = await this.convert(file.path)
 
     const now = Math.round(Date.now() / 1000)
+    const { node, journal } = parseJATSArticle(jats, templateID)
 
-    let manuscript = models.find((m) => m.objectType === ObjectTypes.Manuscript) as Manuscript
+    const manuscriptModel = {
+      _id: node.attrs.id,
+      objectType: ObjectTypes.Manuscript,
+      createdAt: now,
+      updatedAt: now,
+      containerID: projectID,
+      DOI: node.attrs.doi,
+      articleType: node.attrs.articleType,
+      prototype: templateID,
+      primaryLanguageCode: node.attrs.primaryLanguageCode,
+    } as Manuscript
 
-    if (!manuscript) {
-      throw new ValidationError('Manuscript not found', file.filename)
-    }
-
-    models = models.map((m) => {
-      const updated = {
-        ...m,
+    await this.projectClient.bulkInsert([
+      {
+        ...journal,
         createdAt: now,
         updatedAt: now,
         containerID: projectID,
-      }
+      },
+      manuscriptModel,
+    ])
 
-      //why doesn't pressroom already include manuscriptID?
-      if (manuscriptIDTypes.has(m.objectType)) {
-        // @ts-ignore
-        updated.manuscriptID = manuscript._id
-      }
+    await this.documentClient.createDocument(
+      {
+        manuscript_model_id: manuscriptModel._id,
+        project_model_id: projectID,
+        doc: node,
+        schema_version: getVersion(),
+      },
+      userID
+    )
 
-      return updated
-    })
-
-    manuscript = models.find((m) => m.objectType === ObjectTypes.Manuscript) as Manuscript
-    if (templateID) {
-      manuscript.prototype = templateID
-    }
-
-    this.validate(models)
-    await this.projectRepository.bulkInsert(models)
-    await this.createManuscriptDoc(models, manuscript, projectID, userID)
-    return manuscript
+    return manuscriptModel
   }
 
-  private async createManuscriptDoc(
-    models: Model[],
-    manuscript: Manuscript,
-    projectID: string,
-    userID: string
-  ) {
-    const modelMap = DIContainer.sharedContainer.projectService.getContainedModelsMap(
-      models as ContainedModel[]
-    )
-    const article = DIContainer.sharedContainer.projectService.modelMapToManuscriptNode(
-      modelMap,
-      manuscript._id
-    )
+  public async createManuscriptDoc(manuscript: Manuscript, projectID: string, userID: string) {
     const createDoc: CreateDoc = {
       manuscript_model_id: manuscript._id,
       project_model_id: projectID,
-      doc: article,
+      doc: createArticleNode({
+        articleType: manuscript.articleType,
+        primaryLanguageCode: manuscript.primaryLanguageCode,
+        doi: manuscript.DOI,
+        id: manuscript._id,
+        prototype: manuscript.prototype,
+      }),
       schema_version: getVersion(),
     }
-    await DIContainer.sharedContainer.documentClient.createDocument(createDoc, userID)
+    await this.documentClient.createDocument(createDoc, userID)
   }
 
   public async makeArchive(projectID: string, options?: ArchiveOptions) {
@@ -163,9 +154,9 @@ export class ProjectService {
 
     let resources
     if (!onlyIDs) {
-      resources = await this.projectRepository.getProjectResources(projectID)
+      resources = await this.projectClient.getProjectResources(projectID)
     } else {
-      resources = await this.projectRepository.getProjectResourcesIDs(projectID)
+      resources = await this.projectClient.getProjectResourcesIDs(projectID)
     }
 
     const index = { version: '2.0', data: resources }
@@ -186,13 +177,11 @@ export class ProjectService {
     if (manuscriptID) {
       await this.deleteManuscriptResources(manuscriptID)
     }
-    await this.projectRepository.removeWithAllResources(projectID)
+    await this.projectClient.removeWithAllResources(projectID)
   }
 
   private async getManuscriptID(projectID: string): Promise<string | null> {
-    const models = await this.projectRepository.getProjectResources(projectID, [
-      ObjectTypes.Manuscript,
-    ])
+    const models = await this.projectClient.getProjectResources(projectID, [ObjectTypes.Manuscript])
     if (!models) {
       throw new MissingContainerError(projectID)
     }
@@ -207,7 +196,7 @@ export class ProjectService {
   }
 
   public async getProject(projectID: string): Promise<Project> {
-    const project = await this.projectRepository.getProject(projectID)
+    const project = await this.projectClient.getProject(projectID)
     if (!project) {
       throw new MissingContainerError(projectID)
     }
@@ -222,12 +211,12 @@ export class ProjectService {
     // that belongs to the project
     await this.validateManuscriptIDs(projectID, models)
     const docs = this.processManuscriptModels(models)
-    await this.projectRepository.removeAll(projectID)
-    return await this.projectRepository.bulkInsert(docs)
+    await this.projectClient.removeAll(projectID)
+    return await this.projectClient.bulkInsert(docs)
   }
 
   public async getProjectModels(projectID: string): Promise<Model[] | null> {
-    return await this.projectRepository.getProjectResources(projectID)
+    return await this.projectClient.getProjectResources(projectID)
   }
 
   public async updateUserRole(
@@ -281,7 +270,7 @@ export class ProjectService {
         break
     }
 
-    await this.projectRepository.patch(projectID, updated)
+    await this.projectClient.patch(projectID, updated)
   }
 
   public async getPermissions(
@@ -335,7 +324,7 @@ export class ProjectService {
       throw new ValidationError(`contains multiple manuscriptIDs`, models)
     } else if (manuscriptIDs.size === 1) {
       const manuscriptID = manuscriptIDs.values().next().value
-      const manuscript = await this.projectRepository.getProject(manuscriptID)
+      const manuscript = await this.projectClient.getProject(manuscriptID)
       if (!manuscript) {
         throw new ValidationError(`manuscript doesn't exist`, models)
       }
@@ -345,7 +334,7 @@ export class ProjectService {
     }
   }
 
-  private async convert(path: string): Promise<Model[]> {
+  private async convert(path: string) {
     const stream = fs.createReadStream(path)
     const { root, files } = await this.extract(stream)
     const lookupName = ['manuscript.XML', 'manuscript.xml']
@@ -354,75 +343,56 @@ export class ProjectService {
     }
     const file = files[lookupName[0]] ?? files[lookupName[1]]
     const doc = new DOMParser().parseFromString(file.data.toString(), 'application/xml')
-    const models = parseJATSArticle(doc)
     await remove(root)
-    return models
+    return doc
   }
 
   public async exportJats(projectID: string, manuscriptID: string) {
-    const containedModels = await this.getContainedModels(projectID)
-    const manuscript = containedModels.find((model) => model.objectType === ObjectTypes.Manuscript)
-    if (!manuscript) {
-      throw new RecordNotFoundError('manuscript not found')
+    const journal = (await this.getContainedModels(projectID)).find(
+      (m) => m.objectType === ObjectTypes.Journal
+    ) as Journal
+
+    let article
+    try {
+      article = (await this.snapshotClient.getMostRecentSnapshot(manuscriptID)).snapshot as any
+    } catch (error) {
+      article = (await this.documentClient.findDocument(manuscriptID)).doc as any
     }
-    const templateID = (manuscript as Manuscript).prototype
+
+    const templateID: string = article?.attrs?.prototype
     if (!templateID) {
       throw new ValidationError('manuscript template is empty', templateID)
     }
-    const containedModelsMap = this.getContainedModelsMap(containedModels)
-    const article = this.modelMapToManuscriptNode(containedModelsMap, manuscriptID)
-
-    const template: any = await DIContainer.sharedContainer.configService.getDocument(templateID)
+    const template = await this.configService.getDocument(templateID)
     if (!template) {
       throw new MissingTemplateError(templateID)
     }
-    const citationStyle = await this.citationStyleFromTemplate(template)
-    const locale = await DIContainer.sharedContainer.configService.getDocument(DEFAULT_LOCALE)
+    const style = await this.citationStyleFromTemplate(template)
+    const locale = await this.configService.getDocument(DEFAULT_LOCALE)
     if (!locale) {
       throw new RecordNotFoundError('locale not found')
     }
-    return new JATSExporter().serializeToJATS(article.content, containedModelsMap, manuscriptID, {
-      csl: {
-        style: citationStyle,
-        locale,
-      },
+    return new JATSExporter().serializeToJATS(schema.nodeFromJSON(article), {
+      journal,
+      csl: { locale, style },
     })
   }
   public async updateManuscript(manuscript: Manuscript) {
-    await this.projectRepository.updateManuscript(manuscript._id, manuscript)
+    await this.projectClient.updateManuscript(manuscript._id, manuscript)
   }
 
   private async citationStyleFromTemplate(template: any) {
     const templateJson: any = JSON.parse(template)
-    const bundle: any = await DIContainer.sharedContainer.configService.getDocument(
-      templateJson.bundle
-    )
+    const bundle: any = await this.configService.getDocument(templateJson.bundle)
     const bundleJson: any = JSON.parse(bundle)
-    const citationStyle: any = await DIContainer.sharedContainer.configService.getDocument(
-      bundleJson.csl._id
-    )
+    const citationStyle: any = await this.configService.getDocument(bundleJson.csl._id)
     return citationStyle
   }
 
   public async getContainedModels(projectID: string) {
     return (await this.getProjectModels(projectID)) as ContainedModel[]
   }
-  public getContainedModelsMap(projectResources: ContainedModel[]) {
-    projectResources
-      .filter(hasObjectType<Section>(ObjectTypes.Section))
-      .forEach((section: Section) => {
-        section.generatedLabel = true
-      })
-    return new Map<string, ContainedModel>(projectResources.map((model) => [model._id, model]))
-  }
 
-  public modelMapToManuscriptNode(
-    modelMap: Map<string, ContainedModel>,
-    manuscriptID: string
-  ): ManuscriptNode {
-    const decoder = new Decoder(modelMap, false)
-    return decoder.createArticleNode(manuscriptID)
-  }
   private async extract(
     zip: Readable
   ): Promise<{ root: string; files: { [k: string]: decompress.File } }> {
