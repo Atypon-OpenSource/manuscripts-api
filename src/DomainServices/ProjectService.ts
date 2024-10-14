@@ -39,13 +39,14 @@ import tempy from 'tempy'
 
 import {
   MissingContainerError,
+  MissingManuscriptError,
   MissingTemplateError,
   RecordNotFoundError,
   SyncError,
   UserRoleError,
   ValidationError,
 } from '../Errors'
-import { CreateDoc } from '../Models/DocumentModels'
+import { CreateDoc, Doc } from '../Models/DocumentModels'
 import { ArchiveOptions, ProjectPermission, ProjectUserRole } from '../Models/ProjectModels'
 import {
   DocumentClient,
@@ -352,14 +353,14 @@ export class ProjectService {
       (m) => m.objectType === ObjectTypes.Journal
     ) as Journal
 
-    let article
-    try {
-      article = (await this.snapshotClient.getMostRecentSnapshot(manuscriptID)).snapshot as any
-    } catch (error) {
-      article = (await this.documentClient.findDocument(manuscriptID)).doc as any
+    const document = await this.documentClient.findDocument(manuscriptID)
+    if (!document) {
+      throw new MissingManuscriptError(manuscriptID)
     }
 
-    const templateID: string = article?.attrs?.prototype
+    const article = document.doc as Doc
+
+    const templateID: string = article.attrs?.prototype
     if (!templateID) {
       throw new ValidationError('manuscript template is empty', templateID)
     }
