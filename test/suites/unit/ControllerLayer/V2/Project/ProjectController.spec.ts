@@ -23,7 +23,7 @@ import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
 import { ProjectService } from '../../../../../../src/DomainServices/ProjectService'
 import { RecordNotFoundError, RoleDoesNotPermitOperationError } from '../../../../../../src/Errors'
 import { ProjectPermission, ProjectUserRole } from '../../../../../../src/Models/ProjectModels'
-import { DocumentClient, SnapshotClient } from "../../../../../../src/Models/RepositoryModels";
+import { DocumentClient, SnapshotClient } from '../../../../../../src/Models/RepositoryModels'
 import { templates } from '../../../../../data/dump/templates'
 import { ValidHeaderWithApplicationKey } from '../../../../../data/fixtures/headers'
 import { validManuscript } from '../../../../../data/fixtures/manuscripts'
@@ -138,7 +138,9 @@ describe('ProjectController', () => {
       documentClient.findDocument = jest.fn().mockResolvedValue(manuscriptDoc)
       documentClient.updateDocument = jest.fn().mockResolvedValue({})
       snapshotClient.saveSnapshot = jest.fn().mockResolvedValue({})
-      await expect(controller.updateManuscript(user, projectID, manuscriptID, doi)).resolves.not.toThrow()
+      await expect(
+        controller.updateManuscript(user, projectID, manuscriptID, doi)
+      ).resolves.not.toThrow()
     })
   })
   describe('isProjectCachceValid', () => {
