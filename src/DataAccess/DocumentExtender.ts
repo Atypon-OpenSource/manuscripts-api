@@ -115,12 +115,6 @@ export class DocumentExtender {
         schema_version: payload.schema_version,
         doc: payload.doc,
         version: 0,
-        snapshots: {
-          create: {
-            name: 'Initial',
-            snapshot: payload.doc,
-          },
-        },
       },
     })
     return { ...saved, snapshots: [] }
