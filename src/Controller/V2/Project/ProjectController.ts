@@ -66,6 +66,8 @@ export class ProjectController extends BaseController {
       schema_version: getVersion(),
     }
     await DIContainer.sharedContainer.documentClient.updateDocument(manuscriptID, updateDocPayload)
+    const snapshotModel = { docID: manuscriptID, name: 'DOI updated', snapshot: doc }
+    await DIContainer.sharedContainer.snapshotClient.saveSnapshot(snapshotModel)
   }
 
   async isProjectCacheValid(
