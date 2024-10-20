@@ -37,7 +37,6 @@ export class SnapshotExtender {
       saveSnapshot: this.saveSnapshot,
       deleteSnapshot: this.deleteSnapshot,
       deleteAllManuscriptSnapshots: this.deleteAllManuscriptSnapshots,
-      getMostRecentSnapshot: this.getMostRecentSnapshot,
     }
   }
 
@@ -72,21 +71,6 @@ export class SnapshotExtender {
     })
     if (!found) {
       throw new MissingSnapshotError(snapshotID)
-    }
-    return found
-  }
-
-  private getMostRecentSnapshot = async (documentID: string) => {
-    const found = await this.prisma.manuscriptSnapshot.findFirst({
-      where: {
-        doc_id: documentID,
-      },
-      orderBy: {
-        createdAt: 'desc',
-      },
-    })
-    if (!found) {
-      throw new MissingSnapshotError(documentID)
     }
     return found
   }

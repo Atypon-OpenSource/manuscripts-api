@@ -515,9 +515,9 @@ describe('projectService', () => {
     const resources = [validProject, manuscript]
     jest.mock('@manuscripts/transform')
     test('should fail if manuscript document has no template', () => {
-      DIContainer.sharedContainer.snapshotClient.getMostRecentSnapshot = jest
+      DIContainer.sharedContainer.documentClient.findDocument = jest
         .fn()
-        .mockResolvedValue({ snapshot: { attrs: {} } })
+        .mockResolvedValue({ doc: { attrs: {} } })
       projectService.getContainedModels = jest
         .fn()
         .mockResolvedValue([validProject, validManuscript])
@@ -527,9 +527,9 @@ describe('projectService', () => {
     })
     test('should fail if template is not found', () => {
       projectService.getContainedModels = jest.fn().mockResolvedValue(resources)
-      DIContainer.sharedContainer.snapshotClient.getMostRecentSnapshot = jest
+      DIContainer.sharedContainer.documentClient.findDocument = jest
         .fn()
-        .mockResolvedValue({ snapshot: { attrs: { prototype: '123' } } })
+        .mockResolvedValue({ doc: { attrs: { prototype: '123' } } })
       configService.getDocument = jest.fn().mockResolvedValue(false)
       expect(projectService.exportJats(validProject._id, validManuscript._id)).rejects.toThrow(
         MissingTemplateError
@@ -537,9 +537,9 @@ describe('projectService', () => {
     })
     test('should fail if styles are not found', () => {
       projectService.getContainedModels = jest.fn().mockResolvedValue(resources)
-      DIContainer.sharedContainer.snapshotClient.getMostRecentSnapshot = jest
+      DIContainer.sharedContainer.documentClient.findDocument = jest
         .fn()
-        .mockResolvedValue({ snapshot: { attrs: { prototype: '123' } } })
+        .mockResolvedValue({ doc: { attrs: { prototype: '123' } } })
 
       configService.getDocument = jest
         .fn()
