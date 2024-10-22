@@ -512,31 +512,31 @@ describe('projectService', () => {
   })
   describe('projectService - exportJats', () => {
     const manuscript = { ...validManuscript, prototype: projectID }
-    const resources = [validProject, manuscript]
+    const resources = [validProject, manuscript, { objectType: 'MPJournal' }]
     jest.mock('@manuscripts/transform')
     test('should fail if manuscript document has no template', () => {
       DIContainer.sharedContainer.documentClient.findDocument = jest
         .fn()
         .mockResolvedValue({ doc: { attrs: {} } })
-      projectService.getContainedModels = jest
+      projectService.getProjectModels = jest
         .fn()
-        .mockResolvedValue([validProject, validManuscript])
-      expect(projectService.exportJats(validProject._id, validManuscript._id)).rejects.toThrow(
+        .mockResolvedValue([validProject, validManuscript, { objectType: 'MPJournal' }])
+      expect(projectService.exportJats(validProject._id, validManuscript._id, false)).rejects.toThrow(
         ValidationError
       )
     })
     test('should fail if template is not found', () => {
-      projectService.getContainedModels = jest.fn().mockResolvedValue(resources)
+      projectService.getProjectModels = jest.fn().mockResolvedValue(resources)
       DIContainer.sharedContainer.documentClient.findDocument = jest
         .fn()
         .mockResolvedValue({ doc: { attrs: { prototype: '123' } } })
       configService.getDocument = jest.fn().mockResolvedValue(false)
-      expect(projectService.exportJats(validProject._id, validManuscript._id)).rejects.toThrow(
+      expect(projectService.exportJats(validProject._id, validManuscript._id, false)).rejects.toThrow(
         MissingTemplateError
       )
     })
     test('should fail if styles are not found', () => {
-      projectService.getContainedModels = jest.fn().mockResolvedValue(resources)
+      projectService.getProjectModels = jest.fn().mockResolvedValue(resources)
       DIContainer.sharedContainer.documentClient.findDocument = jest
         .fn()
         .mockResolvedValue({ doc: { attrs: { prototype: '123' } } })
@@ -546,7 +546,7 @@ describe('projectService', () => {
         .mockResolvedValueOnce(JSON.stringify({ bundle: 'bundle-123' }))
         .mockResolvedValueOnce(JSON.stringify({ csl: { _id: 'csl-123' } }))
         .mockResolvedValueOnce(undefined)
-      expect(projectService.exportJats(validProject._id, validManuscript._id)).rejects.toThrow(
+      expect(projectService.exportJats(validProject._id, validManuscript._id, false)).rejects.toThrow(
         RecordNotFoundError
       )
     })
