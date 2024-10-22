@@ -308,6 +308,7 @@ export class ProjectExtender {
   private buildModel(data: any) {
     if (data && data.data) {
       data.data._id = data.id || data._id
+      return data.data
     }
     return data
   }
