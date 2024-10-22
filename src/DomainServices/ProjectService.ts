@@ -38,7 +38,6 @@ import tempy from 'tempy'
 
 import {
   MissingContainerError,
-  MissingModelError,
   MissingTemplateError,
   RecordNotFoundError,
   SyncError,
@@ -348,10 +347,7 @@ export class ProjectService {
   }
 
   public async exportJats(projectID: string, manuscriptID: string, useSnapshot: boolean) {
-    const projectModels = await this.getProjectModels(projectID)
-    if (!projectModels) {
-      throw new ValidationError('models for project not found', projectID)
-    }
+    const projectModels = (await this.getProjectModels(projectID)) || []
     const journal = projectModels.find((m) => m.objectType === ObjectTypes.Journal)
     if (!journal) {
       throw new ValidationError('jorunal not found', projectID)
