@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import {
-  ContainedModel,
   Journal,
   Manuscript,
   Model,
@@ -39,7 +38,7 @@ import tempy from 'tempy'
 
 import {
   MissingContainerError,
-  MissingManuscriptError,
+  MissingModelError,
   MissingTemplateError,
   RecordNotFoundError,
   SyncError,
@@ -348,17 +347,22 @@ export class ProjectService {
     return doc
   }
 
-  public async exportJats(projectID: string, manuscriptID: string) {
-    const journal = (await this.getContainedModels(projectID)).find(
-      (m) => m.objectType === ObjectTypes.Journal
-    ) as Journal
-
-    const document = await this.documentClient.findDocument(manuscriptID)
-    if (!document) {
-      throw new MissingManuscriptError(manuscriptID)
+  public async exportJats(projectID: string, manuscriptID: string, useSnapshot: boolean) {
+    const projectModels = await this.getProjectModels(projectID)
+    if (!projectModels) {
+      throw new MissingModelError(projectID)
+    }
+    const journal = projectModels.find((m) => m.objectType === ObjectTypes.Journal)
+    if (!journal) {
+      throw new ValidationError('jorunal not found', projectID)
     }
 
-    const article = document.doc as Doc
+    let article
+    if (useSnapshot) {
+      article = (await this.snapshotClient.getMostRecentSnapshot(manuscriptID)).snapshot as Doc
+    } else {
+      article = (await this.documentClient.findDocument(manuscriptID)).doc as Doc
+    }
 
     const templateID: string = article.attrs?.prototype
     if (!templateID) {
@@ -374,7 +378,7 @@ export class ProjectService {
       throw new RecordNotFoundError('locale not found')
     }
     return new JATSExporter().serializeToJATS(schema.nodeFromJSON(article), {
-      journal,
+      journal: journal as Journal,
       csl: { locale, style },
     })
   }
@@ -388,10 +392,6 @@ export class ProjectService {
     const bundleJson: any = JSON.parse(bundle)
     const citationStyle: any = await this.configService.getDocument(bundleJson.csl._id)
     return citationStyle
-  }
-
-  public async getContainedModels(projectID: string) {
-    return (await this.getProjectModels(projectID)) as ContainedModel[]
   }
 
   private async extract(
