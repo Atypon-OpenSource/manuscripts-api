@@ -5,7 +5,8 @@
     "bundle": "MPBundle:www-zotero-org-styles-american-medical-association",
     "title": "Nature Genetics Journal Publication",
     "createdAt": 1433095330.89114,
-    "updatedAt": 1433095363.40453
+    "updatedAt": 1433095363.40453,
+    "sectionCategories": "default-section-categories.json"
   },
   {
     "_id": "MPManuscriptTemplate:www-zotero-org-styles-nature-genetics-Nature-Genetics-Journal-Publication-Article",
@@ -13,7 +14,8 @@
     "bundle": "MPBundle:www-zotero-org-styles-american-medical-association",
     "title": "Article",
     "createdAt": 1433095333.219065,
-    "updatedAt": 1433095363.405134
+    "updatedAt": 1433095363.405134,
+    "sectionCategories": "default-section-categories.json"
   },
   {
     "_id": "MPManuscriptTemplate:www-zotero-org-styles-bmc-biology-BMC-Biology-Journal-Publication-Editorial",
@@ -21,7 +23,8 @@
     "bundle": "MPBundle:www-zotero-org-styles-american-medical-association",
     "title": "Editorial",
     "createdAt": 1433095334.478636,
-    "updatedAt": 1433095363.405281
+    "updatedAt": 1433095363.405281,
+    "sectionCategories": "default-section-categories.json"
   },
   {
     "_id": "MPManuscriptTemplate:MPManuscriptTemplate:MPManuscriptTemplate:MPBundle:www-zotero-org-styles-harvard1-cambridge_university_press_journal_publication-MPBundle:www-zotero-org-styles-chicago-author-date-health_economics,_policy_and_law-MPBundle:www-zotero-org-styles-chicago-author-date-review_article_health_economics,_policy_and_law",
@@ -29,6 +32,7 @@
     "bundle": "MPBundle:www-zotero-org-styles-chicago-author-date",
     "title": "Review Article Health Economics, Policy and Law",
     "createdAt": 1439238773.006457,
-    "updatedAt": 1439238807.234061
+    "updatedAt": 1439238807.234061,
+    "sectionCategories": "default-section-categories.json"
   }
 ]

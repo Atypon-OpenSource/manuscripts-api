@@ -16,12 +16,18 @@
 import { promises as fs } from 'fs'
 import path from 'path'
 
+import { MissingSectionCategoriesError } from '../Errors'
+
 interface Model {
   _id: string
+}
+interface Template extends Model {
+  sectionCategories: string
 }
 
 export class ConfigService {
   private store: Promise<Map<string, string>>
+  private sectionCategoriesDir = '/section-categories'
 
   constructor(root: string) {
     this.store = this.init(root)
@@ -29,8 +35,8 @@ export class ConfigService {
 
   private async init(root: string) {
     const bundles = await this.initBundles(root)
-    const templates = await this.initTemplates(root)
-    const categories = await this.initSectionCategories(root)
+    const categories = await this.initSectionCategories(root + this.sectionCategoriesDir)
+    const templates = await this.initTemplates(root, categories)
     const styles = await this.initCslStyles(root)
     const locales = await this.initCslLocales(root)
     return new Map<string, string>([...bundles, ...templates, ...categories, ...styles, ...locales])
@@ -41,16 +47,29 @@ export class ConfigService {
     return this.index(models)
   }
 
-  private async initTemplates(root: string) {
-    const models: Model[] = JSON.parse(
+  private async initTemplates(root: string, categories: Map<string, string>) {
+    const templates: Template[] = JSON.parse(
       await fs.readFile(path.join(root, 'templates.json'), 'utf-8')
     )
-    return this.index(models)
+    templates.forEach((template) => {
+      const sectionCategories = categories.get(template.sectionCategories)
+      if (sectionCategories) {
+        template.sectionCategories = JSON.parse(sectionCategories)
+      } else {
+        throw new MissingSectionCategoriesError(template._id)
+      }
+    })
+    return this.index(templates)
   }
 
   private async initSectionCategories(root: string) {
-    const data = await fs.readFile(path.join(root, 'section-categories.json'), 'utf-8')
-    return new Map<string, string>().set('section-categories', data)
+    const files = await fs.readdir(root)
+    const sectionCategories = new Map<string, string>()
+    for (const file of files) {
+      const data = await fs.readFile(path.join(root, file), 'utf-8')
+      sectionCategories.set(file, data)
+    }
+    return sectionCategories
   }
 
   private async initCslStyles(root: string) {
