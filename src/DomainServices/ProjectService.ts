@@ -93,7 +93,6 @@ export class ProjectService {
     const jats = await this.convert(file.path)
 
     const now = Math.round(Date.now() / 1000)
-    console.log(JSON.parse(template).sectionCategories)
     const { node, journal } = parseJATSArticle(
       jats,
       JSON.parse(template).sectionCategories,
