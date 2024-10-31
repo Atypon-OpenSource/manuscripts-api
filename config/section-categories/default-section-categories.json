@@ -1,256 +1,190 @@
 [
   {
-    "_id": "MPSectionCategory:abbreviations",
-    "name": "Abbreviations",
+    "id": "abbreviations",
+    "titles": ["Abbreviations"],
     "synonyms": ["list of abbreviations", "abbreviations"],
-    "isEditable": true
+    "group": "body",
+    "isUnique": false
   },
   {
-    "_id": "MPSectionCategory:abstract",
-    "name": "Abstract",
-    "synonyms": ["abstract"],
-    "titles": ["Abstract"],
-    "groupIDs": ["MPSectionCategory:abstracts"],
-    "isEditable": true
-  },
-  {
-    "_id": "MPSectionCategory:acknowledgements",
-    "name": "Acknowledgments",
+    "id": "acknowledgements",
     "synonyms": ["acknowledgements", "acknowledgments"],
     "titles": ["Acknowledgements"],
-    "groupIDs": ["MPSectionCategory:backmatter"],
-    "isEditable": true
+    "group": "backmatter",
+    "isUnique": true
   },
   {
-    "_id": "MPSectionCategory:affiliations",
-    "name": "Affiliations",
-    "synonyms": [],
-    "isEditable": true
-  },
-  {
-    "_id": "MPSectionCategory:appendices",
-    "name": "Appendices",
+    "id": "appendices",
+    "titles": ["Appendices"],
     "synonyms": ["appendices"],
-    "isEditable": true
+    "group": "body",
+    "isUnique": false
   },
   {
-    "_id": "MPSectionCategory:author-contributions",
-    "name": "Author contributions",
+    "id": "author-contributions",
+    "titles": ["Author contributions"],
     "synonyms": ["author contributions", "authorContributions"],
-    "isEditable": true
+    "group": "body",
+    "isUnique": false
   },
   {
-    "_id": "MPSectionCategory:availability",
-    "name": "Availability",
-    "synonyms": ["availability", "data-availability", "data availability"],
+    "id": "availability",
     "titles": ["Availability"],
-    "isEditable": true
+    "synonyms": ["availability", "data-availability", "data availability"],
+    "group": "body",
+    "isUnique": false
   },
   {
-    "_id": "MPSectionCategory:bibliography",
-    "name": "Bibliography",
+    "id": "bibliography",
+    "titles": ["Bibliography"],
     "synonyms": ["bibliography", "references"],
-    "isEditable": false
+    "group": "body",
+    "isUnique": false
   },
   {
-    "_id": "MPSectionCategory:box-element",
-    "name": "Box Element",
-    "synonyms": ["box-element"],
-    "isEditable": true
-  },
-  {
-    "_id": "MPSectionCategory:competing-interests",
-    "name": "COI Statement",
-    "synonyms": ["competing-interests", "conflict", "conflict of interest", "competing interests"],
+    "id": "coi-statement",
+    "synonyms": [
+      "coi-statement",
+      "competing-interests",
+      "conflict",
+      "conflict of interest",
+      "competing interests"
+    ],
     "titles": ["COI Statement", "Competing Interests"],
-    "isEditable": true,
-    "groupIDs": ["MPSectionCategory:backmatter"]
+    "group": "body",
+    "isUnique": false
   },
   {
-    "_id": "MPSectionCategory:con",
-    "name": "Contributed-by information",
+    "id": "con",
     "synonyms": ["con"],
     "titles": ["Contributed-by information"],
-    "groupIDs": ["MPSectionCategory:backmatter"],
-    "isEditable": true
+    "group": "backmatter",
+    "isUnique": true
   },
   {
-    "_id": "MPSectionCategory:conclusions",
-    "name": "Conclusions",
+    "id": "conclusions",
     "synonyms": ["conclusions"],
     "titles": ["Conclusions"],
-    "groupIDs": ["MPSectionCategory:body"],
-    "isEditable": true
+    "group": "body",
+    "isUnique": false
   },
   {
-    "_id": "MPSectionCategory:contributors",
-    "name": "Contributors",
-    "synonyms": [],
-    "isEditable": true
-  },
-  {
-    "_id": "MPSectionCategory:deceased",
-    "name": "Deceased",
+    "id": "deceased",
+    "titles": ["Deceased"],
     "synonyms": ["deceased"],
-    "isEditable": true
+    "group": "body",
+    "isUnique": false
   },
   {
-    "_id": "MPSectionCategory:discussion",
-    "name": "Discussion",
+    "id": "discussion",
     "synonyms": ["discussion"],
     "titles": ["Discussion"],
-    "groupIDs": ["MPSectionCategory:body"],
-    "isEditable": true
+    "group": "body",
+    "isUnique": false
   },
   {
-    "_id": "MPSectionCategory:endnotes",
-    "name": "Endnotes",
-    "synonyms": ["endnotes"],
-    "isEditable": true
-  },
-  {
-    "_id": "MPSectionCategory:equal",
-    "name": "Equal",
+    "id": "equal",
+    "titles": ["Equal"],
     "synonyms": ["equal"],
-    "isEditable": true
+    "group": "body",
+    "isUnique": false
   },
   {
-    "_id": "MPSectionCategory:ethics-statement",
-    "name": "Ethics Statement",
+    "id": "ethics-statement",
     "synonyms": ["ethics-statement"],
     "titles": ["Ethics Statement"],
-    "groupIDs": ["MPSectionCategory:backmatter"],
-    "isEditable": true
+    "group": "backmatter",
+    "isUnique": false
   },
   {
-    "_id": "MPSectionCategory:financial-disclosure",
-    "name": "Financial Disclosure",
+    "id": "financial-disclosure",
     "synonyms": ["financial-disclosure", "funding information"],
     "titles": ["Financial Disclosure"],
-    "groupIDs": ["MPSectionCategory:backmatter"],
-    "isEditable": true
+    "group": "backmatter",
+    "isUnique": true
   },
   {
-    "_id": "MPSectionCategory:abstract-graphical",
-    "name": "Graphical Abstract",
-    "synonyms": ["abstract-graphical"],
-    "titles": ["Graphical Abstract"],
-    "groupIDs": ["MPSectionCategory:abstracts"],
-    "isEditable": true
-  },
-  {
-    "_id": "MPSectionCategory:abstract-teaser",
-    "name": "Abstract Teaser",
+    "id": "abstract-teaser",
+    "titles": ["Abstract Teaser"],
     "synonyms": ["abstract-teaser"],
-    "isEditable": true
+    "group": "body",
+    "isUnique": false
   },
   {
-    "_id": "MPSectionCategory:floating-element",
-    "name": "Floating Element",
+    "id": "floating-element",
+    "titles": ["Floating Element"],
     "synonyms": ["floating-element"],
-    "isEditable": true
+    "group": "body",
+    "isUnique": false
   },
   {
-    "_id": "MPSectionCategory:intro",
-    "name": "Introduction",
+    "id": "intro",
     "synonyms": ["intro", "introduction"],
     "titles": ["Introduction"],
-    "groupIDs": ["MPSectionCategory:body"],
-    "isEditable": true
+    "group": "body",
+    "isUnique": false
   },
   {
-    "_id": "MPSectionCategory:keywords",
-    "name": "Keywords",
-    "synonyms": ["keywords"],
-    "isEditable": false
-  },
-  {
-    "_id": "MPSectionCategory:list-of-figures",
-    "name": "List of Figures",
-    "synonyms": [],
-    "isEditable": false
-  },
-  {
-    "_id": "MPSectionCategory:list-of-tables",
-    "name": "List of Tables",
-    "synonyms": [],
-    "isEditable": false
-  },
-  {
-    "_id": "MPSectionCategory:methods",
-    "name": "Materials & Methods",
-    "synonyms": ["materials", "methods", "materials and methods", "materials & methods"],
-    "titles": ["Materials & Methods"],
-    "groupIDs": ["MPSectionCategory:body"],
-    "isEditable": true
-  },
-  {
-    "_id": "MPSectionCategory:present-address",
-    "name": "Present Address",
+    "id": "present-address",
+    "titles": ["Present Address"],
     "synonyms": ["present-address"],
-    "isEditable": true
+    "group": "body",
+    "isUnique": false
   },
   {
-    "_id": "MPSectionCategory:presented-at",
-    "name": "Presented at",
+    "id": "presented-at",
+    "titles": ["Presented at"],
     "synonyms": ["presented-at"],
-    "isEditable": true
+    "group": "body",
+    "isUnique": false
   },
   {
-    "_id": "MPSectionCategory:previously-at",
-    "name": "Previously at",
+    "id": "previously-at",
+    "titles": ["Previously at"],
     "synonyms": ["previously-at"],
-    "isEditable": true
+    "group": "body",
+    "isUnique": false
   },
   {
-    "_id": "MPSectionCategory:results",
-    "name": "Results",
+    "id": "results",
     "synonyms": ["results"],
     "titles": ["Results"],
-    "groupIDs": ["MPSectionCategory:body"],
-    "isEditable": true
+    "group": "body",
+    "isUnique": false
   },
   {
-    "_id": "MPSectionCategory:review",
-    "name": "Review",
+    "id": "review",
+    "titles": ["Review"],
     "synonyms": [],
-    "groupIDs": ["MPSectionCategory:body"],
-    "isEditable": true
+    "group": "body",
+    "isUnique": false
   },
   {
-    "_id": "MPSectionCategory:section",
-    "name": "Section",
+    "id": "section",
+    "titles": ["Section"],
     "synonyms": [],
-    "groupIDs": ["MPSectionCategory:body"],
-    "isEditable": true
+    "group": "body",
+    "isUnique": false
   },
   {
-    "_id": "MPSectionCategory:subsection",
-    "name": "Subsection",
+    "id": "subsection",
+    "titles": ["Subsection"],
     "synonyms": ["subsection"],
-    "groupIDs": ["MPSectionCategory:body"],
-    "isEditable": true
+    "group": "body",
+    "isUnique": false
   },
   {
-    "_id": "MPSectionCategory:supplementary-material",
-    "name": "Supplementary Material",
+    "id": "supplementary-material",
     "synonyms": ["supplementary-material"],
     "titles": ["Supplementary Material"],
-    "groupIDs": ["MPSectionCategory:backmatter"],
-    "isEditable": true
+    "group": "backmatter",
+    "isUnique": true
   },
   {
-    "_id": "MPSectionCategory:supported-by",
-    "name": "Supported by",
+    "id": "supported-by",
     "synonyms": ["supported-by"],
     "titles": ["Supported By"],
-    "groupIDs": ["MPSectionCategory:backmatter"],
-    "isEditable": true
-  },
-  {
-    "_id": "MPSectionCategory:toc",
-    "name": "Table of Contents",
-    "synonyms": ["toc"],
-    "isEditable": false
+    "group": "backmatter",
+    "isUnique": true
   }
 ]
