@@ -7,6 +7,20 @@
     "isUnique": false
   },
   {
+    "id": "abstract",
+    "titles": ["Abstract"],
+    "synonyms": ["abstract"],
+    "group": "abstracts",
+    "isUnique": false
+  },
+  {
+    "id": "abstract-graphical",
+    "titles": ["Graphical Abstract"],
+    "synonyms": ["abstract-graphical"],
+    "group": "abstracts",
+    "isUnique": false
+  },
+  {
     "id": "acknowledgements",
     "synonyms": ["acknowledgements", "acknowledgments"],
     "titles": ["Acknowledgements"],
@@ -31,13 +45,6 @@
     "id": "availability",
     "titles": ["Availability"],
     "synonyms": ["availability", "data-availability", "data availability"],
-    "group": "body",
-    "isUnique": false
-  },
-  {
-    "id": "bibliography",
-    "titles": ["Bibliography"],
-    "synonyms": ["bibliography", "references"],
     "group": "body",
     "isUnique": false
   },
@@ -121,6 +128,13 @@
     "id": "intro",
     "synonyms": ["intro", "introduction"],
     "titles": ["Introduction"],
+    "group": "body",
+    "isUnique": false
+  },
+  {
+    "id": "methods",
+    "synonyms": ["materials", "methods", "materials and methods", "materials & methods"],
+    "titles": ["Materials & Methods"],
     "group": "body",
     "isUnique": false
   },

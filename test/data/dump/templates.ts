@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-import { ManuscriptTemplate } from '@manuscripts/transform'
+import { ManuscriptTemplate, SectionCategory } from '@manuscripts/transform'
 
-import { sectionCategories } from '../fixtures/section-categories'
+import sectionCategories from '../../../config/section-categories/default-section-categories.json'
 
 export const templates: ManuscriptTemplate[] = []
 
 templates.push({
   title: 'Valid Template Title',
   _id: 'MPManuscriptTemplate:valid-template-1',
-  sectionCategories,
+  sectionCategories: sectionCategories as SectionCategory[],
   bundle: '123',
 })
 
 templates.push({
   title: 'Valid Template Title',
   _id: 'MPManuscriptTemplate:valid-template-2',
-  sectionCategories,
+  sectionCategories: sectionCategories as SectionCategory[],
   bundle: '123',
 })
