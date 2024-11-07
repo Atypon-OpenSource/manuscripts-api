@@ -120,6 +120,8 @@ export class Configuration implements ConfigurationContainer {
 
     this.data = {
       path: getString(env.CONFIG_PATH, 'CONFIG_PATH'),
+      default: getString(env.CONFIG_DEFAULT, 'CONFIG_DEFAULT'),
+      sectionCategories: getString(env.SECTION_CATEGORIES, 'SECTION_CATEGORIES'),
     }
   }
 

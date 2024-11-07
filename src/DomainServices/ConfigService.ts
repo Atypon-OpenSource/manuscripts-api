@@ -16,6 +16,7 @@
 import { promises as fs } from 'fs'
 import path from 'path'
 
+import { DataConfiguration } from '../Config/ConfigurationTypes'
 import { MissingSectionCategoriesError } from '../Errors'
 
 interface Model {
@@ -27,19 +28,28 @@ interface Template extends Model {
 
 export class ConfigService {
   private store: Promise<Map<string, string>>
-  private sectionCategoriesDir = '/section-categories'
 
-  constructor(root: string) {
-    this.store = this.init(root)
+  constructor(config: DataConfiguration) {
+    this.store = this.init(config)
   }
 
-  private async init(root: string) {
+  private async init(config: DataConfiguration) {
+    const root = await this.getRoot(config)
     const bundles = await this.initBundles(root)
-    const categories = await this.initSectionCategories(root + this.sectionCategoriesDir)
+    const categories = await this.initSectionCategories(root + config.sectionCategories)
     const templates = await this.initTemplates(root, categories)
     const styles = await this.initCslStyles(root)
     const locales = await this.initCslLocales(root)
     return new Map<string, string>([...bundles, ...templates, ...categories, ...styles, ...locales])
+  }
+
+  private async getRoot(config: DataConfiguration) {
+    try {
+      await fs.access(config.path)
+      return config.path
+    } catch (e) {
+      return config.default
+    }
   }
 
   private async initBundles(root: string) {

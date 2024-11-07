@@ -100,7 +100,7 @@ export class DIContainer {
     this.eventManager = new EventManager(this.eventclient)
     this.authenticationService = new AuthenticationService(repository.userClient)
     this.registerationService = new RegisterationService(repository.userClient, this.eventManager)
-    this.configService = new ConfigService(config.data.path)
+    this.configService = new ConfigService(config.data)
     this.authorityService = new AuthorityService(repository.DB)
     this.userService = new UserService(repository.userClient, repository.projectClient)
     this.projectClient = repository.projectClient
