@@ -19,7 +19,7 @@ import '../../../../utilities/configMock.ts'
 import fs from 'fs'
 import path from 'path'
 
-import sectionCategories from '../../../../../config/section-categories/default-section-categories.json'
+import sectionCategories from '../../../../../data/section-categories/default-section-categories.json'
 import { DIContainer } from '../../../../../src/DIContainer/DIContainer'
 import { ConfigService } from '../../../../../src/DomainServices/ConfigService'
 

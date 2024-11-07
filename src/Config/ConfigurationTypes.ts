@@ -72,8 +72,6 @@ export interface EnvironmentLike {
 
 export interface DataConfiguration {
   readonly path: string
-  readonly default: string
-  readonly sectionCategories: string
 }
 export interface ConfigurationContainer {
   readonly API: APIConfiguration
