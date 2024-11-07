@@ -36,7 +36,7 @@ export class ConfigService {
   private async init(config: DataConfiguration) {
     const root = await this.getRoot(config)
     const bundles = await this.initBundles(root)
-    const categories = await this.initSectionCategories(root + config.sectionCategories)
+    const categories = await this.initSectionCategories(path.join(root, config.sectionCategories))
     const templates = await this.initTemplates(root, categories)
     const styles = await this.initCslStyles(root)
     const locales = await this.initCslLocales(root)
