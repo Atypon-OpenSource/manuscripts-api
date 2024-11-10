@@ -109,17 +109,6 @@ export class DatabaseError extends Error implements StatusCoded {
   }
 }
 
-export class MissingSectionCategoriesError extends Error implements StatusCoded {
-  readonly internalErrorCode = InternalErrorCode.MissingSectionCategoriesError
-  readonly statusCode = StatusCodes.INTERNAL_SERVER_ERROR
-
-  constructor(templateID: string) {
-    super(`Section categories not found for template '${templateID}'`)
-    this.name = 'MissingSectionCategoriesError'
-    Object.setPrototypeOf(this, new.target.prototype)
-  }
-}
-
 export class NoBucketError extends Error implements StatusCoded {
   readonly internalErrorCode = InternalErrorCode.NoBucketError
   readonly statusCode = StatusCodes.INTERNAL_SERVER_ERROR

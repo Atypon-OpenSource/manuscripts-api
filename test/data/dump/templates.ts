@@ -16,7 +16,7 @@
 
 import { ManuscriptTemplate, SectionCategory } from '@manuscripts/transform'
 
-import sectionCategories from '../../../data/section-categories/default-section-categories.json'
+import sectionCategories from '../../../data/section-categories.json'
 
 export const templates: ManuscriptTemplate[] = []
 
