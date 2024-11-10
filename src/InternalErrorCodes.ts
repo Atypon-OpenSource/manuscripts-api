@@ -63,5 +63,4 @@ export enum InternalErrorCode {
   ProductionNotesUpdateError = 'PN_NOTES_NOT_UPDATED',
   ProductionNotesLoadError = 'PN_NOTES_NOT_LOADED',
   ManuscriptContentParsingError = 'MANUSCRIPT_CONTENT_PARSING_FAILED',
-  MissingSectionCategoriesError = 'MissingSectionCategoriesError',
 }
