@@ -95,6 +95,7 @@ export class DocumentService {
     socket: Duplex,
     head: Buffer
   ) {
+    console.log('handleUpgrade', request.url, wss, head)
     const url = request.url
     if (!url) {
       this.destroyStream(socket)
@@ -126,6 +127,7 @@ export class DocumentService {
   private attachListeners(_stream: Duplex, ws: WebSocket, manuscriptID: string) {
     ws.onerror = (error) => this.onError(ws, error)
     ws.onclose = () => this.onClose(ws, manuscriptID)
+    ws.onmessage = (message) => console.log('message 2222', message)
   }
 
   private onError(ws: WebSocket, error: ErrorEvent) {
