@@ -141,18 +141,42 @@ export class DocumentRoute extends BaseRoute {
     await this.documentController.deleteDocument(projectID, manuscriptID, user)
     res.sendStatus(StatusCodes.OK).end()
   }
-  private async receiveSteps(req: Request, res: Response) {
-    const { manuscriptID, projectID } = req.params
-    const user = req.user
-    const payload = req.body
+  private async processSteps({
+    projectID,
+    manuscriptID,
+    payload,
+    user,
+  }: {
+    projectID: string
+    manuscriptID: string
+    payload: any
+    user: any
+  }): Promise<any> {
     const result = await this.documentController.receiveSteps(
       projectID,
       manuscriptID,
       payload,
       user
     )
+
+    // Broadcast steps to other connected clients
     this.documentController.broadcastSteps(manuscriptID, result)
-    res.status(StatusCodes.OK).send(result)
+
+    return result
+  }
+
+  private async receiveSteps(req: Request, res: Response) {
+    const { manuscriptID, projectID } = req.params
+    const user = req.user
+    const payload = req.body
+
+    try {
+      const result = await this.processSteps({ projectID, manuscriptID, payload, user })
+      res.status(StatusCodes.OK).send(result)
+    } catch (error) {
+      console.error('Error processing steps:', error)
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({ error: error.message })
+    }
   }
 
   private async stepsSince(req: Request, res: Response) {

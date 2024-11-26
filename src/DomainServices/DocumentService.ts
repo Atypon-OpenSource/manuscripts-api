@@ -16,8 +16,9 @@
 
 import { IncomingMessage } from 'http'
 import { Duplex } from 'stream'
-import { ErrorEvent, WebSocket, WebSocketServer } from 'ws'
+import { ErrorEvent, MessageEvent, WebSocket, WebSocketServer } from 'ws'
 
+import { DocumentController } from '../Controller/V2/Document/DocumentController'
 import { DIContainer } from '../DIContainer/DIContainer'
 import { MissingManuscriptError, RoleDoesNotPermitOperationError } from '../Errors'
 import { ProjectUserRole } from '../Models/ProjectModels'
@@ -39,6 +40,7 @@ export interface SnapshotLabelResult {
 const EMPTY_PERMISSIONS = new Set<DocumentPermission>()
 export class DocumentService {
   constructor(private readonly socketsService: SocketsService) {}
+  private documentController = new DocumentController()
 
   async getPermissions(
     projectID: string,
@@ -127,7 +129,12 @@ export class DocumentService {
   private attachListeners(_stream: Duplex, ws: WebSocket, manuscriptID: string) {
     ws.onerror = (error) => this.onError(ws, error)
     ws.onclose = () => this.onClose(ws, manuscriptID)
-    ws.onmessage = (message) => console.log('message 2222', message)
+    // Wrap the async method in a synchronous event handler
+    ws.onmessage = (event: MessageEvent) => {
+      this.onMessage(ws, event).catch((error) => {
+        console.error('Unhandled error in WebSocket message handler', error)
+      })
+    }
   }
 
   private onError(ws: WebSocket, error: ErrorEvent) {
@@ -137,6 +144,33 @@ export class DocumentService {
   private onClose = (ws: WebSocket, manuscriptID: string) => {
     log.info(`connection closed for ${manuscriptID}`)
     this.closeSocket(ws, manuscriptID)
+  }
+  private async onMessage(ws: WebSocket, event: MessageEvent): Promise<void> {
+    try {
+      // Parse message data (ensure it conforms to your expected structure)
+      const { projectID, manuscriptID, payload, user } = JSON.parse(event.data as string)
+
+      // Process steps using the same logic
+      const result = await this.documentController.processSteps({
+        projectID,
+        manuscriptID,
+        payload,
+        user,
+      })
+
+      // Acknowledge success
+      ws.send(JSON.stringify({ status: 'success', result }))
+    } catch (error) {
+      console.error('Error processing WebSocket message:', error)
+
+      // Notify the client about the error
+      ws.send(
+        JSON.stringify({
+          status: 'error',
+          message: error instanceof Error ? error.message : String(error),
+        })
+      )
+    }
   }
 
   private closeSocket(ws: WebSocket, manuscriptID?: string) {
