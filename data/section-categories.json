@@ -38,7 +38,7 @@
     "id": "availability",
     "titles": ["Availability"],
     "synonyms": ["availability", "data-availability", "data availability"],
-    "group": "body",
+    "group": "backmatter",
     "isUnique": false
   },
   {
@@ -51,7 +51,7 @@
       "competing interests"
     ],
     "titles": ["COI Statement", "Competing Interests"],
-    "group": "body",
+    "group": "backmatter",
     "isUnique": false
   },
   {
