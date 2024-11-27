@@ -169,7 +169,7 @@ export class DocumentRoute extends BaseRoute {
     const { manuscriptID, projectID } = req.params
     const user = req.user
     const payload = req.body
-    console.log('received steps', projectID, manuscriptID, payload, user, req, res)
+    console.log('received steps', user, manuscriptID, projectID)
     try {
       const result = await this.processSteps({ projectID, manuscriptID, payload, user })
       res.status(StatusCodes.OK).send(result)

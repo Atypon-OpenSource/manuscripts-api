@@ -148,7 +148,7 @@ export class DocumentService {
     try {
       // Parse message data (ensure it conforms to your expected structure)
       const { projectID, manuscriptID, payload, user } = JSON.parse(event.data as string)
-      console.log('received message', event)
+      console.log('received message', user)
       // Process steps using the same logic
       const result = await this.documentController.processSteps({
         projectID,
@@ -156,7 +156,6 @@ export class DocumentService {
         payload,
         user,
       })
-      console.log('result', result)
       // Acknowledge success
       ws.send(JSON.stringify({ status: 'success', result }))
     } catch (error) {
