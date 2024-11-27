@@ -148,7 +148,7 @@ export class DocumentService {
     try {
       // Parse message data (ensure it conforms to your expected structure)
       const { projectID, manuscriptID, payload, user } = JSON.parse(event.data as string)
-      console.log('received message', projectID, manuscriptID, payload, user)
+      console.log('received message', event)
       // Process steps using the same logic
       const result = await this.documentController.processSteps({
         projectID,
