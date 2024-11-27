@@ -31,15 +31,15 @@
     "id": "author-contributions",
     "titles": ["Author contributions"],
     "synonyms": ["author contributions", "authorContributions"],
-    "group": "body",
-    "isUnique": false
+    "group": "backmatter",
+    "isUnique": true
   },
   {
     "id": "availability",
     "titles": ["Availability"],
     "synonyms": ["availability", "data-availability", "data availability"],
     "group": "backmatter",
-    "isUnique": false
+    "isUnique": true
   },
   {
     "id": "coi-statement",
@@ -52,7 +52,7 @@
     ],
     "titles": ["COI Statement", "Competing Interests"],
     "group": "backmatter",
-    "isUnique": false
+    "isUnique": true
   },
   {
     "id": "con",
@@ -94,7 +94,7 @@
     "synonyms": ["ethics-statement"],
     "titles": ["Ethics Statement"],
     "group": "backmatter",
-    "isUnique": false
+    "isUnique": true
   },
   {
     "id": "financial-disclosure",
