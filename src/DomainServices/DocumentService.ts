@@ -155,6 +155,7 @@ export class DocumentService {
         manuscriptID,
         payload,
         user,
+        isSocket: true,
       })
       // Acknowledge success
       ws.send(JSON.stringify({ status: 'success', result }))
