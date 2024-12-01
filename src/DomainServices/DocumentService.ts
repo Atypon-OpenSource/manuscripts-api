@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-import { User } from '@prisma/client'
 import { IncomingMessage } from 'http'
-import passport from 'passport'
 import { Duplex } from 'stream'
 import { ErrorEvent, MessageEvent, WebSocket, WebSocketServer } from 'ws'
 
