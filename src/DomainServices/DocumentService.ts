@@ -22,6 +22,7 @@ import { DocumentController } from '../Controller/V2/Document/DocumentController
 import { DIContainer } from '../DIContainer/DIContainer'
 import { MissingManuscriptError, RoleDoesNotPermitOperationError } from '../Errors'
 import { ProjectUserRole } from '../Models/ProjectModels'
+import { UserClient } from '../Models/RepositoryModels'
 import { Snapshot } from '../Models/SnapshotModel'
 import { validateToken } from '../Utilities/JWT/LoginTokenPayload'
 import { log } from '../Utilities/Logger'
@@ -39,7 +40,10 @@ export interface SnapshotLabelResult {
 }
 const EMPTY_PERMISSIONS = new Set<DocumentPermission>()
 export class DocumentService {
-  constructor(private readonly socketsService: SocketsService) {}
+  constructor(
+    private readonly socketsService: SocketsService,
+    private readonly userRepository: UserClient
+  ) {}
   private documentController = new DocumentController()
 
   async getPermissions(
@@ -148,7 +152,8 @@ export class DocumentService {
     try {
       // Parse message data (ensure it conforms to your expected structure)
       const { projectID, manuscriptID, payload, token } = JSON.parse(event.data as string)
-      const user = await DIContainer.sharedContainer.userService.profile(token)
+      const valid = validateToken(token)
+      const user = await this.userRepository.findByID(valid.userID)
       console.log('received steps', user)
       const result = await this.documentController.processSteps({
         projectID,
