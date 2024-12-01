@@ -112,7 +112,7 @@ export class DocumentController extends BaseController {
     projectID: string,
     manuscriptID: string,
     payload: ReceiveSteps,
-    user: Express.User | undefined,
+    user: Express.User | undefined
   ) {
     if (!user) {
       throw new ValidationError('No user found', user)

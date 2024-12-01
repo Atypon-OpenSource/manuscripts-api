@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
+import { User } from '@prisma/client'
 import { IncomingMessage } from 'http'
+import passport from 'passport'
 import { Duplex } from 'stream'
 import { ErrorEvent, MessageEvent, WebSocket, WebSocketServer } from 'ws'
 
@@ -148,7 +150,9 @@ export class DocumentService {
     try {
       // Parse message data (ensure it conforms to your expected structure)
       const { projectID, manuscriptID, payload, token } = JSON.parse(event.data as string)
-      const user =  await DIContainer.sharedContainer.userService.profile(token)
+      const user = await DIContainer.sharedContainer.userService.profile(token)
+      const valid = validateToken(token)
+      console.log('received message', valid)
       console.log('received message', user)
       // Process steps using the same logic
       const result = await this.documentController.processSteps({
