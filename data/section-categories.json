@@ -1,12 +1,5 @@
 [
   {
-    "id": "abbreviations",
-    "titles": ["Abbreviations"],
-    "synonyms": ["list of abbreviations", "abbreviations"],
-    "group": "body",
-    "isUnique": false
-  },
-  {
     "id": "abstract",
     "titles": ["Abstract"],
     "synonyms": ["abstract"],
@@ -24,7 +17,6 @@
     "id": "appendices",
     "titles": ["Appendices"],
     "synonyms": ["appendices"],
-    "group": "body",
     "isUnique": false
   },
   {
@@ -72,7 +64,6 @@
     "id": "deceased",
     "titles": ["Deceased"],
     "synonyms": ["deceased"],
-    "group": "body",
     "isUnique": false
   },
   {
@@ -86,7 +77,6 @@
     "id": "equal",
     "titles": ["Equal"],
     "synonyms": ["equal"],
-    "group": "body",
     "isUnique": false
   },
   {
@@ -107,14 +97,6 @@
     "id": "abstract-teaser",
     "titles": ["Abstract Teaser"],
     "synonyms": ["abstract-teaser"],
-    "group": "body",
-    "isUnique": false
-  },
-  {
-    "id": "floating-element",
-    "titles": ["Floating Element"],
-    "synonyms": ["floating-element"],
-    "group": "body",
     "isUnique": false
   },
   {
@@ -135,21 +117,18 @@
     "id": "present-address",
     "titles": ["Present Address"],
     "synonyms": ["present-address"],
-    "group": "body",
     "isUnique": false
   },
   {
     "id": "presented-at",
     "titles": ["Presented at"],
     "synonyms": ["presented-at"],
-    "group": "body",
     "isUnique": false
   },
   {
     "id": "previously-at",
     "titles": ["Previously at"],
     "synonyms": ["previously-at"],
-    "group": "body",
     "isUnique": false
   },
   {
