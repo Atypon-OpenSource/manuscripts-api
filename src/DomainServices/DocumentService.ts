@@ -151,13 +151,14 @@ export class DocumentService {
       const user = await DIContainer.sharedContainer.userService.profile(token)
       const valid = validateToken(token.replace('1', '2'))
       const valid1 = validateToken(token)
-      console.log('received message', valid)
+      console.log('received message', valid, valid1)
       console.log('received message', user)
       if (!user) {
         throw new Error('Invalid user')
       }
       user._id = valid1.userID
       // Process steps using the same logic
+      console.log('result', user)
       const result = await this.documentController.processSteps({
         projectID,
         manuscriptID,
