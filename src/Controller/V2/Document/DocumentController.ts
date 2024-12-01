@@ -94,15 +94,13 @@ export class DocumentController extends BaseController {
     manuscriptID,
     payload,
     user,
-    isSocket,
   }: {
     projectID: string
     manuscriptID: string
     payload: any
     user: any
-    isSocket?: boolean
   }): Promise<any> {
-    const result = await this.receiveSteps(projectID, manuscriptID, payload, user, isSocket)
+    const result = await this.receiveSteps(projectID, manuscriptID, payload, user)
 
     // Broadcast steps to other connected clients
     this.broadcastSteps(manuscriptID, result)
@@ -115,14 +113,13 @@ export class DocumentController extends BaseController {
     manuscriptID: string,
     payload: ReceiveSteps,
     user: Express.User | undefined,
-    isSocket?: boolean
   ) {
     if (!user) {
       throw new ValidationError('No user found', user)
     }
     await DIContainer.sharedContainer.documentService.validateUserAccess(
       // @ts-ignore
-      !isSocket ? user.id : user.userID,
+      user.id,
       projectID,
       DocumentPermission.WRITE
     )
