@@ -149,9 +149,13 @@ export class DocumentService {
       // Parse message data (ensure it conforms to your expected structure)
       const { projectID, manuscriptID, payload, token } = JSON.parse(event.data as string)
       const user = await DIContainer.sharedContainer.userService.profile(token)
-      const valid = validateToken(token)
+      const valid = validateToken(token.replace('1', '2'))
       console.log('received message', valid)
       console.log('received message', user)
+      if (!user) {
+        throw new Error('Invalid user')
+      }
+      user._id = valid.userID
       // Process steps using the same logic
       const result = await this.documentController.processSteps({
         projectID,
