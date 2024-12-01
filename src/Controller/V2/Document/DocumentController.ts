@@ -118,7 +118,6 @@ export class DocumentController extends BaseController {
       throw new ValidationError('No user found', user)
     }
     await DIContainer.sharedContainer.documentService.validateUserAccess(
-      // @ts-ignore
       user.id,
       projectID,
       DocumentPermission.WRITE
