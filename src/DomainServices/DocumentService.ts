@@ -148,7 +148,7 @@ export class DocumentService {
     try {
       // Parse message data (ensure it conforms to your expected structure)
       const { projectID, manuscriptID, payload, token } = JSON.parse(event.data as string)
-      const user = DIContainer.sharedContainer.userService.profile(token)
+      const user = await DIContainer.sharedContainer.userService.profile(token)
       console.log('received steps', user)
       const result = await this.documentController.processSteps({
         projectID,
