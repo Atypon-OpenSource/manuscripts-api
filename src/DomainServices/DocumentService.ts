@@ -147,7 +147,8 @@ export class DocumentService {
   private async onMessage(ws: WebSocket, event: MessageEvent): Promise<void> {
     try {
       // Parse message data (ensure it conforms to your expected structure)
-      const { projectID, manuscriptID, payload, user } = JSON.parse(event.data as string)
+      const { projectID, manuscriptID, payload, token } = JSON.parse(event.data as string)
+      const user =  await DIContainer.sharedContainer.userService.profile(token)
       console.log('received message', user)
       // Process steps using the same logic
       const result = await this.documentController.processSteps({
@@ -155,7 +156,6 @@ export class DocumentService {
         manuscriptID,
         payload,
         user,
-        isSocket: true,
       })
       // Acknowledge success
       ws.send(JSON.stringify({ status: 'success', result }))
