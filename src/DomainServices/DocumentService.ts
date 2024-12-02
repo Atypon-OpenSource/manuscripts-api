@@ -161,11 +161,10 @@ export class DocumentService {
       ws.send(JSON.stringify({ status: 'success', result }))
     } catch (error) {
       console.error('Error processing WebSocket message:', error)
-
       ws.send(
         JSON.stringify({
-          status: 'error',
-          message: error instanceof Error ? error.message : String(error),
+          status: error.internalErrorCode,
+          message: error.message,
         })
       )
     }
