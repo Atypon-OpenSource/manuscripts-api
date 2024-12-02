@@ -163,7 +163,8 @@ export class DocumentService {
       console.error('Error processing WebSocket message:', error)
       ws.send(
         JSON.stringify({
-          status: error.internalErrorCode,
+          status: 'error',
+          InternalErrorCode: error.InternalErrorCode,
           message: error.message,
         })
       )
