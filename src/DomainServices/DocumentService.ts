@@ -164,7 +164,7 @@ export class DocumentService {
       ws.send(
         JSON.stringify({
           status: 'error',
-          InternalErrorCode: error.InternalErrorCode,
+          InternalErrorCode: error.internalErrorCode,
           message: error.message,
         })
       )
