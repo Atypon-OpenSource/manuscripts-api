@@ -208,7 +208,7 @@ describe('ProjectController', () => {
     it('should throw error if user lacks UPDATE_ROLES permission', async () => {
       controller.getPermissions = jest.fn().mockResolvedValue(new Set([ProjectPermission.READ]))
 
-      await expect(controller.updateUserRole(userID, role, user, projectID)).rejects.toThrow(
+      await expect(controller.updateUserRole(userID, user, projectID, role)).rejects.toThrow(
         new RoleDoesNotPermitOperationError('Access denied', user.id)
       )
     })
@@ -219,7 +219,7 @@ describe('ProjectController', () => {
         .fn()
         .mockResolvedValue(new Set([ProjectPermission.UPDATE_ROLES]))
 
-      await controller.updateUserRole(userID, role, user, projectID)
+      await controller.updateUserRole(userID, user, projectID, role)
       expect(projectService.updateUserRole).toHaveBeenCalledWith(projectID, userID, role)
     })
   })

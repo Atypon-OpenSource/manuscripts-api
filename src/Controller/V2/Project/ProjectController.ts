@@ -100,9 +100,9 @@ export class ProjectController extends BaseController {
 
   async updateUserRole(
     connectUserID: string,
-    role: ProjectUserRole,
     user: Express.User,
-    projectID: string
+    projectID: string,
+    role?: ProjectUserRole
   ): Promise<void> {
     const permissions = await this.getPermissions(projectID, user.id)
     if (!permissions.has(ProjectPermission.UPDATE_ROLES)) {
@@ -111,7 +111,6 @@ export class ProjectController extends BaseController {
 
     await DIContainer.sharedContainer.projectService.updateUserRole(projectID, connectUserID, role)
   }
-
   async createArticleNode(
     user: Express.User,
     projectID: string,
