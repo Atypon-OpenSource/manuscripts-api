@@ -119,19 +119,19 @@ describe('projectService', () => {
   describe('importJats', () => {
     it('should throw an error if the provided templateID does not exist', async () => {
       const file = {}
-      configService.hasDocument = jest.fn().mockResolvedValue(false)
+      configService.getDocument = jest.fn().mockResolvedValue(undefined)
       await expect(
         // @ts-ignore
         projectService.importJats(validUser.id, file, projectID, templateID)
       ).rejects.toThrow(new MissingTemplateError(templateID))
-      expect(configService.hasDocument).toHaveBeenCalledWith(templateID)
+      expect(configService.getDocument).toHaveBeenCalledWith(templateID)
     })
 
     it('should succeed if called correctly', async () => {
       const file = {}
       const docClient = DIContainer.sharedContainer.documentClient
       const jats = await readAndParseFixture('jats-sample.xml')
-      configService.hasDocument = jest.fn().mockResolvedValue(true)
+      configService.getDocument = jest.fn().mockResolvedValue(JSON.stringify(templates[0]))
       //@ts-ignore
       projectClient.bulkInsert = jest.fn(async () => Promise.resolve())
       // @ts-ignore
