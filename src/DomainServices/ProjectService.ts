@@ -222,7 +222,7 @@ export class ProjectService {
   public async updateUserRole(
     projectID: string,
     connectUserID: string,
-    role: ProjectUserRole
+    role?: ProjectUserRole
   ): Promise<void> {
     const project = await this.getProject(projectID)
     const user = await this.userClient.findByConnectID(connectUserID)
