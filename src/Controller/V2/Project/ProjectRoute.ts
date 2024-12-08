@@ -132,6 +132,9 @@ export class ProjectRoute extends BaseRoute {
       multer({ dest: `/tmp` }).single('file'),
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
+          if (req.file && !req.body.templateID) {
+            throw new ValidationError('template ID is required', req.body.templateID)
+          }
           await this.createManuscript(req, res)
         }, next)
       }
