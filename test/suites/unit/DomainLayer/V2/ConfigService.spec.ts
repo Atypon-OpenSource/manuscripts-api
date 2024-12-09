@@ -19,9 +19,9 @@ import '../../../../utilities/configMock.ts'
 import fs from 'fs'
 import path from 'path'
 
+import sectionCategories from '../../../../../data/section-categories.json'
 import { DIContainer } from '../../../../../src/DIContainer/DIContainer'
 import { ConfigService } from '../../../../../src/DomainServices/ConfigService'
-import { sectionCategories } from '../../../../data/fixtures/section-categories'
 
 let configService: ConfigService
 beforeEach(async () => {
@@ -32,9 +32,14 @@ beforeEach(async () => {
       return Promise.resolve(JSON.stringify([{ _id: 'bundle1' }, { _id: 'bundle2' }]))
     }
     if (filePath.includes('templates.json')) {
-      return Promise.resolve(JSON.stringify([{ _id: 'template1' }, { _id: 'template2' }]))
+      return Promise.resolve(
+        JSON.stringify([
+          { _id: 'template1', sectionCategories: 'default-section-categories.json' },
+          { _id: 'template2', sectionCategories: 'default-section-categories.json' },
+        ])
+      )
     }
-    if (filePath.includes('section-categories.json')) {
+    if (filePath.includes('default-section-categories.json')) {
       return Promise.resolve(JSON.stringify(sectionCategories))
     }
     if (filePath.includes('csl/styles')) {
@@ -54,6 +59,9 @@ beforeEach(async () => {
     if (filePath.includes('csl/locales')) {
       return Promise.resolve(['locales-en-US.xml'])
     }
+    if (filePath.includes('section-categories')) {
+      return Promise.resolve(['default-section-categories.json'])
+    }
   })
   jest.spyOn(path, 'join').mockImplementation((...args) => args.join('/'))
   ;(DIContainer as any)._sharedContainer = null
@@ -71,9 +79,12 @@ describe('ConfigService', () => {
       const store = await configService['store']
       expect(store.get('bundle1')).toEqual('{"_id":"bundle1"}')
       expect(store.get('bundle2')).toEqual('{"_id":"bundle2"}')
-      expect(store.get('template1')).toEqual('{"_id":"template1"}')
-      expect(store.get('template2')).toEqual('{"_id":"template2"}')
-      expect(store.get('section-categories')).toEqual(JSON.stringify(sectionCategories))
+      expect(store.get('template1')).toEqual(
+        `{"_id":"template1","sectionCategories":${JSON.stringify(sectionCategories)}}`
+      )
+      expect(store.get('template2')).toEqual(
+        `{"_id":"template2","sectionCategories":${JSON.stringify(sectionCategories)}}`
+      )
       expect(store.get('style1')).toEqual('"styleData"')
       expect(store.get('style2')).toEqual('"styleData"')
       expect(store.get('en-US')).toEqual('"localeData"')
@@ -90,11 +101,6 @@ describe('ConfigService', () => {
     })
   })
   describe('getDocument', () => {
-    it('should return the correct data', async () => {
-      const store = await configService['store']
-      expect(store.get('section-categories')).toEqual(JSON.stringify(sectionCategories))
-    })
-
     it('should return undefined for a non-existing ID', async () => {
       const store = await configService['store']
       expect(store.get('non-existing-id')).toBeUndefined()

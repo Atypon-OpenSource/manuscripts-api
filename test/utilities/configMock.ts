@@ -38,7 +38,7 @@ jest.mock('../../src/Config/Config', () => {
       allowedCORSOrigins: ['http://localhost:8080'],
     },
     data: {
-      path: __dirname + '/../../config',
+      path: __dirname + '/../../data',
     },
   }
 

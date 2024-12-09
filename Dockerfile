@@ -12,8 +12,8 @@ COPY ./src ./src
 COPY ./prisma ./prisma
 COPY ./build ./build
 COPY ./types ./types
-COPY ./config ./config
 COPY ./doc ./doc
+COPY ./data ./data
 
 COPY tsconfig.json tsconfig.build.json ./
 
@@ -28,7 +28,7 @@ COPY --from=build /usr/src/app/package.json ./package.json
 COPY --from=build /usr/src/app/dist ./dist
 COPY --from=build /usr/src/app/node_modules ./node_modules
 COPY --from=build /usr/src/app/doc ./doc
-COPY --from=build /usr/src/app/config ./config
+COPY --from=build /usr/src/app/data ./data
 COPY --from=build /usr/src/app/prisma ./prisma
 
 EXPOSE 3000

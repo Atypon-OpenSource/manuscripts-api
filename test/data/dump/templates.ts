@@ -14,20 +14,22 @@
  * limitations under the License.
  */
 
-import { ManuscriptTemplateLike } from '../../../src/DataAccess/Interfaces/Models'
+import { ManuscriptTemplate, SectionCategory } from '@manuscripts/transform'
 
-export const templates: ManuscriptTemplateLike[] = []
+import sectionCategories from '../../../data/section-categories.json'
+
+export const templates: ManuscriptTemplate[] = []
 
 templates.push({
-  containerID: 'MPProject:valid-project-id-6',
   title: 'Valid Template Title',
   _id: 'MPManuscriptTemplate:valid-template-1',
-  objectType: 'MPManuscriptTemplate'
+  sectionCategories: sectionCategories as SectionCategory[],
+  bundle: '123',
 })
 
 templates.push({
-  containerID: 'MPProject:valid-project-id-2',
   title: 'Valid Template Title',
   _id: 'MPManuscriptTemplate:valid-template-2',
-  objectType: 'MPManuscriptTemplate'
+  sectionCategories: sectionCategories as SectionCategory[],
+  bundle: '123',
 })

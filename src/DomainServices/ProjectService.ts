@@ -83,19 +83,21 @@ export class ProjectService {
     userID: string,
     file: Express.Multer.File,
     projectID: string,
-    templateID?: string
+    templateID: string
   ): Promise<Manuscript> {
-    if (templateID) {
-      const exists = await this.configService.hasDocument(templateID)
-      if (!exists) {
-        throw new MissingTemplateError(templateID)
-      }
+    const template = await this.configService.getDocument(templateID)
+    if (!template) {
+      throw new MissingTemplateError(templateID)
     }
 
     const jats = await this.convert(file.path)
 
     const now = Math.round(Date.now() / 1000)
-    const { node, journal } = parseJATSArticle(jats, templateID)
+    const { node, journal } = parseJATSArticle(
+      jats,
+      JSON.parse(template).sectionCategories,
+      templateID
+    )
 
     const manuscriptModel = {
       _id: node.attrs.id,
