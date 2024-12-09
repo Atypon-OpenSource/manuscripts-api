@@ -18,15 +18,6 @@ import Joi from 'joi'
 
 import { appJsonAndCharset } from '../../BaseSchema'
 
-export const configSchema: Joi.SchemaMap = {
-  headers: Joi.object({
-    accept: appJsonAndCharset,
-  }),
-  query: Joi.object({
-    id: Joi.string().required(),
-  }),
-}
-
 export const defaultSchema: Joi.SchemaMap = {
   headers: Joi.object({
     accept: appJsonAndCharset,
