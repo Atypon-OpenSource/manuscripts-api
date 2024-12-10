@@ -19,10 +19,12 @@ import path from 'path'
 interface Model {
   _id: string
 }
+interface Template extends Model {
+  sectionCategories: string
+}
 
 export class ConfigService {
   private store: Promise<Map<string, string>>
-
   constructor(root: string) {
     this.store = this.init(root)
   }
@@ -30,10 +32,9 @@ export class ConfigService {
   private async init(root: string) {
     const bundles = await this.initBundles(root)
     const templates = await this.initTemplates(root)
-    const categories = await this.initSectionCategories(root)
     const styles = await this.initCslStyles(root)
     const locales = await this.initCslLocales(root)
-    return new Map<string, string>([...bundles, ...templates, ...categories, ...styles, ...locales])
+    return new Map<string, string>([...bundles, ...templates, ...styles, ...locales])
   }
 
   private async initBundles(root: string) {
@@ -42,15 +43,16 @@ export class ConfigService {
   }
 
   private async initTemplates(root: string) {
-    const models: Model[] = JSON.parse(
+    const templates: Template[] = JSON.parse(
       await fs.readFile(path.join(root, 'templates.json'), 'utf-8')
     )
-    return this.index(models)
-  }
-
-  private async initSectionCategories(root: string) {
-    const data = await fs.readFile(path.join(root, 'section-categories.json'), 'utf-8')
-    return new Map<string, string>().set('section-categories', data)
+    for (const template of templates) {
+      if (typeof template.sectionCategories === 'string') {
+        const file = await fs.readFile(path.join(root, template.sectionCategories), 'utf-8')
+        template.sectionCategories = JSON.parse(file)
+      }
+    }
+    return this.index(templates)
   }
 
   private async initCslStyles(root: string) {

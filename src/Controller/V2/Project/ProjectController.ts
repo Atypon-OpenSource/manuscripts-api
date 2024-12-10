@@ -137,7 +137,7 @@ export class ProjectController extends BaseController {
     user: Express.User,
     zip: Express.Multer.File,
     projectID: string,
-    templateID?: string
+    templateID: string
   ): Promise<Manuscript> {
     const permissions = await this.getPermissions(projectID, user.id)
     if (!permissions.has(ProjectPermission.CREATE_MANUSCRIPT)) {

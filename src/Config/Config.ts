@@ -119,7 +119,7 @@ export class Configuration implements ConfigurationContainer {
     }
 
     this.data = {
-      path: getString(env.CONFIG_PATH, 'CONFIG_PATH'),
+      path: getString(env.DATA_PATH, 'DATA_PATH'),
     }
   }
 
