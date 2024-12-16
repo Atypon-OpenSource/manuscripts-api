@@ -35,7 +35,7 @@ import {
   loadManuscriptSchema,
   loadProjectSchema,
   projectUserProfilesSchema,
-  revokeUserPermissions,
+  revokeRoles,
   saveProjectSchema,
   updateManuscriptDoiSchema,
 } from './ProjectSchema'
@@ -115,12 +115,12 @@ export class ProjectRoute extends BaseRoute {
     )
     router.delete(
       `${this.basePath}/:projectID/users`,
-      celebrate(revokeUserPermissions),
+      celebrate(revokeRoles),
       AuthStrategy.JsonHeadersValidation,
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
-          await this.revokeUserPermissions(req, res)
+          await this.revokeRoles(req, res)
         }, next)
       }
     )
@@ -275,7 +275,7 @@ export class ProjectRoute extends BaseRoute {
     res.status(StatusCodes.NO_CONTENT).end()
   }
 
-  private async revokeUserPermissions(req: Request, res: Response) {
+  private async revokeRoles(req: Request, res: Response) {
     const { userID } = req.body
     const { projectID } = req.params
     const { user } = req
@@ -283,7 +283,7 @@ export class ProjectRoute extends BaseRoute {
     if (!user) {
       throw new ValidationError('No user found', user)
     }
-    await this.projectController.updateUserRole(userID, user, projectID)
+    await this.projectController.revokeRoles(userID, user, projectID)
     res.status(StatusCodes.NO_CONTENT).end()
   }
 

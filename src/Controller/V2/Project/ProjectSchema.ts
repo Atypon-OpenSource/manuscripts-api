@@ -71,7 +71,7 @@ export const addUserSchema: Joi.SchemaMap = {
     projectID: Joi.string().required(),
   }),
 }
-export const revokeUserPermissions: Joi.SchemaMap = {
+export const revokeRoles: Joi.SchemaMap = {
   headers: Joi.object({
     accept: appJsonAndCharset,
   }),

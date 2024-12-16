@@ -221,6 +221,23 @@ export class ProjectService {
     return await this.projectClient.getProjectResources(projectID)
   }
 
+  public async revokeRoles(projectID: string, connectUserID: string): Promise<void> {
+    if (connectUserID !== '*') {
+      return this.updateUserRole(projectID, connectUserID)
+    }
+    const project = await this.getProject(projectID)
+    const updated = {
+      _id: projectID,
+      owners: project.owners,
+      writers: [],
+      viewers: [],
+      editors: [],
+      proofers: [],
+      annotators: [],
+    }
+    await this.projectClient.patch(projectID, updated)
+  }
+
   public async updateUserRole(
     projectID: string,
     connectUserID: string,
@@ -233,14 +250,9 @@ export class ProjectService {
       throw new ValidationError('Invalid user id', user)
     }
 
-    if (user.id === '*' && (role === 'Owner' || role === 'Writer')) {
-      throw new ValidationError('User can not be owner or writer', user.id)
-    }
-
     if (ProjectService.isOnlyOwner(project, user.id)) {
       throw new UserRoleError('User is the only owner', role)
     }
-
     const updated = {
       _id: projectID,
       owners: project.owners.filter((u) => u !== user.id),
