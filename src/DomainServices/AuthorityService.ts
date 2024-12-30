@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { getVersion, schema } from '@manuscripts/transform'
+import { getVersion, ManuscriptNode, schema } from '@manuscripts/transform'
 import { Prisma } from '@prisma/client'
 import { JsonObject } from '@prisma/client/runtime/library'
 import { Step } from 'prosemirror-transform'
@@ -78,15 +78,53 @@ export class AuthorityService {
   ) {
     const steps = this.hydrateSteps(jsonSteps)
     const modifiedSteps: ModifiedStep[] = []
-    let pmDocument = schema.nodeFromJSON(document)
+    const old = schema.nodeFromJSON(document)
+    let current = old
     for (let i = 0; i < steps.length; i++) {
-      pmDocument = steps[i].apply(pmDocument).doc || pmDocument
+      current = steps[i].apply(current).doc || current
       modifiedSteps.push({ ...jsonSteps[i], clientID })
     }
-    return { doc: pmDocument.toJSON(), modifiedSteps }
+    console.log(this.changedDescendants(old, current, 0))
+    return { doc: current.toJSON(), modifiedSteps }
   }
 
   private hydrateSteps(jsonSteps: Prisma.JsonValue[]): Step[] {
     return jsonSteps.map((step: Prisma.JsonValue) => Step.fromJSON(schema, step)) as Step[]
+  }
+
+  //this is based on https://github.com/ProseMirror/prosemirror-tables/blob/24392b4e145adea95b765138b887509ad9b773b2/src/fixtables.js#L13
+  private changedDescendants = (
+    oldDoc: ManuscriptNode,
+    currentDoc: ManuscriptNode,
+    offset: number
+  ) => {
+    const changedNodes: ManuscriptNode[] = []
+    const oldSize = oldDoc.childCount
+    const currentSize = currentDoc.childCount
+    outerLoop: for (let i = 0, j = 0; i < currentSize; i++) {
+      const currentChild = currentDoc.child(i)
+      for (let scan = j, e = Math.min(oldSize, i + 3); scan < e; scan++) {
+        if (oldDoc.child(scan) === currentChild) {
+          j = scan + 1
+          offset += currentChild.nodeSize
+          continue outerLoop
+        }
+      }
+      changedNodes.push(currentChild)
+      if (j < oldSize && oldDoc.child(j).sameMarkup(currentChild)) {
+        this.changedDescendants(oldDoc.child(j), currentChild, offset + 1)
+      } else {
+        currentChild.nodesBetween(
+          0,
+          currentChild.content.size,
+          (node) => {
+            changedNodes.push(node)
+          },
+          offset + 1
+        )
+      }
+      offset += currentChild.nodeSize
+    }
+    return changedNodes
   }
 }
