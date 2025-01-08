@@ -35,6 +35,7 @@ import {
   loadManuscriptSchema,
   loadProjectSchema,
   projectUserProfilesSchema,
+  revokeRoles,
   saveProjectSchema,
   updateManuscriptDoiSchema,
 } from './ProjectSchema'
@@ -101,7 +102,6 @@ export class ProjectRoute extends BaseRoute {
         }, next)
       }
     )
-
     router.post(
       `${this.basePath}/:projectID/users`,
       celebrate(addUserSchema),
@@ -110,6 +110,17 @@ export class ProjectRoute extends BaseRoute {
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           await this.updateUserRole(req, res)
+        }, next)
+      }
+    )
+    router.delete(
+      `${this.basePath}/:projectID/users`,
+      celebrate(revokeRoles),
+      AuthStrategy.JsonHeadersValidation,
+      AuthStrategy.JWTAuth,
+      (req: Request, res: Response, next: NextFunction) => {
+        return this.runWithErrorHandling(async () => {
+          await this.revokeRoles(req, res)
         }, next)
       }
     )
@@ -260,7 +271,19 @@ export class ProjectRoute extends BaseRoute {
       throw new ValidationError('Invalid role', role)
     }
 
-    await this.projectController.updateUserRole(userID, role, user, projectID)
+    await this.projectController.updateUserRole(userID, user, projectID, role)
+    res.status(StatusCodes.NO_CONTENT).end()
+  }
+
+  private async revokeRoles(req: Request, res: Response) {
+    const { userID } = req.body
+    const { projectID } = req.params
+    const { user } = req
+
+    if (!user) {
+      throw new ValidationError('No user found', user)
+    }
+    await this.projectController.revokeRoles(userID, user, projectID)
     res.status(StatusCodes.NO_CONTENT).end()
   }
 
