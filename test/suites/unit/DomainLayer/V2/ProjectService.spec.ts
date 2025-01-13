@@ -268,6 +268,62 @@ describe('projectService', () => {
       await expect(projectService.updateProject(projectID, models as any)).resolves.not.toThrow()
     })
   })
+  describe('revokeRole', () => {
+    it('should throw an error if invalid userID', async () => {
+      projectService.getProject = jest.fn().mockResolvedValue(validProject)
+      userClient.findByConnectID = jest.fn().mockResolvedValue(null)
+      await expect(projectService.revokeRoles(projectID, userID)).rejects.toThrow(
+        new ValidationError('Invalid user id', null)
+      )
+    })
+    it('should throw an error if user is the only Owner', async () => {
+      const project = {
+        owners: [userID],
+        writers: [],
+        viewers: [],
+        editors: [],
+        annotators: [],
+      }
+      projectService.getProject = jest.fn().mockResolvedValue(project)
+      userClient.findByConnectID = jest.fn().mockResolvedValue(validUser)
+      await expect(projectService.revokeRoles(projectID, userID)).rejects.toThrow(
+        new UserRoleError('User is the only owner', ProjectUserRole.Owner)
+      )
+    })
+    it('should revoke user role successfully', async () => {
+      const project = {
+        owners: [userID, validUser2._id],
+        writers: [],
+        viewers: [],
+        editors: [],
+        annotators: [],
+      }
+      projectService.getProject = jest.fn().mockResolvedValue(project)
+      const user = { id: userID }
+      userClient.findByConnectID = jest.fn().mockResolvedValue(user)
+      projectClient.patch = jest.fn().mockResolvedValue({})
+
+      await projectService.revokeRoles(projectID, userID)
+
+      expect(projectService.getProject).toHaveBeenCalledTimes(1)
+      expect(projectService.getProject).toHaveBeenCalledWith(projectID)
+
+      expect(userClient.findByConnectID).toHaveBeenCalledTimes(1)
+      expect(userClient.findByConnectID).toHaveBeenCalledWith(userID)
+
+      expect(projectClient.patch).toHaveBeenCalledTimes(1)
+
+      expect(projectClient.patch).toHaveBeenCalledWith(projectID, {
+        _id: projectID,
+        owners: [validUser2._id],
+        writers: [],
+        viewers: [],
+        editors: [],
+        annotators: [],
+        proofers: [],
+      })
+    })
+  })
   describe('updateUserRole', () => {
     it('should throw an error if invalid userID', async () => {
       projectService.getProject = jest.fn().mockResolvedValue(validProject)
@@ -275,20 +331,6 @@ describe('projectService', () => {
       await expect(
         projectService.updateUserRole(projectID, userID, ProjectUserRole.Writer)
       ).rejects.toThrow(new ValidationError('Invalid user id', null))
-    })
-    it('should throw an error if user is * and new role is Writer', async () => {
-      projectService.getProject = jest.fn().mockResolvedValue(validProject)
-      userClient.findByConnectID = jest.fn().mockResolvedValue({ id: '*' })
-      await expect(
-        projectService.updateUserRole(projectID, userID, ProjectUserRole.Writer)
-      ).rejects.toThrow(new ValidationError('User can not be owner or writer', '*'))
-    })
-    it('should throw an error if user is * and new role is Owner', async () => {
-      projectService.getProject = jest.fn().mockResolvedValue(validProject)
-      userClient.findByConnectID = jest.fn().mockResolvedValue({ id: '*' })
-      await expect(
-        projectService.updateUserRole(projectID, userID, ProjectUserRole.Owner)
-      ).rejects.toThrow(new ValidationError('User can not be owner or writer', '*'))
     })
     it('should throw an error if user is the only Owner', async () => {
       const project = {
