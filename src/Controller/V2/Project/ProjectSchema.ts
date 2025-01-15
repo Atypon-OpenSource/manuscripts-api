@@ -71,6 +71,17 @@ export const addUserSchema: Joi.SchemaMap = {
     projectID: Joi.string().required(),
   }),
 }
+export const revokeRoles: Joi.SchemaMap = {
+  headers: Joi.object({
+    accept: appJsonAndCharset,
+  }),
+  body: Joi.object({
+    userID: Joi.string().required(),
+  }),
+  params: Joi.object({
+    projectID: Joi.string().required(),
+  }),
+}
 
 export const getArchiveSchema: Joi.SchemaMap = {
   headers: Joi.object({
