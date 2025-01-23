@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import {
-  ContainedModel,
   Journal,
   Manuscript,
   Model,
@@ -45,7 +44,7 @@ import {
   UserRoleError,
   ValidationError,
 } from '../Errors'
-import { CreateDoc } from '../Models/DocumentModels'
+import { CreateDoc, Doc } from '../Models/DocumentModels'
 import { ArchiveOptions, ProjectPermission, ProjectUserRole } from '../Models/ProjectModels'
 import {
   DocumentClient,
@@ -361,19 +360,21 @@ export class ProjectService {
     return doc
   }
 
-  public async exportJats(projectID: string, manuscriptID: string) {
-    const journal = (await this.getContainedModels(projectID)).find(
-      (m) => m.objectType === ObjectTypes.Journal
-    ) as Journal
-
-    let article
-    try {
-      article = (await this.snapshotClient.getMostRecentSnapshot(manuscriptID)).snapshot as any
-    } catch (error) {
-      article = (await this.documentClient.findDocument(manuscriptID)).doc as any
+  public async exportJats(projectID: string, manuscriptID: string, useSnapshot: boolean) {
+    const projectModels = (await this.getProjectModels(projectID)) || []
+    const journal = projectModels.find((m) => m.objectType === ObjectTypes.Journal)
+    if (!journal) {
+      throw new ValidationError('jorunal not found', projectID)
     }
 
-    const templateID: string = article?.attrs?.prototype
+    let article
+    if (useSnapshot) {
+      article = (await this.snapshotClient.getMostRecentSnapshot(manuscriptID)).snapshot as Doc
+    } else {
+      article = (await this.documentClient.findDocument(manuscriptID)).doc as Doc
+    }
+
+    const templateID: string = article.attrs?.prototype
     if (!templateID) {
       throw new ValidationError('manuscript template is empty', templateID)
     }
@@ -387,7 +388,7 @@ export class ProjectService {
       throw new RecordNotFoundError('locale not found')
     }
     return new JATSExporter().serializeToJATS(schema.nodeFromJSON(article), {
-      journal,
+      journal: journal as Journal,
       csl: { locale, style },
     })
   }
@@ -401,10 +402,6 @@ export class ProjectService {
     const bundleJson: any = JSON.parse(bundle)
     const citationStyle: any = await this.configService.getDocument(bundleJson.csl._id)
     return citationStyle
-  }
-
-  public async getContainedModels(projectID: string) {
-    return (await this.getProjectModels(projectID)) as ContainedModel[]
   }
 
   private async extract(
