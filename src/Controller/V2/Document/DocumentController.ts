@@ -101,10 +101,6 @@ export class DocumentController extends BaseController {
     user: any
   }): Promise<any> {
     const result = await this.receiveSteps(projectID, manuscriptID, payload, user)
-
-    // // Broadcast steps to other connected clients
-    // this.broadcastSteps(manuscriptID, result)
-
     return result
   }
 

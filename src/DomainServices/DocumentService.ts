@@ -128,7 +128,6 @@ export class DocumentService {
   private attachListeners(_stream: Duplex, ws: WebSocket, manuscriptID: string) {
     ws.onerror = (error) => this.onError(ws, error)
     ws.onclose = () => this.onClose(ws, manuscriptID)
-    // Wrap the async method in a synchronous event handler
     ws.onmessage = (event: MessageEvent) => {
       this.onMessage(ws, event).catch((error) => {
         console.error('Unhandled error in WebSocket message handler', error)
