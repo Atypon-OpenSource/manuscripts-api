@@ -89,6 +89,20 @@ export class DocumentController extends BaseController {
     )
     return await DIContainer.sharedContainer.authorityService.getEvents(manuscriptID, versionID)
   }
+  async processSteps({
+    projectID,
+    manuscriptID,
+    payload,
+    user,
+  }: {
+    projectID: string
+    manuscriptID: string
+    payload: any
+    user: any
+  }): Promise<any> {
+    const result = await this.receiveSteps(projectID, manuscriptID, payload, user)
+    return result
+  }
 
   async receiveSteps(
     projectID: string,
