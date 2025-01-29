@@ -20,14 +20,13 @@ import { AuthStrategy } from '../../../Auth/Passport/AuthStrategy'
 import { celebrate } from '../../../Utilities/celebrate'
 import { BaseRoute } from '../../BaseRoute'
 import { ConfigController } from './ConfigController'
-import { bundleSchema, configSchema, defaultSchema, templateSchema } from './ConfigSchema'
+import { bundleSchema, defaultSchema, templateSchema } from './ConfigSchema'
 
 const routes = [
   { path: '/templates', schema: templateSchema },
   { path: '/bundles', schema: bundleSchema },
   { path: '/csl/styles', schema: defaultSchema },
   { path: '/csl/locales', schema: defaultSchema },
-  { path: '/config', schema: configSchema },
 ]
 
 export class ConfigRoute extends BaseRoute {

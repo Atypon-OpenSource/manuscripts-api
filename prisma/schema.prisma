@@ -49,7 +49,8 @@ model ManuscriptDoc {
 }
 
 model MigrationBackup {
-  manuscript_model_id String               @id @default(uuid())
+  id        String                          @id @default(uuid())
+  manuscript_model_id String                @default(uuid())
   user_model_id       String
   project_model_id    String
   doc                 Json

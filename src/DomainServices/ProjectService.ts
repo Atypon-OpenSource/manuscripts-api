@@ -82,19 +82,21 @@ export class ProjectService {
     userID: string,
     file: Express.Multer.File,
     projectID: string,
-    templateID?: string
+    templateID: string
   ): Promise<Manuscript> {
-    if (templateID) {
-      const exists = await this.configService.hasDocument(templateID)
-      if (!exists) {
-        throw new MissingTemplateError(templateID)
-      }
+    const template = await this.configService.getDocument(templateID)
+    if (!template) {
+      throw new MissingTemplateError(templateID)
     }
 
     const jats = await this.convert(file.path)
 
     const now = Math.round(Date.now() / 1000)
-    const { node, journal } = parseJATSArticle(jats, templateID)
+    const { node, journal } = parseJATSArticle(
+      jats,
+      JSON.parse(template).sectionCategories,
+      templateID
+    )
 
     const manuscriptModel = {
       _id: node.attrs.id,
@@ -218,10 +220,27 @@ export class ProjectService {
     return await this.projectClient.getProjectResources(projectID)
   }
 
+  public async revokeRoles(projectID: string, connectUserID: string): Promise<void> {
+    if (connectUserID !== '*') {
+      return this.updateUserRole(projectID, connectUserID)
+    }
+    const project = await this.getProject(projectID)
+    const updated = {
+      _id: projectID,
+      owners: project.owners,
+      writers: [],
+      viewers: [],
+      editors: [],
+      proofers: [],
+      annotators: [],
+    }
+    await this.projectClient.patch(projectID, updated)
+  }
+
   public async updateUserRole(
     projectID: string,
     connectUserID: string,
-    role: ProjectUserRole
+    role?: ProjectUserRole
   ): Promise<void> {
     const project = await this.getProject(projectID)
     const user = await this.userClient.findByConnectID(connectUserID)
@@ -230,14 +249,9 @@ export class ProjectService {
       throw new ValidationError('Invalid user id', user)
     }
 
-    if (user.id === '*' && (role === 'Owner' || role === 'Writer')) {
-      throw new ValidationError('User can not be owner or writer', user.id)
-    }
-
     if (ProjectService.isOnlyOwner(project, user.id)) {
       throw new UserRoleError('User is the only owner', role)
     }
-
     const updated = {
       _id: projectID,
       owners: project.owners.filter((u) => u !== user.id),
