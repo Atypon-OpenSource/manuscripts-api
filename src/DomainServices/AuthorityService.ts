@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { getVersion, schema } from '@manuscripts/transform'
+import { getVersion, JSONNode, schema } from '@manuscripts/transform'
 import { Prisma } from '@prisma/client'
 import { JsonObject } from '@prisma/client/runtime/library'
 import { Step } from 'prosemirror-transform'
@@ -88,5 +88,40 @@ export class AuthorityService {
 
   private hydrateSteps(jsonSteps: Prisma.JsonValue[]): Step[] {
     return jsonSteps.map((step: Prisma.JsonValue) => Step.fromJSON(schema, step)) as Step[]
+  }
+
+  public static removeSuggestions(node: JSONNode) {
+    if (node.content?.length) {
+      const newContent = []
+      nodesLoop: for (let i = 0; i < node.content?.length; i++) {
+        const child = node.content[i]
+        const newMarks = []
+        if (child.type === 'text' && child.marks) {
+          for (let i = 0; i < child.marks?.length; i++) {
+            if (child.marks[i].type === 'tracked_insert') {
+              // skipping the entire node as it's unconfirmed
+              continue nodesLoop
+            }
+
+            if (child.marks[i].type === 'tracked_delete') {
+              // drop marks and treat deleted content as normal
+              continue
+            }
+            newMarks.push(child.marks[i])
+          }
+          child.marks = newMarks
+        }
+        if (child.attrs && child.attrs.dataTracked) {
+          const changes = child.attrs.dataTracked as any[]
+          if (changes.some(({ operation }: { operation: string }) => operation === 'insert')) {
+            continue
+          }
+        }
+        AuthorityService.removeSuggestions(child)
+        newContent.push(child)
+      }
+      node.content = newContent
+    }
+    return node
   }
 }

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { JSONNode } from '@manuscripts/transform'
 import { PrismaClient } from '@prisma/client'
 
 import { DIContainer } from '../../../../../src/DIContainer/DIContainer'
@@ -51,7 +52,7 @@ const step = {
   clientID: '123',
 }
 
-describe('CollaborationService', () => {
+describe('AuthorityService', () => {
   describe('receiveSteps', () => {
     it('should successfully receive and apply steps', async () => {
       const documentID = 'some-doc-id'
@@ -142,6 +143,66 @@ describe('CollaborationService', () => {
       ).toHaveBeenCalledWith(documentID)
       expect(result.steps.length).toBe(1)
       expect(result.clientIDs).toEqual([123])
+    })
+  })
+  describe('removeSuggestions', () => {
+    it('should remove nodes with tracked_insert marks', () => {
+      const node: any = {
+        content: [
+          {
+            type: 'text',
+            marks: [{ type: 'tracked_insert' }],
+          },
+          {
+            type: 'text',
+            marks: [{ type: 'bold' }],
+          },
+        ],
+      }
+
+      const result = AuthorityService.removeSuggestions(node)
+      expect(result.content).toHaveLength(1)
+      expect(result.content?.[0].marks).toEqual([{ type: 'bold' }])
+    })
+
+    it('should drop tracked_delete marks and keep the content', () => {
+      const node: any = {
+        content: [
+          {
+            type: 'text',
+            marks: [{ type: 'tracked_delete' }, { type: 'bold' }],
+          },
+        ],
+      }
+
+      const result = AuthorityService.removeSuggestions(node)
+      expect(result.content).toHaveLength(1)
+      expect(result.content?.[0].marks).toEqual([{ type: 'bold' }])
+    })
+
+    it('should remove nodes with dataTracked insert operations', () => {
+      const node: JSONNode = {
+        content: [
+          {
+            type: 'paragraph',
+            attrs: {
+              dataTracked: [{ operation: 'insert' }],
+            },
+          },
+          {
+            type: 'paragraph',
+            attrs: {
+              dataTracked: null,
+            },
+          },
+        ],
+        type: '',
+        attrs: {}
+      }
+
+      const result = AuthorityService.removeSuggestions(node)
+      expect(result.content).toHaveLength(1)
+      expect(result.content?.[0].attrs.dataTracked).toEqual(null)
     })
   })
 })

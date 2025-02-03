@@ -25,6 +25,7 @@ import {
   createArticleNode,
   getVersion,
   JATSExporter,
+  JSONNode,
   parseJATSArticle,
   schema,
 } from '@manuscripts/transform'
@@ -52,6 +53,7 @@ import {
   SnapshotClient,
   UserClient,
 } from '../Models/RepositoryModels'
+import { AuthorityService } from './AuthorityService'
 import { ConfigService } from './ConfigService'
 
 const EMPTY_PERMISSIONS = new Set<ProjectPermission>()
@@ -361,42 +363,44 @@ export class ProjectService {
   }
 
   public async exportJats(projectID: string, manuscriptID: string, useSnapshot: boolean) {
-    const projectModels = (await this.getProjectModels(projectID)) || []
-    const journal = projectModels.find((m) => m.objectType === ObjectTypes.Journal)
-    if (!journal) {
-      throw new ValidationError('jorunal not found', projectID)
-    }
-
-    let article
-    if (useSnapshot) {
-      article = (await this.snapshotClient.getMostRecentSnapshot(manuscriptID)).snapshot as Doc
-    } else {
-      article = (await this.documentClient.findDocument(manuscriptID)).doc as Doc
-    }
+    const article: JSONNode = useSnapshot
+      ? ((await this.snapshotClient.getMostRecentSnapshot(manuscriptID)).snapshot as JSONNode)
+      : AuthorityService.removeSuggestions(
+          (await this.documentClient.findDocument(manuscriptID)).doc as JSONNode
+        )
 
     const templateID: string = article.attrs?.prototype
     if (!templateID) {
       throw new ValidationError('manuscript template is empty', templateID)
     }
+    const options = await this.getExportJatsOptions(projectID, templateID)
+    return new JATSExporter().serializeToJATS(schema.nodeFromJSON(article), options)
+  }
+
+  private async getExportJatsOptions(projectID: string, templateID: string) {
+    const projectModels = (await this.getProjectModels(projectID)) || []
+    const journal = projectModels.find((m) => m.objectType === ObjectTypes.Journal)
     const template = await this.configService.getDocument(templateID)
     if (!template) {
       throw new MissingTemplateError(templateID)
     }
     const style = await this.citationStyleFromTemplate(template)
     const locale = await this.configService.getDocument(DEFAULT_LOCALE)
-    if (!locale) {
-      throw new RecordNotFoundError('locale not found')
+    if (!locale || !style) {
+      throw new RecordNotFoundError('locale or style not found')
     }
-    return new JATSExporter().serializeToJATS(schema.nodeFromJSON(article), {
-      journal: journal as Journal,
+    return {
+      journal: journal ? (journal as Journal) : undefined,
       csl: { locale, style },
-    })
+    }
   }
+
   public async updateManuscript(manuscript: Manuscript) {
     await this.projectClient.updateManuscript(manuscript._id, manuscript)
   }
 
   private async citationStyleFromTemplate(template: any) {
+    //TODO: we need proper types for this
     const templateJson: any = JSON.parse(template)
     const bundle: any = await this.configService.getDocument(templateJson.bundle)
     const bundleJson: any = JSON.parse(bundle)
