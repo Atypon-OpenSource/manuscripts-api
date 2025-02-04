@@ -368,12 +368,7 @@ export class ProjectService {
       : AuthorityService.removeSuggestions(
           (await this.documentClient.findDocument(manuscriptID)).doc as JSONNode
         )
-
-    const templateID: string = article.attrs?.prototype
-    if (!templateID) {
-      throw new ValidationError('manuscript template is empty', templateID)
-    }
-    const options = await this.getExportJatsOptions(projectID, templateID)
+    const options = await this.getExportJatsOptions(projectID, article.attrs.prototype)
     return new JATSExporter().serializeToJATS(schema.nodeFromJSON(article), options)
   }
 
