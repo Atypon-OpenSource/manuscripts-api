@@ -386,9 +386,11 @@ export class ProjectService {
     if (!locale) {
       throw new RecordNotFoundError('locale not found')
     }
+
     return new JATSExporter().serializeToJATS(schema.nodeFromJSON(article), {
       journal,
       csl: { locale, style },
+      sectionCategories: JSON.parse(template).sectionCategories,
     })
   }
   public async updateManuscript(manuscript: Manuscript) {
