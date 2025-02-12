@@ -97,22 +97,22 @@ export class AuthorityService {
         const child = node.content[i]
         const newMarks = []
         if (child.type === 'text' && child.marks) {
-          for (let i = 0; i < child.marks?.length; i++) {
-            if (child.marks[i].type === 'tracked_insert') {
+          for (let j = 0; j < child.marks?.length; j++) {
+            if (child.marks[j].type === 'tracked_insert') {
               // skipping the entire node as it's unconfirmed
               continue nodesLoop
             }
 
-            if (child.marks[i].type === 'tracked_delete') {
+            if (child.marks[j].type === 'tracked_delete') {
               // drop marks and treat deleted content as normal
               continue
             }
-            newMarks.push(child.marks[i])
+            newMarks.push(child.marks[j])
           }
           child.marks = newMarks
         }
         if (child.attrs && child.attrs.dataTracked) {
-          const changes = child.attrs.dataTracked as any[]
+          const changes = child.attrs.dataTracked
           if (changes.some(({ operation }: { operation: string }) => operation === 'insert')) {
             continue
           }

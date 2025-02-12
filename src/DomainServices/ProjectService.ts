@@ -45,7 +45,7 @@ import {
   UserRoleError,
   ValidationError,
 } from '../Errors'
-import { CreateDoc, Doc } from '../Models/DocumentModels'
+import { CreateDoc } from '../Models/DocumentModels'
 import { ArchiveOptions, ProjectPermission, ProjectUserRole } from '../Models/ProjectModels'
 import {
   DocumentClient,
