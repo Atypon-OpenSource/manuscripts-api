@@ -554,41 +554,41 @@ describe('projectService', () => {
   })
   describe('projectService - exportJats', () => {
     const manuscript = { ...validManuscript, prototype: projectID }
-    const resources = [validProject, manuscript]
+    const resources = [validProject, manuscript, { objectType: 'MPJournal' }]
     jest.mock('@manuscripts/transform')
     test('should fail if manuscript document has no template', () => {
-      DIContainer.sharedContainer.snapshotClient.getMostRecentSnapshot = jest
+      DIContainer.sharedContainer.documentClient.findDocument = jest
         .fn()
-        .mockResolvedValue({ snapshot: { attrs: {} } })
-      projectService.getContainedModels = jest
+        .mockResolvedValue({ doc: { attrs: {} } })
+      projectService.getProjectModels = jest
         .fn()
-        .mockResolvedValue([validProject, validManuscript])
-      expect(projectService.exportJats(validProject._id, validManuscript._id)).rejects.toThrow(
+        .mockResolvedValue([validProject, validManuscript, { objectType: 'MPJournal' }])
+      expect(projectService.exportJats(validProject._id, validManuscript._id, false)).rejects.toThrow(
         ValidationError
       )
     })
     test('should fail if template is not found', () => {
-      projectService.getContainedModels = jest.fn().mockResolvedValue(resources)
-      DIContainer.sharedContainer.snapshotClient.getMostRecentSnapshot = jest
+      projectService.getProjectModels = jest.fn().mockResolvedValue(resources)
+      DIContainer.sharedContainer.documentClient.findDocument = jest
         .fn()
-        .mockResolvedValue({ snapshot: { attrs: { prototype: '123' } } })
+        .mockResolvedValue({ doc: { attrs: { prototype: '123' } } })
       configService.getDocument = jest.fn().mockResolvedValue(false)
-      expect(projectService.exportJats(validProject._id, validManuscript._id)).rejects.toThrow(
+      expect(projectService.exportJats(validProject._id, validManuscript._id, false)).rejects.toThrow(
         MissingTemplateError
       )
     })
     test('should fail if styles are not found', () => {
-      projectService.getContainedModels = jest.fn().mockResolvedValue(resources)
-      DIContainer.sharedContainer.snapshotClient.getMostRecentSnapshot = jest
+      projectService.getProjectModels = jest.fn().mockResolvedValue(resources)
+      DIContainer.sharedContainer.documentClient.findDocument = jest
         .fn()
-        .mockResolvedValue({ snapshot: { attrs: { prototype: '123' } } })
+        .mockResolvedValue({ doc: { attrs: { prototype: '123' } } })
 
       configService.getDocument = jest
         .fn()
         .mockResolvedValueOnce(JSON.stringify({ bundle: 'bundle-123' }))
         .mockResolvedValueOnce(JSON.stringify({ csl: { _id: 'csl-123' } }))
         .mockResolvedValueOnce(undefined)
-      expect(projectService.exportJats(validProject._id, validManuscript._id)).rejects.toThrow(
+      expect(projectService.exportJats(validProject._id, validManuscript._id, false)).rejects.toThrow(
         RecordNotFoundError
       )
     })
