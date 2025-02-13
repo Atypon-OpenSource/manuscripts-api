@@ -2,9 +2,44 @@
   {
     "id": "abstract",
     "titles": ["Abstract"],
-    "synonyms": ["abstract"],
+    "synonyms": [""],
+    "group": "abstracts",
+    "isUnique": true
+  },
+  {
+    "id": "abstract-graphical",
+    "titles": ["Graphical Abstract"],
+    "synonyms": [""],
+    "group": "abstracts-graphic",
+    "isUnique": true
+  },
+  {
+    "id": "abstract-key-image",
+    "titles": ["Key Image"],
+    "synonyms": [""],
+    "group": "abstracts-graphic",
+    "isUnique": true
+  },
+  {
+    "id": "abstract-short",
+    "titles": ["Short"],
+    "synonyms": [""],
+    "group": "abstracts",
+    "isUnique": true
+  },
+  {
+    "id": "abstract-teaser",
+    "titles": ["Abstract Teaser"],
+    "synonyms": [""],
     "group": "abstracts",
     "isUnique": false
+  },
+  {
+    "id": "abstract-toc",
+    "titles": ["Table of contents"],
+    "synonyms": [""],
+    "group": "abstracts",
+    "isUnique": true
   },
   {
     "id": "acknowledgements",
@@ -85,12 +120,6 @@
     "titles": ["Financial Disclosure"],
     "group": "backmatter",
     "isUnique": true
-  },
-  {
-    "id": "abstract-teaser",
-    "titles": ["Abstract Teaser"],
-    "synonyms": ["abstract-teaser"],
-    "isUnique": false
   },
   {
     "id": "intro",
