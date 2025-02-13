@@ -32,7 +32,7 @@
     "titles": ["Abstract Teaser"],
     "synonyms": [""],
     "group": "abstracts",
-    "isUnique": false
+    "isUnique": true
   },
   {
     "id": "abstract-toc",
