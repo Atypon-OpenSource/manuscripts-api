@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import {
-  ContainedModel,
   Journal,
   Manuscript,
   Model,
@@ -26,6 +25,7 @@ import {
   createArticleNode,
   getVersion,
   JATSExporter,
+  JSONNode,
   parseJATSArticle,
   schema,
 } from '@manuscripts/transform'
@@ -53,6 +53,7 @@ import {
   SnapshotClient,
   UserClient,
 } from '../Models/RepositoryModels'
+import { AuthorityService } from './AuthorityService'
 import { ConfigService } from './ConfigService'
 
 const EMPTY_PERMISSIONS = new Set<ProjectPermission>()
@@ -361,50 +362,45 @@ export class ProjectService {
     return doc
   }
 
-  public async exportJats(projectID: string, manuscriptID: string) {
-    const journal = (await this.getContainedModels(projectID)).find(
-      (m) => m.objectType === ObjectTypes.Journal
-    ) as Journal
+  public async exportJats(projectID: string, manuscriptID: string, useSnapshot: boolean) {
+    const article: JSONNode = useSnapshot
+      ? ((await this.snapshotClient.getMostRecentSnapshot(manuscriptID)).snapshot as JSONNode)
+      : AuthorityService.removeSuggestions(
+          (await this.documentClient.findDocument(manuscriptID)).doc as JSONNode
+        )
+    const options = await this.getExportJatsOptions(projectID, article.attrs.prototype)
+    return new JATSExporter().serializeToJATS(schema.nodeFromJSON(article), options)
+  }
 
-    let article
-    try {
-      article = (await this.snapshotClient.getMostRecentSnapshot(manuscriptID)).snapshot as any
-    } catch (error) {
-      article = (await this.documentClient.findDocument(manuscriptID)).doc as any
-    }
-
-    const templateID: string = article?.attrs?.prototype
-    if (!templateID) {
-      throw new ValidationError('manuscript template is empty', templateID)
-    }
+  private async getExportJatsOptions(projectID: string, templateID: string) {
+    const projectModels = (await this.getProjectModels(projectID)) || []
+    const journal = projectModels.find((m) => m.objectType === ObjectTypes.Journal)
     const template = await this.configService.getDocument(templateID)
     if (!template) {
       throw new MissingTemplateError(templateID)
     }
     const style = await this.citationStyleFromTemplate(template)
     const locale = await this.configService.getDocument(DEFAULT_LOCALE)
-    if (!locale) {
-      throw new RecordNotFoundError('locale not found')
+    if (!locale || !style) {
+      throw new RecordNotFoundError('locale or style not found')
     }
-    return new JATSExporter().serializeToJATS(schema.nodeFromJSON(article), {
-      journal,
+    return {
+      journal: journal ? (journal as Journal) : undefined,
       csl: { locale, style },
-    })
+    }
   }
+
   public async updateManuscript(manuscript: Manuscript) {
     await this.projectClient.updateManuscript(manuscript._id, manuscript)
   }
 
   private async citationStyleFromTemplate(template: any) {
+    //TODO: we need proper types for this
     const templateJson: any = JSON.parse(template)
     const bundle: any = await this.configService.getDocument(templateJson.bundle)
     const bundleJson: any = JSON.parse(bundle)
     const citationStyle: any = await this.configService.getDocument(bundleJson.csl._id)
     return citationStyle
-  }
-
-  public async getContainedModels(projectID: string) {
-    return (await this.getProjectModels(projectID)) as ContainedModel[]
   }
 
   private async extract(
