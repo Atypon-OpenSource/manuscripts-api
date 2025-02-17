@@ -106,6 +106,9 @@ export const exportJatsRequest = {
     citationStyle: CITATION_STYLE,
     locale: LOCALE,
   },
+  query: {
+    usesnapshot: 'true',
+  },
 }
 
 export function removeUser(request: any) {
