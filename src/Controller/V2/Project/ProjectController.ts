@@ -170,7 +170,7 @@ export class ProjectController extends BaseController {
   async exportJats(
     projectID: string,
     manuscriptID: string,
-    _useSnapshot: boolean,
+    useSnapshot: boolean,
     user: Express.User
   ): Promise<string> {
     const permissions = await this.getPermissions(projectID, user.id)
@@ -180,7 +180,7 @@ export class ProjectController extends BaseController {
     return await DIContainer.sharedContainer.projectService.exportJats(
       projectID,
       manuscriptID,
-      false
+      useSnapshot
     )
   }
   async getArchive(onlyIDs: any, accept: any, user: Express.User, projectID: string) {
