@@ -116,6 +116,9 @@ export class AuthorityService {
           if (changes.some(({ operation }: { operation: string }) => operation === 'insert')) {
             continue
           }
+          if (changes.some(({ operation }: { operation: string }) => operation === 'set_attrs')) {
+            child.attrs = changes[0].oldAttrs
+          }
         }
         AuthorityService.removeSuggestions(child)
         newContent.push(child)
