@@ -377,7 +377,7 @@ export class ProjectService {
     const journal = projectModels.find((m) => m.objectType === ObjectTypes.Journal)
     const template = await this.configService.getDocument(templateID)
     if (!template) {
-      throw new MissingTemplateError(templateID)
+      throw new ValidationError('manuscript template is empty', templateID)
     }
     const style = await this.citationStyleFromTemplate(template)
     const locale = await this.configService.getDocument(DEFAULT_LOCALE)
