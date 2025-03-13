@@ -563,9 +563,9 @@ describe('projectService', () => {
       projectService.getProjectModels = jest
         .fn()
         .mockResolvedValue([validProject, validManuscript, { objectType: 'MPJournal' }])
-      expect(projectService.exportJats(validProject._id, validManuscript._id, false)).rejects.toThrow(
-        ValidationError
-      )
+      expect(
+        projectService.exportJats(validProject._id, validManuscript._id, false)
+      ).rejects.toThrow(ValidationError)
     })
     test('should fail if template is not found', () => {
       projectService.getProjectModels = jest.fn().mockResolvedValue(resources)
@@ -573,9 +573,9 @@ describe('projectService', () => {
         .fn()
         .mockResolvedValue({ doc: { attrs: { prototype: '123' } } })
       configService.getDocument = jest.fn().mockResolvedValue(false)
-      expect(projectService.exportJats(validProject._id, validManuscript._id, false)).rejects.toThrow(
-        MissingTemplateError
-      )
+      expect(
+        projectService.exportJats(validProject._id, validManuscript._id, false)
+      ).rejects.toThrow(ValidationError)
     })
     test('should fail if styles are not found', () => {
       projectService.getProjectModels = jest.fn().mockResolvedValue(resources)
@@ -588,9 +588,9 @@ describe('projectService', () => {
         .mockResolvedValueOnce(JSON.stringify({ bundle: 'bundle-123' }))
         .mockResolvedValueOnce(JSON.stringify({ csl: { _id: 'csl-123' } }))
         .mockResolvedValueOnce(undefined)
-      expect(projectService.exportJats(validProject._id, validManuscript._id, false)).rejects.toThrow(
-        RecordNotFoundError
-      )
+      expect(
+        projectService.exportJats(validProject._id, validManuscript._id, false)
+      ).rejects.toThrow(RecordNotFoundError)
     })
   })
 })

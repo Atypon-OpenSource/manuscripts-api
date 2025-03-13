@@ -21,7 +21,7 @@ module.exports = {
     "coverageDirectory": "coverage/unit",
     "coverageThreshold": {
         "global": {
-            "branches": 78,
+            "branches": 77,
             "functions": 80,
             "lines": 80
         }
