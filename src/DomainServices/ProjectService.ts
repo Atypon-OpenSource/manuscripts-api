@@ -363,14 +363,11 @@ export class ProjectService {
   }
 
   public async exportJats(projectID: string, manuscriptID: string, useSnapshot: boolean) {
-    let article = (await this.documentClient.findDocument(manuscriptID)).doc as JSONNode
-    const doi = article.attrs.doi
-    if (useSnapshot) {
-      const snapshot = (await this.snapshotClient.getMostRecentSnapshot(manuscriptID))
-        .snapshot as JSONNode
-      article = snapshot
-      article.attrs.doi = doi
-    }
+    const article: JSONNode = useSnapshot
+      ? ((await this.snapshotClient.getMostRecentSnapshot(manuscriptID)).snapshot as JSONNode)
+      : AuthorityService.removeSuggestions(
+          (await this.documentClient.findDocument(manuscriptID)).doc as JSONNode
+        )
     const options = await this.getExportJatsOptions(projectID, article.attrs.prototype)
     return new JATSExporter().serializeToJATS(schema.nodeFromJSON(article), options)
   }
