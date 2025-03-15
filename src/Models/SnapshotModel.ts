@@ -28,6 +28,7 @@ export type SnapshotLabel = Pick<ManuscriptSnapshot, 'id' | 'name' | 'createdAt'
 export type SaveSnapshotRequest = {
   docID: string
   name: string
+  hidden?: boolean
 }
 export type SaveSnapshotResponse = {
   snapshot: ManuscriptSnapshot
