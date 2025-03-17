@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
+import { ProjectPermission } from '../../..//Models/ProjectModels'
 import { DIContainer } from '../../../DIContainer/DIContainer'
 import { DocumentPermission } from '../../../DomainServices/DocumentService'
-import { ValidationError } from '../../../Errors'
+import { RoleDoesNotPermitOperationError, ValidationError } from '../../../Errors'
 import { History, ReceiveSteps } from '../../../Models/AuthorityModels'
 import { CreateDoc, UpdateDocument } from '../../../Models/DocumentModels'
 import { BaseController } from '../../BaseController'
@@ -109,5 +110,19 @@ export class DocumentController extends BaseController {
 
   broadcastSteps(manuscriptID: string, result: History) {
     DIContainer.sharedContainer.socketsService.broadcast(manuscriptID, JSON.stringify(result))
+  }
+
+  async validateDocument(projectID: string, manuscriptID: string, user: Express.User | undefined) {
+    if (!user) {
+      throw new ValidationError('No user found', user)
+    }
+    const permissions = await DIContainer.sharedContainer.projectService.getPermissions(
+      projectID,
+      user.id
+    )
+    if (!permissions.has(ProjectPermission.READ)) {
+      throw new RoleDoesNotPermitOperationError(`Access denied`, user.id)
+    }
+    return await DIContainer.sharedContainer.documentService.validateManuscript(manuscriptID)
   }
 }
