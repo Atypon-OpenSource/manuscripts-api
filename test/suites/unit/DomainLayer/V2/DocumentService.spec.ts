@@ -17,6 +17,9 @@
 import '../../../../utilities/configMock.ts'
 import '../../../../utilities/dbMock.ts'
 
+import { schema } from '@manuscripts/transform'
+import { DocumentClient } from 'src/Models/RepositoryModels.js'
+
 import { DIContainer } from '../../../../../src/DIContainer/DIContainer.ts'
 import {
   DocumentPermission,
@@ -27,11 +30,13 @@ import { ProjectUserRole } from '../../../../../src/Models/ProjectModels'
 
 let documentService: DocumentService
 let projectService: ProjectService
+let documentClient: DocumentClient
 beforeEach(async () => {
   ;(DIContainer as any)._sharedContainer = null
   await DIContainer.init()
   documentService = DIContainer.sharedContainer.documentService
   projectService = DIContainer.sharedContainer.projectService
+  documentClient = DIContainer.sharedContainer.documentClient
 })
 afterEach(() => {
   jest.clearAllMocks()
@@ -127,6 +132,18 @@ describe('DocumentService', () => {
       const snapshot = { doc_id: 'random_manuscript_id' } as any
       DIContainer.sharedContainer.projectClient.getProject = jest.fn().mockResolvedValue(null)
       await expect(documentService.getManuscriptFromSnapshot(snapshot)).rejects.toThrow()
+    })
+  })
+
+  describe('validateManuscript', () => {
+    it('should return errors if the manuscript is not valid', async () => {
+      const titleNode = schema.nodes.title.create()
+      const manuscriptNode = schema.nodes.manuscript.createAndFill({}, [titleNode])
+      documentClient.findDocument = jest
+        .fn()
+        .mockResolvedValue({ doc:manuscriptNode?.toJSON() })
+      const {errors} = await documentService.validateManuscript('random_manuscript_id')
+      expect(errors).toHaveLength(1)
     })
   })
 })

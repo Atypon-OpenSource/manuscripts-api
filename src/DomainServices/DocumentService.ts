@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
+import { schema, validateManuscriptNode } from '@manuscripts/transform'
 import { IncomingMessage } from 'http'
+import type { DocumentClient } from 'src/Models/RepositoryModels'
 import { Duplex } from 'stream'
 import { ErrorEvent, WebSocket, WebSocketServer } from 'ws'
 
@@ -38,7 +40,10 @@ export interface SnapshotLabelResult {
 }
 const EMPTY_PERMISSIONS = new Set<DocumentPermission>()
 export class DocumentService {
-  constructor(private readonly socketsService: SocketsService) {}
+  constructor(
+    private readonly socketsService: SocketsService,
+    private readonly documentClient: DocumentClient
+  ) {}
 
   async getPermissions(
     projectID: string,
@@ -156,5 +161,11 @@ export class DocumentService {
     } catch (error) {
       log.error(`error destroying duplex: ${error}`)
     }
+  }
+
+  public async validateManuscript(manuscriptID: string) {
+    const result = await this.documentClient.findDocument(manuscriptID)
+    const pmDocument = schema.nodeFromJSON(result.doc)
+    return validateManuscriptNode(pmDocument)
   }
 }
