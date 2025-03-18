@@ -71,7 +71,6 @@ export class ProjectController extends BaseController {
       docID: manuscriptID,
       name: DOI_UPDATED_LABEL,
       snapshot: doc,
-      hidden: true,
     }
     await DIContainer.sharedContainer.snapshotClient.saveSnapshot(snapshotModel)
   }
