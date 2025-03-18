@@ -54,7 +54,6 @@ export class SnapshotExtender {
     const found = await this.prisma.manuscriptSnapshot.findMany({
       where: {
         doc_id: documentID,
-        hidden: false,
       },
       select: {
         id: true,
@@ -93,13 +92,12 @@ export class SnapshotExtender {
   }
 
   private saveSnapshot = async (payload: SaveSnapshotModel) => {
-    const { docID, snapshot, name, hidden } = payload
+    const { docID, snapshot, name } = payload
     const saved = await this.prisma.manuscriptSnapshot.create({
       data: {
         snapshot,
         doc_id: docID,
         name,
-        hidden: hidden || false,
       },
     })
     return saved

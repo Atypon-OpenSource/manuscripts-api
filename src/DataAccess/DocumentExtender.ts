@@ -91,9 +91,6 @@ export class DocumentExtender {
             name: true,
             createdAt: true,
           },
-          where: {
-            hidden: false,
-          },
         },
       },
     })

@@ -38,8 +38,8 @@ model ManuscriptDoc {
   user_model_id       String
   project_model_id    String
   doc                 Json
-  version             Int                  @default(0)
-  schema_version      String?
+  version             Int                 @default(0)
+  schema_version      String?       
   createdAt           DateTime             @default(now())
   updatedAt           DateTime             @updatedAt
   snapshots           ManuscriptSnapshot[] @relation("ManuscriptSnapshotToManuscriptDoc")
@@ -49,15 +49,15 @@ model ManuscriptDoc {
 }
 
 model MigrationBackup {
-  id                  String   @id @default(uuid())
-  manuscript_model_id String   @default(uuid())
+  id        String                          @id @default(uuid())
+  manuscript_model_id String                @default(uuid())
   user_model_id       String
   project_model_id    String
   doc                 Json
-  version             Int?     @default(0)
-  schema_version      String?
-  createdAt           DateTime @default(now())
-  updatedAt           DateTime @updatedAt
+  version             Int?                 @default(0)
+  schema_version      String?       
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
 }
 
 model ManuscriptSnapshot {
@@ -67,7 +67,6 @@ model ManuscriptSnapshot {
   createdAt DateTime      @default(now())
   doc       ManuscriptDoc @relation("ManuscriptSnapshotToManuscriptDoc", fields: [doc_id], references: [manuscript_model_id], onDelete: Cascade)
   doc_id    String
-  hidden    Boolean?       @default(false)
 
   @@index(fields: [doc_id])
 }
