@@ -20,13 +20,14 @@ import { ManuscriptDoc, Prisma, PrismaClient } from '@prisma/client'
 import { MissingDocumentError, MissingRecordError } from '../Errors'
 import { CreateDoc, UpdateDocument } from '../Models/DocumentModels'
 import { PrismaErrorCodes } from '../Models/RepositoryModels'
+import { DOI_UPDATED_LABEL } from '../Models/SnapshotModels'
 import maybeMigrate from './maybe-migrate'
 
 export class DocumentExtender {
   readonly DOCUMENT_MODEL = 'manuscriptDoc'
   private extensions: ReturnType<typeof this.buildExtensions>
 
-  constructor(private readonly prisma: PrismaClient) {}
+  constructor (private readonly prisma: PrismaClient) { }
 
   getExtension() {
     this.extensions = this.buildExtensions()
@@ -90,6 +91,11 @@ export class DocumentExtender {
             id: true,
             name: true,
             createdAt: true,
+          },
+          where: {
+            name: {
+              not: DOI_UPDATED_LABEL,
+            },
           },
         },
       },

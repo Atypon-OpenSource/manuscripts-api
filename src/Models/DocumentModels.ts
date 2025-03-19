@@ -15,7 +15,7 @@
  */
 import { ManuscriptDoc, Prisma } from '@prisma/client'
 
-import { SnapshotLabel } from './SnapshotModel'
+import { SnapshotLabel } from './SnapshotModels'
 
 export type Doc = Record<string, any>
 

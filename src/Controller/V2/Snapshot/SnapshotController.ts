@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import type { SaveSnapshotRequest, Snapshot } from 'src/Models/SnapshotModel'
+import type { SaveSnapshotRequest, Snapshot } from 'src/Models/SnapshotModels'
 
 import { DIContainer } from '../../../DIContainer/DIContainer'
 import { DocumentPermission } from '../../../DomainServices/DocumentService'
