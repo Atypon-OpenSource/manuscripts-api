@@ -29,7 +29,7 @@
   ],
   "dependencies": {
     "@manuscripts/json-schema": "2.2.11",
-    "@manuscripts/transform": "3.0.47",
+    "@manuscripts/transform": "3.0.48-LEAN-4406-2.1",
     "@prisma/client": "^5.13.0",
     "bcrypt": "^5.1.0",
     "celebrate": "^15.0.1",
