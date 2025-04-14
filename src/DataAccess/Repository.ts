@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { PrismaClient } from '@prisma/client'
+import { Prisma, PrismaClient } from '@prisma/client'
 
 import {
   DocumentExtension,
@@ -89,5 +89,9 @@ export class Repository {
   }
   public get eventClient() {
     return this.DB.event
+  }
+
+  public acquireLock(tx: Prisma.TransactionClient) {
+    return (tx.$queryRaw`SELECT pg_try_advisory_xact_lock(1)` as any)[0].pg_try_advisory_xact_lock
   }
 }
