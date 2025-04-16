@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { JSONNode } from '@manuscripts/transform'
+import { JSONProsemirrorNode } from '@manuscripts/transform'
 import { PrismaClient } from '@prisma/client'
 
 import { DIContainer } from '../../../../../src/DIContainer/DIContainer'
@@ -181,7 +181,7 @@ describe('AuthorityService', () => {
     })
 
     it('should remove nodes with dataTracked insert operations', () => {
-      const node: JSONNode = {
+      const node: JSONProsemirrorNode = {
         content: [
           {
             type: 'paragraph',
@@ -197,7 +197,7 @@ describe('AuthorityService', () => {
           },
         ],
         type: '',
-        attrs: {}
+        attrs: {},
       }
 
       const result = AuthorityService.removeSuggestions(node)
