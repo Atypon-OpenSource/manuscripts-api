@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { getVersion, JSONNode, schema } from '@manuscripts/transform'
+import { getVersion, JSONProsemirrorNode, schema } from '@manuscripts/transform'
 import { Prisma } from '@prisma/client'
 import { JsonObject } from '@prisma/client/runtime/library'
 import { Step } from 'prosemirror-transform'
@@ -90,7 +90,7 @@ export class AuthorityService {
     return jsonSteps.map((step: Prisma.JsonValue) => Step.fromJSON(schema, step)) as Step[]
   }
 
-  public static removeSuggestions(node: JSONNode) {
+  public static removeSuggestions(node: JSONProsemirrorNode) {
     if (node.content?.length) {
       const newContent = []
       nodesLoop: for (let i = 0; i < node.content?.length; i++) {
