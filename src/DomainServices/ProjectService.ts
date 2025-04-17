@@ -25,7 +25,7 @@ import {
   createArticleNode,
   getVersion,
   JATSExporter,
-  JSONNode,
+  JSONProsemirrorNode,
   parseJATSArticle,
   schema,
 } from '@manuscripts/transform'
@@ -363,10 +363,11 @@ export class ProjectService {
   }
 
   public async exportJats(projectID: string, manuscriptID: string, useSnapshot: boolean) {
-    const article: JSONNode = useSnapshot
-      ? ((await this.snapshotClient.getMostRecentSnapshot(manuscriptID)).snapshot as JSONNode)
+    const article: JSONProsemirrorNode = useSnapshot
+      ? ((await this.snapshotClient.getMostRecentSnapshot(manuscriptID))
+          .snapshot as JSONProsemirrorNode)
       : AuthorityService.removeSuggestions(
-          (await this.documentClient.findDocument(manuscriptID)).doc as JSONNode
+          (await this.documentClient.findDocument(manuscriptID)).doc as JSONProsemirrorNode
         )
     const options = await this.getExportJatsOptions(projectID, article.attrs.prototype)
     return new JATSExporter().serializeToJATS(schema.nodeFromJSON(article), options)
