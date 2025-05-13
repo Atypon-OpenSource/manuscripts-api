@@ -35,7 +35,7 @@ import { remove } from 'fs-extra'
 import getStream from 'get-stream'
 import JSZip from 'jszip'
 import { Readable } from 'stream'
-import tempy from 'tempy'
+import { temporaryDirectory } from 'tempy'
 
 import {
   MissingContainerError,
@@ -407,7 +407,7 @@ export class ProjectService {
   private async extract(
     zip: Readable
   ): Promise<{ root: string; files: { [k: string]: decompress.File } }> {
-    const root = tempy.directory()
+    const root = temporaryDirectory()
     const buffer = await getStream.buffer(zip)
     const files = await decompress(buffer, root)
     return {
