@@ -43,7 +43,7 @@ export function generateUserToken(payload: LoginTokenPayloadLike) {
     aud: config.email.fromBaseURL,
     iss: config.API.hostname,
   }
-  const expiresIn = '10s'
+  const expiresIn = '300s'
   return jwt.sign(fullPayload, config.auth.jwtSecret, { expiresIn })
 }
 
