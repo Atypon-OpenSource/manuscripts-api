@@ -30,7 +30,7 @@ export class ServerStatusRoute extends BaseRoute {
   private static getVersion(_req: Request, res: Response, _next: NextFunction) {
     const version = ServerStatus.version
 
-    return res.status(StatusCodes.OK).json({ version: version }).end()
+    res.status(StatusCodes.OK).json({ version: version }).end()
   }
 
   public create(router: Router): void {

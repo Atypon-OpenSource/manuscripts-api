@@ -20,10 +20,7 @@
     "skipLibCheck": true,
     "baseUrl": "./"
   },
-  "include": [
-    "src",
-    "test"
-  ],
+  "include": ["src"],
   "files": [
     "./types/express/index.d.ts",
   ]
