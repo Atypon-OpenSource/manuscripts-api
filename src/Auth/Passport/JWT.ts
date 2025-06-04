@@ -19,7 +19,6 @@ import { ExtractJwt, Strategy } from 'passport-jwt'
 
 import { config } from '../../Config/Config'
 import { DIContainer } from '../../DIContainer/DIContainer'
-import { timestamp } from '../../Utilities/JWT/LoginTokenPayload'
 import { log } from '../../Utilities/Logger'
 
 export class JwtAuthStrategy {
@@ -34,13 +33,9 @@ export class JwtAuthStrategy {
       'jwt',
       new Strategy(opts, async (jwt, done) => {
         try {
-          // TODO: remove the OR statement after this is deployed everywhere
-          const id = jwt.userID || jwt.userId?.toString().replace('|', '_')
+          const id = jwt.userID
           const user = await DIContainer.sharedContainer.userClient.findByID(id)
           if (!user) {
-            return done(null, false)
-          }
-          if (jwt.expiry && jwt.expiry < timestamp()) {
             return done(null, false)
           }
           return done(null, user)
