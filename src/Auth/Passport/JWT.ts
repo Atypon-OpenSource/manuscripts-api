@@ -33,7 +33,7 @@ export class JwtAuthStrategy {
       'jwt',
       new Strategy(opts, async (jwt, done) => {
         try {
-          const id = jwt.userID
+          const id = jwt.userID || jwt.userId?.toString().replace('|', '_')
           const user = await DIContainer.sharedContainer.userClient.findByID(id)
           if (!user) {
             return done(null, false)
