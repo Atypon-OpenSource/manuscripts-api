@@ -43,7 +43,7 @@ export function generateUserToken(payload: LoginTokenPayloadLike) {
     aud: config.email.fromBaseURL,
     iss: config.API.hostname,
   }
-  return jwt.sign(fullPayload, config.auth.jwtSecret, { expiresIn: '1800s' })
+  return jwt.sign(fullPayload, config.auth.jwtSecret)
 }
 
 export function timestamp() {
