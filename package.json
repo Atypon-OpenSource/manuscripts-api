@@ -52,7 +52,6 @@
     "prosemirror-transform": "1.10.4",
     "semver": "7.7.2",
     "swagger-ui-express": "5.0.1",
-    "tempy": "3.1.0",
     "uuid": "9.0.1",
     "winston": "3.17.0",
     "ws": "8.18.2",
