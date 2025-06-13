@@ -4,9 +4,9 @@ FROM node AS build
 WORKDIR /usr/src/app
 
 COPY package.json ./
-COPY yarn.lock ./
+COPY pnpm-lock.yaml ./
 
-RUN yarn install --non-interactive --frozen-lock-file
+RUN pnpm install --frozen-lockfile
 
 COPY ./src ./src
 COPY ./prisma ./prisma
@@ -15,7 +15,7 @@ COPY ./types ./types
 COPY ./doc ./doc
 COPY ./data ./data
 
-COPY tsconfig.json tsconfig.build.json ./
+COPY tsconfig.json ./
 
 RUN yarn build
 
