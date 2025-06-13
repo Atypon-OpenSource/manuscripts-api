@@ -6,7 +6,7 @@ WORKDIR /usr/src/app
 COPY package.json ./
 COPY pnpm-lock.yaml ./
 
-RUN pnpm install --frozen-lockfile
+RUN pnpm install
 
 COPY ./src ./src
 COPY ./prisma ./prisma
@@ -17,9 +17,9 @@ COPY ./data ./data
 
 COPY tsconfig.json ./
 
-RUN yarn build
+RUN pnpm build
 
-RUN yarn install --production
+RUN pnpm install --production
 
 FROM node
 WORKDIR /app
