@@ -3,6 +3,8 @@ FROM node:iron-bullseye-slim AS node
 FROM node AS build
 WORKDIR /usr/src/app
 
+RUN npm install -g pnpm
+
 COPY package.json ./
 COPY pnpm-lock.yaml ./
 
