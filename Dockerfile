@@ -3,10 +3,12 @@ FROM node:iron-bullseye-slim AS node
 FROM node AS build
 WORKDIR /usr/src/app
 
-COPY package.json ./
-COPY yarn.lock ./
+RUN npm install -g pnpm
 
-RUN yarn install --non-interactive --frozen-lock-file
+COPY package.json ./
+COPY pnpm-lock.yaml ./
+
+RUN pnpm install
 
 COPY ./src ./src
 COPY ./prisma ./prisma
@@ -15,11 +17,11 @@ COPY ./types ./types
 COPY ./doc ./doc
 COPY ./data ./data
 
-COPY tsconfig.json tsconfig.build.json ./
+COPY tsconfig.json ./
 
-RUN yarn build
+RUN pnpm build
 
-RUN yarn install --production
+RUN pnpm install --production
 
 FROM node
 WORKDIR /app
