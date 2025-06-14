@@ -223,8 +223,7 @@ export class ProjectRoute extends BaseRoute {
       if (!user) {
         throw new ValidationError('No user found', user)
       }
-      const { types } = req.body
-      const models = await this.projectController.getProjectModels(types, user, projectID)
+      const models = await this.projectController.getProjectModels([], user, projectID)
       res.set('Content-Type', 'application/json')
       res.status(StatusCodes.OK).send(models)
     }
