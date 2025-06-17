@@ -100,6 +100,7 @@ export class ProjectService {
       JSON.parse(template).sectionCategories,
       templateID
     )
+
     const manuscriptModel = {
       _id: node.attrs.id,
       objectType: ObjectTypes.Manuscript,
