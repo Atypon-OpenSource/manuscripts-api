@@ -95,8 +95,11 @@ export class ProjectService {
     const jats = await this.convert(file.path)
 
     const now = Math.round(Date.now() / 1000)
-    const { node, journal } = parseJATSArticle(jats, template)
-
+    const { node, journal } = parseJATSArticle(
+      jats,
+      JSON.parse(template).sectionCategories,
+      templateID
+    )
     const manuscriptModel = {
       _id: node.attrs.id,
       objectType: ObjectTypes.Manuscript,
