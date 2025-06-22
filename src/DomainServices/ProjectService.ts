@@ -101,8 +101,7 @@ export class ProjectService {
       templateID
     )
 
-    const templateData = JSON.parse(template)
-    const articleType = node.attrs.articleType || templateData.articleType || ''
+    const articleType = await this.resolveArticleType(node.attrs.articleType, templateID)
 
     const manuscriptModel = {
       _id: node.attrs.id,
@@ -139,16 +138,26 @@ export class ProjectService {
     return manuscriptModel
   }
 
-  public async createManuscriptDoc(manuscript: Manuscript, projectID: string, userID: string) {
-
-    let articleType = manuscript.articleType
-    if (!articleType && manuscript.prototype) {
-      const template = await this.configService.getDocument(manuscript.prototype)
-      if (template) {
-        const templateData = JSON.parse(template)
-        articleType = templateData.articleType || ''
-      }
+  private async resolveArticleType(currentArticleType: string | undefined, templateID: string | undefined): Promise<string> {
+    if (currentArticleType) {
+      return currentArticleType
     }
+    
+    if (!templateID) {
+      return ''
+    }
+
+    const template = await this.configService.getDocument(templateID)
+    if (!template) {
+      return ''
+    }
+
+    const templateData = JSON.parse(template)
+    return templateData.articleType || ''
+  }
+
+  public async createManuscriptDoc(manuscript: Manuscript, projectID: string, userID: string) {
+    const articleType = await this.resolveArticleType(manuscript.articleType, manuscript.prototype)
 
     const createDoc: CreateDoc = {
       manuscript_model_id: manuscript._id,
