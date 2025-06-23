@@ -101,8 +101,6 @@ export class ProjectService {
       templateID
     )
 
-    const articleType = await this.resolveArticleType(node.attrs.articleType, templateID)
-
     const manuscriptModel = {
       _id: node.attrs.id,
       objectType: ObjectTypes.Manuscript,
@@ -110,7 +108,7 @@ export class ProjectService {
       updatedAt: now,
       containerID: projectID,
       DOI: node.attrs.doi,
-      articleType: articleType,
+      articleType: node.attrs.articleType || JSON.parse(template).articleType || '',
       prototype: templateID,
       primaryLanguageCode: node.attrs.primaryLanguageCode,
     } as Manuscript
@@ -138,32 +136,15 @@ export class ProjectService {
     return manuscriptModel
   }
 
-  private async resolveArticleType(currentArticleType: string | undefined, templateID: string | undefined): Promise<string> {
-    if (currentArticleType) {
-      return currentArticleType
-    }
-    
-    if (!templateID) {
-      return ''
-    }
-
-    const template = await this.configService.getDocument(templateID)
-    if (!template) {
-      return ''
-    }
-
-    const templateData = JSON.parse(template)
-    return templateData.articleType || ''
-  }
-
   public async createManuscriptDoc(manuscript: Manuscript, projectID: string, userID: string) {
-    const articleType = await this.resolveArticleType(manuscript.articleType, manuscript.prototype)
+    const template = manuscript.prototype ? await this.configService.getDocument(manuscript.prototype) : null
+    const templateData = template ? JSON.parse(template) : null
 
     const createDoc: CreateDoc = {
       manuscript_model_id: manuscript._id,
       project_model_id: projectID,
       doc: createArticleNode({
-        articleType: articleType,
+        articleType: manuscript.articleType || templateData?.articleType || '',
         primaryLanguageCode: manuscript.primaryLanguageCode,
         doi: manuscript.DOI,
         id: manuscript._id,
