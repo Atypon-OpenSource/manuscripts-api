@@ -4,6 +4,7 @@
     "objectType": "MPManuscriptTemplate",
     "bundle": "MPBundle:www-zotero-org-styles-american-medical-association",
     "title": "Nature Genetics Journal Publication",
+    "articleType": "research-article",
     "sectionCategories": "./section-categories.json"
   },
   {
@@ -11,6 +12,7 @@
     "objectType": "MPManuscriptTemplate",
     "bundle": "MPBundle:www-zotero-org-styles-american-medical-association",
     "title": "Article",
+    "articleType": "research-article",
     "sectionCategories": "./section-categories.json"
   },
   {
@@ -18,6 +20,7 @@
     "objectType": "MPManuscriptTemplate",
     "bundle": "MPBundle:www-zotero-org-styles-american-medical-association",
     "title": "Editorial",
+    "articleType": "editorial",
     "sectionCategories": "./section-categories.json"
   },
   {
@@ -25,6 +28,7 @@
     "objectType": "MPManuscriptTemplate",
     "bundle": "MPBundle:www-zotero-org-styles-chicago-author-date",
     "title": "Review Article Health Economics, Policy and Law",
+    "articleType": "review-article",
     "sectionCategories": "./section-categories.json"
   }
 ]
