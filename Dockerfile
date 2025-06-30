@@ -3,10 +3,18 @@ FROM node:iron-bullseye-slim AS node
 FROM node AS build
 WORKDIR /usr/src/app
 
+ARG NODE_AUTH_TOKEN
+ENV NODE_AUTH_TOKEN=$NODE_AUTH_TOKEN
+
 RUN npm install -g pnpm
 
 COPY package.json ./
 COPY pnpm-lock.yaml ./
+
+RUN if [ -n "$NODE_AUTH_TOKEN" ]; then \
+      echo "registry=https://us-west4-npm.pkg.dev/atypon-artifact/lwf-virtual-npm-repo" > .npmrc && \
+      echo "//us-west4-npm.pkg.dev/atypon-artifact/lwf-virtual-npm-repo:_authToken=\"${NODE_AUTH_TOKEN}\"" >> .npmrc; \
+    fi
 
 RUN pnpm install
 
