@@ -1,6 +1,6 @@
 {
   "name": "@manuscripts/api",
-  "version": "2.0.8",
+  "version": "2.0.8-pnpm-fix-prisma",
   "description": "Manuscripts API server",
   "license": "Apache-2.0",
   "main": "dist/index",
