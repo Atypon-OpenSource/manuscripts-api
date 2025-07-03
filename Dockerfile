@@ -8,8 +8,5 @@ COPY doc ./doc
 COPY data ./data
 COPY prisma ./prisma
 
-# Generate Prisma client for the container architecture
-RUN npx prisma generate
-
 EXPOSE 3000
 CMD [ "node", "dist/index.js" ]
