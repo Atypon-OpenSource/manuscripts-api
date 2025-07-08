@@ -1,6 +1,6 @@
 {
   "name": "@manuscripts/api",
-  "version": "2.0.9-LEAN-4642.0",
+  "version": "2.0.10",
   "description": "Manuscripts API server",
   "license": "Apache-2.0",
   "main": "dist/index",
@@ -13,7 +13,7 @@
     "build-app": "tsc",
     "generate-prisma": "prisma generate",
     "migrate-prisma": "prisma migrate dev --name init",
-    "migrate-prisma-deploy": "prisma migrate deploy && node ./prisma/migrations/20240611191311_init/patch.js",
+    "migrate-prisma-deploy": "npx prisma migrate deploy && node ./prisma/migrations/20240611191311_init/patch.js",
     "lint": "eslint src --ext .js,.ts",
     "typecheck": "tsc --noEmit",
     "test": "run-s test:unit test:int",
@@ -26,7 +26,7 @@
   },
   "dependencies": {
     "@manuscripts/json-schema": "2.2.12",
-    "@manuscripts/transform": "4.2.2-LEAN-4642.0",
+    "@manuscripts/transform": "4.2.2",
     "@prisma/client": "6.7.0",
     "celebrate": "15.0.3",
     "checksum": "1.0.0",
@@ -55,7 +55,8 @@
     "uuid": "9.0.1",
     "winston": "3.17.0",
     "ws": "8.18.2",
-    "yaml": "2.7.1"
+    "yaml": "2.7.1",
+    "prisma": "6.7.0"
   },
   "devDependencies": {
     "@babel/core": "7.23.7",
@@ -104,7 +105,6 @@
     "jest-circus": "29.7.0",
     "npm-run-all": "4.1.5",
     "prettier": "2.8.8",
-    "prisma": "6.7.0",
     "ts-node": "10.9.2",
     "typescript": "4.9.5"
   }
