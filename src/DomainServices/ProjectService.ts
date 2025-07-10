@@ -108,7 +108,7 @@ export class ProjectService {
       updatedAt: now,
       containerID: projectID,
       DOI: node.attrs.doi,
-      articleType: node.attrs.articleType || JSON.parse(template).articleType || '',
+      articleType: node.attrs.articleType || JSON.parse(template).articleType || 'other',
       prototype: templateID,
       primaryLanguageCode: node.attrs.primaryLanguageCode,
     } as Manuscript
@@ -144,7 +144,7 @@ export class ProjectService {
       manuscript_model_id: manuscript._id,
       project_model_id: projectID,
       doc: createArticleNode({
-        articleType: manuscript.articleType || templateData?.articleType || '',
+        articleType: manuscript.articleType || templateData?.articleType || 'other',
         primaryLanguageCode: manuscript.primaryLanguageCode,
         doi: manuscript.DOI,
         id: manuscript._id,
