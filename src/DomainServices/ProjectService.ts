@@ -108,7 +108,7 @@ export class ProjectService {
       updatedAt: now,
       containerID: projectID,
       DOI: node.attrs.doi,
-      articleType: node.attrs.articleType,
+      articleType: node.attrs.articleType || JSON.parse(template).articleType || 'other',
       prototype: templateID,
       primaryLanguageCode: node.attrs.primaryLanguageCode,
     } as Manuscript
@@ -137,11 +137,14 @@ export class ProjectService {
   }
 
   public async createManuscriptDoc(manuscript: Manuscript, projectID: string, userID: string) {
+    const template = manuscript.prototype ? await this.configService.getDocument(manuscript.prototype) : null
+    const templateData = template ? JSON.parse(template) : null
+
     const createDoc: CreateDoc = {
       manuscript_model_id: manuscript._id,
       project_model_id: projectID,
       doc: createArticleNode({
-        articleType: manuscript.articleType,
+        articleType: manuscript.articleType || templateData?.articleType || 'other',
         primaryLanguageCode: manuscript.primaryLanguageCode,
         doi: manuscript.DOI,
         id: manuscript._id,
