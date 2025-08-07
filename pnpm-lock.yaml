@@ -12,8 +12,8 @@ importers:
         specifier: 2.2.12
         version: 2.2.12
       '@manuscripts/transform':
-        specifier: 4.2.10
-        version: 4.2.10(prosemirror-state@1.4.3)
+        specifier: 4.2.11
+        version: 4.2.11(prosemirror-state@1.4.3)
       '@prisma/client':
         specifier: 6.7.0
         version: 6.7.0(prisma@6.7.0(typescript@4.9.5))(typescript@4.9.5)
@@ -1274,8 +1274,8 @@ packages:
   '@manuscripts/json-schema@2.2.12':
     resolution: {integrity: sha512-MCz11Dhc1kric1oU9cnYHboPgEwwccWfuuU1XhAEilDIFe8KszAeQk5i4GBGlGLddp/Gvkr6N1gtzLl36mTE7A==}
 
-  '@manuscripts/transform@4.2.10':
-    resolution: {integrity: sha512-WbDw9li5/AwM3onF7pK9qVKiHknss7rFs/fHFsb6py9QxNfz5cXwmlbEPiyRL72V698JKkpj7qWMqxia4Cfr2Q==}
+  '@manuscripts/transform@4.2.11':
+    resolution: {integrity: sha512-hSwZeOUyq1D8CcywUA9n72sep03wZvFsDKuCSIfKdUStY+TR1bEoAMVMYspjonaAzXeXQD91E1LzvVcjxH7JXw==}
     engines: {node: '>=20.16.0'}
 
   '@nodelib/fs.scandir@2.1.5':
@@ -6312,7 +6312,7 @@ snapshots:
       deepmerge: 4.3.1
       uuid: 9.0.1
 
-  '@manuscripts/transform@4.2.10(prosemirror-state@1.4.3)':
+  '@manuscripts/transform@4.2.11(prosemirror-state@1.4.3)':
     dependencies:
       '@manuscripts/json-schema': 2.2.12
       citeproc: 2.4.63
