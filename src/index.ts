@@ -17,6 +17,8 @@
 import { defineGlobals } from './define-globals'
 defineGlobals()
 
+import { schedule } from 'node-cron'
+
 import { config } from './Config/Config'
 import { ServerStatus } from './Controller/V2/ServerStatus/ServerStatus'
 import { DIContainer } from './DIContainer/DIContainer'
@@ -37,6 +39,24 @@ function main() {
     // eslint-disable-next-line promise/always-return
     .then(() => {
       log.info(`Manuscripts.io ${ServerStatus.version} started 🚀`)
+    })
+
+    // eslint-disable-next-line promise/always-return
+    .then(() => {
+      schedule('* * 1 * *', async (date) => {
+        if (date instanceof Date) {
+          await DIContainer.sharedContainer.repository.DB.$transaction(async (tx) => {
+            //@ts-ignore
+            const acquiredLock = DIContainer.sharedContainer.repository.acquireLock(tx)
+            if (acquiredLock) {
+              log.info('Deleting backups older than 30 days')
+              const dateToCompare = new Date(date)
+              dateToCompare.setDate(date.getDate() - 30)
+              await tx.manuscriptDoc.deleteBackupsOlderThan(dateToCompare)
+            }
+          })
+        }
+      })
     })
     .catch((error) => {
       log.error('An error occurred while bootstrapping app:', error)

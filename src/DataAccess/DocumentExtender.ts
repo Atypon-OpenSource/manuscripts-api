@@ -41,6 +41,7 @@ export class DocumentExtender {
       updateDocument: this.updateDocument,
       deleteDocument: this.deleteDocument,
       findHistory: this.findHistory,
+      deleteBackupsOlderThan: this.deleteBackupsOlderThan,
     }
   }
 
@@ -163,5 +164,15 @@ export class DocumentExtender {
       }
       throw error
     }
+  }
+
+  private deleteBackupsOlderThan = async (lt: Date) => {
+    await this.prisma.migrationBackup.deleteMany({
+      where: {
+        createdAt: {
+          lt,
+        },
+      },
+    })
   }
 }
