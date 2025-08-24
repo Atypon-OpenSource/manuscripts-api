@@ -320,7 +320,7 @@ describe('projectService', () => {
         viewers: [],
         editors: [],
         annotators: [],
-        proofers: [],
+
       })
     })
   })
@@ -376,7 +376,7 @@ describe('projectService', () => {
         viewers: [],
         editors: [],
         annotators: [],
-        proofers: [],
+
       })
     })
   })
