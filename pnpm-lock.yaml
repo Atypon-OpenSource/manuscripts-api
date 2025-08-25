@@ -12,8 +12,8 @@ importers:
         specifier: 2.2.12
         version: 2.2.12
       '@manuscripts/transform':
-        specifier: 4.2.15-LEAN-3874.2
-        version: 4.2.15-LEAN-3874.2(prosemirror-state@1.4.3)
+        specifier: 4.2.15-LEAN-3874.3
+        version: 4.2.15-LEAN-3874.3(prosemirror-state@1.4.3)
       '@prisma/client':
         specifier: 6.7.0
         version: 6.7.0(prisma@6.7.0(typescript@4.9.5))(typescript@4.9.5)
@@ -1274,8 +1274,8 @@ packages:
   '@manuscripts/json-schema@2.2.12':
     resolution: {integrity: sha512-MCz11Dhc1kric1oU9cnYHboPgEwwccWfuuU1XhAEilDIFe8KszAeQk5i4GBGlGLddp/Gvkr6N1gtzLl36mTE7A==}
 
-  '@manuscripts/transform@4.2.15-LEAN-3874.2':
-    resolution: {integrity: sha512-2W5C5QGMiUOtNJm1hd3peU9Z/greMR9xETJOfvzEozCHZAJw1W8RgUMohoRysKy5rWbrRGT2mBecLWBcCsTjig==, tarball: https://us-west4-npm.pkg.dev/atypon-artifact/lwf-virtual-npm-repo/@manuscripts/transform/-/@manuscripts/transform-4.2.15-LEAN-3874.2.tgz}
+  '@manuscripts/transform@4.2.15-LEAN-3874.3':
+    resolution: {integrity: sha512-oEkR7nm2+i4ce3b8JVhug+udkcnJaZU8dw67yNUxoerosRY6O+JrvRq2C/NewvKvSacQOgY/pt2G+nwINhrzYQ==, tarball: https://us-west4-npm.pkg.dev/atypon-artifact/lwf-virtual-npm-repo/@manuscripts/transform/-/@manuscripts/transform-4.2.15-LEAN-3874.3.tgz}
     engines: {node: '>=20.16.0'}
 
   '@nodelib/fs.scandir@2.1.5':
@@ -6312,7 +6312,7 @@ snapshots:
       deepmerge: 4.3.1
       uuid: 9.0.1
 
-  '@manuscripts/transform@4.2.15-LEAN-3874.2(prosemirror-state@1.4.3)':
+  '@manuscripts/transform@4.2.15-LEAN-3874.3(prosemirror-state@1.4.3)':
     dependencies:
       '@manuscripts/json-schema': 2.2.12
       citeproc: 2.4.63
