@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ObjectTypes, UserProfile } from '@manuscripts/json-schema'
+import { UserProfile, objectTypes } from '@manuscripts/transform'
 import { User } from '@prisma/client'
 
 import { AccountNotFoundError, RecordNotFoundError } from '../Errors'
@@ -66,16 +66,16 @@ export class UserService {
 
   private createUserProfile(user: User): UserProfile {
     return {
-      _id: `${ObjectTypes.UserProfile}:${user.id.replace('User_', '')}`,
+      _id: `${objectTypes.UserProfile}:${user.id.replace('User_', '')}`,
       bibliographicName: {
         family: user.family,
         given: user.given,
-        objectType: ObjectTypes.BibliographicName,
-        _id: `${ObjectTypes.BibliographicName}:${user.id.replace('User_', '')}`,
+        objectType: objectTypes.BibliographicName,
+        _id: `${objectTypes.BibliographicName}:${user.id.replace('User_', '')}`,
       },
       email: user.email,
       userID: user.id,
-      objectType: ObjectTypes.UserProfile,
+      objectType: objectTypes.UserProfile,
       createdAt: user.createdAt.getTime(),
       updatedAt: user.updatedAt.getTime(),
     }

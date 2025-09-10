@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Model, ObjectTypes, Project } from '@manuscripts/json-schema'
+import { Model, Project, objectTypes } from '@manuscripts/transform'
 import { Prisma, PrismaClient } from '@prisma/client'
 import _ from 'lodash'
 import { v4 as uuid_v4 } from 'uuid'
@@ -26,7 +26,6 @@ import { timestamp } from '../Utilities/JWT/LoginTokenPayload'
 export class ProjectExtender {
   constructor(private readonly prisma: PrismaClient) {}
   readonly PROJECT_MODEL = 'project'
-  readonly objectType = ObjectTypes.Project
   private extensions: ReturnType<typeof this.buildExtensions>
 
   getExtension() {
@@ -63,7 +62,7 @@ export class ProjectExtender {
       where: {
         data: {
           path: ['objectType'],
-          equals: this.objectType,
+          equals: objectTypes.Project,
         },
         OR: [
           { data: { path: ['owners'], array_contains: userID } },
@@ -86,7 +85,7 @@ export class ProjectExtender {
     } catch (error) {
       throw DatabaseError.fromPrismaError(
         error,
-        `error when creating object of type ${ObjectTypes.Project}`,
+        `error when creating object of type ${objectTypes.Project}`,
         JSON.stringify(model)
       )
     }
@@ -106,7 +105,7 @@ export class ProjectExtender {
     } catch (error) {
       throw DatabaseError.fromPrismaError(
         error,
-        `error when creating object of type ${ObjectTypes.Manuscript}`,
+        `error when creating object of type ${objectTypes.Manuscript}`,
         JSON.stringify(model)
       )
     }
@@ -123,7 +122,7 @@ export class ProjectExtender {
       (_documentValue: any, patchValue: any) => patchValue
     ) as any
 
-    if (patchedDocument.objectType !== ObjectTypes.Manuscript) {
+    if (patchedDocument.objectType !== objectTypes.Manuscript) {
       throw new ValidationError(`Object type mismatched`, patchedDocument.objectType)
     }
     const documentToUpdate = {
@@ -244,7 +243,7 @@ export class ProjectExtender {
       (_documentValue: any, patchValue: any) => patchValue
     ) as any
 
-    if (patchedDocument.objectType !== this.objectType) {
+    if (patchedDocument.objectType !== objectTypes.Project) {
       throw new ValidationError(`Object type mismatched`, patchedDocument.objectType)
     }
     const documentToUpdate = {
@@ -264,10 +263,10 @@ export class ProjectExtender {
     return this.buildModel(updatedModel)
   }
   private projectID() {
-    return `${ObjectTypes.Project}:${uuid_v4()}`
+    return `${objectTypes.Project}:${uuid_v4()}`
   }
   private manuscriptID() {
-    return `${ObjectTypes.Manuscript}:${uuid_v4()}`
+    return `${objectTypes.Manuscript}:${uuid_v4()}`
   }
   private createProjectModel(userID: string, title?: string) {
     const createdAt = timestamp()
@@ -280,7 +279,7 @@ export class ProjectExtender {
         writers: [],
         viewers: [],
         title,
-        objectType: ObjectTypes.Project,
+        objectType: objectTypes.Project,
         createdAt,
         updatedAt: createdAt,
       },
@@ -299,7 +298,7 @@ export class ProjectExtender {
         _id: manuscriptID,
         containerID: projectID,
         prototype,
-        objectType: ObjectTypes.Manuscript,
+        objectType: objectTypes.Manuscript,
         createdAt,
         updatedAt: createdAt,
       },

@@ -15,13 +15,10 @@
  */
 import {
   Journal,
-  Manuscript,
-  Model,
-  ObjectTypes,
   Project,
-  validate,
-} from '@manuscripts/json-schema'
-import {
+  ManuscriptAttrs,
+  Model,
+  objectTypes,
   createArticleNode,
   getVersion,
   JATSExporter,
@@ -86,7 +83,7 @@ export class ProjectService {
     file: Express.Multer.File,
     projectID: string,
     templateID: string
-  ): Promise<Manuscript> {
+  ): Promise<ManuscriptAttrs> {
     const template = await this.configService.getDocument(templateID)
     if (!template) {
       throw new MissingTemplateError(templateID)
@@ -103,7 +100,7 @@ export class ProjectService {
 
     const manuscriptModel = {
       _id: node.attrs.id,
-      objectType: ObjectTypes.Manuscript,
+      objectType: objectTypes.Manuscript,
       createdAt: now,
       updatedAt: now,
       containerID: projectID,
@@ -136,7 +133,7 @@ export class ProjectService {
     return manuscriptModel
   }
 
-  public async createManuscriptDoc(manuscript: Manuscript, projectID: string, userID: string) {
+  public async createManuscriptDoc(manuscript: ManuscriptAttrs, projectID: string, userID: string) {
     const template = manuscript.prototype ? await this.configService.getDocument(manuscript.prototype) : null
     const templateData = template ? JSON.parse(template) : null
 
@@ -188,7 +185,7 @@ export class ProjectService {
   }
 
   private async getManuscriptID(projectID: string): Promise<string | null> {
-    const models = await this.projectClient.getProjectResources(projectID, [ObjectTypes.Manuscript])
+    const models = await this.projectClient.getProjectResources(projectID, [objectTypes.Manuscript])
     if (!models) {
       throw new MissingContainerError(projectID)
     }
@@ -379,7 +376,7 @@ export class ProjectService {
 
   private async getExportJatsOptions(projectID: string, templateID: string) {
     const projectModels = (await this.getProjectModels(projectID)) || []
-    const journal = projectModels.find((m) => m.objectType === ObjectTypes.Journal)
+    const journal = projectModels.find((m) => m.objectType === objectTypes.Journal)
     const template = await this.configService.getDocument(templateID)
     if (!template) {
       throw new ValidationError('manuscript template is empty', templateID)
@@ -395,7 +392,7 @@ export class ProjectService {
     }
   }
 
-  public async updateManuscript(manuscript: Manuscript) {
+  public async updateManuscript(manuscript: ManuscriptAttrs) {
     await this.projectClient.updateManuscript(manuscript._id, manuscript)
   }
 
@@ -420,18 +417,9 @@ export class ProjectService {
     }
   }
 
-  private validate(models: Model[]) {
-    models.forEach((m) => {
-      const error = validate(m)
-      if (error) {
-        throw new SyncError(error, m)
-      }
-    })
-  }
   private processManuscriptModels(docs: Model[]) {
     const createdAt = Math.round(Date.now() / 1000)
     const models = docs.map((doc) => ({ ...doc, createdAt, updatedAt: createdAt }))
-    this.validate(models)
     return models
   }
 

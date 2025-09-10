@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Model, ObjectTypes } from '@manuscripts/json-schema'
+import { Model } from '@manuscripts/transform'
 import fs from 'fs'
 import { StatusCodes } from 'http-status-codes'
 import * as supertest from 'supertest'
@@ -342,7 +342,7 @@ describe('ContainerService - get collaborators', () => {
     )
     expect(collaboratorsResponse.status).toBe(StatusCodes.OK)
     expect(collaboratorsResponse.body.length).toBe(2)
-    expect(collaboratorsResponse.body[0].objectType).toBe(ObjectTypes.UserCollaborator)
+      expect(collaboratorsResponse.body[0].objectType).toBe('MPUserCollaborator')
   })
 })
 

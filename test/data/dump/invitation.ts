@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { Invitation, UserProfile } from '@manuscripts/json-schema'
+import { UserProfile } from '@manuscripts/transform'
 import checksum from 'checksum'
 
-export const invitationsList: Invitation[] = []
+export const invitationsList: any[] = []
 
 const invitingUserProfile: UserProfile = {
   createdAt: 1522231220,

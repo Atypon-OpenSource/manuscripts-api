@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { ContainerInvitation } from '@manuscripts/json-schema'
 import { v4 as uuid_v4 } from 'uuid'
 
 import { BucketKey } from '../../../../../src/Config/ConfigurationTypes'
@@ -85,7 +84,7 @@ describe('SGRepository update', () => {
       role: 'Writer',
     }
 
-    await repository.update(projectInvitationUpdatedData as ContainerInvitation)
+    await repository.update(projectInvitationUpdatedData as any)
     const afterUpdate: any = await repository.getById(validProjectInvitationObject._id)
     expect(afterUpdate.role).toBe('Writer')
   })

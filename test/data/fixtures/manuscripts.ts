@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-import { Manuscript } from '@manuscripts/json-schema'
-
-export const validManuscript: Manuscript = {
+export const validManuscript: any = {
   _id: 'MPManuscript:valid-manuscript-id-1',
   objectType: 'MPManuscript',
   title: 'A Test Manuscript',
@@ -27,7 +25,7 @@ export const validManuscript: Manuscript = {
   containerID: 'MPProject:valid-project-id-2',
 }
 
-export const validManuscript1: Manuscript = {
+export const validManuscript1: any = {
   _id: 'MPManuscript:valid-manuscript-id-2',
   objectType: 'MPManuscript',
   title: 'A Test Manuscript',
