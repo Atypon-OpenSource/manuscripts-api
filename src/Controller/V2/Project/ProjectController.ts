@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { getVersion, ManuscriptAttrs, Model, Project, UserProfile, objectTypes } from '@manuscripts/transform'
+import { getVersion, Manuscript, Model, Project, UserProfile, objectTypes } from '@manuscripts/transform'
 
 import { DIContainer } from '../../../DIContainer/DIContainer'
 import {
@@ -137,7 +137,7 @@ export class ProjectController extends BaseController {
     user: Express.User,
     projectID: string,
     templateID?: string
-  ): Promise<ManuscriptAttrs> {
+  ): Promise<Manuscript> {
     const permissions = await this.getPermissions(projectID, user.id)
     if (!permissions.has(ProjectPermission.CREATE_MANUSCRIPT)) {
       throw new RoleDoesNotPermitOperationError(`Access denied`, user.id)
@@ -159,7 +159,7 @@ export class ProjectController extends BaseController {
     zip: Express.Multer.File,
     projectID: string,
     templateID: string
-  ): Promise<ManuscriptAttrs> {
+  ): Promise<Manuscript> {
     const permissions = await this.getPermissions(projectID, user.id)
     if (!permissions.has(ProjectPermission.CREATE_MANUSCRIPT)) {
       throw new RoleDoesNotPermitOperationError(`Access denied`, user.id)
