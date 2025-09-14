@@ -82,7 +82,7 @@ export class ProjectService {
     file: Express.Multer.File,
     projectID: string,
     templateID: string
-  ): Promise<Model> {
+  ): Promise<Manuscript> {
     const template = await this.configService.getDocument(templateID)
     if (!template) {
       throw new MissingTemplateError(templateID)
