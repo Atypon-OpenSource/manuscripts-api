@@ -16,7 +16,6 @@
 import {
   Journal,
   Project,
-  ManuscriptAttrs,
   Model,
   objectTypes,
   createArticleNode,
@@ -25,6 +24,7 @@ import {
   JSONProsemirrorNode,
   parseJATSArticle,
   schema,
+  Manuscript,
 } from '@manuscripts/transform'
 import decompress from 'decompress'
 import fs from 'fs'
@@ -39,7 +39,6 @@ import {
   MissingContainerError,
   MissingTemplateError,
   RecordNotFoundError,
-  SyncError,
   UserRoleError,
   ValidationError,
 } from '../Errors'
@@ -83,7 +82,7 @@ export class ProjectService {
     file: Express.Multer.File,
     projectID: string,
     templateID: string
-  ): Promise<ManuscriptAttrs> {
+  ): Promise<Model> {
     const template = await this.configService.getDocument(templateID)
     if (!template) {
       throw new MissingTemplateError(templateID)
@@ -133,7 +132,7 @@ export class ProjectService {
     return manuscriptModel
   }
 
-  public async createManuscriptDoc(manuscript: ManuscriptAttrs, projectID: string, userID: string) {
+  public async createManuscriptDoc(manuscript: Manuscript, projectID: string, userID: string) {
     const template = manuscript.prototype ? await this.configService.getDocument(manuscript.prototype) : null
     const templateData = template ? JSON.parse(template) : null
 
@@ -392,7 +391,7 @@ export class ProjectService {
     }
   }
 
-  public async updateManuscript(manuscript: ManuscriptAttrs) {
+  public async updateManuscript(manuscript: Manuscript) {
     await this.projectClient.updateManuscript(manuscript._id, manuscript)
   }
 
