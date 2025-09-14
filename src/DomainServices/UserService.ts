@@ -75,7 +75,7 @@ export class UserService {
       },
       email: user.email,
       userID: user.id,
-      objectType: objectTypes.UserProfile,
+      objectType: 'MPUserProfile',
       createdAt: user.createdAt.getTime(),
       updatedAt: user.updatedAt.getTime(),
     }
