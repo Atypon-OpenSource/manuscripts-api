@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 import {
-  Journal,
-  Project,
-  Model,
-  objectTypes,
   createArticleNode,
   getVersion,
   JATSExporter,
+  Journal,
   JSONProsemirrorNode,
-  parseJATSArticle,
-  schema,
   Manuscript,
+  Model,
+  objectTypes,
+  parseJATSArticle,
+  Project,
+  schema,
 } from '@manuscripts/transform'
 import decompress from 'decompress'
 import fs from 'fs'
@@ -133,7 +133,9 @@ export class ProjectService {
   }
 
   public async createManuscriptDoc(manuscript: Manuscript, projectID: string, userID: string) {
-    const template = manuscript.prototype ? await this.configService.getDocument(manuscript.prototype) : null
+    const template = manuscript.prototype
+      ? await this.configService.getDocument(manuscript.prototype)
+      : null
     const templateData = template ? JSON.parse(template) : null
 
     const createDoc: CreateDoc = {

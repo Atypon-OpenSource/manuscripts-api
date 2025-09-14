@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { UserProfile, objectTypes } from '@manuscripts/transform'
+import { objectTypes, UserProfile } from '@manuscripts/transform'
 import { User } from '@prisma/client'
 
 import { AccountNotFoundError, RecordNotFoundError } from '../Errors'

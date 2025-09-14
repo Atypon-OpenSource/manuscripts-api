@@ -15,6 +15,7 @@
     "migrate-prisma": "prisma migrate dev --name init",
     "migrate-prisma-deploy": "npx prisma migrate deploy && node ./prisma/migrations/20240611191311_init/patch.js",
     "lint": "eslint src --ext .js,.ts",
+    "lint:fix": "eslint src --ext .js,.ts --fix",
     "typecheck": "tsc --noEmit",
     "test": "run-s test:unit test:int",
     "test:unit": "jest --ci --config=./jest.config.unit.test.js --no-cache --detectOpenHandles --forceExit --coverage --runInBand --reporters=default",

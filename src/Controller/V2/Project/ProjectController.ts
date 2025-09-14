@@ -14,7 +14,14 @@
  * limitations under the License.
  */
 
-import { getVersion, Manuscript, Model, Project, UserProfile, objectTypes } from '@manuscripts/transform'
+import {
+  getVersion,
+  Manuscript,
+  Model,
+  objectTypes,
+  Project,
+  UserProfile,
+} from '@manuscripts/transform'
 
 import { DIContainer } from '../../../DIContainer/DIContainer'
 import {
@@ -107,8 +114,9 @@ export class ProjectController extends BaseController {
       throw new RoleDoesNotPermitOperationError(`Access denied`, user.id)
     }
 
-    const models = await DIContainer.sharedContainer.projectService.getProjectModels(projectID) || []
-    const manuscript = models.find(m => m.objectType === objectTypes.Manuscript)
+    const models =
+      (await DIContainer.sharedContainer.projectService.getProjectModels(projectID)) || []
+    const manuscript = models.find((m) => m.objectType === objectTypes.Manuscript)
     return manuscript || null
   }
 
