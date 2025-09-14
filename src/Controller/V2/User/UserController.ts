@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Project } from '@manuscripts/json-schema'
+import { Project } from '@manuscripts/transform'
 import { Request } from 'express'
 
 import { DIContainer } from '../../../DIContainer/DIContainer'
