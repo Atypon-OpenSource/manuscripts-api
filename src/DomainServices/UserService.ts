@@ -40,14 +40,12 @@ export class UserService {
       throw new RecordNotFoundError(projectID)
     }
     const annotator = project.annotators ?? []
-    const proofers = project.proofers ?? []
     const editors = project.editors ?? []
     const projectUsers = project.owners.concat(
       editors,
       project.writers,
       project.viewers,
-      annotator,
-      proofers
+      annotator
     )
     const users = []
     for (const id of projectUsers) {
