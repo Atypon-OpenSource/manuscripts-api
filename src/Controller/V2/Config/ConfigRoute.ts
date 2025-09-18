@@ -72,7 +72,7 @@ export class ConfigRoute extends BaseRoute {
 
   private async getDocument(id: string, res: Response) {
     const data = await this.configController.getDocument(id)
-    if (!data) {
+    if (!data || data.length === 0) {
       res.status(StatusCodes.NOT_FOUND).send('No data found')
     } else {
       res.set('Content-Type', 'application/json')

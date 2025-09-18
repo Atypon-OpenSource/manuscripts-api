@@ -81,10 +81,7 @@ export class ConfigService {
   private async initLanguages(root: string) {
     const languages = JSON.parse(await fs.readFile(path.join(root, 'languages.json'), 'utf-8'))
     const languagesMap = new Map<string, string>()
-    
-    // Store the entire languages array
     languagesMap.set('languages', JSON.stringify(languages))
-    
     return languagesMap
   }
 
