@@ -20,20 +20,28 @@ import { AuthStrategy } from '../../../Auth/Passport/AuthStrategy'
 import { celebrate } from '../../../Utilities/celebrate'
 import { BaseRoute } from '../../BaseRoute'
 import { ConfigController } from './ConfigController'
-import { bundleSchema, defaultSchema, templateSchema } from './ConfigSchema'
+import { bundleSchema, defaultPathSchema, defaultQuerySchema, templateSchema } from './ConfigSchema'
 
-const routes = [
+const queryIDRoutes = [
   { path: '/templates', schema: templateSchema },
   { path: '/bundles', schema: bundleSchema },
-  { path: '/csl/styles', schema: defaultSchema },
-  { path: '/csl/locales', schema: defaultSchema },
+  { path: '/csl/styles', schema: defaultQuerySchema },
+  { path: '/csl/locales', schema: defaultQuerySchema },
+]
+
+const pathIDRoutes = [
+  {
+    path: '/languages',
+    id: 'languages',
+    schema: defaultPathSchema,
+  },
 ]
 
 export class ConfigRoute extends BaseRoute {
   private configController = new ConfigController()
 
   public create(router: Router): void {
-    for (const route of routes) {
+    for (const route of queryIDRoutes) {
       router.get(
         route.path,
         celebrate(route.schema),
@@ -41,17 +49,30 @@ export class ConfigRoute extends BaseRoute {
         AuthStrategy.JWTAuth,
         (req: Request, res: Response, next: NextFunction) => {
           return this.runWithErrorHandling(async () => {
-            await this.getDocument(req, res)
+            const id = req.query.id as string
+            await this.getDocument(id, res)
+          }, next)
+        }
+      )
+    }
+    for (const route of pathIDRoutes) {
+      router.get(
+        route.path,
+        celebrate(route.schema),
+        AuthStrategy.JsonHeadersValidation,
+        AuthStrategy.JWTAuth,
+        (_req: Request, res: Response, next: NextFunction) => {
+          return this.runWithErrorHandling(async () => {
+            await this.getDocument(route.id, res)
           }, next)
         }
       )
     }
   }
 
-  private async getDocument(req: Request, res: Response) {
-    const id = req.query.id as string
+  private async getDocument(id: string, res: Response) {
     const data = await this.configController.getDocument(id)
-    if (!data || data.length === 0) {
+    if (!data) {
       res.status(StatusCodes.NOT_FOUND).send('No data found')
     } else {
       res.set('Content-Type', 'application/json')
