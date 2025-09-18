@@ -1,0 +1,3818 @@
+[
+  {
+    "code": "ar",
+    "name": "Arabic",
+    "nativeName": "العربية",
+    "isCommon": true
+  },
+  {
+    "code": "zh",
+    "name": "Chinese",
+    "nativeName": "中文",
+    "isCommon": true
+  },
+  {
+    "code": "en",
+    "name": "English",
+    "nativeName": "English",
+    "isCommon": true
+  },
+  {
+    "code": "fr",
+    "name": "French",
+    "nativeName": "Français",
+    "isCommon": true
+  },
+  {
+    "code": "de",
+    "name": "German",
+    "nativeName": "Deutsch",
+    "isCommon": true
+  },
+  {
+    "code": "it",
+    "name": "Italian",
+    "nativeName": "Italiano",
+    "isCommon": true
+  },
+  {
+    "code": "ja",
+    "name": "Japanese",
+    "nativeName": "日本語",
+    "isCommon": true
+  },
+  {
+    "code": "ko",
+    "name": "Korean",
+    "nativeName": "한국어",
+    "isCommon": true
+  },
+  {
+    "code": "pt",
+    "name": "Portuguese",
+    "nativeName": "Português",
+    "isCommon": true
+  },
+  {
+    "code": "ru",
+    "name": "Russian",
+    "nativeName": "Русский",
+    "isCommon": true
+  },
+  {
+    "code": "es",
+    "name": "Spanish",
+    "nativeName": "Español",
+    "isCommon": true
+  },
+  {
+    "code": "ab",
+    "name": "Abkhazian",
+    "nativeName": "Abkhazian",
+    "isCommon": false
+  },
+  {
+    "code": "ace",
+    "name": "Acehnese",
+    "nativeName": "Acehnese",
+    "isCommon": false
+  },
+  {
+    "code": "ach",
+    "name": "Acoli",
+    "nativeName": "Acoli",
+    "isCommon": false
+  },
+  {
+    "code": "ada",
+    "name": "Adangme",
+    "nativeName": "Adangme",
+    "isCommon": false
+  },
+  {
+    "code": "ady",
+    "name": "Adyghe",
+    "nativeName": "Adyghe",
+    "isCommon": false
+  },
+  {
+    "code": "aa",
+    "name": "Afar",
+    "nativeName": "Afar",
+    "isCommon": false
+  },
+  {
+    "code": "afh",
+    "name": "Afrihili",
+    "nativeName": "Afrihili",
+    "isCommon": false
+  },
+  {
+    "code": "af",
+    "name": "Afrikaans",
+    "nativeName": "Afrikaans",
+    "isCommon": false
+  },
+  {
+    "code": "agq",
+    "name": "Aghem",
+    "nativeName": "Aghem",
+    "isCommon": false
+  },
+  {
+    "code": "ain",
+    "name": "Ainu",
+    "nativeName": "Ainu",
+    "isCommon": false
+  },
+  {
+    "code": "ak",
+    "name": "Akan",
+    "nativeName": "Akan",
+    "isCommon": false
+  },
+  {
+    "code": "akk",
+    "name": "Akkadian",
+    "nativeName": "Akkadian",
+    "isCommon": false
+  },
+  {
+    "code": "bss",
+    "name": "Akoose",
+    "nativeName": "Akoose",
+    "isCommon": false
+  },
+  {
+    "code": "akz",
+    "name": "Alabama",
+    "nativeName": "Alabama",
+    "isCommon": false
+  },
+  {
+    "code": "sq",
+    "name": "Albanian",
+    "nativeName": "Albanian",
+    "isCommon": false
+  },
+  {
+    "code": "ale",
+    "name": "Aleut",
+    "nativeName": "Aleut",
+    "isCommon": false
+  },
+  {
+    "code": "arq",
+    "name": "Algerian Arabic",
+    "nativeName": "Algerian Arabic",
+    "isCommon": false
+  },
+  {
+    "code": "ase",
+    "name": "American Sign Language",
+    "nativeName": "American Sign Language",
+    "isCommon": false
+  },
+  {
+    "code": "am",
+    "name": "Amharic",
+    "nativeName": "Amharic",
+    "isCommon": false
+  },
+  {
+    "code": "egy",
+    "name": "Ancient Egyptian",
+    "nativeName": "Ancient Egyptian",
+    "isCommon": false
+  },
+  {
+    "code": "grc",
+    "name": "Ancient Greek",
+    "nativeName": "Ancient Greek",
+    "isCommon": false
+  },
+  {
+    "code": "anp",
+    "name": "Angika",
+    "nativeName": "Angika",
+    "isCommon": false
+  },
+  {
+    "code": "blo",
+    "name": "Anii",
+    "nativeName": "Anii",
+    "isCommon": false
+  },
+  {
+    "code": "njo",
+    "name": "Ao Naga",
+    "nativeName": "Ao Naga",
+    "isCommon": false
+  },
+  {
+    "code": "an",
+    "name": "Aragonese",
+    "nativeName": "Aragonese",
+    "isCommon": false
+  },
+  {
+    "code": "arc",
+    "name": "Aramaic",
+    "nativeName": "Aramaic",
+    "isCommon": false
+  },
+  {
+    "code": "aro",
+    "name": "Araona",
+    "nativeName": "Araona",
+    "isCommon": false
+  },
+  {
+    "code": "arp",
+    "name": "Arapaho",
+    "nativeName": "Arapaho",
+    "isCommon": false
+  },
+  {
+    "code": "arw",
+    "name": "Arawak",
+    "nativeName": "Arawak",
+    "isCommon": false
+  },
+  {
+    "code": "hy",
+    "name": "Armenian",
+    "nativeName": "Armenian",
+    "isCommon": false
+  },
+  {
+    "code": "rup",
+    "name": "Aromanian",
+    "nativeName": "Aromanian",
+    "isCommon": false
+  },
+  {
+    "code": "frp",
+    "name": "Arpitan",
+    "nativeName": "Arpitan",
+    "isCommon": false
+  },
+  {
+    "code": "as",
+    "name": "Assamese",
+    "nativeName": "Assamese",
+    "isCommon": false
+  },
+  {
+    "code": "ast",
+    "name": "Asturian",
+    "nativeName": "Asturian",
+    "isCommon": false
+  },
+  {
+    "code": "asa",
+    "name": "Asu",
+    "nativeName": "Asu",
+    "isCommon": false
+  },
+  {
+    "code": "atj",
+    "name": "Atikamekw",
+    "nativeName": "Atikamekw",
+    "isCommon": false
+  },
+  {
+    "code": "cch",
+    "name": "Atsam",
+    "nativeName": "Atsam",
+    "isCommon": false
+  },
+  {
+    "code": "av",
+    "name": "Avaric",
+    "nativeName": "Avaric",
+    "isCommon": false
+  },
+  {
+    "code": "ae",
+    "name": "Avestan",
+    "nativeName": "Avestan",
+    "isCommon": false
+  },
+  {
+    "code": "awa",
+    "name": "Awadhi",
+    "nativeName": "Awadhi",
+    "isCommon": false
+  },
+  {
+    "code": "ay",
+    "name": "Aymara",
+    "nativeName": "Aymara",
+    "isCommon": false
+  },
+  {
+    "code": "az",
+    "name": "Azerbaijani",
+    "nativeName": "Azerbaijani",
+    "isCommon": false
+  },
+  {
+    "code": "bfq",
+    "name": "Badaga",
+    "nativeName": "Badaga",
+    "isCommon": false
+  },
+  {
+    "code": "ksf",
+    "name": "Bafia",
+    "nativeName": "Bafia",
+    "isCommon": false
+  },
+  {
+    "code": "bfd",
+    "name": "Bafut",
+    "nativeName": "Bafut",
+    "isCommon": false
+  },
+  {
+    "code": "bqi",
+    "name": "Bakhtiari",
+    "nativeName": "Bakhtiari",
+    "isCommon": false
+  },
+  {
+    "code": "ban",
+    "name": "Balinese",
+    "nativeName": "Balinese",
+    "isCommon": false
+  },
+  {
+    "code": "bal",
+    "name": "Baluchi",
+    "nativeName": "Baluchi",
+    "isCommon": false
+  },
+  {
+    "code": "bm",
+    "name": "Bambara",
+    "nativeName": "Bambara",
+    "isCommon": false
+  },
+  {
+    "code": "bax",
+    "name": "Bamun",
+    "nativeName": "Bamun",
+    "isCommon": false
+  },
+  {
+    "code": "bn",
+    "name": "Bangla",
+    "nativeName": "Bangla",
+    "isCommon": false
+  },
+  {
+    "code": "bjn",
+    "name": "Banjar",
+    "nativeName": "Banjar",
+    "isCommon": false
+  },
+  {
+    "code": "bas",
+    "name": "Basaa",
+    "nativeName": "Basaa",
+    "isCommon": false
+  },
+  {
+    "code": "ba",
+    "name": "Bashkir",
+    "nativeName": "Bashkir",
+    "isCommon": false
+  },
+  {
+    "code": "eu",
+    "name": "Basque",
+    "nativeName": "Basque",
+    "isCommon": false
+  },
+  {
+    "code": "bbc",
+    "name": "Batak Toba",
+    "nativeName": "Batak Toba",
+    "isCommon": false
+  },
+  {
+    "code": "bar",
+    "name": "Bavarian",
+    "nativeName": "Bavarian",
+    "isCommon": false
+  },
+  {
+    "code": "bej",
+    "name": "Beja",
+    "nativeName": "Beja",
+    "isCommon": false
+  },
+  {
+    "code": "be",
+    "name": "Belarusian",
+    "nativeName": "Belarusian",
+    "isCommon": false
+  },
+  {
+    "code": "bem",
+    "name": "Bemba",
+    "nativeName": "Bemba",
+    "isCommon": false
+  },
+  {
+    "code": "bez",
+    "name": "Bena",
+    "nativeName": "Bena",
+    "isCommon": false
+  },
+  {
+    "code": "bew",
+    "name": "Betawi",
+    "nativeName": "Betawi",
+    "isCommon": false
+  },
+  {
+    "code": "bho",
+    "name": "Bhojpuri",
+    "nativeName": "Bhojpuri",
+    "isCommon": false
+  },
+  {
+    "code": "bik",
+    "name": "Bikol",
+    "nativeName": "Bikol",
+    "isCommon": false
+  },
+  {
+    "code": "bin",
+    "name": "Bini",
+    "nativeName": "Bini",
+    "isCommon": false
+  },
+  {
+    "code": "bpy",
+    "name": "Bishnupriya",
+    "nativeName": "Bishnupriya",
+    "isCommon": false
+  },
+  {
+    "code": "bi",
+    "name": "Bislama",
+    "nativeName": "Bislama",
+    "isCommon": false
+  },
+  {
+    "code": "byn",
+    "name": "Blin",
+    "nativeName": "Blin",
+    "isCommon": false
+  },
+  {
+    "code": "zbl",
+    "name": "Blissymbols",
+    "nativeName": "Blissymbols",
+    "isCommon": false
+  },
+  {
+    "code": "brx",
+    "name": "Bodo",
+    "nativeName": "Bodo",
+    "isCommon": false
+  },
+  {
+    "code": "bs",
+    "name": "Bosnian",
+    "nativeName": "Bosnian",
+    "isCommon": false
+  },
+  {
+    "code": "brh",
+    "name": "Brahui",
+    "nativeName": "Brahui",
+    "isCommon": false
+  },
+  {
+    "code": "bra",
+    "name": "Braj",
+    "nativeName": "Braj",
+    "isCommon": false
+  },
+  {
+    "code": "br",
+    "name": "Breton",
+    "nativeName": "Breton",
+    "isCommon": false
+  },
+  {
+    "code": "bug",
+    "name": "Buginese",
+    "nativeName": "Buginese",
+    "isCommon": false
+  },
+  {
+    "code": "bg",
+    "name": "Bulgarian",
+    "nativeName": "Bulgarian",
+    "isCommon": false
+  },
+  {
+    "code": "bum",
+    "name": "Bulu",
+    "nativeName": "Bulu",
+    "isCommon": false
+  },
+  {
+    "code": "bua",
+    "name": "Buriat",
+    "nativeName": "Buriat",
+    "isCommon": false
+  },
+  {
+    "code": "my",
+    "name": "Burmese",
+    "nativeName": "Burmese",
+    "isCommon": false
+  },
+  {
+    "code": "cad",
+    "name": "Caddo",
+    "nativeName": "Caddo",
+    "isCommon": false
+  },
+  {
+    "code": "frc",
+    "name": "Cajun French",
+    "nativeName": "Cajun French",
+    "isCommon": false
+  },
+  {
+    "code": "yue",
+    "name": "Cantonese",
+    "nativeName": "Cantonese",
+    "isCommon": false
+  },
+  {
+    "code": "cps",
+    "name": "Capiznon",
+    "nativeName": "Capiznon",
+    "isCommon": false
+  },
+  {
+    "code": "car",
+    "name": "Carib",
+    "nativeName": "Carib",
+    "isCommon": false
+  },
+  {
+    "code": "crr",
+    "name": "Carolina Algonquian",
+    "nativeName": "Carolina Algonquian",
+    "isCommon": false
+  },
+  {
+    "code": "ca",
+    "name": "Catalan",
+    "nativeName": "Catalan",
+    "isCommon": false
+  },
+  {
+    "code": "cay",
+    "name": "Cayuga",
+    "nativeName": "Cayuga",
+    "isCommon": false
+  },
+  {
+    "code": "ceb",
+    "name": "Cebuano",
+    "nativeName": "Cebuano",
+    "isCommon": false
+  },
+  {
+    "code": "tzm",
+    "name": "Central Atlas Tamazight",
+    "nativeName": "Central Atlas Tamazight",
+    "isCommon": false
+  },
+  {
+    "code": "dtp",
+    "name": "Central Dusun",
+    "nativeName": "Central Dusun",
+    "isCommon": false
+  },
+  {
+    "code": "ckb",
+    "name": "Central Kurdish",
+    "nativeName": "Central Kurdish",
+    "isCommon": false
+  },
+  {
+    "code": "ojc",
+    "name": "Central Ojibwa",
+    "nativeName": "Central Ojibwa",
+    "isCommon": false
+  },
+  {
+    "code": "esu",
+    "name": "Central Yupik",
+    "nativeName": "Central Yupik",
+    "isCommon": false
+  },
+  {
+    "code": "shu",
+    "name": "Chadian Arabic",
+    "nativeName": "Chadian Arabic",
+    "isCommon": false
+  },
+  {
+    "code": "chg",
+    "name": "Chagatai",
+    "nativeName": "Chagatai",
+    "isCommon": false
+  },
+  {
+    "code": "ccp",
+    "name": "Chakma",
+    "nativeName": "Chakma",
+    "isCommon": false
+  },
+  {
+    "code": "ch",
+    "name": "Chamorro",
+    "nativeName": "Chamorro",
+    "isCommon": false
+  },
+  {
+    "code": "ce",
+    "name": "Chechen",
+    "nativeName": "Chechen",
+    "isCommon": false
+  },
+  {
+    "code": "chr",
+    "name": "Cherokee",
+    "nativeName": "Cherokee",
+    "isCommon": false
+  },
+  {
+    "code": "chy",
+    "name": "Cheyenne",
+    "nativeName": "Cheyenne",
+    "isCommon": false
+  },
+  {
+    "code": "chb",
+    "name": "Chibcha",
+    "nativeName": "Chibcha",
+    "isCommon": false
+  },
+  {
+    "code": "cic",
+    "name": "Chickasaw",
+    "nativeName": "Chickasaw",
+    "isCommon": false
+  },
+  {
+    "code": "cgg",
+    "name": "Chiga",
+    "nativeName": "Chiga",
+    "isCommon": false
+  },
+  {
+    "code": "clc",
+    "name": "Chilcotin",
+    "nativeName": "Chilcotin",
+    "isCommon": false
+  },
+  {
+    "code": "qug",
+    "name": "Chimborazo Highland Quichua",
+    "nativeName": "Chimborazo Highland Quichua",
+    "isCommon": false
+  },
+  {
+    "code": "chn",
+    "name": "Chinook Jargon",
+    "nativeName": "Chinook Jargon",
+    "isCommon": false
+  },
+  {
+    "code": "chp",
+    "name": "Chipewyan",
+    "nativeName": "Chipewyan",
+    "isCommon": false
+  },
+  {
+    "code": "cho",
+    "name": "Choctaw",
+    "nativeName": "Choctaw",
+    "isCommon": false
+  },
+  {
+    "code": "cu",
+    "name": "Church Slavic",
+    "nativeName": "Church Slavic",
+    "isCommon": false
+  },
+  {
+    "code": "chk",
+    "name": "Chuukese",
+    "nativeName": "Chuukese",
+    "isCommon": false
+  },
+  {
+    "code": "cv",
+    "name": "Chuvash",
+    "nativeName": "Chuvash",
+    "isCommon": false
+  },
+  {
+    "code": "nwc",
+    "name": "Classical Newari",
+    "nativeName": "Classical Newari",
+    "isCommon": false
+  },
+  {
+    "code": "syc",
+    "name": "Classical Syriac",
+    "nativeName": "Classical Syriac",
+    "isCommon": false
+  },
+  {
+    "code": "ksh",
+    "name": "Colognian",
+    "nativeName": "Colognian",
+    "isCommon": false
+  },
+  {
+    "code": "swb",
+    "name": "Comorian",
+    "nativeName": "Comorian",
+    "isCommon": false
+  },
+  {
+    "code": "cop",
+    "name": "Coptic",
+    "nativeName": "Coptic",
+    "isCommon": false
+  },
+  {
+    "code": "kw",
+    "name": "Cornish",
+    "nativeName": "Cornish",
+    "isCommon": false
+  },
+  {
+    "code": "co",
+    "name": "Corsican",
+    "nativeName": "Corsican",
+    "isCommon": false
+  },
+  {
+    "code": "cr",
+    "name": "Cree",
+    "nativeName": "Cree",
+    "isCommon": false
+  },
+  {
+    "code": "crh",
+    "name": "Crimean Tatar",
+    "nativeName": "Crimean Tatar",
+    "isCommon": false
+  },
+  {
+    "code": "hr",
+    "name": "Croatian",
+    "nativeName": "Croatian",
+    "isCommon": false
+  },
+  {
+    "code": "cs",
+    "name": "Czech",
+    "nativeName": "Czech",
+    "isCommon": false
+  },
+  {
+    "code": "dak",
+    "name": "Dakota",
+    "nativeName": "Dakota",
+    "isCommon": false
+  },
+  {
+    "code": "da",
+    "name": "Danish",
+    "nativeName": "Danish",
+    "isCommon": false
+  },
+  {
+    "code": "dar",
+    "name": "Dargwa",
+    "nativeName": "Dargwa",
+    "isCommon": false
+  },
+  {
+    "code": "dzg",
+    "name": "Dazaga",
+    "nativeName": "Dazaga",
+    "isCommon": false
+  },
+  {
+    "code": "del",
+    "name": "Delaware",
+    "nativeName": "Delaware",
+    "isCommon": false
+  },
+  {
+    "code": "din",
+    "name": "Dinka",
+    "nativeName": "Dinka",
+    "isCommon": false
+  },
+  {
+    "code": "dv",
+    "name": "Divehi",
+    "nativeName": "Divehi",
+    "isCommon": false
+  },
+  {
+    "code": "doi",
+    "name": "Dogri",
+    "nativeName": "Dogri",
+    "isCommon": false
+  },
+  {
+    "code": "dgr",
+    "name": "Dogrib",
+    "nativeName": "Dogrib",
+    "isCommon": false
+  },
+  {
+    "code": "dua",
+    "name": "Duala",
+    "nativeName": "Duala",
+    "isCommon": false
+  },
+  {
+    "code": "nl",
+    "name": "Dutch",
+    "nativeName": "Dutch",
+    "isCommon": false
+  },
+  {
+    "code": "dyu",
+    "name": "Dyula",
+    "nativeName": "Dyula",
+    "isCommon": false
+  },
+  {
+    "code": "dz",
+    "name": "Dzongkha",
+    "nativeName": "Dzongkha",
+    "isCommon": false
+  },
+  {
+    "code": "frs",
+    "name": "Eastern Frisian",
+    "nativeName": "Eastern Frisian",
+    "isCommon": false
+  },
+  {
+    "code": "efi",
+    "name": "Efik",
+    "nativeName": "Efik",
+    "isCommon": false
+  },
+  {
+    "code": "arz",
+    "name": "Egyptian Arabic",
+    "nativeName": "Egyptian Arabic",
+    "isCommon": false
+  },
+  {
+    "code": "eka",
+    "name": "Ekajuk",
+    "nativeName": "Ekajuk",
+    "isCommon": false
+  },
+  {
+    "code": "elx",
+    "name": "Elamite",
+    "nativeName": "Elamite",
+    "isCommon": false
+  },
+  {
+    "code": "ebu",
+    "name": "Embu",
+    "nativeName": "Embu",
+    "isCommon": false
+  },
+  {
+    "code": "egl",
+    "name": "Emilian",
+    "nativeName": "Emilian",
+    "isCommon": false
+  },
+  {
+    "code": "myv",
+    "name": "Erzya",
+    "nativeName": "Erzya",
+    "isCommon": false
+  },
+  {
+    "code": "eo",
+    "name": "Esperanto",
+    "nativeName": "Esperanto",
+    "isCommon": false
+  },
+  {
+    "code": "et",
+    "name": "Estonian",
+    "nativeName": "Estonian",
+    "isCommon": false
+  },
+  {
+    "code": "ee",
+    "name": "Ewe",
+    "nativeName": "Ewe",
+    "isCommon": false
+  },
+  {
+    "code": "ewo",
+    "name": "Ewondo",
+    "nativeName": "Ewondo",
+    "isCommon": false
+  },
+  {
+    "code": "ext",
+    "name": "Extremaduran",
+    "nativeName": "Extremaduran",
+    "isCommon": false
+  },
+  {
+    "code": "fan",
+    "name": "Fang",
+    "nativeName": "Fang",
+    "isCommon": false
+  },
+  {
+    "code": "fat",
+    "name": "Fanti",
+    "nativeName": "Fanti",
+    "isCommon": false
+  },
+  {
+    "code": "fo",
+    "name": "Faroese",
+    "nativeName": "Faroese",
+    "isCommon": false
+  },
+  {
+    "code": "hif",
+    "name": "Fiji Hindi",
+    "nativeName": "Fiji Hindi",
+    "isCommon": false
+  },
+  {
+    "code": "fj",
+    "name": "Fijian",
+    "nativeName": "Fijian",
+    "isCommon": false
+  },
+  {
+    "code": "fil",
+    "name": "Filipino",
+    "nativeName": "Filipino",
+    "isCommon": false
+  },
+  {
+    "code": "fi",
+    "name": "Finnish",
+    "nativeName": "Finnish",
+    "isCommon": false
+  },
+  {
+    "code": "fon",
+    "name": "Fon",
+    "nativeName": "Fon",
+    "isCommon": false
+  },
+  {
+    "code": "gur",
+    "name": "Frafra",
+    "nativeName": "Frafra",
+    "isCommon": false
+  },
+  {
+    "code": "fur",
+    "name": "Friulian",
+    "nativeName": "Friulian",
+    "isCommon": false
+  },
+  {
+    "code": "ff",
+    "name": "Fula",
+    "nativeName": "Fula",
+    "isCommon": false
+  },
+  {
+    "code": "gaa",
+    "name": "Ga",
+    "nativeName": "Ga",
+    "isCommon": false
+  },
+  {
+    "code": "gag",
+    "name": "Gagauz",
+    "nativeName": "Gagauz",
+    "isCommon": false
+  },
+  {
+    "code": "gl",
+    "name": "Galician",
+    "nativeName": "Galician",
+    "isCommon": false
+  },
+  {
+    "code": "gan",
+    "name": "Gan Chinese",
+    "nativeName": "Gan Chinese",
+    "isCommon": false
+  },
+  {
+    "code": "lg",
+    "name": "Ganda",
+    "nativeName": "Ganda",
+    "isCommon": false
+  },
+  {
+    "code": "gay",
+    "name": "Gayo",
+    "nativeName": "Gayo",
+    "isCommon": false
+  },
+  {
+    "code": "gba",
+    "name": "Gbaya",
+    "nativeName": "Gbaya",
+    "isCommon": false
+  },
+  {
+    "code": "gez",
+    "name": "Geez",
+    "nativeName": "Geez",
+    "isCommon": false
+  },
+  {
+    "code": "ka",
+    "name": "Georgian",
+    "nativeName": "Georgian",
+    "isCommon": false
+  },
+  {
+    "code": "aln",
+    "name": "Gheg Albanian",
+    "nativeName": "Gheg Albanian",
+    "isCommon": false
+  },
+  {
+    "code": "bbj",
+    "name": "Ghomala",
+    "nativeName": "Ghomala",
+    "isCommon": false
+  },
+  {
+    "code": "glk",
+    "name": "Gilaki",
+    "nativeName": "Gilaki",
+    "isCommon": false
+  },
+  {
+    "code": "gil",
+    "name": "Gilbertese",
+    "nativeName": "Gilbertese",
+    "isCommon": false
+  },
+  {
+    "code": "gon",
+    "name": "Gondi",
+    "nativeName": "Gondi",
+    "isCommon": false
+  },
+  {
+    "code": "gor",
+    "name": "Gorontalo",
+    "nativeName": "Gorontalo",
+    "isCommon": false
+  },
+  {
+    "code": "got",
+    "name": "Gothic",
+    "nativeName": "Gothic",
+    "isCommon": false
+  },
+  {
+    "code": "grb",
+    "name": "Grebo",
+    "nativeName": "Grebo",
+    "isCommon": false
+  },
+  {
+    "code": "el",
+    "name": "Greek",
+    "nativeName": "Greek",
+    "isCommon": false
+  },
+  {
+    "code": "gn",
+    "name": "Guarani",
+    "nativeName": "Guarani",
+    "isCommon": false
+  },
+  {
+    "code": "gu",
+    "name": "Gujarati",
+    "nativeName": "Gujarati",
+    "isCommon": false
+  },
+  {
+    "code": "guz",
+    "name": "Gusii",
+    "nativeName": "Gusii",
+    "isCommon": false
+  },
+  {
+    "code": "gwi",
+    "name": "Gwichʼin",
+    "nativeName": "Gwichʼin",
+    "isCommon": false
+  },
+  {
+    "code": "hai",
+    "name": "Haida",
+    "nativeName": "Haida",
+    "isCommon": false
+  },
+  {
+    "code": "ht",
+    "name": "Haitian Creole",
+    "nativeName": "Haitian Creole",
+    "isCommon": false
+  },
+  {
+    "code": "hak",
+    "name": "Hakka Chinese",
+    "nativeName": "Hakka Chinese",
+    "isCommon": false
+  },
+  {
+    "code": "hur",
+    "name": "Halkomelem",
+    "nativeName": "Halkomelem",
+    "isCommon": false
+  },
+  {
+    "code": "bgc",
+    "name": "Haryanvi",
+    "nativeName": "Haryanvi",
+    "isCommon": false
+  },
+  {
+    "code": "ha",
+    "name": "Hausa",
+    "nativeName": "Hausa",
+    "isCommon": false
+  },
+  {
+    "code": "haw",
+    "name": "Hawaiian",
+    "nativeName": "Hawaiian",
+    "isCommon": false
+  },
+  {
+    "code": "he",
+    "name": "Hebrew",
+    "nativeName": "Hebrew",
+    "isCommon": false
+  },
+  {
+    "code": "hz",
+    "name": "Herero",
+    "nativeName": "Herero",
+    "isCommon": false
+  },
+  {
+    "code": "hil",
+    "name": "Hiligaynon",
+    "nativeName": "Hiligaynon",
+    "isCommon": false
+  },
+  {
+    "code": "hi",
+    "name": "Hindi",
+    "nativeName": "Hindi",
+    "isCommon": false
+  },
+  {
+    "code": "ho",
+    "name": "Hiri Motu",
+    "nativeName": "Hiri Motu",
+    "isCommon": false
+  },
+  {
+    "code": "hit",
+    "name": "Hittite",
+    "nativeName": "Hittite",
+    "isCommon": false
+  },
+  {
+    "code": "hmn",
+    "name": "Hmong",
+    "nativeName": "Hmong",
+    "isCommon": false
+  },
+  {
+    "code": "hnj",
+    "name": "Hmong Njua",
+    "nativeName": "Hmong Njua",
+    "isCommon": false
+  },
+  {
+    "code": "hu",
+    "name": "Hungarian",
+    "nativeName": "Hungarian",
+    "isCommon": false
+  },
+  {
+    "code": "hup",
+    "name": "Hupa",
+    "nativeName": "Hupa",
+    "isCommon": false
+  },
+  {
+    "code": "iba",
+    "name": "Iban",
+    "nativeName": "Iban",
+    "isCommon": false
+  },
+  {
+    "code": "ibb",
+    "name": "Ibibio",
+    "nativeName": "Ibibio",
+    "isCommon": false
+  },
+  {
+    "code": "is",
+    "name": "Icelandic",
+    "nativeName": "Icelandic",
+    "isCommon": false
+  },
+  {
+    "code": "io",
+    "name": "Ido",
+    "nativeName": "Ido",
+    "isCommon": false
+  },
+  {
+    "code": "ig",
+    "name": "Igbo",
+    "nativeName": "Igbo",
+    "isCommon": false
+  },
+  {
+    "code": "ilo",
+    "name": "Iloko",
+    "nativeName": "Iloko",
+    "isCommon": false
+  },
+  {
+    "code": "smn",
+    "name": "Inari Sami",
+    "nativeName": "Inari Sami",
+    "isCommon": false
+  },
+  {
+    "code": "id",
+    "name": "Indonesian",
+    "nativeName": "Indonesian",
+    "isCommon": false
+  },
+  {
+    "code": "izh",
+    "name": "Ingrian",
+    "nativeName": "Ingrian",
+    "isCommon": false
+  },
+  {
+    "code": "inh",
+    "name": "Ingush",
+    "nativeName": "Ingush",
+    "isCommon": false
+  },
+  {
+    "code": "moe",
+    "name": "Innu-aimun",
+    "nativeName": "Innu-aimun",
+    "isCommon": false
+  },
+  {
+    "code": "ia",
+    "name": "Interlingua",
+    "nativeName": "Interlingua",
+    "isCommon": false
+  },
+  {
+    "code": "ie",
+    "name": "Interlingue",
+    "nativeName": "Interlingue",
+    "isCommon": false
+  },
+  {
+    "code": "iu",
+    "name": "Inuktitut",
+    "nativeName": "Inuktitut",
+    "isCommon": false
+  },
+  {
+    "code": "ik",
+    "name": "Inupiaq",
+    "nativeName": "Inupiaq",
+    "isCommon": false
+  },
+  {
+    "code": "ga",
+    "name": "Irish",
+    "nativeName": "Irish",
+    "isCommon": false
+  },
+  {
+    "code": "jam",
+    "name": "Jamaican Creole English",
+    "nativeName": "Jamaican Creole English",
+    "isCommon": false
+  },
+  {
+    "code": "jv",
+    "name": "Javanese",
+    "nativeName": "Javanese",
+    "isCommon": false
+  },
+  {
+    "code": "kaj",
+    "name": "Jju",
+    "nativeName": "Jju",
+    "isCommon": false
+  },
+  {
+    "code": "dyo",
+    "name": "Jola-Fonyi",
+    "nativeName": "Jola-Fonyi",
+    "isCommon": false
+  },
+  {
+    "code": "jrb",
+    "name": "Judeo-Arabic",
+    "nativeName": "Judeo-Arabic",
+    "isCommon": false
+  },
+  {
+    "code": "jpr",
+    "name": "Judeo-Persian",
+    "nativeName": "Judeo-Persian",
+    "isCommon": false
+  },
+  {
+    "code": "jut",
+    "name": "Jutish",
+    "nativeName": "Jutish",
+    "isCommon": false
+  },
+  {
+    "code": "kbd",
+    "name": "Kabardian",
+    "nativeName": "Kabardian",
+    "isCommon": false
+  },
+  {
+    "code": "kea",
+    "name": "Kabuverdianu",
+    "nativeName": "Kabuverdianu",
+    "isCommon": false
+  },
+  {
+    "code": "kab",
+    "name": "Kabyle",
+    "nativeName": "Kabyle",
+    "isCommon": false
+  },
+  {
+    "code": "kac",
+    "name": "Kachin",
+    "nativeName": "Kachin",
+    "isCommon": false
+  },
+  {
+    "code": "kgp",
+    "name": "Kaingang",
+    "nativeName": "Kaingang",
+    "isCommon": false
+  },
+  {
+    "code": "kkj",
+    "name": "Kako",
+    "nativeName": "Kako",
+    "isCommon": false
+  },
+  {
+    "code": "kl",
+    "name": "Kalaallisut",
+    "nativeName": "Kalaallisut",
+    "isCommon": false
+  },
+  {
+    "code": "kln",
+    "name": "Kalenjin",
+    "nativeName": "Kalenjin",
+    "isCommon": false
+  },
+  {
+    "code": "xal",
+    "name": "Kalmyk",
+    "nativeName": "Kalmyk",
+    "isCommon": false
+  },
+  {
+    "code": "kam",
+    "name": "Kamba",
+    "nativeName": "Kamba",
+    "isCommon": false
+  },
+  {
+    "code": "kbl",
+    "name": "Kanembu",
+    "nativeName": "Kanembu",
+    "isCommon": false
+  },
+  {
+    "code": "xnr",
+    "name": "Kangri",
+    "nativeName": "Kangri",
+    "isCommon": false
+  },
+  {
+    "code": "kn",
+    "name": "Kannada",
+    "nativeName": "Kannada",
+    "isCommon": false
+  },
+  {
+    "code": "kr",
+    "name": "Kanuri",
+    "nativeName": "Kanuri",
+    "isCommon": false
+  },
+  {
+    "code": "kaa",
+    "name": "Kara-Kalpak",
+    "nativeName": "Kara-Kalpak",
+    "isCommon": false
+  },
+  {
+    "code": "krc",
+    "name": "Karachay-Balkar",
+    "nativeName": "Karachay-Balkar",
+    "isCommon": false
+  },
+  {
+    "code": "krl",
+    "name": "Karelian",
+    "nativeName": "Karelian",
+    "isCommon": false
+  },
+  {
+    "code": "ks",
+    "name": "Kashmiri",
+    "nativeName": "Kashmiri",
+    "isCommon": false
+  },
+  {
+    "code": "csb",
+    "name": "Kashubian",
+    "nativeName": "Kashubian",
+    "isCommon": false
+  },
+  {
+    "code": "kaw",
+    "name": "Kawi",
+    "nativeName": "Kawi",
+    "isCommon": false
+  },
+  {
+    "code": "kk",
+    "name": "Kazakh",
+    "nativeName": "Kazakh",
+    "isCommon": false
+  },
+  {
+    "code": "ken",
+    "name": "Kenyang",
+    "nativeName": "Kenyang",
+    "isCommon": false
+  },
+  {
+    "code": "kha",
+    "name": "Khasi",
+    "nativeName": "Khasi",
+    "isCommon": false
+  },
+  {
+    "code": "km",
+    "name": "Khmer",
+    "nativeName": "Khmer",
+    "isCommon": false
+  },
+  {
+    "code": "kho",
+    "name": "Khotanese",
+    "nativeName": "Khotanese",
+    "isCommon": false
+  },
+  {
+    "code": "khw",
+    "name": "Khowar",
+    "nativeName": "Khowar",
+    "isCommon": false
+  },
+  {
+    "code": "ki",
+    "name": "Kikuyu",
+    "nativeName": "Kikuyu",
+    "isCommon": false
+  },
+  {
+    "code": "kmb",
+    "name": "Kimbundu",
+    "nativeName": "Kimbundu",
+    "isCommon": false
+  },
+  {
+    "code": "krj",
+    "name": "Kinaray-a",
+    "nativeName": "Kinaray-a",
+    "isCommon": false
+  },
+  {
+    "code": "rw",
+    "name": "Kinyarwanda",
+    "nativeName": "Kinyarwanda",
+    "isCommon": false
+  },
+  {
+    "code": "kiu",
+    "name": "Kirmanjki",
+    "nativeName": "Kirmanjki",
+    "isCommon": false
+  },
+  {
+    "code": "tlh",
+    "name": "Klingon",
+    "nativeName": "Klingon",
+    "isCommon": false
+  },
+  {
+    "code": "bkm",
+    "name": "Kom",
+    "nativeName": "Kom",
+    "isCommon": false
+  },
+  {
+    "code": "kv",
+    "name": "Komi",
+    "nativeName": "Komi",
+    "isCommon": false
+  },
+  {
+    "code": "koi",
+    "name": "Komi-Permyak",
+    "nativeName": "Komi-Permyak",
+    "isCommon": false
+  },
+  {
+    "code": "kg",
+    "name": "Kongo",
+    "nativeName": "Kongo",
+    "isCommon": false
+  },
+  {
+    "code": "kok",
+    "name": "Konkani",
+    "nativeName": "Konkani",
+    "isCommon": false
+  },
+  {
+    "code": "kfo",
+    "name": "Koro",
+    "nativeName": "Koro",
+    "isCommon": false
+  },
+  {
+    "code": "kos",
+    "name": "Kosraean",
+    "nativeName": "Kosraean",
+    "isCommon": false
+  },
+  {
+    "code": "avk",
+    "name": "Kotava",
+    "nativeName": "Kotava",
+    "isCommon": false
+  },
+  {
+    "code": "khq",
+    "name": "Koyra Chiini",
+    "nativeName": "Koyra Chiini",
+    "isCommon": false
+  },
+  {
+    "code": "ses",
+    "name": "Koyraboro Senni",
+    "nativeName": "Koyraboro Senni",
+    "isCommon": false
+  },
+  {
+    "code": "kpe",
+    "name": "Kpelle",
+    "nativeName": "Kpelle",
+    "isCommon": false
+  },
+  {
+    "code": "kri",
+    "name": "Krio",
+    "nativeName": "Krio",
+    "isCommon": false
+  },
+  {
+    "code": "kj",
+    "name": "Kuanyama",
+    "nativeName": "Kuanyama",
+    "isCommon": false
+  },
+  {
+    "code": "kum",
+    "name": "Kumyk",
+    "nativeName": "Kumyk",
+    "isCommon": false
+  },
+  {
+    "code": "ku",
+    "name": "Kurdish",
+    "nativeName": "Kurdish",
+    "isCommon": false
+  },
+  {
+    "code": "kru",
+    "name": "Kurukh",
+    "nativeName": "Kurukh",
+    "isCommon": false
+  },
+  {
+    "code": "kut",
+    "name": "Kutenai",
+    "nativeName": "Kutenai",
+    "isCommon": false
+  },
+  {
+    "code": "kxv",
+    "name": "Kuvi",
+    "nativeName": "Kuvi",
+    "isCommon": false
+  },
+  {
+    "code": "kwk",
+    "name": "Kwakʼwala",
+    "nativeName": "Kwakʼwala",
+    "isCommon": false
+  },
+  {
+    "code": "nmg",
+    "name": "Kwasio",
+    "nativeName": "Kwasio",
+    "isCommon": false
+  },
+  {
+    "code": "ky",
+    "name": "Kyrgyz",
+    "nativeName": "Kyrgyz",
+    "isCommon": false
+  },
+  {
+    "code": "quc",
+    "name": "Kʼicheʼ",
+    "nativeName": "Kʼicheʼ",
+    "isCommon": false
+  },
+  {
+    "code": "lad",
+    "name": "Ladino",
+    "nativeName": "Ladino",
+    "isCommon": false
+  },
+  {
+    "code": "lkt",
+    "name": "Lakota",
+    "nativeName": "Lakota",
+    "isCommon": false
+  },
+  {
+    "code": "lam",
+    "name": "Lamba",
+    "nativeName": "Lamba",
+    "isCommon": false
+  },
+  {
+    "code": "lag",
+    "name": "Langi",
+    "nativeName": "Langi",
+    "isCommon": false
+  },
+  {
+    "code": "lo",
+    "name": "Lao",
+    "nativeName": "Lao",
+    "isCommon": false
+  },
+  {
+    "code": "ltg",
+    "name": "Latgalian",
+    "nativeName": "Latgalian",
+    "isCommon": false
+  },
+  {
+    "code": "la",
+    "name": "Latin",
+    "nativeName": "Latin",
+    "isCommon": false
+  },
+  {
+    "code": "lv",
+    "name": "Latvian",
+    "nativeName": "Latvian",
+    "isCommon": false
+  },
+  {
+    "code": "lzz",
+    "name": "Laz",
+    "nativeName": "Laz",
+    "isCommon": false
+  },
+  {
+    "code": "lez",
+    "name": "Lezghian",
+    "nativeName": "Lezghian",
+    "isCommon": false
+  },
+  {
+    "code": "lij",
+    "name": "Ligurian",
+    "nativeName": "Ligurian",
+    "isCommon": false
+  },
+  {
+    "code": "lil",
+    "name": "Lillooet",
+    "nativeName": "Lillooet",
+    "isCommon": false
+  },
+  {
+    "code": "li",
+    "name": "Limburgish",
+    "nativeName": "Limburgish",
+    "isCommon": false
+  },
+  {
+    "code": "ln",
+    "name": "Lingala",
+    "nativeName": "Lingala",
+    "isCommon": false
+  },
+  {
+    "code": "lfn",
+    "name": "Lingua Franca Nova",
+    "nativeName": "Lingua Franca Nova",
+    "isCommon": false
+  },
+  {
+    "code": "lzh",
+    "name": "Literary Chinese",
+    "nativeName": "Literary Chinese",
+    "isCommon": false
+  },
+  {
+    "code": "lt",
+    "name": "Lithuanian",
+    "nativeName": "Lithuanian",
+    "isCommon": false
+  },
+  {
+    "code": "liv",
+    "name": "Livonian",
+    "nativeName": "Livonian",
+    "isCommon": false
+  },
+  {
+    "code": "jbo",
+    "name": "Lojban",
+    "nativeName": "Lojban",
+    "isCommon": false
+  },
+  {
+    "code": "lmo",
+    "name": "Lombard",
+    "nativeName": "Lombard",
+    "isCommon": false
+  },
+  {
+    "code": "lou",
+    "name": "Louisiana Creole",
+    "nativeName": "Louisiana Creole",
+    "isCommon": false
+  },
+  {
+    "code": "nds",
+    "name": "Low German",
+    "nativeName": "Low German",
+    "isCommon": false
+  },
+  {
+    "code": "sli",
+    "name": "Lower Silesian",
+    "nativeName": "Lower Silesian",
+    "isCommon": false
+  },
+  {
+    "code": "dsb",
+    "name": "Lower Sorbian",
+    "nativeName": "Lower Sorbian",
+    "isCommon": false
+  },
+  {
+    "code": "loz",
+    "name": "Lozi",
+    "nativeName": "Lozi",
+    "isCommon": false
+  },
+  {
+    "code": "lu",
+    "name": "Luba-Katanga",
+    "nativeName": "Luba-Katanga",
+    "isCommon": false
+  },
+  {
+    "code": "lua",
+    "name": "Luba-Lulua",
+    "nativeName": "Luba-Lulua",
+    "isCommon": false
+  },
+  {
+    "code": "lui",
+    "name": "Luiseno",
+    "nativeName": "Luiseno",
+    "isCommon": false
+  },
+  {
+    "code": "smj",
+    "name": "Lule Sami",
+    "nativeName": "Lule Sami",
+    "isCommon": false
+  },
+  {
+    "code": "lun",
+    "name": "Lunda",
+    "nativeName": "Lunda",
+    "isCommon": false
+  },
+  {
+    "code": "luo",
+    "name": "Luo",
+    "nativeName": "Luo",
+    "isCommon": false
+  },
+  {
+    "code": "lb",
+    "name": "Luxembourgish",
+    "nativeName": "Luxembourgish",
+    "isCommon": false
+  },
+  {
+    "code": "luy",
+    "name": "Luyia",
+    "nativeName": "Luyia",
+    "isCommon": false
+  },
+  {
+    "code": "mde",
+    "name": "Maba",
+    "nativeName": "Maba",
+    "isCommon": false
+  },
+  {
+    "code": "mk",
+    "name": "Macedonian",
+    "nativeName": "Macedonian",
+    "isCommon": false
+  },
+  {
+    "code": "jmc",
+    "name": "Machame",
+    "nativeName": "Machame",
+    "isCommon": false
+  },
+  {
+    "code": "mad",
+    "name": "Madurese",
+    "nativeName": "Madurese",
+    "isCommon": false
+  },
+  {
+    "code": "maf",
+    "name": "Mafa",
+    "nativeName": "Mafa",
+    "isCommon": false
+  },
+  {
+    "code": "mag",
+    "name": "Magahi",
+    "nativeName": "Magahi",
+    "isCommon": false
+  },
+  {
+    "code": "vmf",
+    "name": "Main-Franconian",
+    "nativeName": "Main-Franconian",
+    "isCommon": false
+  },
+  {
+    "code": "mai",
+    "name": "Maithili",
+    "nativeName": "Maithili",
+    "isCommon": false
+  },
+  {
+    "code": "mak",
+    "name": "Makasar",
+    "nativeName": "Makasar",
+    "isCommon": false
+  },
+  {
+    "code": "vmw",
+    "name": "Makhuwa",
+    "nativeName": "Makhuwa",
+    "isCommon": false
+  },
+  {
+    "code": "mgh",
+    "name": "Makhuwa-Meetto",
+    "nativeName": "Makhuwa-Meetto",
+    "isCommon": false
+  },
+  {
+    "code": "kde",
+    "name": "Makonde",
+    "nativeName": "Makonde",
+    "isCommon": false
+  },
+  {
+    "code": "mg",
+    "name": "Malagasy",
+    "nativeName": "Malagasy",
+    "isCommon": false
+  },
+  {
+    "code": "ms",
+    "name": "Malay",
+    "nativeName": "Malay",
+    "isCommon": false
+  },
+  {
+    "code": "ml",
+    "name": "Malayalam",
+    "nativeName": "Malayalam",
+    "isCommon": false
+  },
+  {
+    "code": "pqm",
+    "name": "Maliseet-Passamaquoddy",
+    "nativeName": "Maliseet-Passamaquoddy",
+    "isCommon": false
+  },
+  {
+    "code": "mt",
+    "name": "Maltese",
+    "nativeName": "Maltese",
+    "isCommon": false
+  },
+  {
+    "code": "mnc",
+    "name": "Manchu",
+    "nativeName": "Manchu",
+    "isCommon": false
+  },
+  {
+    "code": "mdr",
+    "name": "Mandar",
+    "nativeName": "Mandar",
+    "isCommon": false
+  },
+  {
+    "code": "man",
+    "name": "Mandingo",
+    "nativeName": "Mandingo",
+    "isCommon": false
+  },
+  {
+    "code": "mni",
+    "name": "Manipuri",
+    "nativeName": "Manipuri",
+    "isCommon": false
+  },
+  {
+    "code": "gv",
+    "name": "Manx",
+    "nativeName": "Manx",
+    "isCommon": false
+  },
+  {
+    "code": "mi",
+    "name": "Māori",
+    "nativeName": "Māori",
+    "isCommon": false
+  },
+  {
+    "code": "arn",
+    "name": "Mapuche",
+    "nativeName": "Mapuche",
+    "isCommon": false
+  },
+  {
+    "code": "mr",
+    "name": "Marathi",
+    "nativeName": "Marathi",
+    "isCommon": false
+  },
+  {
+    "code": "chm",
+    "name": "Mari",
+    "nativeName": "Mari",
+    "isCommon": false
+  },
+  {
+    "code": "mh",
+    "name": "Marshallese",
+    "nativeName": "Marshallese",
+    "isCommon": false
+  },
+  {
+    "code": "mwr",
+    "name": "Marwari",
+    "nativeName": "Marwari",
+    "isCommon": false
+  },
+  {
+    "code": "mas",
+    "name": "Masai",
+    "nativeName": "Masai",
+    "isCommon": false
+  },
+  {
+    "code": "mzn",
+    "name": "Mazanderani",
+    "nativeName": "Mazanderani",
+    "isCommon": false
+  },
+  {
+    "code": "byv",
+    "name": "Medumba",
+    "nativeName": "Medumba",
+    "isCommon": false
+  },
+  {
+    "code": "men",
+    "name": "Mende",
+    "nativeName": "Mende",
+    "isCommon": false
+  },
+  {
+    "code": "mwv",
+    "name": "Mentawai",
+    "nativeName": "Mentawai",
+    "isCommon": false
+  },
+  {
+    "code": "mer",
+    "name": "Meru",
+    "nativeName": "Meru",
+    "isCommon": false
+  },
+  {
+    "code": "mgo",
+    "name": "Metaʼ",
+    "nativeName": "Metaʼ",
+    "isCommon": false
+  },
+  {
+    "code": "mic",
+    "name": "Mi'kmaw",
+    "nativeName": "Mi'kmaw",
+    "isCommon": false
+  },
+  {
+    "code": "crg",
+    "name": "Michif",
+    "nativeName": "Michif",
+    "isCommon": false
+  },
+  {
+    "code": "dum",
+    "name": "Middle Dutch",
+    "nativeName": "Middle Dutch",
+    "isCommon": false
+  },
+  {
+    "code": "enm",
+    "name": "Middle English",
+    "nativeName": "Middle English",
+    "isCommon": false
+  },
+  {
+    "code": "frm",
+    "name": "Middle French",
+    "nativeName": "Middle French",
+    "isCommon": false
+  },
+  {
+    "code": "gmh",
+    "name": "Middle High German",
+    "nativeName": "Middle High German",
+    "isCommon": false
+  },
+  {
+    "code": "mga",
+    "name": "Middle Irish",
+    "nativeName": "Middle Irish",
+    "isCommon": false
+  },
+  {
+    "code": "nan",
+    "name": "Min Nan Chinese",
+    "nativeName": "Min Nan Chinese",
+    "isCommon": false
+  },
+  {
+    "code": "min",
+    "name": "Minangkabau",
+    "nativeName": "Minangkabau",
+    "isCommon": false
+  },
+  {
+    "code": "xmf",
+    "name": "Mingrelian",
+    "nativeName": "Mingrelian",
+    "isCommon": false
+  },
+  {
+    "code": "mwl",
+    "name": "Mirandese",
+    "nativeName": "Mirandese",
+    "isCommon": false
+  },
+  {
+    "code": "lus",
+    "name": "Mizo",
+    "nativeName": "Mizo",
+    "isCommon": false
+  },
+  {
+    "code": "moh",
+    "name": "Mohawk",
+    "nativeName": "Mohawk",
+    "isCommon": false
+  },
+  {
+    "code": "mdf",
+    "name": "Moksha",
+    "nativeName": "Moksha",
+    "isCommon": false
+  },
+  {
+    "code": "lol",
+    "name": "Mongo",
+    "nativeName": "Mongo",
+    "isCommon": false
+  },
+  {
+    "code": "mn",
+    "name": "Mongolian",
+    "nativeName": "Mongolian",
+    "isCommon": false
+  },
+  {
+    "code": "crm",
+    "name": "Moose Cree",
+    "nativeName": "Moose Cree",
+    "isCommon": false
+  },
+  {
+    "code": "mfe",
+    "name": "Morisyen",
+    "nativeName": "Morisyen",
+    "isCommon": false
+  },
+  {
+    "code": "ary",
+    "name": "Moroccan Arabic",
+    "nativeName": "Moroccan Arabic",
+    "isCommon": false
+  },
+  {
+    "code": "mos",
+    "name": "Mossi",
+    "nativeName": "Mossi",
+    "isCommon": false
+  },
+  {
+    "code": "mul",
+    "name": "Multiple languages",
+    "nativeName": "Multiple languages",
+    "isCommon": false
+  },
+  {
+    "code": "mua",
+    "name": "Mundang",
+    "nativeName": "Mundang",
+    "isCommon": false
+  },
+  {
+    "code": "mus",
+    "name": "Muscogee",
+    "nativeName": "Muscogee",
+    "isCommon": false
+  },
+  {
+    "code": "ttt",
+    "name": "Muslim Tat",
+    "nativeName": "Muslim Tat",
+    "isCommon": false
+  },
+  {
+    "code": "mye",
+    "name": "Myene",
+    "nativeName": "Myene",
+    "isCommon": false
+  },
+  {
+    "code": "nqo",
+    "name": "N’Ko",
+    "nativeName": "N’Ko",
+    "isCommon": false
+  },
+  {
+    "code": "ars",
+    "name": "Najdi Arabic",
+    "nativeName": "Najdi Arabic",
+    "isCommon": false
+  },
+  {
+    "code": "naq",
+    "name": "Nama",
+    "nativeName": "Nama",
+    "isCommon": false
+  },
+  {
+    "code": "na",
+    "name": "Nauru",
+    "nativeName": "Nauru",
+    "isCommon": false
+  },
+  {
+    "code": "nv",
+    "name": "Navajo",
+    "nativeName": "Navajo",
+    "isCommon": false
+  },
+  {
+    "code": "ng",
+    "name": "Ndonga",
+    "nativeName": "Ndonga",
+    "isCommon": false
+  },
+  {
+    "code": "nap",
+    "name": "Neapolitan",
+    "nativeName": "Neapolitan",
+    "isCommon": false
+  },
+  {
+    "code": "ne",
+    "name": "Nepali",
+    "nativeName": "Nepali",
+    "isCommon": false
+  },
+  {
+    "code": "new",
+    "name": "Newari",
+    "nativeName": "Newari",
+    "isCommon": false
+  },
+  {
+    "code": "sba",
+    "name": "Ngambay",
+    "nativeName": "Ngambay",
+    "isCommon": false
+  },
+  {
+    "code": "nnh",
+    "name": "Ngiemboon",
+    "nativeName": "Ngiemboon",
+    "isCommon": false
+  },
+  {
+    "code": "jgo",
+    "name": "Ngomba",
+    "nativeName": "Ngomba",
+    "isCommon": false
+  },
+  {
+    "code": "yrl",
+    "name": "Nheengatu",
+    "nativeName": "Nheengatu",
+    "isCommon": false
+  },
+  {
+    "code": "nia",
+    "name": "Nias",
+    "nativeName": "Nias",
+    "isCommon": false
+  },
+  {
+    "code": "pcm",
+    "name": "Nigerian Pidgin",
+    "nativeName": "Nigerian Pidgin",
+    "isCommon": false
+  },
+  {
+    "code": "niu",
+    "name": "Niuean",
+    "nativeName": "Niuean",
+    "isCommon": false
+  },
+  {
+    "code": "zxx",
+    "name": "No linguistic content",
+    "nativeName": "No linguistic content",
+    "isCommon": false
+  },
+  {
+    "code": "nog",
+    "name": "Nogai",
+    "nativeName": "Nogai",
+    "isCommon": false
+  },
+  {
+    "code": "nd",
+    "name": "North Ndebele",
+    "nativeName": "North Ndebele",
+    "isCommon": false
+  },
+  {
+    "code": "crl",
+    "name": "Northern East Cree",
+    "nativeName": "Northern East Cree",
+    "isCommon": false
+  },
+  {
+    "code": "frr",
+    "name": "Northern Frisian",
+    "nativeName": "Northern Frisian",
+    "isCommon": false
+  },
+  {
+    "code": "lrc",
+    "name": "Northern Luri",
+    "nativeName": "Northern Luri",
+    "isCommon": false
+  },
+  {
+    "code": "se",
+    "name": "Northern Sami",
+    "nativeName": "Northern Sami",
+    "isCommon": false
+  },
+  {
+    "code": "nso",
+    "name": "Northern Sotho",
+    "nativeName": "Northern Sotho",
+    "isCommon": false
+  },
+  {
+    "code": "ttm",
+    "name": "Northern Tutchone",
+    "nativeName": "Northern Tutchone",
+    "isCommon": false
+  },
+  {
+    "code": "ojb",
+    "name": "Northwestern Ojibwa",
+    "nativeName": "Northwestern Ojibwa",
+    "isCommon": false
+  },
+  {
+    "code": "no",
+    "name": "Norwegian",
+    "nativeName": "Norwegian",
+    "isCommon": false
+  },
+  {
+    "code": "nb",
+    "name": "Norwegian Bokmål",
+    "nativeName": "Norwegian Bokmål",
+    "isCommon": false
+  },
+  {
+    "code": "nn",
+    "name": "Norwegian Nynorsk",
+    "nativeName": "Norwegian Nynorsk",
+    "isCommon": false
+  },
+  {
+    "code": "nov",
+    "name": "Novial",
+    "nativeName": "Novial",
+    "isCommon": false
+  },
+  {
+    "code": "nus",
+    "name": "Nuer",
+    "nativeName": "Nuer",
+    "isCommon": false
+  },
+  {
+    "code": "nym",
+    "name": "Nyamwezi",
+    "nativeName": "Nyamwezi",
+    "isCommon": false
+  },
+  {
+    "code": "ny",
+    "name": "Nyanja",
+    "nativeName": "Nyanja",
+    "isCommon": false
+  },
+  {
+    "code": "nyn",
+    "name": "Nyankole",
+    "nativeName": "Nyankole",
+    "isCommon": false
+  },
+  {
+    "code": "tog",
+    "name": "Nyasa Tonga",
+    "nativeName": "Nyasa Tonga",
+    "isCommon": false
+  },
+  {
+    "code": "nyo",
+    "name": "Nyoro",
+    "nativeName": "Nyoro",
+    "isCommon": false
+  },
+  {
+    "code": "nzi",
+    "name": "Nzima",
+    "nativeName": "Nzima",
+    "isCommon": false
+  },
+  {
+    "code": "ann",
+    "name": "Obolo",
+    "nativeName": "Obolo",
+    "isCommon": false
+  },
+  {
+    "code": "oc",
+    "name": "Occitan",
+    "nativeName": "Occitan",
+    "isCommon": false
+  },
+  {
+    "code": "or",
+    "name": "Odia",
+    "nativeName": "Odia",
+    "isCommon": false
+  },
+  {
+    "code": "ojs",
+    "name": "Oji-Cree",
+    "nativeName": "Oji-Cree",
+    "isCommon": false
+  },
+  {
+    "code": "oj",
+    "name": "Ojibwa",
+    "nativeName": "Ojibwa",
+    "isCommon": false
+  },
+  {
+    "code": "oka",
+    "name": "Okanagan",
+    "nativeName": "Okanagan",
+    "isCommon": false
+  },
+  {
+    "code": "ang",
+    "name": "Old English",
+    "nativeName": "Old English",
+    "isCommon": false
+  },
+  {
+    "code": "fro",
+    "name": "Old French",
+    "nativeName": "Old French",
+    "isCommon": false
+  },
+  {
+    "code": "goh",
+    "name": "Old High German",
+    "nativeName": "Old High German",
+    "isCommon": false
+  },
+  {
+    "code": "sga",
+    "name": "Old Irish",
+    "nativeName": "Old Irish",
+    "isCommon": false
+  },
+  {
+    "code": "non",
+    "name": "Old Norse",
+    "nativeName": "Old Norse",
+    "isCommon": false
+  },
+  {
+    "code": "peo",
+    "name": "Old Persian",
+    "nativeName": "Old Persian",
+    "isCommon": false
+  },
+  {
+    "code": "pro",
+    "name": "Old Provençal",
+    "nativeName": "Old Provençal",
+    "isCommon": false
+  },
+  {
+    "code": "om",
+    "name": "Oromo",
+    "nativeName": "Oromo",
+    "isCommon": false
+  },
+  {
+    "code": "osa",
+    "name": "Osage",
+    "nativeName": "Osage",
+    "isCommon": false
+  },
+  {
+    "code": "os",
+    "name": "Ossetic",
+    "nativeName": "Ossetic",
+    "isCommon": false
+  },
+  {
+    "code": "ota",
+    "name": "Ottoman Turkish",
+    "nativeName": "Ottoman Turkish",
+    "isCommon": false
+  },
+  {
+    "code": "pal",
+    "name": "Pahlavi",
+    "nativeName": "Pahlavi",
+    "isCommon": false
+  },
+  {
+    "code": "pfl",
+    "name": "Palatine German",
+    "nativeName": "Palatine German",
+    "isCommon": false
+  },
+  {
+    "code": "pau",
+    "name": "Palauan",
+    "nativeName": "Palauan",
+    "isCommon": false
+  },
+  {
+    "code": "pi",
+    "name": "Pali",
+    "nativeName": "Pali",
+    "isCommon": false
+  },
+  {
+    "code": "pam",
+    "name": "Pampanga",
+    "nativeName": "Pampanga",
+    "isCommon": false
+  },
+  {
+    "code": "pag",
+    "name": "Pangasinan",
+    "nativeName": "Pangasinan",
+    "isCommon": false
+  },
+  {
+    "code": "pap",
+    "name": "Papiamento",
+    "nativeName": "Papiamento",
+    "isCommon": false
+  },
+  {
+    "code": "ps",
+    "name": "Pashto",
+    "nativeName": "Pashto",
+    "isCommon": false
+  },
+  {
+    "code": "pdc",
+    "name": "Pennsylvania German",
+    "nativeName": "Pennsylvania German",
+    "isCommon": false
+  },
+  {
+    "code": "fa",
+    "name": "Persian",
+    "nativeName": "Persian",
+    "isCommon": false
+  },
+  {
+    "code": "phn",
+    "name": "Phoenician",
+    "nativeName": "Phoenician",
+    "isCommon": false
+  },
+  {
+    "code": "pcd",
+    "name": "Picard",
+    "nativeName": "Picard",
+    "isCommon": false
+  },
+  {
+    "code": "pms",
+    "name": "Piedmontese",
+    "nativeName": "Piedmontese",
+    "isCommon": false
+  },
+  {
+    "code": "pis",
+    "name": "Pijin",
+    "nativeName": "Pijin",
+    "isCommon": false
+  },
+  {
+    "code": "crk",
+    "name": "Plains Cree",
+    "nativeName": "Plains Cree",
+    "isCommon": false
+  },
+  {
+    "code": "pdt",
+    "name": "Plautdietsch",
+    "nativeName": "Plautdietsch",
+    "isCommon": false
+  },
+  {
+    "code": "pon",
+    "name": "Pohnpeian",
+    "nativeName": "Pohnpeian",
+    "isCommon": false
+  },
+  {
+    "code": "pl",
+    "name": "Polish",
+    "nativeName": "Polish",
+    "isCommon": false
+  },
+  {
+    "code": "pnt",
+    "name": "Pontic",
+    "nativeName": "Pontic",
+    "isCommon": false
+  },
+  {
+    "code": "prg",
+    "name": "Prussian",
+    "nativeName": "Prussian",
+    "isCommon": false
+  },
+  {
+    "code": "pa",
+    "name": "Punjabi",
+    "nativeName": "Punjabi",
+    "isCommon": false
+  },
+  {
+    "code": "qu",
+    "name": "Quechua",
+    "nativeName": "Quechua",
+    "isCommon": false
+  },
+  {
+    "code": "raj",
+    "name": "Rajasthani",
+    "nativeName": "Rajasthani",
+    "isCommon": false
+  },
+  {
+    "code": "rap",
+    "name": "Rapanui",
+    "nativeName": "Rapanui",
+    "isCommon": false
+  },
+  {
+    "code": "rar",
+    "name": "Rarotongan",
+    "nativeName": "Rarotongan",
+    "isCommon": false
+  },
+  {
+    "code": "rif",
+    "name": "Riffian",
+    "nativeName": "Riffian",
+    "isCommon": false
+  },
+  {
+    "code": "rhg",
+    "name": "Rohingya",
+    "nativeName": "Rohingya",
+    "isCommon": false
+  },
+  {
+    "code": "rgn",
+    "name": "Romagnol",
+    "nativeName": "Romagnol",
+    "isCommon": false
+  },
+  {
+    "code": "ro",
+    "name": "Romanian",
+    "nativeName": "Romanian",
+    "isCommon": false
+  },
+  {
+    "code": "rm",
+    "name": "Romansh",
+    "nativeName": "Romansh",
+    "isCommon": false
+  },
+  {
+    "code": "rom",
+    "name": "Romany",
+    "nativeName": "Romany",
+    "isCommon": false
+  },
+  {
+    "code": "rof",
+    "name": "Rombo",
+    "nativeName": "Rombo",
+    "isCommon": false
+  },
+  {
+    "code": "rtm",
+    "name": "Rotuman",
+    "nativeName": "Rotuman",
+    "isCommon": false
+  },
+  {
+    "code": "rug",
+    "name": "Roviana",
+    "nativeName": "Roviana",
+    "isCommon": false
+  },
+  {
+    "code": "rn",
+    "name": "Rundi",
+    "nativeName": "Rundi",
+    "isCommon": false
+  },
+  {
+    "code": "rue",
+    "name": "Rusyn",
+    "nativeName": "Rusyn",
+    "isCommon": false
+  },
+  {
+    "code": "rwk",
+    "name": "Rwa",
+    "nativeName": "Rwa",
+    "isCommon": false
+  },
+  {
+    "code": "lsm",
+    "name": "Saamia",
+    "nativeName": "Saamia",
+    "isCommon": false
+  },
+  {
+    "code": "ssy",
+    "name": "Saho",
+    "nativeName": "Saho",
+    "isCommon": false
+  },
+  {
+    "code": "sam",
+    "name": "Samaritan Aramaic",
+    "nativeName": "Samaritan Aramaic",
+    "isCommon": false
+  },
+  {
+    "code": "saq",
+    "name": "Samburu",
+    "nativeName": "Samburu",
+    "isCommon": false
+  },
+  {
+    "code": "sm",
+    "name": "Samoan",
+    "nativeName": "Samoan",
+    "isCommon": false
+  },
+  {
+    "code": "sgs",
+    "name": "Samogitian",
+    "nativeName": "Samogitian",
+    "isCommon": false
+  },
+  {
+    "code": "sad",
+    "name": "Sandawe",
+    "nativeName": "Sandawe",
+    "isCommon": false
+  },
+  {
+    "code": "sg",
+    "name": "Sango",
+    "nativeName": "Sango",
+    "isCommon": false
+  },
+  {
+    "code": "sbp",
+    "name": "Sangu",
+    "nativeName": "Sangu",
+    "isCommon": false
+  },
+  {
+    "code": "sa",
+    "name": "Sanskrit",
+    "nativeName": "Sanskrit",
+    "isCommon": false
+  },
+  {
+    "code": "sat",
+    "name": "Santali",
+    "nativeName": "Santali",
+    "isCommon": false
+  },
+  {
+    "code": "sc",
+    "name": "Sardinian",
+    "nativeName": "Sardinian",
+    "isCommon": false
+  },
+  {
+    "code": "sas",
+    "name": "Sasak",
+    "nativeName": "Sasak",
+    "isCommon": false
+  },
+  {
+    "code": "sdc",
+    "name": "Sassarese Sardinian",
+    "nativeName": "Sassarese Sardinian",
+    "isCommon": false
+  },
+  {
+    "code": "stq",
+    "name": "Saterland Frisian",
+    "nativeName": "Saterland Frisian",
+    "isCommon": false
+  },
+  {
+    "code": "saz",
+    "name": "Saurashtra",
+    "nativeName": "Saurashtra",
+    "isCommon": false
+  },
+  {
+    "code": "sco",
+    "name": "Scots",
+    "nativeName": "Scots",
+    "isCommon": false
+  },
+  {
+    "code": "gd",
+    "name": "Scottish Gaelic",
+    "nativeName": "Scottish Gaelic",
+    "isCommon": false
+  },
+  {
+    "code": "sly",
+    "name": "Selayar",
+    "nativeName": "Selayar",
+    "isCommon": false
+  },
+  {
+    "code": "sel",
+    "name": "Selkup",
+    "nativeName": "Selkup",
+    "isCommon": false
+  },
+  {
+    "code": "seh",
+    "name": "Sena",
+    "nativeName": "Sena",
+    "isCommon": false
+  },
+  {
+    "code": "see",
+    "name": "Seneca",
+    "nativeName": "Seneca",
+    "isCommon": false
+  },
+  {
+    "code": "sr",
+    "name": "Serbian",
+    "nativeName": "Serbian",
+    "isCommon": false
+  },
+  {
+    "code": "sh",
+    "name": "Serbo-Croatian",
+    "nativeName": "Serbo-Croatian",
+    "isCommon": false
+  },
+  {
+    "code": "srr",
+    "name": "Serer",
+    "nativeName": "Serer",
+    "isCommon": false
+  },
+  {
+    "code": "sei",
+    "name": "Seri",
+    "nativeName": "Seri",
+    "isCommon": false
+  },
+  {
+    "code": "crs",
+    "name": "Seselwa Creole French",
+    "nativeName": "Seselwa Creole French",
+    "isCommon": false
+  },
+  {
+    "code": "ksb",
+    "name": "Shambala",
+    "nativeName": "Shambala",
+    "isCommon": false
+  },
+  {
+    "code": "shn",
+    "name": "Shan",
+    "nativeName": "Shan",
+    "isCommon": false
+  },
+  {
+    "code": "sn",
+    "name": "Shona",
+    "nativeName": "Shona",
+    "isCommon": false
+  },
+  {
+    "code": "ii",
+    "name": "Sichuan Yi",
+    "nativeName": "Sichuan Yi",
+    "isCommon": false
+  },
+  {
+    "code": "scn",
+    "name": "Sicilian",
+    "nativeName": "Sicilian",
+    "isCommon": false
+  },
+  {
+    "code": "sid",
+    "name": "Sidamo",
+    "nativeName": "Sidamo",
+    "isCommon": false
+  },
+  {
+    "code": "bla",
+    "name": "Siksiká",
+    "nativeName": "Siksiká",
+    "isCommon": false
+  },
+  {
+    "code": "szl",
+    "name": "Silesian",
+    "nativeName": "Silesian",
+    "isCommon": false
+  },
+  {
+    "code": "sd",
+    "name": "Sindhi",
+    "nativeName": "Sindhi",
+    "isCommon": false
+  },
+  {
+    "code": "si",
+    "name": "Sinhala",
+    "nativeName": "Sinhala",
+    "isCommon": false
+  },
+  {
+    "code": "sms",
+    "name": "Skolt Sami",
+    "nativeName": "Skolt Sami",
+    "isCommon": false
+  },
+  {
+    "code": "den",
+    "name": "Slave",
+    "nativeName": "Slave",
+    "isCommon": false
+  },
+  {
+    "code": "sk",
+    "name": "Slovak",
+    "nativeName": "Slovak",
+    "isCommon": false
+  },
+  {
+    "code": "sl",
+    "name": "Slovenian",
+    "nativeName": "Slovenian",
+    "isCommon": false
+  },
+  {
+    "code": "xog",
+    "name": "Soga",
+    "nativeName": "Soga",
+    "isCommon": false
+  },
+  {
+    "code": "sog",
+    "name": "Sogdien",
+    "nativeName": "Sogdien",
+    "isCommon": false
+  },
+  {
+    "code": "so",
+    "name": "Somali",
+    "nativeName": "Somali",
+    "isCommon": false
+  },
+  {
+    "code": "snk",
+    "name": "Soninke",
+    "nativeName": "Soninke",
+    "isCommon": false
+  },
+  {
+    "code": "nr",
+    "name": "South Ndebele",
+    "nativeName": "South Ndebele",
+    "isCommon": false
+  },
+  {
+    "code": "alt",
+    "name": "Southern Altai",
+    "nativeName": "Southern Altai",
+    "isCommon": false
+  },
+  {
+    "code": "crj",
+    "name": "Southern East Cree",
+    "nativeName": "Southern East Cree",
+    "isCommon": false
+  },
+  {
+    "code": "hax",
+    "name": "Southern Haida",
+    "nativeName": "Southern Haida",
+    "isCommon": false
+  },
+  {
+    "code": "sdh",
+    "name": "Southern Kurdish",
+    "nativeName": "Southern Kurdish",
+    "isCommon": false
+  },
+  {
+    "code": "slh",
+    "name": "Southern Lushootseed",
+    "nativeName": "Southern Lushootseed",
+    "isCommon": false
+  },
+  {
+    "code": "sma",
+    "name": "Southern Sami",
+    "nativeName": "Southern Sami",
+    "isCommon": false
+  },
+  {
+    "code": "st",
+    "name": "Southern Sotho",
+    "nativeName": "Southern Sotho",
+    "isCommon": false
+  },
+  {
+    "code": "tce",
+    "name": "Southern Tutchone",
+    "nativeName": "Southern Tutchone",
+    "isCommon": false
+  },
+  {
+    "code": "srn",
+    "name": "Sranan Tongo",
+    "nativeName": "Sranan Tongo",
+    "isCommon": false
+  },
+  {
+    "code": "zgh",
+    "name": "Standard Moroccan Tamazight",
+    "nativeName": "Standard Moroccan Tamazight",
+    "isCommon": false
+  },
+  {
+    "code": "str",
+    "name": "Straits Salish",
+    "nativeName": "Straits Salish",
+    "isCommon": false
+  },
+  {
+    "code": "suk",
+    "name": "Sukuma",
+    "nativeName": "Sukuma",
+    "isCommon": false
+  },
+  {
+    "code": "sux",
+    "name": "Sumerian",
+    "nativeName": "Sumerian",
+    "isCommon": false
+  },
+  {
+    "code": "su",
+    "name": "Sundanese",
+    "nativeName": "Sundanese",
+    "isCommon": false
+  },
+  {
+    "code": "sus",
+    "name": "Susu",
+    "nativeName": "Susu",
+    "isCommon": false
+  },
+  {
+    "code": "sw",
+    "name": "Swahili",
+    "nativeName": "Swahili",
+    "isCommon": false
+  },
+  {
+    "code": "csw",
+    "name": "Swampy Cree",
+    "nativeName": "Swampy Cree",
+    "isCommon": false
+  },
+  {
+    "code": "ss",
+    "name": "Swati",
+    "nativeName": "Swati",
+    "isCommon": false
+  },
+  {
+    "code": "sv",
+    "name": "Swedish",
+    "nativeName": "Swedish",
+    "isCommon": false
+  },
+  {
+    "code": "gsw",
+    "name": "Swiss German",
+    "nativeName": "Swiss German",
+    "isCommon": false
+  },
+  {
+    "code": "syr",
+    "name": "Syriac",
+    "nativeName": "Syriac",
+    "isCommon": false
+  },
+  {
+    "code": "shi",
+    "name": "Tachelhit",
+    "nativeName": "Tachelhit",
+    "isCommon": false
+  },
+  {
+    "code": "tl",
+    "name": "Tagalog",
+    "nativeName": "Tagalog",
+    "isCommon": false
+  },
+  {
+    "code": "tgx",
+    "name": "Tagish",
+    "nativeName": "Tagish",
+    "isCommon": false
+  },
+  {
+    "code": "ty",
+    "name": "Tahitian",
+    "nativeName": "Tahitian",
+    "isCommon": false
+  },
+  {
+    "code": "tht",
+    "name": "Tahltan",
+    "nativeName": "Tahltan",
+    "isCommon": false
+  },
+  {
+    "code": "blt",
+    "name": "Tai Dam",
+    "nativeName": "Tai Dam",
+    "isCommon": false
+  },
+  {
+    "code": "dav",
+    "name": "Taita",
+    "nativeName": "Taita",
+    "isCommon": false
+  },
+  {
+    "code": "tg",
+    "name": "Tajik",
+    "nativeName": "Tajik",
+    "isCommon": false
+  },
+  {
+    "code": "tly",
+    "name": "Talysh",
+    "nativeName": "Talysh",
+    "isCommon": false
+  },
+  {
+    "code": "tmh",
+    "name": "Tamashek",
+    "nativeName": "Tamashek",
+    "isCommon": false
+  },
+  {
+    "code": "ta",
+    "name": "Tamil",
+    "nativeName": "Tamil",
+    "isCommon": false
+  },
+  {
+    "code": "trv",
+    "name": "Taroko",
+    "nativeName": "Taroko",
+    "isCommon": false
+  },
+  {
+    "code": "twq",
+    "name": "Tasawaq",
+    "nativeName": "Tasawaq",
+    "isCommon": false
+  },
+  {
+    "code": "tt",
+    "name": "Tatar",
+    "nativeName": "Tatar",
+    "isCommon": false
+  },
+  {
+    "code": "te",
+    "name": "Telugu",
+    "nativeName": "Telugu",
+    "isCommon": false
+  },
+  {
+    "code": "ter",
+    "name": "Tereno",
+    "nativeName": "Tereno",
+    "isCommon": false
+  },
+  {
+    "code": "teo",
+    "name": "Teso",
+    "nativeName": "Teso",
+    "isCommon": false
+  },
+  {
+    "code": "tet",
+    "name": "Tetum",
+    "nativeName": "Tetum",
+    "isCommon": false
+  },
+  {
+    "code": "th",
+    "name": "Thai",
+    "nativeName": "Thai",
+    "isCommon": false
+  },
+  {
+    "code": "bo",
+    "name": "Tibetan",
+    "nativeName": "Tibetan",
+    "isCommon": false
+  },
+  {
+    "code": "tig",
+    "name": "Tigre",
+    "nativeName": "Tigre",
+    "isCommon": false
+  },
+  {
+    "code": "ti",
+    "name": "Tigrinya",
+    "nativeName": "Tigrinya",
+    "isCommon": false
+  },
+  {
+    "code": "tem",
+    "name": "Timne",
+    "nativeName": "Timne",
+    "isCommon": false
+  },
+  {
+    "code": "tiv",
+    "name": "Tiv",
+    "nativeName": "Tiv",
+    "isCommon": false
+  },
+  {
+    "code": "tli",
+    "name": "Tlingit",
+    "nativeName": "Tlingit",
+    "isCommon": false
+  },
+  {
+    "code": "tpi",
+    "name": "Tok Pisin",
+    "nativeName": "Tok Pisin",
+    "isCommon": false
+  },
+  {
+    "code": "tkl",
+    "name": "Tokelau",
+    "nativeName": "Tokelau",
+    "isCommon": false
+  },
+  {
+    "code": "tok",
+    "name": "Toki Pona",
+    "nativeName": "Toki Pona",
+    "isCommon": false
+  },
+  {
+    "code": "to",
+    "name": "Tongan",
+    "nativeName": "Tongan",
+    "isCommon": false
+  },
+  {
+    "code": "fit",
+    "name": "Tornedalen Finnish",
+    "nativeName": "Tornedalen Finnish",
+    "isCommon": false
+  },
+  {
+    "code": "trw",
+    "name": "Torwali",
+    "nativeName": "Torwali",
+    "isCommon": false
+  },
+  {
+    "code": "tkr",
+    "name": "Tsakhur",
+    "nativeName": "Tsakhur",
+    "isCommon": false
+  },
+  {
+    "code": "tsd",
+    "name": "Tsakonian",
+    "nativeName": "Tsakonian",
+    "isCommon": false
+  },
+  {
+    "code": "tsi",
+    "name": "Tsimshian",
+    "nativeName": "Tsimshian",
+    "isCommon": false
+  },
+  {
+    "code": "ts",
+    "name": "Tsonga",
+    "nativeName": "Tsonga",
+    "isCommon": false
+  },
+  {
+    "code": "tn",
+    "name": "Tswana",
+    "nativeName": "Tswana",
+    "isCommon": false
+  },
+  {
+    "code": "tcy",
+    "name": "Tulu",
+    "nativeName": "Tulu",
+    "isCommon": false
+  },
+  {
+    "code": "tum",
+    "name": "Tumbuka",
+    "nativeName": "Tumbuka",
+    "isCommon": false
+  },
+  {
+    "code": "aeb",
+    "name": "Tunisian Arabic",
+    "nativeName": "Tunisian Arabic",
+    "isCommon": false
+  },
+  {
+    "code": "tr",
+    "name": "Turkish",
+    "nativeName": "Turkish",
+    "isCommon": false
+  },
+  {
+    "code": "tk",
+    "name": "Turkmen",
+    "nativeName": "Turkmen",
+    "isCommon": false
+  },
+  {
+    "code": "tru",
+    "name": "Turoyo",
+    "nativeName": "Turoyo",
+    "isCommon": false
+  },
+  {
+    "code": "tvl",
+    "name": "Tuvalu",
+    "nativeName": "Tuvalu",
+    "isCommon": false
+  },
+  {
+    "code": "tyv",
+    "name": "Tuvinian",
+    "nativeName": "Tuvinian",
+    "isCommon": false
+  },
+  {
+    "code": "tw",
+    "name": "Twi",
+    "nativeName": "Twi",
+    "isCommon": false
+  },
+  {
+    "code": "kcg",
+    "name": "Tyap",
+    "nativeName": "Tyap",
+    "isCommon": false
+  },
+  {
+    "code": "udm",
+    "name": "Udmurt",
+    "nativeName": "Udmurt",
+    "isCommon": false
+  },
+  {
+    "code": "uga",
+    "name": "Ugaritic",
+    "nativeName": "Ugaritic",
+    "isCommon": false
+  },
+  {
+    "code": "uk",
+    "name": "Ukrainian",
+    "nativeName": "Ukrainian",
+    "isCommon": false
+  },
+  {
+    "code": "umb",
+    "name": "Umbundu",
+    "nativeName": "Umbundu",
+    "isCommon": false
+  },
+  {
+    "code": "und",
+    "name": "Unknown language",
+    "nativeName": "Unknown language",
+    "isCommon": false
+  },
+  {
+    "code": "hsb",
+    "name": "Upper Sorbian",
+    "nativeName": "Upper Sorbian",
+    "isCommon": false
+  },
+  {
+    "code": "ur",
+    "name": "Urdu",
+    "nativeName": "Urdu",
+    "isCommon": false
+  },
+  {
+    "code": "ug",
+    "name": "Uyghur",
+    "nativeName": "Uyghur",
+    "isCommon": false
+  },
+  {
+    "code": "uz",
+    "name": "Uzbek",
+    "nativeName": "Uzbek",
+    "isCommon": false
+  },
+  {
+    "code": "vai",
+    "name": "Vai",
+    "nativeName": "Vai",
+    "isCommon": false
+  },
+  {
+    "code": "ve",
+    "name": "Venda",
+    "nativeName": "Venda",
+    "isCommon": false
+  },
+  {
+    "code": "vec",
+    "name": "Venetian",
+    "nativeName": "Venetian",
+    "isCommon": false
+  },
+  {
+    "code": "vep",
+    "name": "Veps",
+    "nativeName": "Veps",
+    "isCommon": false
+  },
+  {
+    "code": "vi",
+    "name": "Vietnamese",
+    "nativeName": "Vietnamese",
+    "isCommon": false
+  },
+  {
+    "code": "vo",
+    "name": "Volapük",
+    "nativeName": "Volapük",
+    "isCommon": false
+  },
+  {
+    "code": "vro",
+    "name": "Võro",
+    "nativeName": "Võro",
+    "isCommon": false
+  },
+  {
+    "code": "vot",
+    "name": "Votic",
+    "nativeName": "Votic",
+    "isCommon": false
+  },
+  {
+    "code": "vun",
+    "name": "Vunjo",
+    "nativeName": "Vunjo",
+    "isCommon": false
+  },
+  {
+    "code": "wa",
+    "name": "Walloon",
+    "nativeName": "Walloon",
+    "isCommon": false
+  },
+  {
+    "code": "wae",
+    "name": "Walser",
+    "nativeName": "Walser",
+    "isCommon": false
+  },
+  {
+    "code": "war",
+    "name": "Waray",
+    "nativeName": "Waray",
+    "isCommon": false
+  },
+  {
+    "code": "wbp",
+    "name": "Warlpiri",
+    "nativeName": "Warlpiri",
+    "isCommon": false
+  },
+  {
+    "code": "was",
+    "name": "Washo",
+    "nativeName": "Washo",
+    "isCommon": false
+  },
+  {
+    "code": "guc",
+    "name": "Wayuu",
+    "nativeName": "Wayuu",
+    "isCommon": false
+  },
+  {
+    "code": "cy",
+    "name": "Welsh",
+    "nativeName": "Welsh",
+    "isCommon": false
+  },
+  {
+    "code": "vls",
+    "name": "West Flemish",
+    "nativeName": "West Flemish",
+    "isCommon": false
+  },
+  {
+    "code": "bgn",
+    "name": "Western Balochi",
+    "nativeName": "Western Balochi",
+    "isCommon": false
+  },
+  {
+    "code": "ikt",
+    "name": "Western Canadian Inuktitut",
+    "nativeName": "Western Canadian Inuktitut",
+    "isCommon": false
+  },
+  {
+    "code": "fy",
+    "name": "Western Frisian",
+    "nativeName": "Western Frisian",
+    "isCommon": false
+  },
+  {
+    "code": "mrj",
+    "name": "Western Mari",
+    "nativeName": "Western Mari",
+    "isCommon": false
+  },
+  {
+    "code": "ojw",
+    "name": "Western Ojibwa",
+    "nativeName": "Western Ojibwa",
+    "isCommon": false
+  },
+  {
+    "code": "lah",
+    "name": "Western Panjabi",
+    "nativeName": "Western Panjabi",
+    "isCommon": false
+  },
+  {
+    "code": "wal",
+    "name": "Wolaytta",
+    "nativeName": "Wolaytta",
+    "isCommon": false
+  },
+  {
+    "code": "wo",
+    "name": "Wolof",
+    "nativeName": "Wolof",
+    "isCommon": false
+  },
+  {
+    "code": "wuu",
+    "name": "Wu Chinese",
+    "nativeName": "Wu Chinese",
+    "isCommon": false
+  },
+  {
+    "code": "xh",
+    "name": "Xhosa",
+    "nativeName": "Xhosa",
+    "isCommon": false
+  },
+  {
+    "code": "hsn",
+    "name": "Xiang Chinese",
+    "nativeName": "Xiang Chinese",
+    "isCommon": false
+  },
+  {
+    "code": "sah",
+    "name": "Yakut",
+    "nativeName": "Yakut",
+    "isCommon": false
+  },
+  {
+    "code": "yav",
+    "name": "Yangben",
+    "nativeName": "Yangben",
+    "isCommon": false
+  },
+  {
+    "code": "yao",
+    "name": "Yao",
+    "nativeName": "Yao",
+    "isCommon": false
+  },
+  {
+    "code": "yap",
+    "name": "Yapese",
+    "nativeName": "Yapese",
+    "isCommon": false
+  },
+  {
+    "code": "ybb",
+    "name": "Yemba",
+    "nativeName": "Yemba",
+    "isCommon": false
+  },
+  {
+    "code": "yi",
+    "name": "Yiddish",
+    "nativeName": "Yiddish",
+    "isCommon": false
+  },
+  {
+    "code": "yo",
+    "name": "Yoruba",
+    "nativeName": "Yoruba",
+    "isCommon": false
+  },
+  {
+    "code": "zap",
+    "name": "Zapotec",
+    "nativeName": "Zapotec",
+    "isCommon": false
+  },
+  {
+    "code": "dje",
+    "name": "Zarma",
+    "nativeName": "Zarma",
+    "isCommon": false
+  },
+  {
+    "code": "zza",
+    "name": "Zaza",
+    "nativeName": "Zaza",
+    "isCommon": false
+  },
+  {
+    "code": "zea",
+    "name": "Zeelandic",
+    "nativeName": "Zeelandic",
+    "isCommon": false
+  },
+  {
+    "code": "zen",
+    "name": "Zenaga",
+    "nativeName": "Zenaga",
+    "isCommon": false
+  },
+  {
+    "code": "za",
+    "name": "Zhuang",
+    "nativeName": "Zhuang",
+    "isCommon": false
+  },
+  {
+    "code": "gbz",
+    "name": "Zoroastrian Dari",
+    "nativeName": "Zoroastrian Dari",
+    "isCommon": false
+  },
+  {
+    "code": "zu",
+    "name": "Zulu",
+    "nativeName": "Zulu",
+    "isCommon": false
+  },
+  {
+    "code": "zun",
+    "name": "Zuni",
+    "nativeName": "Zuni",
+    "isCommon": false
+  }
+]
