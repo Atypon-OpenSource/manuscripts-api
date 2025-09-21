@@ -56,7 +56,6 @@ export class DocumentService {
       case ProjectUserRole.Writer:
       case ProjectUserRole.Editor:
       case ProjectUserRole.Annotator:
-      case ProjectUserRole.Proofer:
         return new Set([DocumentPermission.READ, DocumentPermission.WRITE])
       case ProjectUserRole.Viewer:
         return new Set([DocumentPermission.READ])

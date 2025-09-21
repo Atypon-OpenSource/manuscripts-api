@@ -22,14 +22,12 @@ export type PatchProject = {
   viewers?: string[]
   editors?: string[]
   annotators?: string[]
-  proofers?: string[]
 }
 export enum ProjectUserRole {
   Owner = 'Owner',
   Writer = 'Writer',
   Viewer = 'Viewer',
   Editor = 'Editor',
-  Proofer = 'Proofer',
   Annotator = 'Annotator',
 }
 export enum ProjectPermission {
