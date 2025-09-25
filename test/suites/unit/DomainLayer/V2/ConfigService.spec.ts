@@ -48,6 +48,15 @@ beforeEach(async () => {
     if (filePath.includes('csl/locales')) {
       return Promise.resolve('"localeData"')
     }
+    if (filePath.includes('languages')) {
+      return Promise.resolve([
+        {
+          code: 'zh',
+          name: 'Chinese',
+          nativeName: '中文',
+        },
+      ])
+    }
   })
   // @ts-ignore
   jest.spyOn(fs.promises, 'readdir').mockImplementation((path) => {
@@ -88,6 +97,13 @@ describe('ConfigService', () => {
       expect(store.get('style1')).toEqual('"styleData"')
       expect(store.get('style2')).toEqual('"styleData"')
       expect(store.get('en-US')).toEqual('"localeData"')
+      expect(store.get('languages')).toEqual([
+        {
+          code: 'zh',
+          name: 'Chinese',
+          nativeName: '中文',
+        },
+      ])
     })
   })
 

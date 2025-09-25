@@ -18,7 +18,7 @@ import Joi from 'joi'
 
 import { appJsonAndCharset } from '../../BaseSchema'
 
-export const defaultSchema: Joi.SchemaMap = {
+export const defaultQuerySchema: Joi.SchemaMap = {
   headers: Joi.object({
     accept: appJsonAndCharset,
   }),
@@ -46,5 +46,11 @@ export const bundleSchema: Joi.SchemaMap = {
     id: Joi.string()
       .regex(/^MPBundle:.+$/)
       .required(),
+  }),
+}
+
+export const defaultPathSchema: Joi.SchemaMap = {
+  headers: Joi.object({
+    accept: appJsonAndCharset,
   }),
 }

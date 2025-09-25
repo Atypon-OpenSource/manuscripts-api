@@ -137,7 +137,9 @@ export class ProjectService {
   }
 
   public async createManuscriptDoc(manuscript: Manuscript, projectID: string, userID: string) {
-    const template = manuscript.prototype ? await this.configService.getDocument(manuscript.prototype) : null
+    const template = manuscript.prototype
+      ? await this.configService.getDocument(manuscript.prototype)
+      : null
     const templateData = template ? JSON.parse(template) : null
 
     const createDoc: CreateDoc = {
