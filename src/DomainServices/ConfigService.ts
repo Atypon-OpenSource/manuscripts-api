@@ -79,9 +79,9 @@ export class ConfigService {
   }
 
   private async initLanguages(root: string) {
-    const languages = JSON.parse(await fs.readFile(path.join(root, 'languages.json'), 'utf-8'))
+    const languages = await fs.readFile(path.join(root, 'languages.json'), 'utf-8')
     const languagesMap = new Map<string, string>()
-    languagesMap.set('languages', JSON.stringify(languages))
+    languagesMap.set('languages', languages)
     return languagesMap
   }
 

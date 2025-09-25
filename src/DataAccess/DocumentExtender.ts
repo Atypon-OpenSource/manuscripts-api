@@ -27,7 +27,7 @@ export class DocumentExtender {
   readonly DOCUMENT_MODEL = 'manuscriptDoc'
   private extensions: ReturnType<typeof this.buildExtensions>
 
-  constructor (private readonly prisma: PrismaClient) { }
+  constructor(private readonly prisma: PrismaClient) {}
 
   getExtension() {
     this.extensions = this.buildExtensions()
