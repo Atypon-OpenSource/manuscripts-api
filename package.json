@@ -1,6 +1,6 @@
 {
   "name": "@manuscripts/api",
-  "version": "2.1.7-LEAN-4873.3",
+  "version": "2.1.12",
   "description": "Manuscripts API server",
   "license": "Apache-2.0",
   "main": "dist/index",
@@ -15,7 +15,6 @@
     "migrate-prisma": "prisma migrate dev --name init",
     "migrate-prisma-deploy": "npx prisma migrate deploy && node ./prisma/migrations/20240611191311_init/patch.js",
     "lint": "eslint src --ext .js,.ts",
-    "lint:fix": "eslint src --ext .js,.ts --fix",
     "typecheck": "tsc --noEmit",
     "test": "run-s test:unit test:int",
     "test:unit": "jest --ci --config=./jest.config.unit.test.js --no-cache --detectOpenHandles --forceExit --coverage --runInBand --reporters=default",
@@ -26,7 +25,8 @@
     "clean": "rm -rf dist/"
   },
   "dependencies": {
-    "@manuscripts/transform": "4.2.18-LEAN-4873.8",
+    "@manuscripts/json-schema": "2.2.12",
+    "@manuscripts/transform": "4.3.5",
     "@prisma/client": "6.7.0",
     "celebrate": "15.0.3",
     "checksum": "1.0.0",

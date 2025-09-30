@@ -235,7 +235,6 @@ export class ProjectService {
       writers: [],
       viewers: [],
       editors: [],
-      proofers: [],
       annotators: [],
     }
     await this.projectClient.patch(projectID, updated)
@@ -262,7 +261,6 @@ export class ProjectService {
       writers: project.writers.filter((u) => u !== user.id),
       viewers: project.viewers.filter((u) => u !== user.id),
       editors: project.editors ? project.editors.filter((u) => u !== user.id) : [],
-      proofers: project.proofers ? project.proofers.filter((u) => u !== user.id) : [],
       annotators: project.annotators ? project.annotators.filter((u) => u !== user.id) : [],
     }
 
@@ -278,9 +276,6 @@ export class ProjectService {
         break
       case ProjectUserRole.Editor:
         updated.editors.push(user.id)
-        break
-      case ProjectUserRole.Proofer:
-        updated.proofers.push(user.id)
         break
       case ProjectUserRole.Annotator:
         updated.annotators.push(user.id)
@@ -314,8 +309,6 @@ export class ProjectService {
     } else if (project.editors?.includes(userID)) {
       return new Set([ProjectPermission.READ, ProjectPermission.UPDATE])
     } else if (project.annotators?.includes(userID)) {
-      return new Set([ProjectPermission.READ, ProjectPermission.UPDATE])
-    } else if (project.proofers?.includes(userID)) {
       return new Set([ProjectPermission.READ, ProjectPermission.UPDATE])
     }
     return EMPTY_PERMISSIONS
@@ -435,8 +428,6 @@ export class ProjectService {
       return ProjectUserRole.Editor
     } else if (ProjectService.isAnnotator(project, userID)) {
       return ProjectUserRole.Annotator
-    } else if (ProjectService.isProofer(project, userID)) {
-      return ProjectUserRole.Proofer
     } else {
       return null
     }
@@ -465,14 +456,6 @@ export class ProjectService {
     const annotators = project.annotators
     if (annotators && annotators.length) {
       return annotators.indexOf(userID) > -1
-    }
-    return false
-  }
-
-  public static isProofer(project: Project, userID: string): boolean {
-    const proofers = project.proofers
-    if (proofers && proofers.length) {
-      return proofers.indexOf(userID) > -1
     }
     return false
   }

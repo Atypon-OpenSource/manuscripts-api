@@ -618,29 +618,6 @@ describe('ContainerService - loadProject', () => {
     expect(response.status).toBe(StatusCodes.OK)
   })
 
-  test('should successfully loadProject when user is proofer', async () => {
-    const loginResponse: supertest.Response = await basicLogin(
-      validBody2,
-      ValidHeaderWithApplicationKey
-    )
-
-    expect(loginResponse.status).toBe(StatusCodes.OK)
-
-    const authHeader = authorizationHeader(loginResponse.body.token)
-    await createProject('MPProject:valid-project-id-2')
-    const response: supertest.Response = await loadProject(
-      {
-        ...ValidContentTypeAcceptJsonHeader,
-        ...authHeader,
-      },
-      {},
-      {
-        projectId: 'MPProject:valid-project-id-2',
-      }
-    )
-    expect(response.status).toBe(StatusCodes.OK)
-  })
-
   test('should return NOT_MODIFIED', async () => {
     const loginResponse: supertest.Response = await basicLogin(
       validBody,
