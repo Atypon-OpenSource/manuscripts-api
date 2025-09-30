@@ -34,7 +34,8 @@ export class ConfigService {
     const templates = await this.initTemplates(root)
     const styles = await this.initCslStyles(root)
     const locales = await this.initCslLocales(root)
-    return new Map<string, string>([...bundles, ...templates, ...styles, ...locales])
+    const languages = await this.initLanguages(root)
+    return new Map<string, string>([...bundles, ...templates, ...styles, ...locales, ...languages])
   }
 
   private async initBundles(root: string) {
@@ -47,10 +48,8 @@ export class ConfigService {
       await fs.readFile(path.join(root, 'templates.json'), 'utf-8')
     )
     for (const template of templates) {
-      if (typeof template.sectionCategories === 'string') {
-        const file = await fs.readFile(path.join(root, template.sectionCategories), 'utf-8')
-        template.sectionCategories = JSON.parse(file)
-      }
+      const file = await fs.readFile(path.join(root, template.sectionCategories), 'utf-8')
+      template.sectionCategories = JSON.parse(file)
     }
     return this.index(templates)
   }
@@ -77,6 +76,13 @@ export class ConfigService {
       locales.set(id, data)
     }
     return locales
+  }
+
+  private async initLanguages(root: string) {
+    const languages = await fs.readFile(path.join(root, 'languages.json'), 'utf-8')
+    const languagesMap = new Map<string, string>()
+    languagesMap.set('languages', languages)
+    return languagesMap
   }
 
   private index(models: Model[]) {
