@@ -12,8 +12,8 @@ importers:
         specifier: 2.2.12
         version: 2.2.12
       '@manuscripts/transform':
-        specifier: 4.3.5
-        version: 4.3.5(prosemirror-state@1.4.3)
+        specifier: 4.3.6-LEAN-4810.2
+        version: 4.3.6-LEAN-4810.2(prosemirror-state@1.4.3)
       '@prisma/client':
         specifier: 6.7.0
         version: 6.7.0(prisma@6.7.0(typescript@4.9.5))(typescript@4.9.5)
@@ -119,7 +119,7 @@ importers:
         version: 3.0.0
       '@manuscripts/eslint-config':
         specifier: 0.5.1
-        version: 0.5.1(4s2xfmzsey3buelygsmpt2ulxe)
+        version: 0.5.1(dd7c837a70e5c690b0fa94af673420e9)
       '@types/bcrypt':
         specifier: 5.0.2
         version: 5.0.2
@@ -1274,8 +1274,8 @@ packages:
   '@manuscripts/json-schema@2.2.12':
     resolution: {integrity: sha512-MCz11Dhc1kric1oU9cnYHboPgEwwccWfuuU1XhAEilDIFe8KszAeQk5i4GBGlGLddp/Gvkr6N1gtzLl36mTE7A==}
 
-  '@manuscripts/transform@4.3.5':
-    resolution: {integrity: sha512-Dsx2cUvRfjOvYuUOGAR/dTbB6wVkLMMYrzey/lao2XmhzwP4qNkvX9UI2I+8AAFrf8S5qIbvljNAB0rZ1ABf4Q==}
+  '@manuscripts/transform@4.3.6-LEAN-4810.2':
+    resolution: {integrity: sha512-XedMyI1prieG5Iu5elaoibABfCSpng3JjU4lvF9FrGZEQMJICaASVucUTC3+Ec5/OrPkwHwn7fxV1DTYG3fuSA==, tarball: https://us-west4-npm.pkg.dev/atypon-artifact/lwf-virtual-npm-repo/@manuscripts/transform/-/@manuscripts/transform-4.3.6-LEAN-4810.2.tgz}
     engines: {node: '>=20.16.0'}
 
   '@nodelib/fs.scandir@2.1.5':
@@ -6285,7 +6285,7 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.0
       '@jridgewell/sourcemap-codec': 1.4.14
 
-  '@manuscripts/eslint-config@0.5.1(4s2xfmzsey3buelygsmpt2ulxe)':
+  '@manuscripts/eslint-config@0.5.1(dd7c837a70e5c690b0fa94af673420e9)':
     dependencies:
       '@typescript-eslint/eslint-plugin': 5.62.0(@typescript-eslint/parser@5.62.0(eslint@8.57.1)(typescript@4.9.5))(eslint@8.57.1)(typescript@4.9.5)
       '@typescript-eslint/parser': 5.62.0(eslint@8.57.1)(typescript@4.9.5)
@@ -6312,7 +6312,7 @@ snapshots:
       deepmerge: 4.3.1
       uuid: 9.0.1
 
-  '@manuscripts/transform@4.3.5(prosemirror-state@1.4.3)':
+  '@manuscripts/transform@4.3.6-LEAN-4810.2(prosemirror-state@1.4.3)':
     dependencies:
       '@manuscripts/json-schema': 2.2.12
       citeproc: 2.4.63
