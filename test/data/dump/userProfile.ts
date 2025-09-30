@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { UserProfile } from '@manuscripts/json-schema'
+import { UserProfile } from '@manuscripts/transform'
 
 import { UserService } from '../../../src/DomainServices/User/UserService'
 

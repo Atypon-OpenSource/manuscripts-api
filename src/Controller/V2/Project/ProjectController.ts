@@ -14,8 +14,14 @@
  * limitations under the License.
  */
 
-import { Manuscript, Model, ObjectTypes, Project, UserProfile } from '@manuscripts/json-schema'
-import { getVersion } from '@manuscripts/transform'
+import {
+  getVersion,
+  Manuscript,
+  Model,
+  objectTypes,
+  Project,
+  UserProfile,
+} from '@manuscripts/transform'
 
 import { DIContainer } from '../../../DIContainer/DIContainer'
 import {
@@ -50,11 +56,10 @@ export class ProjectController extends BaseController {
     if (!permissions.has(ProjectPermission.UPDATE)) {
       throw new RoleDoesNotPermitOperationError(`Access denied`, user.id)
     }
-    const models: Model[] = await this.getProjectModels([ObjectTypes.Manuscript], user, projectID)
-    if (!models || models.length == 0) {
+    const manuscript = await this.getProjectManuscript(projectID, user)
+    if (!manuscript) {
       throw new RecordNotFoundError(manuscriptID)
     }
-    const manuscript = models[0] as Manuscript
     manuscript.DOI = doi
     await DIContainer.sharedContainer.projectService.updateManuscript(manuscript)
     const manuscriptDocument = await DIContainer.sharedContainer.documentClient.findDocument(
@@ -101,6 +106,18 @@ export class ProjectController extends BaseController {
     }
 
     return models
+  }
+
+  async getProjectManuscript(projectID: string, user: Express.User): Promise<any | null> {
+    const permissions = await this.getPermissions(projectID, user.id)
+    if (!permissions.has(ProjectPermission.READ)) {
+      throw new RoleDoesNotPermitOperationError(`Access denied`, user.id)
+    }
+
+    const models =
+      (await DIContainer.sharedContainer.projectService.getProjectModels(projectID)) || []
+    const manuscript = models.find((m) => m.objectType === objectTypes.Manuscript)
+    return manuscript || null
   }
 
   async updateUserRole(

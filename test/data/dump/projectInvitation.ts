@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import { ContainerInvitation, UserProfile } from '@manuscripts/json-schema'
+import { UserProfile } from '@manuscripts/transform'
 import checksum from 'checksum'
 
 import { ContainerRole } from '../../../src/Models/ContainerModels'
 
-export const projectInvitationsList: ContainerInvitation[] = []
+export const projectInvitationsList: any[] = []
 
 const invitingUserProfile: UserProfile = {
   createdAt: 1522231220,
