@@ -76,7 +76,7 @@ export class ProjectRoute extends BaseRoute {
       AuthStrategy.JWTAuth,
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
-          await this.getProjectModels(req, res)
+          await this.getProject(req, res)
         }, next)
       }
     )
@@ -213,7 +213,7 @@ export class ProjectRoute extends BaseRoute {
     res.status(StatusCodes.OK).send(manuscript)
   }
 
-  private async getProjectModels(req: Request, res: Response) {
+  private async getProject(req: Request, res: Response) {
     const modifiedSince = req.headers['if-modified-since']
     const { projectID } = req.params
     if (await this.projectController.isProjectCacheValid(projectID, modifiedSince)) {
@@ -223,9 +223,9 @@ export class ProjectRoute extends BaseRoute {
       if (!user) {
         throw new ValidationError('No user found', user)
       }
-      const models = await this.projectController.getProjectModels([], user, projectID)
+      const project = await this.projectController.getProject(projectID, user)
       res.set('Content-Type', 'application/json')
-      res.status(StatusCodes.OK).send(models)
+      res.status(StatusCodes.OK).send(project)
     }
   }
 

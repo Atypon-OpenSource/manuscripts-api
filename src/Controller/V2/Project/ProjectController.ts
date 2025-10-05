@@ -14,15 +14,9 @@
  * limitations under the License.
  */
 
-import {
-  getVersion,
-  Manuscript,
-  Model,
-  objectTypes,
-  Project,
-  UserProfile,
-} from '@manuscripts/transform'
+import { getVersion, Manuscript, Project, UserProfile } from '@manuscripts/transform'
 
+import { Model, objectTypes } from '../../../Models/BaseModels'
 import { DIContainer } from '../../../DIContainer/DIContainer'
 import {
   MissingContainerError,
@@ -39,6 +33,14 @@ export class ProjectController extends BaseController {
   async createProject(title: string, user: Express.User): Promise<Project> {
     //todo check access
     return await DIContainer.sharedContainer.projectService.createProject(user.id, title)
+  }
+
+  async getProject(projectID: string, user: Express.User): Promise<Project> {
+    const permissions = await this.getPermissions(projectID, user.id)
+    if (!permissions.has(ProjectPermission.READ)) {
+      throw new RoleDoesNotPermitOperationError(`Access denied`, user.id)
+    }
+    return await DIContainer.sharedContainer.projectService.getProject(projectID)
   }
 
   async updateProject(data: Model[], user: Express.User, projectID: string): Promise<void> {

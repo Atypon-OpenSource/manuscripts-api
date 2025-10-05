@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { objectTypes, UserProfile } from '@manuscripts/transform'
+import { UserProfile } from '@manuscripts/transform'
 import { User } from '@prisma/client'
 
 import { AccountNotFoundError, RecordNotFoundError } from '../Errors'
@@ -64,12 +64,12 @@ export class UserService {
 
   private createUserProfile(user: User): UserProfile {
     return {
-      _id: `${objectTypes.UserProfile}:${user.id.replace('User_', '')}`,
+      _id: `MPUserProfile:${user.id.replace('User_', '')}`,
       bibliographicName: {
         family: user.family,
         given: user.given,
-        objectType: objectTypes.BibliographicName,
-        _id: `${objectTypes.BibliographicName}:${user.id.replace('User_', '')}`,
+        objectType: 'MPBibliographicName',
+        _id: `MPBibliographicName:${user.id.replace('User_', '')}`,
       },
       email: user.email,
       userID: user.id,

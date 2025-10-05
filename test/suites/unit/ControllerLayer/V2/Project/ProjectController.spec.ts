@@ -16,8 +16,8 @@
 import '../../../../../utilities/configMock'
 import '../../../../../utilities/dbMock'
 
-import { Model } from '@manuscripts/transform'
 
+import { Model } from '../../../../../../src/Models/BaseModels'
 import { ProjectController } from '../../../../../../src/Controller/V2/Project/ProjectController'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
 import { ProjectService } from '../../../../../../src/DomainServices/ProjectService'

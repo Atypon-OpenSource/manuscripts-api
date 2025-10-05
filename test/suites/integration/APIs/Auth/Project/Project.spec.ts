@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { Model } from '@manuscripts/transform'
 import fs from 'fs'
 import { StatusCodes } from 'http-status-codes'
 import * as supertest from 'supertest'
 
+import { Model } from '../../../../../../src/Models/BaseModels'
 import { BucketKey } from '../../../../../../src/Config/ConfigurationTypes'
 import { SeedOptions } from '../../../../../../src/DataAccess/Interfaces/SeedOptions'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'

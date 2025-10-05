@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import { Model } from '@manuscripts/transform'
 import { Chance } from 'chance'
 import checksum from 'checksum'
 import { StatusCodes } from 'http-status-codes'
 import * as supertest from 'supertest'
 
+import { Model } from '../../../../../src/Models/BaseModels'
 import { config } from '../../../../../src/Config/Config'
 import { BucketKey } from '../../../../../src/Config/ConfigurationTypes'
 import { SeedOptions } from '../../../../../src/DataAccess/Interfaces/SeedOptions'

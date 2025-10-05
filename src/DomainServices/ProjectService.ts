@@ -20,12 +20,11 @@ import {
   Journal,
   JSONProsemirrorNode,
   Manuscript,
-  Model,
-  objectTypes,
   parseJATSArticle,
   Project,
   schema,
 } from '@manuscripts/transform'
+import { Model, objectTypes } from '../Models/BaseModels'
 import decompress from 'decompress'
 import fs from 'fs'
 import { remove } from 'fs-extra'

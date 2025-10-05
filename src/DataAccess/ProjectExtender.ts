@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import { Model, objectTypes, Project } from '@manuscripts/transform'
+import { Project } from '@manuscripts/transform'
+import { Model, objectTypes } from '../Models/BaseModels'
 import { Prisma, PrismaClient } from '@prisma/client'
 import _ from 'lodash'
 import { v4 as uuid_v4 } from 'uuid'
