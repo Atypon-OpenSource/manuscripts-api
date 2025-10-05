@@ -20,13 +20,10 @@ import checksum from 'checksum'
 export const invitationsList: any[] = []
 
 const invitingUserProfile: UserProfile = {
-  createdAt: 1522231220,
-  updatedAt: 1522231220,
   _id: 'MPUserProfile:valid-user-invite',
   objectType: 'MPUserProfile',
   bibliographicName: {
     _id: 'MPBibliographicName:valid-name',
-    objectType: 'MPBibliographicName'
   },
   userID: `User_valid-user@manuscriptsapp.com`
 }

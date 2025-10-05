@@ -19,8 +19,6 @@ export const validManuscript: any = {
   objectType: 'MPManuscript',
   title: 'A Test Manuscript',
   bundle: 'MPBundle:foo',
-  createdAt: 1603157299,
-  updatedAt: 1603157220,
   priority: 1,
   containerID: 'MPProject:valid-project-id-2',
 }
@@ -30,8 +28,6 @@ export const validManuscript1: any = {
   objectType: 'MPManuscript',
   title: 'A Test Manuscript',
   bundle: 'MPBundle:foo',
-  createdAt: 1603157299,
-  updatedAt: 1603157220,
   priority: 1,
   containerID: 'MPProject:valid-project-id-11',
 }

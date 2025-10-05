@@ -29,6 +29,4 @@ userProfileList.push({
     objectType: 'MPBibliographicName',
     given: 'Kevin'
   },
-  createdAt: 1522231220,
-  updatedAt: 1522231220
 })
