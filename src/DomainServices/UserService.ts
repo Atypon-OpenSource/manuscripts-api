@@ -68,14 +68,11 @@ export class UserService {
       bibliographicName: {
         family: user.family,
         given: user.given,
-        objectType: 'MPBibliographicName',
         _id: `MPBibliographicName:${user.id.replace('User_', '')}`,
       },
       email: user.email,
       userID: user.id,
       objectType: 'MPUserProfile',
-      createdAt: user.createdAt.getTime(),
-      updatedAt: user.updatedAt.getTime(),
     }
   }
 }
