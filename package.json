@@ -1,6 +1,6 @@
 {
   "name": "@manuscripts/api",
-  "version": "2.1.14-LEAN-4873.1",
+  "version": "2.1.14-LEAN-4873.2",
   "description": "Manuscripts API server",
   "license": "Apache-2.0",
   "main": "dist/index",
