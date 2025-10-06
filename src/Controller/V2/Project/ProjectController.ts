@@ -16,7 +16,6 @@
 
 import { getVersion, Manuscript, Project, UserProfile } from '@manuscripts/transform'
 
-import { Model, objectTypes } from '../../../Models/BaseModels'
 import { DIContainer } from '../../../DIContainer/DIContainer'
 import {
   MissingContainerError,
@@ -24,6 +23,7 @@ import {
   RecordNotFoundError,
   RoleDoesNotPermitOperationError,
 } from '../../../Errors'
+import { Model, objectTypes } from '../../../Models/BaseModels'
 import { UpdateDocument } from '../../../Models/DocumentModels'
 import { ProjectPermission, ProjectUserRole } from '../../../Models/ProjectModels'
 import { DOI_UPDATED_LABEL } from '../../../Models/SnapshotModels'

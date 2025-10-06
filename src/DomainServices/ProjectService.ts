@@ -24,7 +24,6 @@ import {
   Project,
   schema,
 } from '@manuscripts/transform'
-import { Model, objectTypes } from '../Models/BaseModels'
 import decompress from 'decompress'
 import fs from 'fs'
 import { remove } from 'fs-extra'
@@ -41,6 +40,7 @@ import {
   UserRoleError,
   ValidationError,
 } from '../Errors'
+import { Model, objectTypes } from '../Models/BaseModels'
 import { CreateDoc } from '../Models/DocumentModels'
 import { ArchiveOptions, ProjectPermission, ProjectUserRole } from '../Models/ProjectModels'
 import {

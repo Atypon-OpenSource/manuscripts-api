@@ -15,12 +15,12 @@
  */
 
 import { Project } from '@manuscripts/transform'
-import { Model, objectTypes } from '../Models/BaseModels'
 import { Prisma, PrismaClient } from '@prisma/client'
 import _ from 'lodash'
 import { v4 as uuid_v4 } from 'uuid'
 
 import { DatabaseError, ValidationError } from '../Errors'
+import { Model, objectTypes } from '../Models/BaseModels'
 import { timestamp } from '../Utilities/JWT/LoginTokenPayload'
 
 // TODO: change containerID to projectID

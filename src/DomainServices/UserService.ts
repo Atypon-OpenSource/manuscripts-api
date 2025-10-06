@@ -41,12 +41,7 @@ export class UserService {
     }
     const annotator = project.annotators ?? []
     const editors = project.editors ?? []
-    const projectUsers = project.owners.concat(
-      editors,
-      project.writers,
-      project.viewers,
-      annotator
-    )
+    const projectUsers = project.owners.concat(editors, project.writers, project.viewers, annotator)
     const users = []
     for (const id of projectUsers) {
       const user = await this.userRepository.findByID(id)
