@@ -14,19 +14,14 @@
  * limitations under the License.
  */
 import {
-  Journal,
-  Manuscript,
-  Model,
-  ObjectTypes,
-  Project,
-  validate,
-} from '@manuscripts/json-schema'
-import {
   createArticleNode,
   getVersion,
   JATSExporter,
+  Journal,
   JSONProsemirrorNode,
+  Manuscript,
   parseJATSArticle,
+  Project,
   schema,
 } from '@manuscripts/transform'
 import decompress from 'decompress'
@@ -42,10 +37,10 @@ import {
   MissingContainerError,
   MissingTemplateError,
   RecordNotFoundError,
-  SyncError,
   UserRoleError,
   ValidationError,
 } from '../Errors'
+import { Model, objectTypes } from '../Models/BaseModels'
 import { CreateDoc } from '../Models/DocumentModels'
 import { ArchiveOptions, ProjectPermission, ProjectUserRole } from '../Models/ProjectModels'
 import {
@@ -103,7 +98,7 @@ export class ProjectService {
 
     const manuscriptModel = {
       _id: node.attrs.id,
-      objectType: ObjectTypes.Manuscript,
+      objectType: objectTypes.Manuscript,
       createdAt: now,
       updatedAt: now,
       containerID: projectID,
@@ -190,7 +185,7 @@ export class ProjectService {
   }
 
   private async getManuscriptID(projectID: string): Promise<string | null> {
-    const models = await this.projectClient.getProjectResources(projectID, [ObjectTypes.Manuscript])
+    const models = await this.projectClient.getProjectResources(projectID, [objectTypes.Manuscript])
     if (!models) {
       throw new MissingContainerError(projectID)
     }
@@ -374,7 +369,7 @@ export class ProjectService {
 
   private async getExportJatsOptions(projectID: string, templateID: string) {
     const projectModels = (await this.getProjectModels(projectID)) || []
-    const journal = projectModels.find((m) => m.objectType === ObjectTypes.Journal)
+    const journal = projectModels.find((m) => m.objectType === objectTypes.Journal)
     const template = await this.configService.getDocument(templateID)
     if (!template) {
       throw new ValidationError('manuscript template is empty', templateID)
@@ -415,18 +410,9 @@ export class ProjectService {
     }
   }
 
-  private validate(models: Model[]) {
-    models.forEach((m) => {
-      const error = validate(m)
-      if (error) {
-        throw new SyncError(error, m)
-      }
-    })
-  }
   private processManuscriptModels(docs: Model[]) {
     const createdAt = Math.round(Date.now() / 1000)
     const models = docs.map((doc) => ({ ...doc, createdAt, updatedAt: createdAt }))
-    this.validate(models)
     return models
   }
 

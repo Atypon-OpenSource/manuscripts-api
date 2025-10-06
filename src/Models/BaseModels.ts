@@ -1,5 +1,5 @@
 /*!
- * © 2020 Atypon Systems LLC
+ * © 2024 Atypon Systems LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,19 +14,14 @@
  * limitations under the License.
  */
 
-import { UserProfile } from '@manuscripts/transform'
+export interface Model {
+  _id: string
+  objectType: string
+  prototype?: string
+}
 
-import { UserService } from '../../../src/DomainServices/User/UserService'
-
-export const userProfileList: UserProfile[] = []
-
-userProfileList.push({
-  _id: UserService.profileID('User|valid-user@manuscriptsapp.com'),
-  userID: 'User_valid-user@manuscriptsapp.com',
-  objectType: 'MPUserProfile',
-  bibliographicName: {
-    _id: 'MPBibliographicName:valid-bibliographic-name',
-    objectType: 'MPBibliographicName',
-    given: 'Kevin'
-  },
-})
+export const objectTypes = {
+  Project: 'MPProject',
+  Manuscript: 'MPManuscript',
+  Journal: 'MPJournal',
+}

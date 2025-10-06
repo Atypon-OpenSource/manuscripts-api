@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ObjectTypes, UserProfile } from '@manuscripts/json-schema'
+import { UserProfile } from '@manuscripts/transform'
 import { User } from '@prisma/client'
 
 import { AccountNotFoundError, RecordNotFoundError } from '../Errors'
@@ -41,12 +41,7 @@ export class UserService {
     }
     const annotator = project.annotators ?? []
     const editors = project.editors ?? []
-    const projectUsers = project.owners.concat(
-      editors,
-      project.writers,
-      project.viewers,
-      annotator
-    )
+    const projectUsers = project.owners.concat(editors, project.writers, project.viewers, annotator)
     const users = []
     for (const id of projectUsers) {
       const user = await this.userRepository.findByID(id)
@@ -64,18 +59,15 @@ export class UserService {
 
   private createUserProfile(user: User): UserProfile {
     return {
-      _id: `${ObjectTypes.UserProfile}:${user.id.replace('User_', '')}`,
+      _id: `MPUserProfile:${user.id.replace('User_', '')}`,
       bibliographicName: {
         family: user.family,
         given: user.given,
-        objectType: ObjectTypes.BibliographicName,
-        _id: `${ObjectTypes.BibliographicName}:${user.id.replace('User_', '')}`,
+        _id: `MPBibliographicName:${user.id.replace('User_', '')}`,
       },
       email: user.email,
       userID: user.id,
-      objectType: ObjectTypes.UserProfile,
-      createdAt: user.createdAt.getTime(),
-      updatedAt: user.updatedAt.getTime(),
+      objectType: 'MPUserProfile',
     }
   }
 }
