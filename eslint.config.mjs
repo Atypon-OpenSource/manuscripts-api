@@ -1,5 +1,5 @@
 /*!
- * © 2022 Atypon Systems LLC
+ * © 2025 Atypon Systems LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,19 @@
  * limitations under the License.
  */
 
-module.exports = {
-    extends: '@manuscripts/eslint-config',
-    ignorePatterns: ['**/*.js']
-}
+import { FlatCompat } from '@eslint/eslintrc'
+import js from '@eslint/js'
+import config from '@manuscripts/eslint-config'
+import { defineConfig } from 'eslint/config'
+import header from 'eslint-plugin-header'
+
+header.rules.header.meta.schema = false
+
+const compat = new FlatCompat({
+    recommendedConfig: js.configs.recommended,
+})
+
+export default defineConfig([
+    ...compat.config(config),
+    ...compat.extends('plugin:diff/diff'),
+])
