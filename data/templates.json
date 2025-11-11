@@ -35,7 +35,7 @@
     "_id": "MPManuscriptTemplate:preprint",
     "objectType": "MPManuscriptTemplate",
     "bundle": "MPBundle:www-zotero-org-styles-chicago-author-date",
-    "title": "Preprints",
+    "title": "Preprint",
     "articleType": "preprint",
     "sectionCategories": "./preprint-section-categories.json",
     "hiddenNodeTypes": [
