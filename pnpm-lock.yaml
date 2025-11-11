@@ -114,6 +114,12 @@ importers:
       '@babel/preset-typescript':
         specifier: 7.23.3
         version: 7.23.3(@babel/core@7.23.7)
+      '@eslint/eslintrc':
+        specifier: 3.3.1
+        version: 3.3.1
+      '@eslint/js':
+        specifier: 9.39.1
+        version: 9.39.1
       '@jest-mock/express':
         specifier: 3.0.0
         version: 3.0.0
