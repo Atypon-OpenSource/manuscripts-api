@@ -30,5 +30,20 @@
     "title": "Review Article Health Economics, Policy and Law",
     "articleType": "review-article",
     "sectionCategories": "./section-categories.json"
+  },
+  {
+    "_id": "MPManuscriptTemplate:preprint",
+    "objectType": "MPManuscriptTemplate",
+    "bundle": "MPBundle:www-zotero-org-styles-chicago-author-date",
+    "title": "Preprints",
+    "articleType": "preprint",
+    "sectionCategories": "./preprint-section-categories.json",
+    "hiddenNodeTypes": [
+      "author_notes",
+      "box_element",
+      "pullquote_element",
+      "image_element",
+      "hero_image"
+    ]
   }
 ]

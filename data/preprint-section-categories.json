@@ -1,0 +1,115 @@
+[
+  {
+    "id": "abstract",
+    "titles": ["Abstract"],
+    "synonyms": [""],
+    "group": "abstracts",
+    "isUnique": true
+  },
+  {
+    "id": "abstract-graphical",
+    "titles": ["Graphical Abstract"],
+    "synonyms": [""],
+    "group": "abstracts-graphic",
+    "isUnique": true
+  },
+  {
+    "id": "acknowledgements",
+    "synonyms": ["acknowledgements", "acknowledgments"],
+    "titles": ["Acknowledgements"],
+    "group": "backmatter",
+    "isUnique": true
+  },
+  {
+    "id": "appendices",
+    "titles": ["Appendices"],
+    "synonyms": ["appendices"],
+    "isUnique": false
+  },
+  {
+    "id": "availability",
+    "titles": ["Availability"],
+    "synonyms": ["availability", "data-availability", "data availability"],
+    "group": "backmatter",
+    "isUnique": true
+  },
+  {
+    "id": "coi-statement",
+    "synonyms": [
+      "coi-statement",
+      "competing-interests",
+      "conflict",
+      "conflict of interest",
+      "competing interests"
+    ],
+    "titles": ["COI Statement", "Competing Interests"],
+    "group": "backmatter",
+    "isUnique": true
+  },
+  {
+    "id": "con",
+    "synonyms": ["con"],
+    "titles": ["Contributed-by information"],
+    "group": "backmatter",
+    "isUnique": true
+  },
+  {
+    "id": "deceased",
+    "titles": ["Deceased"],
+    "synonyms": ["deceased"],
+    "isUnique": false
+  },
+  {
+    "id": "equal",
+    "titles": ["Equal"],
+    "synonyms": ["equal"],
+    "isUnique": false
+  },
+  {
+    "id": "ethics-statement",
+    "synonyms": ["ethics-statement"],
+    "titles": ["Ethics Statement"],
+    "group": "backmatter",
+    "isUnique": true
+  },
+  {
+    "id": "financial-disclosure",
+    "synonyms": ["financial-disclosure", "funding information"],
+    "titles": ["Financial Disclosure"],
+    "group": "backmatter",
+    "isUnique": true
+  },
+  {
+    "id": "present-address",
+    "titles": ["Present Address"],
+    "synonyms": ["present-address"],
+    "isUnique": false
+  },
+  {
+    "id": "presented-at",
+    "titles": ["Presented at"],
+    "synonyms": ["presented-at"],
+    "isUnique": false
+  },
+  {
+    "id": "previously-at",
+    "titles": ["Previously at"],
+    "synonyms": ["previously-at"],
+    "isUnique": false
+  },
+
+  {
+    "id": "supplementary-material",
+    "synonyms": ["supplementary-material"],
+    "titles": ["Supplementary Material"],
+    "group": "backmatter",
+    "isUnique": true
+  },
+  {
+    "id": "supported-by",
+    "synonyms": ["supported-by"],
+    "titles": ["Supported By"],
+    "group": "backmatter",
+    "isUnique": true
+  }
+]
