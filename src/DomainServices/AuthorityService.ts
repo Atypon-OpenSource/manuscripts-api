@@ -22,38 +22,80 @@ import { Step } from 'prosemirror-transform'
 import { VersionMismatchError } from '../Errors'
 import { History, ModifiedStep, ReceiveSteps } from '../Models/AuthorityModels'
 import { DB } from '../Models/RepositoryModels'
+
+const cache = new Map<
+  string,
+  {
+    manuscript_model_id: string
+    user_model_id: string
+    project_model_id: string
+    doc: Prisma.JsonValue
+    version: number
+    schema_version: string | null
+    steps: Prisma.JsonValue[]
+  }
+>()
+
 export class AuthorityService {
   constructor(private readonly repository: DB) {}
 
   public async receiveSteps(documentID: string, receiveSteps: ReceiveSteps): Promise<History> {
     //TODO: check if the transaction is doing anything here, it doesn't look like its useful in anyway for our case
-    return this.repository.$transaction(async (tx) => {
-      const found = await tx.manuscriptDoc.findDocument(documentID)
-      this.checkVersion(found.version, receiveSteps.version)
-      const { doc, modifiedSteps } = this.applyStepsToDocument(
-        receiveSteps.steps,
-        found.doc,
-        receiveSteps.clientID.toString()
-      )
-      await tx.manuscriptDoc.updateDocument(documentID, {
-        doc: doc,
-        version: receiveSteps.version + receiveSteps.steps.length,
-        steps: (found.steps as JsonObject[]).concat(modifiedSteps),
-        schema_version: getVersion(),
-      })
-      return {
-        steps: receiveSteps.steps,
-        clientIDs: Array(receiveSteps.steps.length).fill(receiveSteps.clientID),
-        version: receiveSteps.version + receiveSteps.steps.length,
-      }
-    })
+    if (!cache.has(documentID)) {
+      const doc = await this.repository.manuscriptDoc.findDocument(documentID)
+      cache.set(documentID, doc)
+    }
+
+    const docData = cache.get(documentID)
+    this.checkVersion(docData!.version, receiveSteps.version)
+
+    const { doc, modifiedSteps } = this.applyStepsToDocument(
+      receiveSteps.steps,
+      docData!.doc,
+      receiveSteps.clientID.toString()
+    )
+
+    docData!.doc = doc
+    docData!.version = docData!.version + receiveSteps.steps.length
+    docData!.steps.push(...modifiedSteps)
+
+    return {
+      steps: receiveSteps.steps,
+      clientIDs: Array(receiveSteps.steps.length).fill(receiveSteps.clientID),
+      version: docData!.steps.length,
+    }
+
+    // return this.repository.$transaction(async (tx) => {
+    //   const found = await tx.manuscriptDoc.findDocument(documentID)
+    //   this.checkVersion(found.version, receiveSteps.version)
+    //   const { doc, modifiedSteps } = this.applyStepsToDocument(
+    //     receiveSteps.steps,
+    //     found.doc,
+    //     receiveSteps.clientID.toString()
+    //   )
+    //   await tx.manuscriptDoc.updateDocument(documentID, {
+    //     doc: doc,
+    //     version: receiveSteps.version + receiveSteps.steps.length,
+    //     steps: (found.steps as JsonObject[]).concat(modifiedSteps),
+    //     schema_version: getVersion(),
+    //   })
+    //   return {
+    //     steps: receiveSteps.steps,
+    //     clientIDs: Array(receiveSteps.steps.length).fill(receiveSteps.clientID),
+    //     version: receiveSteps.version + receiveSteps.steps.length,
+    //   }
+    // })
   }
 
   public async getEvents(documentID: string, versionID: number): Promise<History> {
-    const found = await this.repository.manuscriptDoc.findHistory(documentID)
+    if (!cache.has(documentID)) {
+      const doc = await this.repository.manuscriptDoc.findDocument(documentID)
+      cache.set(documentID, doc)
+    }
+    const docData = cache.get(documentID)
 
-    const startIndex = found.steps.length - (found.version - versionID)
-    const steps = found.steps.slice(startIndex)
+    const startIndex = docData!.steps.length - (docData!.version - versionID)
+    const steps = docData!.steps.slice(startIndex)
     const clientIDs = steps
       .filter((step): step is { clientID: string } => typeof step === 'object' && step !== null)
       .map((step: { clientID: string }) => parseInt(step.clientID))
@@ -61,7 +103,7 @@ export class AuthorityService {
     const history = {
       steps: this.hydrateSteps(steps),
       clientIDs,
-      version: found.version,
+      version: docData!.version,
     }
     return history
   }
