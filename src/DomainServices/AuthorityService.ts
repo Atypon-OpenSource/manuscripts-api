@@ -19,34 +19,33 @@ import { Prisma } from '@prisma/client'
 import { JsonObject } from '@prisma/client/runtime/library'
 import { Step } from 'prosemirror-transform'
 
-import { VersionMismatchError } from '../Errors'
 import { History, ModifiedStep, ReceiveSteps } from '../Models/AuthorityModels'
 import { DB } from '../Models/RepositoryModels'
 export class AuthorityService {
   constructor(private readonly repository: DB) {}
 
   public async receiveSteps(documentID: string, receiveSteps: ReceiveSteps): Promise<History> {
-    //TODO: check if the transaction is doing anything here, it doesn't look like its useful in anyway for our case
-    return this.repository.$transaction(async (tx) => {
-      const found = await tx.manuscriptDoc.findDocument(documentID)
-      this.checkVersion(found.version, receiveSteps.version)
-      const { doc, modifiedSteps } = this.applyStepsToDocument(
-        receiveSteps.steps,
-        found.doc,
-        receiveSteps.clientID.toString()
-      )
-      await tx.manuscriptDoc.updateDocument(documentID, {
+    const found = await this.repository.manuscriptDoc.findDocument(documentID)
+    const { doc, modifiedSteps } = this.applyStepsToDocument(
+      receiveSteps.steps,
+      found.doc,
+      receiveSteps.clientID.toString()
+    )
+    await this.repository.manuscriptDoc.updateDocumentWithVersionCheck(
+      documentID,
+      receiveSteps.version,
+      {
         doc: doc,
         version: receiveSteps.version + receiveSteps.steps.length,
         steps: (found.steps as JsonObject[]).concat(modifiedSteps),
         schema_version: getVersion(),
-      })
-      return {
-        steps: receiveSteps.steps,
-        clientIDs: Array(receiveSteps.steps.length).fill(receiveSteps.clientID),
-        version: receiveSteps.version + receiveSteps.steps.length,
       }
-    })
+    )
+    return {
+      steps: receiveSteps.steps,
+      clientIDs: Array(receiveSteps.steps.length).fill(receiveSteps.clientID),
+      version: receiveSteps.version + receiveSteps.steps.length,
+    }
   }
 
   public async getEvents(documentID: string, versionID: number): Promise<History> {
@@ -66,11 +65,6 @@ export class AuthorityService {
     return history
   }
 
-  private checkVersion(docVersion: number, version: number): void {
-    if (version != docVersion) {
-      throw new VersionMismatchError(docVersion)
-    }
-  }
   private applyStepsToDocument(
     jsonSteps: Prisma.JsonObject[],
     document: Prisma.JsonValue,
