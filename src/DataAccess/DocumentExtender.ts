@@ -39,6 +39,7 @@ export class DocumentExtender {
       findDocumentWithSnapshot: this.findDocumentWithSnapshot,
       createDocument: this.createDocument,
       updateDocument: this.updateDocument,
+      updateDocumentWithVersionCheck: this.updateDocumentWithVersionCheck,
       deleteDocument: this.deleteDocument,
       findHistory: this.findHistory,
     }
@@ -147,6 +148,21 @@ export class DocumentExtender {
       }
       throw error
     }
+  }
+
+  private updateDocumentWithVersionCheck = async (
+    documentID: string,
+    expectedVersion: number,
+    payload: UpdateDocument
+  ) => {
+    const saved = await this.prisma.manuscriptDoc.update({
+      data: payload,
+      where: {
+        manuscript_model_id: documentID,
+        version: expectedVersion,
+      },
+    })
+    return saved
   }
 
   private deleteDocument = async (documentID: string) => {
