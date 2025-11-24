@@ -21,6 +21,7 @@ import { Step } from 'prosemirror-transform'
 
 import { History, ModifiedStep, ReceiveSteps } from '../Models/AuthorityModels'
 import { DB } from '../Models/RepositoryModels'
+import { VersionMismatchError } from '../Errors'
 export class AuthorityService {
   constructor(private readonly repository: DB) {}
 
@@ -31,16 +32,23 @@ export class AuthorityService {
       found.doc,
       receiveSteps.clientID.toString()
     )
-    await this.repository.manuscriptDoc.updateDocumentWithVersionCheck(
-      documentID,
-      receiveSteps.version,
-      {
-        doc: doc,
-        version: receiveSteps.version + receiveSteps.steps.length,
-        steps: (found.steps as JsonObject[]).concat(modifiedSteps),
-        schema_version: getVersion(),
-      }
-    )
+    try {
+      await this.repository.manuscriptDoc.updateDocumentWithVersionCheck(
+        documentID,
+        receiveSteps.version,
+        {
+          doc: doc,
+          version: receiveSteps.version + receiveSteps.steps.length,
+          steps: (found.steps as JsonObject[]).concat(modifiedSteps),
+          schema_version: getVersion(),
+        }
+      )
+    } catch (e) {
+      // console.log(e)
+      throw new VersionMismatchError(
+        'Inavlid version:' + receiveSteps.version + ' doc version at the time: ' + found.version
+      )
+    }
     return {
       steps: receiveSteps.steps,
       clientIDs: Array(receiveSteps.steps.length).fill(receiveSteps.clientID),
