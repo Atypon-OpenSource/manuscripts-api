@@ -46,7 +46,10 @@ export class AuthorityService {
     } catch (e) {
       // console.log(e)
       throw new VersionMismatchError(
-        'Inavlid version:' + receiveSteps.version + ' doc version at the time: ' + found.version
+        'Inavlid version:' +
+          receiveSteps.version +
+          ' doc version at the time of scheduling (not the one that conflicted): ' +
+          found.version
       )
     }
     return {
