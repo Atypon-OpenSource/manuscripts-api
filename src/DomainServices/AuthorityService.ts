@@ -44,13 +44,16 @@ export class AuthorityService {
         }
       )
     } catch (e) {
-      // console.log(e)
-      throw new VersionMismatchError(
-        'Inavlid version:' +
-          receiveSteps.version +
-          ' doc version at the time of scheduling (not the one that conflicted): ' +
-          found.version
-      )
+      console.log(e)
+      if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2025') {
+        throw new VersionMismatchError(
+          'Inavlid version:' +
+            receiveSteps.version +
+            ' doc version at the time of scheduling (not the one that conflicted): ' +
+            found.version
+        )
+      }
+      throw e
     }
     return {
       steps: receiveSteps.steps,
