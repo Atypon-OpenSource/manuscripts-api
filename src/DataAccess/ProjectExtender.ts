@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-import { Model, ObjectTypes, Project } from '@manuscripts/json-schema'
+import { Project } from '@manuscripts/transform'
 import { Prisma, PrismaClient } from '@prisma/client'
 import _ from 'lodash'
 import { v4 as uuid_v4 } from 'uuid'
 
 import { DatabaseError, ValidationError } from '../Errors'
+import { Model, ObjectTypes } from '../Models/ProjectModels'
 import { timestamp } from '../Utilities/JWT/LoginTokenPayload'
 
 // TODO: change containerID to projectID
 export class ProjectExtender {
   constructor(private readonly prisma: PrismaClient) {}
   readonly PROJECT_MODEL = 'project'
-  readonly objectType = ObjectTypes.Project
   private extensions: ReturnType<typeof this.buildExtensions>
 
   getExtension() {
@@ -63,7 +63,7 @@ export class ProjectExtender {
       where: {
         data: {
           path: ['objectType'],
-          equals: this.objectType,
+          equals: ObjectTypes.Project,
         },
         OR: [
           { data: { path: ['owners'], array_contains: userID } },
@@ -244,7 +244,7 @@ export class ProjectExtender {
       (_documentValue: any, patchValue: any) => patchValue
     ) as any
 
-    if (patchedDocument.objectType !== this.objectType) {
+    if (patchedDocument.objectType !== ObjectTypes.Project) {
       throw new ValidationError(`Object type mismatched`, patchedDocument.objectType)
     }
     const documentToUpdate = {

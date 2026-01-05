@@ -16,7 +16,6 @@
 import '../../../../utilities/configMock.ts'
 import '../../../../utilities/dbMock.ts'
 
-import { ObjectTypes } from '@manuscripts/json-schema'
 
 import { DIContainer } from '../../../../../src/DIContainer/DIContainer'
 import { ConfigService } from '../../../../../src/DomainServices/ConfigService'
@@ -88,7 +87,7 @@ describe('projectService', () => {
     })
     it('should create a new manuscript with the provided templateID', async () => {
       const expectedManuscript = {
-        objectType: ObjectTypes.Manuscript,
+        objectType: 'MPManuscript',
         containerID: projectID,
         prototype: templateID,
       }
@@ -166,7 +165,7 @@ describe('projectService', () => {
       const models = [
         {
           containerID: validProject2._id,
-          objectType: ObjectTypes.Project,
+          objectType: 'MPProject',
           createdAt: 20,
           updatedAt: 21,
         },
@@ -181,14 +180,14 @@ describe('projectService', () => {
         {
           containerID: projectID,
           manuscriptID: manuscriptID,
-          objectType: ObjectTypes.Project,
+          objectType: 'MPProject',
           createdAt: 20,
           updatedAt: 21,
         },
         {
           containerID: projectID,
           manuscriptID: validManuscript1._id,
-          objectType: ObjectTypes.Project,
+          objectType: 'MPProject',
           createdAt: 20,
           updatedAt: 21,
         },
@@ -203,14 +202,14 @@ describe('projectService', () => {
         {
           containerID: projectID,
           manuscriptID: manuscriptID,
-          objectType: ObjectTypes.Project,
+          objectType: 'MPProject',
           createdAt: 20,
           updatedAt: 21,
         },
         {
           containerID: projectID,
           manuscriptID: manuscriptID,
-          objectType: ObjectTypes.Project,
+          objectType: 'MPProject',
           createdAt: 20,
           updatedAt: 21,
         },
@@ -226,14 +225,14 @@ describe('projectService', () => {
         {
           containerID: projectID,
           manuscriptID: manuscriptID,
-          objectType: ObjectTypes.Project,
+          objectType: 'MPProject',
           createdAt: 20,
           updatedAt: 21,
         },
         {
           containerID: projectID,
           manuscriptID: manuscriptID,
-          objectType: ObjectTypes.Project,
+          objectType: 'MPProject',
           createdAt: 20,
           updatedAt: 21,
         },
@@ -247,13 +246,13 @@ describe('projectService', () => {
     it('should update project if manuscript belongs to project, manuscript exists, no multiple manuscriptIDs and a valid containerID', async () => {
       const manuscript = {
         _id: 'MPManuscript:test-manuscript',
-        objectType: ObjectTypes.Manuscript,
+        objectType: 'MPManuscript',
         containerID: projectID,
         createdAt: 20,
       }
       const paragraph = {
         _id: 'MPParagraphElement:test-paragraph',
-        objectType: ObjectTypes.ParagraphElement,
+        objectType: 'MPParagraphElement',
         contents: 'Test paragraph',
         elementType: 'p',
         containerID: projectID,

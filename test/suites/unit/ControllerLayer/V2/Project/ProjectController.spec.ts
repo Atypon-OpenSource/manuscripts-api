@@ -16,8 +16,8 @@
 import '../../../../../utilities/configMock'
 import '../../../../../utilities/dbMock'
 
-import { Model, ObjectTypes } from '@manuscripts/json-schema'
 
+import { Model } from '../../../../../../src/Models/BaseModels'
 import { ProjectController } from '../../../../../../src/Controller/V2/Project/ProjectController'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
 import { ProjectService } from '../../../../../../src/DomainServices/ProjectService'
@@ -62,7 +62,7 @@ describe('ProjectController', () => {
   const data: Model[] = [
     {
       _id: validProject._id,
-      objectType: ObjectTypes.Project,
+        objectType: 'MPProject',
       createdAt: 20 / 12 / 2020,
       updatedAt: 21 / 12 / 2020,
     },

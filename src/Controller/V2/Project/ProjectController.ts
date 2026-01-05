@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-import { Manuscript, Model, ObjectTypes, Project, UserProfile } from '@manuscripts/json-schema'
-import { getVersion } from '@manuscripts/transform'
+import { getVersion, Project, UserProfile } from '@manuscripts/transform'
 
 import { DIContainer } from '../../../DIContainer/DIContainer'
 import {
@@ -25,7 +24,7 @@ import {
   RoleDoesNotPermitOperationError,
 } from '../../../Errors'
 import { UpdateDocument } from '../../../Models/DocumentModels'
-import { ProjectPermission, ProjectUserRole } from '../../../Models/ProjectModels'
+import { ObjectTypes, Model, ProjectPermission, ProjectUserRole } from '../../../Models/ProjectModels'
 import { DOI_UPDATED_LABEL } from '../../../Models/SnapshotModels'
 import { BaseController } from '../../BaseController'
 
@@ -33,6 +32,14 @@ export class ProjectController extends BaseController {
   async createProject(title: string, user: Express.User): Promise<Project> {
     //todo check access
     return await DIContainer.sharedContainer.projectService.createProject(user.id, title)
+  }
+
+  async getProject(projectID: string, user: Express.User): Promise<Project> {
+    const permissions = await this.getPermissions(projectID, user.id)
+    if (!permissions.has(ProjectPermission.READ)) {
+      throw new RoleDoesNotPermitOperationError(`Access denied`, user.id)
+    }
+    return await DIContainer.sharedContainer.projectService.getProject(projectID)
   }
 
   async updateProject(data: Model[], user: Express.User, projectID: string): Promise<void> {
@@ -50,11 +57,10 @@ export class ProjectController extends BaseController {
     if (!permissions.has(ProjectPermission.UPDATE)) {
       throw new RoleDoesNotPermitOperationError(`Access denied`, user.id)
     }
-    const models: Model[] = await this.getProjectModels([ObjectTypes.Manuscript], user, projectID)
-    if (!models || models.length == 0) {
+    const manuscript = await this.getProjectManuscript(projectID, user)
+    if (!manuscript) {
       throw new RecordNotFoundError(manuscriptID)
     }
-    const manuscript = models[0] as Manuscript
     manuscript.DOI = doi
     await DIContainer.sharedContainer.projectService.updateManuscript(manuscript)
     const manuscriptDocument = await DIContainer.sharedContainer.documentClient.findDocument(
@@ -103,6 +109,18 @@ export class ProjectController extends BaseController {
     return models
   }
 
+  async getProjectManuscript(projectID: string, user: Express.User): Promise<any | null> {
+    const permissions = await this.getPermissions(projectID, user.id)
+    if (!permissions.has(ProjectPermission.READ)) {
+      throw new RoleDoesNotPermitOperationError(`Access denied`, user.id)
+    }
+
+    const models =
+      (await DIContainer.sharedContainer.projectService.getProjectModels(projectID)) || []
+    const manuscript = models.find((m) => m.objectType === ObjectTypes.Manuscript)
+    return manuscript || null
+  }
+
   async updateUserRole(
     connectUserID: string,
     user: Express.User,
@@ -128,7 +146,7 @@ export class ProjectController extends BaseController {
     user: Express.User,
     projectID: string,
     templateID?: string
-  ): Promise<Manuscript> {
+  ): Promise<string> {
     const permissions = await this.getPermissions(projectID, user.id)
     if (!permissions.has(ProjectPermission.CREATE_MANUSCRIPT)) {
       throw new RoleDoesNotPermitOperationError(`Access denied`, user.id)
@@ -150,7 +168,7 @@ export class ProjectController extends BaseController {
     zip: Express.Multer.File,
     projectID: string,
     templateID: string
-  ): Promise<Manuscript> {
+  ): Promise<string> {
     const permissions = await this.getPermissions(projectID, user.id)
     if (!permissions.has(ProjectPermission.CREATE_MANUSCRIPT)) {
       throw new RoleDoesNotPermitOperationError(`Access denied`, user.id)
@@ -182,11 +200,7 @@ export class ProjectController extends BaseController {
     if (!permissions.has(ProjectPermission.READ)) {
       throw new RoleDoesNotPermitOperationError(`Access denied`, user.id)
     }
-    return await DIContainer.sharedContainer.projectService.exportJats(
-      projectID,
-      manuscriptID,
-      useSnapshot
-    )
+    return await DIContainer.sharedContainer.projectService.exportJats(manuscriptID, useSnapshot)
   }
   async getArchive(onlyIDs: any, accept: any, user: Express.User, projectID: string) {
     const permissions = await this.getPermissions(projectID, user.id)

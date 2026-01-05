@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-import { Manuscript } from '@manuscripts/json-schema'
-
-export const manuscriptList: Manuscript[] = []
+export const manuscriptList: any[] = []
 
 manuscriptList.push({
   _id: 'MPManuscript:valid-manuscript-id-1',
