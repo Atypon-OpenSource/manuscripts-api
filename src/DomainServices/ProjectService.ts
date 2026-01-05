@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import {
-  ContainedModel,
   Journal,
   Manuscript,
   Model,
@@ -26,6 +25,7 @@ import {
   createArticleNode,
   getVersion,
   JATSExporter,
+  JSONProsemirrorNode,
   parseJATSArticle,
   schema,
 } from '@manuscripts/transform'
@@ -34,8 +34,9 @@ import fs from 'fs'
 import { remove } from 'fs-extra'
 import getStream from 'get-stream'
 import JSZip from 'jszip'
+import os from 'os'
+import path from 'path'
 import { Readable } from 'stream'
-import tempy from 'tempy'
 
 import {
   MissingContainerError,
@@ -53,6 +54,7 @@ import {
   SnapshotClient,
   UserClient,
 } from '../Models/RepositoryModels'
+import { AuthorityService } from './AuthorityService'
 import { ConfigService } from './ConfigService'
 
 const EMPTY_PERMISSIONS = new Set<ProjectPermission>()
@@ -106,7 +108,7 @@ export class ProjectService {
       updatedAt: now,
       containerID: projectID,
       DOI: node.attrs.doi,
-      articleType: node.attrs.articleType,
+      articleType: node.attrs.articleType || JSON.parse(template).articleType || 'other',
       prototype: templateID,
       primaryLanguageCode: node.attrs.primaryLanguageCode,
     } as Manuscript
@@ -135,11 +137,16 @@ export class ProjectService {
   }
 
   public async createManuscriptDoc(manuscript: Manuscript, projectID: string, userID: string) {
+    const template = manuscript.prototype
+      ? await this.configService.getDocument(manuscript.prototype)
+      : null
+    const templateData = template ? JSON.parse(template) : null
+
     const createDoc: CreateDoc = {
       manuscript_model_id: manuscript._id,
       project_model_id: projectID,
       doc: createArticleNode({
-        articleType: manuscript.articleType,
+        articleType: manuscript.articleType || templateData?.articleType || 'other',
         primaryLanguageCode: manuscript.primaryLanguageCode,
         doi: manuscript.DOI,
         id: manuscript._id,
@@ -232,7 +239,6 @@ export class ProjectService {
       writers: [],
       viewers: [],
       editors: [],
-      proofers: [],
       annotators: [],
     }
     await this.projectClient.patch(projectID, updated)
@@ -259,7 +265,6 @@ export class ProjectService {
       writers: project.writers.filter((u) => u !== user.id),
       viewers: project.viewers.filter((u) => u !== user.id),
       editors: project.editors ? project.editors.filter((u) => u !== user.id) : [],
-      proofers: project.proofers ? project.proofers.filter((u) => u !== user.id) : [],
       annotators: project.annotators ? project.annotators.filter((u) => u !== user.id) : [],
     }
 
@@ -275,9 +280,6 @@ export class ProjectService {
         break
       case ProjectUserRole.Editor:
         updated.editors.push(user.id)
-        break
-      case ProjectUserRole.Proofer:
-        updated.proofers.push(user.id)
         break
       case ProjectUserRole.Annotator:
         updated.annotators.push(user.id)
@@ -311,8 +313,6 @@ export class ProjectService {
     } else if (project.editors?.includes(userID)) {
       return new Set([ProjectPermission.READ, ProjectPermission.UPDATE])
     } else if (project.annotators?.includes(userID)) {
-      return new Set([ProjectPermission.READ, ProjectPermission.UPDATE])
-    } else if (project.proofers?.includes(userID)) {
       return new Set([ProjectPermission.READ, ProjectPermission.UPDATE])
     }
     return EMPTY_PERMISSIONS
@@ -361,41 +361,41 @@ export class ProjectService {
     return doc
   }
 
-  public async exportJats(projectID: string, manuscriptID: string) {
-    const journal = (await this.getContainedModels(projectID)).find(
-      (m) => m.objectType === ObjectTypes.Journal
-    ) as Journal
+  public async exportJats(projectID: string, manuscriptID: string, useSnapshot: boolean) {
+    const article: JSONProsemirrorNode = useSnapshot
+      ? ((await this.snapshotClient.getMostRecentSnapshot(manuscriptID))
+          .snapshot as JSONProsemirrorNode)
+      : AuthorityService.removeSuggestions(
+          (await this.documentClient.findDocument(manuscriptID)).doc as JSONProsemirrorNode
+        )
+    const options = await this.getExportJatsOptions(projectID, article.attrs.prototype)
+    return new JATSExporter().serializeToJATS(schema.nodeFromJSON(article), options)
+  }
 
-    let article
-    try {
-      article = (await this.snapshotClient.getMostRecentSnapshot(manuscriptID)).snapshot as any
-    } catch (error) {
-      article = (await this.documentClient.findDocument(manuscriptID)).doc as any
-    }
-
-    const templateID: string = article?.attrs?.prototype
-    if (!templateID) {
-      throw new ValidationError('manuscript template is empty', templateID)
-    }
+  private async getExportJatsOptions(projectID: string, templateID: string) {
+    const projectModels = (await this.getProjectModels(projectID)) || []
+    const journal = projectModels.find((m) => m.objectType === ObjectTypes.Journal)
     const template = await this.configService.getDocument(templateID)
     if (!template) {
-      throw new MissingTemplateError(templateID)
+      throw new ValidationError('manuscript template is empty', templateID)
     }
     const style = await this.citationStyleFromTemplate(template)
     const locale = await this.configService.getDocument(DEFAULT_LOCALE)
-    if (!locale) {
-      throw new RecordNotFoundError('locale not found')
+    if (!locale || !style) {
+      throw new RecordNotFoundError('locale or style not found')
     }
-    return new JATSExporter().serializeToJATS(schema.nodeFromJSON(article), {
-      journal,
+    return {
+      journal: journal ? (journal as Journal) : undefined,
       csl: { locale, style },
-    })
+    }
   }
+
   public async updateManuscript(manuscript: Manuscript) {
     await this.projectClient.updateManuscript(manuscript._id, manuscript)
   }
 
   private async citationStyleFromTemplate(template: any) {
+    //TODO: we need proper types for this
     const templateJson: any = JSON.parse(template)
     const bundle: any = await this.configService.getDocument(templateJson.bundle)
     const bundleJson: any = JSON.parse(bundle)
@@ -403,14 +403,10 @@ export class ProjectService {
     return citationStyle
   }
 
-  public async getContainedModels(projectID: string) {
-    return (await this.getProjectModels(projectID)) as ContainedModel[]
-  }
-
   private async extract(
     zip: Readable
   ): Promise<{ root: string; files: { [k: string]: decompress.File } }> {
-    const root = tempy.directory()
+    const root = await fs.promises.mkdtemp(path.join(os.tmpdir(), 'extracted-zip-'))
     const buffer = await getStream.buffer(zip)
     const files = await decompress(buffer, root)
     return {
@@ -445,8 +441,6 @@ export class ProjectService {
       return ProjectUserRole.Editor
     } else if (ProjectService.isAnnotator(project, userID)) {
       return ProjectUserRole.Annotator
-    } else if (ProjectService.isProofer(project, userID)) {
-      return ProjectUserRole.Proofer
     } else {
       return null
     }
@@ -475,14 +469,6 @@ export class ProjectService {
     const annotators = project.annotators
     if (annotators && annotators.length) {
       return annotators.indexOf(userID) > -1
-    }
-    return false
-  }
-
-  public static isProofer(project: Project, userID: string): boolean {
-    const proofers = project.proofers
-    if (proofers && proofers.length) {
-      return proofers.indexOf(userID) > -1
     }
     return false
   }

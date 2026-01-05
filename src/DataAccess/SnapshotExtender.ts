@@ -18,7 +18,7 @@ import { Prisma, PrismaClient } from '@prisma/client'
 
 import { MissingRecordError, MissingSnapshotError } from '../Errors'
 import { PrismaErrorCodes } from '../Models/RepositoryModels'
-import { SaveSnapshotModel } from '../Models/SnapshotModel'
+import { DOI_UPDATED_LABEL, SaveSnapshotModel } from '../Models/SnapshotModels'
 
 export class SnapshotExtender {
   readonly SNAPSHOT_MODEL = 'manuscriptSnapshot'
@@ -54,6 +54,9 @@ export class SnapshotExtender {
     const found = await this.prisma.manuscriptSnapshot.findMany({
       where: {
         doc_id: documentID,
+        name: {
+          not: DOI_UPDATED_LABEL,
+        },
       },
       select: {
         id: true,

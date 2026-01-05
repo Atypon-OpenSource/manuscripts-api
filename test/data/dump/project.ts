@@ -35,8 +35,7 @@ projectsList.push({
     'User_valid-user-3@manuscriptsapp.com'
   ],
   writers: ['User_valid-user-2@manuscriptsapp.com'],
-  viewers: [],
-  proofers: ['User_valid-user-6@manuscriptsapp.com']
+  viewers: []
 })
 
 projectsList.push({

@@ -26,6 +26,7 @@ import {
 } from '../../../Errors'
 import { UpdateDocument } from '../../../Models/DocumentModels'
 import { ProjectPermission, ProjectUserRole } from '../../../Models/ProjectModels'
+import { DOI_UPDATED_LABEL } from '../../../Models/SnapshotModels'
 import { BaseController } from '../../BaseController'
 
 export class ProjectController extends BaseController {
@@ -66,7 +67,11 @@ export class ProjectController extends BaseController {
       schema_version: getVersion(),
     }
     await DIContainer.sharedContainer.documentClient.updateDocument(manuscriptID, updateDocPayload)
-    const snapshotModel = { docID: manuscriptID, name: 'DOI updated', snapshot: doc }
+    const snapshotModel = {
+      docID: manuscriptID,
+      name: DOI_UPDATED_LABEL,
+      snapshot: doc,
+    }
     await DIContainer.sharedContainer.snapshotClient.saveSnapshot(snapshotModel)
   }
 
@@ -167,12 +172,21 @@ export class ProjectController extends BaseController {
     return await DIContainer.sharedContainer.userService.getProjectUserProfiles(projectID)
   }
 
-  async exportJats(projectID: string, manuscriptID: string, user: Express.User): Promise<string> {
+  async exportJats(
+    projectID: string,
+    manuscriptID: string,
+    useSnapshot: boolean,
+    user: Express.User
+  ): Promise<string> {
     const permissions = await this.getPermissions(projectID, user.id)
     if (!permissions.has(ProjectPermission.READ)) {
       throw new RoleDoesNotPermitOperationError(`Access denied`, user.id)
     }
-    return await DIContainer.sharedContainer.projectService.exportJats(projectID, manuscriptID)
+    return await DIContainer.sharedContainer.projectService.exportJats(
+      projectID,
+      manuscriptID,
+      useSnapshot
+    )
   }
   async getArchive(onlyIDs: any, accept: any, user: Express.User, projectID: string) {
     const permissions = await this.getPermissions(projectID, user.id)

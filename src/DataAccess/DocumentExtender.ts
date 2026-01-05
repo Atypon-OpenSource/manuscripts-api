@@ -20,6 +20,7 @@ import { ManuscriptDoc, Prisma, PrismaClient } from '@prisma/client'
 import { MissingDocumentError, MissingRecordError } from '../Errors'
 import { CreateDoc, UpdateDocument } from '../Models/DocumentModels'
 import { PrismaErrorCodes } from '../Models/RepositoryModels'
+import { DOI_UPDATED_LABEL } from '../Models/SnapshotModels'
 import maybeMigrate from './maybe-migrate'
 
 export class DocumentExtender {
@@ -38,6 +39,7 @@ export class DocumentExtender {
       findDocumentWithSnapshot: this.findDocumentWithSnapshot,
       createDocument: this.createDocument,
       updateDocument: this.updateDocument,
+      updateDocumentWithVersionCheck: this.updateDocumentWithVersionCheck,
       deleteDocument: this.deleteDocument,
       findHistory: this.findHistory,
     }
@@ -91,6 +93,11 @@ export class DocumentExtender {
             name: true,
             createdAt: true,
           },
+          where: {
+            name: {
+              not: DOI_UPDATED_LABEL,
+            },
+          },
         },
       },
     })
@@ -141,6 +148,21 @@ export class DocumentExtender {
       }
       throw error
     }
+  }
+
+  private updateDocumentWithVersionCheck = async (
+    documentID: string,
+    expectedVersion: number,
+    payload: UpdateDocument
+  ) => {
+    const saved = await this.prisma.manuscriptDoc.update({
+      data: payload,
+      where: {
+        manuscript_model_id: documentID,
+        version: expectedVersion,
+      },
+    })
+    return saved
   }
 
   private deleteDocument = async (documentID: string) => {

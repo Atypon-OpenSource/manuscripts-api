@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
+import { schema, validateManuscriptNode } from '@manuscripts/transform'
 import { IncomingMessage } from 'http'
+import type { DocumentClient } from 'src/Models/RepositoryModels'
 import { Duplex } from 'stream'
 import { ErrorEvent, MessageEvent, WebSocket, WebSocketServer } from 'ws'
 
@@ -22,7 +24,7 @@ import { DocumentController } from '../Controller/V2/Document/DocumentController
 import { DIContainer } from '../DIContainer/DIContainer'
 import { MissingManuscriptError, RoleDoesNotPermitOperationError } from '../Errors'
 import { ProjectUserRole } from '../Models/ProjectModels'
-import { Snapshot } from '../Models/SnapshotModel'
+import { Snapshot } from '../Models/SnapshotModels'
 import { validateToken } from '../Utilities/JWT/LoginTokenPayload'
 import { log } from '../Utilities/Logger'
 import { SocketsService } from './SocketsService'
@@ -39,7 +41,10 @@ export interface SnapshotLabelResult {
 }
 const EMPTY_PERMISSIONS = new Set<DocumentPermission>()
 export class DocumentService {
-  constructor(private readonly socketsService: SocketsService) {}
+  constructor(
+    private readonly socketsService: SocketsService,
+    private readonly documentClient: DocumentClient
+  ) {}
   private documentController = new DocumentController()
 
   async getPermissions(
@@ -53,7 +58,6 @@ export class DocumentService {
       case ProjectUserRole.Writer:
       case ProjectUserRole.Editor:
       case ProjectUserRole.Annotator:
-      case ProjectUserRole.Proofer:
         return new Set([DocumentPermission.READ, DocumentPermission.WRITE])
       case ProjectUserRole.Viewer:
         return new Set([DocumentPermission.READ])
@@ -189,5 +193,11 @@ export class DocumentService {
     } catch (error) {
       log.error(`error destroying duplex: ${error}`)
     }
+  }
+
+  public async validateManuscript(manuscriptID: string) {
+    const result = await this.documentClient.findDocument(manuscriptID)
+    const pmDocument = schema.nodeFromJSON(result.doc)
+    return validateManuscriptNode(pmDocument)
   }
 }

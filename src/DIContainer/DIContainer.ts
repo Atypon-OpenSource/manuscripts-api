@@ -115,7 +115,7 @@ export class DIContainer {
       this.configService
     )
     this.socketsService = new SocketsService()
-    this.documentService = new DocumentService(this.socketsService)
+    this.documentService = new DocumentService(this.socketsService, repository.documentClient)
   }
 
   /**

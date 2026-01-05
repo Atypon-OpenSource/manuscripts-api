@@ -28,6 +28,7 @@ import {
   receiveStepsSchema,
   stepsSinceSchema,
   updateDocumentSchema,
+  validateDocumentSchema,
 } from './DocumentSchema'
 
 export class DocumentRoute extends BaseRoute {
@@ -37,6 +38,17 @@ export class DocumentRoute extends BaseRoute {
   }
 
   public create(router: Router): void {
+    router.post(
+      `${this.basePath}/:projectID/manuscript/:manuscriptID/validate`,
+      celebrate(validateDocumentSchema),
+      AuthStrategy.JsonHeadersValidation,
+      AuthStrategy.JWTAuth,
+      (req: Request, res: Response, next: NextFunction) => {
+        return this.runWithErrorHandling(async () => {
+          await this.validateDocument(req, res)
+        }, next)
+      }
+    )
     router.get(
       `${this.basePath}/version`,
       AuthStrategy.JsonHeadersValidation,
@@ -152,6 +164,13 @@ export class DocumentRoute extends BaseRoute {
       user
     )
     res.status(StatusCodes.OK).send(result)
+  }
+
+  private async validateDocument(req: Request, res: Response) {
+    const { projectID, manuscriptID } = req.params
+    const user = req.user
+    const result = await this.documentController.validateDocument(projectID, manuscriptID, user)
+    return res.status(StatusCodes.OK).json(result).end()
   }
 
   private async stepsSince(req: Request, res: Response) {

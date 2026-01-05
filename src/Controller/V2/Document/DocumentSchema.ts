@@ -66,3 +66,10 @@ export const receiveStepsSchema: Joi.SchemaMap = {
     version: Joi.number().required(),
   }),
 }
+
+export const validateDocumentSchema: Joi.SchemaMap = {
+  params: Joi.object({
+    projectID: Joi.string().required(),
+    manuscriptID: Joi.string().required(),
+  }),
+}

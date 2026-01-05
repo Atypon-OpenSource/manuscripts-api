@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { getVersion, JSONNode, migrateFor } from '@manuscripts/transform'
+import { getVersion, JSONProsemirrorNode, migrateFor } from '@manuscripts/transform'
 import { Prisma } from '@prisma/client'
 import { cloneDeep } from 'lodash'
 
@@ -32,7 +32,7 @@ async function maybeMigrate(
   if (!schema_version || !doc || typeof doc !== 'object') {
     return
   }
-  const migratedDoc = migrateFor(cloneDeep(doc as JSONNode), schema_version)
+  const migratedDoc = migrateFor(cloneDeep(doc as JSONProsemirrorNode), schema_version)
 
   // backing up old doc
   await tx.migrationBackup.create({
