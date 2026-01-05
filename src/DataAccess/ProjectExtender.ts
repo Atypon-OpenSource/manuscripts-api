@@ -20,7 +20,7 @@ import _ from 'lodash'
 import { v4 as uuid_v4 } from 'uuid'
 
 import { DatabaseError, ValidationError } from '../Errors'
-import { Model, objectTypes } from '../Models/BaseModels'
+import { Model, ObjectTypes } from '../Models/ProjectModels'
 import { timestamp } from '../Utilities/JWT/LoginTokenPayload'
 
 // TODO: change containerID to projectID
@@ -63,7 +63,7 @@ export class ProjectExtender {
       where: {
         data: {
           path: ['objectType'],
-          equals: objectTypes.Project,
+          equals: ObjectTypes.Project,
         },
         OR: [
           { data: { path: ['owners'], array_contains: userID } },
@@ -86,7 +86,7 @@ export class ProjectExtender {
     } catch (error) {
       throw DatabaseError.fromPrismaError(
         error,
-        `error when creating object of type ${objectTypes.Project}`,
+        `error when creating object of type ${ObjectTypes.Project}`,
         JSON.stringify(model)
       )
     }
@@ -106,7 +106,7 @@ export class ProjectExtender {
     } catch (error) {
       throw DatabaseError.fromPrismaError(
         error,
-        `error when creating object of type ${objectTypes.Manuscript}`,
+        `error when creating object of type ${ObjectTypes.Manuscript}`,
         JSON.stringify(model)
       )
     }
@@ -123,7 +123,7 @@ export class ProjectExtender {
       (_documentValue: any, patchValue: any) => patchValue
     ) as any
 
-    if (patchedDocument.objectType !== objectTypes.Manuscript) {
+    if (patchedDocument.objectType !== ObjectTypes.Manuscript) {
       throw new ValidationError(`Object type mismatched`, patchedDocument.objectType)
     }
     const documentToUpdate = {
@@ -244,7 +244,7 @@ export class ProjectExtender {
       (_documentValue: any, patchValue: any) => patchValue
     ) as any
 
-    if (patchedDocument.objectType !== objectTypes.Project) {
+    if (patchedDocument.objectType !== ObjectTypes.Project) {
       throw new ValidationError(`Object type mismatched`, patchedDocument.objectType)
     }
     const documentToUpdate = {
@@ -264,10 +264,10 @@ export class ProjectExtender {
     return this.buildModel(updatedModel)
   }
   private projectID() {
-    return `${objectTypes.Project}:${uuid_v4()}`
+    return `${ObjectTypes.Project}:${uuid_v4()}`
   }
   private manuscriptID() {
-    return `${objectTypes.Manuscript}:${uuid_v4()}`
+    return `${ObjectTypes.Manuscript}:${uuid_v4()}`
   }
   private createProjectModel(userID: string, title?: string) {
     const createdAt = timestamp()
@@ -280,7 +280,7 @@ export class ProjectExtender {
         writers: [],
         viewers: [],
         title,
-        objectType: objectTypes.Project,
+        objectType: ObjectTypes.Project,
         createdAt,
         updatedAt: createdAt,
       },
@@ -299,7 +299,7 @@ export class ProjectExtender {
         _id: manuscriptID,
         containerID: projectID,
         prototype,
-        objectType: objectTypes.Manuscript,
+        objectType: ObjectTypes.Manuscript,
         createdAt,
         updatedAt: createdAt,
       },

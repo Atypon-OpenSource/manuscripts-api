@@ -38,9 +38,8 @@ import {
   UserRoleError,
   ValidationError,
 } from '../Errors'
-import {Model, objectTypes, Manuscript} from '../Models/BaseModels'
 import { CreateDoc } from '../Models/DocumentModels'
-import { ArchiveOptions, ProjectPermission, ProjectUserRole } from '../Models/ProjectModels'
+import { Manuscript, Model, ObjectTypes, ArchiveOptions, ProjectPermission, ProjectUserRole } from '../Models/ProjectModels'
 import {
   DocumentClient,
   ProjectClient,
@@ -97,7 +96,7 @@ export class ProjectService {
 
     const manuscriptModel = {
       _id: node.attrs.id,
-      objectType: objectTypes.Manuscript,
+      objectType: ObjectTypes.Manuscript,
       createdAt: now,
       updatedAt: now,
       containerID: projectID,
@@ -105,7 +104,7 @@ export class ProjectService {
       articleType: node.attrs.articleType || JSON.parse(template).articleType || 'other',
       prototype: templateID,
       primaryLanguageCode: node.attrs.primaryLanguageCode,
-    } as Manuscript
+    }
 
     await this.projectClient.bulkInsert([
       {
@@ -183,7 +182,7 @@ export class ProjectService {
   }
 
   private async getManuscriptID(projectID: string): Promise<string | null> {
-    const models = await this.projectClient.getProjectResources(projectID, [objectTypes.Manuscript])
+    const models = await this.projectClient.getProjectResources(projectID, [ObjectTypes.Manuscript])
     if (!models) {
       throw new MissingContainerError(projectID)
     }

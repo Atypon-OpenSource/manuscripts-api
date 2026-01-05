@@ -23,9 +23,8 @@ import {
   RecordNotFoundError,
   RoleDoesNotPermitOperationError,
 } from '../../../Errors'
-import { Model, objectTypes } from '../../../Models/BaseModels'
 import { UpdateDocument } from '../../../Models/DocumentModels'
-import { ProjectPermission, ProjectUserRole } from '../../../Models/ProjectModels'
+import { ObjectTypes, Model, ProjectPermission, ProjectUserRole } from '../../../Models/ProjectModels'
 import { DOI_UPDATED_LABEL } from '../../../Models/SnapshotModels'
 import { BaseController } from '../../BaseController'
 
@@ -118,7 +117,7 @@ export class ProjectController extends BaseController {
 
     const models =
       (await DIContainer.sharedContainer.projectService.getProjectModels(projectID)) || []
-    const manuscript = models.find((m) => m.objectType === objectTypes.Manuscript)
+    const manuscript = models.find((m) => m.objectType === ObjectTypes.Manuscript)
     return manuscript || null
   }
 
