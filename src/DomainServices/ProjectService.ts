@@ -17,9 +17,7 @@ import {
   createArticleNode,
   getVersion,
   JATSExporter,
-  Journal,
   JSONProsemirrorNode,
-  Manuscript,
   parseJATSArticle,
   Project,
   schema,
@@ -40,7 +38,7 @@ import {
   UserRoleError,
   ValidationError,
 } from '../Errors'
-import { Model, objectTypes } from '../Models/BaseModels'
+import {Model, objectTypes, Manuscript} from '../Models/BaseModels'
 import { CreateDoc } from '../Models/DocumentModels'
 import { ArchiveOptions, ProjectPermission, ProjectUserRole } from '../Models/ProjectModels'
 import {
@@ -73,7 +71,8 @@ export class ProjectService {
         throw new MissingTemplateError(templateID)
       }
     }
-    return await this.projectClient.createManuscript(projectID, templateID)
+    const manuscript = await this.projectClient.createManuscript(projectID, templateID)
+    return manuscript._id
   }
 
   public async importJats(
@@ -81,7 +80,7 @@ export class ProjectService {
     file: Express.Multer.File,
     projectID: string,
     templateID: string
-  ): Promise<Manuscript> {
+  ): Promise<string> {
     const template = await this.configService.getDocument(templateID)
     if (!template) {
       throw new MissingTemplateError(templateID)
@@ -90,7 +89,7 @@ export class ProjectService {
     const jats = await this.convert(file.path)
 
     const now = Math.round(Date.now() / 1000)
-    const { node, journal } = parseJATSArticle(
+    const node = parseJATSArticle(
       jats,
       JSON.parse(template).sectionCategories,
       templateID
@@ -110,7 +109,6 @@ export class ProjectService {
 
     await this.projectClient.bulkInsert([
       {
-        ...journal,
         createdAt: now,
         updatedAt: now,
         containerID: projectID,
@@ -120,7 +118,7 @@ export class ProjectService {
 
     await this.documentClient.createDocument(
       {
-        manuscript_model_id: manuscriptModel._id,
+        manuscript_model_id: node.attrs.id,
         project_model_id: projectID,
         doc: node,
         schema_version: getVersion(),
@@ -128,7 +126,7 @@ export class ProjectService {
       userID
     )
 
-    return manuscriptModel
+    return node.attrs.id
   }
 
   public async createManuscriptDoc(manuscript: Manuscript, projectID: string, userID: string) {
@@ -356,20 +354,18 @@ export class ProjectService {
     return doc
   }
 
-  public async exportJats(projectID: string, manuscriptID: string, useSnapshot: boolean) {
+  public async exportJats(manuscriptID: string, useSnapshot: boolean) {
     const article: JSONProsemirrorNode = useSnapshot
       ? ((await this.snapshotClient.getMostRecentSnapshot(manuscriptID))
           .snapshot as JSONProsemirrorNode)
       : AuthorityService.removeSuggestions(
           (await this.documentClient.findDocument(manuscriptID)).doc as JSONProsemirrorNode
         )
-    const options = await this.getExportJatsOptions(projectID, article.attrs.prototype)
+    const options = await this.getExportJatsOptions(article.attrs.prototype)
     return new JATSExporter().serializeToJATS(schema.nodeFromJSON(article), options)
   }
 
-  private async getExportJatsOptions(projectID: string, templateID: string) {
-    const projectModels = (await this.getProjectModels(projectID)) || []
-    const journal = projectModels.find((m) => m.objectType === objectTypes.Journal)
+  private async getExportJatsOptions(templateID: string) {
     const template = await this.configService.getDocument(templateID)
     if (!template) {
       throw new ValidationError('manuscript template is empty', templateID)
@@ -380,7 +376,6 @@ export class ProjectService {
       throw new RecordNotFoundError('locale or style not found')
     }
     return {
-      journal: journal ? (journal as Journal) : undefined,
       csl: { locale, style },
     }
   }

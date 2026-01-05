@@ -25,3 +25,13 @@ export const objectTypes = {
   Manuscript: 'MPManuscript',
   Journal: 'MPJournal',
 }
+
+export interface Manuscript {
+  _id: string
+  objectType: 'MPManuscript'
+  containerID: string
+  DOI?: string
+  articleType: string
+  prototype: string
+  primaryLanguageCode: string
+}

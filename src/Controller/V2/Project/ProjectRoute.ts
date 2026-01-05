@@ -296,15 +296,15 @@ export class ProjectRoute extends BaseRoute {
       throw new ValidationError('No user found', user)
     }
 
-    let manuscript
+    let id
     if (file && file.path) {
-      manuscript = await this.projectController.importJats(user, file, projectID, templateID)
+      id = await this.projectController.importJats(user, file, projectID, templateID)
       await remove(file.path)
     } else {
-      manuscript = await this.projectController.createArticleNode(user, projectID, templateID)
+      id = await this.projectController.createArticleNode(user, projectID, templateID)
     }
 
-    res.status(StatusCodes.OK).send(manuscript)
+    res.status(StatusCodes.OK).send({_id: id})
   }
 
   private async getProjectUserProfiles(req: Request, res: Response) {

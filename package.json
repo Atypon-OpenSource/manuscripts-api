@@ -25,7 +25,6 @@
     "clean": "rm -rf dist/"
   },
   "dependencies": {
-    "@manuscripts/json-schema": "2.2.12",
     "@manuscripts/transform": "4.3.12",
     "@prisma/client": "6.7.0",
     "celebrate": "15.0.3",

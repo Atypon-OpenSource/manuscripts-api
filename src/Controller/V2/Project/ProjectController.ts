@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { getVersion, Manuscript, Project, UserProfile } from '@manuscripts/transform'
+import { getVersion, Project, UserProfile } from '@manuscripts/transform'
 
 import { DIContainer } from '../../../DIContainer/DIContainer'
 import {
@@ -147,7 +147,7 @@ export class ProjectController extends BaseController {
     user: Express.User,
     projectID: string,
     templateID?: string
-  ): Promise<Manuscript> {
+  ): Promise<string> {
     const permissions = await this.getPermissions(projectID, user.id)
     if (!permissions.has(ProjectPermission.CREATE_MANUSCRIPT)) {
       throw new RoleDoesNotPermitOperationError(`Access denied`, user.id)
@@ -169,7 +169,7 @@ export class ProjectController extends BaseController {
     zip: Express.Multer.File,
     projectID: string,
     templateID: string
-  ): Promise<Manuscript> {
+  ): Promise<string> {
     const permissions = await this.getPermissions(projectID, user.id)
     if (!permissions.has(ProjectPermission.CREATE_MANUSCRIPT)) {
       throw new RoleDoesNotPermitOperationError(`Access denied`, user.id)
@@ -201,11 +201,7 @@ export class ProjectController extends BaseController {
     if (!permissions.has(ProjectPermission.READ)) {
       throw new RoleDoesNotPermitOperationError(`Access denied`, user.id)
     }
-    return await DIContainer.sharedContainer.projectService.exportJats(
-      projectID,
-      manuscriptID,
-      useSnapshot
-    )
+    return await DIContainer.sharedContainer.projectService.exportJats(manuscriptID, useSnapshot)
   }
   async getArchive(onlyIDs: any, accept: any, user: Express.User, projectID: string) {
     const permissions = await this.getPermissions(projectID, user.id)
