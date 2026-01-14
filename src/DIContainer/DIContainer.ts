@@ -16,7 +16,6 @@
 
 import { PrismaClient } from '@prisma/client'
 
-import { config } from '../Config/Config'
 import { DocumentExtender } from '../DataAccess/DocumentExtender'
 import { EventExtender } from '../DataAccess/EventExtender'
 import { ProjectExtender } from '../DataAccess/ProjectExtender'
@@ -100,7 +99,7 @@ export class DIContainer {
     this.eventManager = new EventManager(this.eventclient)
     this.authenticationService = new AuthenticationService(repository.userClient)
     this.registerationService = new RegisterationService(repository.userClient, this.eventManager)
-    this.configService = new ConfigService(config.data.path)
+    this.configService = new ConfigService()
     this.authorityService = new AuthorityService(repository.DB)
     this.userService = new UserService(repository.userClient, repository.projectClient)
     this.projectClient = repository.projectClient
