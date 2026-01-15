@@ -16,8 +16,8 @@
 
 import { createLogger, format, Logger, transports } from 'winston'
 
-import { Environment } from '../../../Config/ConfigurationTypes'
 import { ILogger } from '../ILogger'
+import { config } from '../../../config'
 
 export class WinstonLogger implements ILogger {
   /**
@@ -71,11 +71,7 @@ export class WinstonLogger implements ILogger {
    */
   debug(msg: string, meta: any): void {
     // disable debug if node env is production, or force log debug data flag is set 1
-    if (process.env.FORCE_DEBUG === '1') {
-      this.logger.debug(msg, meta)
-    } else if (process.env.NODE_ENV === Environment.Production) {
-      // nothing to do.
-    } else {
+    if (config.debug) {
       this.logger.debug(msg, meta)
     }
   }

@@ -42,7 +42,6 @@ import {
   MissingContainerError,
   MissingTemplateError,
   RecordNotFoundError,
-  SyncError,
   UserRoleError,
   ValidationError,
 } from '../Errors'
@@ -419,7 +418,7 @@ export class ProjectService {
     models.forEach((m) => {
       const error = validate(m)
       if (error) {
-        throw new SyncError(error, m)
+        throw new Error(error)
       }
     })
   }

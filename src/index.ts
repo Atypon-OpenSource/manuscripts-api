@@ -17,10 +17,10 @@
 import { defineGlobals } from './define-globals'
 defineGlobals()
 
-import { config } from './Config/Config'
 import { ServerStatus } from './Controller/V2/ServerStatus/ServerStatus'
 import { DIContainer } from './DIContainer/DIContainer'
 import { log } from './Utilities/Logger'
+import { config } from './config'
 
 process.on('unhandledRejection', (reason, promise) => {
   log.error(`Unhandled rejection – reason: ${reason}, promise: ${promise}`)
@@ -32,7 +32,7 @@ function main() {
     .then(async () => {
       const container = DIContainer.sharedContainer
       container.server.bootstrap()
-      return container.server.start(config.API.port)
+      return container.server.start(config.server.port)
     })
     // eslint-disable-next-line promise/always-return
     .then(() => {

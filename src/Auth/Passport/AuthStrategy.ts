@@ -19,10 +19,10 @@ import { NextFunction, Request, Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
 import passport from 'passport'
 
-import { config } from '../../Config/Config'
 import { APP_SECRET_HEADER_KEY } from '../../Controller/V2/Auth/AuthController'
 import { InvalidJsonHeadersError, InvalidServerCredentialsError } from '../../Errors'
 import { isString } from '../../util'
+import { config } from '../../config'
 
 export class AuthStrategy {
   /**
@@ -39,8 +39,8 @@ export class AuthStrategy {
    */
   public static secretValidation() {
     return async (req: Request, _res: Response, next: NextFunction): Promise<void> => {
-      const appSecret = req.headers[APP_SECRET_HEADER_KEY]
-      if (!isString(appSecret) || config.auth.serverSecret !== appSecret) {
+      const secret = req.headers[APP_SECRET_HEADER_KEY]
+      if (!isString(secret) || config.server.secret !== secret) {
         return next(new InvalidServerCredentialsError())
       }
       next()
