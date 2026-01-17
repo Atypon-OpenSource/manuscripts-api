@@ -367,18 +367,26 @@ export class ProjectService {
       : AuthorityService.removeSuggestions(
           (await this.documentClient.findDocument(manuscriptID)).doc as JSONProsemirrorNode
         )
-    const options = await this.getExportJatsOptions(projectID, article.attrs.prototype)
+    const options = await this.getExportJatsOptions(
+      projectID,
+      article.attrs.prototype,
+      article.attrs.citationStyle
+    )
     return new JATSExporter().serializeToJATS(schema.nodeFromJSON(article), options)
   }
 
-  private async getExportJatsOptions(projectID: string, templateID: string) {
+  private async getExportJatsOptions(
+    projectID: string,
+    templateID: string,
+    citationStyle?: string
+  ) {
     const projectModels = (await this.getProjectModels(projectID)) || []
     const journal = projectModels.find((m) => m.objectType === ObjectTypes.Journal)
     const template = await this.configService.getDocument(templateID)
     if (!template) {
       throw new ValidationError('manuscript template is empty', templateID)
     }
-    const style = await this.citationStyleFromTemplate(template)
+    const style = citationStyle ?? (await this.citationStyleFromTemplate(template))
     const locale = await this.configService.getDocument(DEFAULT_LOCALE)
     if (!locale || !style) {
       throw new RecordNotFoundError('locale or style not found')
