@@ -17,17 +17,17 @@
 import passport from 'passport'
 import { ExtractJwt, Strategy } from 'passport-jwt'
 
-import { config } from '../../Config/Config'
 import { DIContainer } from '../../DIContainer/DIContainer'
 import { log } from '../../Utilities/Logger'
+import { config } from '../../config'
 
 export class JwtAuthStrategy {
   public static use(): void {
     const opts = {
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      secretOrKey: config.auth.jwtSecret,
-      issuer: config.API.hostname,
-      audience: config.email.fromBaseURL,
+      secretOrKey: config.jwt.secret,
+      issuer: config.jwt.issuer,
+      audience: config.jwt.audience,
     }
     passport.use(
       'jwt',

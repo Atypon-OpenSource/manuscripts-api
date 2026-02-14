@@ -13,76 +13,97 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { promises as fs } from 'fs'
+import fs from 'fs'
 import path from 'path'
 
-interface Model {
+import { config } from '../config'
+import { isString } from '../util'
+
+type Model = {
   _id: string
-}
-interface Template extends Model {
-  sectionCategories: string
 }
 
 export class ConfigService {
-  private store: Promise<Map<string, string>>
-  constructor(root: string) {
-    this.store = this.init(root)
+  private store: Map<string, string>
+
+  constructor() {
+    this.store = this.readConfig()
   }
 
-  private async init(root: string) {
-    const bundles = await this.initBundles(root)
-    const templates = await this.initTemplates(root)
-    const styles = await this.initCslStyles(root)
-    const locales = await this.initCslLocales(root)
-    const languages = await this.initLanguages(root)
-    return new Map<string, string>([...bundles, ...templates, ...styles, ...locales, ...languages])
+  private readConfig() {
+    const store = new Map()
+    for (const path of config.data.paths) {
+      this.readBundles(path)?.forEach((v, k) => store.set(k, v))
+      this.readTemplates(path)?.forEach((v, k) => store.set(k, v))
+      this.readCslStyles(path)?.forEach((v, k) => store.set(k, v))
+      this.readCslLocales(path)?.forEach((v, k) => store.set(k, v))
+      this.readLanguages(path)?.forEach((v, k) => store.set(k, v))
+    }
+    return store
   }
 
-  private async initBundles(root: string) {
-    const models: Model[] = JSON.parse(await fs.readFile(path.join(root, 'bundles.json'), 'utf-8'))
+  private readBundles(root: string) {
+    const file = path.join(root, 'bundles.json')
+    if (!fs.existsSync(file)) {
+      return
+    }
+    const models = JSON.parse(fs.readFileSync(file, 'utf-8'))
     return this.index(models)
   }
 
-  private async initTemplates(root: string) {
-    const templates: Template[] = JSON.parse(
-      await fs.readFile(path.join(root, 'templates.json'), 'utf-8')
-    )
+  private readTemplates(root: string) {
+    const file = path.join(root, 'templates.json')
+    if (!fs.existsSync(file)) {
+      return
+    }
+    const templates = JSON.parse(fs.readFileSync(file, 'utf-8'))
     for (const template of templates) {
-      const file = await fs.readFile(path.join(root, template.sectionCategories), 'utf-8')
-      template.sectionCategories = JSON.parse(file)
+      if (isString(template.sectionCategories)) {
+        const file = fs.readFileSync(path.join(root, template.sectionCategories), 'utf-8')
+        template.sectionCategories = JSON.parse(file)
+      }
     }
     return this.index(templates)
   }
 
-  private async initCslStyles(root: string) {
-    const styles = new Map<string, string>()
+  private readCslStyles(root: string) {
     const dir = path.join(root, 'csl', 'styles')
-    const files = await fs.readdir(dir)
+    if (!fs.existsSync(dir)) {
+      return
+    }
+    const styles = new Map<string, string>()
+    const files = fs.readdirSync(dir)
     for (const file of files) {
       const id = file.slice(0, -4)
-      const data = await fs.readFile(path.join(dir, file), 'utf-8')
+      const data = fs.readFileSync(path.join(dir, file), 'utf-8')
       styles.set(id, data)
     }
     return styles
   }
 
-  private async initCslLocales(root: string) {
-    const locales = new Map<string, string>()
+  private readCslLocales(root: string) {
     const dir = path.join(root, 'csl', 'locales')
-    const files = await fs.readdir(dir)
+    if (!fs.existsSync(dir)) {
+      return
+    }
+
+    const locales = new Map<string, string>()
+    const files = fs.readdirSync(dir)
     for (const file of files) {
       const id = file.slice(8, -4)
-      const data = await fs.readFile(path.join(dir, file), 'utf-8')
+      const data = fs.readFileSync(path.join(dir, file), 'utf-8')
       locales.set(id, data)
     }
     return locales
   }
 
-  private async initLanguages(root: string) {
-    const languages = await fs.readFile(path.join(root, 'languages.json'), 'utf-8')
-    const languagesMap = new Map<string, string>()
-    languagesMap.set('languages', languages)
-    return languagesMap
+  private readLanguages(root: string) {
+    const file = path.join(root, 'languages.json')
+    if (!fs.existsSync(file)) {
+      return
+    }
+    const languages = fs.readFileSync(file, 'utf-8')
+    return new Map([['languages', languages]])
   }
 
   private index(models: Model[]) {
@@ -92,12 +113,10 @@ export class ConfigService {
   }
 
   public async getDocument(id: string) {
-    const data = await this.store
-    return data.get(id)
+    return this.store.get(id)
   }
 
   public async hasDocument(id: string): Promise<boolean> {
-    const data = await this.store
-    return data.has(id)
+    return this.store.has(id)
   }
 }

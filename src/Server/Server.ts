@@ -19,15 +19,14 @@ import express from 'express'
 import promBundle from 'express-prom-bundle'
 import logger from 'morgan'
 import * as path from 'path'
+import { config } from '../config'
 import { WebSocketServer } from 'ws'
 
 import { PassportAuth } from '../Auth/Passport/Passport'
-import { config } from '../Config/Config'
-import { Environment } from '../Config/ConfigurationTypes'
 import { initRouter } from '../Controller/InitRouter'
 import { getRoutes as getRoutesV2 } from '../Controller/V2/Routes'
 import { DIContainer } from '../DIContainer/DIContainer'
-import { ForbiddenOriginError, IllegalStateError, isStatusCoded } from '../Errors'
+import { ForbiddenOriginError, isStatusCoded } from '../Errors'
 import generateDocs from '../Utilities/Docs/swagger'
 import { log } from '../Utilities/Logger'
 import { IServer } from './IServer'
@@ -56,21 +55,6 @@ export class Server implements IServer {
       this.app.use(logger('dev')) // short
     }
 
-    const allowedOrigins: string[] = []
-
-    for (const allowedOrigin of config.server.allowedCORSOrigins) {
-      allowedOrigins.push(allowedOrigin)
-    }
-
-    const originWildcard = allowedOrigins.indexOf('*') >= 0
-
-    if (process.env.NODE_ENV === Environment.Production && originWildcard) {
-      throw new IllegalStateError(
-        'Attempting to execute in production mode with "APP_ALLOWED_CORS_ORIGINS" including "*". You probably didn\'t want to do this?',
-        'APP_ALLOWED_CORS_ORIGINS=*'
-      )
-    }
-
     this.app.use(
       cors({
         origin: (requestOrigin, callback) => {
@@ -78,10 +62,7 @@ export class Server implements IServer {
           if (!requestOrigin) {
             return callback(null, true)
           }
-          if (process.env.NODE_ENV === Environment.Development && originWildcard) {
-            return callback(null, true)
-          }
-          if (allowedOrigins.indexOf(requestOrigin) >= 0) {
+          if (!config.server.origins.length || config.server.origins.indexOf(requestOrigin) >= 0) {
             return callback(null, true)
           } else {
             return callback(new ForbiddenOriginError(requestOrigin))

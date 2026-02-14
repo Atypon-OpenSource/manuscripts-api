@@ -16,8 +16,8 @@
 
 import jwt from 'jsonwebtoken'
 
-import { config } from '../../Config/Config'
 import { InvalidCredentialsError } from '../../Errors'
+import { config } from '../../config'
 
 /**
  * Represents the contents of a JWT token payload;
@@ -40,10 +40,10 @@ export type LoginTokenPayloadLike = Pick<
 export function generateUserToken(payload: LoginTokenPayloadLike) {
   const fullPayload = {
     ...payload,
-    aud: config.email.fromBaseURL,
-    iss: config.API.hostname,
+    aud: config.jwt.audience,
+    iss: config.jwt.issuer,
   }
-  return jwt.sign(fullPayload, config.auth.jwtSecret, { expiresIn: '1800s' })
+  return jwt.sign(fullPayload, config.jwt.secret, { expiresIn: config.jwt.duration })
 }
 
 export function timestamp() {
