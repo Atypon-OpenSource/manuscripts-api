@@ -22,7 +22,7 @@
   },
   {
     "id": "abstract-short",
-    "titles": ["Short"],
+    "titles": ["Short Abstract"],
     "synonyms": [""],
     "group": "abstracts",
     "isUnique": true
@@ -36,7 +36,7 @@
   },
   {
     "id": "abstract-toc",
-    "titles": ["Table of contents"],
+    "titles": ["Table of Contents"],
     "synonyms": [""],
     "group": "abstracts",
     "isUnique": true
