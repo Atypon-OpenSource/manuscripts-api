@@ -31,7 +31,7 @@ export class ConfigService {
   }
 
   private readConfig() {
-    const store = new Map()
+    const store = new Map<string, string>()
     for (const path of config.data.paths) {
       this.readBundles(path)?.forEach((v, k) => store.set(k, v))
       this.readTemplates(path)?.forEach((v, k) => store.set(k, v))
