@@ -70,7 +70,8 @@
       "conflict of interest",
       "competing interests"
     ],
-    "titles": ["COI Statement", "Competing Interests"],
+    "label": "Conflict of Interest",
+    "titles": ["Conflict of Interest Statement","COI Statement", "Competing Interests"],
     "group": "backmatter",
     "isUnique": true
   },
