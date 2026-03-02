@@ -289,7 +289,7 @@ export class ProjectRoute extends BaseRoute {
   private async createManuscript(req: Request, res: Response) {
     const file = req.file
     const { projectID } = req.params
-    const { templateID } = req.body
+    const { templateID, owner } = req.body
     const { user } = req
 
     if (!user) {
@@ -301,7 +301,7 @@ export class ProjectRoute extends BaseRoute {
       manuscript = await this.projectController.importJats(user, file, projectID, templateID)
       await remove(file.path)
     } else {
-      manuscript = await this.projectController.createArticleNode(user, projectID, templateID)
+      manuscript = await this.projectController.createArticleNode(user, projectID, templateID, owner)
     }
 
     res.status(StatusCodes.OK).send(manuscript)

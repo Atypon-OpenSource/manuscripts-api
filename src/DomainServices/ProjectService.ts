@@ -28,6 +28,7 @@ import {
   JSONProsemirrorNode,
   parseJATSArticle,
   schema,
+  SubmissionOwner,
 } from '@manuscripts/transform'
 import decompress from 'decompress'
 import fs from 'fs'
@@ -135,7 +136,7 @@ export class ProjectService {
     return manuscriptModel
   }
 
-  public async createManuscriptDoc(manuscript: Manuscript, projectID: string, userID: string) {
+  public async createManuscriptDoc(manuscript: Manuscript, projectID: string, userID: string, owner?: SubmissionOwner) {
     const template = manuscript.prototype
       ? await this.configService.getDocument(manuscript.prototype)
       : null
@@ -150,7 +151,7 @@ export class ProjectService {
         doi: manuscript.DOI,
         id: manuscript._id,
         prototype: manuscript.prototype,
-      }),
+      }, owner),
       schema_version: getVersion(),
     }
     await this.documentClient.createDocument(createDoc, userID)

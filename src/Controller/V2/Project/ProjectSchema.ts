@@ -153,5 +153,12 @@ export const createManuscriptSchema: Joi.SchemaMap = {
   }),
   body: Joi.object({
     templateID: Joi.string(),
+    owner: Joi.object({
+      email: Joi.string().email().allow('', null),
+      firstName: Joi.string().allow('', null),
+      lastName: Joi.string().allow('', null),
+      prefix: Joi.string().allow('', null),
+      orcid: Joi.string().allow('', null),
+    }),
   }),
 }

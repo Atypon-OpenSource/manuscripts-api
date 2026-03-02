@@ -15,7 +15,7 @@
  */
 
 import { Manuscript, Model, ObjectTypes, Project, UserProfile } from '@manuscripts/json-schema'
-import { getVersion } from '@manuscripts/transform'
+import { getVersion, SubmissionOwner } from '@manuscripts/transform'
 
 import { DIContainer } from '../../../DIContainer/DIContainer'
 import {
@@ -127,7 +127,8 @@ export class ProjectController extends BaseController {
   async createArticleNode(
     user: Express.User,
     projectID: string,
-    templateID?: string
+    templateID?: string,
+    owner?: SubmissionOwner
   ): Promise<Manuscript> {
     const permissions = await this.getPermissions(projectID, user.id)
     if (!permissions.has(ProjectPermission.CREATE_MANUSCRIPT)) {
@@ -140,7 +141,8 @@ export class ProjectController extends BaseController {
     await DIContainer.sharedContainer.projectService.createManuscriptDoc(
       manuscript,
       projectID,
-      user.id
+      user.id,
+      owner
     )
     return manuscript
   }
