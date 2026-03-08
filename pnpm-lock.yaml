@@ -12,8 +12,8 @@ importers:
         specifier: 2.2.12
         version: 2.2.12
       '@manuscripts/transform':
-        specifier: 4.3.23-LEAN-4873.1
-        version: 4.3.23-LEAN-4873.1(prosemirror-state@1.4.3)
+        specifier: 4.3.22
+        version: 4.3.22(prosemirror-state@1.4.3)
       '@prisma/client':
         specifier: 6.7.0
         version: 6.7.0(prisma@6.7.0(typescript@4.9.5))(typescript@4.9.5)
@@ -1312,8 +1312,8 @@ packages:
   '@manuscripts/json-schema@2.2.12':
     resolution: {integrity: sha512-MCz11Dhc1kric1oU9cnYHboPgEwwccWfuuU1XhAEilDIFe8KszAeQk5i4GBGlGLddp/Gvkr6N1gtzLl36mTE7A==}
 
-  '@manuscripts/transform@4.3.23-LEAN-4873.1':
-    resolution: {integrity: sha512-f9EeQQFAWwtjcDNf4VajuVsLmWngjegg0BFoSO12fubSkEa6r1lnDJ/umy1kKhjrlbavRtLT0GAydcSnTW9NzQ==, tarball: https://us-central1-npm.pkg.dev/atypon-artifact/npm-virtual/@manuscripts/transform/-/@manuscripts/transform-4.3.23-LEAN-4873.1.tgz}
+  '@manuscripts/transform@4.3.22':
+    resolution: {integrity: sha512-Yaa7+v2cRf4q/SjVS1Up0k8EFAhEr/Q/n6Hn0kWfkuIacv4EeJzjyG05wMSUJ1YY3LHBHu7kwp6q7JbHgJ7zjw==}
     engines: {node: '>=20.16.0'}
 
   '@nodelib/fs.scandir@2.1.5':
@@ -6452,7 +6452,7 @@ snapshots:
       deepmerge: 4.3.1
       uuid: 9.0.1
 
-  '@manuscripts/transform@4.3.23-LEAN-4873.1(prosemirror-state@1.4.3)':
+  '@manuscripts/transform@4.3.22(prosemirror-state@1.4.3)':
     dependencies:
       citeproc: 2.4.63
       jszip: 3.10.1
