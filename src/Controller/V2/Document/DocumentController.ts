@@ -105,7 +105,14 @@ export class DocumentController extends BaseController {
       projectID,
       DocumentPermission.WRITE
     )
-    return await DIContainer.sharedContainer.authorityService.receiveSteps(manuscriptID, payload)
+    const capabilities = await DIContainer.sharedContainer.documentService.getCapabilities(
+      projectID,
+      user.id
+    )
+    return await DIContainer.sharedContainer.authorityService.receiveSteps(manuscriptID, payload, {
+      userId: user.id,
+      capabilities,
+    })
   }
 
   broadcastSteps(manuscriptID: string, result: History) {

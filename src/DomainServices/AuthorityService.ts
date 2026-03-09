@@ -21,16 +21,23 @@ import { Step } from 'prosemirror-transform'
 
 import { History, ModifiedStep, ReceiveSteps } from '../Models/AuthorityModels'
 import { DB } from '../Models/RepositoryModels'
-import { VersionMismatchError } from '../Errors'
+import { StepAccessError, VersionMismatchError } from '../Errors'
+import { DIContainer } from '../DIContainer/DIContainer'
+import { AccessContext } from '../Models/AccessContextModels'
 export class AuthorityService {
   constructor(private readonly repository: DB) {}
 
-  public async receiveSteps(documentID: string, receiveSteps: ReceiveSteps): Promise<History> {
+  public async receiveSteps(
+    documentID: string,
+    receiveSteps: ReceiveSteps,
+    accessContext: AccessContext
+  ): Promise<History> {
     const found = await this.repository.manuscriptDoc.findDocument(documentID)
     const { doc, modifiedSteps } = this.applyStepsToDocument(
       receiveSteps.steps,
       found.doc,
-      receiveSteps.clientID.toString()
+      receiveSteps.clientID.toString(),
+      accessContext
     )
     try {
       await this.repository.manuscriptDoc.updateDocumentWithVersionCheck(
@@ -82,12 +89,21 @@ export class AuthorityService {
   private applyStepsToDocument(
     jsonSteps: Prisma.JsonObject[],
     document: Prisma.JsonValue,
-    clientID: string
+    clientID: string,
+    accessContext: AccessContext
   ) {
     const steps = this.hydrateSteps(jsonSteps)
     const modifiedSteps: ModifiedStep[] = []
     let pmDocument = schema.nodeFromJSON(document)
     for (let i = 0; i < steps.length; i++) {
+      const hasAccessToStep = DIContainer.sharedContainer.stepAccessService.validate(
+        steps[i],
+        pmDocument,
+        accessContext
+      )
+      if (!hasAccessToStep) {
+        throw new StepAccessError(steps[i])
+      }
       pmDocument = steps[i].apply(pmDocument).doc || pmDocument
       modifiedSteps.push({ ...jsonSteps[i], clientID })
     }
