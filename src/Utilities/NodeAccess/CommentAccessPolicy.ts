@@ -41,7 +41,7 @@ export class CommentAccessPolicy implements NodeAccessPolicy {
         ? context.capabilities.resolveOwnComment
         : context.capabilities.resolveOthersComment
     }
-    return true
+    return false
   }
 
   private isOwn(comment: CommentNode, userId: string) {

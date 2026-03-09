@@ -23,9 +23,25 @@ import { TEST_TIMEOUT } from '../../../../utilities/testSetup'
 
 jest.setTimeout(TEST_TIMEOUT)
 
+let accessContext: AccessContext
+let tr: Transform
+
 beforeEach(async () => {
   ;(DIContainer as any)._sharedContainer = null
   await DIContainer.init()
+    accessContext = {
+      userId: 'MPUserProfile:01',
+      capabilities: {
+        resolveOthersComment: true,
+        resolveOwnComment: true,
+        handleOthersComments: true,
+        handleOwnComments: true,
+        createComment: true,
+      },
+    }
+    const emptyDoc = schema.nodes.doc.createAndFill()!
+    tr = new Transform(emptyDoc)
+    tr.insert(10, schema.nodeFromJSON(comment))
 })
 
 afterEach(() => {
@@ -52,20 +68,6 @@ const comment = {
 }
 
 describe('StepAccessService', () => {
-  const accessContext: AccessContext = {
-    userId: 'MPUserProfile:01',
-    capabilities: {
-      resolveOthersComment: true,
-      resolveOwnComment: true,
-      handleOthersComments: true,
-      handleOwnComments: true,
-      createComment: true,
-    },
-  }
-  const doc = schema.nodes.doc.createAndFill()!
-  const tr = new Transform(doc)
-  tr.insert(10, schema.nodeFromJSON(comment))
-
   describe('validate', () => {
     it('has no access to resolve other comment', () => {
       accessContext.userId = 'MPUserProfile:02'
