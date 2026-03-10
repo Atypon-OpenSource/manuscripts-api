@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import { Model, ObjectTypes } from '@manuscripts/json-schema'
 import { Chance } from 'chance'
 import checksum from 'checksum'
 import { StatusCodes } from 'http-status-codes'
 import * as supertest from 'supertest'
 
+import { Model } from '../../../../../src/Models/BaseModels'
 import { config } from '../../../../../src/Config/Config'
 import { BucketKey } from '../../../../../src/Config/ConfigurationTypes'
 import { SeedOptions } from '../../../../../src/DataAccess/Interfaces/SeedOptions'
@@ -683,14 +683,14 @@ describe('ContainerService - loadProject', () => {
         ...ValidContentTypeAcceptJsonHeader,
         ...authHeader,
       },
-      { types: [ObjectTypes.ManuscriptNote] },
+        { types: ['MPManuscriptNote'] },
       {
         projectId: 'MPProject:valid-project-id-2',
       }
     )
     expect(response.status).toBe(StatusCodes.OK)
     expect(response.body.length).toBe(1)
-    expect(response.body[0].objectType).toBe(ObjectTypes.ManuscriptNote)
+      expect(response.body[0].objectType).toBe('MPManuscriptNote')
   })
 
   test('should successfully load notes even if types are not provided', async () => {
@@ -716,7 +716,7 @@ describe('ContainerService - loadProject', () => {
     )
     expect(response.status).toBe(StatusCodes.OK)
     const manuscriptsNotes = response.body.filter(
-      (model: Model) => model.objectType === ObjectTypes.ManuscriptNote
+        (model: Model) => model.objectType === 'MPManuscriptNote'
     )
     expect(manuscriptsNotes.length).toBeGreaterThan(0)
   })
