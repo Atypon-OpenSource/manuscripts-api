@@ -27,9 +27,9 @@ const appMetricMap = {
 }
 const metricsMap = [
   {
-    name: 'json_schema_version_info',
-    packageName: 'json-schema',
-    help: 'The @manuscripts/json-schema version by package.json',
+    name: 'transform_version_info',
+    packageName: 'transform',
+    help: 'The @manuscripts/transform version by package.json',
     labelNames: ['version', 'major', 'minor', 'patch'],
   },
 ]

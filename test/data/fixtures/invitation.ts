@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { ContainerInvitation } from '@manuscripts/json-schema'
 import checksum from 'checksum'
 
 export const validInvitation = {
@@ -51,7 +50,7 @@ export const validProjectInvitationWithoutEmail = {
   skipEmail: true
 }
 
-export const validProjectInvitationObject: ContainerInvitation = {
+export const validProjectInvitationObject = {
   _id: 'MPContainerInvitation:' + checksum(
     'valid-user@manuscriptsapp.com-valid-user-4@manuscriptsapp.com-valid-project-id-2',
     { algorithm: 'sha1' }
