@@ -160,7 +160,7 @@ export class ProjectController extends BaseController {
       projectID,
       user.id
     )
-    return manuscript
+    return manuscript._id
   }
 
   async importJats(

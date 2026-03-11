@@ -70,8 +70,7 @@ export class ProjectService {
         throw new MissingTemplateError(templateID)
       }
     }
-    const manuscript = await this.projectClient.createManuscript(projectID, templateID)
-    return manuscript._id
+    return await this.projectClient.createManuscript(projectID, templateID)
   }
 
   public async importJats(
