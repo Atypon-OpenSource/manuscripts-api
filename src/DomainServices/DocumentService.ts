@@ -27,6 +27,7 @@ import { Snapshot } from '../Models/SnapshotModels'
 import { validateToken } from '../Utilities/JWT/LoginTokenPayload'
 import { log } from '../Utilities/Logger'
 import { SocketsService } from './SocketsService'
+import { Capabilities } from '../Models/CapabilitiesModels'
 
 export enum DocumentPermission {
   READ,
@@ -61,6 +62,22 @@ export class DocumentService {
         return new Set([DocumentPermission.READ])
     }
     return EMPTY_PERMISSIONS
+  }
+
+  async getCapabilities(projectID: string, userID: string): Promise<Capabilities> {
+    const project = await DIContainer.sharedContainer.projectService.getProject(projectID)
+    const role = DIContainer.sharedContainer.projectService.getUserRole(project, userID)
+    const isViewer = role === ProjectUserRole.Viewer
+    const isOwner = role === ProjectUserRole.Owner
+    const isEditor = role === ProjectUserRole.Editor
+
+    return {
+      handleOwnComments: !isViewer,
+      handleOthersComments: isOwner,
+      resolveOwnComment: !isViewer,
+      resolveOthersComment: isOwner || isEditor,
+      createComment: !isViewer,
+    }
   }
 
   public async validateUserAccess(
