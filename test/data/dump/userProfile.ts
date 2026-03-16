@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { UserProfile } from '@manuscripts/json-schema'
+import { UserProfile } from '@manuscripts/transform'
 
 import { UserService } from '../../../src/DomainServices/User/UserService'
 
@@ -29,6 +29,4 @@ userProfileList.push({
     objectType: 'MPBibliographicName',
     given: 'Kevin'
   },
-  createdAt: 1522231220,
-  updatedAt: 1522231220
 })
