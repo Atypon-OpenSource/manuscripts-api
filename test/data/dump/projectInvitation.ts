@@ -14,33 +14,27 @@
  * limitations under the License.
  */
 
-import { ContainerInvitation, UserProfile } from '@manuscripts/json-schema'
+import { UserProfile } from '@manuscripts/transform'
 import checksum from 'checksum'
 
 import { ContainerRole } from '../../../src/Models/ContainerModels'
 
-export const projectInvitationsList: ContainerInvitation[] = []
+export const projectInvitationsList: any[] = []
 
 const invitingUserProfile: UserProfile = {
-  createdAt: 1522231220,
-  updatedAt: 1522231220,
   _id: 'MPUserProfile:valid-user-invite',
   objectType: 'MPUserProfile',
   bibliographicName: {
-    _id: 'MPBibliographicName:valid-name',
-    objectType: 'MPBibliographicName'
+    _id: 'MPBibliographicName:valid-name'
   },
   userID: `User_valid-user@manuscriptsapp.com`
 }
 
 const invitingUserProfile2: UserProfile = {
-  createdAt: 1522231220,
-  updatedAt: 1522231220,
   _id: 'MPUserProfile:valid-user2-invite',
   objectType: 'MPUserProfile',
   bibliographicName: {
-    _id: 'MPBibliographicName:valid-name',
-    objectType: 'MPBibliographicName'
+    _id: 'MPBibliographicName:valid-name'
   },
   userID: `User_valid-user-4@manuscriptsapp.com`
 }
