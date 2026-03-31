@@ -38,3 +38,4 @@ emails/rendered/*.html
 junit.xml
 
 .prisma
+*.http
