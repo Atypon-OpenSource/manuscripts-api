@@ -62,7 +62,7 @@ export class DocumentExtender {
     if (!found) {
       throw new MissingDocumentError(documentID)
     }
-    return found
+    return this.applySchemaMigration(found)
   }
 
   private findHistory = async (documentID: string) => {
@@ -104,15 +104,20 @@ export class DocumentExtender {
     if (!found) {
       throw new MissingDocumentError(documentID)
     }
-    if (found && found.schema_version !== getVersion()) {
-      const migrationResult = await maybeMigrate(found, this.prisma)
-      if (migrationResult) {
-        const { doc, schema_version } = migrationResult
-        return { ...found, doc, schema_version }
-      }
-    }
-    return found
+    return this.applySchemaMigration(found)
   }
+
+  private async applySchemaMigration<T extends ManuscriptDoc>(found: T): Promise<T> {
+    if (!found.schema_version || found.schema_version === getVersion()) {
+      return found
+    }
+    const migrationResult = await maybeMigrate(found, this.prisma)
+    if (!migrationResult) {
+      return found
+    }
+    return { ...found, ...migrationResult }
+  }
+
   private createDocument = async (payload: CreateDoc, userID: string) => {
     const saved = await this.prisma.manuscriptDoc.create({
       data: {
