@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { getVersion } from '@manuscripts/transform'
 import { ManuscriptDoc, Prisma, PrismaClient } from '@prisma/client'
 
 import { MissingDocumentError, MissingRecordError } from '../Errors'
@@ -62,7 +61,7 @@ export class DocumentExtender {
     if (!found) {
       throw new MissingDocumentError(documentID)
     }
-    return this.applySchemaMigration(found)
+    return maybeMigrate(found, this.prisma)
   }
 
   private findHistory = async (documentID: string) => {
@@ -104,18 +103,7 @@ export class DocumentExtender {
     if (!found) {
       throw new MissingDocumentError(documentID)
     }
-    return this.applySchemaMigration(found)
-  }
-
-  private async applySchemaMigration<T extends ManuscriptDoc>(found: T): Promise<T> {
-    if (!found.schema_version || found.schema_version === getVersion()) {
-      return found
-    }
-    const migrationResult = await maybeMigrate(found, this.prisma)
-    if (!migrationResult) {
-      return found
-    }
-    return { ...found, ...migrationResult }
+    return maybeMigrate(found, this.prisma)
   }
 
   private createDocument = async (payload: CreateDoc, userID: string) => {

@@ -15,48 +15,42 @@
  */
 
 import { getVersion, JSONProsemirrorNode, migrateFor } from '@manuscripts/transform'
-import { Prisma } from '@prisma/client'
+import { ManuscriptDoc, Prisma } from '@prisma/client'
 import { cloneDeep } from 'lodash'
 
-async function maybeMigrate(
-  p: {
-    manuscript_model_id: string
-    user_model_id: string
-    project_model_id: string
-    doc: Prisma.JsonValue
-    schema_version: string | null
-  },
+async function maybeMigrate<T extends ManuscriptDoc>(
+  row: T,
   tx: Prisma.TransactionClient
-) {
-  const { manuscript_model_id, user_model_id, project_model_id, doc, schema_version } = p
-  if (!schema_version || !doc || typeof doc !== 'object') {
-    return
+): Promise<T> {
+  const { manuscript_model_id, user_model_id, project_model_id, doc, schema_version } = row
+  const currentVersion = getVersion()
+
+  if (!schema_version || !doc || typeof doc !== 'object' || schema_version === currentVersion) {
+    return row
   }
+
   const migratedDoc = migrateFor(cloneDeep(doc as JSONProsemirrorNode), schema_version)
 
-  // backing up old doc
   await tx.migrationBackup.create({
     data: {
-      manuscript_model_id: manuscript_model_id,
+      manuscript_model_id,
       user_model_id,
       project_model_id,
       schema_version,
-      doc: migratedDoc,
+      doc: doc as Prisma.JsonObject,
       version: 0,
     },
   })
 
   await tx.manuscriptDoc.update({
+    where: { manuscript_model_id },
     data: {
-      doc: migratedDoc,
-      schema_version: getVersion(),
-    },
-    where: {
-      manuscript_model_id,
+      doc: migratedDoc as unknown as Prisma.JsonObject,
+      schema_version: currentVersion,
     },
   })
 
-  return { doc: migratedDoc, schema_version: getVersion() }
+  return { ...row, doc: migratedDoc, schema_version: currentVersion }
 }
 
 export default maybeMigrate
