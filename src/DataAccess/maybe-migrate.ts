@@ -37,7 +37,7 @@ async function maybeMigrate<T extends ManuscriptDoc>(
       user_model_id,
       project_model_id,
       schema_version,
-      doc: doc as Prisma.JsonObject,
+      doc,
       version: 0,
     },
   })
