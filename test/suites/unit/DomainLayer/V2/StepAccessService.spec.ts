@@ -55,14 +55,7 @@ const comment = {
     contents: 'comment content',
     target: 'MPParagraphElement:06D94BD3',
     resolved: false,
-    contributions: [
-      {
-        _id: 'MPContribution:1164DD22',
-        profileID: 'MPUserProfile:01',
-        timestamp: 1,
-        objectType: 'MPContribution',
-      },
-    ],
+    userID: 'MPUserProfile:01',
     originalText: '',
   },
 }

@@ -51,7 +51,7 @@ export class CommentAccessPolicy implements NodeAccessPolicy {
   }
 
   private schemaHasAttr(attr: string) {
-    const commentAttrsSpec = schema.nodes.comment.spec
+    const commentAttrsSpec = schema.nodes.comment.spec.attrs
     return commentAttrsSpec && attr in commentAttrsSpec
   }
 }
