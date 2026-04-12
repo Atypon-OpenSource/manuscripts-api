@@ -14,6 +14,30 @@
  * limitations under the License.
  */
 
+
+export interface Model {
+  _id: string
+  objectType: string
+  prototype?: string
+}
+
+export const ObjectTypes = {
+  Project: 'MPProject',
+  Manuscript: 'MPManuscript',
+  Journal: 'MPJournal',
+}
+
+export interface Manuscript {
+  _id: string
+  objectType: 'MPManuscript'
+  containerID: string
+  DOI?: string
+  articleType: string
+  prototype: string
+  primaryLanguageCode: string
+}
+
+
 export type PatchProject = {
   _id: string
   title?: string
