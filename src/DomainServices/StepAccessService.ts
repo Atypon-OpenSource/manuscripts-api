@@ -46,8 +46,9 @@ export class StepAccessService {
   private validateReplaceStep(step: ReplaceStep, doc: Node, context: AccessContext) {
     if (this.isStepUpdateNodeAttr(step, doc.slice(step.from, step.to))) {
       const node = step.slice.content.firstChild!
-      return !this.findDiff(doc.slice(step.from, step.to).content.firstChild!, node.attrs).find(
-        (attr) => !this.registry.canEditAttr(node, attr, context)
+      const nodeDB = doc.slice(step.from, step.to).content.firstChild!
+      return !this.findDiff(nodeDB, node.attrs).find(
+        (attr) => !this.registry.canEditAttr(nodeDB, attr, context)
       )
     }
 

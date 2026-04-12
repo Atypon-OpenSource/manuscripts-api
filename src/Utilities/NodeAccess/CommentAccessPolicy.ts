@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { CommentNode } from '@manuscripts/transform'
+import { CommentNode, schema } from '@manuscripts/transform'
 import { Node } from 'prosemirror-model'
 
 import { AccessContext } from '../../Models/AccessContextModels'
@@ -32,11 +32,12 @@ export class CommentAccessPolicy implements NodeAccessPolicy {
 
   canEditAttr(node: Node, attr: string, context: AccessContext): boolean {
     const isOwn = this.isOwn(node as CommentNode, context.userId)
-    if (attr === 'contents') {
+
+    if (this.schemaHasAttr('contents') && attr === 'contents') {
       return isOwn
         ? context.capabilities.handleOwnComments
         : context.capabilities.handleOthersComments
-    } else if (attr === 'resolved') {
+    } else if (this.schemaHasAttr('resolved') && attr === 'resolved') {
       return isOwn
         ? context.capabilities.resolveOwnComment
         : context.capabilities.resolveOthersComment
@@ -45,8 +46,12 @@ export class CommentAccessPolicy implements NodeAccessPolicy {
   }
 
   private isOwn(comment: CommentNode, userId: string) {
-    const contributions = comment.attrs.contributions
-    const profileID = !contributions?.length ? undefined : contributions[0].profileID
+    const profileID = this.schemaHasAttr('userID') && comment.attrs.userID
     return profileID && profileID === userId
+  }
+
+  private schemaHasAttr(attr: string) {
+    const commentAttrsSpec = schema.nodes.comment.spec
+    return commentAttrsSpec && attr in commentAttrsSpec
   }
 }
