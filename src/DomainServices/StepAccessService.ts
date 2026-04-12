@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { AccessContext } from '@manuscripts/transform'
 import { Attrs, Fragment, Node, Slice } from 'prosemirror-model'
 import { AttrStep, ReplaceAroundStep, ReplaceStep, Step } from 'prosemirror-transform'
 
-import { AccessContext } from '../Models/AccessContextModels'
 import { NodeAccessRegistry } from '../Utilities/NodeAccess/NodeAccessRegistry'
 
 type ExposedSlice = Slice & {

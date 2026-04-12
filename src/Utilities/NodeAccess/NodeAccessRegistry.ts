@@ -13,10 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { schema } from '@manuscripts/transform'
+import { schema, AccessContext } from '@manuscripts/transform'
 import { Node } from 'prosemirror-model'
-
-import { AccessContext } from '../../Models/AccessContextModels'
 
 export class NodeAccessRegistry {
   canInsertNode(node: Node, context: AccessContext): boolean {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { schema, validateManuscriptNode } from '@manuscripts/transform'
+import { schema, Capabilities, validateManuscriptNode } from '@manuscripts/transform'
 import { IncomingMessage } from 'http'
 import type { DocumentClient } from 'src/Models/RepositoryModels'
 import { Duplex } from 'stream'
@@ -27,7 +27,6 @@ import { Snapshot } from '../Models/SnapshotModels'
 import { validateToken } from '../Utilities/JWT/LoginTokenPayload'
 import { log } from '../Utilities/Logger'
 import { SocketsService } from './SocketsService'
-import { Capabilities } from '../Models/CapabilitiesModels'
 
 export enum DocumentPermission {
   READ,

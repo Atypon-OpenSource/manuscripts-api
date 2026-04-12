@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { getVersion, JSONProsemirrorNode, schema } from '@manuscripts/transform'
+import { getVersion, JSONProsemirrorNode, AccessContext, schema } from '@manuscripts/transform'
 import { Prisma } from '@prisma/client'
 import { JsonObject } from '@prisma/client/runtime/library'
 import { Step } from 'prosemirror-transform'
@@ -23,7 +23,6 @@ import { History, ModifiedStep, ReceiveSteps } from '../Models/AuthorityModels'
 import { DB } from '../Models/RepositoryModels'
 import { StepAccessError, VersionMismatchError } from '../Errors'
 import { DIContainer } from '../DIContainer/DIContainer'
-import { AccessContext } from '../Models/AccessContextModels'
 export class AuthorityService {
   constructor(private readonly repository: DB) {}
 

@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-import { schema } from '@manuscripts/transform'
+import { schema, AccessContext } from '@manuscripts/transform'
 import { Transform } from 'prosemirror-transform'
 
 import { DIContainer } from '../../../../../src/DIContainer/DIContainer'
-import { AccessContext } from '../../../../../src/Models/AccessContextModels'
 import { TEST_TIMEOUT } from '../../../../utilities/testSetup'
 
 jest.setTimeout(TEST_TIMEOUT)
