@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@manuscripts/transform':
-        specifier: 4.3.32
-        version: 4.3.32(prosemirror-state@1.4.3)
+        specifier: 4.3.33
+        version: 4.3.33(prosemirror-state@1.4.3)
       '@prisma/client':
         specifier: 6.7.0
         version: 6.7.0(prisma@6.7.0(typescript@4.9.5))(typescript@4.9.5)
@@ -1306,8 +1306,8 @@ packages:
       eslint-plugin-simple-import-sort: '>= 8'
       typescript: '*'
 
-  '@manuscripts/transform@4.3.32':
-    resolution: {integrity: sha512-08tA3I9iPhq2tjbbvjAjIwi8W4vrCBcLmk3eztNXGGUSTYUpJyfN4UspJ7c3O3Tq7YCxk3ZhuDcio7H4xGBOyQ==}
+  '@manuscripts/transform@4.3.33':
+    resolution: {integrity: sha512-G1qjWoRQf75MmjhowWayakbkB5JTXdSyd6ubJmRZOFG4j3AElZhW9MmI7R4xQm7Hyp1pr/l80MTnfzDEZFQJ5w==}
     engines: {node: '>=20.16.0'}
 
   '@nodelib/fs.scandir@2.1.5':
@@ -6427,7 +6427,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@manuscripts/transform@4.3.32(prosemirror-state@1.4.3)':
+  '@manuscripts/transform@4.3.33(prosemirror-state@1.4.3)':
     dependencies:
       citeproc: 2.4.63
       jszip: 3.10.1
