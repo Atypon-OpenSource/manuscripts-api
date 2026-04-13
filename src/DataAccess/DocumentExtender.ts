@@ -35,7 +35,6 @@ export class DocumentExtender {
   private buildExtensions() {
     return {
       findDocument: this.findDocument,
-      findDocumentWithSnapshot: this.findDocumentWithSnapshot,
       createDocument: this.createDocument,
       updateDocument: this.updateDocument,
       updateDocumentWithVersionCheck: this.updateDocumentWithVersionCheck,
@@ -51,17 +50,6 @@ export class DocumentExtender {
         [this.DOCUMENT_MODEL]: this.extensions,
       },
     })
-  }
-  private findDocument = async (documentID: string): Promise<ManuscriptDoc> => {
-    const found = await this.prisma.manuscriptDoc.findUnique({
-      where: {
-        manuscript_model_id: documentID,
-      },
-    })
-    if (!found) {
-      throw new MissingDocumentError(documentID)
-    }
-    return maybeMigrate(found, this.prisma)
   }
 
   private findHistory = async (documentID: string) => {
@@ -80,7 +68,7 @@ export class DocumentExtender {
     return found
   }
 
-  private findDocumentWithSnapshot = async (documentID: string) => {
+  private findDocument = async (documentID: string) => {
     const found = await this.prisma.manuscriptDoc.findUnique({
       where: {
         manuscript_model_id: documentID,
