@@ -18,27 +18,26 @@ import { getVersion, JSONProsemirrorNode, migrateFor } from '@manuscripts/transf
 import { Prisma } from '@prisma/client'
 import { cloneDeep } from 'lodash'
 
+import type { ManuscriptDocWithSnapshots } from '../Models/DocumentModels'
+
 async function maybeMigrate(
-  //todo:  replace with ManuscriptDoc once we remove all findDocumentWithSnapshot calls
-  p: {
-    manuscript_model_id: string
-    user_model_id: string
-    project_model_id: string
-    doc: Prisma.JsonValue
-    schema_version: string | null
-  },
+  p: ManuscriptDocWithSnapshots,
   tx: Prisma.TransactionClient
-) {
+): Promise<ManuscriptDocWithSnapshots> {
   const { manuscript_model_id, user_model_id, project_model_id, doc, schema_version } = p
   if (!schema_version || !doc || typeof doc !== 'object') {
-    return
+    return p
+  }
+  const currentVersion = getVersion()
+  if (schema_version === currentVersion) {
+    return p
   }
   const migratedDoc = migrateFor(cloneDeep(doc as JSONProsemirrorNode), schema_version)
 
   // backing up old doc
   await tx.migrationBackup.create({
     data: {
-      manuscript_model_id,
+      manuscript_model_id: manuscript_model_id,
       user_model_id,
       project_model_id,
       schema_version,
@@ -50,13 +49,14 @@ async function maybeMigrate(
   await tx.manuscriptDoc.update({
     data: {
       doc: migratedDoc,
-      schema_version: getVersion(),
+      schema_version: currentVersion,
     },
     where: {
       manuscript_model_id,
     },
   })
-  return { doc: migratedDoc, schema_version: getVersion() }
+
+  return { ...p, doc: migratedDoc, schema_version: currentVersion } as unknown as ManuscriptDocWithSnapshots
 }
 
 export default maybeMigrate
