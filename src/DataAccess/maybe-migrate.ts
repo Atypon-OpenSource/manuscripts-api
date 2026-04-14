@@ -21,6 +21,7 @@ import { cloneDeep } from 'lodash'
 import type { ManuscriptDocWithSnapshots } from '../Models/DocumentModels'
 
 async function maybeMigrate(
+  //todo:  replace with ManuscriptDoc once we remove all findDocumentWithSnapshot calls
   p: ManuscriptDocWithSnapshots,
   tx: Prisma.TransactionClient
 ): Promise<ManuscriptDocWithSnapshots> {
