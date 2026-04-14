@@ -35,7 +35,7 @@ export class SnapshotController extends BaseController {
       projectID,
       DocumentPermission.WRITE
     )
-    const document = await DIContainer.sharedContainer.documentClient.findDocumentWithSnapshot(
+    const document = await DIContainer.sharedContainer.documentClient.findDocument(
       payload.docID
     )
     const snapshotModel = { docID: payload.docID, name: payload.name, snapshot: document.doc }

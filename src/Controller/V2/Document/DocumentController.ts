@@ -43,7 +43,7 @@ export class DocumentController extends BaseController {
       projectID,
       DocumentPermission.READ
     )
-    return await DIContainer.sharedContainer.documentClient.findDocumentWithSnapshot(manuscriptID)
+    return await DIContainer.sharedContainer.documentClient.findDocument(manuscriptID)
   }
 
   async deleteDocument(projectID: string, manuscriptID: string, user: Express.User | undefined) {
