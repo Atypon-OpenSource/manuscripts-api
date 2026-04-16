@@ -63,6 +63,7 @@ export class UserService {
       family: user.family,
       given: user.given,
       userID: user.id,
+      connectID: user.connectUserID
     }
   }
 }
