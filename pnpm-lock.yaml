@@ -68,6 +68,9 @@ importers:
       multer:
         specifier: 1.4.5-lts.2
         version: 1.4.5-lts.2
+      oembed-providers:
+        specifier: 1.0.20250430
+        version: 1.0.20250430
       passport:
         specifier: 0.7.0
         version: 0.7.0
@@ -3959,6 +3962,9 @@ packages:
   object.values@1.2.1:
     resolution: {integrity: sha512-gXah6aZrcUxjWg2zR2MwouP2eHlCBzdV4pygudehaKXSGW4v2AsRQUK+lwwXhii6KFZcunEnmSUoYp5CXibxtA==}
     engines: {node: '>= 0.4'}
+
+  oembed-providers@1.0.20250430:
+    resolution: {integrity: sha512-uffgYYEiBAK8yvrhkd1og2s2CnywX26bicnQgsSq14Ox5Y7wZ8HQrOKdNg4QBoVojTaEnIRjGzn8Xpb/ynoI+g==}
 
   on-finished@2.3.0:
     resolution: {integrity: sha512-ikqdkGAAyf/X/gPhXGvfgAytDZtDbr+bkNUJ0N9h5MI/dmdgCs3l6hoHrcUv41sRKew3jIwrp4qQDXiK99Utww==}
@@ -9970,6 +9976,8 @@ snapshots:
       call-bound: 1.0.4
       define-properties: 1.2.1
       es-object-atoms: 1.1.1
+
+  oembed-providers@1.0.20250430: {}
 
   on-finished@2.3.0:
     dependencies:
