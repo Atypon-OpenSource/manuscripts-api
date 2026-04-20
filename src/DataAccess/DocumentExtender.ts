@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-import { getVersion } from '@manuscripts/transform'
-import { ManuscriptDoc, Prisma, PrismaClient } from '@prisma/client'
+import { Prisma, PrismaClient } from '@prisma/client'
 
 import { MissingDocumentError, MissingRecordError } from '../Errors'
-import { CreateDoc, UpdateDocument } from '../Models/DocumentModels'
+import { CreateDoc, MANUSCRIPT_DOC_LOADED_INCLUDE, UpdateDocument } from '../Models/DocumentModels'
 import { PrismaErrorCodes } from '../Models/RepositoryModels'
-import { DOI_UPDATED_LABEL } from '../Models/SnapshotModels'
 import maybeMigrate from './maybe-migrate'
 
 export class DocumentExtender {
@@ -36,7 +34,6 @@ export class DocumentExtender {
   private buildExtensions() {
     return {
       findDocument: this.findDocument,
-      findDocumentWithSnapshot: this.findDocumentWithSnapshot,
       createDocument: this.createDocument,
       updateDocument: this.updateDocument,
       updateDocumentWithVersionCheck: this.updateDocumentWithVersionCheck,
@@ -52,17 +49,6 @@ export class DocumentExtender {
         [this.DOCUMENT_MODEL]: this.extensions,
       },
     })
-  }
-  private findDocument = async (documentID: string): Promise<ManuscriptDoc> => {
-    const found = await this.prisma.manuscriptDoc.findUnique({
-      where: {
-        manuscript_model_id: documentID,
-      },
-    })
-    if (!found) {
-      throw new MissingDocumentError(documentID)
-    }
-    return found
   }
 
   private findHistory = async (documentID: string) => {
@@ -81,38 +67,19 @@ export class DocumentExtender {
     return found
   }
 
-  private findDocumentWithSnapshot = async (documentID: string) => {
+  private findDocument = async (documentID: string) => {
     const found = await this.prisma.manuscriptDoc.findUnique({
       where: {
         manuscript_model_id: documentID,
       },
-      include: {
-        snapshots: {
-          select: {
-            id: true,
-            name: true,
-            createdAt: true,
-          },
-          where: {
-            name: {
-              not: DOI_UPDATED_LABEL,
-            },
-          },
-        },
-      },
+      include: MANUSCRIPT_DOC_LOADED_INCLUDE,
     })
     if (!found) {
       throw new MissingDocumentError(documentID)
     }
-    if (found && found.schema_version !== getVersion()) {
-      const migrationResult = await maybeMigrate(found, this.prisma)
-      if (migrationResult) {
-        const { doc, schema_version } = migrationResult
-        return { ...found, doc, schema_version }
-      }
-    }
-    return found
+    return maybeMigrate(found, this.prisma)
   }
+
   private createDocument = async (payload: CreateDoc, userID: string) => {
     const saved = await this.prisma.manuscriptDoc.create({
       data: {
