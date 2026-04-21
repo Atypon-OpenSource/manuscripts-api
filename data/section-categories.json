@@ -2,7 +2,7 @@
   {
     "id": "abstract",
     "titles": ["Abstract"],
-    "synonyms": [""],
+    "synonyms": ["abstract-primary"],
     "group": "abstracts",
     "isUnique": true
   },
