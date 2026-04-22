@@ -18,37 +18,42 @@ import { NextFunction, Request, Response, Router } from 'express'
 import { StatusCodes } from 'http-status-codes'
 
 import { celebrate } from '../../../Utilities/celebrate'
-import { getOEmbedHTML } from '../../../Utilities/OEmbed/getOEmbedHTML'
 import { BaseRoute } from '../../BaseRoute'
+import { OEmbedController } from './OEmbedController'
 import { oEmbedHtmlQuerySchema } from './OEmbedSchema'
 
+type OEmbedHtmlQuery = {
+  url: string
+  maxwidth: number
+  maxheight: number
+}
+
 export class OEmbedRoute extends BaseRoute {
+  private oEmbedController = new OEmbedController()
+
   private get basePath(): string {
     return '/oembed'
   }
 
-  private static async getHtml(req: Request, res: Response, next: NextFunction) {
-    try {
-      const { url, maxwidth, maxheight } = req.query as unknown as {
-        url: string
-        maxwidth: number
-        maxheight: number
-      }
-      const html = await getOEmbedHTML(url, maxwidth, maxheight)
-      res
-        .status(StatusCodes.OK)
-        .json({ html: html ?? null })
-        .end()
-    } catch (error) {
-      next(error)
-    }
+  private async getHtml(req: Request, res: Response) {
+    const query = req.query as unknown as OEmbedHtmlQuery
+    const { url, maxwidth, maxheight } = query
+    const html = await this.oEmbedController.getOEmbedHtml(url, maxwidth, maxheight)
+    res
+      .status(StatusCodes.OK)
+      .json({ html: html ?? null })
+      .end()
   }
 
   public create(router: Router): void {
     router.get(
       `${this.basePath}/html`,
       celebrate(oEmbedHtmlQuerySchema),
-      (req: Request, res: Response, next: NextFunction) => OEmbedRoute.getHtml(req, res, next)
+      (req: Request, res: Response, next: NextFunction) => {
+        return this.runWithErrorHandling(async () => {
+          await this.getHtml(req, res)
+        }, next)
+      }
     )
   }
 }
