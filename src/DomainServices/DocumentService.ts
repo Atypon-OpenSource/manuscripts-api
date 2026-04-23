@@ -22,6 +22,7 @@ import { ErrorEvent, WebSocket, WebSocketServer } from 'ws'
 
 import { DIContainer } from '../DIContainer/DIContainer'
 import { MissingManuscriptError, RoleDoesNotPermitOperationError } from '../Errors'
+import { Capabilities } from '../Models/CapabilitiesModels'
 import { ProjectUserRole } from '../Models/ProjectModels'
 import { Snapshot } from '../Models/SnapshotModels'
 import { validateToken } from '../Utilities/JWT/LoginTokenPayload'
@@ -61,6 +62,23 @@ export class DocumentService {
         return new Set([DocumentPermission.READ])
     }
     return EMPTY_PERMISSIONS
+  }
+
+  async getCapabilities(projectID: string, userID: string): Promise<Capabilities> {
+    const project = await DIContainer.sharedContainer.projectService.getProject(projectID)
+    const role = DIContainer.sharedContainer.projectService.getUserRole(project, userID)
+    const isViewer = role === ProjectUserRole.Viewer
+    const isOwner = role === ProjectUserRole.Owner
+    const isEditor = role === ProjectUserRole.Editor
+
+    return {
+      handleOwnComments: !isViewer,
+      handleOthersComments: isOwner,
+      resolveOwnComment: !isViewer,
+      resolveOthersComment: isOwner || isEditor,
+      createComment: !isViewer,
+      editArticle: !isViewer,
+    }
   }
 
   public async validateUserAccess(
