@@ -30,5 +30,142 @@
     "title": "Review Article Health Economics, Policy and Law",
     "articleType": "review-article",
     "sectionCategories": "./section-categories.json"
+  },
+  {
+    "_id": "MPManuscriptTemplate:preprint",
+    "bundle": "MPBundle:www-zotero-org-styles-american-medical-association",
+    "title": "Preprint",
+    "articleType": "preprint",
+    "sectionCategories": [
+      {
+        "id": "abstract-graphical",
+        "group": "abstracts-graphic",
+        "titles": ["Graphical Abstract"],
+        "synonyms": [],
+        "isUnique": true
+      },
+      {
+        "id": "abstract",
+        "group": "abstracts",
+        "titles": ["Abstract"],
+        "synonyms": [],
+        "isUnique": true
+      },
+      {
+        "id": "acknowledgements",
+        "group": "backmatter",
+        "synonyms": ["acknowledgements", "acknowledgments"],
+        "titles": ["Acknowledgements"],
+        "isUnique": true
+      },
+      {
+        "id": "availability",
+        "group": "backmatter",
+        "titles": ["Availability"],
+        "synonyms": ["availability", "data-availability", "data availability"],
+        "isUnique": true
+      },
+      {
+        "id": "coi-statement",
+        "group": "backmatter",
+        "synonyms": [
+          "coi-statement",
+          "competing-interests",
+          "conflict",
+          "conflict of interest",
+          "competing interests"
+        ],
+        "titles": ["Conflict of Interest Statement", "COI Statement", "Competing Interests"],
+        "isUnique": true
+      },
+      {
+        "id": "con",
+        "group": "backmatter",
+        "synonyms": ["con"],
+        "titles": ["Contributed-by information"],
+        "isUnique": true
+      },
+      {
+        "id": "ethics-statement",
+        "group": "backmatter",
+        "synonyms": ["ethics-statement"],
+        "titles": ["Ethics Statement"],
+        "isUnique": true
+      },
+      {
+        "id": "financial-disclosure",
+        "group": "backmatter",
+        "synonyms": ["financial-disclosure", "funding information"],
+        "titles": ["Financial Disclosure"],
+        "isUnique": true
+      },
+      {
+        "id": "supported-by",
+        "synonyms": ["supported-by"],
+        "titles": ["Supported By"],
+        "group": "backmatter",
+        "isUnique": true
+      }
+    ],
+    "hiddenNodeTypes": [
+      "author_notes",
+      "box_element",
+      "pullquote_element",
+      "image_element",
+      "hero_image",
+      "trans_abstract"
+    ]
+  },
+  {
+    "_id": "MPManuscriptTemplate:direct",
+    "bundle": "MPBundle:www-zotero-org-styles-american-medical-association",
+    "title": "Direct",
+    "articleType": "direct",
+    "sectionCategories": [
+      {
+        "id": "abstract-graphical",
+        "group": "abstracts-graphic",
+        "titles": ["Graphical Abstract"],
+        "synonyms": [],
+        "isUnique": true
+      },
+      {
+        "id": "abstract",
+        "group": "abstracts",
+        "titles": ["Abstract"],
+        "synonyms": [],
+        "isUnique": true
+      },
+      {
+        "id": "acknowledgements",
+        "group": "backmatter",
+        "synonyms": ["acknowledgements", "acknowledgments"],
+        "titles": ["Acknowledgements"],
+        "isUnique": true
+      },
+      {
+        "id": "supplementary-material",
+        "synonyms": ["supplementary-material"],
+        "titles": ["Supplementary Material"],
+        "group": "backmatter",
+        "isUnique": true
+      },
+      {
+        "id": "supported-by",
+        "synonyms": ["supported-by"],
+        "titles": ["Supported By"],
+        "group": "backmatter",
+        "isUnique": true
+      }
+    ],
+    "hiddenNodeTypes": [
+      "author_notes",
+      "awards",
+      "trans_abstract",
+      "figure_element",
+      "equation",
+      "inline_equation",
+      "equation_element"
+    ]
   }
 ]
