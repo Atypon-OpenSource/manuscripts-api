@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { schema, Capabilities, validateManuscriptNode } from '@manuscripts/transform'
+import { schema, validateManuscriptNode } from '@manuscripts/transform'
 import { IncomingMessage } from 'http'
 import type { DocumentClient } from 'src/Models/RepositoryModels'
 import { Duplex } from 'stream'
@@ -22,6 +22,7 @@ import { ErrorEvent, WebSocket, WebSocketServer } from 'ws'
 
 import { DIContainer } from '../DIContainer/DIContainer'
 import { MissingManuscriptError, RoleDoesNotPermitOperationError } from '../Errors'
+import { Capabilities } from '../Models/CapabilitiesModels'
 import { ProjectUserRole } from '../Models/ProjectModels'
 import { Snapshot } from '../Models/SnapshotModels'
 import { validateToken } from '../Utilities/JWT/LoginTokenPayload'
@@ -76,6 +77,7 @@ export class DocumentService {
       resolveOwnComment: !isViewer,
       resolveOthersComment: isOwner || isEditor,
       createComment: !isViewer,
+      editArticle: !isViewer,
     }
   }
 

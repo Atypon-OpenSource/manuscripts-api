@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+import { schemaToCapabilityAdapter } from '@manuscripts/transform'
 import { ProjectPermission } from '../../..//Models/ProjectModels'
 import { DIContainer } from '../../../DIContainer/DIContainer'
 import { DocumentPermission } from '../../../DomainServices/DocumentService'
@@ -112,6 +112,7 @@ export class DocumentController extends BaseController {
     return await DIContainer.sharedContainer.authorityService.receiveSteps(manuscriptID, payload, {
       userId: user.id,
       capabilities,
+      adapter: schemaToCapabilityAdapter
     })
   }
 

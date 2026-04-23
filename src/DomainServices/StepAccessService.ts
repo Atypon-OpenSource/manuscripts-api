@@ -13,23 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { AccessContext } from '@manuscripts/transform'
-import { Attrs, Fragment, Node, Slice } from 'prosemirror-model'
+import { ManuscriptNode } from '@manuscripts/transform'
 import { AttrStep, ReplaceAroundStep, ReplaceStep, Step } from 'prosemirror-transform'
 
+import { AccessContext } from '../Models/AccessContextModels'
 import { NodeAccessRegistry } from '../Utilities/NodeAccess/NodeAccessRegistry'
 
-type ExposedSlice = Slice & {
-  insertAt: (pos: number, fragment: Fragment) => Slice
+type ExposedSlice<T, F> = T & {
+  insertAt: (pos: number, fragment: F) => T
 }
 
 export class StepAccessService {
   constructor(private readonly registry: NodeAccessRegistry) {}
 
-  validate(step: Step, doc: Node, context: AccessContext) {
+  validate(step: Step, doc: ManuscriptNode, context: AccessContext) {
     if (step instanceof ReplaceAroundStep) {
       const gap = doc.slice(step.gapFrom, step.gapTo)
-      const slice = (step.slice as ExposedSlice).insertAt(step.insert, gap.content)
+      const slice = (
+        step.slice as ExposedSlice<typeof step.slice, typeof step.slice.content>
+      ).insertAt(step.insert, gap.content)
       return this.validateReplaceStep(new ReplaceStep(step.from, step.to, slice), doc, context)
     }
 
@@ -43,11 +45,11 @@ export class StepAccessService {
     return true
   }
 
-  private validateReplaceStep(step: ReplaceStep, doc: Node, context: AccessContext) {
-    if (this.isStepUpdateNodeAttr(step, doc.slice(step.from, step.to))) {
+  private validateReplaceStep(step: ReplaceStep, doc: ManuscriptNode, context: AccessContext) {
+    if (this.isStepUpdateNodeAttr(step, doc)) {
       const node = step.slice.content.firstChild!
       const nodeDB = doc.slice(step.from, step.to).content.firstChild!
-      return !this.findDiff(nodeDB, node.attrs).find(
+      return !this.findDiff(nodeDB, node).find(
         (attr) => !this.registry.canEditAttr(nodeDB, attr, context)
       )
     }
@@ -71,14 +73,14 @@ export class StepAccessService {
     return hasAccess
   }
 
-  private validateAttrStep(step: AttrStep, doc: Node, context: AccessContext) {
+  private validateAttrStep(step: AttrStep, doc: ManuscriptNode, context: AccessContext) {
     const node = doc.nodeAt(step.pos)
     return !!(node && this.registry.canEditAttr(node, step.attr, context))
   }
 
-  private isStepUpdateNodeAttr(step: ReplaceStep, slice: Slice) {
+  private isStepUpdateNodeAttr(step: ReplaceStep, doc: ManuscriptNode) {
     const stepContent = step.slice.content
-    const sliceContent = slice.content
+    const sliceContent = doc.slice(step.from, step.to).content
     return (
       stepContent.size === sliceContent.size &&
       stepContent.childCount === 1 &&
@@ -87,10 +89,10 @@ export class StepAccessService {
     )
   }
 
-  private findDiff(node: Node, attrs: Attrs) {
+  private findDiff(nodeA: ManuscriptNode, nodeB: ManuscriptNode) {
     const keys: string[] = []
-    Object.entries(attrs).map(([key, value]) => {
-      if (!node.hasMarkup(node.type, { ...node.attrs, [key]: value })) {
+    Object.entries(nodeB.attrs).map(([key, value]) => {
+      if (!nodeA.hasMarkup(nodeA.type, { ...nodeA.attrs, [key]: value })) {
         keys.push(key)
       }
     })

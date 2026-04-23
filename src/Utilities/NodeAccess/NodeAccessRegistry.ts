@@ -13,26 +13,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { schema, AccessContext } from '@manuscripts/transform'
-import { Node } from 'prosemirror-model'
+import { ManuscriptNode, ManuscriptNodeType, schema } from '@manuscripts/transform'
+
+import { AccessContext } from '../../Models/AccessContextModels'
+import { NodeAccessPolicy } from '../../Models/NodeAccessModels'
+import { CommentAccessPolicy } from './CommentAccessPolicy'
+import { DefaultNodeAccessPolicy } from './DefaultNodeAccessPolicy'
 
 export class NodeAccessRegistry {
-  canInsertNode(node: Node, context: AccessContext): boolean {
-    const canInsertNode = schema.nodes[node.type.name].spec.canInsertNode
-    return canInsertNode ? canInsertNode(node, context) : true
+  private policies = new Map<ManuscriptNodeType, NodeAccessPolicy>()
+  private readonly defaultPolicy: NodeAccessPolicy
+
+  constructor(defaultPolicy?: NodeAccessPolicy) {
+    this.defaultPolicy = defaultPolicy ?? new DefaultNodeAccessPolicy()
   }
 
-  canDeleteNode(node: Node, context: AccessContext): boolean {
-    const canDeleteNode = schema.nodes[node.type.name].spec.canDeleteNode
-    return canDeleteNode ? canDeleteNode(node, context) : true
+  register(nodeType: ManuscriptNodeType, policy: NodeAccessPolicy): this {
+    this.policies.set(nodeType, policy)
+    return this
   }
 
-  canEditAttr(node: Node, attr: string, context: AccessContext): boolean {
-    const canEditAttr = schema.nodes[node.type.name].spec.canEditAttr
-    return canEditAttr ? canEditAttr(node, attr, context) : true
+  getPolicy(nodeType: ManuscriptNodeType): NodeAccessPolicy {
+    return this.policies.get(nodeType) ?? this.defaultPolicy
+  }
+
+  canInsertNode(node: ManuscriptNode, context: AccessContext): boolean {
+    return this.getPolicy(node.type).canInsertNode(node, context)
+  }
+
+  canDeleteNode(node: ManuscriptNode, context: AccessContext): boolean {
+    return this.getPolicy(node.type).canDeleteNode(node, context)
+  }
+
+  canEditAttr(node: ManuscriptNode, attr: string, context: AccessContext): boolean {
+    return this.getPolicy(node.type).canEditAttr(node, attr, context)
   }
 }
 
 export function createNodeAccessRegistry(): NodeAccessRegistry {
-  return new NodeAccessRegistry()
+  return new NodeAccessRegistry().register(schema.nodes.comment, new CommentAccessPolicy())
 }

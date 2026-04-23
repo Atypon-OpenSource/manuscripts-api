@@ -249,9 +249,6 @@ importers:
       prettier:
         specifier: 3.6.2
         version: 3.6.2
-      prosemirror-model:
-        specifier: 1.25.0
-        version: 1.25.0
       ts-node:
         specifier: 10.9.2
         version: 10.9.2(@types/node@22.19.0)(typescript@4.9.5)
