@@ -15,8 +15,6 @@
  */
 import {Prisma } from '@prisma/client'
 
-import { DOI_UPDATED_LABEL } from './SnapshotModels'
-
 export type Doc = Record<string, any>
 
   
@@ -26,11 +24,6 @@ export const MANUSCRIPT_DOC_LOADED_INCLUDE = {
       id: true,
       name: true,
       createdAt: true,
-    },
-    where: {
-      name: {
-        not: DOI_UPDATED_LABEL,
-      },
     },
   },
 } satisfies Prisma.ManuscriptDocInclude
