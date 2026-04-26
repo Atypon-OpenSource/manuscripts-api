@@ -54,6 +54,9 @@ export class SnapshotExtender {
     const found = await this.prisma.manuscriptSnapshot.findMany({
       where: {
         doc_id: documentID,
+        name: {
+          not: 'DOI updated',
+        },
       },
       select: {
         id: true,

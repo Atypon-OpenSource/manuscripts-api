@@ -357,7 +357,7 @@ export class ProjectService {
       return this.exportFromManuscript(manuscriptID)
     }
     try {
-      return await this.exportFromSnapshot(manuscriptID)
+      return this.exportFromSnapshot(manuscriptID)
     } catch {
       return this.exportFromManuscript(manuscriptID)
     }
