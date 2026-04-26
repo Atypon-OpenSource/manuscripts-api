@@ -364,17 +364,15 @@ export class ProjectService {
   }
 
   public async exportFromSnapshot(manuscriptID: string) {
-    const snapshot = await this.snapshotClient.getMostRecentSnapshot(manuscriptID)
-    const article: JSONProsemirrorNode = snapshot.snapshot as JSONProsemirrorNode
+    const model = await this.snapshotClient.getMostRecentSnapshot(manuscriptID)
+    const article = model.snapshot as JSONProsemirrorNode
     const options = await this.getExportJatsOptions(article.attrs.prototype)
     return new JATSExporter().serializeToJATS(schema.nodeFromJSON(article), options)
   }
 
   public async exportFromManuscript(manuscriptID: string) {
-    const document = await this.documentClient.findDocument(manuscriptID)
-    const article: JSONProsemirrorNode = AuthorityService.removeSuggestions(
-      document.doc as JSONProsemirrorNode
-    )
+    const model = await this.documentClient.findDocument(manuscriptID)
+    const article = AuthorityService.removeSuggestions(model.doc as JSONProsemirrorNode)
     const options = await this.getExportJatsOptions(article.attrs.prototype)
     return new JATSExporter().serializeToJATS(schema.nodeFromJSON(article), options)
   }
