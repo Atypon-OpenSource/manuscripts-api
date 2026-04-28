@@ -27,6 +27,7 @@ import { AuthorityService } from '../DomainServices/AuthorityService'
 import { ConfigService } from '../DomainServices/ConfigService'
 import { DocumentService } from '../DomainServices/DocumentService'
 import { EventManager } from '../DomainServices/EventService'
+import { OEmbedService } from '../DomainServices/OEmbedService'
 import { ProjectService } from '../DomainServices/ProjectService'
 import { RegisterationService } from '../DomainServices/RegisterationService'
 import { SocketsService } from '../DomainServices/SocketsService'
@@ -74,6 +75,7 @@ export class DIContainer {
   readonly userService: UserService
   readonly configService: ConfigService
   readonly documentService: DocumentService
+  readonly oEmbedService: OEmbedService
   readonly authenticationService: AuthenticationService
   readonly registerationService: RegisterationService
   readonly projectClient: ProjectClient
@@ -115,6 +117,7 @@ export class DIContainer {
     )
     this.socketsService = new SocketsService()
     this.documentService = new DocumentService(this.socketsService, repository.documentClient)
+    this.oEmbedService = new OEmbedService()
   }
 
   /**
