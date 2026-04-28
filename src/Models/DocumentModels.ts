@@ -25,6 +25,11 @@ export const MANUSCRIPT_DOC_LOADED_INCLUDE = {
       name: true,
       createdAt: true,
     },
+    where: {
+      name: {
+        not: 'DOI updated',
+      },
+    },
   },
 } satisfies Prisma.ManuscriptDocInclude
 
