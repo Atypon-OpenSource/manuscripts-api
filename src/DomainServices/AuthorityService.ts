@@ -84,7 +84,7 @@ export class AuthorityService {
 
   public async getPermittedActions(projectID: string, userID: string): Promise<PermittedActions> {
     const project = await DIContainer.sharedContainer.projectService.getProject(projectID)
-    const role = DIContainer.sharedContainer.projectService.getUserRole(project, userID)
+    const role = DIContainer.sharedContainer.projectService.getUserRole(project, userID) ?? ''
     const isViewer = role === ProjectUserRole.Viewer
     const isOwner = role === ProjectUserRole.Owner
     const isEditor = role === ProjectUserRole.Editor

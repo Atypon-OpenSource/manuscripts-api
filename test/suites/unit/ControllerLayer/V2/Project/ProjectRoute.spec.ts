@@ -21,7 +21,7 @@ import { StatusCodes } from 'http-status-codes'
 import { ProjectRoute } from '../../../../../../src/Controller/V2/Project/ProjectRoute'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
 import { ProjectService } from '../../../../../../src/DomainServices/ProjectService'
-import {AuthorityService} from "../../../../../../src/DomainServices/AuthorityService"
+import {AuthorityService} from '../../../../../../src/DomainServices/AuthorityService'
 import { RoleDoesNotPermitOperationError, ValidationError } from '../../../../../../src/Errors'
 import { ProjectPermission, ProjectUserRole } from '../../../../../../src/Models/ProjectModels'
 import { DocumentClient } from '../../../../../../src/Models/RepositoryModels'
@@ -41,6 +41,7 @@ import {
 } from '../../../../../data/fixtures/projectRouteRequests'
 import { validProject } from '../../../../../data/fixtures/projects'
 import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
+import {PermittedActions} from "../../../../../../src/Models/AuthorityModels";
 
 jest.setTimeout(TEST_TIMEOUT)
 
@@ -367,9 +368,22 @@ describe('ProjectRoute', () => {
   })
   describe('getPermittedActions', () => {
     it('should call getPermittedActions and return the right list of permitted actions', async () => {
-      const permittedActions = ['editArticle']
-      const projectID = createManuscriptRequest.params.projectID
-      const userID = updateUserRoleRequest.user.id
+      const permittedActions: PermittedActions = {
+        handleSuggestion: true,
+        rejectOwnSuggestion: false,
+        handleOwnComments: true,
+        handleOthersComments: false,
+        resolveOwnComment: true,
+        resolveOthersComment: false,
+        createComment: true,
+        canEditFiles: false,
+        editArticle: true,
+        formatArticle: false,
+        editMetadata: false,
+        editCitationsAndRefs: false,
+        seeEditorToolbar: true,
+        seeReferencesButtons: false,
+      }
 
       authorityService.getPermittedActions = jest.fn().mockResolvedValue(permittedActions)
 
@@ -377,8 +391,17 @@ describe('ProjectRoute', () => {
       await route.getProjectPermittedActions(getPermittedActionsRequest, res)
 
       expect(authorityService.getPermittedActions).toHaveBeenCalledWith(
-          projectID, userID
+          getPermittedActionsRequest.params.projectID,
+          getPermittedActionsRequest.user.id
       )
+      expect(res.send).toHaveBeenCalledWith([
+          'handleSuggestion',
+        'handleOwnComments',
+        'resolveOwnComment',
+        'createComment',
+        'editArticle',
+        'seeEditorToolbar'
+      ])
       expect(res.status).toHaveBeenCalledWith(StatusCodes.OK)
     })
   })
