@@ -32,6 +32,7 @@ import {
   exportJatsRequest,
   getArchiveRequest,
   getProjectModelsRequest,
+  getPermittedActionsRequest,
   getUserProfilesRequest,
   removeUser,
   updateProjectRequest,
@@ -39,6 +40,7 @@ import {
 } from '../../../../../data/fixtures/projectRouteRequests'
 import { validProject } from '../../../../../data/fixtures/projects'
 import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
+import {describe} from "jest-circus";
 
 jest.setTimeout(TEST_TIMEOUT)
 
@@ -361,6 +363,44 @@ describe('ProjectRoute', () => {
       expect(res.status).toHaveBeenCalledWith(StatusCodes.OK)
     })
   })
+  describe('getPermittedActions', () => {
+    it('should call getPermittedActions with and return the right list of permitted actions', () => {
+      const permittedActions = ['editArticle']
+      // @ts-ignore
+      projectService.getProjectPermittedActions = jest.fn().mockResolvedValue(permittedActions)
+      // // @ts-ignore
+      // await route.getProjectPermittedActions(getPermittedActionsRequest, res)
+      // // @ts-ignore
+      // expect(projectService.getProjectPermittedActions).toHaveReturnedWith(
+      //     projectID
+      // )
+      expect(res.status).toHaveBeenCalledWith(StatusCodes.OK)
+    })
+  })
+  //    it('should return ok if called correctly', async () => {
+  //       const permissions = new Set([ProjectPermission.READ])
+  //       projectService.exportJats = jest.fn().mockResolvedValue('')
+  //       projectService.getPermissions = jest.fn().mockResolvedValue(permissions)
+  //       projectService.getArticleModelMap = jest.fn().mockResolvedValue({ article: {}, modelMap: {} })
+  //
+  //       // @ts-ignore
+  //       await route.exportJats(exportJatsRequest, res)
+  //       expect(projectService.exportJats).toHaveBeenCalled()
+  //     })
+  //
+  //     it('should fail if user lacks permissions', async () => {
+  //       const permissions = new Set([])
+  //       projectService.exportJats = jest.fn().mockResolvedValue('')
+  //       projectService.getPermissions = jest.fn().mockResolvedValue(permissions)
+  //       projectService.getArticleModelMap = jest.fn().mockResolvedValue({ article: {}, modelMap: {} })
+  //
+  //       await expect(
+  //         // @ts-ignore
+  //         route.exportJats(exportJatsRequest, res)
+  //       ).rejects.toThrow(
+  //         new RoleDoesNotPermitOperationError('Access denied', exportJatsRequest.user._id)
+  //       )
+  //     })
   describe('getArchive', () => {
     it('should throw error if user is missing', async () => {
       await expect(

@@ -190,6 +190,16 @@ export class ProjectController extends BaseController {
     return await DIContainer.sharedContainer.userService.getProjectUserProfiles(projectID)
   }
 
+  async getPermittedActions(projectID: string, userId: string): Promise<string[]> {
+    const permittedActions = await DIContainer.sharedContainer.authorityService.getPermittedActions(
+      projectID,
+      userId
+    )
+    return Object.entries(permittedActions)
+      .filter(([_, value]) => value)
+      .map(([action]) => action)
+  }
+
   async exportJats(
     projectID: string,
     manuscriptID: string,

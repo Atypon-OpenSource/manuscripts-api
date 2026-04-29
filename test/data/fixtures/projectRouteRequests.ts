@@ -75,6 +75,13 @@ export const getUserProfilesRequest = {
   },
 }
 
+export const getPermittedActionsRequest = {
+  user: validUser,
+  params: {
+    projectID: validProject._id,
+  },
+}
+
 export const getArchiveRequest = {
   user: validUser,
   params: {
