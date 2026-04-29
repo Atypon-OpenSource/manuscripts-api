@@ -391,16 +391,16 @@ describe('ProjectRoute', () => {
       await route.getProjectPermittedActions(getPermittedActionsRequest, res)
 
       expect(authorityService.getPermittedActions).toHaveBeenCalledWith(
-          getPermittedActionsRequest.params.projectID,
-          getPermittedActionsRequest.user.id
+        getPermittedActionsRequest.params.projectID,
+        getPermittedActionsRequest.user.id
       )
       expect(res.send).toHaveBeenCalledWith([
-          'handleSuggestion',
+        'handleSuggestion',
         'handleOwnComments',
         'resolveOwnComment',
         'createComment',
         'editArticle',
-        'seeEditorToolbar'
+        'seeEditorToolbar',
       ])
       expect(res.status).toHaveBeenCalledWith(StatusCodes.OK)
     })
