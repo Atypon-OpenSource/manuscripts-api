@@ -84,7 +84,27 @@ export class AuthorityService {
 
   public async getPermittedActions(projectID: string, userID: string): Promise<PermittedActions> {
     const project = await DIContainer.sharedContainer.projectService.getProject(projectID)
-    const role = DIContainer.sharedContainer.projectService.getUserRole(project, userID) ?? ''
+    const role = DIContainer.sharedContainer.projectService.getUserRole(project, userID)
+
+    if (role === null) {
+      return {
+        handleSuggestion: false,
+        rejectOwnSuggestion: false,
+        handleOwnComments: false,
+        handleOthersComments: false,
+        resolveOwnComment: false,
+        resolveOthersComment: false,
+        createComment: false,
+        canEditFiles: false,
+        editArticle: false,
+        formatArticle: false,
+        editMetadata: false,
+        editCitationsAndRefs: false,
+        seeEditorToolbar: false,
+        seeReferencesButtons: false,
+      }
+    }
+
     const isViewer = role === ProjectUserRole.Viewer
     const isOwner = role === ProjectUserRole.Owner
     const isEditor = role === ProjectUserRole.Editor
