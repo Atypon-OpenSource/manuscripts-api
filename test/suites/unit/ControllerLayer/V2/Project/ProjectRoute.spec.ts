@@ -21,6 +21,7 @@ import { StatusCodes } from 'http-status-codes'
 import { ProjectRoute } from '../../../../../../src/Controller/V2/Project/ProjectRoute'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
 import { ProjectService } from '../../../../../../src/DomainServices/ProjectService'
+import {AuthorityService} from "../../../../../../src/DomainServices/AuthorityService"
 import { RoleDoesNotPermitOperationError, ValidationError } from '../../../../../../src/Errors'
 import { ProjectPermission, ProjectUserRole } from '../../../../../../src/Models/ProjectModels'
 import { DocumentClient } from '../../../../../../src/Models/RepositoryModels'
@@ -45,10 +46,12 @@ import {describe} from "jest-circus";
 jest.setTimeout(TEST_TIMEOUT)
 
 let projectService: ProjectService
+let authorityService: AuthorityService
 beforeEach(async () => {
   ;(DIContainer as any)._sharedContainer = null
   await DIContainer.init()
   projectService = DIContainer.sharedContainer.projectService
+  authorityService = DIContainer.sharedContainer.authorityService
 })
 afterEach(() => {
   jest.clearAllMocks()
@@ -364,43 +367,22 @@ describe('ProjectRoute', () => {
     })
   })
   describe('getPermittedActions', () => {
-    it('should call getPermittedActions with and return the right list of permitted actions', () => {
+    it('should call getPermittedActions and return the right list of permitted actions', async () => {
       const permittedActions = ['editArticle']
+      const projectID = createManuscriptRequest.params.projectID
+      const userID = updateUserRoleRequest.user.id
+
+      authorityService.getPermittedActions = jest.fn().mockResolvedValue(permittedActions)
+
       // @ts-ignore
-      projectService.getProjectPermittedActions = jest.fn().mockResolvedValue(permittedActions)
-      // // @ts-ignore
-      // await route.getProjectPermittedActions(getPermittedActionsRequest, res)
-      // // @ts-ignore
-      // expect(projectService.getProjectPermittedActions).toHaveReturnedWith(
-      //     projectID
-      // )
+      await route.getProjectPermittedActions(getPermittedActionsRequest, res)
+
+      expect(authorityService.getPermittedActions).toHaveBeenCalledWith(
+          projectID, userID
+      )
       expect(res.status).toHaveBeenCalledWith(StatusCodes.OK)
     })
   })
-  //    it('should return ok if called correctly', async () => {
-  //       const permissions = new Set([ProjectPermission.READ])
-  //       projectService.exportJats = jest.fn().mockResolvedValue('')
-  //       projectService.getPermissions = jest.fn().mockResolvedValue(permissions)
-  //       projectService.getArticleModelMap = jest.fn().mockResolvedValue({ article: {}, modelMap: {} })
-  //
-  //       // @ts-ignore
-  //       await route.exportJats(exportJatsRequest, res)
-  //       expect(projectService.exportJats).toHaveBeenCalled()
-  //     })
-  //
-  //     it('should fail if user lacks permissions', async () => {
-  //       const permissions = new Set([])
-  //       projectService.exportJats = jest.fn().mockResolvedValue('')
-  //       projectService.getPermissions = jest.fn().mockResolvedValue(permissions)
-  //       projectService.getArticleModelMap = jest.fn().mockResolvedValue({ article: {}, modelMap: {} })
-  //
-  //       await expect(
-  //         // @ts-ignore
-  //         route.exportJats(exportJatsRequest, res)
-  //       ).rejects.toThrow(
-  //         new RoleDoesNotPermitOperationError('Access denied', exportJatsRequest.user._id)
-  //       )
-  //     })
   describe('getArchive', () => {
     it('should throw error if user is missing', async () => {
       await expect(
