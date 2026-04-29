@@ -41,7 +41,6 @@ import {
 } from '../../../../../data/fixtures/projectRouteRequests'
 import { validProject } from '../../../../../data/fixtures/projects'
 import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
-import {describe} from "jest-circus";
 
 jest.setTimeout(TEST_TIMEOUT)
 
