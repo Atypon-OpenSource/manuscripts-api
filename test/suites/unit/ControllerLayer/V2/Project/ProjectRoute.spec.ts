@@ -21,7 +21,7 @@ import { StatusCodes } from 'http-status-codes'
 import { ProjectRoute } from '../../../../../../src/Controller/V2/Project/ProjectRoute'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
 import { ProjectService } from '../../../../../../src/DomainServices/ProjectService'
-import {AuthorityService} from '../../../../../../src/DomainServices/AuthorityService'
+import { AuthorityService } from '../../../../../../src/DomainServices/AuthorityService'
 import { RoleDoesNotPermitOperationError, ValidationError } from '../../../../../../src/Errors'
 import { ProjectPermission, ProjectUserRole } from '../../../../../../src/Models/ProjectModels'
 import { DocumentClient } from '../../../../../../src/Models/RepositoryModels'
@@ -41,7 +41,7 @@ import {
 } from '../../../../../data/fixtures/projectRouteRequests'
 import { validProject } from '../../../../../data/fixtures/projects'
 import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
-import {PermittedActions} from '../../../../../../src/Models/AuthorityModels'
+import { PermittedActions } from '../../../../../../src/Models/AuthorityModels'
 
 jest.setTimeout(TEST_TIMEOUT)
 
@@ -391,8 +391,8 @@ describe('ProjectRoute', () => {
       await route.getProjectPermittedActions(getPermittedActionsRequest, res)
 
       expect(authorityService.getPermittedActions).toHaveBeenCalledWith(
-        getPermittedActionsRequest.params.projectID,
-        getPermittedActionsRequest.user.id
+          getPermittedActionsRequest.params.projectID,
+          getPermittedActionsRequest.user.id
       )
       expect(res.send).toHaveBeenCalledWith([
         'handleSuggestion',
