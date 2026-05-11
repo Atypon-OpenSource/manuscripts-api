@@ -64,7 +64,7 @@ export class SnapshotExtender {
         createdAt: true,
       },
       orderBy: {
-        createdAt: 'desc',
+        createdAt: 'asc',
       },
     })
     return found
