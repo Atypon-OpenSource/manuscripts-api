@@ -30,6 +30,9 @@ export const MANUSCRIPT_DOC_LOADED_INCLUDE = {
         not: 'DOI updated',
       },
     },
+    orderBy: {
+      createdAt: 'desc',
+    },
   },
 } satisfies Prisma.ManuscriptDocInclude
 
