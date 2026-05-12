@@ -23,5 +23,6 @@
   "include": ["src"],
   "files": [
     "./types/express/index.d.ts",
+    "./types/oembed-providers.d.ts"
   ]
 }

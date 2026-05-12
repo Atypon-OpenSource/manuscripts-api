@@ -18,6 +18,7 @@ import { BaseRoute } from '../BaseRoute'
 import { AuthRoute } from './Auth/AuthRoute'
 import { ConfigRoute } from './Config/ConfigRoute'
 import { DocumentRoute } from './Document/DocumentRoute'
+import { OEmbedRoute } from './OEmbed/OEmbedRoute'
 import { ProjectRoute } from './Project/ProjectRoute'
 import { RegistrationRoute } from './Registration/RegistrationRoute'
 import { ServerStatusRoute } from './ServerStatus/ServerStatusRoute'
@@ -30,6 +31,7 @@ export function getRoutes(): BaseRoute[] {
     new RegistrationRoute(),
     new UserRoute(),
     new ServerStatusRoute(),
+    new OEmbedRoute(),
     new ProjectRoute(),
     new ConfigRoute(),
     new DocumentRoute(),
