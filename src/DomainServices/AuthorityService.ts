@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {getVersion, JSONProsemirrorNode, ManuscriptActions, schema} from '@manuscripts/transform'
+import { getVersion, JSONProsemirrorNode, ManuscriptActions, schema } from '@manuscripts/transform'
 import { Prisma } from '@prisma/client'
 import { JsonObject } from '@prisma/client/runtime/library'
 import { Step } from 'prosemirror-transform'
