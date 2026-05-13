@@ -90,8 +90,8 @@ describe('ProjectRoute', () => {
 
     it('should throw an error if user is not found', async () => {
       await expect(
-          // @ts-ignore
-          route.createProject(removeUser(createProjectRequest), res)
+        // @ts-ignore
+        route.createProject(removeUser(createProjectRequest), res)
       ).rejects.toThrow(new ValidationError('No user found', null))
     })
 
@@ -99,16 +99,16 @@ describe('ProjectRoute', () => {
       projectService.createProject = jest.fn().mockRejectedValue(new Error('Test Error'))
 
       await expect(
-          // @ts-ignore
-          route.createProject(createProjectRequest, res)
+        // @ts-ignore
+        route.createProject(createProjectRequest, res)
       ).rejects.toThrow('Test Error')
     })
   })
   describe('updateProject', () => {
     it('should throw an error if user is missing', async () => {
       await expect(
-          // @ts-ignore
-          route.updateProject(removeUser(updateProjectRequest), res)
+        // @ts-ignore
+        route.updateProject(removeUser(updateProjectRequest), res)
       ).rejects.toThrow(new ValidationError('No user found', null))
     })
 
@@ -117,10 +117,10 @@ describe('ProjectRoute', () => {
       projectService.getPermissions = jest.fn().mockResolvedValue(permissions)
 
       await expect(
-          // @ts-ignore
-          route.updateProject(updateProjectRequest, res)
+        // @ts-ignore
+        route.updateProject(updateProjectRequest, res)
       ).rejects.toThrow(
-          new RoleDoesNotPermitOperationError('Access denied', updateProjectRequest.user._id)
+        new RoleDoesNotPermitOperationError('Access denied', updateProjectRequest.user._id)
       )
     })
     it('should throw an error if ProjectService.updateProject fails', async () => {
@@ -130,8 +130,8 @@ describe('ProjectRoute', () => {
       projectService.updateProject = jest.fn().mockRejectedValue(new Error('Test Error'))
 
       await expect(
-          // @ts-ignore
-          route.updateProject(updateProjectRequest, res)
+        // @ts-ignore
+        route.updateProject(updateProjectRequest, res)
       ).rejects.toThrow('Test Error')
     })
 
@@ -141,8 +141,8 @@ describe('ProjectRoute', () => {
 
       projectService.updateProject = jest.fn().mockResolvedValue({})
       await expect(
-          // @ts-ignore
-          route.updateProject(updateProjectRequest, res)
+        // @ts-ignore
+        route.updateProject(updateProjectRequest, res)
       ).resolves.not.toThrow()
       expect(res.status).toHaveBeenCalledWith(StatusCodes.OK)
     })
@@ -154,8 +154,8 @@ describe('ProjectRoute', () => {
       })
 
       await expect(
-          // @ts-ignore
-          route.getProjectModels(removeUser(getProjectModelsRequest), res)
+        // @ts-ignore
+        route.getProjectModels(removeUser(getProjectModelsRequest), res)
       ).rejects.toThrow(new ValidationError('No user found', null))
     })
 
@@ -167,10 +167,10 @@ describe('ProjectRoute', () => {
       })
 
       await expect(
-          // @ts-ignore
-          route.getProjectModels(getProjectModelsRequest, res)
+        // @ts-ignore
+        route.getProjectModels(getProjectModelsRequest, res)
       ).rejects.toThrow(
-          new RoleDoesNotPermitOperationError('Access denied', getProjectModelsRequest.user._id)
+        new RoleDoesNotPermitOperationError('Access denied', getProjectModelsRequest.user._id)
       )
     })
 
@@ -234,8 +234,8 @@ describe('ProjectRoute', () => {
   describe('updateUserRole', () => {
     it('should throw error if user is missing', async () => {
       await expect(
-          // @ts-ignore
-          route.updateUserRole(removeUser(updateUserRoleRequest), res)
+        // @ts-ignore
+        route.updateUserRole(removeUser(updateUserRoleRequest), res)
       ).rejects.toThrow(new ValidationError('No user found', null))
     })
 
@@ -244,10 +244,10 @@ describe('ProjectRoute', () => {
       projectService.getPermissions = jest.fn().mockResolvedValue(permissions)
 
       await expect(
-          // @ts-ignore
-          route.updateUserRole(updateUserRoleRequest, res)
+        // @ts-ignore
+        route.updateUserRole(updateUserRoleRequest, res)
       ).rejects.toThrow(
-          new RoleDoesNotPermitOperationError('Access denied', updateUserRoleRequest.user._id)
+        new RoleDoesNotPermitOperationError('Access denied', updateUserRoleRequest.user._id)
       )
     })
 
@@ -256,8 +256,8 @@ describe('ProjectRoute', () => {
       request.body.role = 'invalid'
 
       await expect(
-          // @ts-ignore
-          route.updateUserRole(request, res)
+        // @ts-ignore
+        route.updateUserRole(request, res)
       ).rejects.toThrow(new ValidationError('Invalid role', request.body.role))
     })
 
@@ -279,8 +279,8 @@ describe('ProjectRoute', () => {
   describe('createManuscript', () => {
     it('should throw error if user is missing', async () => {
       await expect(
-          // @ts-ignore
-          route.createManuscript(removeUser(createManuscriptRequest), res)
+        // @ts-ignore
+        route.createManuscript(removeUser(createManuscriptRequest), res)
       ).rejects.toThrow(new ValidationError('No user found', null))
     })
 
@@ -289,7 +289,7 @@ describe('ProjectRoute', () => {
       projectService.getPermissions = jest.fn().mockResolvedValue(permissions)
       // @ts-ignore
       await expect(route.createManuscript(createManuscriptRequest)).rejects.toThrow(
-          new RoleDoesNotPermitOperationError('Access denied', createManuscriptRequest.user._id)
+        new RoleDoesNotPermitOperationError('Access denied', createManuscriptRequest.user._id)
       )
     })
 
@@ -329,8 +329,8 @@ describe('ProjectRoute', () => {
   describe('getUserProfiles', () => {
     it('should throw error if user is missing', async () => {
       await expect(
-          // @ts-ignore
-          route.getProjectUserProfiles(removeUser(getUserProfilesRequest), res)
+        // @ts-ignore
+        route.getProjectUserProfiles(removeUser(getUserProfilesRequest), res)
       ).rejects.toThrow(new ValidationError('No user found', null))
     })
 
@@ -340,7 +340,7 @@ describe('ProjectRoute', () => {
 
       // @ts-ignore
       await expect(route.getProjectUserProfiles(getUserProfilesRequest)).rejects.toThrow(
-          new RoleDoesNotPermitOperationError('Access denied', getUserProfilesRequest.user._id)
+        new RoleDoesNotPermitOperationError('Access denied', getUserProfilesRequest.user._id)
       )
     })
 
@@ -349,14 +349,14 @@ describe('ProjectRoute', () => {
       const permissions = new Set([ProjectPermission.READ])
       projectService.getPermissions = jest.fn().mockResolvedValue(permissions)
       DIContainer.sharedContainer.userService.getProjectUserProfiles = jest
-          .fn()
-          .mockResolvedValue([])
+        .fn()
+        .mockResolvedValue([])
 
       // @ts-ignore
       await route.getProjectUserProfiles(getUserProfilesRequest, res)
 
       expect(DIContainer.sharedContainer.userService.getProjectUserProfiles).toHaveBeenCalledWith(
-          projectID
+        projectID
       )
       expect(res.status).toHaveBeenCalledWith(StatusCodes.OK)
     })
@@ -364,8 +364,8 @@ describe('ProjectRoute', () => {
   describe('getArchive', () => {
     it('should throw error if user is missing', async () => {
       await expect(
-          // @ts-ignore
-          route.getArchive(removeUser(getArchiveRequest), res)
+        // @ts-ignore
+        route.getArchive(removeUser(getArchiveRequest), res)
       ).rejects.toThrow(new ValidationError('No user found', null))
     })
 
@@ -374,7 +374,7 @@ describe('ProjectRoute', () => {
       projectService.getPermissions = jest.fn().mockResolvedValue(permissions)
       // @ts-ignore
       await expect(route.getArchive(getArchiveRequest)).rejects.toThrow(
-          new RoleDoesNotPermitOperationError('Access denied', getArchiveRequest.user._id)
+        new RoleDoesNotPermitOperationError('Access denied', getArchiveRequest.user._id)
       )
     })
 
@@ -417,8 +417,8 @@ describe('ProjectRoute', () => {
   describe('deleteProject', () => {
     it('should throw error if user is missing', async () => {
       await expect(
-          // @ts-ignore
-          route.deleteProject(removeUser(deleteProjectRequest), res)
+        // @ts-ignore
+        route.deleteProject(removeUser(deleteProjectRequest), res)
       ).rejects.toThrow(new ValidationError('No user found', null))
     })
 
@@ -427,10 +427,10 @@ describe('ProjectRoute', () => {
       projectService.getPermissions = jest.fn().mockResolvedValue(permissions)
 
       await expect(
-          // @ts-ignore
-          route.deleteProject(deleteProjectRequest, res)
+        // @ts-ignore
+        route.deleteProject(deleteProjectRequest, res)
       ).rejects.toThrow(
-          new RoleDoesNotPermitOperationError('Access denied', deleteProjectRequest.user._id)
+        new RoleDoesNotPermitOperationError('Access denied', deleteProjectRequest.user._id)
       )
     })
 
@@ -450,8 +450,8 @@ describe('ProjectRoute', () => {
   describe('exportJats', () => {
     it('should throw error if user is missing', async () => {
       await expect(
-          // @ts-ignore
-          route.exportJats(removeUser(exportJatsRequest), res)
+        // @ts-ignore
+        route.exportJats(removeUser(exportJatsRequest), res)
       ).rejects.toThrow(new ValidationError('No user found', null))
     })
 
@@ -473,10 +473,10 @@ describe('ProjectRoute', () => {
       projectService.getArticleModelMap = jest.fn().mockResolvedValue({ article: {}, modelMap: {} })
 
       await expect(
-          // @ts-ignore
-          route.exportJats(exportJatsRequest, res)
+        // @ts-ignore
+        route.exportJats(exportJatsRequest, res)
       ).rejects.toThrow(
-          new RoleDoesNotPermitOperationError('Access denied', exportJatsRequest.user._id)
+        new RoleDoesNotPermitOperationError('Access denied', exportJatsRequest.user._id)
       )
     })
   })
