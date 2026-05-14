@@ -351,7 +351,7 @@ export class ProjectRoute extends BaseRoute {
     } else {
       res.set('Content-Type', 'application/json')
     }
-    res.status(StatusCodes.OK).send(Buffer.from(archive))
+    res.status(StatusCodes.OK).send(Uint8Array.from(archive))
   }
 
   private async deleteProject(req: Request, res: Response) {
