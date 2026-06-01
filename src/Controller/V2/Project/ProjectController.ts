@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { getVersion, Project, UserProfile } from '@manuscripts/transform'
+import { getVersion, Project, UserProfile, ManuscriptActions } from '@manuscripts/transform'
 
 import { DIContainer } from '../../../DIContainer/DIContainer'
 import {
@@ -190,7 +190,7 @@ export class ProjectController extends BaseController {
     return await DIContainer.sharedContainer.userService.getProjectUserProfiles(projectID)
   }
 
-  async getPermittedActions(projectID: string, userId: string): Promise<string[]> {
+  async getPermittedActions(projectID: string, userId: string): Promise<ManuscriptActions[]> {
     const permittedActions = await DIContainer.sharedContainer.authorityService.getPermittedActions(
       projectID,
       userId

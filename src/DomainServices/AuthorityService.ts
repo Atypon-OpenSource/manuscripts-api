@@ -20,7 +20,7 @@ import { JsonObject } from '@prisma/client/runtime/library'
 import { Step } from 'prosemirror-transform'
 
 import { DIContainer } from '../DIContainer/DIContainer'
-import { VersionMismatchError } from '../Errors'
+import { UserRoleError, VersionMismatchError } from '../Errors'
 import { History, ModifiedStep, ReceiveSteps } from '../Models/AuthorityModels'
 import { ProjectUserRole } from '../Models/ProjectModels'
 import { DB } from '../Models/RepositoryModels'
@@ -87,22 +87,10 @@ export class AuthorityService {
     const role = DIContainer.sharedContainer.projectService.getUserRole(project, userID)
 
     if (role === null) {
-      return {
-        handleSuggestion: false,
-        rejectOwnSuggestion: false,
-        handleOwnComments: false,
-        handleOthersComments: false,
-        resolveOwnComment: false,
-        resolveOthersComment: false,
-        createComment: false,
-        canEditFiles: false,
-        editArticle: false,
-        formatArticle: false,
-        editMetadata: false,
-        editCitationsAndRefs: false,
-        seeEditorToolbar: false,
-        seeReferencesButtons: false,
-      }
+      throw new UserRoleError(`User does not have access to project ${projectID}`, {
+        userId: userID,
+        projectId: projectID,
+      })
     }
 
     const isViewer = role === ProjectUserRole.Viewer
