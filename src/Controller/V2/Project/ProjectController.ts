@@ -188,7 +188,7 @@ export class ProjectController extends BaseController {
       projectID,
       userId
     )
-    return Object.entries(permittedActions)
+    return (Object.entries(permittedActions) as [ManuscriptActions, boolean][])
       .filter(([_, value]) => value)
       .map(([action]) => action)
   }
