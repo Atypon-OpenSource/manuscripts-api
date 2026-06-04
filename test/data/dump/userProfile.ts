@@ -23,10 +23,5 @@ export const userProfileList: UserProfile[] = []
 userProfileList.push({
   _id: UserService.profileID('User|valid-user@manuscriptsapp.com'),
   userID: 'User_valid-user@manuscriptsapp.com',
-  objectType: 'MPUserProfile',
-  bibliographicName: {
-    _id: 'MPBibliographicName:valid-bibliographic-name',
-    objectType: 'MPBibliographicName',
-    given: 'Kevin'
-  },
+  connectID: 'connectID-string-id'
 })
