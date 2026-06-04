@@ -25,7 +25,6 @@ import {
 } from '../../../Errors'
 import { UpdateDocument } from '../../../Models/DocumentModels'
 import { ObjectTypes, Model, ProjectPermission, ProjectUserRole } from '../../../Models/ProjectModels'
-import { DOI_UPDATED_LABEL } from '../../../Models/SnapshotModels'
 import { BaseController } from '../../BaseController'
 
 export class ProjectController extends BaseController {
@@ -73,12 +72,6 @@ export class ProjectController extends BaseController {
       schema_version: getVersion(),
     }
     await DIContainer.sharedContainer.documentClient.updateDocument(manuscriptID, updateDocPayload)
-    const snapshotModel = {
-      docID: manuscriptID,
-      name: DOI_UPDATED_LABEL,
-      snapshot: doc,
-    }
-    await DIContainer.sharedContainer.snapshotClient.saveSnapshot(snapshotModel)
   }
 
   async isProjectCacheValid(

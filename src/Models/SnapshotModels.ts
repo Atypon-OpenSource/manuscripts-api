@@ -38,4 +38,3 @@ export type SnapshotLabelResult = {
   name: string
   createdAt: number
 }
-export const DOI_UPDATED_LABEL = 'DOI updated'
