@@ -319,10 +319,7 @@ export class ProjectRoute extends BaseRoute {
   }
 
   private async exportJats(req: Request, res: Response) {
-    let useSnapshot: any = req.query.useSnapshot
-    if (typeof useSnapshot != 'boolean') {
-      useSnapshot = true
-    }
+    const { useSnapshot = true, includeUncitedReferences = false } = req.body ?? {}
     const { projectID, manuscriptID } = req.params
     const { user } = req
 
@@ -330,7 +327,12 @@ export class ProjectRoute extends BaseRoute {
       throw new ValidationError('No user found', user)
     }
 
-    const jats = await this.projectController.exportJats(projectID, manuscriptID, useSnapshot, user)
+    const jats = await this.projectController.exportJats(
+      projectID,
+      manuscriptID,
+      { useSnapshot, includeUncitedReferences },
+      user
+    )
 
     res.status(StatusCodes.OK).type('application/xml').send(jats)
   }

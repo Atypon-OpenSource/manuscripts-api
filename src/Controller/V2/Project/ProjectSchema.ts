@@ -104,8 +104,9 @@ export const exportJatsSchema: Joi.SchemaMap = {
     projectID: Joi.string().required(),
     manuscriptID: Joi.string().required(),
   }),
-  query: Joi.object({
+  body: Joi.object({
     useSnapshot: Joi.boolean(),
+    includeUncitedReferences: Joi.boolean(),
   }),
 }
 
