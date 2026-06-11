@@ -395,7 +395,7 @@ export class ProjectService {
     const style = await this.citationStyleFromTemplate(template)
     const locale = await this.configService.getDocument(DEFAULT_LOCALE)
     if (!locale || !style) {
-      tsdhrow new RecordNotFoundError('locale or style not found')
+      throw new RecordNotFoundError('locale or style not found')
     }
     return {
       csl: { locale, style },
