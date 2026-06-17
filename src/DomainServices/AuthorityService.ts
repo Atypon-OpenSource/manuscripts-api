@@ -18,7 +18,7 @@ import {
   getVersion,
   JSONProsemirrorNode,
   ManuscriptActions,
-  NodeAccessSubject,
+  AccessContext,
   schema,
 } from '@manuscripts/transform'
 import { Prisma } from '@prisma/client'
@@ -37,7 +37,7 @@ export class AuthorityService {
   public async receiveSteps(
     documentID: string,
     receiveSteps: ReceiveSteps,
-    accessContext: NodeAccessSubject
+    accessContext: AccessContext
   ): Promise<History> {
     const found = await this.repository.manuscriptDoc.findDocument(documentID)
     const { doc, modifiedSteps } = this.applyStepsToDocument(
@@ -138,7 +138,7 @@ export class AuthorityService {
     jsonSteps: Prisma.JsonObject[],
     document: Prisma.JsonValue,
     clientID: string,
-    accessContext: NodeAccessSubject
+    accessContext: AccessContext
   ) {
     const steps = this.hydrateSteps(jsonSteps)
     const modifiedSteps: ModifiedStep[] = []

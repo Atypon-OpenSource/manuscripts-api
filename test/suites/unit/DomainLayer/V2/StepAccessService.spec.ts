@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { NodeAccessSubject, schema } from '@manuscripts/transform'
+import { AccessContext, schema } from '@manuscripts/transform'
 import { Transform } from 'prosemirror-transform'
 
 import { DIContainer } from '../../../../../src/DIContainer/DIContainer'
@@ -22,7 +22,7 @@ import { TEST_TIMEOUT } from '../../../../utilities/testSetup'
 
 jest.setTimeout(TEST_TIMEOUT)
 
-let accessContext: NodeAccessSubject
+let accessContext: AccessContext
 let tr: Transform
 
 beforeEach(async () => {
@@ -33,15 +33,12 @@ beforeEach(async () => {
     actions: {
       handleSuggestion: true,
       rejectOwnSuggestion: true,
-
       handleOwnComments: true,
       handleOthersComments: true,
       resolveOwnComment: true,
       resolveOthersComment: true,
       createComment: true,
-
       canEditFiles: true,
-
       editArticle: true,
       formatArticle: true,
       editMetadata: true,

@@ -4218,6 +4218,9 @@ packages:
   prosemirror-model@1.25.0:
     resolution: {integrity: sha512-/8XUmxWf0pkj2BmtqZHYJipTBMHIdVjuvFzMvEoxrtyGNmfvdhBiRwYt/eFwy2wA9DtBW3RLqvZnjurEkHaFCw==}
 
+  prosemirror-model@1.25.1:
+    resolution: {integrity: sha512-AUvbm7qqmpZa5d9fPKMvH1Q5bqYQvAZWOGRvxsB6iFLyycvC9MwNemNVjHVrWgjaoxAfY8XVg7DbvQ/qxvI9Eg==}
+
   prosemirror-state@1.4.3:
     resolution: {integrity: sha512-goFKORVbvPuAQaXhpbemJFRKJ2aixr+AZMGiquiqKxaucC6hlpHNZHWgz5R7dS4roHiwq9vDctE//CZ++o0W1Q==}
 
@@ -6410,25 +6413,25 @@ snapshots:
       '@jridgewell/sourcemap-codec': 1.4.14
 
   ? '@manuscripts/eslint-config@0.5.1(@typescript-eslint/eslint-plugin@8.46.4(@typescript-eslint/parser@8.46.4(eslint@9.39.1)(typescript@4.9.5))(eslint@9.39.1)(typescript@4.9.5))(eslint-plugin-header@3.1.1(eslint@9.39.1))(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.46.4(eslint@9.39.1)(typescript@4.9.5))(eslint@9.39.1))(eslint-plugin-jest@29.0.1(@typescript-eslint/eslint-plugin@8.46.4(@typescript-eslint/parser@8.46.4(eslint@9.39.1)(typescript@4.9.5))(eslint@9.39.1)(typescript@4.9.5))(eslint@9.39.1)(jest@29.7.0(@types/node@22.19.0)(ts-node@10.9.2(@types/node@22.19.0)(typescript@4.9.5)))(typescript@4.9.5))(eslint-plugin-jsx-a11y@6.10.2(eslint@9.39.1))(eslint-plugin-mdx@3.6.2(eslint@9.39.1))(eslint-plugin-prettier@5.5.4(eslint-config-prettier@10.1.8(eslint@9.39.1))(eslint@9.39.1)(prettier@3.6.2))(eslint-plugin-promise@7.2.1(eslint@9.39.1))(eslint-plugin-react-hooks@7.0.1(eslint@9.39.1))(eslint-plugin-react@7.37.5(eslint@9.39.1))(eslint-plugin-simple-import-sort@12.1.1(eslint@9.39.1))(eslint@9.39.1)(typescript@4.9.5)'
-  : dependencies:
-      '@typescript-eslint/eslint-plugin': 8.46.4(@typescript-eslint/parser@8.46.4(eslint@9.39.1)(typescript@4.9.5))(eslint@9.39.1)(typescript@4.9.5)
-      '@typescript-eslint/parser': 5.62.0(eslint@9.39.1)(typescript@4.9.5)
-      eslint: 9.39.1
-      eslint-config-prettier: 8.10.0(eslint@9.39.1)
-      eslint-plugin-header: 3.1.1(eslint@9.39.1)
-      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.46.4(eslint@9.39.1)(typescript@4.9.5))(eslint@9.39.1)
-      eslint-plugin-jest: 29.0.1(@typescript-eslint/eslint-plugin@8.46.4(@typescript-eslint/parser@8.46.4(eslint@9.39.1)(typescript@4.9.5))(eslint@9.39.1)(typescript@4.9.5))(eslint@9.39.1)(jest@29.7.0(@types/node@22.19.0)(ts-node@10.9.2(@types/node@22.19.0)(typescript@4.9.5)))(typescript@4.9.5)
-      eslint-plugin-jsx-a11y: 6.10.2(eslint@9.39.1)
-      eslint-plugin-mdx: 3.6.2(eslint@9.39.1)
-      eslint-plugin-prettier: 5.5.4(eslint-config-prettier@10.1.8(eslint@9.39.1))(eslint@9.39.1)(prettier@3.6.2)
-      eslint-plugin-promise: 7.2.1(eslint@9.39.1)
-      eslint-plugin-react: 7.37.5(eslint@9.39.1)
-      eslint-plugin-react-hooks: 7.0.1(eslint@9.39.1)
-      eslint-plugin-simple-import-sort: 12.1.1(eslint@9.39.1)
-      prettier: 2.8.8
-      typescript: 4.9.5
-    transitivePeerDependencies:
-      - supports-color
+    : dependencies:
+        '@typescript-eslint/eslint-plugin': 8.46.4(@typescript-eslint/parser@8.46.4(eslint@9.39.1)(typescript@4.9.5))(eslint@9.39.1)(typescript@4.9.5)
+        '@typescript-eslint/parser': 5.62.0(eslint@9.39.1)(typescript@4.9.5)
+        eslint: 9.39.1
+        eslint-config-prettier: 8.10.0(eslint@9.39.1)
+        eslint-plugin-header: 3.1.1(eslint@9.39.1)
+        eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.46.4(eslint@9.39.1)(typescript@4.9.5))(eslint@9.39.1)
+        eslint-plugin-jest: 29.0.1(@typescript-eslint/eslint-plugin@8.46.4(@typescript-eslint/parser@8.46.4(eslint@9.39.1)(typescript@4.9.5))(eslint@9.39.1)(typescript@4.9.5))(eslint@9.39.1)(jest@29.7.0(@types/node@22.19.0)(ts-node@10.9.2(@types/node@22.19.0)(typescript@4.9.5)))(typescript@4.9.5)
+        eslint-plugin-jsx-a11y: 6.10.2(eslint@9.39.1)
+        eslint-plugin-mdx: 3.6.2(eslint@9.39.1)
+        eslint-plugin-prettier: 5.5.4(eslint-config-prettier@10.1.8(eslint@9.39.1))(eslint@9.39.1)(prettier@3.6.2)
+        eslint-plugin-promise: 7.2.1(eslint@9.39.1)
+        eslint-plugin-react: 7.37.5(eslint@9.39.1)
+        eslint-plugin-react-hooks: 7.0.1(eslint@9.39.1)
+        eslint-plugin-simple-import-sort: 12.1.1(eslint@9.39.1)
+        prettier: 2.8.8
+        typescript: 4.9.5
+      transitivePeerDependencies:
+        - supports-color
 
   '@manuscripts/transform@4.3.53(prosemirror-state@1.4.3)':
     dependencies:
@@ -10245,23 +10248,27 @@ snapshots:
     dependencies:
       orderedmap: 2.1.1
 
+  prosemirror-model@1.25.1:
+    dependencies:
+      orderedmap: 2.1.1
+
   prosemirror-state@1.4.3:
     dependencies:
-      prosemirror-model: 1.25.0
+      prosemirror-model: 1.25.1
       prosemirror-transform: 1.10.4
       prosemirror-view: 1.39.2
 
   prosemirror-tables@1.7.1:
     dependencies:
       prosemirror-keymap: 1.2.2
-      prosemirror-model: 1.25.0
+      prosemirror-model: 1.25.1
       prosemirror-state: 1.4.3
       prosemirror-transform: 1.10.4
       prosemirror-view: 1.39.2
 
   prosemirror-transform@1.10.4:
     dependencies:
-      prosemirror-model: 1.25.0
+      prosemirror-model: 1.25.1
 
   prosemirror-utils@1.2.2(prosemirror-model@1.25.0)(prosemirror-state@1.4.3):
     dependencies:
@@ -10270,7 +10277,7 @@ snapshots:
 
   prosemirror-view@1.39.2:
     dependencies:
-      prosemirror-model: 1.25.0
+      prosemirror-model: 1.25.1
       prosemirror-state: 1.4.3
       prosemirror-transform: 1.10.4
 

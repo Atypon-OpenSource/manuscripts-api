@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { getNodeAccessPolicy, ManuscriptNode, NodeAccessSubject } from '@manuscripts/transform'
+import { AccessContext, getNodeAccessPolicy, ManuscriptNode } from '@manuscripts/transform'
 import { AttrStep, ReplaceAroundStep, ReplaceStep, Step } from 'prosemirror-transform'
 
 type ExposedSlice<T, F> = T & {
@@ -21,8 +21,7 @@ type ExposedSlice<T, F> = T & {
 }
 
 export class StepAccessService {
-
-  validate(step: Step, doc: ManuscriptNode, context: NodeAccessSubject) {
+  validate(step: Step, doc: ManuscriptNode, context: AccessContext) {
     if (step instanceof ReplaceAroundStep) {
       const gap = doc.slice(step.gapFrom, step.gapTo)
       const slice = (
@@ -41,13 +40,11 @@ export class StepAccessService {
     return true
   }
 
-  private validateReplaceStep(step: ReplaceStep, doc: ManuscriptNode, context: NodeAccessSubject) {
+  private validateReplaceStep(step: ReplaceStep, doc: ManuscriptNode, context: AccessContext) {
     if (this.isStepUpdateNodeAttr(step, doc)) {
       const node = step.slice.content.firstChild!
       const nodeDB = doc.slice(step.from, step.to).content.firstChild!
-      return !this.findDiff(nodeDB, node).find(
-        (attr) => !this.attrPolicy(nodeDB, attr, context)
-      )
+      return !this.findDiff(nodeDB, node).find((attr) => !this.attrPolicy(nodeDB, attr, context))
     }
 
     let hasAccess = true
@@ -71,7 +68,7 @@ export class StepAccessService {
     return hasAccess
   }
 
-  private validateAttrStep(step: AttrStep, doc: ManuscriptNode, context: NodeAccessSubject) {
+  private validateAttrStep(step: AttrStep, doc: ManuscriptNode, context: AccessContext) {
     const node = doc.nodeAt(step.pos)
     return this.attrPolicy(node, step.attr, context)
   }
@@ -97,7 +94,7 @@ export class StepAccessService {
     return keys
   }
 
-  private attrPolicy(node: ManuscriptNode | null, attr: string, context: NodeAccessSubject) {
+  private attrPolicy(node: ManuscriptNode | null, attr: string, context: AccessContext) {
     const policy = node?.type && getNodeAccessPolicy(node.type)?.attrs
 
     if (policy) {
