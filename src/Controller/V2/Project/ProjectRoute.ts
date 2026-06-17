@@ -34,6 +34,7 @@ import {
   getArchiveSchema,
   loadManuscriptSchema,
   loadProjectSchema,
+  projectUserPermittedActionsSchema,
   projectUserProfilesSchema,
   revokeRoles,
   saveProjectSchema,
@@ -148,6 +149,18 @@ export class ProjectRoute extends BaseRoute {
       (req: Request, res: Response, next: NextFunction) => {
         return this.runWithErrorHandling(async () => {
           await this.getProjectUserProfiles(req, res)
+        }, next)
+      }
+    )
+
+    router.get(
+      `${this.basePath}/:projectID/permitted-actions`,
+      celebrate(projectUserPermittedActionsSchema),
+      AuthStrategy.JsonHeadersValidation,
+      AuthStrategy.JWTAuth,
+      (req: Request, res: Response, next: NextFunction) => {
+        return this.runWithErrorHandling(async () => {
+          await this.getProjectPermittedActions(req, res)
         }, next)
       }
     )
@@ -316,6 +329,17 @@ export class ProjectRoute extends BaseRoute {
     }
     const userProfiles = await this.projectController.getUserProfiles(user, projectID)
     res.status(StatusCodes.OK).send(userProfiles)
+  }
+
+  private async getProjectPermittedActions(req: Request, res: Response) {
+    const { projectID } = req.params
+    const { user } = req
+
+    if (!user) {
+      throw new ValidationError('No user found', user)
+    }
+    const permittedActions = await this.projectController.getPermittedActions(projectID, user.id)
+    res.status(StatusCodes.OK).send(permittedActions)
   }
 
   private async exportJats(req: Request, res: Response) {
