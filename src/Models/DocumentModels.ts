@@ -13,15 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ManuscriptDoc, Prisma } from '@prisma/client'
-
-import { SnapshotLabel } from './SnapshotModels'
+import {Prisma } from '@prisma/client'
 
 export type Doc = Record<string, any>
 
-export type ManuscriptDocWithSnapshots = ManuscriptDoc & {
-  snapshots: SnapshotLabel[]
-}
+  
+export const MANUSCRIPT_DOC_LOADED_INCLUDE = {
+  snapshots: {
+    select: {
+      id: true,
+      name: true,
+      createdAt: true,
+    },
+    where: {
+      name: {
+        not: 'DOI updated',
+      },
+    },
+    orderBy: {
+      createdAt: 'desc',
+    },
+  },
+} satisfies Prisma.ManuscriptDocInclude
+
+export type ManuscriptDocWithSnapshots = Prisma.ManuscriptDocGetPayload<{
+  include: typeof MANUSCRIPT_DOC_LOADED_INCLUDE
+}>
 
 export type CreateDoc = {
   manuscript_model_id: string

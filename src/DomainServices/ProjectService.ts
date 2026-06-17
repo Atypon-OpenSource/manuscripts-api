@@ -353,12 +353,26 @@ export class ProjectService {
   }
 
   public async exportJats(manuscriptID: string, useSnapshot: boolean) {
-    const article: JSONProsemirrorNode = useSnapshot
-      ? ((await this.snapshotClient.getMostRecentSnapshot(manuscriptID))
-          .snapshot as JSONProsemirrorNode)
-      : AuthorityService.removeSuggestions(
-          (await this.documentClient.findDocument(manuscriptID)).doc as JSONProsemirrorNode
-        )
+    if (!useSnapshot) {
+      return this.exportFromManuscript(manuscriptID)
+    }
+    try {
+      return this.exportFromSnapshot(manuscriptID)
+    } catch {
+      return this.exportFromManuscript(manuscriptID)
+    }
+  }
+
+  public async exportFromSnapshot(manuscriptID: string) {
+    const model = await this.snapshotClient.getMostRecentSnapshot(manuscriptID)
+    const article = model.snapshot as JSONProsemirrorNode
+    const options = await this.getExportJatsOptions(article.attrs.prototype)
+    return new JATSExporter().serializeToJATS(schema.nodeFromJSON(article), options)
+  }
+
+  public async exportFromManuscript(manuscriptID: string) {
+    const model = await this.documentClient.findDocument(manuscriptID)
+    const article = AuthorityService.removeSuggestions(model.doc as JSONProsemirrorNode)
     const options = await this.getExportJatsOptions(article.attrs.prototype)
     return new JATSExporter().serializeToJATS(schema.nodeFromJSON(article), options)
   }

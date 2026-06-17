@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { getVersion, Project, UserProfile } from '@manuscripts/transform'
+import { getVersion, Project, UserProfile, ManuscriptActions } from '@manuscripts/transform'
 
 import { DIContainer } from '../../../DIContainer/DIContainer'
 import {
@@ -25,7 +25,6 @@ import {
 } from '../../../Errors'
 import { UpdateDocument } from '../../../Models/DocumentModels'
 import { ObjectTypes, Model, ProjectPermission, ProjectUserRole } from '../../../Models/ProjectModels'
-import { DOI_UPDATED_LABEL } from '../../../Models/SnapshotModels'
 import { BaseController } from '../../BaseController'
 
 export class ProjectController extends BaseController {
@@ -73,12 +72,6 @@ export class ProjectController extends BaseController {
       schema_version: getVersion(),
     }
     await DIContainer.sharedContainer.documentClient.updateDocument(manuscriptID, updateDocPayload)
-    const snapshotModel = {
-      docID: manuscriptID,
-      name: DOI_UPDATED_LABEL,
-      snapshot: doc,
-    }
-    await DIContainer.sharedContainer.snapshotClient.saveSnapshot(snapshotModel)
   }
 
   async isProjectCacheValid(
@@ -188,6 +181,16 @@ export class ProjectController extends BaseController {
       throw new RoleDoesNotPermitOperationError(`Access denied`, user.id)
     }
     return await DIContainer.sharedContainer.userService.getProjectUserProfiles(projectID)
+  }
+
+  async getPermittedActions(projectID: string, userId: string): Promise<ManuscriptActions[]> {
+    const permittedActions = await DIContainer.sharedContainer.authorityService.getPermittedActions(
+      projectID,
+      userId
+    )
+    return (Object.entries(permittedActions) as [ManuscriptActions, boolean][])
+      .filter(([_, value]) => value)
+      .map(([action]) => action)
   }
 
   async exportJats(

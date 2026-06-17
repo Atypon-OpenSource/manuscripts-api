@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 
-import { getVersion, JSONProsemirrorNode, schema } from '@manuscripts/transform'
+import { getVersion, JSONProsemirrorNode, ManuscriptActions, schema } from '@manuscripts/transform'
 import { Prisma } from '@prisma/client'
 import { JsonObject } from '@prisma/client/runtime/library'
 import { Step } from 'prosemirror-transform'
 
 import { DIContainer } from '../DIContainer/DIContainer'
-import { StepAccessError, VersionMismatchError } from '../Errors'
-import { AccessContext } from '../Models/AccessContextModels'
+import { UserRoleError, VersionMismatchError } from '../Errors'
 import { History, ModifiedStep, ReceiveSteps } from '../Models/AuthorityModels'
+import { ProjectUserRole } from '../Models/ProjectModels'
 import { DB } from '../Models/RepositoryModels'
+
 export class AuthorityService {
   constructor(private readonly repository: DB) {}
 
@@ -84,6 +85,44 @@ export class AuthorityService {
       version: found.version,
     }
     return history
+  }
+
+  public async getPermittedActions(projectID: string, userID: string): Promise<Record<ManuscriptActions, boolean>> {
+    const project = await DIContainer.sharedContainer.projectService.getProject(projectID)
+    const role = DIContainer.sharedContainer.projectService.getUserRole(project, userID)
+
+    if (role === null) {
+      throw new UserRoleError(`User does not have access to project ${projectID}`, {
+        userId: userID,
+        projectId: projectID,
+      })
+    }
+
+    const isViewer = role === ProjectUserRole.Viewer
+    const isOwner = role === ProjectUserRole.Owner
+    const isEditor = role === ProjectUserRole.Editor
+    const isWriter = role === ProjectUserRole.Writer
+    const isAnnotator = role === ProjectUserRole.Annotator
+
+    return {
+      handleSuggestion: isOwner || isEditor || isWriter,
+      rejectOwnSuggestion: !isViewer,
+
+      handleOwnComments: !isViewer,
+      handleOthersComments: isOwner,
+      resolveOwnComment: !isViewer,
+      resolveOthersComment: isOwner || isEditor,
+      createComment: !isViewer,
+
+      canEditFiles: isOwner || isEditor || isWriter || isAnnotator,
+
+      editArticle: !isViewer,
+      formatArticle: !isViewer,
+      editMetadata: !isViewer,
+      editCitationsAndRefs: !isViewer,
+      seeEditorToolbar: !isViewer,
+      seeReferencesButtons: !isViewer,
+    }
   }
 
   private applyStepsToDocument(
