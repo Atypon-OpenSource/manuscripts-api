@@ -9,11 +9,11 @@ importers:
   .:
     dependencies:
       '@manuscripts/transform':
-        specifier: 4.3.53
-        version: 4.3.53(prosemirror-state@1.4.3)
+        specifier: 4.3.54-LEAN-5586.0
+        version: 4.3.54-LEAN-5586.0(prosemirror-state@1.4.3)
       '@prisma/client':
-        specifier: 6.19.3
-        version: 6.19.3(prisma@6.19.3(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.7.0
+        version: 6.7.0(prisma@6.19.3(typescript@5.9.2))(typescript@5.9.2)
       celebrate:
         specifier: 15.0.3
         version: 15.0.3
@@ -1230,8 +1230,8 @@ packages:
       eslint-plugin-simple-import-sort: '>= 8'
       typescript: '*'
 
-  '@manuscripts/transform@4.3.53':
-    resolution: {integrity: sha512-REIXsk/Ua/m/IIC7I7clH67hj+E8O6gd6szPv9ZmAPJw+6sxKOE3ywjQN87rhVadI8mx8ZDZX330xxxtjmkI2A==}
+  '@manuscripts/transform@4.3.54-LEAN-5586.0':
+    resolution: {integrity: sha512-8H8Z7zLbD0NOBsVNicehmNEYXWz6F84oMsWO41VG4F3uV7Z8l4pHTwlB/Svey8O/NGA/p05ZZHwMCEtfzrEDiA==, tarball: https://us-central1-npm.pkg.dev/atypon-artifact/npm-virtual/@manuscripts/transform/-/@manuscripts/transform-4.3.54-LEAN-5586.0.tgz}
     engines: {node: '>=22'}
 
   '@nodelib/fs.scandir@2.1.5':
@@ -1282,8 +1282,8 @@ packages:
     resolution: {integrity: sha512-QNqXyfVS2wm9hweSYD2O7F0G06uurj9kZ96TRQE5Y9hU7+tgdZwIkbAKc5Ocy1HxEY2kuDQa6cQ1WRs/O5LFKA==}
     engines: {node: ^12.20.0 || ^14.18.0 || >=16.0.0}
 
-  '@prisma/client@6.19.3':
-    resolution: {integrity: sha512-mKq3jQFhjvko5LTJFHGilsuQs+W+T3Gm451NzuTDGQxwCzwXHYnIu2zGkRoW+Exq3Rob7yp2MfzSrdIiZVhrBg==}
+  '@prisma/client@6.7.0':
+    resolution: {integrity: sha512-+k61zZn1XHjbZul8q6TdQLpuI/cvyfil87zqK2zpreNIXyXtpUv3+H/oM69hcsFcZXaokHJIzPAt5Z8C8eK2QA==}
     engines: {node: '>=18.18'}
     peerDependencies:
       prisma: '*'
@@ -6521,7 +6521,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@manuscripts/transform@4.3.53(prosemirror-state@1.4.3)':
+  '@manuscripts/transform@4.3.54-LEAN-5586.0(prosemirror-state@1.4.3)':
     dependencies:
       citeproc: 2.4.63
       jszip: 3.10.1
@@ -6606,7 +6606,7 @@ snapshots:
 
   '@pkgr/core@0.2.9': {}
 
-  '@prisma/client@6.19.3(prisma@6.19.3(typescript@5.9.2))(typescript@5.9.2)':
+  '@prisma/client@6.7.0(prisma@6.19.3(typescript@5.9.2))(typescript@5.9.2)':
     optionalDependencies:
       prisma: 6.19.3(typescript@5.9.2)
       typescript: 5.9.2
