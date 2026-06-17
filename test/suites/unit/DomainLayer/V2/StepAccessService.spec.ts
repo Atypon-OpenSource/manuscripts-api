@@ -14,32 +14,42 @@
  * limitations under the License.
  */
 
-import { schema} from '@manuscripts/transform'
+import { NodeAccessSubject, schema } from '@manuscripts/transform'
 import { Transform } from 'prosemirror-transform'
 
 import { DIContainer } from '../../../../../src/DIContainer/DIContainer'
-import { AccessContext } from '../../../../../src/Models/AccessContextModels'
 import { TEST_TIMEOUT } from '../../../../utilities/testSetup'
 
 jest.setTimeout(TEST_TIMEOUT)
 
-let accessContext: AccessContext
+let accessContext: NodeAccessSubject
 let tr: Transform
 
 beforeEach(async () => {
   ;(DIContainer as any)._sharedContainer = null
   await DIContainer.init()
-    accessContext = {
-      userId: 'MPUserProfile:01',
-      capabilities: {
-        resolveOthersComment: true,
-        resolveOwnComment: true,
-        handleOthersComments: true,
-        handleOwnComments: true,
-        createComment: true,
-        editArticle: true,
-      },
-    }
+  accessContext = {
+    userId: 'MPUserProfile:01',
+    actions: {
+      handleSuggestion: true,
+      rejectOwnSuggestion: true,
+
+      handleOwnComments: true,
+      handleOthersComments: true,
+      resolveOwnComment: true,
+      resolveOthersComment: true,
+      createComment: true,
+
+      canEditFiles: true,
+
+      editArticle: true,
+      formatArticle: true,
+      editMetadata: true,
+      editCitationsAndRefs: true,
+      seeEditorToolbar: true,
+      seeReferencesButtons: true,
+    },
+  }
     const emptyDoc = schema.nodes.doc.createAndFill()!
     tr = new Transform(emptyDoc)
     tr.insert(10, schema.nodeFromJSON(comment))
@@ -65,7 +75,7 @@ describe('StepAccessService', () => {
   describe('validate', () => {
     it('has no access to resolve other comment', () => {
       accessContext.userId = 'MPUserProfile:02'
-      accessContext.capabilities.resolveOthersComment = false
+      accessContext.actions.resolveOthersComment = false
       tr.setNodeMarkup(10, undefined, { ...comment.attrs, resolved: true })
       const hasAccessToStep = DIContainer.sharedContainer.stepAccessService.validate(
         tr.steps[1],
@@ -75,7 +85,7 @@ describe('StepAccessService', () => {
       expect(hasAccessToStep).toEqual(false)
     })
     it('has no access to resolve own comment', () => {
-      accessContext.capabilities.resolveOwnComment = false
+      accessContext.actions.resolveOwnComment = false
       tr.setNodeMarkup(10, undefined, { ...comment.attrs, resolved: true })
       const hasAccessToStep = DIContainer.sharedContainer.stepAccessService.validate(
         tr.steps[1],
@@ -85,7 +95,7 @@ describe('StepAccessService', () => {
       expect(hasAccessToStep).toEqual(false)
     })
     it('has no access to create a comment', () => {
-      accessContext.capabilities.createComment = false
+      accessContext.actions.createComment = false
       tr.insert(10, schema.nodeFromJSON(comment))
       const hasAccessToStep = DIContainer.sharedContainer.stepAccessService.validate(
         tr.steps[1],
@@ -95,7 +105,7 @@ describe('StepAccessService', () => {
       expect(hasAccessToStep).toEqual(false)
     })
     it('has no access to delete a comment', () => {
-      accessContext.capabilities.handleOwnComments = false
+      accessContext.actions.handleOwnComments = false
       tr.delete(10, 11)
       const hasAccessToStep = DIContainer.sharedContainer.stepAccessService.validate(
         tr.steps[1],

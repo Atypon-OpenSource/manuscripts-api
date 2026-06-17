@@ -13,20 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ManuscriptNode } from '@manuscripts/transform'
+import { getNodeAccessPolicy, ManuscriptNode, NodeAccessSubject } from '@manuscripts/transform'
 import { AttrStep, ReplaceAroundStep, ReplaceStep, Step } from 'prosemirror-transform'
-
-import { AccessContext } from '../Models/AccessContextModels'
-import { NodeAccessRegistry } from '../Utilities/NodeAccess/NodeAccessRegistry'
 
 type ExposedSlice<T, F> = T & {
   insertAt: (pos: number, fragment: F) => T
 }
 
 export class StepAccessService {
-  constructor(private readonly registry: NodeAccessRegistry) {}
 
-  validate(step: Step, doc: ManuscriptNode, context: AccessContext) {
+  validate(step: Step, doc: ManuscriptNode, context: NodeAccessSubject) {
     if (step instanceof ReplaceAroundStep) {
       const gap = doc.slice(step.gapFrom, step.gapTo)
       const slice = (
@@ -45,26 +41,28 @@ export class StepAccessService {
     return true
   }
 
-  private validateReplaceStep(step: ReplaceStep, doc: ManuscriptNode, context: AccessContext) {
+  private validateReplaceStep(step: ReplaceStep, doc: ManuscriptNode, context: NodeAccessSubject) {
     if (this.isStepUpdateNodeAttr(step, doc)) {
       const node = step.slice.content.firstChild!
       const nodeDB = doc.slice(step.from, step.to).content.firstChild!
       return !this.findDiff(nodeDB, node).find(
-        (attr) => !this.registry.canEditAttr(nodeDB, attr, context)
+        (attr) => !this.attrPolicy(nodeDB, attr, context)
       )
     }
 
     let hasAccess = true
 
     doc.slice(step.from, step.to).content.descendants((node) => {
-      if (!this.registry.canDeleteNode(node, context)) {
+      const deletePolicy = getNodeAccessPolicy(node.type)?.delete
+      if (deletePolicy && !deletePolicy(node, context)) {
         hasAccess = false
         return false
       }
     })
 
     step.slice.content.descendants((node) => {
-      if (!this.registry.canInsertNode(node, context)) {
+      const insertPolicy = getNodeAccessPolicy(node.type)?.insert
+      if (insertPolicy && !insertPolicy(node, context)) {
         hasAccess = false
         return false
       }
@@ -73,9 +71,9 @@ export class StepAccessService {
     return hasAccess
   }
 
-  private validateAttrStep(step: AttrStep, doc: ManuscriptNode, context: AccessContext) {
+  private validateAttrStep(step: AttrStep, doc: ManuscriptNode, context: NodeAccessSubject) {
     const node = doc.nodeAt(step.pos)
-    return !!(node && this.registry.canEditAttr(node, step.attr, context))
+    return this.attrPolicy(node, step.attr, context)
   }
 
   private isStepUpdateNodeAttr(step: ReplaceStep, doc: ManuscriptNode) {
@@ -97,5 +95,21 @@ export class StepAccessService {
       }
     })
     return keys
+  }
+
+  private attrPolicy(node: ManuscriptNode | null, attr: string, context: NodeAccessSubject) {
+    const policy = node?.type && getNodeAccessPolicy(node.type)?.attrs
+
+    if (policy) {
+      // we could have a policy that applied to all attribute changes
+      if (typeof policy === 'function') {
+        return policy(node, context)
+      } else {
+        // apply policy per-attribute
+        return !!policy[attr]?.(node, context)
+      }
+    }
+
+    return true
   }
 }

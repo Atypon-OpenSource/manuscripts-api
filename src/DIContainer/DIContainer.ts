@@ -42,7 +42,6 @@ import {
 } from '../Models/RepositoryModels'
 import { IServer } from '../Server/IServer'
 import { Server } from '../Server/Server'
-import { createNodeAccessRegistry } from '../Utilities/NodeAccess/NodeAccessRegistry'
 
 const prisma = new PrismaClient()
 
@@ -121,7 +120,7 @@ export class DIContainer {
     this.socketsService = new SocketsService()
     this.documentService = new DocumentService(this.socketsService, repository.documentClient)
     this.oEmbedService = new OEmbedService()
-    this.stepAccessService = new StepAccessService(createNodeAccessRegistry())
+    this.stepAccessService = new StepAccessService()
   }
 
   /**

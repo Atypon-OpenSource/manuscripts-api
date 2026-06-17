@@ -14,13 +14,19 @@
  * limitations under the License.
  */
 
-import { getVersion, JSONProsemirrorNode, ManuscriptActions, schema } from '@manuscripts/transform'
+import {
+  getVersion,
+  JSONProsemirrorNode,
+  ManuscriptActions,
+  NodeAccessSubject,
+  schema,
+} from '@manuscripts/transform'
 import { Prisma } from '@prisma/client'
 import { JsonObject } from '@prisma/client/runtime/library'
 import { Step } from 'prosemirror-transform'
 
 import { DIContainer } from '../DIContainer/DIContainer'
-import { UserRoleError, VersionMismatchError } from '../Errors'
+import { StepAccessError, UserRoleError, VersionMismatchError } from '../Errors'
 import { History, ModifiedStep, ReceiveSteps } from '../Models/AuthorityModels'
 import { ProjectUserRole } from '../Models/ProjectModels'
 import { DB } from '../Models/RepositoryModels'
@@ -31,7 +37,7 @@ export class AuthorityService {
   public async receiveSteps(
     documentID: string,
     receiveSteps: ReceiveSteps,
-    accessContext: AccessContext
+    accessContext: NodeAccessSubject
   ): Promise<History> {
     const found = await this.repository.manuscriptDoc.findDocument(documentID)
     const { doc, modifiedSteps } = this.applyStepsToDocument(
@@ -87,7 +93,10 @@ export class AuthorityService {
     return history
   }
 
-  public async getPermittedActions(projectID: string, userID: string): Promise<Record<ManuscriptActions, boolean>> {
+  public async getPermittedActions(
+    projectID: string,
+    userID: string
+  ): Promise<Record<ManuscriptActions, boolean>> {
     const project = await DIContainer.sharedContainer.projectService.getProject(projectID)
     const role = DIContainer.sharedContainer.projectService.getUserRole(project, userID)
 
@@ -129,7 +138,7 @@ export class AuthorityService {
     jsonSteps: Prisma.JsonObject[],
     document: Prisma.JsonValue,
     clientID: string,
-    accessContext: AccessContext
+    accessContext: NodeAccessSubject
   ) {
     const steps = this.hydrateSteps(jsonSteps)
     const modifiedSteps: ModifiedStep[] = []
