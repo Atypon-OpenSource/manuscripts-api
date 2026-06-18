@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "@manuscripts/transform": "4.3.54-LEAN-5586.0",
-    "@prisma/client": "6.7.0",
+    "@prisma/client": "6.19.3",
     "celebrate": "15.0.3",
     "checksum": "1.0.0",
     "cors": "2.8.6",

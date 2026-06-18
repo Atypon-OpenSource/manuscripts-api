@@ -12,8 +12,8 @@ importers:
         specifier: 4.3.54-LEAN-5586.0
         version: 4.3.54-LEAN-5586.0(prosemirror-state@1.4.3)
       '@prisma/client':
-        specifier: 6.7.0
-        version: 6.7.0(prisma@6.19.3(typescript@5.9.2))(typescript@5.9.2)
+        specifier: 6.19.3
+        version: 6.19.3(prisma@6.19.3(typescript@5.9.2))(typescript@5.9.2)
       celebrate:
         specifier: 15.0.3
         version: 15.0.3
@@ -125,7 +125,7 @@ importers:
         version: 3.0.0
       '@manuscripts/eslint-config':
         specifier: 0.5.1
-        version: 0.5.1(2fda869ee57bed885b6417107e40b4c0)
+        version: 0.5.1(e1f7d3cbb08b7f761f979f2dc657825d)
       '@types/bcrypt':
         specifier: 5.0.2
         version: 5.0.2
@@ -215,7 +215,7 @@ importers:
         version: 2.32.0(@typescript-eslint/parser@8.59.3(eslint@9.39.4(jiti@2.7.0))(typescript@5.9.2))(eslint@9.39.4(jiti@2.7.0))
       eslint-plugin-jest:
         specifier: 29.15.2
-        version: 29.15.2(@typescript-eslint/eslint-plugin@8.59.3(@typescript-eslint/parser@8.59.3(eslint@9.39.4(jiti@2.7.0))(typescript@5.9.2))(eslint@9.39.4(jiti@2.7.0))(typescript@5.9.2))(eslint@9.39.4(jiti@2.7.0))(jest@29.7.0(@types/node@22.19.0)(ts-node@10.9.2(@types/node@22.19.0)(typescript@5.9.2)))(typescript@5.9.2)
+        version: 29.15.2(@typescript-eslint/eslint-plugin@8.59.3(@typescript-eslint/parser@8.59.3(eslint@9.39.4(jiti@2.7.0))(typescript@5.9.2))(eslint@9.39.4(jiti@2.7.0))(typescript@5.9.2))(eslint@9.39.4(jiti@2.7.0))(jest@29.7.0(@types/node@18.11.18)(ts-node@10.9.2(@types/node@18.11.18)(typescript@5.9.2)))(typescript@5.9.2)
       eslint-plugin-jsx-a11y:
         specifier: 6.10.2
         version: 6.10.2(eslint@9.39.4(jiti@2.7.0))
@@ -245,7 +245,7 @@ importers:
         version: 9.1.7
       jest:
         specifier: 29.7.0
-        version: 29.7.0(@types/node@22.19.0)(ts-node@10.9.2(@types/node@22.19.0)(typescript@5.9.2))
+        version: 29.7.0(@types/node@18.11.18)(ts-node@10.9.2(@types/node@18.11.18)(typescript@5.9.2))
       jest-circus:
         specifier: 29.7.0
         version: 29.7.0
@@ -257,7 +257,7 @@ importers:
         version: 3.8.3
       ts-node:
         specifier: 10.9.2
-        version: 10.9.2(@types/node@22.19.0)(typescript@5.9.2)
+        version: 10.9.2(@types/node@18.11.18)(typescript@5.9.2)
       typescript:
         specifier: 5.9.2
         version: 5.9.2
@@ -1282,8 +1282,8 @@ packages:
     resolution: {integrity: sha512-QNqXyfVS2wm9hweSYD2O7F0G06uurj9kZ96TRQE5Y9hU7+tgdZwIkbAKc5Ocy1HxEY2kuDQa6cQ1WRs/O5LFKA==}
     engines: {node: ^12.20.0 || ^14.18.0 || >=16.0.0}
 
-  '@prisma/client@6.7.0':
-    resolution: {integrity: sha512-+k61zZn1XHjbZul8q6TdQLpuI/cvyfil87zqK2zpreNIXyXtpUv3+H/oM69hcsFcZXaokHJIzPAt5Z8C8eK2QA==}
+  '@prisma/client@6.19.3':
+    resolution: {integrity: sha512-mKq3jQFhjvko5LTJFHGilsuQs+W+T3Gm451NzuTDGQxwCzwXHYnIu2zGkRoW+Exq3Rob7yp2MfzSrdIiZVhrBg==}
     engines: {node: '>=18.18'}
     peerDependencies:
       prisma: '*'
@@ -6283,7 +6283,7 @@ snapshots:
       jest-util: 29.7.0
       slash: 3.0.0
 
-  '@jest/core@29.7.0(ts-node@10.9.2(@types/node@22.19.0)(typescript@5.9.2))':
+  '@jest/core@29.7.0(ts-node@10.9.2(@types/node@18.11.18)(typescript@5.9.2))':
     dependencies:
       '@jest/console': 29.7.0
       '@jest/reporters': 29.7.0
@@ -6297,7 +6297,7 @@ snapshots:
       exit: 0.1.2
       graceful-fs: 4.2.10
       jest-changed-files: 29.7.0
-      jest-config: 29.7.0(@types/node@18.11.18)(ts-node@10.9.2(@types/node@22.19.0)(typescript@5.9.2))
+      jest-config: 29.7.0(@types/node@18.11.18)(ts-node@10.9.2(@types/node@18.11.18)(typescript@5.9.2))
       jest-haste-map: 29.7.0
       jest-message-util: 29.7.0
       jest-regex-util: 29.6.3
@@ -6500,7 +6500,7 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.0
       '@jridgewell/sourcemap-codec': 1.4.14
 
-  '@manuscripts/eslint-config@0.5.1(2fda869ee57bed885b6417107e40b4c0)':
+  '@manuscripts/eslint-config@0.5.1(e1f7d3cbb08b7f761f979f2dc657825d)':
     dependencies:
       '@typescript-eslint/eslint-plugin': 8.59.3(@typescript-eslint/parser@8.59.3(eslint@9.39.4(jiti@2.7.0))(typescript@5.9.2))(eslint@9.39.4(jiti@2.7.0))(typescript@5.9.2)
       '@typescript-eslint/parser': 5.62.0(eslint@9.39.4(jiti@2.7.0))(typescript@5.9.2)
@@ -6508,7 +6508,7 @@ snapshots:
       eslint-config-prettier: 8.10.0(eslint@9.39.4(jiti@2.7.0))
       eslint-plugin-header: 3.1.1(eslint@9.39.4(jiti@2.7.0))
       eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.59.3(eslint@9.39.4(jiti@2.7.0))(typescript@5.9.2))(eslint@9.39.4(jiti@2.7.0))
-      eslint-plugin-jest: 29.15.2(@typescript-eslint/eslint-plugin@8.59.3(@typescript-eslint/parser@8.59.3(eslint@9.39.4(jiti@2.7.0))(typescript@5.9.2))(eslint@9.39.4(jiti@2.7.0))(typescript@5.9.2))(eslint@9.39.4(jiti@2.7.0))(jest@29.7.0(@types/node@22.19.0)(ts-node@10.9.2(@types/node@22.19.0)(typescript@5.9.2)))(typescript@5.9.2)
+      eslint-plugin-jest: 29.15.2(@typescript-eslint/eslint-plugin@8.59.3(@typescript-eslint/parser@8.59.3(eslint@9.39.4(jiti@2.7.0))(typescript@5.9.2))(eslint@9.39.4(jiti@2.7.0))(typescript@5.9.2))(eslint@9.39.4(jiti@2.7.0))(jest@29.7.0(@types/node@18.11.18)(ts-node@10.9.2(@types/node@18.11.18)(typescript@5.9.2)))(typescript@5.9.2)
       eslint-plugin-jsx-a11y: 6.10.2(eslint@9.39.4(jiti@2.7.0))
       eslint-plugin-mdx: 3.7.0(eslint@9.39.4(jiti@2.7.0))
       eslint-plugin-prettier: 5.5.5(eslint-config-prettier@10.1.8(eslint@9.39.4(jiti@2.7.0)))(eslint@9.39.4(jiti@2.7.0))(prettier@3.8.3)
@@ -6606,7 +6606,7 @@ snapshots:
 
   '@pkgr/core@0.2.9': {}
 
-  '@prisma/client@6.7.0(prisma@6.19.3(typescript@5.9.2))(typescript@5.9.2)':
+  '@prisma/client@6.19.3(prisma@6.19.3(typescript@5.9.2))(typescript@5.9.2)':
     optionalDependencies:
       prisma: 6.19.3(typescript@5.9.2)
       typescript: 5.9.2
@@ -7613,13 +7613,13 @@ snapshots:
       object-assign: 4.1.1
       vary: 1.1.2
 
-  create-jest@29.7.0(@types/node@22.19.0)(ts-node@10.9.2(@types/node@22.19.0)(typescript@5.9.2)):
+  create-jest@29.7.0(@types/node@18.11.18)(ts-node@10.9.2(@types/node@18.11.18)(typescript@5.9.2)):
     dependencies:
       '@jest/types': 29.6.3
       chalk: 4.1.2
       exit: 0.1.2
       graceful-fs: 4.2.10
-      jest-config: 29.7.0(@types/node@22.19.0)(ts-node@10.9.2(@types/node@22.19.0)(typescript@5.9.2))
+      jest-config: 29.7.0(@types/node@18.11.18)(ts-node@10.9.2(@types/node@18.11.18)(typescript@5.9.2))
       jest-util: 29.7.0
       prompts: 2.4.2
     transitivePeerDependencies:
@@ -8161,13 +8161,13 @@ snapshots:
       - eslint-import-resolver-webpack
       - supports-color
 
-  eslint-plugin-jest@29.15.2(@typescript-eslint/eslint-plugin@8.59.3(@typescript-eslint/parser@8.59.3(eslint@9.39.4(jiti@2.7.0))(typescript@5.9.2))(eslint@9.39.4(jiti@2.7.0))(typescript@5.9.2))(eslint@9.39.4(jiti@2.7.0))(jest@29.7.0(@types/node@22.19.0)(ts-node@10.9.2(@types/node@22.19.0)(typescript@5.9.2)))(typescript@5.9.2):
+  eslint-plugin-jest@29.15.2(@typescript-eslint/eslint-plugin@8.59.3(@typescript-eslint/parser@8.59.3(eslint@9.39.4(jiti@2.7.0))(typescript@5.9.2))(eslint@9.39.4(jiti@2.7.0))(typescript@5.9.2))(eslint@9.39.4(jiti@2.7.0))(jest@29.7.0(@types/node@18.11.18)(ts-node@10.9.2(@types/node@18.11.18)(typescript@5.9.2)))(typescript@5.9.2):
     dependencies:
       '@typescript-eslint/utils': 8.46.4(eslint@9.39.4(jiti@2.7.0))(typescript@5.9.2)
       eslint: 9.39.4(jiti@2.7.0)
     optionalDependencies:
       '@typescript-eslint/eslint-plugin': 8.59.3(@typescript-eslint/parser@8.59.3(eslint@9.39.4(jiti@2.7.0))(typescript@5.9.2))(eslint@9.39.4(jiti@2.7.0))(typescript@5.9.2)
-      jest: 29.7.0(@types/node@22.19.0)(ts-node@10.9.2(@types/node@22.19.0)(typescript@5.9.2))
+      jest: 29.7.0(@types/node@18.11.18)(ts-node@10.9.2(@types/node@18.11.18)(typescript@5.9.2))
       typescript: 5.9.2
     transitivePeerDependencies:
       - supports-color
@@ -9131,16 +9131,16 @@ snapshots:
       - babel-plugin-macros
       - supports-color
 
-  jest-cli@29.7.0(@types/node@22.19.0)(ts-node@10.9.2(@types/node@22.19.0)(typescript@5.9.2)):
+  jest-cli@29.7.0(@types/node@18.11.18)(ts-node@10.9.2(@types/node@18.11.18)(typescript@5.9.2)):
     dependencies:
-      '@jest/core': 29.7.0(ts-node@10.9.2(@types/node@22.19.0)(typescript@5.9.2))
+      '@jest/core': 29.7.0(ts-node@10.9.2(@types/node@18.11.18)(typescript@5.9.2))
       '@jest/test-result': 29.7.0
       '@jest/types': 29.6.3
       chalk: 4.1.2
-      create-jest: 29.7.0(@types/node@22.19.0)(ts-node@10.9.2(@types/node@22.19.0)(typescript@5.9.2))
+      create-jest: 29.7.0(@types/node@18.11.18)(ts-node@10.9.2(@types/node@18.11.18)(typescript@5.9.2))
       exit: 0.1.2
       import-local: 3.1.0
-      jest-config: 29.7.0(@types/node@22.19.0)(ts-node@10.9.2(@types/node@22.19.0)(typescript@5.9.2))
+      jest-config: 29.7.0(@types/node@18.11.18)(ts-node@10.9.2(@types/node@18.11.18)(typescript@5.9.2))
       jest-util: 29.7.0
       jest-validate: 29.7.0
       yargs: 17.6.2
@@ -9150,7 +9150,7 @@ snapshots:
       - supports-color
       - ts-node
 
-  jest-config@29.7.0(@types/node@18.11.18)(ts-node@10.9.2(@types/node@22.19.0)(typescript@5.9.2)):
+  jest-config@29.7.0(@types/node@18.11.18)(ts-node@10.9.2(@types/node@18.11.18)(typescript@5.9.2)):
     dependencies:
       '@babel/core': 7.29.0
       '@jest/test-sequencer': 29.7.0
@@ -9176,38 +9176,7 @@ snapshots:
       strip-json-comments: 3.1.1
     optionalDependencies:
       '@types/node': 18.11.18
-      ts-node: 10.9.2(@types/node@22.19.0)(typescript@5.9.2)
-    transitivePeerDependencies:
-      - babel-plugin-macros
-      - supports-color
-
-  jest-config@29.7.0(@types/node@22.19.0)(ts-node@10.9.2(@types/node@22.19.0)(typescript@5.9.2)):
-    dependencies:
-      '@babel/core': 7.29.0
-      '@jest/test-sequencer': 29.7.0
-      '@jest/types': 29.6.3
-      babel-jest: 29.7.0(@babel/core@7.29.0)
-      chalk: 4.1.2
-      ci-info: 3.7.1
-      deepmerge: 4.3.1
-      glob: 7.2.3
-      graceful-fs: 4.2.10
-      jest-circus: 29.7.0
-      jest-environment-node: 29.7.0
-      jest-get-type: 29.6.3
-      jest-regex-util: 29.6.3
-      jest-resolve: 29.7.0
-      jest-runner: 29.7.0
-      jest-util: 29.7.0
-      jest-validate: 29.7.0
-      micromatch: 4.0.5
-      parse-json: 5.2.0
-      pretty-format: 29.7.0
-      slash: 3.0.0
-      strip-json-comments: 3.1.1
-    optionalDependencies:
-      '@types/node': 22.19.0
-      ts-node: 10.9.2(@types/node@22.19.0)(typescript@5.9.2)
+      ts-node: 10.9.2(@types/node@18.11.18)(typescript@5.9.2)
     transitivePeerDependencies:
       - babel-plugin-macros
       - supports-color
@@ -9464,12 +9433,12 @@ snapshots:
       merge-stream: 2.0.0
       supports-color: 8.1.1
 
-  jest@29.7.0(@types/node@22.19.0)(ts-node@10.9.2(@types/node@22.19.0)(typescript@5.9.2)):
+  jest@29.7.0(@types/node@18.11.18)(ts-node@10.9.2(@types/node@18.11.18)(typescript@5.9.2)):
     dependencies:
-      '@jest/core': 29.7.0(ts-node@10.9.2(@types/node@22.19.0)(typescript@5.9.2))
+      '@jest/core': 29.7.0(ts-node@10.9.2(@types/node@18.11.18)(typescript@5.9.2))
       '@jest/types': 29.6.3
       import-local: 3.1.0
-      jest-cli: 29.7.0(@types/node@22.19.0)(ts-node@10.9.2(@types/node@22.19.0)(typescript@5.9.2))
+      jest-cli: 29.7.0(@types/node@18.11.18)(ts-node@10.9.2(@types/node@18.11.18)(typescript@5.9.2))
     transitivePeerDependencies:
       - '@types/node'
       - babel-plugin-macros
@@ -11137,14 +11106,14 @@ snapshots:
     dependencies:
       typescript: 5.9.2
 
-  ts-node@10.9.2(@types/node@22.19.0)(typescript@5.9.2):
+  ts-node@10.9.2(@types/node@18.11.18)(typescript@5.9.2):
     dependencies:
       '@cspotcode/source-map-support': 0.8.1
       '@tsconfig/node10': 1.0.9
       '@tsconfig/node12': 1.0.11
       '@tsconfig/node14': 1.0.3
       '@tsconfig/node16': 1.0.3
-      '@types/node': 22.19.0
+      '@types/node': 18.11.18
       acorn: 8.8.1
       acorn-walk: 8.2.0
       arg: 4.1.3
