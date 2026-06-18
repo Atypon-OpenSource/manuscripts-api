@@ -163,7 +163,6 @@ export class DocumentRoute extends BaseRoute {
       payload,
       user
     )
-    this.documentController.broadcastSteps(manuscriptID, result)
     res.status(StatusCodes.OK).send(result)
   }
 
