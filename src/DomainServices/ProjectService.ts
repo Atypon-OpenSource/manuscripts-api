@@ -15,7 +15,6 @@
  */
 import {
   createArticleNode,
-  ExportOptions,
   getVersion,
   JATSExporter,
   JSONProsemirrorNode,
@@ -34,7 +33,6 @@ import { Readable } from 'stream'
 
 import {
   MissingContainerError,
-  MissingSnapshotError,
   MissingTemplateError,
   RecordNotFoundError,
   UserRoleError,
@@ -53,12 +51,6 @@ import { ConfigService } from './ConfigService'
 
 const EMPTY_PERMISSIONS = new Set<ProjectPermission>()
 const DEFAULT_LOCALE = 'en-US'
-
-export type JatsExportOptions = {
-  useSnapshot: boolean
-  includeUncitedReferences: boolean
-}
-
 export class ProjectService {
   constructor(
     private readonly projectClient: ProjectClient,
@@ -360,34 +352,32 @@ export class ProjectService {
     return doc
   }
 
-  public async exportJats(manuscriptID: string, options: JatsExportOptions) {
-    const article = await this.getArticle(manuscriptID, options.useSnapshot)
-    const exportOptions = await this.getExportJatsOptions(
-      article.attrs.prototype,
-      options.includeUncitedReferences
-    )
-    return new JATSExporter().serializeToJATS(schema.nodeFromJSON(article), exportOptions)
-  }
-
-  private async getArticle(
-    manuscriptID: string,
-    useSnapshot: boolean
-  ): Promise<JSONProsemirrorNode> {
-    if (useSnapshot) {
-      try {
-        const model = await this.snapshotClient.getMostRecentSnapshot(manuscriptID)
-        return model.snapshot as JSONProsemirrorNode
-      } catch (error) {
-        if (!(error instanceof MissingSnapshotError)) {
-          throw error
-        }
-      }
+  public async exportJats(manuscriptID: string, useSnapshot: boolean) {
+    if (!useSnapshot) {
+      return this.exportFromManuscript(manuscriptID)
     }
-    const model = await this.documentClient.findDocument(manuscriptID)
-    return AuthorityService.removeSuggestions(model.doc as JSONProsemirrorNode)
+    try {
+      return this.exportFromSnapshot(manuscriptID)
+    } catch {
+      return this.exportFromManuscript(manuscriptID)
+    }
   }
 
-  private async getExportJatsOptions(templateID: string, includeUncitedReferences: boolean) {
+  public async exportFromSnapshot(manuscriptID: string) {
+    const model = await this.snapshotClient.getMostRecentSnapshot(manuscriptID)
+    const article = model.snapshot as JSONProsemirrorNode
+    const options = await this.getExportJatsOptions(article.attrs.prototype)
+    return new JATSExporter().serializeToJATS(schema.nodeFromJSON(article), options)
+  }
+
+  public async exportFromManuscript(manuscriptID: string) {
+    const model = await this.documentClient.findDocument(manuscriptID)
+    const article = AuthorityService.removeSuggestions(model.doc as JSONProsemirrorNode)
+    const options = await this.getExportJatsOptions(article.attrs.prototype)
+    return new JATSExporter().serializeToJATS(schema.nodeFromJSON(article), options)
+  }
+
+  private async getExportJatsOptions(templateID: string) {
     const template = await this.configService.getDocument(templateID)
     if (!template) {
       throw new ValidationError('manuscript template is empty', templateID)
@@ -399,7 +389,6 @@ export class ProjectService {
     }
     return {
       csl: { locale, style },
-      includeUncitedReferences,
     }
   }
 

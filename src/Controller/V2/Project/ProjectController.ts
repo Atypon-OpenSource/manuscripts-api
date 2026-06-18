@@ -17,7 +17,6 @@
 import { getVersion, Project, UserProfile, ManuscriptActions } from '@manuscripts/transform'
 
 import { DIContainer } from '../../../DIContainer/DIContainer'
-import { JatsExportOptions } from '../../../DomainServices/ProjectService'
 import {
   MissingContainerError,
   MissingRecordError,
@@ -197,14 +196,14 @@ export class ProjectController extends BaseController {
   async exportJats(
     projectID: string,
     manuscriptID: string,
-    options: JatsExportOptions,
+    useSnapshot: boolean,
     user: Express.User
   ): Promise<string> {
     const permissions = await this.getPermissions(projectID, user.id)
     if (!permissions.has(ProjectPermission.READ)) {
       throw new RoleDoesNotPermitOperationError(`Access denied`, user.id)
     }
-    return await DIContainer.sharedContainer.projectService.exportJats(manuscriptID, options)
+    return await DIContainer.sharedContainer.projectService.exportJats(manuscriptID, useSnapshot)
   }
   async getArchive(onlyIDs: any, accept: any, user: Express.User, projectID: string) {
     const permissions = await this.getPermissions(projectID, user.id)
