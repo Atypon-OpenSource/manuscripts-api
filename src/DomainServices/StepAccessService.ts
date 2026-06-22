@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { AccessContext, getNodeAccessPolicy, ManuscriptNode } from '@manuscripts/transform'
+import {
+  AccessContext,
+  getNodeAccessPolicy,
+  ManuscriptNode,
+  ExposedSlice,
+} from '@manuscripts/transform'
 import { AttrStep, ReplaceAroundStep, ReplaceStep, Step } from 'prosemirror-transform'
-
-type ExposedSlice<T, F> = T & {
-  insertAt: (pos: number, fragment: F) => T
-}
 
 export class StepAccessService {
   validate(step: Step, doc: ManuscriptNode, context: AccessContext) {
@@ -47,7 +48,7 @@ export class StepAccessService {
       return !this.findDiff(nodeDB, node).find((attr) => !this.attrPolicy(nodeDB, attr, context))
     }
 
-    let hasAccess = true
+    let hasAccess = context.actions.editArticle
 
     doc.slice(step.from, step.to).content.descendants((node) => {
       const deletePolicy = getNodeAccessPolicy(node.type)?.delete
@@ -107,6 +108,6 @@ export class StepAccessService {
       }
     }
 
-    return true
+    return context.actions.editMetadata
   }
 }
