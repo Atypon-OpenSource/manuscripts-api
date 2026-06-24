@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 import { ProjectPermission } from '../../..//Models/ProjectModels'
 import { DIContainer } from '../../../DIContainer/DIContainer'
 import { DocumentPermission } from '../../../DomainServices/DocumentService'
@@ -105,7 +104,15 @@ export class DocumentController extends BaseController {
       projectID,
       DocumentPermission.WRITE
     )
-    return await DIContainer.sharedContainer.authorityService.receiveSteps(manuscriptID, payload)
+    const permittedActions = await DIContainer.sharedContainer.authorityService.getPermittedActions(
+      projectID,
+      user.id
+    )
+
+    return await DIContainer.sharedContainer.authorityService.receiveSteps(manuscriptID, payload, {
+      userId: user.id,
+      actions: permittedActions,
+    })
   }
 
   broadcastSteps(manuscriptID: string, result: History) {

@@ -1,0 +1,115 @@
+/*!
+ * © 2026 Atypon Systems LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import { AccessContext, schema } from '@manuscripts/transform'
+import { Transform } from 'prosemirror-transform'
+
+import { DIContainer } from '../../../../../src/DIContainer/DIContainer'
+import { TEST_TIMEOUT } from '../../../../utilities/testSetup'
+
+jest.setTimeout(TEST_TIMEOUT)
+
+let accessContext: AccessContext
+let tr: Transform
+
+beforeEach(async () => {
+  ;(DIContainer as any)._sharedContainer = null
+  await DIContainer.init()
+  accessContext = {
+    userId: 'MPUserProfile:01',
+    actions: {
+      handleSuggestion: true,
+      rejectOwnSuggestion: true,
+      handleOwnComments: true,
+      handleOthersComments: true,
+      resolveOwnComment: true,
+      resolveOthersComment: true,
+      createComment: true,
+      canEditFiles: true,
+      editArticle: true,
+      formatArticle: true,
+      editMetadata: true,
+      editCitationsAndRefs: true,
+      seeEditorToolbar: true,
+      seeReferencesButtons: true,
+    },
+  }
+    const emptyDoc = schema.nodes.doc.createAndFill()!
+    tr = new Transform(emptyDoc)
+    tr.insert(10, schema.nodeFromJSON(comment))
+})
+
+afterEach(() => {
+  jest.clearAllMocks()
+})
+
+const comment = {
+  type: 'comment',
+  attrs: {
+    id: 'MPCommentAnnotation:29D4335B',
+    contents: 'comment content',
+    target: 'MPParagraphElement:06D94BD3',
+    resolved: false,
+    userID: 'MPUserProfile:01',
+    originalText: '',
+  },
+}
+
+describe('StepAccessService', () => {
+  describe('validate', () => {
+    it('has no access to resolve other comment', () => {
+      accessContext.userId = 'MPUserProfile:02'
+      accessContext.actions.resolveOthersComment = false
+      tr.setNodeMarkup(10, undefined, { ...comment.attrs, resolved: true })
+      const hasAccessToStep = DIContainer.sharedContainer.stepAccessService.validate(
+        tr.steps[1],
+        tr.docs[1],
+        accessContext
+      )
+      expect(hasAccessToStep).toEqual(false)
+    })
+    it('has no access to resolve own comment', () => {
+      accessContext.actions.resolveOwnComment = false
+      tr.setNodeMarkup(10, undefined, { ...comment.attrs, resolved: true })
+      const hasAccessToStep = DIContainer.sharedContainer.stepAccessService.validate(
+        tr.steps[1],
+        tr.docs[1],
+        accessContext
+      )
+      expect(hasAccessToStep).toEqual(false)
+    })
+    it('has no access to create a comment', () => {
+      accessContext.actions.createComment = false
+      tr.insert(10, schema.nodeFromJSON(comment))
+      const hasAccessToStep = DIContainer.sharedContainer.stepAccessService.validate(
+        tr.steps[1],
+        tr.docs[1],
+        accessContext
+      )
+      expect(hasAccessToStep).toEqual(false)
+    })
+    it('has no access to delete a comment', () => {
+      accessContext.actions.handleOwnComments = false
+      tr.delete(10, 11)
+      const hasAccessToStep = DIContainer.sharedContainer.stepAccessService.validate(
+        tr.steps[1],
+        tr.docs[1],
+        accessContext
+      )
+      expect(hasAccessToStep).toEqual(false)
+    })
+  })
+})
