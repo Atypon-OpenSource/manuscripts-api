@@ -1,6 +1,6 @@
 {
   "name": "@manuscripts/api",
-  "version": "2.3.3",
+  "version": "2.3.4",
   "description": "Manuscripts API server",
   "license": "Apache-2.0",
   "main": "dist/index",
@@ -27,7 +27,7 @@
     "preversion": "pnpm typecheck && pnpm lint"
   },
   "dependencies": {
-    "@manuscripts/transform": "4.4.4-LEAN-5776.0",
+    "@manuscripts/transform": "4.4.4",
     "@prisma/client": "6.19.3",
     "celebrate": "15.0.3",
     "checksum": "1.0.0",
