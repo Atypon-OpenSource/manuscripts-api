@@ -18,6 +18,7 @@ import { Prisma } from '@prisma/client'
 import { StatusCodes } from 'http-status-codes'
 
 import { InternalErrorCode } from './InternalErrorCodes'
+import { Step } from 'prosemirror-transform'
 
 /** An error-like object that has a code. Used amongst error types to describe those error types that have their own natural HTTP status code. */
 export interface StatusCoded {
@@ -284,6 +285,19 @@ export class ForbiddenOriginError extends Error implements StatusCoded {
   constructor(requestOrigin: string) {
     super(`'${requestOrigin}' not amongst allowed origins`)
     this.name = 'ForbiddenOriginError'
+    Object.setPrototypeOf(this, new.target.prototype)
+  }
+}
+
+export class StepAccessError extends Error implements StatusCoded {
+  readonly internalErrorCode = InternalErrorCode.StepAccessError
+  readonly statusCode = StatusCodes.FORBIDDEN
+  step: JSON
+
+  constructor(step: Step) {
+    super(`User role is not permitted to apply step`)
+    this.name = 'StepAccessError'
+    this.step = step.toJSON()
     Object.setPrototypeOf(this, new.target.prototype)
   }
 }
