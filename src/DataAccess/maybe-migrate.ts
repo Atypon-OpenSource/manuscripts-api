@@ -33,7 +33,7 @@ async function maybeMigrate(
   if (schema_version === currentVersion) {
     return p
   }
-  const migratedDoc = migrateFor(cloneDeep(doc as JSONProsemirrorNode), schema_version)
+  const migratedDoc = migrateFor(cloneDeep(doc as JSONProsemirrorNode), schema_version).toJSON()
 
   // backing up old doc
   await tx.migrationBackup.create({

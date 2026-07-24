@@ -51,6 +51,15 @@ export const projectUserProfilesSchema: Joi.SchemaMap = {
   }),
 }
 
+export const projectUserPermittedActionsSchema: Joi.SchemaMap = {
+  headers: Joi.object({
+    accept: appJsonAndCharset,
+  }),
+  params: Joi.object({
+    projectID: Joi.string().required(),
+  }),
+}
+
 export const deleteSchema: Joi.SchemaMap = {
   headers: Joi.object({
     accept: appJsonAndCharset,
