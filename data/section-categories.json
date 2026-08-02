@@ -7,35 +7,35 @@
     "isUnique": true
   },
   {
-    "id": "abstract-graphical",
+    "id": "graphical",
     "titles": ["Graphical Abstract"],
     "synonyms": [""],
     "group": "abstracts-graphic",
     "isUnique": true
   },
   {
-    "id": "abstract-key-image",
+    "id": "key-image",
     "titles": ["Key Image"],
     "synonyms": [""],
     "group": "abstracts-graphic",
     "isUnique": true
   },
   {
-    "id": "abstract-short",
+    "id": "short",
     "titles": ["Short"],
     "synonyms": [""],
     "group": "abstracts",
     "isUnique": true
   },
   {
-    "id": "abstract-teaser",
+    "id": "teaser",
     "titles": ["Abstract Teaser"],
     "synonyms": [""],
     "group": "abstracts",
     "isUnique": true
   },
   {
-    "id": "abstract-toc",
+    "id": "toc",
     "titles": ["Table of contents"],
     "synonyms": [""],
     "group": "abstracts",
