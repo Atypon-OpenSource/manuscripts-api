@@ -27,7 +27,7 @@
     "preversion": "pnpm typecheck && pnpm lint"
   },
   "dependencies": {
-    "@manuscripts/transform": "4.4.7-LEAN-5550.0",
+    "@manuscripts/transform": "4.5.0",
     "@prisma/client": "6.19.3",
     "celebrate": "15.0.3",
     "checksum": "1.0.0",
