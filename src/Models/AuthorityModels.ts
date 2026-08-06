@@ -34,19 +34,3 @@ export type DocumentHistory = History & { doc: Prisma.JsonValue | undefined }
 export interface ModifiedStep extends Prisma.JsonObject {
   clientID: string
 }
-
-export type ManuscriptActions =
-  | 'handleSuggestion'
-  | 'rejectOwnSuggestion'
-  | 'handleOwnComments'
-  | 'handleOthersComments'
-  | 'resolveOwnComment'
-  | 'resolveOthersComment'
-  | 'createComment'
-  | 'canEditFiles'
-  | 'editArticle'
-  | 'formatArticle'
-  | 'editMetadata'
-  | 'editCitationsAndRefs'
-  | 'seeEditorToolbar'
-  | 'seeReferencesButtons'

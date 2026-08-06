@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-import { getVersion, JSONProsemirrorNode, schema } from '@manuscripts/transform'
+import { getVersion, JSONProsemirrorNode, ManuscriptActions, schema } from '@manuscripts/transform'
 import { Prisma } from '@prisma/client'
 import { JsonObject } from '@prisma/client/runtime/library'
 import { Step } from 'prosemirror-transform'
 
 import { DIContainer } from '../DIContainer/DIContainer'
 import { UserRoleError, VersionMismatchError } from '../Errors'
-import { History, ManuscriptActions, ModifiedStep, ReceiveSteps } from '../Models/AuthorityModels'
+import { History, ModifiedStep, ReceiveSteps } from '../Models/AuthorityModels'
 import { ProjectUserRole } from '../Models/ProjectModels'
 import { DB } from '../Models/RepositoryModels'
 

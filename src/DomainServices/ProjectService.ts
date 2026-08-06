@@ -87,7 +87,7 @@ export class ProjectService {
     const jats = await this.convert(file.path)
 
     const now = Math.round(Date.now() / 1000)
-    const { node } = parseJATSArticle(
+    const node = parseJATSArticle(
       jats,
       JSON.parse(template).sectionCategories,
       templateID
