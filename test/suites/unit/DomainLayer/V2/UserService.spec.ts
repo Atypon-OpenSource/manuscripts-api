@@ -86,8 +86,6 @@ describe('UserService', () => {
       const mockUser = {
         id: 'User_1',
         email: 'test@example.com',
-        family: 'Doe',
-        given: 'John',
         createdAt: new Date(),
         updatedAt: new Date(),
       }
