@@ -60,9 +60,8 @@ export class UserService {
   private createUserProfile(user: User): UserProfile {
     return {
       _id: `MPUserProfile:${user.id.replace('User_', '')}`,
-      family: user.family,
-      given: user.given,
       userID: user.id,
+      connectID: user.connectUserID
     }
   }
 }
