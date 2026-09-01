@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@manuscripts/transform':
-        specifier: 4.5.3-LEAN-5807.2
-        version: 4.5.3-LEAN-5807.2(prosemirror-state@1.4.3)
+        specifier: 4.5.3-LEAN-5807.3
+        version: 4.5.3-LEAN-5807.3(prosemirror-state@1.4.3)
       '@prisma/client':
         specifier: 6.19.3
         version: 6.19.3(prisma@6.19.3(typescript@5.9.2))(typescript@5.9.2)
@@ -1230,8 +1230,8 @@ packages:
       eslint-plugin-simple-import-sort: '>= 8'
       typescript: '*'
 
-  '@manuscripts/transform@4.5.3-LEAN-5807.2':
-    resolution: {integrity: sha512-DoF288YmY+src6b7HbPmZJTa7d8Aw/2oooWcfZk21rhSb3n1Z5LLJ2ltPw/akvzYRAVDw/CjUxp7q8EySSSIUg==, tarball: https://us-central1-npm.pkg.dev/atypon-artifact/npm-virtual/@manuscripts/transform/-/@manuscripts/transform-4.5.3-LEAN-5807.2.tgz}
+  '@manuscripts/transform@4.5.3-LEAN-5807.3':
+    resolution: {integrity: sha512-RipBj3ZWU5FrKgiOR1lkSn6Im3K789Uta4nHzItJrcz9/hRRTWvmlIH8Ti8ZRIMrRsSINozN58RspjLEp7vVWg==, tarball: https://us-central1-npm.pkg.dev/atypon-artifact/npm-virtual/@manuscripts/transform/-/@manuscripts/transform-4.5.3-LEAN-5807.3.tgz}
     engines: {node: '>=22'}
 
   '@nodelib/fs.scandir@2.1.5':
@@ -6521,7 +6521,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@manuscripts/transform@4.5.3-LEAN-5807.2(prosemirror-state@1.4.3)':
+  '@manuscripts/transform@4.5.3-LEAN-5807.3(prosemirror-state@1.4.3)':
     dependencies:
       citeproc: 2.4.63
       jszip: 3.10.1
