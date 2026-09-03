@@ -16,6 +16,7 @@
 
 export enum InternalErrorCode {
   SyncError = 'SG_ERR',
+  StepAccessError = 'STEP_ACCESS_ERR',
   NumericalError = 'NUMERICAL_ERR',
   NoBucketError = 'CB_BUCKET_NOT_FOUND',
   InvalidBucketError = 'CB_INVALID_BUCKET',

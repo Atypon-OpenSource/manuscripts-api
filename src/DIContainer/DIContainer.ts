@@ -32,6 +32,7 @@ import { ProjectService } from '../DomainServices/ProjectService'
 import { RegisterationService } from '../DomainServices/RegisterationService'
 import { SocketsService } from '../DomainServices/SocketsService'
 import { UserService } from '../DomainServices/UserService'
+import { StepAccessService } from '../DomainServices/StepAccessService'
 import {
   DocumentClient,
   EventClient,
@@ -85,6 +86,7 @@ export class DIContainer {
   readonly eventclient: EventClient
   readonly eventManager: EventManager
   readonly socketsService: SocketsService
+  readonly stepAccessService: StepAccessService
 
   /**
    * WARNING: internal method.
@@ -118,6 +120,7 @@ export class DIContainer {
     this.socketsService = new SocketsService()
     this.documentService = new DocumentService(this.socketsService, repository.documentClient)
     this.oEmbedService = new OEmbedService()
+    this.stepAccessService = new StepAccessService()
   }
 
   /**
