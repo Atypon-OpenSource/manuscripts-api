@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import {
+  ActualManuscriptNode,
   createArticleNode,
   getVersion,
   JATSExporter,
@@ -366,15 +367,19 @@ export class ProjectService {
   public async exportFromSnapshot(manuscriptID: string) {
     const model = await this.snapshotClient.getMostRecentSnapshot(manuscriptID)
     const article = model.snapshot as JSONProsemirrorNode
-    const options = await this.getExportJatsOptions(article.attrs.prototype)
-    return new JATSExporter().serializeToJATS(schema.nodeFromJSON(article), options)
+    return this.serializeToJATS(article)
   }
 
   public async exportFromManuscript(manuscriptID: string) {
     const model = await this.documentClient.findDocument(manuscriptID)
     const article = AuthorityService.removeSuggestions(model.doc as JSONProsemirrorNode)
+    return this.serializeToJATS(article)
+  }
+
+  private async serializeToJATS(article: JSONProsemirrorNode) {
     const options = await this.getExportJatsOptions(article.attrs.prototype)
-    return new JATSExporter().serializeToJATS(schema.nodeFromJSON(article), options)
+    const node = schema.nodeFromJSON(article) as ActualManuscriptNode
+    return new JATSExporter().serializeToJATS(node, options)
   }
 
   private async getExportJatsOptions(templateID: string) {
