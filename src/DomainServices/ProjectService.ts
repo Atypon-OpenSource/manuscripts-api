@@ -379,7 +379,8 @@ export class ProjectService {
   private async serializeToJATS(article: JSONProsemirrorNode) {
     const options = await this.getExportJatsOptions(article.attrs.prototype)
     const node = schema.nodeFromJSON(article) as ActualManuscriptNode
-    return new JATSExporter().serializeToJATS(node, options)
+    const document = await new JATSExporter().export(node, options)
+    return new XMLSerializer().serializeToString(document)
   }
 
   private async getExportJatsOptions(templateID: string) {
