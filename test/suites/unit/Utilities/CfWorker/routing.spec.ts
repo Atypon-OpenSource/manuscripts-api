@@ -20,7 +20,7 @@ import { getVersion } from '@manuscripts/transform'
 import { DIContainer } from '../../../../../src/DIContainer/DIContainer'
 import { resolveV3Route } from '../../../../../src/Utilities/CfWorker/routing'
 
-let documentClient: { findDocument: jest.Mock }
+let documentClient: { findDocument: jest.Mock; findRoutingInfo: jest.Mock }
 
 beforeEach(async () => {
   ;(DIContainer as any)._sharedContainer = null
@@ -30,16 +30,16 @@ beforeEach(async () => {
 
 describe('resolveV3Route', () => {
   it('treats manuscriptID "v3" as a sentinel and never touches Prisma', async () => {
-    documentClient.findDocument = jest.fn()
+    documentClient.findRoutingInfo = jest.fn()
 
     const route = await resolveV3Route('raw-v3-doc-id', 'v3')
 
     expect(route).toEqual({ proxied: true, docID: 'raw-v3-doc-id', schemaVersion: getVersion() })
-    expect(documentClient.findDocument).not.toHaveBeenCalled()
+    expect(documentClient.findRoutingInfo).not.toHaveBeenCalled()
   })
 
   it('proxies a document flagged migratedToV3, building the docID from project+manuscript', async () => {
-    documentClient.findDocument = jest.fn().mockResolvedValue({
+    documentClient.findRoutingInfo = jest.fn().mockResolvedValue({
       migratedToV3: true,
       schema_version: '3.2.1',
     })
@@ -54,7 +54,7 @@ describe('resolveV3Route', () => {
   })
 
   it('falls back to getVersion() when a migrated row has no schema_version', async () => {
-    documentClient.findDocument = jest.fn().mockResolvedValue({
+    documentClient.findRoutingInfo = jest.fn().mockResolvedValue({
       migratedToV3: true,
       schema_version: null,
     })
@@ -68,18 +68,28 @@ describe('resolveV3Route', () => {
     })
   })
 
-  it('returns the local document unproxied when migratedToV3 is false', async () => {
-    const localDocument = { migratedToV3: false, manuscript_model_id: 'manuscript-1' }
-    documentClient.findDocument = jest.fn().mockResolvedValue(localDocument)
+  it('returns unproxied when migratedToV3 is false, without exposing the local row', async () => {
+    documentClient.findRoutingInfo = jest
+      .fn()
+      .mockResolvedValue({ migratedToV3: false, schema_version: '1.0.0' })
 
     const route = await resolveV3Route('project-1', 'manuscript-1')
 
-    expect(route).toEqual({ proxied: false, localDocument })
+    expect(route).toEqual({ proxied: false })
   })
 
   it('propagates MissingDocumentError for a manuscriptID that does not exist locally', async () => {
-    documentClient.findDocument = jest.fn().mockRejectedValue(new Error('Document not found'))
+    documentClient.findRoutingInfo = jest.fn().mockRejectedValue(new Error('Document not found'))
 
     await expect(resolveV3Route('project-1', 'nonexistent')).rejects.toThrow('Document not found')
+  })
+
+  it('never calls the heavy findDocument (which loads doc/steps/snapshots and can write a migration backup) for its own routing check', async () => {
+    documentClient.findDocument = jest.fn().mockRejectedValue(new Error('should not be called'))
+    documentClient.findRoutingInfo = jest.fn().mockResolvedValue({ migratedToV3: false })
+
+    await resolveV3Route('project-1', 'manuscript-1')
+
+    expect(documentClient.findDocument).not.toHaveBeenCalled()
   })
 })

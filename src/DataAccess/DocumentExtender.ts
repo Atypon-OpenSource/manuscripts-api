@@ -34,6 +34,7 @@ export class DocumentExtender {
   private buildExtensions() {
     return {
       findDocument: this.findDocument,
+      findRoutingInfo: this.findRoutingInfo,
       createDocument: this.createDocument,
       updateDocument: this.updateDocument,
       updateDocumentWithVersionCheck: this.updateDocumentWithVersionCheck,
@@ -78,6 +79,28 @@ export class DocumentExtender {
       throw new MissingDocumentError(documentID)
     }
     return maybeMigrate(found, this.prisma)
+  }
+
+  // Deliberately lighter than findDocument: no `doc`/`steps`/snapshots load,
+  // and no maybeMigrate (which can write a MigrationBackup row and rewrite
+  // `doc` as a side effect). The v2→v3 interceptor's routing decision only
+  // needs to know whether a document has moved to cf-worker — it must not
+  // trigger a schema migration, and it must not do that work before the
+  // caller's access has even been checked.
+  private findRoutingInfo = async (documentID: string) => {
+    const found = await this.prisma.manuscriptDoc.findUnique({
+      where: {
+        manuscript_model_id: documentID,
+      },
+      select: {
+        migratedToV3: true,
+        schema_version: true,
+      },
+    })
+    if (!found) {
+      throw new MissingDocumentError(documentID)
+    }
+    return found
   }
 
   private createDocument = async (payload: CreateDoc, userID: string) => {

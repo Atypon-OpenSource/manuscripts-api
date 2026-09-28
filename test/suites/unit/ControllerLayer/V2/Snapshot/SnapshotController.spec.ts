@@ -69,6 +69,12 @@ beforeEach(async () => {
   snapshotClient = DIContainer.sharedContainer.snapshotClient
   documentService = DIContainer.sharedContainer.documentService
   documentClient = DIContainer.sharedContainer.documentClient
+  // listSnapshotLabels and createSnapshot now call resolveV3Route first,
+  // which calls documentClient.findRoutingInfo — dbMock's documentClient
+  // is a bare jest.fn() with no methods, so every pre-existing test below
+  // needs this default (migratedToV3: false routes to the unchanged v2
+  // path); tests that need the migratedToV3 branch override it themselves.
+  documentClient.findRoutingInfo = jest.fn().mockResolvedValue({ migratedToV3: false })
 })
 afterEach(() => {
   jest.clearAllMocks()
@@ -354,7 +360,7 @@ describe('SnapshotController', () => {
 
   describe('createSnapshot — v3 routing', () => {
     it('proxies creation using payload.docID (not the URL manuscriptID) for routing', async () => {
-      documentClient.findDocument = jest.fn().mockResolvedValue({ migratedToV3: true })
+      documentClient.findRoutingInfo = jest.fn().mockResolvedValue({ migratedToV3: true })
       DIContainer.sharedContainer.cfWorkerClient.createSnapshot = jest
         .fn()
         .mockResolvedValue({ id: 'snap-1', name: 'v1', createdAt: 100 })
@@ -380,7 +386,7 @@ describe('SnapshotController', () => {
 
   describe('listSnapshotLabels — v3 routing', () => {
     it('proxies listing and rewrites every id', async () => {
-      documentClient.findDocument = jest.fn().mockResolvedValue({ migratedToV3: true })
+      documentClient.findRoutingInfo = jest.fn().mockResolvedValue({ migratedToV3: true })
       DIContainer.sharedContainer.cfWorkerClient.listSnapshots = jest
         .fn()
         .mockResolvedValue([{ id: 'snap-1', name: 'v1', createdAt: 100 }])

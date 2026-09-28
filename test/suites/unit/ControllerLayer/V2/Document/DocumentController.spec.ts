@@ -43,6 +43,16 @@ beforeEach(async () => {
   documentService = DIContainer.sharedContainer.documentService
   authorityService = DIContainer.sharedContainer.authorityService
   documentController = new DocumentController()
+  // Every method now calls resolveV3Route first, which calls
+  // documentClient.findRoutingInfo — dbMock's documentClient is a bare
+  // jest.fn() with no methods, so every pre-existing test below needs
+  // this default (migratedToV3: false routes to the unchanged v2 path);
+  // tests that need the migratedToV3 branch override it themselves.
+  documentClient.findRoutingInfo = jest.fn().mockResolvedValue({ migratedToV3: false })
+  // getDocument's non-proxied branch calls findDocument directly (after
+  // validateUserAccess) to fetch the actual document — separate from the
+  // routing check above.
+  documentClient.findDocument = jest.fn().mockResolvedValue({})
 })
 jest.setTimeout(TEST_TIMEOUT)
 
@@ -321,7 +331,7 @@ describe('DocumentController', () => {
     })
 
     it('proxies a migratedToV3 document and rewrites snapshot ids', async () => {
-      documentClient.findDocument = jest
+      documentClient.findRoutingInfo = jest
         .fn()
         .mockResolvedValue({ migratedToV3: true, schema_version: '1.0.0' })
       documentService.validateUserAccess = jest.fn()
@@ -348,7 +358,7 @@ describe('DocumentController', () => {
     })
 
     it('still calls validateUserAccess for a non-migrated document', async () => {
-      documentClient.findDocument = jest.fn().mockResolvedValue({ migratedToV3: false })
+      documentClient.findRoutingInfo = jest.fn().mockResolvedValue({ migratedToV3: false })
       documentService.validateUserAccess = jest.fn().mockResolvedValue(undefined)
 
       await documentController.getDocument('project-1', 'manuscript-1', {
@@ -366,7 +376,7 @@ describe('DocumentController', () => {
 
   describe('deleteDocument — v3 routing', () => {
     it('proxies deletion for a migratedToV3 document', async () => {
-      documentClient.findDocument = jest.fn().mockResolvedValue({ migratedToV3: true })
+      documentClient.findRoutingInfo = jest.fn().mockResolvedValue({ migratedToV3: true })
       documentClient.deleteDocument = jest.fn()
       DIContainer.sharedContainer.cfWorkerClient.deleteDocument = jest
         .fn()
@@ -387,7 +397,7 @@ describe('DocumentController', () => {
 
   describe('receiveSteps — v3 routing', () => {
     it('proxies steps for a migratedToV3 document and strips the type field', async () => {
-      documentClient.findDocument = jest.fn().mockResolvedValue({ migratedToV3: true })
+      documentClient.findRoutingInfo = jest.fn().mockResolvedValue({ migratedToV3: true })
       DIContainer.sharedContainer.cfWorkerClient.receiveSteps = jest.fn().mockResolvedValue({
         type: 'steps',
         steps: [{ a: 1 }],
@@ -415,7 +425,7 @@ describe('DocumentController', () => {
 
   describe('getEvents — v3 routing', () => {
     it('proxies steps-since for a migratedToV3 document', async () => {
-      documentClient.findDocument = jest.fn().mockResolvedValue({ migratedToV3: true })
+      documentClient.findRoutingInfo = jest.fn().mockResolvedValue({ migratedToV3: true })
       DIContainer.sharedContainer.cfWorkerClient.getStepsSince = jest
         .fn()
         .mockResolvedValue({ steps: [], clientIDs: [], version: 9 })
@@ -436,7 +446,7 @@ describe('DocumentController', () => {
 
   describe('validateDocument — v3 routing', () => {
     it('returns a valid result without hitting projectService for a migratedToV3 document', async () => {
-      documentClient.findDocument = jest.fn().mockResolvedValue({ migratedToV3: true })
+      documentClient.findRoutingInfo = jest.fn().mockResolvedValue({ migratedToV3: true })
       const projectServiceSpy = jest.spyOn(
         DIContainer.sharedContainer.projectService,
         'getPermissions'

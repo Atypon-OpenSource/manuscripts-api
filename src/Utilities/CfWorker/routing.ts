@@ -16,28 +16,33 @@
 import { getVersion } from '@manuscripts/transform'
 
 import { DIContainer } from '../../DIContainer/DIContainer'
-import { ManuscriptDocWithSnapshots } from '../../Models/DocumentModels'
 
 export const V3_SENTINEL_MANUSCRIPT_ID = 'v3'
 
-export type V3Route =
-  | { proxied: true; docID: string; schemaVersion: string }
-  | { proxied: false; localDocument: ManuscriptDocWithSnapshots }
+export type V3Route = { proxied: true; docID: string; schemaVersion: string } | { proxied: false }
 
 // manuscriptID === 'v3' means projectID is itself a raw v3 docID — decided by
 // the URL shape alone, so this never touches Prisma for that case (a
 // genuinely new v3-native document may not even have a local row to find).
+//
+// Uses findRoutingInfo (a lightweight, no-write lookup), not findDocument:
+// findDocument loads the full doc/steps/snapshots and runs maybeMigrate,
+// which can write a MigrationBackup row and rewrite `doc` as a side effect
+// — unacceptable for a check that runs before authorization, on every
+// request, including ones the caller may not even be allowed to make.
 export async function resolveV3Route(projectID: string, manuscriptID: string): Promise<V3Route> {
   if (manuscriptID === V3_SENTINEL_MANUSCRIPT_ID) {
     return { proxied: true, docID: projectID, schemaVersion: getVersion() }
   }
-  const localDocument = await DIContainer.sharedContainer.documentClient.findDocument(manuscriptID)
-  if (localDocument.migratedToV3) {
+  const routingInfo = await DIContainer.sharedContainer.documentClient.findRoutingInfo(
+    manuscriptID
+  )
+  if (routingInfo.migratedToV3) {
     return {
       proxied: true,
       docID: `${projectID}#${manuscriptID}`,
-      schemaVersion: localDocument.schema_version ?? getVersion(),
+      schemaVersion: routingInfo.schema_version ?? getVersion(),
     }
   }
-  return { proxied: false, localDocument }
+  return { proxied: false }
 }
