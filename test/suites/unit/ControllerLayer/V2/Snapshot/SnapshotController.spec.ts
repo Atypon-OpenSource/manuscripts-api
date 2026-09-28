@@ -23,6 +23,7 @@ import {
 } from '../../../../../../src/DomainServices/DocumentService'
 import { MissingSnapshotError, ValidationError } from '../../../../../../src/Errors'
 import { DocumentClient, SnapshotClient } from '../../../../../../src/Models/RepositoryModels'
+import { encodeSnapshotID } from '../../../../../../src/Utilities/CfWorker/SnapshotIdCodec'
 import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
 jest.setTimeout(TEST_TIMEOUT)
 
@@ -347,6 +348,128 @@ describe('SnapshotController', () => {
         .mockRejectedValue(new MissingSnapshotError('random_snapshot_id'))
       await expect(snapshotController['fetchSnapshot']('random_snapshot_id')).rejects.toThrow(
         new MissingSnapshotError('random_snapshot_id')
+      )
+    })
+  })
+
+  describe('createSnapshot — v3 routing', () => {
+    it('proxies creation using payload.docID (not the URL manuscriptID) for routing', async () => {
+      documentClient.findDocument = jest.fn().mockResolvedValue({ migratedToV3: true })
+      DIContainer.sharedContainer.cfWorkerClient.createSnapshot = jest
+        .fn()
+        .mockResolvedValue({ id: 'snap-1', name: 'v1', createdAt: 100 })
+
+      const result = await snapshotController.createSnapshot(
+        'project-1',
+        { docID: 'manuscript-1', name: 'v1' },
+        { id: 'user-1', connectUserID: 'connect-1' } as any
+      )
+
+      expect(DIContainer.sharedContainer.cfWorkerClient.createSnapshot).toHaveBeenCalledWith(
+        'connect-1',
+        'project-1#manuscript-1',
+        'v1'
+      )
+      expect(result).toEqual({
+        id: encodeSnapshotID('project-1#manuscript-1', 'snap-1'),
+        name: 'v1',
+        createdAt: 100,
+      })
+    })
+  })
+
+  describe('listSnapshotLabels — v3 routing', () => {
+    it('proxies listing and rewrites every id', async () => {
+      documentClient.findDocument = jest.fn().mockResolvedValue({ migratedToV3: true })
+      DIContainer.sharedContainer.cfWorkerClient.listSnapshots = jest
+        .fn()
+        .mockResolvedValue([{ id: 'snap-1', name: 'v1', createdAt: 100 }])
+
+      const result = await snapshotController.listSnapshotLabels('project-1', 'manuscript-1', {
+        id: 'user-1',
+        connectUserID: 'connect-1',
+      } as any)
+
+      expect(result).toEqual([
+        { id: encodeSnapshotID('project-1#manuscript-1', 'snap-1'), name: 'v1', createdAt: 100 },
+      ])
+    })
+  })
+
+  describe('getSnapshot — composite ID routing', () => {
+    it('proxies a composite id by decoding it, without calling documentService', async () => {
+      const composite = encodeSnapshotID('project-1#manuscript-1', 'snap-1')
+      const getManuscriptFromSnapshotSpy = jest.spyOn(
+        DIContainer.sharedContainer.documentService,
+        'getManuscriptFromSnapshot'
+      )
+      DIContainer.sharedContainer.cfWorkerClient.getSnapshot = jest.fn().mockResolvedValue({
+        id: 'snap-1',
+        name: 'v1',
+        createdAt: 100,
+        doc: { type: 'doc' },
+      })
+
+      const result = await snapshotController.getSnapshot(composite, {
+        id: 'user-1',
+        connectUserID: 'connect-1',
+      } as any)
+
+      expect(DIContainer.sharedContainer.cfWorkerClient.getSnapshot).toHaveBeenCalledWith(
+        'connect-1',
+        'project-1#manuscript-1',
+        'snap-1'
+      )
+      expect(getManuscriptFromSnapshotSpy).not.toHaveBeenCalled()
+      expect(result).toEqual({
+        doc_id: 'project-1#manuscript-1',
+        snapshot: JSON.stringify({ type: 'doc' }),
+        id: composite,
+        createdAt: 100,
+      })
+    })
+
+    it('falls through to the existing v2 path for a non-composite id', async () => {
+      snapshotClient.getSnapshot = jest.fn().mockResolvedValue({
+        doc_id: 'doc-1',
+        snapshot: '{}',
+        id: 'plain-uuid',
+        createdAt: 100,
+      })
+      documentService.getManuscriptFromSnapshot = jest
+        .fn()
+        .mockResolvedValue({ containerID: 'project-1' })
+      documentService.validateUserAccess = jest.fn().mockResolvedValue(undefined)
+
+      await snapshotController.getSnapshot('plain-uuid', {
+        id: 'user-1',
+        connectUserID: 'connect-1',
+      } as any)
+
+      expect(documentService.validateUserAccess).toHaveBeenCalledWith(
+        'user-1',
+        'project-1',
+        DocumentPermission.READ
+      )
+    })
+  })
+
+  describe('deleteSnapshot — composite ID routing', () => {
+    it('proxies a composite id by decoding it', async () => {
+      const composite = encodeSnapshotID('project-1#manuscript-1', 'snap-1')
+      DIContainer.sharedContainer.cfWorkerClient.deleteSnapshot = jest
+        .fn()
+        .mockResolvedValue(undefined)
+
+      await snapshotController.deleteSnapshot(composite, {
+        id: 'user-1',
+        connectUserID: 'connect-1',
+      } as any)
+
+      expect(DIContainer.sharedContainer.cfWorkerClient.deleteSnapshot).toHaveBeenCalledWith(
+        'connect-1',
+        'project-1#manuscript-1',
+        'snap-1'
       )
     })
   })
