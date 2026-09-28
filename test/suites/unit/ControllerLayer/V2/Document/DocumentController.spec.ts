@@ -17,6 +17,8 @@
 // import '../../../../../utilities/configMock'
 import '../../../../../utilities/dbMock'
 
+import { getVersion } from '@manuscripts/transform'
+
 import { DocumentController } from '../../../../../../src/Controller/V2/Document/DocumentController'
 import { DIContainer } from '../../../../../../src/DIContainer/DIContainer'
 import { AuthorityService } from '../../../../../../src/DomainServices/AuthorityService'
@@ -25,6 +27,7 @@ import {
   DocumentService,
 } from '../../../../../../src/DomainServices/DocumentService'
 import { DocumentClient } from '../../../../../../src/Models/RepositoryModels'
+import { encodeSnapshotID } from '../../../../../../src/Utilities/CfWorker/SnapshotIdCodec'
 import { TEST_TIMEOUT } from '../../../../../utilities/testSetup'
 
 let documentService: DocumentService
@@ -290,6 +293,162 @@ describe('DocumentController', () => {
       await expect(
         documentController.receiveSteps('projectID', 'manuscriptID', mockReceiveSteps, {} as any)
       ).rejects.toThrow('Access denied')
+    })
+  })
+
+  describe('getDocument — v3 routing', () => {
+    it('proxies a v3-sentinel manuscriptID without calling validateUserAccess', async () => {
+      documentService.validateUserAccess = jest.fn()
+      DIContainer.sharedContainer.cfWorkerClient.getDocument = jest
+        .fn()
+        .mockResolvedValue({ doc: { type: 'doc' }, version: 2 })
+      DIContainer.sharedContainer.cfWorkerClient.listSnapshots = jest.fn().mockResolvedValue([])
+
+      const result = await documentController.getDocument('raw-v3-doc-id', 'v3', {
+        id: 'user-1',
+        connectUserID: 'connect-1',
+      } as any)
+
+      expect(documentService.validateUserAccess).not.toHaveBeenCalled()
+      expect(result).toEqual({
+        manuscript_model_id: 'v3',
+        project_model_id: 'raw-v3-doc-id',
+        schema_version: getVersion(),
+        doc: { type: 'doc' },
+        version: 2,
+        snapshots: [],
+      })
+    })
+
+    it('proxies a migratedToV3 document and rewrites snapshot ids', async () => {
+      documentClient.findDocument = jest
+        .fn()
+        .mockResolvedValue({ migratedToV3: true, schema_version: '1.0.0' })
+      documentService.validateUserAccess = jest.fn()
+      DIContainer.sharedContainer.cfWorkerClient.getDocument = jest
+        .fn()
+        .mockResolvedValue({ doc: { type: 'doc' }, version: 5 })
+      DIContainer.sharedContainer.cfWorkerClient.listSnapshots = jest
+        .fn()
+        .mockResolvedValue([{ id: 'snap-1', name: 'v1', createdAt: 100 }])
+
+      const result = await documentController.getDocument('project-1', 'manuscript-1', {
+        id: 'user-1',
+        connectUserID: 'connect-1',
+      } as any)
+
+      expect(documentService.validateUserAccess).not.toHaveBeenCalled()
+      expect(result.snapshots).toEqual([
+        {
+          id: encodeSnapshotID('project-1#manuscript-1', 'snap-1'),
+          name: 'v1',
+          createdAt: 100,
+        },
+      ])
+    })
+
+    it('still calls validateUserAccess for a non-migrated document', async () => {
+      documentClient.findDocument = jest.fn().mockResolvedValue({ migratedToV3: false })
+      documentService.validateUserAccess = jest.fn().mockResolvedValue(undefined)
+
+      await documentController.getDocument('project-1', 'manuscript-1', {
+        id: 'user-1',
+        connectUserID: 'connect-1',
+      } as any)
+
+      expect(documentService.validateUserAccess).toHaveBeenCalledWith(
+        'user-1',
+        'project-1',
+        DocumentPermission.READ
+      )
+    })
+  })
+
+  describe('deleteDocument — v3 routing', () => {
+    it('proxies deletion for a migratedToV3 document', async () => {
+      documentClient.findDocument = jest.fn().mockResolvedValue({ migratedToV3: true })
+      documentClient.deleteDocument = jest.fn()
+      DIContainer.sharedContainer.cfWorkerClient.deleteDocument = jest
+        .fn()
+        .mockResolvedValue(undefined)
+
+      await documentController.deleteDocument('project-1', 'manuscript-1', {
+        id: 'user-1',
+        connectUserID: 'connect-1',
+      } as any)
+
+      expect(DIContainer.sharedContainer.cfWorkerClient.deleteDocument).toHaveBeenCalledWith(
+        'connect-1',
+        'project-1#manuscript-1'
+      )
+      expect(documentClient.deleteDocument).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('receiveSteps — v3 routing', () => {
+    it('proxies steps for a migratedToV3 document and strips the type field', async () => {
+      documentClient.findDocument = jest.fn().mockResolvedValue({ migratedToV3: true })
+      DIContainer.sharedContainer.cfWorkerClient.receiveSteps = jest.fn().mockResolvedValue({
+        type: 'steps',
+        steps: [{ a: 1 }],
+        clientIDs: [7],
+        version: 4,
+      })
+
+      const result = await documentController.receiveSteps(
+        'project-1',
+        'manuscript-1',
+        { steps: [{ a: 1 }], clientID: 7, version: 3 },
+        { id: 'user-1', connectUserID: 'connect-1' } as any
+      )
+
+      expect(DIContainer.sharedContainer.cfWorkerClient.receiveSteps).toHaveBeenCalledWith(
+        'connect-1',
+        'project-1#manuscript-1',
+        [{ a: 1 }],
+        7,
+        3
+      )
+      expect(result).toEqual({ steps: [{ a: 1 }], clientIDs: [7], version: 4 })
+    })
+  })
+
+  describe('getEvents — v3 routing', () => {
+    it('proxies steps-since for a migratedToV3 document', async () => {
+      documentClient.findDocument = jest.fn().mockResolvedValue({ migratedToV3: true })
+      DIContainer.sharedContainer.cfWorkerClient.getStepsSince = jest
+        .fn()
+        .mockResolvedValue({ steps: [], clientIDs: [], version: 9 })
+
+      const result = await documentController.getEvents('project-1', 'manuscript-1', 5, {
+        id: 'user-1',
+        connectUserID: 'connect-1',
+      } as any)
+
+      expect(DIContainer.sharedContainer.cfWorkerClient.getStepsSince).toHaveBeenCalledWith(
+        'connect-1',
+        'project-1#manuscript-1',
+        5
+      )
+      expect(result).toEqual({ steps: [], clientIDs: [], version: 9 })
+    })
+  })
+
+  describe('validateDocument — v3 routing', () => {
+    it('returns a valid result without hitting projectService for a migratedToV3 document', async () => {
+      documentClient.findDocument = jest.fn().mockResolvedValue({ migratedToV3: true })
+      const projectServiceSpy = jest.spyOn(
+        DIContainer.sharedContainer.projectService,
+        'getPermissions'
+      )
+
+      const result = await documentController.validateDocument('project-1', 'manuscript-1', {
+        id: 'user-1',
+        connectUserID: 'connect-1',
+      } as any)
+
+      expect(result).toEqual({ isValid: true, errors: [] })
+      expect(projectServiceSpy).not.toHaveBeenCalled()
     })
   })
 })
