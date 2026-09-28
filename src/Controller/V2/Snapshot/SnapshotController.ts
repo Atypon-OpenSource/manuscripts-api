@@ -93,10 +93,14 @@ export class SnapshotController extends BaseController {
         decoded.docID,
         decoded.id
       )
+      // Matches manuscripts-article-editor's actual ManuscriptSnapshot type
+      // ({id, name, snapshot: PMDoc, createdAt}) — snapshot is a ProseMirror
+      // doc object, not a JSON string (CompareDocumentsModal.tsx calls
+      // schema.nodeFromJSON(snapshot.snapshot) directly on it).
       return {
-        doc_id: decoded.docID,
-        snapshot: JSON.stringify(stored.doc),
         id: encodeSnapshotID(decoded.docID, stored.id),
+        name: stored.name,
+        snapshot: stored.doc,
         createdAt: stored.createdAt,
       }
     }

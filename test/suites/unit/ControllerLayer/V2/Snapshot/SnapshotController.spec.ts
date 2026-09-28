@@ -421,10 +421,15 @@ describe('SnapshotController', () => {
         'snap-1'
       )
       expect(getManuscriptFromSnapshotSpy).not.toHaveBeenCalled()
+      // Matches manuscripts-article-editor's actual ManuscriptSnapshot type
+      // (src/lib/doc.ts: {id, name, snapshot: PMDoc, createdAt}) — snapshot
+      // is a ProseMirror doc object, not a JSON string, and name is required
+      // (SnapshotsList.tsx displays it; CompareDocumentsModal.tsx calls
+      // schema.nodeFromJSON(snapshot.snapshot), which throws on a string).
       expect(result).toEqual({
-        doc_id: 'project-1#manuscript-1',
-        snapshot: JSON.stringify({ type: 'doc' }),
         id: composite,
+        name: 'v1',
+        snapshot: { type: 'doc' },
         createdAt: 100,
       })
     })
