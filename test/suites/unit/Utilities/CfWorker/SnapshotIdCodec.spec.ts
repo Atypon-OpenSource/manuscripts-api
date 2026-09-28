@@ -35,21 +35,31 @@ describe('SnapshotIdCodec', () => {
     })
   })
 
-  it('always ends with the #v3 suffix', () => {
-    expect(encodeSnapshotID('doc', 'id')).toMatch(/#v3$/)
+  it('always ends with the .v3 suffix', () => {
+    expect(encodeSnapshotID('doc', 'id')).toMatch(/\.v3$/)
   })
 
-  it('returns undefined for a plain Postgres-style UUID (no #v3 suffix)', () => {
+  it('survives being placed in a URL path — the client builds a relative URL out of it (Api.ts: `snapshot/${snapshotID}`), and a "#" starts a URL fragment that never reaches the server', () => {
+    const encoded = encodeSnapshotID('project-1#manuscript-1', 'snapshot-uuid')
+    const url = new URL(`snapshot/${encoded}`, 'https://example.test/api/v2/')
+    expect(url.pathname).toBe(`/api/v2/snapshot/${encoded}`)
+    expect(decodeSnapshotID(url.pathname.split('/').pop()!)).toEqual({
+      docID: 'project-1#manuscript-1',
+      id: 'snapshot-uuid',
+    })
+  })
+
+  it('returns undefined for a plain Postgres-style UUID (no .v3 suffix)', () => {
     expect(decodeSnapshotID('550e8400-e29b-41d4-a716-446655440000')).toBeUndefined()
   })
 
-  it('returns undefined for a string that ends with #v3 but is not valid base64url JSON', () => {
-    expect(decodeSnapshotID('not-valid-base64!!!#v3')).toBeUndefined()
+  it('returns undefined for a string that ends with .v3 but is not valid base64url JSON', () => {
+    expect(decodeSnapshotID('not-valid-base64!!!.v3')).toBeUndefined()
   })
 
   it('returns undefined for valid base64url that decodes to JSON missing docID/id', () => {
     const payload = Buffer.from(JSON.stringify({ foo: 'bar' }), 'utf8').toString('base64url')
-    expect(decodeSnapshotID(`${payload}#v3`)).toBeUndefined()
+    expect(decodeSnapshotID(`${payload}.v3`)).toBeUndefined()
   })
 
   it('does not throw on an empty string', () => {

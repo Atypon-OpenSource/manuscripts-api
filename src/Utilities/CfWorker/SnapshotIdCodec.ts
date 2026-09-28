@@ -19,7 +19,11 @@ export interface DecodedSnapshotID {
   id: string
 }
 
-const SUFFIX = '#v3'
+// A suffix outside base64url's alphabet ([A-Za-z0-9_-]) so the boundary is
+// unambiguous, and outside the URL reserved characters (unlike "#", which
+// starts a fragment — a client building a URL as `snapshot/${id}` would
+// have this silently stripped before the request is ever sent).
+const SUFFIX = '.v3'
 
 export function encodeSnapshotID(docID: string, id: string): string {
   const payload = Buffer.from(JSON.stringify({ docID, id }), 'utf8').toString('base64url')
