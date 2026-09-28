@@ -114,4 +114,13 @@ describe('CfWorkerClient', () => {
 
     expect(result).toEqual([label])
   })
+
+  it('rejects an empty connectUserID (an unlinked account) before sending any request, rather than sharing an anonymous cf-worker identity across every unlinked user', async () => {
+    const fetchImpl = jest.fn().mockResolvedValue(jsonResponse({ doc: {}, version: 0 }))
+    const client = new CfWorkerClient(BASE_URL, TENANT_ID, SECRET, fetchImpl)
+
+    await expect(client.getDocument('', 'docID')).rejects.toMatchObject({ statusCode: 403 })
+    await expect(client.getDocument('', 'docID')).rejects.toBeInstanceOf(CfWorkerRequestError)
+    expect(fetchImpl).not.toHaveBeenCalled()
+  })
 })

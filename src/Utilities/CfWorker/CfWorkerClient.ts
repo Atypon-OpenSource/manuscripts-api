@@ -67,6 +67,14 @@ export class CfWorkerClient {
   }
 
   private async request<T>(userID: string, method: string, path: string, body?: unknown): Promise<T> {
+    // User.connectUserID defaults to "" (unlinked accounts) and isn't
+    // unique — an empty string would still pass cf-worker's own
+    // `typeof userID === 'string'` check, so every unlinked user would
+    // silently share one anonymous identity there. Reject before ever
+    // sending a request.
+    if (!userID) {
+      throw new CfWorkerRequestError(403, 'Missing connectUserID')
+    }
     const response = await this.fetchImpl(`${this.baseUrl}${path}`, {
       method,
       headers: {
