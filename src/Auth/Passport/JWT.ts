@@ -33,8 +33,8 @@ export class JwtAuthStrategy {
       'jwt',
       new Strategy(opts, async (jwt, done) => {
         try {
-          const id = jwt.userID
-          const user = await DIContainer.sharedContainer.userClient.findByID(id)
+          const connectUserID = jwt.userID
+          const user = await DIContainer.sharedContainer.userClient.findByConnectID(connectUserID)
           if (!user) {
             return done(null, false)
           }

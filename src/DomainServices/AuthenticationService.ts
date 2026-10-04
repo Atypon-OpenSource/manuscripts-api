@@ -26,10 +26,10 @@ export class AuthenticationService {
     if (!user) {
       throw new AccountNotFoundError(connectUserID)
     }
-    const { id, email } = user
+    const { email } = user
     const token = generateUserToken({
       email,
-      userID: id,
+      userID: connectUserID,
       deviceID,
     })
     return token

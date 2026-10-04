@@ -29,7 +29,7 @@ export class UserService {
 
   public async profile(token: string) {
     const payload = validateToken(token)
-    const user = await this.userRepository.findByID(payload.userID)
+    const user = await this.userRepository.findByConnectID(payload.userID)
     return user ? this.createUserProfile(user) : null
   }
 
