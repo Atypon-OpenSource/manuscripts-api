@@ -57,7 +57,7 @@ function applyUserIdMap(value: Json, idMap: Map<string, string>): Json {
 // internal ids a parent-app user directory never heard of - resolve them to
 // the stable connectUserID every time this is read, rather than rewriting
 // storage.
-export async function rewriteTrackedUserIds<T extends Json>(
+export async function rewriteUserIds<T extends Json>(
   value: T,
   prisma: Pick<PrismaClient, 'user'>
 ): Promise<T> {
