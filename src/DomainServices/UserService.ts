@@ -29,7 +29,10 @@ export class UserService {
 
   public async profile(token: string) {
     const payload = validateToken(token)
-    const user = await this.userRepository.findByConnectID(payload.userID)
+    // Same transition fallback as JwtAuthStrategy - see its comment.
+    const user =
+      (await this.userRepository.findByConnectID(payload.userID)) ??
+      (await this.userRepository.findByID(payload.userID))
     return user ? this.createUserProfile(user) : null
   }
 
