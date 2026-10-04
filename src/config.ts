@@ -30,4 +30,9 @@ export const config = {
   data: {
     paths: process.env.DATA_PATH?.split(';') ?? [],
   },
+  cfWorker: {
+    baseUrl: process.env.CF_WORKER_BASE_URL ?? '',
+    tenantID: process.env.CF_WORKER_TENANT_ID ?? '',
+    jwtSecret: process.env.CF_WORKER_JWT_SECRET ?? '',
+  },
 }

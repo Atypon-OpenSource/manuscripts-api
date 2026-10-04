@@ -16,6 +16,7 @@
 
 import { PrismaClient } from '@prisma/client'
 
+import { config } from '../config'
 import { DocumentExtender } from '../DataAccess/DocumentExtender'
 import { EventExtender } from '../DataAccess/EventExtender'
 import { ProjectExtender } from '../DataAccess/ProjectExtender'
@@ -41,6 +42,7 @@ import {
 } from '../Models/RepositoryModels'
 import { IServer } from '../Server/IServer'
 import { Server } from '../Server/Server'
+import { CfWorkerClient } from '../Utilities/CfWorker/CfWorkerClient'
 
 const prisma = new PrismaClient()
 
@@ -85,6 +87,7 @@ export class DIContainer {
   readonly eventclient: EventClient
   readonly eventManager: EventManager
   readonly socketsService: SocketsService
+  readonly cfWorkerClient: CfWorkerClient
 
   /**
    * WARNING: internal method.
@@ -118,6 +121,11 @@ export class DIContainer {
     this.socketsService = new SocketsService()
     this.documentService = new DocumentService(this.socketsService, repository.documentClient)
     this.oEmbedService = new OEmbedService()
+    this.cfWorkerClient = new CfWorkerClient(
+      config.cfWorker.baseUrl,
+      config.cfWorker.tenantID,
+      config.cfWorker.jwtSecret
+    )
   }
 
   /**
