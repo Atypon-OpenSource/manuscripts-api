@@ -18,6 +18,14 @@ import { Prisma, PrismaClient } from '@prisma/client'
 
 type Json = Prisma.JsonValue
 
+// Comments store a bare `userID` attr (matches @manuscripts/transform's
+// CommentAttrs). Track-changes data (dataTracked) stores `authorID` and
+// `reviewedByID` instead - @manuscripts/track-changes-plugin's actual
+// runtime shape (confirmed in its compiled source, e.g.
+// createNewPendingAttrs), which has drifted from
+// @manuscripts/transform's now-stale DataTrackedAttrs.userID typing.
+const USER_ID_KEYS = new Set(['userID', 'authorID', 'reviewedByID'])
+
 function collectUserIds(value: Json, ids: Set<string>): void {
   if (Array.isArray(value)) {
     for (const item of value) {
@@ -25,7 +33,7 @@ function collectUserIds(value: Json, ids: Set<string>): void {
     }
   } else if (value && typeof value === 'object') {
     for (const [key, val] of Object.entries(value)) {
-      if (key === 'userID' && typeof val === 'string' && val) {
+      if (USER_ID_KEYS.has(key) && typeof val === 'string' && val) {
         ids.add(val)
       } else {
         collectUserIds(val as Json, ids)
@@ -42,7 +50,7 @@ function applyUserIdMap(value: Json, idMap: Map<string, string>): Json {
     const result: Record<string, Json> = {}
     for (const [key, val] of Object.entries(value)) {
       result[key] =
-        key === 'userID' && typeof val === 'string' && idMap.has(val)
+        USER_ID_KEYS.has(key) && typeof val === 'string' && idMap.has(val)
           ? (idMap.get(val) as Json)
           : applyUserIdMap(val as Json, idMap)
     }
@@ -51,12 +59,12 @@ function applyUserIdMap(value: Json, idMap: Map<string, string>): Json {
   return value
 }
 
-// Tracked changes (dataTracked.userID, on nearly every node/mark type) and
-// comments (a bare userID attr) embed whichever manuscripts-api user id was
-// current when the editor made that edit. Older documents/steps still carry
-// internal ids a parent-app user directory never heard of - resolve them to
-// the stable connectUserID every time this is read, rather than rewriting
-// storage.
+// Tracked changes (dataTracked.authorID/reviewedByID, on nearly every
+// node/mark type) and comments (a bare userID attr) embed whichever
+// manuscripts-api user id was current when the editor made that edit.
+// Older documents/steps still carry internal ids a parent-app user
+// directory never heard of - resolve them to the stable connectUserID
+// every time this is read, rather than rewriting storage.
 export async function rewriteUserIds<T extends Json>(
   value: T,
   prisma: Pick<PrismaClient, 'user'>
