@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { Project } from '@manuscripts/transform'
 import { Request } from 'express'
 
 import { DIContainer } from '../../../DIContainer/DIContainer'
 import { ValidationError } from '../../../Errors'
+import { Project } from '../../../Models/ProjectModels'
 import { authorizationBearerToken, BaseController } from '../../BaseController'
 
 export class UserController extends BaseController {

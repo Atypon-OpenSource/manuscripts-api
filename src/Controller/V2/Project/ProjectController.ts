@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { getVersion, Project, UserProfile, ManuscriptActions } from '@manuscripts/transform'
+import { getVersion } from '@manuscripts/transform'
 
 import { DIContainer } from '../../../DIContainer/DIContainer'
 import {
@@ -23,8 +23,16 @@ import {
   RecordNotFoundError,
   RoleDoesNotPermitOperationError,
 } from '../../../Errors'
+import { ManuscriptActions } from '../../../Models/AuthorityModels'
 import { UpdateDocument } from '../../../Models/DocumentModels'
-import { ObjectTypes, Model, ProjectPermission, ProjectUserRole } from '../../../Models/ProjectModels'
+import {
+  Model,
+  ObjectTypes,
+  Project,
+  ProjectPermission,
+  ProjectUserRole,
+} from '../../../Models/ProjectModels'
+import { UserProfile } from '../../../Models/UserModels'
 import { BaseController } from '../../BaseController'
 
 export class ProjectController extends BaseController {

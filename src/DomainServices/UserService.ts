@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { UserProfile } from '@manuscripts/transform'
 import { User } from '@prisma/client'
 
 import { AccountNotFoundError, RecordNotFoundError } from '../Errors'
 import { ProjectClient, UserClient } from '../Models/RepositoryModels'
+import { UserProfile } from '../Models/UserModels'
 import { validateToken } from '../Utilities/JWT/LoginTokenPayload'
 
 export class UserService {

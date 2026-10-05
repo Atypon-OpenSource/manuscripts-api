@@ -22,6 +22,15 @@ export interface User {
   connectUserID: string
 }
 
+// Was exported by @manuscripts/transform until it dropped UserProfile in
+// favor of its own, differently-shaped User type - kept here since this repo
+// still returns this exact shape from UserService.createUserProfile().
+export interface UserProfile {
+  _id: string
+  userID: string
+  connectID: string
+}
+
 export type ConnectSignupCredentials = {
   name: string
   email: string

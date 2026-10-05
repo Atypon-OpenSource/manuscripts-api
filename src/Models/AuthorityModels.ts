@@ -34,3 +34,23 @@ export type DocumentHistory = History & { doc: Prisma.JsonValue | undefined }
 export interface ModifiedStep extends Prisma.JsonObject {
   clientID: string
 }
+
+// Was exported by @manuscripts/transform until it dropped this enum as part
+// of its v3-migration cleanup - kept here since AuthorityService.
+// getPermittedActions still returns this exact shape.
+export enum ManuscriptActions {
+  handleSuggestion = 'handleSuggestion',
+  rejectOwnSuggestion = 'rejectOwnSuggestion',
+  handleOwnComments = 'handleOwnComments',
+  handleOthersComments = 'handleOthersComments',
+  resolveOwnComment = 'resolveOwnComment',
+  resolveOthersComment = 'resolveOthersComment',
+  createComment = 'createComment',
+  canEditFiles = 'canEditFiles',
+  editArticle = 'editArticle',
+  formatArticle = 'formatArticle',
+  editMetadata = 'editMetadata',
+  editCitationsAndRefs = 'editCitationsAndRefs',
+  seeEditorToolbar = 'seeEditorToolbar',
+  seeReferencesButtons = 'seeReferencesButtons',
+}
