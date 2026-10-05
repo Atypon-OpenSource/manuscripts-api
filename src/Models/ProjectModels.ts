@@ -37,6 +37,19 @@ export interface Manuscript {
   primaryLanguageCode: string
 }
 
+// Was exported by @manuscripts/transform until it dropped Project as part
+// of its v3-migration cleanup - kept here since this repo's v2 project
+// model still matches this exact shape.
+export interface Project {
+  _id: string
+  owners: string[]
+  writers: string[]
+  editors?: string[]
+  annotators?: string[]
+  proofers?: string[]
+  viewers: string[]
+  updatedAt: number
+}
 
 export type PatchProject = {
   _id: string

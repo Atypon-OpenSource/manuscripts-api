@@ -24,7 +24,6 @@ import { DIContainer } from '../DIContainer/DIContainer'
 import { MissingManuscriptError, RoleDoesNotPermitOperationError } from '../Errors'
 import { ProjectUserRole } from '../Models/ProjectModels'
 import { Snapshot } from '../Models/SnapshotModels'
-import { validateToken } from '../Utilities/JWT/LoginTokenPayload'
 import { log } from '../Utilities/Logger'
 import { SocketsService } from './SocketsService'
 
@@ -72,15 +71,6 @@ export class DocumentService {
     if (!permissions.has(permission)) {
       throw new RoleDoesNotPermitOperationError(`Access denied`, userID)
     }
-  }
-
-  public async validateTokenAccess(
-    token: string,
-    projectID: string,
-    permission: DocumentPermission
-  ) {
-    const { userID } = validateToken(token)
-    await this.validateUserAccess(userID, projectID, permission)
   }
 
   public async getManuscriptFromSnapshot(snapshot: Snapshot) {

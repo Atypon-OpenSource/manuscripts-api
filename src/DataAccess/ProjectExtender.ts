@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-import { Project } from '@manuscripts/transform'
 import { Prisma, PrismaClient } from '@prisma/client'
 import _ from 'lodash'
 import { v4 as uuid_v4 } from 'uuid'
 
 import { DatabaseError, ValidationError } from '../Errors'
-import { Model, ObjectTypes } from '../Models/ProjectModels'
+import { Model, ObjectTypes, Project } from '../Models/ProjectModels'
 import { timestamp } from '../Utilities/JWT/LoginTokenPayload'
 
 // TODO: change containerID to projectID

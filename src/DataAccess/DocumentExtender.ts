@@ -20,6 +20,7 @@ import { MissingDocumentError, MissingRecordError } from '../Errors'
 import { CreateDoc, MANUSCRIPT_DOC_LOADED_INCLUDE, UpdateDocument } from '../Models/DocumentModels'
 import { PrismaErrorCodes } from '../Models/RepositoryModels'
 import maybeMigrate from './maybe-migrate'
+import { rewriteUserIds } from './rewrite-user-ids'
 
 export class DocumentExtender {
   readonly DOCUMENT_MODEL = 'manuscriptDoc'
@@ -64,7 +65,10 @@ export class DocumentExtender {
     if (!found) {
       throw new MissingDocumentError(documentID)
     }
-    return found
+    return {
+      ...found,
+      steps: await rewriteUserIds(found.steps, this.prisma),
+    }
   }
 
   private findDocument = async (documentID: string) => {
@@ -77,7 +81,12 @@ export class DocumentExtender {
     if (!found) {
       throw new MissingDocumentError(documentID)
     }
-    return maybeMigrate(found, this.prisma)
+    const migrated = await maybeMigrate(found, this.prisma)
+    return {
+      ...migrated,
+      doc: await rewriteUserIds(migrated.doc, this.prisma),
+      steps: await rewriteUserIds(migrated.steps, this.prisma),
+    }
   }
 
   private createDocument = async (payload: CreateDoc, userID: string) => {

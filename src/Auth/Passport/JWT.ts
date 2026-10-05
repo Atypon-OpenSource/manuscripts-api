@@ -33,8 +33,14 @@ export class JwtAuthStrategy {
       'jwt',
       new Strategy(opts, async (jwt, done) => {
         try {
-          const id = jwt.userID
-          const user = await DIContainer.sharedContainer.userClient.findByID(id)
+          const tokenUserID = jwt.userID
+          const userClient = DIContainer.sharedContainer.userClient
+          // Falls back to the internal id for tokens minted before userID
+          // switched meaning (serverToServerTokenAuth) - safe to remove once
+          // no token issued before that deploy can still be unexpired
+          // (jwt.duration, currently 1800s).
+          const user =
+            (await userClient.findByConnectID(tokenUserID)) ?? (await userClient.findByID(tokenUserID))
           if (!user) {
             return done(null, false)
           }

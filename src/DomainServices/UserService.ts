@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { UserProfile } from '@manuscripts/transform'
 import { User } from '@prisma/client'
 
 import { AccountNotFoundError, RecordNotFoundError } from '../Errors'
 import { ProjectClient, UserClient } from '../Models/RepositoryModels'
+import { UserProfile } from '../Models/UserModels'
 import { validateToken } from '../Utilities/JWT/LoginTokenPayload'
 
 export class UserService {
@@ -29,7 +29,10 @@ export class UserService {
 
   public async profile(token: string) {
     const payload = validateToken(token)
-    const user = await this.userRepository.findByID(payload.userID)
+    // Same transition fallback as JwtAuthStrategy - see its comment.
+    const user =
+      (await this.userRepository.findByConnectID(payload.userID)) ??
+      (await this.userRepository.findByID(payload.userID))
     return user ? this.createUserProfile(user) : null
   }
 

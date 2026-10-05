@@ -20,7 +20,6 @@ import {
   JATSExporter,
   JSONProsemirrorNode,
   parseJATSArticle,
-  Project,
   schema,
 } from '@manuscripts/transform'
 import decompress from 'decompress'
@@ -40,7 +39,15 @@ import {
   ValidationError,
 } from '../Errors'
 import { CreateDoc } from '../Models/DocumentModels'
-import { Manuscript, Model, ObjectTypes, ArchiveOptions, ProjectPermission, ProjectUserRole } from '../Models/ProjectModels'
+import {
+  Manuscript,
+  Model,
+  ObjectTypes,
+  ArchiveOptions,
+  Project,
+  ProjectPermission,
+  ProjectUserRole,
+} from '../Models/ProjectModels'
 import {
   DocumentClient,
   ProjectClient,
